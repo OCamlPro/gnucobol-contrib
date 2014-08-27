@@ -1,0 +1,1 @@
+this is a quick test of 80 character sequential reads from a file to a GTK+ GUI.

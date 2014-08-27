@@ -1,0 +1,21 @@
+The GNU Cobol functional bindings to GTK+ 3
+
+make
+cobcrun cobweb-gtk
+./cobweb-gui
+
+Needs GTK+ 3 libraries and VTE for GTK 3.  (libvte2_90)
+
+In the GTKBuilder test, the sample text editor only has (fake) handlers for
+Help/About and with File/Save attached to a callback to display the multiline
+text buffer. In this initial release, that is true for both the cobweb-gtk self
+test and the cobweb-gui sample.
+
+make cobodoc
+
+Builds ROBODoc documentation.  Requires a patched version of ROBODoc 4.99.41 allowing
+for dashes in identifiers (breaking cmode for any expressions like c=a-b;)
+
+make periodic
+
+Builds a sample periodic table, raw CALL to GTK+.

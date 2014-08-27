@@ -1,0 +1,4 @@
+2014-08-27 Brian Tiffin <btiffin@gnu.org>
+  * Initial release of cobweb-gtk
+  * with window, box, frame, scrolled window, entry, textview, button
+  * label, image, spinner, vte

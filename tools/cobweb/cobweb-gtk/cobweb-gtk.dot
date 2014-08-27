@@ -1,0 +1,28 @@
+digraph G {
+  subgraph cluster_widgets {
+      style=dashed;
+      color=gray;
+      node [fontname="Helvetica",fontsize=10,shape=box];
+      window -> box;
+      box -> vte [style=dashed];
+      box -> "..." [style=dashed];
+      window, box, vte, "..." [shape=parallelogram];
+  }
+  edge [fontname="Helvetica",fontsize=10,labelfontname="Helvetica",labelfontsize=10];
+  node [fontname="Helvetica",fontsize=10,shape=box];
+  rankdir=LR;
+  compound=true;
+  source -> cobc;
+  cobc -> builder -> gui;
+  xml -> builder;
+  cobc -> window;
+  vte -> gui [ltail=cluster_widgets];
+  gui -> profit;
+  source -> robodoc -> documentation [style="dashed"];
+  xml [shape=component];
+  builder [shape=parallelogram];
+  documentation [shape=folder,fillcolor=lightgray,style=filled];
+  gui [fillcolor=lightblue,style=filled,shape=box3d];
+  profit [shape=signature];
+  source [shape=note];
+}
