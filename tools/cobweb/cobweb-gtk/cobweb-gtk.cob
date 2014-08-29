@@ -35,6 +35,7 @@ id     identification division.
            function new-entry
            function new-textview
            function new-button
+           function new-checkbutton
            function new-spinner
            function new-vte
            function rundown-signals
@@ -85,6 +86,9 @@ data   data division.
        01 gtk-button-data.
           05 gtk-button        usage pointer.
 
+       01 gtk-checkbutton-data.
+          05 gtk-checkbutton   usage pointer.
+
        01 gtk-image-data.
           05 gtk-image         usage pointer.
 
@@ -117,6 +121,7 @@ code   procedure division.
            "           function new-label"                     newline
            "           function new-entry"                     newline
            "           function new-button"                    newline
+           "           function new-checkbutton"               newline
            "           function new-spinner"                   newline
            "           function new-vte"                       newline
            "           function new-textview"                  newline
@@ -149,6 +154,9 @@ code   procedure division.
            "cobweb-gtk-entry-activated")
          to gtk-entry-data
        move new-button(gtk-box, "Button",
+           "cobweb-gtk-button-clicked")
+         to gtk-button-data
+       move new-checkbutton(gtk-box, "Check",
            "cobweb-gtk-button-clicked")
          to gtk-button-data
        move new-vte(gtk-scrolled-window, "/bin/sh", vte-cols, vte-rows)
@@ -756,6 +764,58 @@ code   procedure division using
 
 done   goback.
        end function new-button.
+      *>****
+          
+
+      *>****F* cobweb/new-checkbutton
+      *> PURPOSE
+      *> Define a new checkbutton.
+      *> OUTPUT
+      *> image:https://developer.gnome.org/gtk3/stable/check-button.png
+      *> SOURCE
+id     identification division.
+       function-id. new-checkbutton.
+
+       environment division.
+       configuration section.
+       repository.
+           function signal-attach 
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 extraneous                 usage binary-long.
+
+link   linkage section.
+       01 gtk-container              usage pointer.
+       01 gtk-checkbutton-data.
+          05 gtk-checkbutton         usage pointer.
+       01 button-label               pic x any length.
+       01 button-callback            pic x any length.
+
+code   procedure division using
+           gtk-container button-label button-callback
+           returning gtk-checkbutton-data.
+
+      *> Add a labelled button
+       call "gtk_check_button_new_with_label" using
+           by content concatenate(trim(button-label), x"00")
+           returning gtk-checkbutton
+       end-call
+
+      *> Add the button to the container
+       call "gtk_container_add" using
+           by value gtk-container
+           by value gtk-checkbutton
+           returning omitted
+       end-call
+
+      *> Connect handler to clicked
+       move signal-attach(gtk-checkbutton, "clicked", button-callback)
+         to extraneous
+
+done   goback.
+       end function new-checkbutton.
       *>****
           
 
