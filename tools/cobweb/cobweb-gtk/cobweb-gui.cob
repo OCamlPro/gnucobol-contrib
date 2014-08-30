@@ -57,6 +57,7 @@ data   data division.
        working-storage section.
        01 sample-data-status       pic 99.
 
+       01 TOPLEVEL             usage binary-long value 0.
        01 HORIZONTAL           usage binary-long value 0.
        01 VERTICAL             usage binary-long value 1.
 
@@ -124,7 +125,7 @@ code   procedure division.
        close sample-data
 
       *> Main window and top level container
-       move new-window("cobweb-gui", width-hint, height-hint) to gtk-window-data
+       move new-window("cobweb-gui", TOPLEVEL, width-hint, height-hint) to gtk-window-data
        move new-box(gtk-window, VERTICAL, spacing, homogeneous) to gtk-container-data
        
       *> First box, across

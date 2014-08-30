@@ -19,3 +19,7 @@ for dashes in identifiers (breaking cmode for any expressions like c=a-b;)
 make periodic
 
 Builds a sample periodic table, raw CALL to GTK+.
+
+make broadway
+
+Will set the environment so these gui applications show up in a browser at local port 8080

@@ -62,16 +62,16 @@ options:
     --tell
 headertypes:
     J  "Project"            robo_projects     9
-    P  "Program"            robo_programs     8
-    S  "Subprogram"         robo_subprogs     7
-    F  "Function"           robo_functions    7
     L  "Library"            robo_libraries    9
-    C  "Copybook"           robo_files        6
-    d  "division"           robo_structure    5
-    s  "section"            robo_structure    4
-    p  "paragraph"          robo_structure    3
-    e  "Makefile Entry"     robo_tectonics    2
-    T  "System Test"        robo_selftests    2
+    P  "Program"            robo_programs     8
+    F  "Function"           robo_functions    7
+    S  "Subprogram"         robo_subprogs     6
+    C  "Copybook"           robo_files        5
+    d  "division"           robo_structure    4
+    s  "section"            robo_structure    3
+    p  "paragraph"          robo_structure    2
+    e  "Makefile Entry"     robo_tectonics    1
+    T  "System Test"        robo_selftests    1
 ignore files:
     CVS
     *.bak

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -30,30 +29,35 @@
 <li><a href="#robo0">cobweb/cobweb-gtk</a></li>
 <li><a href="#robo2">cobweb/builder-get-object</a></li>
 <li><a href="#robo3">cobweb/builder-signal-attach</a></li>
-<li><a href="#robo4">cobweb/cobweb-delete-event</a></li>
-<li><a href="#robo5">cobweb/cobweb-gtk-button-clicked</a></li>
-<li><a href="#robo6">cobweb/cobweb-gtk-entry-activated</a></li>
-<li><a href="#robo9">cobweb/entry-get-text</a></li>
-<li><a href="#robo10">cobweb/entry-set-text</a></li>
-<li><a href="#robo11">cobweb/gtk-go</a></li>
-<li><a href="#robo12">cobweb/new-box</a></li>
-<li><a href="#robo13">cobweb/new-builder</a></li>
-<li><a href="#robo14">cobweb/new-button</a></li>
-<li><a href="#robo15">cobweb/new-entry</a></li>
-<li><a href="#robo16">cobweb/new-frame</a></li>
-<li><a href="#robo17">cobweb/new-image</a></li>
-<li><a href="#robo18">cobweb/new-label</a></li>
-<li><a href="#robo19">cobweb/new-scrolled-window</a></li>
-<li><a href="#robo20">cobweb/new-spinner</a></li>
-<li><a href="#robo21">cobweb/new-textview</a></li>
-<li><a href="#robo22">cobweb/new-vte</a></li>
-<li><a href="#robo23">cobweb/new-window</a></li>
-<li><a href="#robo24">cobweb/rundown-signals</a></li>
-<li><a href="#robo25">cobweb/signal-attach</a></li>
-<li><a href="#robo26">cobweb/textview-get-text</a></li>
-<li><a href="#robo27">cobweb/textview-set-text</a></li>
-<li><a href="#robo30">cobweb/help-about-gtk</a></li>
-<li><a href="#robo32">cobweb/see-textview-gtk</a></li>
+<li><a href="#robo4">cobweb/entry-get-text</a></li>
+<li><a href="#robo5">cobweb/entry-set-text</a></li>
+<li><a href="#robo6">cobweb/gtk-go</a></li>
+<li><a href="#robo7">cobweb/hide-widget</a></li>
+<li><a href="#robo8">cobweb/new-box</a></li>
+<li><a href="#robo9">cobweb/new-builder</a></li>
+<li><a href="#robo10">cobweb/new-button</a></li>
+<li><a href="#robo11">cobweb/new-checkbutton</a></li>
+<li><a href="#robo12">cobweb/new-entry</a></li>
+<li><a href="#robo13">cobweb/new-frame</a></li>
+<li><a href="#robo14">cobweb/new-image</a></li>
+<li><a href="#robo15">cobweb/new-label</a></li>
+<li><a href="#robo16">cobweb/new-scrolled-window</a></li>
+<li><a href="#robo17">cobweb/new-spinner</a></li>
+<li><a href="#robo18">cobweb/new-textview</a></li>
+<li><a href="#robo19">cobweb/new-vte</a></li>
+<li><a href="#robo20">cobweb/new-window</a></li>
+<li><a href="#robo21">cobweb/rundown-signals</a></li>
+<li><a href="#robo22">cobweb/set-sensitive-widget</a></li>
+<li><a href="#robo23">cobweb/show-widget</a></li>
+<li><a href="#robo24">cobweb/signal-attach</a></li>
+<li><a href="#robo25">cobweb/textview-get-text</a></li>
+<li><a href="#robo26">cobweb/textview-set-text</a></li>
+<li><a href="#robo28">cobweb/cobweb-delete-event</a></li>
+<li><a href="#robo29">cobweb/cobweb-gtk-button-clicked</a></li>
+<li><a href="#robo30">cobweb/cobweb-gtk-checkbutton-clicked</a></li>
+<li><a href="#robo31">cobweb/cobweb-gtk-entry-activated</a></li>
+<li><a href="#robo35">cobweb/help-about-gtk</a></li>
+<li><a href="#robo37">cobweb/see-textview-gtk</a></li>
 </ul>
 <hr />
 <a name="cobweb2fcobweb2dgtk"></a>
@@ -64,13 +68,14 @@
 <pre>   Brian Tiffin
 </pre>
 <p class="item_name">COLOPHON</p>
-<pre>   Part of the GNU Cobol project
+<pre>   Part of the GNU Cobol free software project
    Copyright (C) 2014, Brian Tiffin
-   Date:      20130308, 20140717
-   License:   GPL 3.0 or greater
+   Date:      20130308
+   Modified:  20140728
+   License:   GNU General Public License, GPL, 3.0 or greater
 </pre>
 <p class="item_name">PURPOSE</p>
-<p> GNU Cobol functional bindings to GTK+
+<p> GNU Cobol functional bindings to GTK+, self test
 </p>
 <p class="item_name">TECTONICS</p>
 <pre>   cobc -m -g -debug <a href="#robo_top_of_doc">cobweb-gtk.cob</a> <a href="./voidcall_c.html#robo_top_of_doc">voidcall.c</a> `pkg-config --libs gtk+-3.0`
@@ -88,24 +93,25 @@
        <span class="keyword">environment</span> <span class="keyword">division</span><span class="sign">.</span>
        <span class="keyword">configuration</span> <span class="keyword">section</span><span class="sign">.</span>
        <span class="keyword">repository</span><span class="sign">.</span>
-           <span class="keyword">function</span> <a href="#robo13">new-builder</a>
-           <span class="keyword">function</span> <a href="#robo23">new-window</a> 
-           <span class="keyword">function</span> <a href="#robo19">new-scrolled-window</a> 
-           <span class="keyword">function</span> <a href="#robo12">new-box</a>
-           <span class="keyword">function</span> <a href="#robo16">new-frame</a>
-           <span class="keyword">function</span> <a href="#robo17">new-image</a>
-           <span class="keyword">function</span> <a href="#robo18">new-label</a>
-           <span class="keyword">function</span> <a href="#robo15">new-entry</a>
-           <span class="keyword">function</span> <a href="#robo21">new-textview</a>
-           <span class="keyword">function</span> <a href="#robo14">new-button</a>
-           <span class="keyword">function</span> <a href="#robo20">new-spinner</a>
-           <span class="keyword">function</span> <a href="#robo22">new-vte</a>
-           <span class="keyword">function</span> <a href="#robo24">rundown-signals</a>
-           <span class="keyword">function</span> <a href="#robo25">signal-attach</a>
+           <span class="keyword">function</span> <a href="#robo9">new-builder</a>
+           <span class="keyword">function</span> <a href="#robo20">new-window</a> 
+           <span class="keyword">function</span> <a href="#robo16">new-scrolled-window</a> 
+           <span class="keyword">function</span> <a href="#robo8">new-box</a>
+           <span class="keyword">function</span> <a href="#robo13">new-frame</a>
+           <span class="keyword">function</span> <a href="#robo14">new-image</a>
+           <span class="keyword">function</span> <a href="#robo15">new-label</a>
+           <span class="keyword">function</span> <a href="#robo12">new-entry</a>
+           <span class="keyword">function</span> <a href="#robo18">new-textview</a>
+           <span class="keyword">function</span> <a href="#robo10">new-button</a>
+           <span class="keyword">function</span> <a href="#robo11">new-checkbutton</a>
+           <span class="keyword">function</span> <a href="#robo17">new-spinner</a>
+           <span class="keyword">function</span> <a href="#robo19">new-vte</a>
+           <span class="keyword">function</span> <a href="#robo21">rundown-signals</a>
+           <span class="keyword">function</span> <a href="#robo24">signal-attach</a>
            <span class="keyword">function</span> <a href="#robo3">builder-signal-attach</a>
            <span class="keyword">function</span> <a href="#robo2">builder-get-object</a>
-           <span class="keyword">function</span> <a href="#robo27">textview-set-text</a>
-           <span class="keyword">function</span> <a href="#robo11">gtk-go</a>
+           <span class="keyword">function</span> <a href="#robo26">textview-set-text</a>
+           <span class="keyword">function</span> <a href="#robo6">gtk-go</a>
            <span class="keyword">function</span> <span class="keyword">all</span> <span class="keyword">intrinsic</span><span class="sign">.</span>
 
 <span class="keyword">data</span>   <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -121,6 +127,7 @@
           05 gtk-builtwindow   <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
        01 builder-connect      <span class="keyword">usage</span> <span class="keyword">binary-long</span> <span class="keyword">value</span> 0<span class="sign">.</span>
  
+       01 GTK-WINDOW-TOPLEVEL  <span class="keyword">usage</span> <span class="keyword">binary-long</span> <span class="keyword">value</span> 0<span class="sign">.</span>
        01 gtk-window-data                               <span class="keyword">external</span><span class="sign">.</span>
           05 gtk-window        <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
        01 width-hint           <span class="keyword">usage</span> <span class="keyword">binary-long</span> <span class="keyword">value</span> 500<span class="sign">.</span>
@@ -145,8 +152,11 @@
           05 gtk-entry         <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
        01 entry-chars          <span class="keyword">usage</span> <span class="keyword">binary-long</span> <span class="keyword">value</span> 8<span class="sign">.</span>
 
-       01 gtk-button-data<span class="sign">.</span>
+       01 gtk-button-data                     <span class="keyword">external</span><span class="sign">.</span>
           05 gtk-button        <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+
+       01 gtk-checkbutton-data<span class="sign">.</span>
+          05 gtk-checkbutton   <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
 
        01 gtk-image-data<span class="sign">.</span>
           05 gtk-image         <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
@@ -171,55 +181,63 @@
        <span class="keyword">end-display</span>
        <span class="keyword">display</span>
            <span class="quote">"       repository."</span>                                newline
-           <span class="quote">"           function <a href="#robo13">new-builder</a>"</span>                   newline
-           <span class="quote">"           function <a href="#robo23">new-window</a>"</span>                    newline
-           <span class="quote">"           function <a href="#robo19">new-scrolled-window</a>"</span>           newline
-           <span class="quote">"           function <a href="#robo12">new-box</a>"</span>                       newline
-           <span class="quote">"           function <a href="#robo16">new-frame</a>"</span>                     newline
-           <span class="quote">"           function <a href="#robo17">new-image</a>"</span>                     newline
-           <span class="quote">"           function <a href="#robo18">new-label</a>"</span>                     newline
-           <span class="quote">"           function <a href="#robo15">new-entry</a>"</span>                     newline
-           <span class="quote">"           function <a href="#robo14">new-button</a>"</span>                    newline
-           <span class="quote">"           function <a href="#robo20">new-spinner</a>"</span>                   newline
-           <span class="quote">"           function <a href="#robo22">new-vte</a>"</span>                       newline
-           <span class="quote">"           function <a href="#robo21">new-textview</a>"</span>                  newline
-           <span class="quote">"           function <a href="#robo24">rundown-signals</a>"</span>               newline
-           <span class="quote">"           function <a href="#robo25">signal-attach</a>"</span>                 newline
+           <span class="quote">"           function <a href="#robo9">new-builder</a>"</span>                   newline
+           <span class="quote">"           function <a href="#robo20">new-window</a>"</span>                    newline
+           <span class="quote">"           function <a href="#robo16">new-scrolled-window</a>"</span>           newline
+           <span class="quote">"           function <a href="#robo8">new-box</a>"</span>                       newline
+           <span class="quote">"           function <a href="#robo13">new-frame</a>"</span>                     newline
+           <span class="quote">"           function <a href="#robo14">new-image</a>"</span>                     newline
+           <span class="quote">"           function <a href="#robo15">new-label</a>"</span>                     newline
+           <span class="quote">"           function <a href="#robo12">new-entry</a>"</span>                     newline
+           <span class="quote">"           function <a href="#robo10">new-button</a>"</span>                    newline
+           <span class="quote">"           function <a href="#robo11">new-checkbutton</a>"</span>               newline
+           <span class="quote">"           function <a href="#robo17">new-spinner</a>"</span>                   newline
+           <span class="quote">"           function <a href="#robo19">new-vte</a>"</span>                       newline
+           <span class="quote">"           function <a href="#robo18">new-textview</a>"</span>                  newline
+           <span class="quote">"           function <a href="#robo21">rundown-signals</a>"</span>               newline
+           <span class="quote">"           function <a href="#robo24">signal-attach</a>"</span>                 newline
            <span class="quote">"           function <a href="#robo3">builder-signal-attach</a>"</span>         newline
            <span class="quote">"           function <a href="#robo2">builder-get-object</a>"</span>            newline
-           <span class="quote">"           function <a href="#robo9">entry-get-text</a>"</span>                newline
-           <span class="quote">"           function <a href="#robo10">entry-set-text</a>"</span>                newline
-           <span class="quote">"           function <a href="#robo26">textview-get-text</a>"</span>             newline
-           <span class="quote">"           function <a href="#robo27">textview-set-text</a>"</span>             newline
-           <span class="quote">"           function <a href="#robo11">gtk-go</a>"</span>                        newline
+           <span class="quote">"           function <a href="#robo23">show-widget</a>"</span>                   newline
+           <span class="quote">"           function <a href="#robo7">hide-widget</a>"</span>                   newline
+           <span class="quote">"           function <a href="#robo22">set-sensitive-widget</a>"</span>          newline
+           <span class="quote">"           function <a href="#robo4">entry-get-text</a>"</span>                newline
+           <span class="quote">"           function <a href="#robo5">entry-set-text</a>"</span>                newline
+           <span class="quote">"           function <a href="#robo25">textview-get-text</a>"</span>             newline
+           <span class="quote">"           function <a href="#robo26">textview-set-text</a>"</span>             newline
+           <span class="quote">"           function <a href="#robo6">gtk-go</a>"</span>                        newline
            <span class="quote">"           function all intrinsic."</span>
        <span class="keyword">end-display</span>
 
       <span class="comment">*&gt; test basic windowing</span>
-       <span class="keyword">move</span> <a href="#robo23">new-window</a><span class="sign">(</span><span class="quote">"<strong>cobweb-gtk</strong>"</span><span class="sign">,</span> width-hint<span class="sign">,</span> height-hint<span class="sign">)</span>
+       <span class="keyword">move</span> <a href="#robo20">new-window</a><span class="sign">(</span><span class="quote">"<strong>cobweb-gtk</strong>"</span><span class="sign">,</span> GTK-WINDOW-TOPLEVEL<span class="sign">,</span>
+            width-hint<span class="sign">,</span> height-hint<span class="sign">)</span>
          <span class="keyword">to</span> gtk-window-data
-       <span class="keyword">move</span> <a href="#robo12">new-box</a><span class="sign">(</span>gtk-window<span class="sign">,</span> HORIZONTAL<span class="sign">,</span> spacing<span class="sign">,</span> homogeneous<span class="sign">)</span>
+       <span class="keyword">move</span> <a href="#robo8">new-box</a><span class="sign">(</span>gtk-window<span class="sign">,</span> HORIZONTAL<span class="sign">,</span> spacing<span class="sign">,</span> homogeneous<span class="sign">)</span>
          <span class="keyword">to</span> gtk-box-data
-       <span class="keyword">move</span> <a href="#robo16">new-frame</a><span class="sign">(</span>gtk-box<span class="sign">,</span> <span class="quote">"GTK+ frame"</span><span class="sign">)</span>
+       <span class="keyword">move</span> <a href="#robo13">new-frame</a><span class="sign">(</span>gtk-box<span class="sign">,</span> <span class="quote">"GTK+ frame"</span><span class="sign">)</span>
          <span class="keyword">to</span> gtk-frame-data
-       <span class="keyword">move</span> <a href="#robo19">new-scrolled-window</a><span class="sign">(</span>gtk-frame<span class="sign">,</span> NULL<span class="sign">,</span> NULL<span class="sign">)</span>
+       <span class="keyword">move</span> <a href="#robo16">new-scrolled-window</a><span class="sign">(</span>gtk-frame<span class="sign">,</span> NULL<span class="sign">,</span> NULL<span class="sign">)</span>
          <span class="keyword">to</span> gtk-scrolled-window-data
-       <span class="keyword">move</span> <a href="#robo17">new-image</a><span class="sign">(</span>gtk-box<span class="sign">,</span> <span class="quote">"blue66.png"</span><span class="sign">)</span>
+       <span class="keyword">move</span> <a href="#robo14">new-image</a><span class="sign">(</span>gtk-box<span class="sign">,</span> <span class="quote">"blue66.png"</span><span class="sign">)</span>
          <span class="keyword">to</span> gtk-image-data
-       <span class="keyword">move</span> <a href="#robo18">new-label</a><span class="sign">(</span>gtk-box<span class="sign">,</span> <span class="quote">"Label"</span><span class="sign">)</span>
+       <span class="keyword">move</span> <a href="#robo15">new-label</a><span class="sign">(</span>gtk-box<span class="sign">,</span> <span class="quote">"Label"</span><span class="sign">)</span>
          <span class="keyword">to</span> gtk-label-data
-       <span class="keyword">move</span> <a href="#robo15">new-entry</a><span class="sign">(</span>gtk-box<span class="sign">,</span> entry-chars<span class="sign">,</span>
-           <span class="quote">"<a href="#robo6">cobweb-gtk-entry-activated</a>"</span><span class="sign">)</span>
+       <span class="keyword">move</span> <a href="#robo12">new-entry</a><span class="sign">(</span>gtk-box<span class="sign">,</span> entry-chars<span class="sign">,</span>
+           <span class="quote">"<a href="#robo31">cobweb-gtk-entry-activated</a>"</span><span class="sign">)</span>
          <span class="keyword">to</span> gtk-entry-data
-       <span class="keyword">move</span> <a href="#robo14">new-button</a><span class="sign">(</span>gtk-box<span class="sign">,</span> <span class="quote">"Button"</span><span class="sign">,</span>
-           <span class="quote">"<a href="#robo5">cobweb-gtk-button-clicked</a>"</span><span class="sign">)</span>
+       <span class="keyword">move</span> <a href="#robo10">new-button</a><span class="sign">(</span>gtk-box<span class="sign">,</span> <span class="quote">"Button"</span><span class="sign">,</span>
+           <span class="quote">"<a href="#robo29">cobweb-gtk-button-clicked</a>"</span><span class="sign">)</span>
          <span class="keyword">to</span> gtk-button-data
-       <span class="keyword">move</span> <a href="#robo22">new-vte</a><span class="sign">(</span>gtk-scrolled-window<span class="sign">,</span> <span class="quote">"/bin/sh"</span><span class="sign">,</span> vte-cols<span class="sign">,</span> vte-rows<span class="sign">)</span>
+       <span class="keyword">move</span> <a href="#robo11">new-checkbutton</a><span class="sign">(</span>gtk-box<span class="sign">,</span> <span class="quote">"Check"</span><span class="sign">,</span> 0
+           <span class="quote">"<a href="#robo30">cobweb-gtk-checkbutton-clicked</a>"</span><span class="sign">)</span>
+         <span class="keyword">to</span> gtk-checkbutton-data
+       <span class="keyword">move</span> <a href="#robo19">new-vte</a><span class="sign">(</span>gtk-scrolled-window<span class="sign">,</span> <span class="quote">"/bin/sh"</span><span class="sign">,</span> vte-cols<span class="sign">,</span> vte-rows<span class="sign">)</span>
          <span class="keyword">to</span> gtk-vte-data
-       <span class="keyword">move</span> <a href="#robo20">new-spinner</a><span class="sign">(</span>gtk-box<span class="sign">)</span>
+       <span class="keyword">move</span> <a href="#robo17">new-spinner</a><span class="sign">(</span>gtk-box<span class="sign">)</span>
          <span class="keyword">to</span> gtk-spinner-data
 
-       <span class="keyword">move</span> <a href="#robo11">gtk-go</a><span class="sign">(</span>gtk-window<span class="sign">)</span> <span class="keyword">to</span> extraneous
+       <span class="keyword">move</span> <a href="#robo6">gtk-go</a><span class="sign">(</span>gtk-window<span class="sign">)</span> <span class="keyword">to</span> extraneous
 
       <span class="comment">*&gt; Control can pass back and forth to COBOL subprograms,</span>
       <span class="comment">*&gt;  by event, but control flow stops above, until the</span>
@@ -233,26 +251,27 @@
       <span class="comment">*&gt; Demonstrate GTKBuilder automation</span>
       <span class="comment">*&gt; In this case, using the sample included in the GTK+ Builder</span>
       <span class="comment">*&gt;   tutorial by Micah Carrick </span>
-       <span class="keyword">move</span> <a href="#robo13">new-builder</a><span class="sign">(</span><span class="quote">"cobweb-sample.xml"</span><span class="sign">,</span> builder-connect<span class="sign">)</span>
+       <span class="keyword">move</span> <a href="#robo9">new-builder</a><span class="sign">(</span><span class="quote">"cobweb-sample.xml"</span><span class="sign">,</span> builder-connect<span class="sign">)</span>
          <span class="keyword">to</span> gtk-builder-data
 
       <span class="comment">*&gt; attach handlers</span>
        <span class="keyword">move</span> <a href="#robo3">builder-signal-attach</a><span class="sign">(</span>
            gtk-builder<span class="sign">,</span> <span class="quote">"about_menu_item"</span><span class="sign">,</span> <span class="quote">"activate"</span><span class="sign">,</span>
-               <span class="quote">"<a href="#robo30">help-about-gtk</a>"</span><span class="sign">)</span>
+               <span class="quote">"<a href="#robo35">help-about-gtk</a>"</span><span class="sign">)</span>
          <span class="keyword">to</span> extraneous
        <span class="keyword">move</span> <a href="#robo3">builder-signal-attach</a><span class="sign">(</span>
            gtk-builder<span class="sign">,</span> <span class="quote">"save_menu_item"</span><span class="sign">,</span> <span class="quote">"activate"</span><span class="sign">,</span>
-               <span class="quote">"<a href="#robo32">see-textview-gtk</a>"</span><span class="sign">)</span>
+               <span class="quote">"<a href="#robo37">see-textview-gtk</a>"</span><span class="sign">)</span>
          <span class="keyword">to</span> extraneous
 
       <span class="comment">*&gt; set some initial text</span>
-       <span class="keyword">move</span> <a href="#robo27">textview-set-text</a><span class="sign">(</span>
+       <span class="keyword">move</span> <a href="#robo26">textview-set-text</a><span class="sign">(</span>
            <a href="#robo2">builder-get-object</a><span class="sign">(</span>gtk-builder<span class="sign">,</span> <span class="quote">"text_view"</span><span class="sign">)</span><span class="sign">,</span>
            <span class="quote">"Display this text"</span> <span class="sign">&amp;</span> x<span class="quote">"0a"</span> <span class="sign">&amp;</span> <span class="quote">"by clicking File/Save"</span><span class="sign">)</span>
          <span class="keyword">to</span> extraneous
 
-       <span class="keyword">move</span> <a href="#robo11">gtk-go</a><span class="sign">(</span>gtk-builtwindow<span class="sign">)</span> <span class="keyword">to</span> extraneous
+       <span class="comment">*&gt;  #### DISABLED TEST ####</span>
+       <span class="comment">*&gt; move <a href="#robo6">gtk-go</a>(gtk-builtwindow) to extraneous</span>
 
        <span class="keyword">display</span>
            <span class="quote">"GNU Cobol: builder GTK eventloop terminated normally"</span>
@@ -319,7 +338,7 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
        <span class="keyword">environment</span> <span class="keyword">division</span><span class="sign">.</span>
        <span class="keyword">configuration</span> <span class="keyword">section</span><span class="sign">.</span>
        <span class="keyword">repository</span><span class="sign">.</span>
-           <span class="keyword">function</span> <a href="#robo25">signal-attach</a>
+           <span class="keyword">function</span> <a href="#robo24">signal-attach</a>
            <span class="keyword">function</span> <span class="keyword">all</span> <span class="keyword">intrinsic</span><span class="sign">.</span>
 
 <span class="keyword">data</span>   <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -344,7 +363,7 @@ link   <span class="keyword">linkage</span> <span class="keyword">section</span>
            <span class="keyword">returning</span> gtk-widget
        <span class="keyword">end-call</span>
        <span class="keyword">if</span> gtk-widget <span class="keyword">not</span> <span class="keyword">equal</span> <span class="keyword">null</span> <span class="keyword">then</span>
-          <span class="keyword">move</span> <a href="#robo25">signal-attach</a><span class="sign">(</span>gtk-widget<span class="sign">,</span> builder-event<span class="sign">,</span> callback-byname<span class="sign">)</span>
+          <span class="keyword">move</span> <a href="#robo24">signal-attach</a><span class="sign">(</span>gtk-widget<span class="sign">,</span> builder-event<span class="sign">,</span> callback-byname<span class="sign">)</span>
             <span class="keyword">to</span> extraneous
        <span class="keyword">end-if</span>
 
@@ -353,95 +372,8 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 </pre>
 
 <hr />
-<a name="cobweb2fcobweb2ddelete2devent"></a>
-<a name="robo4"></a><h2>cobweb-delete-event</h2>
-
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_subprogs.html#robo_top_of_doc">Subprogram</a> ]</p>
-<p class="item_name">PURPOSE</p>
-<p>   application layer default GTK rundown handler
-   Returns false, allowing window close
-</p>
-<p class="item_name">SOURCE</p>
-<pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
-       <span class="keyword">program-id</span><span class="sign">.</span> <strong>cobweb-delete-event</strong><span class="sign">.</span>
-
-       <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
-       <span class="keyword">working-storage</span> <span class="keyword">section</span><span class="sign">.</span>
-       01 working-flag         <span class="keyword">usage</span> <span class="keyword">binary-long</span> <span class="keyword">value</span> 0<span class="sign">.</span>
-
-       <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
-       01 gtk-widget           <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
-       01 gdk-event            <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
-       01 gtk-data             <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
-       01 the-flag             <span class="keyword">usage</span> <span class="keyword">binary-long</span><span class="sign">.</span>
-
-       <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span>
-           <span class="keyword">by</span> <span class="keyword">value</span> gtk-widget gdk-event gtk-data <span class="keyword">returning</span> the-flag<span class="sign">.</span>
-
-      <span class="comment">*&gt; return false, allow the destroy signal              </span>
-       <span class="keyword">set</span> <span class="keyword">address</span> <span class="keyword">of</span> the-flag <span class="keyword">to</span> <span class="keyword">address</span> <span class="keyword">of</span> working-flag
-
-done   <span class="keyword">goback</span><span class="sign">.</span>
-       <span class="keyword">end</span> <span class="keyword">program</span> <strong>cobweb-delete-event</strong><span class="sign">.</span>
-</pre>
-
-<hr />
-<a name="cobweb2fcobweb2dgtk2dbutton2dclicked"></a>
-<a name="robo5"></a><h2>cobweb-gtk-button-clicked</h2>
-
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_subprogs.html#robo_top_of_doc">Subprogram</a> ]</p>
-<p class="item_name">PURPOSE</p>
-<p>   default button click handler
-</p>
-<p class="item_name">SOURCE</p>
-<pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
-       <span class="keyword">program-id</span><span class="sign">.</span> <strong>cobweb-gtk-button-clicked</strong><span class="sign">.</span>
-
-       <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
-       <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
-       01 gtk-widget           <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
-       01 gtk-data             <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
-
-       <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span> <span class="keyword">by</span> <span class="keyword">value</span> gtk-widget gtk-data<span class="sign">.</span>
-
-       <span class="keyword">display</span>
-           <span class="quote">"clicked "</span> gtk-widget <span class="quote">" with "</span> gtk-data <span class="keyword">upon</span> syserr
-       <span class="keyword">end-display</span>
-
-done   <span class="keyword">goback</span><span class="sign">.</span>
-       <span class="keyword">end</span> <span class="keyword">program</span> <strong>cobweb-gtk-button-clicked</strong><span class="sign">.</span>
-</pre>
-
-<hr />
-<a name="cobweb2fcobweb2dgtk2dentry2dactivated"></a>
-<a name="robo6"></a><h2>cobweb-gtk-entry-activated</h2>
-
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_subprogs.html#robo_top_of_doc">Subprogram</a> ]</p>
-<p class="item_name">PURPOSE</p>
-<p>   default text entry activate handler
-</p>
-<p class="item_name">SOURCE</p>
-<pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
-       <span class="keyword">program-id</span><span class="sign">.</span> <strong>cobweb-gtk-entry-activated</strong><span class="sign">.</span>
-
-       <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
-       <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
-       01 gtk-widget           <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
-       01 gtk-data             <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
-
-       <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span> <span class="keyword">by</span> <span class="keyword">value</span> gtk-widget gtk-data<span class="sign">.</span>   
-
-       <span class="keyword">display</span>
-           <span class="quote">"activated "</span> gtk-widget <span class="quote">" with "</span> gtk-data <span class="keyword">upon</span> syserr
-       <span class="keyword">end-display</span>
-
-done   <span class="keyword">goback</span><span class="sign">.</span>
-       <span class="keyword">end</span> <span class="keyword">program</span> <strong>cobweb-gtk-entry-activated</strong><span class="sign">.</span>
-</pre>
-
-<hr />
 <a name="cobweb2fentry2dget2dtext"></a>
-<a name="robo9"></a><h2>entry-get-text</h2>
+<a name="robo4"></a><h2>entry-get-text</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
@@ -486,7 +418,7 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 <hr />
 <a name="cobweb2fentry2dset2dtext"></a>
-<a name="robo10"></a><h2>entry-set-text</h2>
+<a name="robo5"></a><h2>entry-set-text</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
@@ -523,12 +455,15 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 <hr />
 <a name="cobweb2fgtk2dgo"></a>
-<a name="robo11"></a><h2>gtk-go</h2>
+<a name="robo6"></a><h2>gtk-go</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
 <p> Start the GTK+ event loop, only returns after rundown
 </p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-window pointer (starting with widget_show_all)
+</pre>
 <p class="item_name">SOURCE</p>
 <pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
        <span class="keyword">function-id</span><span class="sign">.</span> <strong>gtk-go</strong><span class="sign">.</span> 
@@ -558,13 +493,58 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 </pre>
 
 <hr />
+<a name="cobweb2fhide2dwidget"></a>
+<a name="robo7"></a><h2>hide-widget</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
+<p class="item_name">PURPOSE</p>
+<p> Inform GTK to mark the widget invisible
+</p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-widget pointer
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">function-id</span><span class="sign">.</span> <strong>hide-widget</strong><span class="sign">.</span> 
+
+       <span class="keyword">environment</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">configuration</span> <span class="keyword">section</span><span class="sign">.</span>
+       <span class="keyword">repository</span><span class="sign">.</span>
+           <span class="keyword">function</span> <span class="keyword">all</span> <span class="keyword">intrinsic</span><span class="sign">.</span>
+
+<span class="keyword">data</span>   <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
+link   <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
+       01 gtk-widget           <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+       01 extraneous           <span class="keyword">usage</span> <span class="keyword">binary-long</span><span class="sign">.</span>
+
+<span class="keyword">code</span>   <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span> gtk-widget <span class="keyword">returning</span> extraneous<span class="sign">.</span>
+
+       <span class="keyword">call</span> <span class="quote">"gtk_widget_hide"</span> <span class="keyword">using</span>
+               <span class="keyword">by</span> <span class="keyword">value</span> gtk-widget
+           <span class="keyword">returning</span> <span class="keyword">omitted</span>
+       <span class="keyword">end-call</span>
+
+done   <span class="keyword">goback</span><span class="sign">.</span>
+       <span class="keyword">end</span> <span class="keyword">function</span> <strong>hide-widget</strong><span class="sign">.</span>
+</pre>
+
+<hr />
 <a name="cobweb2fnew2dbox"></a>
-<a name="robo12"></a><h2>new-box</h2>
+<a name="robo8"></a><h2>new-box</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
 <p> Define a new container
 </p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-window/widget pointer
+   orientation 0 across, 1 up down
+   spacing between contained items
+   do all the widgets try and keep the same size
+</pre>
+<p class="item_name">OUTPUT</p>
+<pre>   gtk-box-record, first field pointer
+</pre>
 <p class="item_name">SOURCE</p>
 <pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
        <span class="keyword">function-id</span><span class="sign">.</span> <strong>new-box</strong><span class="sign">.</span> 
@@ -613,14 +593,19 @@ COOL   <span class="keyword">end</span> <span class="keyword">function</span> <s
 
 <hr />
 <a name="cobweb2fnew2dbuilder"></a>
-<a name="robo13"></a><h2>new-builder</h2>
+<a name="robo9"></a><h2>new-builder</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
 <p> Use GTKBuilder to create an entire window and widget set
 </p>
 <p class="item_name">INPUT</p>
-<pre> XML layout filename
+<pre>   XML layout filename pic x any
+   boolean, auto-connect signals or not
+</pre>
+<p class="item_name">OUTPUT</p>
+<pre>   gtk-builder-record with
+   gtk-builder and gtk-window
 </pre>
 <p class="item_name">SOURCE</p>
 <pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -629,7 +614,7 @@ COOL   <span class="keyword">end</span> <span class="keyword">function</span> <s
        <span class="keyword">environment</span> <span class="keyword">division</span><span class="sign">.</span>
        <span class="keyword">configuration</span> <span class="keyword">section</span><span class="sign">.</span>
        <span class="keyword">repository</span><span class="sign">.</span>
-           <span class="keyword">function</span> <a href="#robo24">rundown-signals</a>
+           <span class="keyword">function</span> <a href="#robo21">rundown-signals</a>
            <span class="keyword">function</span> <span class="keyword">all</span> <span class="keyword">intrinsic</span><span class="sign">.</span>
 
 <span class="keyword">data</span>   <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -674,7 +659,7 @@ link   01 builder-xmlfile            <span class="keyword">pic</span> x <span cl
                <span class="keyword">returning</span> <span class="keyword">omitted</span>
            <span class="keyword">end-call</span>
        <span class="keyword">else</span>
-          <span class="keyword">move</span> <a href="#robo24">rundown-signals</a><span class="sign">(</span>gtk-builtwindow<span class="sign">)</span> <span class="keyword">to</span> extraneous
+          <span class="keyword">move</span> <a href="#robo21">rundown-signals</a><span class="sign">(</span>gtk-builtwindow<span class="sign">)</span> <span class="keyword">to</span> extraneous
        <span class="keyword">end-if</span>
 
 done   <span class="keyword">goback</span><span class="sign">.</span>
@@ -683,14 +668,20 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 <hr />
 <a name="cobweb2fnew2dbutton"></a>
-<a name="robo14"></a><h2>new-button</h2>
+<a name="robo10"></a><h2>new-button</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
 <p> Define a new button.
 </p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-container
+   button-label pic x any
+   button-callback pic x any
+</pre>
 <p class="item_name">OUTPUT</p>
-<pre> <img src="https://developer.gnome.org/gtk3/stable/button.png">
+<pre>   gtk-button-record reference, first field pointer
+   <img src="https://developer.gnome.org/gtk3/stable/button.png">
 </pre>
 <p class="item_name">SOURCE</p>
 <pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -699,7 +690,7 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
        <span class="keyword">environment</span> <span class="keyword">division</span><span class="sign">.</span>
        <span class="keyword">configuration</span> <span class="keyword">section</span><span class="sign">.</span>
        <span class="keyword">repository</span><span class="sign">.</span>
-           <span class="keyword">function</span> <a href="#robo25">signal-attach</a> 
+           <span class="keyword">function</span> <a href="#robo24">signal-attach</a> 
            <span class="keyword">function</span> <span class="keyword">all</span> <span class="keyword">intrinsic</span><span class="sign">.</span>
 
 <span class="keyword">data</span>   <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -731,7 +722,7 @@ link   <span class="keyword">linkage</span> <span class="keyword">section</span>
        <span class="keyword">end-call</span>
 
       <span class="comment">*&gt; Connect handler to clicked</span>
-       <span class="keyword">move</span> <a href="#robo25">signal-attach</a><span class="sign">(</span>gtk-button<span class="sign">,</span> <span class="quote">"clicked"</span><span class="sign">,</span> button-callback<span class="sign">)</span>
+       <span class="keyword">move</span> <a href="#robo24">signal-attach</a><span class="sign">(</span>gtk-button<span class="sign">,</span> <span class="quote">"clicked"</span><span class="sign">,</span> button-callback<span class="sign">)</span>
          <span class="keyword">to</span> extraneous
 
 done   <span class="keyword">goback</span><span class="sign">.</span>
@@ -739,15 +730,96 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 </pre>
 
 <hr />
+<a name="cobweb2fnew2dcheckbutton"></a>
+<a name="robo11"></a><h2>new-checkbutton</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
+<p class="item_name">PURPOSE</p>
+<p> Define a new checkbutton.
+</p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-container
+    button-label pic x any
+    button-value usage binary-long
+    button-callback pic x any
+</pre>
+<p class="item_name">OUTPUT</p>
+<pre>   gtk-checkbutton-record reference, first field pointer
+   <img src="https://developer.gnome.org/gtk3/stable/check-button.png">
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">function-id</span><span class="sign">.</span> <strong>new-checkbutton</strong><span class="sign">.</span>
+
+       <span class="keyword">environment</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">configuration</span> <span class="keyword">section</span><span class="sign">.</span>
+       <span class="keyword">repository</span><span class="sign">.</span>
+           <span class="keyword">function</span> <a href="#robo24">signal-attach</a> 
+           <span class="keyword">function</span> <span class="keyword">all</span> <span class="keyword">intrinsic</span><span class="sign">.</span>
+
+<span class="keyword">data</span>   <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">working-storage</span> <span class="keyword">section</span><span class="sign">.</span>
+       01 extraneous                 <span class="keyword">usage</span> <span class="keyword">binary-long</span><span class="sign">.</span>
+
+link   <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
+       01 gtk-container              <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+       01 button-label               <span class="keyword">pic</span> x <span class="keyword">any</span> <span class="keyword">length</span><span class="sign">.</span>
+       01 button-value               <span class="keyword">usage</span> <span class="keyword">binary-long</span><span class="sign">.</span>
+       01 button-callback            <span class="keyword">pic</span> x <span class="keyword">any</span> <span class="keyword">length</span><span class="sign">.</span>
+        01 gtk-checkbutton-data<span class="sign">.</span>
+          05 gtk-checkbutton         <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+
+<span class="keyword">code</span>   <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span>
+           gtk-container
+           button-label
+           button-value
+           button-callback
+           <span class="keyword">returning</span> gtk-checkbutton-data<span class="sign">.</span>
+
+      <span class="comment">*&gt; Add a labelled button</span>
+       <span class="keyword">call</span> <span class="quote">"gtk_check_button_new_with_label"</span> <span class="keyword">using</span>
+           <span class="keyword">by</span> <span class="keyword">content</span> concatenate<span class="sign">(</span>trim<span class="sign">(</span>button-label<span class="sign">)</span><span class="sign">,</span> x<span class="quote">"00"</span><span class="sign">)</span>
+           <span class="keyword">returning</span> gtk-checkbutton
+       <span class="keyword">end-call</span>
+
+      <span class="comment">*&gt; Set initial value</span>
+       <span class="keyword">call</span> <span class="quote">"gtk_toggle_button_set_active"</span> <span class="keyword">using</span>
+           <span class="keyword">by</span> <span class="keyword">value</span> gtk-checkbutton
+           <span class="keyword">by</span> <span class="keyword">value</span> button-value
+           <span class="keyword">returning</span> <span class="keyword">omitted</span>
+       <span class="keyword">end-call</span>
+
+      <span class="comment">*&gt; Add the button to the container</span>
+       <span class="keyword">call</span> <span class="quote">"gtk_container_add"</span> <span class="keyword">using</span>
+           <span class="keyword">by</span> <span class="keyword">value</span> gtk-container
+           <span class="keyword">by</span> <span class="keyword">value</span> gtk-checkbutton
+           <span class="keyword">returning</span> <span class="keyword">omitted</span>
+       <span class="keyword">end-call</span>
+
+      <span class="comment">*&gt; Connect handler to clicked</span>
+       <span class="keyword">move</span> <a href="#robo24">signal-attach</a><span class="sign">(</span>gtk-checkbutton<span class="sign">,</span> <span class="quote">"clicked"</span><span class="sign">,</span> button-callback<span class="sign">)</span>
+         <span class="keyword">to</span> extraneous
+
+done   <span class="keyword">goback</span><span class="sign">.</span>
+       <span class="keyword">end</span> <span class="keyword">function</span> <strong>new-checkbutton</strong><span class="sign">.</span>
+</pre>
+
+<hr />
 <a name="cobweb2fnew2dentry"></a>
-<a name="robo15"></a><h2>new-entry</h2>
+<a name="robo12"></a><h2>new-entry</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
 <p> Define a new single line text entry
 </p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-container pointer
+   entry-size integer
+   entry-callback
+</pre>
 <p class="item_name">OUTPUT</p>
-<pre> <img src="https://developer.gnome.org/gtk3/stable/entry.png">
+<pre>   gtk-entry-record, first field pointer
+   <img src="https://developer.gnome.org/gtk3/stable/entry.png">
 </pre>
 <p class="item_name">SOURCE</p>
 <pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -756,7 +828,7 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
        <span class="keyword">environment</span> <span class="keyword">division</span><span class="sign">.</span>
        <span class="keyword">configuration</span> <span class="keyword">section</span><span class="sign">.</span>
        <span class="keyword">repository</span><span class="sign">.</span>
-           <span class="keyword">function</span> <a href="#robo25">signal-attach</a>
+           <span class="keyword">function</span> <a href="#robo24">signal-attach</a>
            <span class="keyword">function</span> <span class="keyword">all</span> <span class="keyword">intrinsic</span><span class="sign">.</span>
 
 <span class="keyword">data</span>   <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -766,9 +838,9 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 link   <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
        01 gtk-container              <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
        01 entry-chars                <span class="keyword">usage</span> <span class="keyword">binary-long</span><span class="sign">.</span>
+       01 entry-callback             <span class="keyword">pic</span> x <span class="keyword">any</span> <span class="keyword">length</span><span class="sign">.</span>
        01 gtk-entry-data<span class="sign">.</span>
           05 gtk-entry               <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
-       01 entry-callback             <span class="keyword">pic</span> x <span class="keyword">any</span> <span class="keyword">length</span><span class="sign">.</span>
 
 <span class="keyword">code</span>   <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span> gtk-container entry-chars entry-callback
          <span class="keyword">returning</span> gtk-entry-data<span class="sign">.</span>
@@ -789,7 +861,7 @@ link   <span class="keyword">linkage</span> <span class="keyword">section</span>
        <span class="keyword">end-call</span>
 
       <span class="comment">*&gt; Connect a signal to "activate".</span>
-       <span class="keyword">move</span> <a href="#robo25">signal-attach</a><span class="sign">(</span>gtk-entry<span class="sign">,</span> <span class="quote">"activate"</span><span class="sign">,</span> entry-callback<span class="sign">)</span>
+       <span class="keyword">move</span> <a href="#robo24">signal-attach</a><span class="sign">(</span>gtk-entry<span class="sign">,</span> <span class="quote">"activate"</span><span class="sign">,</span> entry-callback<span class="sign">)</span>
          <span class="keyword">to</span> extraneous
 
 done   <span class="keyword">goback</span><span class="sign">.</span>
@@ -798,14 +870,19 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 <hr />
 <a name="cobweb2fnew2dframe"></a>
-<a name="robo16"></a><h2>new-frame</h2>
+<a name="robo13"></a><h2>new-frame</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
 <p> Define a new framed container
 </p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-container pointer
+   frame-label pic x any
+</pre>
 <p class="item_name">OUTPUT</p>
-<pre> <img src="https://developer.gnome.org/gtk3/stable/frame.png">
+<pre>   gtk-frame-record, first field pointer
+   <img src="https://developer.gnome.org/gtk3/stable/frame.png">
 </pre>
 <p class="item_name">SOURCE</p>
 <pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -846,17 +923,19 @@ COOL   <span class="keyword">end</span> <span class="keyword">function</span> <s
 
 <hr />
 <a name="cobweb2fnew2dimage"></a>
-<a name="robo17"></a><h2>new-image</h2>
+<a name="robo14"></a><h2>new-image</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
 <p> Define a new image.  Various graphic formats supported
 </p>
 <p class="item_name">INPUT</p>
-<pre> graphics file name
+<pre>   gtk-container pointer reference 
+   graphics file name
 </pre>
 <p class="item_name">OUTPUT</p>
-<pre> <img src="https://developer.gnome.org/gtk3/stable/image.png">
+<pre>   gtk-image-record reference, first field is pointer
+   <img src="https://developer.gnome.org/gtk3/stable/image.png">
 </pre>
 <p class="item_name">SOURCE</p>
 <pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -900,14 +979,19 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 <hr />
 <a name="cobweb2fnew2dlabel"></a>
-<a name="robo18"></a><h2>new-label</h2>
+<a name="robo15"></a><h2>new-label</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
 <p> Define a label
 </p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-container pointer
+   label-text pic x any
+</pre>
 <p class="item_name">OUTPUT</p>
-<pre> <img src="https://developer.gnome.org/gtk3/stable/label.png">
+<pre>   gtk-label-record, first field pointer
+   <img src="https://developer.gnome.org/gtk3/stable/label.png">
 </pre>
 <p class="item_name">SOURCE</p>
 <pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -921,9 +1005,9 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 <span class="keyword">data</span>   <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
 link   <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
        01 gtk-container              <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+       01 label-text                 <span class="keyword">pic</span> x <span class="keyword">any</span> <span class="keyword">length</span><span class="sign">.</span>
        01 gtk-label-data<span class="sign">.</span>
           05 gtk-label               <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
-       01 label-text                 <span class="keyword">pic</span> x <span class="keyword">any</span> <span class="keyword">length</span><span class="sign">.</span>
 
 <span class="keyword">code</span>   <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span> gtk-container label-text
            <span class="keyword">returning</span> gtk-label-data<span class="sign">.</span>
@@ -947,14 +1031,20 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 <hr />
 <a name="cobweb2fnew2dscrolled2dwindow"></a>
-<a name="robo19"></a><h2>new-scrolled-window</h2>
+<a name="robo16"></a><h2>new-scrolled-window</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
 <p> Define a new scrolled-window
 </p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-container pointer
+   horizontal-adjust pointer
+   vertical-adjust pointer
+</pre>
 <p class="item_name">OUTPUT</p>
-<pre> <img src="https://developer.gnome.org/gtk3/stable/scrolledwindow.png">
+<pre>   gtk-scrolled-window-record, first field pointer
+   <img src="https://developer.gnome.org/gtk3/stable/scrolledwindow.png">
 </pre>
 <p class="item_name">SOURCE</p>
 <pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -968,10 +1058,10 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 <span class="keyword">data</span>   <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
 link   <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
        01 gtk-container              <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
-       01 gtk-scrolled-window-data<span class="sign">.</span>
-          05 gtk-scrolled-window     <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
        01 horizontal-adjustment      <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
        01 vertical-adjustment        <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+       01 gtk-scrolled-window-data<span class="sign">.</span>
+          05 gtk-scrolled-window     <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
 
 <span class="keyword">code</span>   <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span>
            gtk-container horizontal-adjustment vertical-adjustment
@@ -996,14 +1086,18 @@ COOL   <span class="keyword">end</span> <span class="keyword">function</span> <s
 
 <hr />
 <a name="cobweb2fnew2dspinner"></a>
-<a name="robo20"></a><h2>new-spinner</h2>
+<a name="robo17"></a><h2>new-spinner</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
 <p>   Define a new spinner, set it spinning 
 </p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-container pointer reference
+</pre>
 <p class="item_name">OUTPUT</p>
-<pre> <img src="https://developer.gnome.org/gtk3/stable/spinner.png">
+<pre>   gtk-spinner-record reference, first field pointer
+   <img src="https://developer.gnome.org/gtk3/stable/spinner.png">
 </pre>
 <p class="item_name">SOURCE</p>
 <pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -1050,14 +1144,19 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 <hr />
 <a name="cobweb2fnew2dtextview"></a>
-<a name="robo21"></a><h2>new-textview</h2>
+<a name="robo18"></a><h2>new-textview</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
 <p> Define a multi-line text entry
 </p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-container pointer
+   entry-callback pic x any
+</pre>
 <p class="item_name">OUTPUT</p>
-<pre> <img src="https://developer.gnome.org/gtk3/stable/multiline-text.png">
+<pre>   gtk-textview-record, first field pointer
+   <img src="https://developer.gnome.org/gtk3/stable/multiline-text.png">
 </pre>
 <p class="item_name">SOURCE</p>
 <pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -1066,7 +1165,7 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
        <span class="keyword">environment</span> <span class="keyword">division</span><span class="sign">.</span>
        <span class="keyword">configuration</span> <span class="keyword">section</span><span class="sign">.</span>
        <span class="keyword">repository</span><span class="sign">.</span>
-           <span class="keyword">function</span> <a href="#robo25">signal-attach</a>
+           <span class="keyword">function</span> <a href="#robo24">signal-attach</a>
            <span class="keyword">function</span> <span class="keyword">all</span> <span class="keyword">intrinsic</span><span class="sign">.</span>
 
 <span class="keyword">data</span>   <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -1075,9 +1174,9 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 link   <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
        01 gtk-container              <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+       01 entry-callback             <span class="keyword">pic</span> x <span class="keyword">any</span> <span class="keyword">length</span><span class="sign">.</span>
        01 gtk-textview-data<span class="sign">.</span>
           05 gtk-textview            <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
-       01 entry-callback             <span class="keyword">pic</span> x <span class="keyword">any</span> <span class="keyword">length</span><span class="sign">.</span>
 
 <span class="keyword">code</span>   <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span> gtk-container entry-callback
          <span class="keyword">returning</span> gtk-textview-data<span class="sign">.</span>
@@ -1092,8 +1191,8 @@ link   <span class="keyword">linkage</span> <span class="keyword">section</span>
            <span class="keyword">returning</span> <span class="keyword">omitted</span>
        <span class="keyword">end-call</span>
 
-      <span class="comment">*&gt; Connect activate signal, wrapped in <a href="./voidcall_c.html#robo28">voidcall</a></span>
-       <span class="keyword">move</span> <a href="#robo25">signal-attach</a><span class="sign">(</span>gtk-textview<span class="sign">,</span> <span class="quote">"activate"</span><span class="sign">,</span> entry-callback<span class="sign">)</span>
+      <span class="comment">*&gt; Connect activate signal, wrapped in <a href="./voidcall_c.html#robo27">voidcall</a></span>
+       <span class="keyword">move</span> <a href="#robo24">signal-attach</a><span class="sign">(</span>gtk-textview<span class="sign">,</span> <span class="quote">"activate"</span><span class="sign">,</span> entry-callback<span class="sign">)</span>
          <span class="keyword">to</span> extraneous
 
 done   <span class="keyword">goback</span><span class="sign">.</span>
@@ -1102,7 +1201,7 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 <hr />
 <a name="cobweb2fnew2dvte"></a>
-<a name="robo22"></a><h2>new-vte</h2>
+<a name="robo19"></a><h2>new-vte</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
@@ -1167,14 +1266,21 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 <hr />
 <a name="cobweb2fnew2dwindow"></a>
-<a name="robo23"></a><h2>new-window</h2>
+<a name="robo20"></a><h2>new-window</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
 <p> Define a new top level window.
 </p>
+<p class="item_name">INPUT</p>
+<pre>   window-title pic x any
+   window-type
+   width hint
+   height hint
+</pre>
 <p class="item_name">OUTPUT</p>
-<pre> <img src="https://developer.gnome.org/gtk3/stable/window.png">
+<pre>   gtk-window-record, first field pointer
+   <img src="https://developer.gnome.org/gtk3/stable/window.png">
 </pre>
 <p class="item_name">SOURCE</p>
 <pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -1183,22 +1289,27 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
        <span class="keyword">environment</span> <span class="keyword">division</span><span class="sign">.</span>
        <span class="keyword">configuration</span> <span class="keyword">section</span><span class="sign">.</span>
        <span class="keyword">repository</span><span class="sign">.</span>
-           <span class="keyword">function</span> <a href="#robo24">rundown-signals</a>
+           <span class="keyword">function</span> <a href="#robo21">rundown-signals</a>
            <span class="keyword">function</span> <span class="keyword">all</span> <span class="keyword">intrinsic</span><span class="sign">.</span>
 
        <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
 <span class="keyword">data</span>   <span class="keyword">working-storage</span> <span class="keyword">section</span><span class="sign">.</span>
-       01 GTK-WINDOW-TOPLEVEL        <span class="keyword">constant</span> <span class="keyword">as</span> 0<span class="sign">.</span>
+       01 GTK-WINDOW-TOPLEVEL        <span class="keyword">usage</span> <span class="keyword">binary-long</span> <span class="keyword">value</span> 0<span class="sign">.</span>
        01 extraneous                 <span class="keyword">usage</span> <span class="keyword">binary-long</span><span class="sign">.</span>
 
        <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
 link   01 window-title               <span class="keyword">pic</span> x <span class="keyword">any</span> <span class="keyword">length</span><span class="sign">.</span>
+       01 window-type                <span class="keyword">usage</span> <span class="keyword">binary-short</span><span class="sign">.</span>
        01 width-hint                 <span class="keyword">usage</span> <span class="keyword">binary-long</span><span class="sign">.</span>
        01 height-hint                <span class="keyword">usage</span> <span class="keyword">binary-long</span><span class="sign">.</span>
        01 gtk-window-data<span class="sign">.</span>
           05 gtk-window              <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
        
-<span class="keyword">code</span>   <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span> window-title width-hint height-hint
+<span class="keyword">code</span>   <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span>
+           window-title
+           window-type
+           width-hint
+           height-hint
            <span class="keyword">returning</span> gtk-window-data<span class="sign">.</span>
 
       <span class="comment">*&gt; Start up the GIMP/Gnome Tool Kit</span>
@@ -1216,7 +1327,7 @@ bail           <span class="keyword">stop</span> <span class="keyword">run</span
 
       <span class="comment">*&gt; Create a new window, returning handle as pointer</span>
        <span class="keyword">call</span> <span class="quote">"gtk_window_new"</span> <span class="keyword">using</span> 
-           <span class="keyword">by</span> <span class="keyword">value</span> GTK-WINDOW-TOPLEVEL        <span class="comment">*&gt; it's a zero or a 1 popup</span>
+           <span class="keyword">by</span> <span class="keyword">value</span> window-type                <span class="comment">*&gt; it's a zero or a 1 popup</span>
            <span class="keyword">returning</span> gtk-window                <span class="comment">*&gt; and remember the handle</span>
        <span class="keyword">end-call</span>
 
@@ -1245,7 +1356,7 @@ bail       <span class="keyword">stop</span> <span class="keyword">run</span> <s
        <span class="keyword">end-call</span>
 
       <span class="comment">*&gt; Connect rundown signals.</span>
-       <span class="keyword">move</span> <a href="#robo24">rundown-signals</a><span class="sign">(</span>gtk-window<span class="sign">)</span> <span class="keyword">to</span> extraneous
+       <span class="keyword">move</span> <a href="#robo21">rundown-signals</a><span class="sign">(</span>gtk-window<span class="sign">)</span> <span class="keyword">to</span> extraneous
 
 done   <span class="keyword">goback</span><span class="sign">.</span>
        <span class="keyword">end</span> <span class="keyword">function</span> <strong>new-window</strong><span class="sign">.</span>
@@ -1253,12 +1364,15 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 <hr />
 <a name="cobweb2frundown2dsignals"></a>
-<a name="robo24"></a><h2>rundown-signals</h2>
+<a name="robo21"></a><h2>rundown-signals</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
 <p> Attach default GTK+ rundown handlers
 </p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-window pointer
+</pre>
 <p class="item_name">SOURCE</p>
 <pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
        <span class="keyword">function-id</span><span class="sign">.</span> <strong>rundown-signals</strong><span class="sign">.</span> 
@@ -1291,7 +1405,7 @@ link   <span class="keyword">linkage</span> <span class="keyword">section</span>
            <span class="keyword">returning</span> gtk-quit-id       <span class="comment">*&gt; not used</span>
        <span class="keyword">end-call</span>
 
-       <span class="keyword">set</span> gtk-callback <span class="keyword">to</span> <span class="keyword">entry</span> <span class="quote">"<a href="#robo4">cobweb-delete-event</a>"</span>
+       <span class="keyword">set</span> gtk-callback <span class="keyword">to</span> <span class="keyword">entry</span> <span class="quote">"<a href="#robo28">cobweb-delete-event</a>"</span>
        <span class="keyword">call</span> <span class="quote">"g_signal_connect_data"</span> <span class="keyword">using</span>
            <span class="keyword">by</span> <span class="keyword">value</span> gtk-window
            <span class="keyword">by</span> <span class="keyword">reference</span> z<span class="quote">"delete_event"</span>
@@ -1307,13 +1421,92 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 </pre>
 
 <hr />
+<a name="cobweb2fset2dsensitive2dwidget"></a>
+<a name="robo22"></a><h2>set-sensitive-widget</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
+<p class="item_name">PURPOSE</p>
+<p> set the widget interactive state
+</p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-widget pointer
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">function-id</span><span class="sign">.</span> <strong>set-sensitive-widget</strong><span class="sign">.</span> 
+
+       <span class="keyword">environment</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">configuration</span> <span class="keyword">section</span><span class="sign">.</span>
+       <span class="keyword">repository</span><span class="sign">.</span>
+           <span class="keyword">function</span> <span class="keyword">all</span> <span class="keyword">intrinsic</span><span class="sign">.</span>
+
+<span class="keyword">data</span>   <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
+link   <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
+       01 gtk-widget           <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+       01 onoff                <span class="keyword">usage</span> <span class="keyword">binary-long</span><span class="sign">.</span>
+       01 extraneous           <span class="keyword">usage</span> <span class="keyword">binary-long</span><span class="sign">.</span>
+
+<span class="keyword">code</span>   <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span> gtk-widget <span class="keyword">returning</span> extraneous<span class="sign">.</span>
+
+       <span class="keyword">call</span> <span class="quote">"gtk_widget_set_sensitive"</span> <span class="keyword">using</span>
+               <span class="keyword">by</span> <span class="keyword">value</span> gtk-widget
+               <span class="keyword">by</span> <span class="keyword">value</span> onoff
+           <span class="keyword">returning</span> <span class="keyword">omitted</span>
+       <span class="keyword">end-call</span>
+
+done   <span class="keyword">goback</span><span class="sign">.</span>
+       <span class="keyword">end</span> <span class="keyword">function</span> <strong>set-sensitive-widget</strong><span class="sign">.</span>
+</pre>
+
+<hr />
+<a name="cobweb2fshow2dwidget"></a>
+<a name="robo23"></a><h2>show-widget</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
+<p class="item_name">PURPOSE</p>
+<p> Inform GTK to render the widget
+</p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-widget pointer
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">function-id</span><span class="sign">.</span> <strong>show-widget</strong><span class="sign">.</span> 
+
+       <span class="keyword">environment</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">configuration</span> <span class="keyword">section</span><span class="sign">.</span>
+       <span class="keyword">repository</span><span class="sign">.</span>
+           <span class="keyword">function</span> <span class="keyword">all</span> <span class="keyword">intrinsic</span><span class="sign">.</span>
+
+<span class="keyword">data</span>   <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
+link   <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
+       01 gtk-widget           <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+       01 extraneous           <span class="keyword">usage</span> <span class="keyword">binary-long</span><span class="sign">.</span>
+
+<span class="keyword">code</span>   <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span> gtk-widget <span class="keyword">returning</span> extraneous<span class="sign">.</span>
+
+       <span class="keyword">call</span> <span class="quote">"gtk_widget_show"</span> <span class="keyword">using</span>
+               <span class="keyword">by</span> <span class="keyword">value</span> gtk-widget
+           <span class="keyword">returning</span> <span class="keyword">omitted</span>
+       <span class="keyword">end-call</span>
+
+done   <span class="keyword">goback</span><span class="sign">.</span>
+       <span class="keyword">end</span> <span class="keyword">function</span> <strong>show-widget</strong><span class="sign">.</span>
+</pre>
+
+<hr />
 <a name="cobweb2fsignal2dattach"></a>
-<a name="robo25"></a><h2>signal-attach</h2>
+<a name="robo24"></a><h2>signal-attach</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
 <p> Attach a callback handler, wrapped in a void return
 </p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-widget pointer
+   the-event-name pic x any
+   the-handler-name pic x any
+</pre>
 <p class="item_name">SOURCE</p>
 <pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
        <span class="keyword">function-id</span><span class="sign">.</span> <strong>signal-attach</strong><span class="sign">.</span> 
@@ -1338,9 +1531,9 @@ link   <span class="keyword">linkage</span> <span class="keyword">section</span>
 <span class="keyword">code</span>   <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span>
            gtk-widget the-trigger callback-byname <span class="keyword">returning</span> extraneous<span class="sign">.</span>
 
-      <span class="comment">*&gt; Connect signal to action, wrapped in <a href="./voidcall_c.html#robo28">voidcall</a></span>
+      <span class="comment">*&gt; Connect signal to action, wrapped in <a href="./voidcall_c.html#robo27">voidcall</a></span>
        <span class="keyword">set</span> cobweb-callback <span class="keyword">to</span> <span class="keyword">entry</span> callback-byname
-       <span class="keyword">set</span> gtk-void-callback <span class="keyword">to</span> <span class="keyword">entry</span> <span class="quote">"<a href="./voidcall_c.html#robo28">voidcall</a>"</span>
+       <span class="keyword">set</span> gtk-void-callback <span class="keyword">to</span> <span class="keyword">entry</span> <span class="quote">"<a href="./voidcall_c.html#robo27">voidcall</a>"</span>
 
        <span class="keyword">call</span> <span class="quote">"g_signal_connect_data"</span> <span class="keyword">using</span>
            <span class="keyword">by</span> <span class="keyword">value</span> gtk-widget
@@ -1358,7 +1551,7 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 <hr />
 <a name="cobweb2ftextview2dget2dtext"></a>
-<a name="robo26"></a><h2>textview-get-text</h2>
+<a name="robo25"></a><h2>textview-get-text</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
@@ -1428,7 +1621,7 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 <hr />
 <a name="cobweb2ftextview2dset2dtext"></a>
-<a name="robo27"></a><h2>textview-set-text</h2>
+<a name="robo26"></a><h2>textview-set-text</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Function</a> ]</p>
 <p class="item_name">PURPOSE</p>
@@ -1480,8 +1673,142 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 </pre>
 
 <hr />
+<a name="cobweb2fcobweb2ddelete2devent"></a>
+<a name="robo28"></a><h2>cobweb-delete-event</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_subprogs.html#robo_top_of_doc">Subprogram</a> ]</p>
+<p class="item_name">PURPOSE</p>
+<p>   application layer default GTK rundown handler
+   Returns false, allowing window close
+</p>
+<p class="item_name">SOURCE</p>
+<pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">program-id</span><span class="sign">.</span> <strong>cobweb-delete-event</strong><span class="sign">.</span>
+
+       <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">working-storage</span> <span class="keyword">section</span><span class="sign">.</span>
+       01 working-flag         <span class="keyword">usage</span> <span class="keyword">binary-long</span> <span class="keyword">value</span> 0<span class="sign">.</span>
+
+       <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
+       01 gtk-widget           <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+       01 gdk-event            <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+       01 gtk-data             <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+       01 the-flag             <span class="keyword">usage</span> <span class="keyword">binary-long</span><span class="sign">.</span>
+
+       <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span>
+           <span class="keyword">by</span> <span class="keyword">value</span> gtk-widget gdk-event gtk-data <span class="keyword">returning</span> the-flag<span class="sign">.</span>
+
+      <span class="comment">*&gt; return false, allow the destroy signal              </span>
+       <span class="keyword">set</span> <span class="keyword">address</span> <span class="keyword">of</span> the-flag <span class="keyword">to</span> <span class="keyword">address</span> <span class="keyword">of</span> working-flag
+
+done   <span class="keyword">goback</span><span class="sign">.</span>
+       <span class="keyword">end</span> <span class="keyword">program</span> <strong>cobweb-delete-event</strong><span class="sign">.</span>
+</pre>
+
+<hr />
+<a name="cobweb2fcobweb2dgtk2dbutton2dclicked"></a>
+<a name="robo29"></a><h2>cobweb-gtk-button-clicked</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_subprogs.html#robo_top_of_doc">Subprogram</a> ]</p>
+<p class="item_name">PURPOSE</p>
+<p>   default button click handler
+</p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-widget pointer
+   gtk-data pointer
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">program-id</span><span class="sign">.</span> <strong>cobweb-gtk-button-clicked</strong><span class="sign">.</span>
+
+       <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
+       01 gtk-widget           <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+       01 gtk-data             <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+
+       <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span> <span class="keyword">by</span> <span class="keyword">value</span> gtk-widget gtk-data<span class="sign">.</span>
+
+       <span class="keyword">display</span>
+           <span class="quote">"clicked "</span> gtk-widget <span class="quote">" with "</span> gtk-data <span class="keyword">upon</span> syserr
+       <span class="keyword">end-display</span>
+
+done   <span class="keyword">goback</span><span class="sign">.</span>
+       <span class="keyword">end</span> <span class="keyword">program</span> <strong>cobweb-gtk-button-clicked</strong><span class="sign">.</span>
+</pre>
+
+<hr />
+<a name="cobweb2fcobweb2dgtk2dcheckbutton2dclicked"></a>
+<a name="robo30"></a><h2>cobweb-gtk-checkbutton-clicked</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_subprogs.html#robo_top_of_doc">Subprogram</a> ]</p>
+<p class="item_name">PURPOSE</p>
+<p>   default checkbutton click handler
+</p>
+<p class="item_name">INPUT</p>
+<pre>   gtk-widget pointer
+   gtk-data pointer
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">program-id</span><span class="sign">.</span> <strong>cobweb-gtk-checkbutton-clicked</strong><span class="sign">.</span>
+
+       <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">working-storage</span> <span class="keyword">section</span><span class="sign">.</span>
+       01 gtk-button-data                     <span class="keyword">external</span><span class="sign">.</span>
+          05 gtk-button        <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+       01 gtk-sensitivity      <span class="keyword">usage</span> <span class="keyword">binary-long</span> <span class="keyword">value</span> 0<span class="sign">.</span>
+       <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
+       01 gtk-widget           <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+       01 gtk-data             <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+
+       <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span> <span class="keyword">by</span> <span class="keyword">value</span> gtk-widget gtk-data<span class="sign">.</span>
+
+       <span class="keyword">display</span>
+           <span class="quote">"clicked (check)"</span> gtk-widget <span class="quote">" with "</span> gtk-data <span class="keyword">upon</span> syserr
+       <span class="keyword">end-display</span>
+       <span class="keyword">call</span> <span class="quote">"gtk_toggle_button_get_active"</span> <span class="keyword">using</span>
+           <span class="keyword">by</span> <span class="keyword">value</span> gtk-widget
+           <span class="keyword">returning</span> gtk-sensitivity
+       <span class="keyword">end-call</span>
+       <span class="keyword">call</span> <span class="quote">"gtk_widget_set_sensitive"</span> <span class="keyword">using</span>
+           <span class="keyword">by</span> <span class="keyword">value</span> gtk-button
+           <span class="keyword">by</span> <span class="keyword">value</span> gtk-sensitivity
+       <span class="keyword">end-call</span>
+
+done   <span class="keyword">goback</span><span class="sign">.</span>
+       <span class="keyword">end</span> <span class="keyword">program</span> <strong>cobweb-gtk-checkbutton-clicked</strong><span class="sign">.</span>
+</pre>
+
+<hr />
+<a name="cobweb2fcobweb2dgtk2dentry2dactivated"></a>
+<a name="robo31"></a><h2>cobweb-gtk-entry-activated</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_subprogs.html#robo_top_of_doc">Subprogram</a> ]</p>
+<p class="item_name">PURPOSE</p>
+<p>   default text entry activate handler
+</p>
+<p class="item_name">SOURCE</p>
+<pre class="source"><span class="keyword">id</span>     <span class="keyword">identification</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">program-id</span><span class="sign">.</span> <strong>cobweb-gtk-entry-activated</strong><span class="sign">.</span>
+
+       <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
+       <span class="keyword">linkage</span> <span class="keyword">section</span><span class="sign">.</span>
+       01 gtk-widget           <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+       01 gtk-data             <span class="keyword">usage</span> <span class="keyword">pointer</span><span class="sign">.</span>
+
+       <span class="keyword">procedure</span> <span class="keyword">division</span> <span class="keyword">using</span> <span class="keyword">by</span> <span class="keyword">value</span> gtk-widget gtk-data<span class="sign">.</span>   
+
+       <span class="keyword">display</span>
+           <span class="quote">"activated "</span> gtk-widget <span class="quote">" with "</span> gtk-data <span class="keyword">upon</span> syserr
+       <span class="keyword">end-display</span>
+
+done   <span class="keyword">goback</span><span class="sign">.</span>
+       <span class="keyword">end</span> <span class="keyword">program</span> <strong>cobweb-gtk-entry-activated</strong><span class="sign">.</span>
+</pre>
+
+<hr />
 <a name="cobweb2fhelp2dabout2dgtk"></a>
-<a name="robo30"></a><h2>help-about-gtk</h2>
+<a name="robo35"></a><h2>help-about-gtk</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_selftests.html#robo_top_of_doc">System Test</a> ]</p>
 <p class="item_name">PURPOSE</p>
@@ -1520,7 +1847,7 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 <hr />
 <a name="cobweb2fsee2dtextview2dgtk"></a>
-<a name="robo32"></a><h2>see-textview-gtk</h2>
+<a name="robo37"></a><h2>see-textview-gtk</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_selftests.html#robo_top_of_doc">System Test</a> ]</p>
 <p class="item_name">PURPOSE</p>
@@ -1533,7 +1860,7 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
        <span class="keyword">environment</span> <span class="keyword">division</span><span class="sign">.</span>
        <span class="keyword">configuration</span> <span class="keyword">section</span><span class="sign">.</span>
        <span class="keyword">repository</span><span class="sign">.</span>
-           <span class="keyword">function</span> <a href="#robo26">textview-get-text</a>
+           <span class="keyword">function</span> <a href="#robo25">textview-get-text</a>
            <span class="keyword">function</span> <span class="keyword">all</span> <span class="keyword">intrinsic</span><span class="sign">.</span>
 
 <span class="keyword">data</span>   <span class="keyword">data</span> <span class="keyword">division</span><span class="sign">.</span>
@@ -1554,7 +1881,7 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
            <span class="keyword">by</span> <span class="keyword">content</span> concatenate<span class="sign">(</span>trim<span class="sign">(</span><span class="quote">"text_view"</span><span class="sign">)</span><span class="sign">,</span> x<span class="quote">"00"</span><span class="sign">)</span>
            <span class="keyword">returning</span> gtk-textview
        <span class="keyword">end-call</span>
-       <span class="keyword">display</span> trim<span class="sign">(</span><a href="#robo26">textview-get-text</a><span class="sign">(</span>gtk-textview<span class="sign">)</span><span class="sign">)</span> <span class="keyword">end-display</span>
+       <span class="keyword">display</span> trim<span class="sign">(</span><a href="#robo25">textview-get-text</a><span class="sign">(</span>gtk-textview<span class="sign">)</span><span class="sign">)</span> <span class="keyword">end-display</span>
  
 done   <span class="keyword">goback</span><span class="sign">.</span>
        <span class="keyword">end</span> <span class="keyword">program</span> <strong>see-textview-gtk</strong><span class="sign">.</span>
@@ -1562,7 +1889,7 @@ done   <span class="keyword">goback</span><span class="sign">.</span>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./cobweb-gtk.cob with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.41 on Wed Aug 27 2014 07:09:15
+<p>Generated from ./cobweb-gtk.cob with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.41 on Sat Aug 30 2014 07:08:32
 </p>
 </div> <!-- footer -->
 </body>

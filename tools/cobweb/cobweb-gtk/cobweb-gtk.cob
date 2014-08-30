@@ -4,12 +4,13 @@ Cobol *>
       *> AUTHOR
       *>   Brian Tiffin
       *> COLOPHON
-      *>   Part of the GNU Cobol project
+      *>   Part of the GNU Cobol free software project
       *>   Copyright (C) 2014, Brian Tiffin
-      *>   Date:      20130308, 20140717
-      *>   License:   GPL 3.0 or greater
+      *>   Date:      20130308
+      *>   Modified:  20140728
+      *>   License:   GNU General Public License, GPL, 3.0 or greater
       *> PURPOSE
-      *> GNU Cobol functional bindings to GTK+
+      *> GNU Cobol functional bindings to GTK+, self test
       *> SYNOPSIS
       *> |dotfile cobweb-gtk.dot
       *> TECTONICS
@@ -59,6 +60,7 @@ data   data division.
           05 gtk-builtwindow   usage pointer.
        01 builder-connect      usage binary-long value 0.
  
+       01 GTK-WINDOW-TOPLEVEL  usage binary-long value 0.
        01 gtk-window-data                               external.
           05 gtk-window        usage pointer.
        01 width-hint           usage binary-long value 500.
@@ -83,7 +85,7 @@ data   data division.
           05 gtk-entry         usage pointer.
        01 entry-chars          usage binary-long value 8.
 
-       01 gtk-button-data.
+       01 gtk-button-data                     external.
           05 gtk-button        usage pointer.
 
        01 gtk-checkbutton-data.
@@ -129,6 +131,9 @@ code   procedure division.
            "           function signal-attach"                 newline
            "           function builder-signal-attach"         newline
            "           function builder-get-object"            newline
+           "           function show-widget"                   newline
+           "           function hide-widget"                   newline
+           "           function set-sensitive-widget"          newline
            "           function entry-get-text"                newline
            "           function entry-set-text"                newline
            "           function textview-get-text"             newline
@@ -138,7 +143,8 @@ code   procedure division.
        end-display
 
       *> test basic windowing
-       move new-window("cobweb-gtk", width-hint, height-hint)
+       move new-window("cobweb-gtk", GTK-WINDOW-TOPLEVEL,
+            width-hint, height-hint)
          to gtk-window-data
        move new-box(gtk-window, HORIZONTAL, spacing, homogeneous)
          to gtk-box-data
@@ -156,9 +162,9 @@ code   procedure division.
        move new-button(gtk-box, "Button",
            "cobweb-gtk-button-clicked")
          to gtk-button-data
-       move new-checkbutton(gtk-box, "Check",
-           "cobweb-gtk-button-clicked")
-         to gtk-button-data
+       move new-checkbutton(gtk-box, "Check", 0
+           "cobweb-gtk-checkbutton-clicked")
+         to gtk-checkbutton-data
        move new-vte(gtk-scrolled-window, "/bin/sh", vte-cols, vte-rows)
          to gtk-vte-data
        move new-spinner(gtk-box)
@@ -197,7 +203,8 @@ code   procedure division.
            "Display this text" & x"0a" & "by clicking File/Save")
          to extraneous
 
-       move gtk-go(gtk-builtwindow) to extraneous
+       *>  #### DISABLED TEST ####
+       *> move gtk-go(gtk-builtwindow) to extraneous
 
        display
            "GNU Cobol: builder GTK eventloop terminated normally"
@@ -244,6 +251,9 @@ done   goback.
       *>****S* cobweb/cobweb-gtk-button-clicked [0.2]
       *> PURPOSE
       *>   default button click handler
+      *> INPUT
+      *>   gtk-widget pointer
+      *>   gtk-data pointer
       *> SOURCE
 id     identification division.
        program-id. cobweb-gtk-button-clicked.
@@ -264,6 +274,44 @@ done   goback.
       *>****
 
 
+      *>****S* cobweb/cobweb-gtk-checkbutton-clicked [0.2]
+      *> PURPOSE
+      *>   default checkbutton click handler
+      *> INPUT
+      *>   gtk-widget pointer
+      *>   gtk-data pointer
+      *> SOURCE
+id     identification division.
+       program-id. cobweb-gtk-checkbutton-clicked.
+
+       data division.
+       working-storage section.
+       01 gtk-button-data                     external.
+          05 gtk-button        usage pointer.
+       01 gtk-sensitivity      usage binary-long value 0.
+       linkage section.
+       01 gtk-widget           usage pointer.
+       01 gtk-data             usage pointer.
+
+       procedure division using by value gtk-widget gtk-data.
+
+       display
+           "clicked (check)" gtk-widget " with " gtk-data upon syserr
+       end-display
+       call "gtk_toggle_button_get_active" using
+           by value gtk-widget
+           returning gtk-sensitivity
+       end-call
+       call "gtk_widget_set_sensitive" using
+           by value gtk-button
+           by value gtk-sensitivity
+       end-call
+
+done   goback.
+       end program cobweb-gtk-checkbutton-clicked.
+      *>****
+      
+       
       *>****S* cobweb/cobweb-gtk-entry-activated [0.2]
       *> PURPOSE
       *>   default text entry activate handler
@@ -295,7 +343,11 @@ done   goback.
       *> PURPOSE
       *> Use GTKBuilder to create an entire window and widget set
       *> INPUT
-      *> XML layout filename
+      *>   XML layout filename pic x any
+      *>   boolean, auto-connect signals or not
+      *> OUTPUT
+      *>   gtk-builder-record with
+      *>   gtk-builder and gtk-window
       *> SOURCE
 id     identification division.
        function-id. new-builder. 
@@ -358,8 +410,14 @@ done   goback.
       *>****F* cobweb/new-window
       *> PURPOSE
       *> Define a new top level window.
+      *> INPUT
+      *>   window-title pic x any
+      *>   window-type
+      *>   width hint
+      *>   height hint
       *> OUTPUT
-      *> image:https://developer.gnome.org/gtk3/stable/window.png
+      *>   gtk-window-record, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/window.png
       *> SOURCE
 id     identification division.
        function-id. new-window. 
@@ -372,17 +430,22 @@ id     identification division.
 
        data division.
 data   working-storage section.
-       01 GTK-WINDOW-TOPLEVEL        constant as 0.
+       01 GTK-WINDOW-TOPLEVEL        usage binary-long value 0.
        01 extraneous                 usage binary-long.
 
        linkage section.
 link   01 window-title               pic x any length.
+       01 window-type                usage binary-short.
        01 width-hint                 usage binary-long.
        01 height-hint                usage binary-long.
        01 gtk-window-data.
           05 gtk-window              usage pointer.
        
-code   procedure division using window-title width-hint height-hint
+code   procedure division using
+           window-title
+           window-type
+           width-hint
+           height-hint
            returning gtk-window-data.
 
       *> Start up the GIMP/Gnome Tool Kit
@@ -400,7 +463,7 @@ bail           stop run returning 1
 
       *> Create a new window, returning handle as pointer
        call "gtk_window_new" using 
-           by value GTK-WINDOW-TOPLEVEL        *> it's a zero or a 1 popup
+           by value window-type                *> it's a zero or a 1 popup
            returning gtk-window                *> and remember the handle
        end-call
 
@@ -439,6 +502,13 @@ done   goback.
       *>****F* cobweb/new-box
       *> PURPOSE
       *> Define a new container
+      *> INPUT
+      *>   gtk-window/widget pointer
+      *>   orientation 0 across, 1 up down
+      *>   spacing between contained items
+      *>   do all the widgets try and keep the same size
+      *> OUTPUT
+      *>   gtk-box-record, first field pointer
       *> SOURCE
 id     identification division.
        function-id. new-box. 
@@ -489,8 +559,12 @@ COOL   end function new-box.
       *>****F* cobweb/new-frame
       *> PURPOSE
       *> Define a new framed container
+      *> INPUT
+      *>   gtk-container pointer
+      *>   frame-label pic x any
       *> OUTPUT
-      *> image:https://developer.gnome.org/gtk3/stable/frame.png
+      *>   gtk-frame-record, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/frame.png
       *> SOURCE
 id     identification division.
        function-id. new-frame. 
@@ -532,8 +606,13 @@ COOL   end function new-frame.
       *>****F* cobweb/new-scrolled-window
       *> PURPOSE
       *> Define a new scrolled-window
+      *> INPUT
+      *>   gtk-container pointer
+      *>   horizontal-adjust pointer
+      *>   vertical-adjust pointer
       *> OUTPUT
-      *> image:https://developer.gnome.org/gtk3/stable/scrolledwindow.png
+      *>   gtk-scrolled-window-record, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/scrolledwindow.png
       *> SOURCE
 id     identification division.
        function-id. new-scrolled-window. 
@@ -546,10 +625,10 @@ id     identification division.
 data   data division.
 link   linkage section.
        01 gtk-container              usage pointer.
-       01 gtk-scrolled-window-data.
-          05 gtk-scrolled-window     usage pointer.
        01 horizontal-adjustment      usage pointer.
        01 vertical-adjustment        usage pointer.
+       01 gtk-scrolled-window-data.
+          05 gtk-scrolled-window     usage pointer.
 
 code   procedure division using
            gtk-container horizontal-adjustment vertical-adjustment
@@ -576,8 +655,12 @@ COOL   end function new-scrolled-window.
       *>****F* cobweb/new-label
       *> PURPOSE
       *> Define a label
+      *> INPUT
+      *>   gtk-container pointer
+      *>   label-text pic x any
       *> OUTPUT
-      *> image:https://developer.gnome.org/gtk3/stable/label.png
+      *>   gtk-label-record, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/label.png
       *> SOURCE
 id     identification division.
        function-id. new-label.
@@ -590,9 +673,9 @@ id     identification division.
 data   data division.
 link   linkage section.
        01 gtk-container              usage pointer.
+       01 label-text                 pic x any length.
        01 gtk-label-data.
           05 gtk-label               usage pointer.
-       01 label-text                 pic x any length.
 
 code   procedure division using gtk-container label-text
            returning gtk-label-data.
@@ -618,8 +701,13 @@ done   goback.
       *>****F* cobweb/new-entry
       *> PURPOSE
       *> Define a new single line text entry
+      *> INPUT
+      *>   gtk-container pointer
+      *>   entry-size integer
+      *>   entry-callback
       *> OUTPUT
-      *> image:https://developer.gnome.org/gtk3/stable/entry.png
+      *>   gtk-entry-record, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/entry.png
       *> SOURCE
 id     identification division.
        function-id. new-entry.
@@ -637,9 +725,9 @@ data   data division.
 link   linkage section.
        01 gtk-container              usage pointer.
        01 entry-chars                usage binary-long.
+       01 entry-callback             pic x any length.
        01 gtk-entry-data.
           05 gtk-entry               usage pointer.
-       01 entry-callback             pic x any length.
 
 code   procedure division using gtk-container entry-chars entry-callback
          returning gtk-entry-data.
@@ -671,8 +759,12 @@ done   goback.
       *>****F* cobweb/new-textview
       *> PURPOSE
       *> Define a multi-line text entry
+      *> INPUT
+      *>   gtk-container pointer
+      *>   entry-callback pic x any
       *> OUTPUT
-      *> image:https://developer.gnome.org/gtk3/stable/multiline-text.png
+      *>   gtk-textview-record, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/multiline-text.png
       *> SOURCE
 id     identification division.
        function-id. new-textview.
@@ -689,9 +781,9 @@ data   data division.
 
 link   linkage section.
        01 gtk-container              usage pointer.
+       01 entry-callback             pic x any length.
        01 gtk-textview-data.
           05 gtk-textview            usage pointer.
-       01 entry-callback             pic x any length.
 
 code   procedure division using gtk-container entry-callback
          returning gtk-textview-data.
@@ -718,8 +810,13 @@ done   goback.
       *>****F* cobweb/new-button
       *> PURPOSE
       *> Define a new button.
+      *> INPUT
+      *>   gtk-container
+      *>   button-label pic x any
+      *>   button-callback pic x any
       *> OUTPUT
-      *> image:https://developer.gnome.org/gtk3/stable/button.png
+      *>   gtk-button-record reference, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/button.png
       *> SOURCE
 id     identification division.
        function-id. new-button.
@@ -770,8 +867,14 @@ done   goback.
       *>****F* cobweb/new-checkbutton
       *> PURPOSE
       *> Define a new checkbutton.
+      *> INPUT
+      *>   gtk-container
+      *>    button-label pic x any
+      *>    button-value usage binary-long
+      *>    button-callback pic x any
       *> OUTPUT
-      *> image:https://developer.gnome.org/gtk3/stable/check-button.png
+      *>   gtk-checkbutton-record reference, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/check-button.png
       *> SOURCE
 id     identification division.
        function-id. new-checkbutton.
@@ -788,19 +891,30 @@ data   data division.
 
 link   linkage section.
        01 gtk-container              usage pointer.
-       01 gtk-checkbutton-data.
-          05 gtk-checkbutton         usage pointer.
        01 button-label               pic x any length.
+       01 button-value               usage binary-long.
        01 button-callback            pic x any length.
+        01 gtk-checkbutton-data.
+          05 gtk-checkbutton         usage pointer.
 
 code   procedure division using
-           gtk-container button-label button-callback
+           gtk-container
+           button-label
+           button-value
+           button-callback
            returning gtk-checkbutton-data.
 
       *> Add a labelled button
        call "gtk_check_button_new_with_label" using
            by content concatenate(trim(button-label), x"00")
            returning gtk-checkbutton
+       end-call
+
+      *> Set initial value
+       call "gtk_toggle_button_set_active" using
+           by value gtk-checkbutton
+           by value button-value
+           returning omitted
        end-call
 
       *> Add the button to the container
@@ -823,9 +937,11 @@ done   goback.
       *> PURPOSE
       *> Define a new image.  Various graphic formats supported
       *> INPUT
-      *> graphics file name
+      *>   gtk-container pointer reference 
+      *>   graphics file name
       *> OUTPUT
-      *> image:https://developer.gnome.org/gtk3/stable/image.png
+      *>   gtk-image-record reference, first field is pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/image.png
       *> SOURCE
 id     identification division.
        function-id. new-image.
@@ -870,8 +986,11 @@ done   goback.
       *>****F* cobweb/new-spinner
       *> PURPOSE
       *>   Define a new spinner, set it spinning 
+      *> INPUT
+      *>   gtk-container pointer reference
       *> OUTPUT
-      *> image:https://developer.gnome.org/gtk3/stable/spinner.png
+      *>   gtk-spinner-record reference, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/spinner.png
       *> SOURCE
 id     identification division.
        function-id. new-spinner.
@@ -983,6 +1102,10 @@ done   goback.
       *>****F* cobweb/signal-attach
       *> PURPOSE
       *> Attach a callback handler, wrapped in a void return
+      *> INPUT
+      *>   gtk-widget pointer
+      *>   the-event-name pic x any
+      *>   the-handler-name pic x any
       *> SOURCE
 id     identification division.
        function-id. signal-attach. 
@@ -1075,6 +1198,8 @@ done   goback.
       *>****F* cobweb/rundown-signals
       *> PURPOSE
       *> Attach default GTK+ rundown handlers
+      *> INPUT
+      *>   gtk-window pointer
       *> SOURCE
 id     identification division.
        function-id. rundown-signals. 
@@ -1126,6 +1251,8 @@ done   goback.
       *>****F* cobweb/gtk-go
       *> PURPOSE
       *> Start the GTK+ event loop, only returns after rundown
+      *> INPUT
+      *>   gtk-window pointer (starting with widget_show_all)
       *> SOURCE
 id     identification division.
        function-id. gtk-go. 
@@ -1155,6 +1282,100 @@ done   goback.
       *>****
           
 
+      *>****F* cobweb/show-widget
+      *> PURPOSE
+      *> Inform GTK to render the widget
+      *> INPUT
+      *>   gtk-widget pointer
+      *> SOURCE
+id     identification division.
+       function-id. show-widget. 
+
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
+data   data division.
+link   linkage section.
+       01 gtk-widget           usage pointer.
+       01 extraneous           usage binary-long.
+
+code   procedure division using gtk-widget returning extraneous.
+
+       call "gtk_widget_show" using
+               by value gtk-widget
+           returning omitted
+       end-call
+
+done   goback.
+       end function show-widget.
+      *>****
+       
+      *>****F* cobweb/hide-widget
+      *> PURPOSE
+      *> Inform GTK to mark the widget invisible
+      *> INPUT
+      *>   gtk-widget pointer
+      *> SOURCE
+id     identification division.
+       function-id. hide-widget. 
+
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
+data   data division.
+link   linkage section.
+       01 gtk-widget           usage pointer.
+       01 extraneous           usage binary-long.
+
+code   procedure division using gtk-widget returning extraneous.
+
+       call "gtk_widget_hide" using
+               by value gtk-widget
+           returning omitted
+       end-call
+
+done   goback.
+       end function hide-widget.
+      *>****
+          
+
+      *>****F* cobweb/set-sensitive-widget
+      *> PURPOSE
+      *> set the widget interactive state
+      *> INPUT
+      *>   gtk-widget pointer
+      *> SOURCE
+id     identification division.
+       function-id. set-sensitive-widget. 
+
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
+data   data division.
+link   linkage section.
+       01 gtk-widget           usage pointer.
+       01 onoff                usage binary-long.
+       01 extraneous           usage binary-long.
+
+code   procedure division using gtk-widget returning extraneous.
+
+       call "gtk_widget_set_sensitive" using
+               by value gtk-widget
+               by value onoff
+           returning omitted
+       end-call
+
+done   goback.
+       end function set-sensitive-widget.
+      *>****
+
+       
       *>****F* cobweb/entry-get-text
       *> PURPOSE
       *> Get the text from an entry widget

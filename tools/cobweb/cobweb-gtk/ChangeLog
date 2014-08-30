@@ -2,3 +2,8 @@
   * Initial release of cobweb-gtk
   * with window, box, frame, scrolled window, entry, textview, button
   * label, image, spinner, vte
+
+2014-08-30 Brian Tiffin <btiffin@gnu.org>
+  * added checkbutton, show action, hide, set-sensitive
+  * a few more docs added
+ 
