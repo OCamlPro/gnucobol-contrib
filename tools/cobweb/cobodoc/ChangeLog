@@ -1,5 +1,11 @@
 # vi: spell ff=unix ft=none
 
+Sep 2014 - V4.99.41Cobol
+  Brian Tiffin
+  o Added dash to the link/identifier analyzer
+    This is a --cmode breaking feature.
+  o Added |copy pipe tool
+
 Feb 2011 - V4.99.41
   Frans Slothouber
   o Switch to github
