@@ -1,15 +1,27 @@
 # cobweb-gui early alpha
-cobweb-gui: cobweb-gui.cob cobweb-gtk.cob voidcall.c Makefile
-	cobc -m -g -debug cobweb-gtk.cob voidcall.c `pkg-config --libs gtk+-3.0` -lvte2_90 
+cobweb-gui: cobweb-gui.cob cobweb-gtk.cob voidcall_gtk.c Makefile
+	cobc -m -g -debug cobweb-gtk.cob voidcall_gtk.c `pkg-config --libs gtk+-3.0` -lvte2_90 
 	LD_RUN_PATH=. cobc -x -g -debug cobweb-gui.cob cobweb-gtk.so 
+
+cobweb-gui-example-label: cobweb-gui-example-label.cob cobweb-gtk-preamble.cpy cobweb-gtk.cob voidcall_gtk.c Makefile
+	cobc -m -g -debug cobweb-gtk.cob voidcall_gtk.c `pkg-config --libs gtk+-3.0` -lvte2_90 
+	LD_RUN_PATH=. cobc -x -g -debug cobweb-gui-example-label.cob cobweb-gtk.so 
+
+cobweb-gui-example-entry: cobweb-gui-example-entry.cob cobweb-gtk-preamble.cpy cobweb-gtk.cob voidcall_gtk.c Makefile
+	cobc -m -g -debug cobweb-gtk.cob voidcall_gtk.c `pkg-config --libs gtk+-3.0` -lvte2_90 
+	LD_RUN_PATH=. cobc -x -g -debug cobweb-gui-example-entry.cob cobweb-gtk.so 
 
 # Create the COBODoc, Dreamhost chokes on the generated <?xml...> line
 cobodoc: 
-	robodoc --src ./ --doc cobwebgtk --multidoc --rc robocob.rc
+	robodoc --src ./ --doc cobwebgtk --multidoc --rc robocob.rc --css cobodoc.css
+	cp cobwebgtk/toc_index.html cobwebgtk/index.html
 	sed -i '1d' cobwebgtk/*.html
 
-cobweb-gui.tar.gz: cobweb-gui.cob cobweb-gtk.cob voidcall.c Makefile
-	tar cvzf cobweb-gui.tar.gz -C .. gtk/cobweb-gui.cob gtk/cobweb-gtk.cob gtk/voidcall.c gtk/Makefile gtk/cobweb-gui-sample-data.txt
+sync:
+	rsync -avzcn --existing --exclude=Makefile . /home/btiffin/wip/contrib/trunk/tools/cobweb/cobweb-gtk/
+
+cobweb-gui.tar.gz: cobweb-gui.cob cobweb-gtk.cob voidcall_gtk.c Makefile
+	tar cvzf cobweb-gui.tar.gz -C .. gtk/cobweb-gui.cob gtk/cobweb-gtk.cob gtk/voidcall_gtk.c gtk/Makefile gtk/cobweb-gui-sample-data.txt
 
 broadway: cobweb-gui
 	echo 'starting up; browse to http://localhost:8080; when finished, killall broadwayd'
@@ -17,8 +29,8 @@ broadway: cobweb-gui
 	GDK_BACKEND=broadway BROADWAY_DISPLAY=:1 ./cobweb-gui
 
 # for building the periodic table sample
-periodic: cobweb-periodic.cob support-cobweb.cob voidcall.c
-	cobc -x -g -debug cobweb-periodic.cob support-cobweb.cob voidcall.c `pkg-config --libs gtk+-3.0`
+periodic: cobweb-periodic.cob support-cobweb.cob voidcall_gtk.c
+	cobc -x -g -debug cobweb-periodic.cob support-cobweb.cob voidcall_gtk.c `pkg-config --libs gtk+-3.0`
 
 # for building up a cobweb instance
 cobweb: cobweb.cob support-cobweb.cob voidcalls.c cobweb-rest.cob

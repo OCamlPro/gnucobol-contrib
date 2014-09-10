@@ -1,28 +1,44 @@
 digraph G {
   subgraph cluster_widgets {
       style=dashed;
-      color=gray;
+      color=gray32;
+      edge [fontname="Helvetica",fontsize=10,labelfontname="Helvetica",labelfontsize=10,color=gray32];
       node [fontname="Helvetica",fontsize=10,shape=box];
       window -> box;
-      box -> vte [style=dashed];
-      box -> "..." [style=dashed];
-      window, box, vte, "..." [shape=parallelogram];
+      box -> vte [style=dotted];
+      box -> "..." [style=dotted];
+      window, box [shape=parallelogram,color=gray];
+      vte, "..." [shape=component,color=lightblue];
   }
-  edge [fontname="Helvetica",fontsize=10,labelfontname="Helvetica",labelfontsize=10];
-  node [fontname="Helvetica",fontsize=10,shape=box];
+  edge [fontname="Helvetica",fontsize=10,labelfontname="Helvetica",labelfontsize=10,color=gray32];
+  node [fontname="Helvetica",fontsize=10,shape=box,color=gray32];
   rankdir=LR;
   compound=true;
   source -> cobc;
-  cobc -> builder -> gui;
+  cobc [label="cobc\ncobweb-gtk"];
+  cobc -> builder [style=dashed];
+  builder -> gui;
+  xml [shape=component,label="GTKBuilder\nXML"];
   xml -> builder;
-  cobc -> window;
+  cobc -> window [style=dashed];
   vte -> gui [ltail=cluster_widgets];
-  gui -> profit;
-  source -> robodoc -> documentation [style="dashed"];
-  xml [shape=component];
-  builder [shape=parallelogram];
+  gui -> profit [arrowhead=open,arrowtail=inv,dir=both];
+  source -> robodoc [style=dotted];
+  source -> docpass [style=dotted];
+  robodoc [label="robdoc\nocdoc"];
+  docpass [label="docpass\nsphinx"];
+  robodoc -> documentation;
+  docpass -> documentation;
+  builder [shape=parallelogram,color=gray];
   documentation [shape=folder,fillcolor=lightgray,style=filled];
-  gui [fillcolor=lightblue,style=filled,shape=box3d];
-  profit [shape=signature];
+  documentation->happy [arrowhead=open,arrowtail=inv,dir=both];
+  gui [fillcolor=lightblue,style=filled,shape=box3d,color=black];
+  profit [shape=signature,fillcolor=ghostwhite,style=filled];
+  happy [shape=signature,fillcolor=ghostwhite,style=filled,label="happy staff"];
+  happy -> gui;
+  gui -> legacydata [dir=both];
+  gui -> cloud [dir=both];
+  legacydata [shape=egg,style=filled,fillcolor=palegreen,label="heritage\ndata"];
+  cloud [shape=diamond,style="rounded,dashed,filled",label="cloud",fillcolor=ghostwhite];
   source [shape=note];
 }

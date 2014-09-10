@@ -1,51 +1,56 @@
 # robodoc.rc for GNU Cobol
 #
 items:
-    NAME
-    AUTHOR
-    COLOPHON
-    DATE
-    HISTORY
-    COPYRIGHT
-    LICENSE
-    PURPOSE
-    TECTONICS
-    SYNOPSIS
-    INPUT
-    OUTPUT
-    SIDE EFFECTS
-    BUGS
-    EXAMPLE
+    Name:
+    Author:
+    Colophon:
+    Date:
+    History:
+    Copyright:
+    License:
+    Purpose:
+    Tectonics:
+    Synopsis:
+    Outline:
+    Input:
+    Output:
+    Side effects:
+    Bugs:
+    Example:
     SOURCE
+    Unittest:
 ignore items:
-    BUGS
+    Bugs:
 item order:
-    NAME
-    AUTHOR
-    COLOPHON
-    DATE
-    HISTORY
-    COPYRIGHT
-    LICENSE
-    PURPOSE
-    TECTONICS
-    SYNOPSIS
-    INPUT
-    OUTPUT
-    SIDE EFFECTS
-    HISTORY
-    BUGS
-    EXAMPLE
+    Name:
+    Author:
+    Colophon:
+    Date:
+    History:
+    Copyright:
+    License:
+    Purpose:
+    Tectonics:
+    Synopsis:
+    Outline:
+    Input:
+    Output:
+    Side effects:
+    History:
+    Bugs:
+    Example:
     SOURCE
+    Unittest:
 source items:
-    EXAMPLE
+    Unittest:
 preformatted items:
-    COLOPHON
-    TECTONICS
-    INPUT
-    OUTPUT
+    Colophon:
+    Tectonics:
+    Input:
+    Output:
+    Example:
 format items:
-    PURPOSE
+    Purpose:
 options:
     --documenttitle "cobweb-gtk"
 #   --src ./
@@ -57,6 +62,7 @@ options:
 #   --multidoc
     --index
     --sectionnameonly
+    --nosort
     --tabsize 4
     --toc
     --tell

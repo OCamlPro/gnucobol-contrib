@@ -1,20 +1,54 @@
 GNU    >>SOURCE FORMAT IS FIXED
 Cobol *>
       *>****P* cobweb/cobweb-gui [demo]
-      *> NAME
+      *> Name:
       *>   cobweb-gui, a cobweb GTK usage example 
-      *> AUTHOR 
+      *> Author: 
       *>   Brian Tiffin
-      *> COLOPHON
+      *> Colophon:
       *>   A cobweb-gtk example
       *>   Date: 20130308, 20140826
       *>   Copyright (c) 2014, Brian Tiffin
       *>   License: GPL 3.0 (or greater)
-      *> PURPOSE
+      *> Purpose:
       *>   demonstration of GNU Cobol functional GTK
-      *> TECTONICS
+      *> Synopsis:
+      *> |dotfile cobweb-gui.dot
+      *> Tectonics:
       *>   cobc -m -g -debug cobweb-gtk.cob voidcall.c `pkg-config --libs gtk+-3.0`
       *>   LD_RUN_PATH=. cobc -x -g -debug cobweb-gui.cob cobweb-gtk.so
+      *><* =====================
+      *><* cobweb-gui usage guide
+      *><* =====================
+      *><* .. sidebar:: Table of Contents
+      *><*
+      *><*     .. contents:: :local:
+      *><*
+      *><* :Author:    Brian Tiffin
+      *><* :Date:      30-Aug-2014
+      *><* :Rights:    Copyright (c) 2008, Brian Tiffin.
+      *><*             GNU FDL License.
+      *><* :Purpose:   Extract usage document lines from COBOL sources.
+      *><*             Using GNU Cobol 2.0.
+      *><* :Tectonics: make
+      *><* :Docgen:    $ ./ocdoc cobweb-gui.cob ocdoc.rst cobweb-gui.html skin.css
+      *><*
+      *><* ------------
+      *><* Command line
+      *><* ------------
+      *><* *cobweb-gui* runs two basic tests.  GTKBuilder, and GTKWindow
+      *><*
+      *><* -----------
+      *><* Source code
+      *><* -----------
+      *><* `Download cobweb-gui.cob
+      *><+ <https://sourceforge.net/p/open-cobol/contrib/HEAD/tree/trunk/tools/cobweb/cobweb-gtk/>`_
+      *><* `See cobwebgtk API
+      *><+ <http://peoplecards.ca/cobweb/cobweb-gtk/index.html>`_
+      *><*
+      *><! This is not extracted. Reminder of how to include source
+      *><! .. include:: ocdoc.cob
+      *><!    :literal:
       *>  SOURCE
 id     identification division.
        program-id. cobweb-gui.
@@ -140,7 +174,7 @@ code   procedure division.
        move new-label(gtk-verticalbox, "sample data") to gtk-label-data
        move 80 to entry-chars
        move new-entry(gtk-verticalbox, entry-chars, "cobweb-entry-activated") to gtk-sample-entry-data 
-       move new-vte(gtk-verticalbox, "/bin/sh", vte-cols, vte-rows) to gtk-vte-data
+       move new-vte(gtk-verticalbox, "/home/btiffin/lang/cobol/cobweb/gtk/colours-tui", vte-cols, vte-rows) to gtk-vte-data
 
       *> prefill the and box with a note
        move entry-set-text(gtk-entry, "type here") to extraneous
@@ -174,7 +208,7 @@ code   procedure division.
          to extraneous
            
       *> GTK+ event loop takes over, again       
-       move gtk-go(gtk-builtwindow) to extraneous
+      *> move gtk-go(gtk-builtwindow) to extraneous
 
        display
            "GNU Cobol: builder GTK main eventloop terminated normally"
@@ -200,7 +234,7 @@ done   goback.
        REPLACE ==FIELDSIZE== BY ==80==.
 
       *>****S* cobweb/cobweb-gui-button-clicked [demo]
-      *> PURPOSE
+      *> Purpose:
       *>   application layer button "clicked" events
       *> SOURCE
 id     identification division.
@@ -233,7 +267,7 @@ done   goback.
       *>****
       
       *>****S* cobweb/cobweb-gui-entry-activated [demo]
-      *> PURPOSE
+      *> Purpose:
       *>   application layer text entry "activate" events
       *> SOURCE
 id     identification division.
@@ -268,7 +302,7 @@ done   goback.
       *> ********************************************************
        
       *>****T* cobweb/help-about [demo]
-      *> PURPOSE
+      *> Purpose:
       *>   Display an application Help/About dialog box
       *> SOURCE
 id     identification division.
