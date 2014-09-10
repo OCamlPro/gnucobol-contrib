@@ -1,11 +1,3 @@
-COBODoc Version 4.99.41Cobol Sep 2014.
-
-ROBODoc was modified to be more friendly to COBOL sources, by adding
-dash to identifiers.  This will break most other uses of ROBODoc,
-tripping code expressions that use the minus operator.
-
-Also added a |copy piping tool, to include text, as-is.
-
 ROBODoc Version 4.99.41 Feb 2011.
 
 ROBODoc is program documentation tool. The idea is to include for

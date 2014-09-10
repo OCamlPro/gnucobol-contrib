@@ -470,12 +470,12 @@ int RB_HTML_Generate_Extra(
         {
             char               *keyword;
 
-            /*  Check if we are at the beginning of a word */  /* BWT added dash */
-            if ( !utf8_isalnum( prev_char ) && ( prev_char != '_' ) && ( prev_char != '-') )
+            /*  Check if we are at the beginning of a word */
+            if ( !utf8_isalnum( prev_char ) && ( prev_char != '_' ) )
             {
                 /*  Count word length */
-                for ( i = 1;    /*  A word should have at least one character... */  /* BWT dashed */
-                      utf8_isalnum( cur_char[i] ) || ( cur_char[i] == '_' ) || ( cur_char[i] == '-' );
+                for ( i = 1;    /*  A word should have at least one character... */
+                      utf8_isalnum( cur_char[i] ) || ( cur_char[i] == '_' );
                       i++ );
                 /*  Check if it is a keyword */
                 if ( ( keyword = Find_Keyword( cur_char, i ) ) )
@@ -488,8 +488,8 @@ int RB_HTML_Generate_Extra(
             }
         }
 
-        /*  Do some fancy coloration for non-alphanumeric chars */  /* BWT dashed */
-        if ( !utf8_isalnum( *cur_char ) && *cur_char != '_' && *cur_char != '-'
+        /*  Do some fancy coloration for non-alphanumeric chars */
+        if ( !utf8_isalnum( *cur_char ) && *cur_char != '_'
              && *cur_char != ' ' && course_of_action.do_non_alpha )
         {
             RB_HTML_Color_String( dest_doc, 3, SIGN_CLASS, cur_char );

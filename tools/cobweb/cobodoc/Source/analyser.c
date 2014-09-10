@@ -204,12 +204,6 @@ static char        *Is_Tool(
             *itemkind = ITEM_LINE_EXEC;
             return ( s + 5 );
         }
-        /* Check for include items */
-        else if ( !strncmp( "copy ", s, 5 ) && !*tool_active )
-        {
-            *itemkind = ITEM_LINE_INCLUDE;
-            return ( s + 5 );
-        }
     }
 
     return NULL;
