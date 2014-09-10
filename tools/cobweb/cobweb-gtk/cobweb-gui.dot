@@ -1,0 +1,54 @@
+digraph G {
+  subgraph cluster_widgets {
+      style=dashed;
+      color=gray32;
+      edge [fontname="Helvetica",fontsize=10,labelfontname="Helvetica",labelfontsize=10,color=gray32];
+      node [fontname="Helvetica",fontsize=10,shape=parallelogram,color=gray];
+      window -> box;
+      box -> vte [style=dotted];
+      box -> "..." [style=dotted];
+      window, box, hbox, vbox, entry, spinner [color=gray];
+      vte, "..." [shape=component,color=lightblue];
+      hbox -> check -> spinner;
+      box -> dialog;
+      dialog -> textview -> button;
+      box -> gtklabel1;
+      box -> vbox;
+      vbox -> gtklabel2;
+      gtklabel2 -> entry;
+      box -> hbox;
+      gtklabel1, gtklabel2 [label="label"];
+      
+  }
+  edge [fontname="Helvetica",fontsize=10,labelfontname="Helvetica",labelfontsize=10,color=gray32];
+  node [fontname="Helvetica",fontsize=10,shape=box,color=gray32];
+  rankdir=LR;
+  compound=true;
+  source -> cobc;
+  cobc [label="cobc\ncobweb-gtk"];
+  cobc -> builder [style=dashed];
+  builder -> demo;
+  xml [shape=component,label="GTKBuilder\nXML"];
+  xml -> builder;
+  cobc -> window [style=dashed];
+  vte -> demo [ltail=cluster_widgets];
+  demo -> profit [arrowhead=open,arrowtail=inv,dir=both];
+  source -> robodoc [style=dotted];
+  source -> docpass [style=dotted];
+  robodoc [label="robdoc\nocdoc"];
+  docpass [label="docpass\nsphinx"];
+  robodoc -> documentation;
+  docpass -> documentation;
+  builder [shape=parallelogram,color=gray];
+  documentation [shape=folder,fillcolor=lightgray,style=filled];
+  documentation->happy [arrowhead=open,arrowtail=inv,dir=both];
+  demo [fillcolor=lightblue,style=filled,shape=box3d,color=black];
+  profit [shape=cds,fillcolor=yellow,style=filled,label="new ideas"];
+  happy [shape=signature,fillcolor=ghostwhite,style=filled,label="happy devs"];
+  happy -> demo;
+  demo -> legacydata [dir=both];
+  demo -> cloud [dir=both];
+  legacydata [shape=egg,style=filled,fillcolor=palegreen,label="heritage\ndata"];
+  cloud [shape=diamond,style="rounded,dashed,filled",label="cloud",fillcolor=ghostwhite];
+  source [shape=note];
+}
