@@ -74,6 +74,12 @@ Store all documentation in a single file.
 .IP --singlefile
 Generate a single document from a single file
 
+.IP --cmode
+Handy defaults for C
+
+.IP --cobol
+Add hyphens to identifiers, breaks cmode indexing.
+
 .EE
 The complete list of options can be found in the HTML documentation.
 (Reference at the end of this page.)
