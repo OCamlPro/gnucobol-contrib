@@ -79,6 +79,9 @@ typedef struct actions_s
     char                 do_keywords;
     char                 do_non_alpha;
 
+    /* Hyphens in identifiers */
+    char                 do_hyphens;
+
 } actions_t;
 
 /* RB_Say modes */
