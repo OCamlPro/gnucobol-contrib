@@ -53,14 +53,15 @@ preformatted items:
 format items:
     Purpose:
 options:
-    --documenttitle "cobweb-gtk"
-#   --src ./
-#   --doc ./doc
+    --documenttitle "COBOL ROBODoc"
+    --src ./
+    --doc ./doc
     --nodesc
     --html
+    --cobol
     --syntaxcolors
-#   --singledoc
-#   --multidoc
+    --singledoc
+#    --multidoc
     --index
     --sectionnameonly
     --nosort
