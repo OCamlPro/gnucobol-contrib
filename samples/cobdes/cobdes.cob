@@ -20,22 +20,23 @@
 *>**********************************************************************
 *> Date       Change description 
 *> ========== ==========================================================
-*> 04.10.2013 Converted to GNU Cobol 
+*> 04.10.2013 Converted to GnuCOBOL
 *>**********************************************************************
 
 *>**********************************************************************
-*> License: COBDES is free for use in any environment, including but 
-*> not necessarily limited to: personal, academic, commercial, 
-*> government, business, non-profit, and for-profit. You may modify, 
-*> adapt, rent, lease, loan, sell, or create derivative works based upon
-*> the Software or any part thereof.
-*> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
-*> EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-*> MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
-*> NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY 
-*> CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-*> TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-*> SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+*>  COBDES compiler is free software: you can redistribute it and/or
+*>  modify it under the terms of the GNU General Public License as
+*>  published by the Free Software Foundation, either version 3 of
+*>  the License, or (at your option) any later version.
+*>
+*>  COBDES is distributed in the hope that it will be useful, but
+*>  WITHOUT ANY WARRANTY; without even the implied warranty of
+*>  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*>  See the GNU General Public License for more details.
+*>
+*>  You should have received a copy of the GNU General Public License
+*>  along with COBDES.
+*>  If not, see <http://www.gnu.org/licenses/>.
 *>**********************************************************************
 
  ENVIRONMENT DIVISION.
