@@ -1,9 +1,17 @@
-2014-08-27 Brian Tiffin <btiffin@gnu.org>
-  * Initial release of cobweb-gtk
-  * with window, box, frame, scrolled window, entry, textview, button
-  * label, image, spinner, vte
+2014-10-03 Brian Tiffin <btiffin@gnu.org>
+  * contrived anonymous widgets in cobweb-gtk-widgets.cpy
+  * button-box didn't work, triggering a "code shouldn't get here" in GTK
+  * added statusbar instead, with push and pop message
+  * interface is now, pointer, pointer, int in the widget records
+  * added colours-tui.cob, vte kinda working with TUI binaries
 
 2014-08-30 Brian Tiffin <btiffin@gnu.org>
   * added checkbutton, show action, hide, set-sensitive
   * a few more docs added
  
+
+2014-08-27 Brian Tiffin <btiffin@gnu.org>
+  * Initial release of cobweb-gtk
+  * with window, box, frame, scrolled window, entry, textview, button
+  * label, image, spinner, vte
+

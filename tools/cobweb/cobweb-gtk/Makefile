@@ -1,7 +1,7 @@
 # cobweb-gui early alpha
-cobweb-gui: cobweb-gui.cob cobweb-gtk.cob voidcall_gtk.c Makefile
-	cobc -m -g -debug cobweb-gtk.cob voidcall_gtk.c `pkg-config --libs gtk+-3.0` -lvte2_90 
-	LD_RUN_PATH=. cobc -x -g -debug cobweb-gui.cob cobweb-gtk.so 
+cobweb-gui: cobweb-gui.cob cobweb-gtk.cob voidcall_gtk.c cobweb-gtk-widgets.cpy colours-tui.cob Makefile
+	cobc -v -b -g -debug cobweb-gtk.cob voidcall_gtk.c `pkg-config --libs gtk+-3.0` -lvte2_90 
+	LD_RUN_PATH=. cobc -v -x -g -debug cobweb-gui.cob cobweb-gtk.so 
 
 cobweb-gui-example-label: cobweb-gui-example-label.cob cobweb-gtk-preamble.cpy cobweb-gtk.cob voidcall_gtk.c Makefile
 	cobc -m -g -debug cobweb-gtk.cob voidcall_gtk.c `pkg-config --libs gtk+-3.0` -lvte2_90 
@@ -12,13 +12,14 @@ cobweb-gui-example-entry: cobweb-gui-example-entry.cob cobweb-gtk-preamble.cpy c
 	LD_RUN_PATH=. cobc -x -g -debug cobweb-gui-example-entry.cob cobweb-gtk.so 
 
 # Create the COBODoc, Dreamhost chokes on the generated <?xml...> line
-cobodoc: 
-	robodoc --src ./ --doc cobwebgtk --multidoc --rc robocob.rc --css cobodoc.css
-	cp cobwebgtk/toc_index.html cobwebgtk/index.html
-	sed -i '1d' cobwebgtk/*.html
+# robodoc --rc cobodoc.rc --css cobodoc.css
+cobodoc: cobweb-gtk.cob cobweb-gui.cob voidcall_gtk.c cobweb-gtk-widgets.cpy cobodoc.rc cobodoc.css Makefile colours-tui.cob gtkwindow.h
+	robodoc --rc cobodoc.rc --css cobodoc.css
+	cp cobodoc/toc_index.html cobdoc/index.html
+	# sed -i '1d' cobwebgtk/*.html
 
 sync:
-	rsync -avzcn --existing --exclude=Makefile . /home/btiffin/wip/contrib/trunk/tools/cobweb/cobweb-gtk/
+	rsync -avzc --existing . /home/btiffin/wip/contrib/trunk/tools/cobweb/cobweb-gtk/
 
 cobweb-gui.tar.gz: cobweb-gui.cob cobweb-gtk.cob voidcall_gtk.c Makefile
 	tar cvzf cobweb-gui.tar.gz -C .. gtk/cobweb-gui.cob gtk/cobweb-gtk.cob gtk/voidcall_gtk.c gtk/Makefile gtk/cobweb-gui-sample-data.txt

@@ -105,8 +105,8 @@ data   data division.
 
        01 gtk-window-data.
           05 gtk-window        usage pointer.
-       01 width-hint           usage binary-long value 200.
-       01 height-hint          usage binary-long value 220.
+       01 width-hint           usage binary-long value 640.
+       01 height-hint          usage binary-long value 480.
 
        01 gtk-container-data.
           05 gtk-container     usage pointer.
@@ -127,6 +127,9 @@ data   data division.
        01 gtk-button-data.
           05 gtk-button        usage pointer.
 
+       01 gtk-button-box-data.
+          05 gtk-button-box    usage pointer.
+
        01 gtk-image-data.
           05 gtk-image         usage pointer.
 
@@ -135,8 +138,8 @@ data   data division.
 
        01 gtk-vte-data.
           05 gtk-vte           usage pointer.
-       01 vte-cols             usage binary-c-long value 24.
-       01 vte-rows             usage binary-c-long value 6.
+       01 vte-cols             usage binary-c-long value 80.
+       01 vte-rows             usage binary-c-long value 24.
        
        01 gtk-verticalbox-data.
           05 gtk-verticalbox   usage pointer.
@@ -167,7 +170,9 @@ code   procedure division.
        move new-image(gtk-box, "blue66.png") to gtk-image-data
        move new-label(gtk-box, "And?") to gtk-label-data
        move new-entry(gtk-box, entry-chars, "cobweb-entry-activated") to gtk-entry-data
-       move new-button(gtk-box, "expedite", "cobweb-button-clicked") to gtk-button-data
+       move new-box(gtk-box, VERTICAL, spacing, homogeneous) to gtk-button-box-data
+       move new-button(gtk-button-box, "expedite", "cobweb-button-clicked") to gtk-button-data
+       move new-button(gtk-button-box, "ground", "cobweb-button-clicked") to gtk-button-data
 
       *> Other box, down
        move new-box(gtk-container, VERTICAL, spacing, homogeneous) to gtk-verticalbox-data
