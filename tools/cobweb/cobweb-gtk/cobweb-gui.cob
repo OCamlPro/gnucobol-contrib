@@ -101,51 +101,76 @@ data   data division.
        01 gtk-builder-data                         external.
           05 gtk-builder       usage pointer.
           05 gtk-builtwindow   usage pointer.
+          05 filler            usage binary-long.
        01 builder-connect      usage binary-long value 0.
 
        01 gtk-window-data.
           05 gtk-window        usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
        01 width-hint           usage binary-long value 640.
        01 height-hint          usage binary-long value 480.
 
        01 gtk-container-data.
           05 gtk-container     usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
        01 orientation          usage binary-long.
        01 spacing              usage binary-long value 8.
        01 homogeneous          usage binary-long value 0.
 
        01 gtk-box-data.
           05 gtk-box           usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
        01 gtk-label-data.
           05 gtk-label         usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
        01 gtk-entry-data                              external.
           05 gtk-entry         usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
        01 entry-chars          usage binary-long value 10.
 
        01 gtk-button-data.
           05 gtk-button        usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
        01 gtk-button-box-data.
           05 gtk-button-box    usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
        01 gtk-image-data.
           05 gtk-image         usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
        01 gtk-spinner-data.
           05 gtk-spinner       usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
        01 gtk-vte-data.
           05 gtk-vte           usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
        01 vte-cols             usage binary-c-long value 80.
        01 vte-rows             usage binary-c-long value 24.
        
        01 gtk-verticalbox-data.
           05 gtk-verticalbox   usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
        01 gtk-sample-entry-data.
           05 gtk-sample-entry  usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
        01 venue                pic x(8).
           88 broadway              values "broadway", "BROADWAY".
@@ -172,7 +197,7 @@ code   procedure division.
        move new-entry(gtk-box, entry-chars, "cobweb-entry-activated") to gtk-entry-data
        move new-box(gtk-box, VERTICAL, spacing, homogeneous) to gtk-button-box-data
        move new-button(gtk-button-box, "expedite", "cobweb-button-clicked") to gtk-button-data
-       move new-button(gtk-button-box, "ground", "cobweb-button-clicked") to gtk-button-data
+       move new-button(gtk-button-box, "process", "cobweb-button-clicked") to gtk-button-data
 
       *> Other box, down
        move new-box(gtk-container, VERTICAL, spacing, homogeneous) to gtk-verticalbox-data

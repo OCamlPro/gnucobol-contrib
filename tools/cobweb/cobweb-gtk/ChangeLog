@@ -1,8 +1,11 @@
 2014-10-03 Brian Tiffin <btiffin@gnu.org>
   * contrived anonymous widgets in cobweb-gtk-widgets.cpy
+  * interface is now, widget pointer, cobweb-pointer and int in the
+      widget records
   * button-box didn't work, triggering a "code shouldn't get here" in GTK
-  * added statusbar instead, with push and pop message
-  * interface is now, pointer, pointer, int in the widget records
+  * added statusbar, with push and pop message by context, passed in
+      cobweb-pointer
+  * added radio-button by group, grouplist returned in cobweb-pointer
   * added colours-tui.cob, vte kinda working with TUI binaries
 
 2014-08-30 Brian Tiffin <btiffin@gnu.org>

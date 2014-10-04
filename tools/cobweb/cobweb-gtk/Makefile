@@ -15,8 +15,8 @@ cobweb-gui-example-entry: cobweb-gui-example-entry.cob cobweb-gtk-preamble.cpy c
 # robodoc --rc cobodoc.rc --css cobodoc.css
 cobodoc: cobweb-gtk.cob cobweb-gui.cob voidcall_gtk.c cobweb-gtk-widgets.cpy cobodoc.rc cobodoc.css Makefile colours-tui.cob gtkwindow.h
 	robodoc --rc cobodoc.rc --css cobodoc.css
-	cp cobodoc/toc_index.html cobdoc/index.html
-	# sed -i '1d' cobwebgtk/*.html
+	cp cobodoc/toc_index.html cobodoc/index.html
+	sed -i '1d' cobodoc/*.html
 
 sync:
 	rsync -avzc --existing . /home/btiffin/wip/contrib/trunk/tools/cobweb/cobweb-gtk/

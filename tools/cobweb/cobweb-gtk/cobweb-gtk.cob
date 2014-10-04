@@ -61,7 +61,8 @@ id     identification division.
            function new-entry
            function new-textview
            function new-button
-           function new-checkbutton
+           function new-check-button
+           function new-radio-button
            function new-spinner
            function new-vte
            function rundown-signals
@@ -83,6 +84,8 @@ data   data division.
        01 HORIZONTAL           usage binary-long value 0.
        01 VERTICAL             usage binary-long value 1.
 
+       01 ETCHED-UP            usage binary-long value 3.
+
        01 newline              pic x value x"0a".
        01 extraneous           usage binary-long.
 
@@ -93,57 +96,84 @@ data   data division.
        01 gtk-builder-data                                   external.
           05 gtk-builder       usage pointer.
           05 gtk-builtwindow   usage pointer.
+          05 filler            usage binary-long.
        01 builder-connect      usage binary-long value 0.
  
        01 GTK-WINDOW-TOPLEVEL  usage binary-long value 0.
        01 gtk-window-data                                    external.
           05 gtk-window        usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
        01 width-hint           usage binary-long value 500.
        01 height-hint          usage binary-long value 48.
 
        01 gtk-box-data.
           05 gtk-box           usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
        01 orientation          usage binary-long.
        01 spacing              usage binary-long value 0.
        01 homogeneous          usage binary-long value 0.
 
        01 gtk-button-box-data.
           05 gtk-button-box    usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
        01 style                usage binary-long value 0.
 
        01 gtk-scrolled-window-data                      external.
           05 gtk-scrolled-window   usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
        01 gtk-frame-data.
           05 gtk-frame         usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
        01 gtk-label-data.
           05 gtk-label         usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
        01 gtk-entry-data.
           05 gtk-entry         usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
        01 entry-chars          usage binary-long value 8.
        01 margin-start         usage binary-long value 8.
        01 margin-end           usage binary-long value 8.
 
        01 gtk-button-data                     external.
           05 gtk-button        usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
-       01 gtk-checkbutton-data                external.
-          05 gtk-checkbutton   usage pointer.
+       01 gtk-check-button-data                external.
+          05 gtk-check-button   usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
        01 gtk-image-data.
           05 gtk-image         usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
        01 gtk-statusbar-data.
           05 gtk-statusbar     usage pointer.
+          05 filler            usage pointer.
           05 statusbar-context usage binary-long.
 
        01 gtk-spinner-data.
           05 gtk-spinner       usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
 
        01 gtk-vte-data.
           05 gtk-vte           usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
+
        01 vte-cols             usage binary-c-long value 24.
        01 vte-rows             usage binary-c-long value 8.
 
@@ -167,7 +197,8 @@ code   procedure division.
            "           function new-label"                     newline
            "           function new-entry"                     newline
            "           function new-button"                    newline
-           "           function new-checkbutton"               newline
+           "           function new-check-button"               newline
+           "           function new-radio-buton"               newline
            "           function new-spinner"                   newline
            "           function new-vte"                       newline
            "           function new-textview"                  newline
@@ -193,9 +224,9 @@ code   procedure division.
        if testing then
 
            *> test basic windowing using the anonymous widget pile
-           move 7 to total-widgets 
+           move 11 to total-widgets
+ 
            move 4 to spacing
-
            move 2 to gtk-padding
            move 0 to gtk-fill
            move 0 to gtk-expand
@@ -212,11 +243,30 @@ code   procedure division.
            move new-box(contrived(7), HORIZONTAL, spacing, homogeneous)
              to contrivance(2)
 
-           move new-frame(contrived(2), "GTK+ frame") to contrivance(3)
+           move new-frame(contrived(2), "GTK+ frame", ETCHED-UP)
+             to contrivance(3)
            move new-scrolled-window(contrived(3), NULL, NULL)
              to contrivance(4)
 
            move new-image(contrived(2), "blue66.png") to contrivance(5)
+
+          *> vbox for radio buttons
+           move new-box(contrived(2), VERTICAL, spacing, homogeneous)
+             to contrivance(8)
+
+          *> There is a sliding pointer dance here.
+          *>   The first radio button sets a group, then following
+          *>   radio buttons are linked together
+           set cobweb-pointer(9) to NULL
+           move new-radio-button(contrived(8), cobweb-pointer(9),
+               "First Radio", "cobweb-gtk-button-clicked")
+             to contrivance(9)
+           move new-radio-button(contrived(8), cobweb-pointer(9),
+               "Second Radio", "cobweb-gtk-button-clicked")
+             to contrivance(10)
+           move new-radio-button(contrived(8), cobweb-pointer(10),
+               "Third Radio", "cobweb-gtk-button-clicked")
+             to contrivance(11)
 
            move new-statusbar(contrived(7)) to contrivance(6)
 
@@ -247,7 +297,7 @@ code   procedure division.
            move new-box(gtk-window, HORIZONTAL, spacing, homogeneous)
              to gtk-box-data
 
-           move new-frame(gtk-box, "GTK+ frame")
+           move new-frame(gtk-box, "GTK+ frame", ETCHED-UP)
              to gtk-frame-data
            move new-scrolled-window(gtk-frame, NULL, NULL)
              to gtk-scrolled-window-data
@@ -266,9 +316,9 @@ code   procedure division.
            move new-button(gtk-box, "Button",
                "cobweb-gtk-button-clicked")
              to gtk-button-data
-           move new-checkbutton(gtk-box, "Check", 0
-               "cobweb-gtk-checkbutton-clicked")
-             to gtk-checkbutton-data
+           move new-check-button(gtk-box, "Check", 0
+               "cobweb-gtk-check-button-clicked")
+             to gtk-check-button-data
 
            move new-vte(gtk-scrolled-window, "/bin/sh",
                vte-cols, vte-rows)
@@ -355,7 +405,7 @@ done   goback.
       *>****S* cobweb/cobweb-gtk-button-clicked [0.2]
       *> Purpose:
       *>   default button click handler
-      *>   in this case, self-test, hide/unhide the checkbutton
+      *>   in this case, self-test, hide/unhide the check-button
       *> Input:
       *>   gtk-widget pointer
       *>   gtk-data pointer
@@ -365,8 +415,8 @@ id     identification division.
 
        data division.
        working-storage section.
-       01 gtk-checkbutton-data                external.
-          05 gtk-checkbutton   usage pointer.
+       01 gtk-check-button-data                external.
+          05 gtk-check-button   usage pointer.
        01 hide-state           usage binary-long.
        COPY cobweb-gtk-widgets.
        
@@ -384,18 +434,18 @@ id     identification division.
        end-display
 
 
-      *> self test, hide and unhide the checkbutton on click
-       if gtk-checkbutton is not equal null then
+      *> self test, hide and unhide the check-button on click
+       if gtk-check-button is not equal null then
            if hide-state is zero then
                move 1 to hide-state
                call "gtk_widget_hide" using
-                   by value gtk-checkbutton
+                   by value gtk-check-button
                    returning omitted
                end-call
            else
                move 0 to hide-state
                call "gtk_widget_show" using
-                   by value gtk-checkbutton
+                   by value gtk-check-button
                    returning omitted
                end-call
            end-if
@@ -406,16 +456,16 @@ done   goback.
       *>****
 
 
-      *>****S* cobweb/cobweb-gtk-checkbutton-clicked [0.2]
+      *>****S* cobweb/cobweb-gtk-check-button-clicked [0.2]
       *> Purpose:
-      *>   default checkbutton click handler
+      *>   default check-button click handler
       *>   in this case, self-test, enable/disable the button
       *> Input:
       *>   gtk-widget pointer
       *>   gtk-data pointer
       *> Source:
 id     identification division.
-       program-id. cobweb-gtk-checkbutton-clicked.
+       program-id. cobweb-gtk-check-button-clicked.
 
        data division.
        working-storage section.
@@ -433,7 +483,7 @@ id     identification division.
        end-display
 
       *> self test, enable the test button on true, grey out on uncheck
-      *> when check is on, the button can hide this checkbutton completely
+      *> when check is on, the button can hide this check-button completely
        call "gtk_toggle_button_get_active" using
            by value gtk-widget
            returning gtk-sensitivity
@@ -444,7 +494,7 @@ id     identification division.
        end-call
 
 done   goback.
-       end program cobweb-gtk-checkbutton-clicked.
+       end program cobweb-gtk-check-button-clicked.
       *>****
       
        
@@ -577,7 +627,9 @@ link   01 window-title               pic x any length.
        01 height-hint                usage binary-long.
        01 gtk-window-data.
           05 gtk-window              usage pointer.
-       
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
+ 
 code   procedure division using
            window-title
            window-type
@@ -677,6 +729,8 @@ link   linkage section.
        01 homogeneous                usage binary-long.
        01 gtk-box-data.
           05 gtk-box                 usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
 
 code   procedure division using
            gtk-widget                         *> can be a window, once
@@ -759,6 +813,8 @@ link   linkage section.
        01 style                      usage binary-long.
        01 gtk-button-box-data.
           05 gtk-button-box          usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
 
 code   procedure division using
            gtk-widget
@@ -832,13 +888,18 @@ id     identification division.
 data   data division.
 link   linkage section.
        01 gtk-container              usage pointer.
+       01 the-label                  pic x any length.
+       01 shadow-type                usage binary-long.
        01 gtk-frame-data.
           05 gtk-frame               usage pointer.
-       01 the-label                  pic x any length.
+          05 filler                  usage pointer.
+          05 filler                  usage binary-long.
 
 code   procedure division using
-           gtk-container the-label
-           returning gtk-frame-data.
+           gtk-container
+           the-label
+           shadow-type
+         returning gtk-frame-data.
 
       *> Define a new frame
        call "gtk_frame_new" using
@@ -846,12 +907,21 @@ code   procedure division using
            returning gtk-frame
        end-call
 
-      *> Add the frame to the window
-       call "gtk_container_add" using
-           by value gtk-container
-           by value gtk-frame
-           returning omitted
-       end-call
+       if gtk-frame not equal null then
+          *> set the shadowing
+           call "gtk_frame_set_shadow_type" using
+               by value gtk-frame
+               by value shadow-type
+               returning omitted
+           end-call
+
+          *> Add the frame to the window
+           call "gtk_container_add" using
+               by value gtk-container
+               by value gtk-frame
+               returning omitted
+           end-call
+       end-if
 
 done   goback.
        end function new-frame.
@@ -940,6 +1010,8 @@ link   linkage section.
        01 vertical-adjustment        usage pointer.
        01 gtk-scrolled-window-data.
           05 gtk-scrolled-window     usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
 
 code   procedure division using
            gtk-container horizontal-adjustment vertical-adjustment
@@ -987,6 +1059,8 @@ link   linkage section.
        01 label-text                 pic x any length.
        01 gtk-label-data.
           05 gtk-label               usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
 
 code   procedure division using gtk-container label-text
            returning gtk-label-data.
@@ -1042,6 +1116,8 @@ link   linkage section.
        01 entry-callback             pic x any length.
        01 gtk-entry-data.
           05 gtk-entry               usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
 
 code   procedure division using
            gtk-container
@@ -1106,6 +1182,8 @@ link   linkage section.
        01 entry-callback             pic x any length.
        01 gtk-textview-data.
           05 gtk-textview            usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
 
 code   procedure division using gtk-container entry-callback
          returning gtk-textview-data.
@@ -1155,10 +1233,12 @@ data   data division.
 
 link   linkage section.
        01 gtk-container              usage pointer.
-       01 gtk-button-data.
-          05 gtk-button              usage pointer.
        01 button-label               pic x any length.
        01 button-callback            pic x any length.
+       01 gtk-button-data.
+          05 gtk-button              usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
 
 code   procedure division using
            gtk-container button-label button-callback
@@ -1186,20 +1266,20 @@ done   goback.
       *>****
           
 
-      *>****F* cobweb/new-checkbutton
+      *>****F* cobweb/new-check-button
       *> Purpose:
-      *> Define a new checkbutton.
+      *> Define a new check-button.
       *> Input:
       *>   gtk-container
       *>    button-label pic x any
       *>    button-value usage binary-long
       *>    button-callback pic x any
       *> Output:
-      *>   gtk-checkbutton-record reference, first field pointer
+      *>   gtk-check-button-record reference, first field pointer
       *>   image:https://developer.gnome.org/gtk3/stable/check-button.png
       *> Source:
 id     identification division.
-       function-id. new-checkbutton.
+       function-id. new-check-button.
 
        environment division.
        configuration section.
@@ -1216,25 +1296,27 @@ link   linkage section.
        01 button-label               pic x any length.
        01 button-value               usage binary-long.
        01 button-callback            pic x any length.
-        01 gtk-checkbutton-data.
-          05 gtk-checkbutton         usage pointer.
+       01 gtk-check-button-data.
+          05 gtk-check-button        usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
 
 code   procedure division using
            gtk-container
            button-label
            button-value
            button-callback
-           returning gtk-checkbutton-data.
+           returning gtk-check-button-data.
 
       *> Add a labelled button
        call "gtk_check_button_new_with_label" using
            by content concatenate(trim(button-label), x"00")
-           returning gtk-checkbutton
+           returning gtk-check-button
        end-call
 
       *> Set initial value
        call "gtk_toggle_button_set_active" using
-           by value gtk-checkbutton
+           by value gtk-check-button
            by value button-value
            returning omitted
        end-call
@@ -1242,16 +1324,91 @@ code   procedure division using
       *> Add the button to the container
        call "gtk_container_add" using
            by value gtk-container
-           by value gtk-checkbutton
+           by value gtk-check-button
            returning omitted
        end-call
 
       *> Connect handler to clicked
-       move signal-attach(gtk-checkbutton, "clicked", button-callback)
+       move signal-attach(gtk-check-button, "clicked", button-callback)
          to extraneous
 
 done   goback.
-       end function new-checkbutton.
+       end function new-check-button.
+      *>****
+       
+       
+      *>****F* cobweb/new-radio-button
+      *> Purpose:
+      *> Define a new radio, group and or button.
+      *> The first radio button will create a group
+      *>   following buttons are linked to previous in the group
+      *>   Link first to null, second to the returned cobweb-pointer
+      *>     third to the return of the second, and so on.
+      *> Input:
+      *>   gtk-container
+      *>   gtk-button-group, NULL for new group
+      *>   button-label pic x any
+      *>   button-callback pic x any
+      *> Output:
+      *>   gtk-radio-button-record reference, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/radio-group.png
+      *> Source:
+id     identification division.
+       function-id. new-radio-button.
+
+       environment division.
+       configuration section.
+       repository.
+           function signal-attach 
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 extraneous                 usage binary-long.
+
+link   linkage section.
+       01 gtk-container              usage pointer.
+       01 gtk-radio-group            usage pointer.
+       01 button-label               pic x any length.
+       01 button-callback            pic x any length.
+       01 gtk-radio-button-data.
+          05 gtk-radio-button        usage pointer.
+          05 cobweb-pointer          usage pointer.
+          05 filler                  usage binary-long.
+
+code   procedure division using
+           gtk-container
+           gtk-radio-group
+           button-label
+           button-callback
+         returning gtk-radio-button-data.
+
+      *> This might be a new group
+       call "gtk_radio_button_new_with_label" using
+           by value gtk-radio-group
+           by content concatenate(trim(button-label TRAILING), x"00")
+           returning gtk-radio-button
+       end-call
+
+      *> return the group as part of the record
+       call "gtk_radio_button_get_group" using
+           by value gtk-radio-button
+           returning cobweb-pointer
+       end-call
+           
+      *> Add the button to the container
+       call "gtk_container_add" using
+           by value gtk-container
+           by value gtk-radio-button
+           returning omitted
+       end-call
+
+      *> Connect handler to clicked
+       move signal-attach(gtk-radio-button, "clicked", button-callback)
+         to extraneous
+
+done   goback.
+       end function new-radio-button.
       *>****
           
 
@@ -1282,6 +1439,8 @@ link   linkage section.
        01 image-filename             pic x any length.
        01 gtk-image-data. 
           05 gtk-image               usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
 
 code   procedure division using
            gtk-container image-filename
@@ -1330,6 +1489,8 @@ link   linkage section.
        01 gtk-container              usage pointer.
        01 gtk-spinner-data. 
           05 gtk-spinner             usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
 
 code   procedure division
            using gtk-container returning gtk-spinner-data.
@@ -1361,7 +1522,11 @@ done   goback.
       *> Purpose:
       *> Define a new virtual terminal
       *> Input:
-      *>   command, columns, rows
+      *>   command to run, columns, rows
+      *> Output:
+      *>   Given, colours-tui, a compiled GnuCOBOL
+      *>   SCREEN SECTION program in an 80x24 vte
+      *>   image:cobweb-gui11.png
       *> Source:
 id     identification division.
        function-id. new-vte.
@@ -1382,6 +1547,8 @@ link   linkage section.
        01 vte-rows                   usage binary-c-long.
        01 gtk-vte-data. 
           05 gtk-vte                 usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
 
 code   procedure division
            using gtk-container vte-command vte-cols vte-rows
@@ -1872,7 +2039,7 @@ link   linkage section.
 code   procedure division using
            gtk-textview
            the-text-area 
-           returning extraneous.
+         returning extraneous.
 
       *> retrieve the textbuffer of the textview
        call "gtk_text_view_get_buffer" using
@@ -1914,6 +2081,8 @@ link   linkage section.
        01 builder-idname       pic x any length.
        01 gtk-widget-data.
           05 gtk-widget        usage pointer.
+          05 filler            usage pointer.
+          05 filler            binary-long.
 
 code   procedure division using
            gtk-builder builder-idname
@@ -2021,7 +2190,9 @@ data   data division.
        working-storage section.
        01 gtk-window-data                external.
           05 gtk-window        usage pointer.
-
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
+ 
        linkage section.
        01 gtk-widget           usage pointer.
        01 gtk-data             usage pointer.
@@ -2063,6 +2234,7 @@ data   data division.
        01 gtk-builder-data                              external.
           05 gtk-builder       usage pointer.
           05 gtk-builtwindow   usage pointer.
+          05 filler            usage binary-long.
        01 gtk-textview         usage pointer.
 
        linkage section.
