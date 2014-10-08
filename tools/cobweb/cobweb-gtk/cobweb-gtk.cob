@@ -63,6 +63,8 @@ id     identification division.
            function new-button
            function new-check-button
            function new-radio-button
+           function new-link-button
+           function new-separator
            function new-spinner
            function new-vte
            function rundown-signals
@@ -154,6 +156,11 @@ data   data division.
           05 filler            usage pointer.
           05 filler            usage binary-long.
 
+       01 gtk-link-button-data.
+          05 gtk-link-button   usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
+
        01 gtk-image-data.
           05 gtk-image         usage pointer.
           05 filler            usage pointer.
@@ -166,6 +173,11 @@ data   data division.
 
        01 gtk-spinner-data.
           05 gtk-spinner       usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
+
+       01 gtk-separator-data.    
+          05 gtk-separator     usage pointer.
           05 filler            usage pointer.
           05 filler            usage binary-long.
 
@@ -197,8 +209,10 @@ code   procedure division.
            "           function new-label"                     newline
            "           function new-entry"                     newline
            "           function new-button"                    newline
-           "           function new-check-button"               newline
+           "           function new-check-button"              newline
            "           function new-radio-buton"               newline
+           "           function new-link-buton"                newline
+           "           function new-separator"                 newline
            "           function new-spinner"                   newline
            "           function new-vte"                       newline
            "           function new-textview"                  newline
@@ -224,7 +238,7 @@ code   procedure division.
        if testing then
 
            *> test basic windowing using the anonymous widget pile
-           move 11 to total-widgets
+           move 13 to total-widgets
  
            move 4 to spacing
            move 2 to gtk-padding
@@ -248,7 +262,14 @@ code   procedure division.
            move new-scrolled-window(contrived(3), NULL, NULL)
              to contrivance(4)
 
+           move new-separator(contrived(2), VERTICAL) to contrivance(12)
+
            move new-image(contrived(2), "blue66.png") to contrivance(5)
+
+           move new-link-button(contrived(2),
+               "http://sourceforge.net/p/open-cobol/discussion",
+               "GnuCOBOL")
+             to contrivance(13) 
 
           *> vbox for radio buttons
            move new-box(contrived(2), VERTICAL, spacing, homogeneous)
@@ -262,7 +283,7 @@ code   procedure division.
                "First Radio", "cobweb-gtk-button-clicked")
              to contrivance(9)
            move new-radio-button(contrived(8), cobweb-pointer(9),
-               "Second Radio", "cobweb-gtk-button-clicked")
+               "Radio Two", "cobweb-gtk-button-clicked")
              to contrivance(10)
            move new-radio-button(contrived(8), cobweb-pointer(10),
                "Third Radio", "cobweb-gtk-button-clicked")
@@ -291,6 +312,7 @@ code   procedure division.
           *> test basic windowing
            move 8 to spacing
            move 0 to homogeneous
+
            move new-window("cobweb-gtk", GTK-WINDOW-TOPLEVEL,
                 width-hint, height-hint)
              to gtk-window-data
@@ -323,6 +345,10 @@ code   procedure division.
            move new-vte(gtk-scrolled-window, "/bin/sh",
                vte-cols, vte-rows)
              to gtk-vte-data
+
+           move new-separator(gtk-box, VERTICAL)
+             to gtk-separator-data
+
            move new-spinner(gtk-box)
              to gtk-spinner-data
 
@@ -1409,6 +1435,118 @@ code   procedure division using
 
 done   goback.
        end function new-radio-button.
+      *>****
+       
+       
+      *>****F* cobweb/new-link-button
+      *> Purpose:
+      *> Define a new url link button. Launch browser on click.
+      *> Input:
+      *>   gtk-container
+      *>   button-uri      pic x any
+      *>   button-label    pic x any
+      *> Output:
+      *>   gtk-link-button-record reference, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/link-button.png
+      *> Source:
+id     identification division.
+       function-id. new-link-button.
+
+       environment division.
+       configuration section.
+       repository.
+           function signal-attach 
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 extraneous                 usage binary-long.
+
+link   linkage section.
+       01 gtk-container              usage pointer.
+       01 button-uri                 pic x any length.
+       01 button-label               pic x any length.
+       01 gtk-link-button-data.
+          05 gtk-link-button         usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  usage binary-long.
+
+code   procedure division using
+           gtk-container
+           button-uri     
+           button-label
+         returning gtk-link-button-data.
+
+      *> define a new link button
+       call "gtk_link_button_new_with_label" using
+           by content concatenate(trim(button-uri TRAILING), x"00")
+           by content concatenate(trim(button-label TRAILING), x"00")
+           returning gtk-link-button
+       end-call
+
+       if gtk-link-button not equal null then
+          *> Add the button to the container
+           call "gtk_container_add" using
+               by value gtk-container
+               by value gtk-link-button
+               returning omitted
+           end-call
+       end-if
+
+done   goback.
+       end function new-link-button.
+      *>****
+          
+
+      *>****F* cobweb/new-separator
+      *> Purpose:
+      *> Define a new thin line separator, horizonal, vertical
+      *> Input:
+      *>   gtk-container
+      *>   orientation
+      *> Output:
+      *>   gtk-separator
+      *>   image:https://developer.gnome.org/gtk3/stable/separator.png
+      *> Source:
+id     identification division.
+       function-id. new-separator.
+
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
+data   data division.
+link   linkage section.
+       01 gtk-container              usage pointer.
+       01 orientation                usage pointer.
+       01 gtk-separator-data.   
+          05 gtk-separator           usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  usage binary-long.
+
+code   procedure division using
+           gtk-container
+           orientation      
+         returning gtk-separator-data.
+
+      *> That's it, thay's all.
+       call "gtk_separator_new" using
+           by value orientation
+           returning gtk-separator
+       end-call
+
+       if gtk-separator not equal null then
+      
+          *> Add the divider line to the container
+           call "gtk_container_add" using
+               by value gtk-container
+               by value gtk-separator
+               returning omitted
+           end-call
+
+done   goback.
+       end function new-separator.
       *>****
           
 
