@@ -1,3 +1,6 @@
+2014-10-08 Brian Tiffin <btiffin@gnu.org>
+  * added separator, link-button, color-button
+
 2014-10-03 Brian Tiffin <btiffin@gnu.org>
   * contrived anonymous widgets in cobweb-gtk-widgets.cpy
   * interface is now, widget pointer, cobweb-pointer and int in the

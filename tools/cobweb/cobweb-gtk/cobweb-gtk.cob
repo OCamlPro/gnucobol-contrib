@@ -64,6 +64,7 @@ id     identification division.
            function new-check-button
            function new-radio-button
            function new-link-button
+           function new-color-button
            function new-separator
            function new-spinner
            function new-vte
@@ -152,12 +153,17 @@ data   data division.
           05 filler            usage binary-long.
 
        01 gtk-check-button-data                external.
-          05 gtk-check-button   usage pointer.
+          05 gtk-check-button  usage pointer.
           05 filler            usage pointer.
           05 filler            usage binary-long.
 
        01 gtk-link-button-data.
           05 gtk-link-button   usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
+
+       01 gtk-color-button-data.
+          05 gtk-color-button  usage pointer.
           05 filler            usage pointer.
           05 filler            usage binary-long.
 
@@ -212,6 +218,7 @@ code   procedure division.
            "           function new-check-button"              newline
            "           function new-radio-buton"               newline
            "           function new-link-buton"                newline
+           "           function new-color-buton"               newline
            "           function new-separator"                 newline
            "           function new-spinner"                   newline
            "           function new-vte"                       newline
@@ -351,6 +358,9 @@ code   procedure division.
 
            move new-spinner(gtk-box)
              to gtk-spinner-data
+
+           move new-color-button(gtk-box, NULL)
+             to gtk-color-button-data
 
           *> start up another gtk main loop    
            move gtk-go(gtk-window) to extraneous
@@ -1495,6 +1505,66 @@ code   procedure division using
 
 done   goback.
        end function new-link-button.
+      *>****
+          
+
+      *>****F* cobweb/new-color-button
+      *> Purpose:
+      *> Define a new color select button. Displays dialog on click.
+      *> Input:
+      *>   gtk-container
+      *>   OPTIONAL gdk-color
+      *> Output:
+      *>   gtk-color-button-record reference, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/color-button.png
+      *> Source:
+id     identification division.
+       function-id. new-color-button.
+
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 extraneous                 usage binary-long.
+
+link   linkage section.
+       01 gtk-container              usage pointer.
+       01 default-color              usage pointer.
+       01 gtk-color-button-data.
+          05 gtk-color-button        usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  usage binary-long.
+
+code   procedure division using
+           gtk-container
+           optional default-color
+         returning gtk-color-button-data.
+
+       if default-color omitted then
+           call "gtk_color_button_new"
+               returning gtk-color-button
+           end-call
+       else
+           call "gtk_color_button_new_with_color" using
+               by value default-color
+               returning gtk-color-button
+           end-call
+       end-if   
+
+       if gtk-color-button not equal null then
+          *> Add the button to the container
+           call "gtk_container_add" using
+               by value gtk-container
+               by value gtk-color-button
+               returning omitted
+           end-call
+       end-if
+
+done   goback.
+       end function new-color-button.
       *>****
           
 
