@@ -14,9 +14,10 @@ Cobol *>
       *> Purpose:
       *> GNU Cobol functional bindings to GTK+
       *> Main module includes paperwork output and self test
-      *> Outline:
-      *> |dotfile cobweb-gtk.dot
       *> Synopsis:
+      *> |dotfile cobweb-gtk.dot
+      *> |html <br />
+      *> Functions include
       *> |exec cobcrun cobweb-gtk >cobweb-gtk.repository
       *> |html <pre>
       *> |copy cobweb-gtk.repository
@@ -38,7 +39,8 @@ Cobol *>
       *>    to gtk-window-data
       *>  move gtk-go(gtk-window) to extraneous
       *>  goback.
-      *>
+      *> Screenshot:
+      *> image:cobweb-gtk.png
       *> Source:
        REPLACE ==FIELDSIZE== BY ==80==
                ==AREASIZE==  BY ==32768==.
@@ -65,6 +67,7 @@ id     identification division.
            function new-radio-button
            function new-link-button
            function new-color-button
+           function new-file-chooser-button
            function new-separator
            function new-spinner
            function new-vte
@@ -88,6 +91,9 @@ data   data division.
        01 VERTICAL             usage binary-long value 1.
 
        01 ETCHED-UP            usage binary-long value 3.
+
+       01 FILE-CHOOSER-OPEN    usage binary-long value 0.
+       01 FILE-CHOOSER-SELECT-FOLDER usage binary-long value 3.
 
        01 newline              pic x value x"0a".
        01 extraneous           usage binary-long.
@@ -219,6 +225,7 @@ code   procedure division.
            "           function new-radio-buton"               newline
            "           function new-link-buton"                newline
            "           function new-color-buton"               newline
+           "           function new-file-chooser-button"       newline
            "           function new-separator"                 newline
            "           function new-spinner"                   newline
            "           function new-vte"                       newline
@@ -245,7 +252,7 @@ code   procedure division.
        if testing then
 
            *> test basic windowing using the anonymous widget pile
-           move 13 to total-widgets
+           move 14 to total-widgets
  
            move 4 to spacing
            move 2 to gtk-padding
@@ -277,6 +284,12 @@ code   procedure division.
                "http://sourceforge.net/p/open-cobol/discussion",
                "GnuCOBOL")
              to contrivance(13) 
+
+           move new-file-chooser-button(contrived(2),
+               "Test file chooser",
+               FILE-CHOOSER-OPEN,
+               "../cobweb-jokes.cob")
+             to contrivance(14) 
 
           *> vbox for radio buttons
            move new-box(contrived(2), VERTICAL, spacing, homogeneous)
@@ -1565,6 +1578,73 @@ code   procedure division using
 
 done   goback.
        end function new-color-button.
+      *>****
+          
+
+      *>****F* cobweb/new-file-chooser-button
+      *> Purpose:
+      *> Define a new file selector button. Displays dialog on click.
+      *> Input:
+      *>   gtk-container
+      *>   title pic x any
+      *>   mode-value, one of Open, Save, Select folder, Create folder
+      *>   default-filespec pic x ant
+      *> Output:
+      *>   gtk-file-chooser-button-record reference, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/file-button.png
+      *> Source:
+id     identification division.
+       function-id. new-file-chooser-button.
+
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 extraneous                 usage binary-long.
+
+link   linkage section.
+       01 gtk-container              usage pointer.
+       01 title                      pic x any length.
+       01 chooser-mode               usage binary-long.
+       01 default-filename           pic x any length.
+       01 gtk-file-chooser-button-data.
+          05 gtk-file-chooser-button usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  usage binary-long.
+
+code   procedure division using
+           gtk-container
+           title
+           chooser-mode
+           default-filename
+         returning gtk-file-chooser-button-data.
+
+       call "gtk_file_chooser_button_new" using
+           by content concatenate(trim(title), x"00")
+           by value chooser-mode
+           returning gtk-file-chooser-button
+       end-call
+
+       if gtk-file-chooser-button not equal null then
+          *> set default name
+           call "gtk_file_chooser_set_filename" using
+               by value gtk-file-chooser-button
+               by content concatenate(trim(default-filename), x"00")
+           end-call
+
+          *> Add the button to the container
+           call "gtk_container_add" using
+               by value gtk-container
+               by value gtk-file-chooser-button
+               returning omitted
+           end-call
+       end-if
+
+done   goback.
+       end function new-file-chooser-button.
       *>****
           
 

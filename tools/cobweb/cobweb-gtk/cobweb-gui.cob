@@ -12,6 +12,8 @@ Cobol *>
       *>   License: GPL 3.0 (or greater)
       *> Purpose:
       *>   demonstration of GNU Cobol functional GTK
+      *> Screenshot:
+      *> image:cobweb-gui.png
       *> Synopsis:
       *> |dotfile cobweb-gui.dot
       *> Tectonics:

@@ -35,7 +35,7 @@ digraph G {
   demo -> profit [arrowhead=open,arrowtail=inv,dir=both];
   source -> robodoc [style=dotted];
   source -> docpass [style=dotted];
-  robodoc [label="robdoc\nocdoc"];
+  robodoc [label="robodoc\nocdoc"];
   docpass [label="docpass\nsphinx"];
   robodoc -> documentation;
   docpass -> documentation;
