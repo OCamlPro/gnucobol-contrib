@@ -40,10 +40,11 @@ Cobol *>
       *>  move gtk-go(gtk-window) to extraneous
       *>  goback.
       *> Screenshot:
-      *> image:cobweb-gtk.png
+      *> image:cobweb-gtk1.png
       *> Source:
        REPLACE ==FIELDSIZE== BY ==80==
-               ==AREASIZE==  BY ==32768==.
+               ==AREASIZE==  BY ==32768==
+               ==FILESIZE==  BY ==1045876==.
 
 id     identification division.
        program-id. cobweb-gtk.
@@ -78,6 +79,7 @@ id     identification division.
            function textview-set-text
            function statusbar-push
            function statusbar-pop
+           function file-contents
            function gtk-go
            function all intrinsic.
 
@@ -201,9 +203,12 @@ data   data division.
        01 vte-cols             usage binary-c-long value 24.
        01 vte-rows             usage binary-c-long value 8.
 
+       01 file-length          usage binary-long.
+       01 error-code           usage binary-long.
+
        01 cli                  pic x(16).
           88 testing           values "test", "testing", "check".
-       
+
 code   procedure division.
        display
            "      *> cobweb-gtk UDF repository"
@@ -243,15 +248,24 @@ code   procedure division.
            "           function textview-set-text"             newline
            "           function statusbar-push"                newline
            "           function statusbar-pop"                 newline
+           "           function file-contents"                 newline
            "           function gtk-go"                        newline
            "           function all intrinsic."
        end-display
 
       *> cobcrun cobweb-gtk testing   - triggers the library self tests
        accept cli from command-line end-accept
-       if testing then
 
-           *> test basic windowing using the anonymous widget pile
+       if testing then
+          *> quick file read test
+           display
+               trim(file-contents("README", file-length, error-code))
+           end-display
+           display error-code ", " file-length end-display
+
+          *>
+          *> test basic windowing using the anonymous widget pile
+          *>
            move 14 to total-widgets
  
            move 4 to spacing
@@ -261,65 +275,65 @@ code   procedure division.
 
            move new-window("cobweb-gtk", GTK-WINDOW-TOPLEVEL,
                 width-hint, height-hint)
-             to contrivance(1)
+             to widget-record(1)
 
            move 0 to homogeneous
-           move new-box(contrived(1), VERTICAL, spacing, homogeneous)
-             to contrivance(7)
+           move new-box(widget(1), VERTICAL, spacing, homogeneous)
+             to widget-record(7)
 
            move 1 to homogeneous
-           move new-box(contrived(7), HORIZONTAL, spacing, homogeneous)
-             to contrivance(2)
+           move new-box(widget(7), HORIZONTAL, spacing, homogeneous)
+             to widget-record(2)
 
-           move new-frame(contrived(2), "GTK+ frame", ETCHED-UP)
-             to contrivance(3)
-           move new-scrolled-window(contrived(3), NULL, NULL)
-             to contrivance(4)
+           move new-frame(widget(2), "GTK+ frame", ETCHED-UP)
+             to widget-record(3)
+           move new-scrolled-window(widget(3), NULL, NULL)
+             to widget-record(4)
 
-           move new-separator(contrived(2), VERTICAL) to contrivance(12)
+           move new-separator(widget(2), VERTICAL) to widget-record(12)
 
-           move new-image(contrived(2), "blue66.png") to contrivance(5)
+           move new-image(widget(2), "blue66.png") to widget-record(5)
 
-           move new-link-button(contrived(2),
+           move new-link-button(widget(2),
                "http://sourceforge.net/p/open-cobol/discussion",
                "GnuCOBOL")
-             to contrivance(13) 
+             to widget-record(13) 
 
-           move new-file-chooser-button(contrived(2),
+           move new-file-chooser-button(widget(2),
                "Test file chooser",
                FILE-CHOOSER-OPEN,
-               "../cobweb-jokes.cob")
-             to contrivance(14) 
+               "./cobweb-gtk.cob")
+             to widget-record(14) 
 
           *> vbox for radio buttons
-           move new-box(contrived(2), VERTICAL, spacing, homogeneous)
-             to contrivance(8)
+           move new-box(widget(2), VERTICAL, spacing, homogeneous)
+             to widget-record(8)
 
           *> There is a sliding pointer dance here.
           *>   The first radio button sets a group, then following
           *>   radio buttons are linked together
-           set cobweb-pointer(9) to NULL
-           move new-radio-button(contrived(8), cobweb-pointer(9),
+           set extra-pointer(9) to NULL
+           move new-radio-button(widget(8), extra-pointer(9),
                "First Radio", "cobweb-gtk-button-clicked")
-             to contrivance(9)
-           move new-radio-button(contrived(8), cobweb-pointer(9),
+             to widget-record(9)
+           move new-radio-button(widget(8), extra-pointer(9),
                "Radio Two", "cobweb-gtk-button-clicked")
-             to contrivance(10)
-           move new-radio-button(contrived(8), cobweb-pointer(10),
+             to widget-record(10)
+           move new-radio-button(widget(8), extra-pointer(10),
                "Third Radio", "cobweb-gtk-button-clicked")
-             to contrivance(11)
+             to widget-record(11)
 
-           move new-statusbar(contrived(7)) to contrivance(6)
+           move new-statusbar(widget(7)) to widget-record(6)
 
-           *> push and pop need the cobweb-int, pass the whole record
-           move statusbar-push(contrivance(6), "Status Message")
+           *> push and pop need the extra-int, pass the whole record
+           move statusbar-push(widget-record(6), "Status Message")
              to extraneous
-           move statusbar-push(contrivance(6), "Hidden Message")
+           move statusbar-push(widget-record(6), "Hidden Message")
              to extraneous
-           move statusbar-pop(contrivance(6)) to extraneous
+           move statusbar-pop(widget-record(6)) to extraneous
 
           *> hand over control to GTK+ main loop
-           move gtk-go(contrived(1)) to extraneous
+           move gtk-go(widget(1)) to extraneous
 
           *> Control can pass back and forth to COBOL subprograms,
           *>  by event, but control flow stops above, until the
@@ -329,7 +343,9 @@ code   procedure division.
                upon syserr
            end-display
 
-          *> test basic windowing
+          *>
+          *> test basic windowing with named widget records
+          *>
            move 8 to spacing
            move 0 to homogeneous
 
@@ -382,11 +398,12 @@ code   procedure division.
                "GNU Cobol: second GTK eventloop terminated normally"
                upon syserr
            end-display
-          
-          *> ********************************************************
+
+          *>          
           *> Demonstrate GTKBuilder automation
           *> In this case, using the sample included in the GTK+ Builder
           *>   tutorial by Micah Carrick 
+          *>
            move new-builder("cobweb-sample.xml", builder-connect)
              to gtk-builder-data
     
@@ -478,7 +495,7 @@ id     identification division.
        display
            "clicked " gtk-widget " with " gtk-data
            " and " hide-state
-           " and " contrived(1)
+           " and " widget(1)
            upon syserr
        end-display
 
@@ -1391,7 +1408,7 @@ done   goback.
       *> Define a new radio, group and or button.
       *> The first radio button will create a group
       *>   following buttons are linked to previous in the group
-      *>   Link first to null, second to the returned cobweb-pointer
+      *>   Link first to null, second to the returned extra-pointer
       *>     third to the return of the second, and so on.
       *> Input:
       *>   gtk-container
@@ -1422,7 +1439,7 @@ link   linkage section.
        01 button-callback            pic x any length.
        01 gtk-radio-button-data.
           05 gtk-radio-button        usage pointer.
-          05 cobweb-pointer          usage pointer.
+          05 extra-pointer           usage pointer.
           05 filler                  usage binary-long.
 
 code   procedure division using
@@ -1442,7 +1459,7 @@ code   procedure division using
       *> return the group as part of the record
        call "gtk_radio_button_get_group" using
            by value gtk-radio-button
-           returning cobweb-pointer
+           returning extra-pointer
        end-call
            
       *> Add the button to the container
@@ -2460,6 +2477,103 @@ code   procedure division using gtk-statusbar-data returning extraneous.
 
 done   goback.
        end function statusbar-pop.
+      *>****
+          
+      *>****F* cobweb/file-contents
+      *> Purpose:
+      *> Return file contents as a string
+      *> Inputs:
+      *>    file name pic x any
+      *>    optional file-length slot (integer, write)
+      *>    optional error-code slot  (integer, write)
+      *> Output:
+      *>    file contents
+      *> Warning:
+      *>    There is a one megabyte limit on file size.
+      *>    It has been pointed out that reading a whole
+      *>    file with unknown size is not an overly smart
+      *>    thing to do.
+      *> Source:
+id     identification division.
+       function-id. file-contents.
+
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 buffer-pointer       usage pointer.
+       01 file-length          usage binary-long.
+       01 error-pointer        usage pointer.
+       01 status-code          usage binary-long based.
+       01 buffer-index         usage index.
+       01 buffer-element       pic x based.
+
+link   linkage section.
+       01 filename             pic x any length.
+       01 actual-length        usage binary-long.
+       01 error-code           usage binary-long.
+       01 file-buffer          pic x(FILESIZE).
+
+code   procedure division using
+           filename
+           optional actual-length 
+           optional error-code
+         returning file-buffer.
+
+      *> call glib file utility
+       call "g_file_get_contents" using
+           by content concatenate(trim(filename), x"00")
+           by reference buffer-pointer
+           by reference file-length
+           by reference error-pointer
+       end-call
+
+      *> linkage section dataspace will likely be random
+       initialize file-buffer
+
+      *> if the caller wants the length
+       if not actual-length omitted then
+           move file-length to actual-length
+       end-if
+
+      *> if there is an error, and the call wants a code
+       if return-code equal zero then
+           if not error-code omitted then
+               if error-pointer not equal null then
+                  *> the code is 4 bytes into the GError struct
+                   set error-pointer up by 4
+                   set address of status-code to error-pointer
+                   move status-code to error-code
+               else
+                   move 1 to error-code
+               end-if
+           end-if
+       else
+          *> fill the return field
+           if buffer-pointer not equal null then
+               set buffer-index to 1
+               set address of buffer-element to buffer-pointer
+               perform until buffer-index greater than file-length
+                          or buffer-index greater than FILESIZE
+                          or buffer-element equal x"00"
+                   move buffer-element to file-buffer(buffer-index:1)
+                   set buffer-index up by 1
+                   set address of buffer-element up by 1
+               end-perform
+           end-if
+       end-if
+
+      *> g_file_get_contents allocated a buffer    
+       call "g_free" using
+           by value buffer-pointer
+           returning omitted
+       end-call
+
+done   goback.
+       end function file-contents.
       *>****
           
 

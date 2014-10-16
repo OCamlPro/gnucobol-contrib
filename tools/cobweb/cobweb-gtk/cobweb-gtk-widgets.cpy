@@ -9,11 +9,11 @@
       *>   License   GNU General Public License, GPL, 3.0 or greater
       *>   Documentation licensed GNU FDL, version 2.1 or greater
       *> Purpose:
-      *> A managed widget pool, access by subscript
+      *> An anonymous widget-record pool, access by subscript
        01 total-widgets        usage binary-long             external.
        01 gtk-widgets                                        external.
-          05 contrivance  occurs 32768 times depending on total-widgets.
-             10 contrived      usage pointer.
-             10 cobweb-pointer usage pointer.
-             10 cobweb-int     usage binary-long.
+          05 widget-record occurs 999 times depending on total-widgets.
+             10 widget         usage pointer.
+             10 extra-pointer  usage pointer.
+             10 extra-int      usage binary-long.
       *>****

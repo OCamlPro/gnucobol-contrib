@@ -1,20 +1,40 @@
-The GNU Cobol functional bindings to GTK+ 3
+The GnuCOBOL 2 functional bindings to GTK+ 3
+============================================
+
+This is a work in progess.  Licensed under the GNU GPL 3.1 (or later, at your
+discretion)
+
+Building cobweb-gtk
+-------------------
+
+*Requires GnuCOBOL 2.0 or above as it makes extensive use of FUNCTION-ID*
+
+The included Makefile has a default target of cobweb-gui (an example
+application; currently a simple testhead)
 
 make
 cobcrun cobweb-gtk
+cobcrun cobweb-gtk test
 ./cobweb-gui
+
+cobweb-gtk, the dynamic library (DSO), includes a entry point suitable for use
+with cobcrun. Without arguments, this entry point simply displays a REPOSITORY
+paragraph suitable for direct paste into application level COBOL.  With an
+argument of "test", "testing" or "check", the library will exercise the various
+widget set and display a few windows.
 
 Needs GTK+ 3 libraries and VTE for GTK 3.  (libvte2_90)
 
-In the GTKBuilder test, the sample text editor only has (fake) handlers for
-Help/About and with File/Save attached to a callback to display the multiline
-text buffer. In this initial release, that is true for both the cobweb-gtk self
-test and the cobweb-gui sample.
+In the GTKBuilder test, the sample text editor only has simple handlers for
+Help/About, which displays a dialog box, and the File/Save menu item attached
+to a callback to display the multiline text buffer. In this initial release,
+that is true for both the cobweb-gtk self test and the cobweb-gui sample.
 
 make cobodoc
 
-Builds ROBODoc documentation.  Requires a patched version of ROBODoc 4.99.41 allowing
-for dashes in identifiers (breaking cmode for any expressions like c=a-b;)
+Builds ROBODoc documentation.  Requires a patched version of ROBODoc 4.99.41
+allowing for dashes in identifiers, with --cobol (breaking cmode for any
+expressions like c=a-b;)
 
 make periodic
 

@@ -1,7 +1,11 @@
-# cobweb-gui early alpha
+# cobweb-gui early alpha, assumes cobweb-gtk library is local
 cobweb-gui: cobweb-gui.cob cobweb-gtk.cob voidcall_gtk.c cobweb-gtk-widgets.cpy colours-tui.cob Makefile
 	cobc -v -b -g -debug cobweb-gtk.cob voidcall_gtk.c `pkg-config --libs gtk+-3.0` -lvte2_90 
 	LD_RUN_PATH=. cobc -v -x -g -debug cobweb-gui.cob cobweb-gtk.so 
+
+.PHONY: test check
+test check: cobweb-gtk.so
+	cobcrun cobweb-gtk test
 
 cobweb-gui-example-label: cobweb-gui-example-label.cob cobweb-gtk-preamble.cpy cobweb-gtk.cob voidcall_gtk.c Makefile
 	cobc -m -g -debug cobweb-gtk.cob voidcall_gtk.c `pkg-config --libs gtk+-3.0` -lvte2_90 

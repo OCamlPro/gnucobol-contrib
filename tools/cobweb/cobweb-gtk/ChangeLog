@@ -1,3 +1,10 @@
+2014-10-16 Brian Tiffin <btiffin@gnu.org>
+  * added file-contents (against Simon's better judgement, so it might
+      get yanked)
+
+2014-10-12 Brian Tiffin <btiffin@gnu.org>
+  * added file-chooser-button
+
 2014-10-08 Brian Tiffin <btiffin@gnu.org>
   * added separator, link-button, color-button
 
