@@ -771,7 +771,7 @@
        ELSE   
           IF V-FIRST-LINE-NO OF WS-FIRST-LINE-FLAG
           THEN
-*>           this was only a CRLF, we have to write it in the file
+*>           this was only a CRLF, we have to write it in the internal table
              IF WS-IND-1 < C-TAB-MAX-VALUE
              THEN
                 MOVE WS-INPUT-BUF-SAVE(1:WS-INPUT-BUF-SAVE-IND) 

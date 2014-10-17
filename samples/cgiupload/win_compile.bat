@@ -1,30 +1,51 @@
-rem delete old files
-del C:\Apache2\cgi-bin\cgiupload
-del C:\Apache2\htdocs\upload1.html
-del C:\Apache2\htdocs\upload2.html
-del C:\Apache2\htdocs\upload3.html
-del C:\Apache2\htdocs\upload4.html
-del C:\Apache2\htdocs\upload5.html
-del C:\Apache2\htdocs\upload6.html
-del C:\Apache2\htdocs\upload7.html
-del cgiupload.exe
+:: set directories to match your installation
+set cgibin=C:\Apache2\cgi-bin
+set htdocs=C:\Apache2\htdocs
+set progdir=C:\oc_projekt
 
-rem set env. variables
+:: test if directories exist
+if not exist "%cgibin%\" (
+   echo Please set cgibin correct, currently set to %cgibin%
+   goto :eof
+)
+if not exist "%htdocs%\" (
+   echo Please set htdocs correct, currently set to %htdocs%
+   goto :eof
+)
+if not exist "%progdir%\" (
+   echo Please set progdir correct, currently set to %progdir%
+   goto :eof
+)
+
+:: delete old files (ignoring errors)
+del "%cgibin%\cgiupload"    2>NUL
+del "%htdocs%\upload1.html" 2>NUL
+del "%htdocs%\upload2.html" 2>NUL
+del "%htdocs%\upload3.html" 2>NUL
+del "%htdocs%\upload4.html" 2>NUL
+del "%htdocs%\upload5.html" 2>NUL
+del "%htdocs%\upload6.html" 2>NUL
+del "%htdocs%\upload7.html" 2>NUL
+del "cgiupload.exe"         2>NUL
+
+:: set env. variables
 call "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"
 
-cd C:\oc_projekt\cgiupload
+cd "%progdir%\cgiupload"
 
-rem compile with define
+:: compile with define
 cobc -x -free cgiupload.cob -D OS=WINDOWS
 
-rem copy new files in apache directory
-copy cgiupload.exe C:\Apache2\cgi-bin\cgiupload
-copy upload1.html C:\Apache2\htdocs\upload1.html
-copy upload2.html C:\Apache2\htdocs\upload2.html
-copy upload3.html C:\Apache2\htdocs\upload3.html
-copy upload4.html C:\Apache2\htdocs\upload4.html
-copy upload5.html C:\Apache2\htdocs\upload5.html
-copy upload6.html C:\Apache2\htdocs\upload6.html
-copy upload7.html C:\Apache2\htdocs\upload7.html
+:: copy new files in apache directory
+copy cgiupload.exe "%cgibin%\cgiupload"
+copy upload1.html  "%htdocs%\upload1.html"
+copy upload2.html  "%htdocs%\upload2.html"
+copy upload3.html  "%htdocs%\upload3.html"
+copy upload4.html  "%htdocs%\upload4.html"
+copy upload5.html  "%htdocs%\upload5.html"
+copy upload6.html  "%htdocs%\upload6.html"
+copy upload7.html  "%htdocs%\upload7.html"
+
+:eof
 
 pause
