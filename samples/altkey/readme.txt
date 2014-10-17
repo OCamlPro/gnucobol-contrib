@@ -25,10 +25,15 @@
  'suppress when spaces' clause.  As an exercise, comment out the 
  clause and see the difference when the program is run again. 
 
-    To compile and run under GNU Cobol on Linux. 
+    To compile and run under GNU Cobol on Linux/Cygwin/MSYS:
 
 cobc -x altkey.cob 
 ./altkey 
+
+    To compile and run under GNU Cobol on MS Windows:
+
+cobc -x altkey.cob 
+.\altkey.exe
 
     If "suppress when space" is not supported, use the file i/o 
  rewrite and compile it again.  Or run the program without it.  

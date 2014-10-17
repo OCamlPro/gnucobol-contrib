@@ -18,7 +18,7 @@
        file-control.
 
            Select iftest
-               assign to "/tmp/iftest"
+               assign to "./iftest"
                organization is indexed
                access mode is dynamic
                record key is iftest-key
@@ -113,6 +113,9 @@
            Move "open output" to ws-operation.
            Move space         to ws-record.
            Perform sfo-show-file-operation thru sfo-exit.
+           if ws-file-status (1:1) not = '0'
+              goback
+           end-if
 
       ** Write 6 records, 1, 3, 5, and 6 have space alternate key.
            Move "write" to ws-operation.
