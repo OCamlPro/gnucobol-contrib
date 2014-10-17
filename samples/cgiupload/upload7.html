@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>File upload test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+
+<h2>File upload test</h2>
+
+File upload uses enctype="multipart/form-data".
+<br><br>
+<h2>complex form</h2>
+<br>
+
+<p> 
+<form action="/cgi-bin/cgiupload" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
+
+  <table border="0" cellpadding="3" cellspacing="0">
+    <tr>
+      <td align="right">first name:</td>
+      <td><input name="first_name" type="text" size="30" maxlength="30"></td>
+    </tr>
+    <tr>
+      <td align="right">surname:</td>
+      <td><input name="surname" type="text" size="30" maxlength="40"></td>
+    </tr>
+    <tr>
+      <td align="right" valign="top">gender:</td>
+      <td>
+        <input type="radio" name="gender" value="m"> male<br>
+        <input type="radio" name="gender" value="f"> female
+      </td>
+    </tr>
+    <tr>
+      <td align="right" valign="top">skills:</td>
+      <td>
+        <input type="checkbox" name="skills" value="cobol">COBOL<br>
+        <input type="checkbox" name="skills" value="cpp">C/C++<br>
+        <input type="checkbox" name="skills" value="java">java<br>
+        <input type="checkbox" name="skills" value="asm">ASM
+      </td>
+    </tr>
+    <tr>
+      <td align="right" valign="top">your city:</td>
+      <td>
+      <select name="your_city" size="1">
+        <option value="new_york">New York</option>
+        <option value="Berlin">Berlin</option>
+        <option value="Paris">Paris</option>
+        <option value="Budapest">Budapest</option>
+      </select>
+      </td>
+    </tr>
+    <tr>
+      <td align="right" valign="top">comment:</td>
+      <td><textarea name="comment" rows="10" cols="50"></textarea></td>
+    </tr>
+    <tr>
+      <td align="right">foto1:</td>
+      <td><input type="file" name="foto1" /></td>
+    </tr>
+    <tr>
+      <td align="right">foto2:</td>
+      <td><input type="file" name="foto2" /></td>
+    </tr>
+    <tr>
+      <td align="right">hidden data:</td>
+      <td><input type="hidden" name="hidden_data" value="1234567890"/></td>
+    </tr>
+    <tr>
+      <td align="right">form:</td>
+      <td>
+        <input type="submit" value="Send data">
+        <input type="reset" value="Reset form">
+      </td>
+    </tr>
+  </table>
+
+</form>
+</p>
+</body>
+</html>
