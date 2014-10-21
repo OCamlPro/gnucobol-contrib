@@ -17,7 +17,8 @@ Cobol *>
       *> Synopsis:
       *> |dotfile cobweb-gui.dot
       *> Tectonics:
-      *>   cobc -m -g -debug cobweb-gtk.cob voidcall.c `pkg-config --libs gtk+-3.0`
+      *>   cobc -v -b -g -debug cobweb-gtk.cob voidcall_gtk.c
+      *>        `pkg-config --libs gtk+-3.0` -lvte2_90 -lyelp
       *>   LD_RUN_PATH=. cobc -x -g -debug cobweb-gui.cob cobweb-gtk.so
       *><* =====================
       *><* cobweb-gui usage guide
@@ -59,6 +60,7 @@ id     identification division.
 udf    repository.
            function new-builder
            function new-window 
+           function new-scrolled-window
            function new-box
            function new-label
            function new-entry
@@ -66,6 +68,7 @@ udf    repository.
            function new-button
            function new-image
            function new-spinner
+           function new-yelp
            function new-vte
            function signal-attach
            function builder-signal-attach
@@ -88,7 +91,7 @@ io     input-output section.
 data   data division.
        file section.
        fd sample-data.
-          01 some-80-characters    pic x(80).
+          01 some-credits    pic x(96).
 
        working-storage section.
        01 sample-data-status       pic 99.
@@ -111,7 +114,7 @@ data   data division.
           05 filler            usage pointer.
           05 filler            usage binary-long.
        01 width-hint           usage binary-long value 640.
-       01 height-hint          usage binary-long value 480.
+       01 height-hint          usage binary-long value 640.
 
        01 gtk-container-data.
           05 gtk-container     usage pointer.
@@ -164,6 +167,16 @@ data   data division.
        01 vte-cols             usage binary-c-long value 80.
        01 vte-rows             usage binary-c-long value 24.
        
+       01 gtk-yelpwindow.
+          05 gtk-yelp-window   usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
+
+       01 gtk-yelp-data.
+          05 gtk-yelp          usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
+
        01 gtk-verticalbox-data.
           05 gtk-verticalbox   usage pointer.
           05 filler            usage pointer.
@@ -194,7 +207,7 @@ code   procedure division.
        
       *> First box, across
        move new-box(gtk-container, HORIZONTAL, spacing, homogeneous) to gtk-box-data
-       move new-image(gtk-box, "blue66.png") to gtk-image-data
+       move new-image(gtk-box, "white66.png") to gtk-image-data
        move new-label(gtk-box, "And?") to gtk-label-data
        move new-entry(gtk-box, entry-chars, "cobweb-entry-activated") to gtk-entry-data
        move new-box(gtk-box, VERTICAL, spacing, homogeneous) to gtk-button-box-data
@@ -203,16 +216,18 @@ code   procedure division.
 
       *> Other box, down
        move new-box(gtk-container, VERTICAL, spacing, homogeneous) to gtk-verticalbox-data
-       move new-label(gtk-verticalbox, "sample data") to gtk-label-data
+       move new-label(gtk-verticalbox, "some credits below") to gtk-label-data
        move 80 to entry-chars
        move new-entry(gtk-verticalbox, entry-chars, "cobweb-entry-activated") to gtk-sample-entry-data 
        move new-vte(gtk-verticalbox, "/home/btiffin/lang/cobol/cobweb/gtk/colours-tui", vte-cols, vte-rows) to gtk-vte-data
+       move new-scrolled-window(gtk-verticalbox, NULL, NULL) to gtk-yelpwindow
+       move new-yelp(gtk-yelpwindow, "cobodoc/index.html") to gtk-yelp-data
 
       *> prefill the and box with a note
        move entry-set-text(gtk-entry, "type here") to extraneous
 
       *> prefill the sample entry with the data read from the sample file
-       move entry-set-text(gtk-sample-entry, some-80-characters) to extraneous
+       move entry-set-text(gtk-sample-entry, some-credits) to extraneous
 
       *> GTK+ event loop now takes over       
        move gtk-go(gtk-window) to extraneous
@@ -236,7 +251,7 @@ code   procedure division.
          to extraneous
 
        move textview-set-text(builder-get-object(
-           gtk-builder, "text_view") some-80-characters)
+           gtk-builder, "text_view") some-credits)
          to extraneous
            
       *> GTK+ event loop takes over, again       

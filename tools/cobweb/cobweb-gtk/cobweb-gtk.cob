@@ -24,10 +24,11 @@ Cobol *>
       *> |html </pre>
       *> |exec rm cobweb-gtk.repository
       *> Tectonics:
-      *>   cobc -m -g -debug cobweb-gtk.cob voidcall.c `pkg-config --libs gtk+-3.0`
-      *>   robodoc --src ./ --doc cobwebgtk --multidoc --rc robocob.rc --css cobodoc.css
+      *>   cobc -v -b -g -debug cobweb-gtk.cob voidcall_gtk.c
+      *>        `pkg-config --libs gtk+-3.0` -lvte2_90 -lyelp
+      *>   robodoc --cobol --src ./ --doc cobwebgtk --multidoc --rc robocob.rc --css cobodoc.css
       *>   cobc -E -Ddocpass cobweb-gtk.cob
-      *>   sphinx cobweb-gtk.i
+      *>   make singlehtml  # once Sphinx set up to read cobweb-gtk.i
       *> Example:
       *>  COPY cobweb-gtk-preamble.
       *>  procedure division.
@@ -71,6 +72,7 @@ id     identification division.
            function new-file-chooser-button
            function new-separator
            function new-spinner
+           function new-yelp
            function new-vte
            function rundown-signals
            function signal-attach
@@ -115,8 +117,8 @@ data   data division.
           05 gtk-window        usage pointer.
           05 filler            usage pointer.
           05 filler            usage binary-long.
-       01 width-hint           usage binary-long value 500.
-       01 height-hint          usage binary-long value 48.
+       01 width-hint           usage binary-long value 600.
+       01 height-hint          usage binary-long value 192.
 
        01 gtk-box-data.
           05 gtk-box           usage pointer.
@@ -203,6 +205,11 @@ data   data division.
        01 vte-cols             usage binary-c-long value 24.
        01 vte-rows             usage binary-c-long value 8.
 
+       01 gtk-yelp-data.
+          05 gtk-yelp          usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
+
        01 file-length          usage binary-long.
        01 error-code           usage binary-long.
 
@@ -233,6 +240,7 @@ code   procedure division.
            "           function new-file-chooser-button"       newline
            "           function new-separator"                 newline
            "           function new-spinner"                   newline
+           "           function new-yelp"                      newline
            "           function new-vte"                       newline
            "           function new-textview"                  newline
            "           function rundown-signals"               newline
@@ -266,12 +274,12 @@ code   procedure division.
           *>
           *> test basic windowing using the anonymous widget pile
           *>
-           move 14 to total-widgets
+           move 16 to total-widgets
  
            move 4 to spacing
            move 2 to gtk-padding
-           move 0 to gtk-fill
            move 0 to gtk-expand
+           move 0 to gtk-fill
 
            move new-window("cobweb-gtk", GTK-WINDOW-TOPLEVEL,
                 width-hint, height-hint)
@@ -299,6 +307,13 @@ code   procedure division.
                "GnuCOBOL")
              to widget-record(13) 
 
+           move 1 to gtk-expand gtk-fill           
+           move new-scrolled-window(widget(2), NULL, NULL)
+             to widget-record(15)
+           move new-yelp(widget(15), "cobodoc/index.html")
+             to widget-record(16)
+
+           move 0 to gtk-expand gtk-fill           
            move new-file-chooser-button(widget(2),
                "Test file chooser",
                FILE-CHOOSER-OPEN,
@@ -458,7 +473,10 @@ id     identification division.
        01 the-flag             usage binary-long.
 
        procedure division using
-           by value gtk-widget gdk-event gtk-data returning the-flag.
+           gtk-widget
+           gdk-event
+           gtk-data
+         returning the-flag.
 
       *> return false, allow the destroy signal              
        set address of the-flag to address of working-flag
@@ -490,7 +508,9 @@ id     identification division.
        01 gtk-widget           usage pointer.
        01 gtk-data             usage pointer.
 
-       procedure division using by value gtk-widget gtk-data.
+       procedure division using
+           by value gtk-widget
+           gtk-data.
 
        display
            "clicked " gtk-widget " with " gtk-data
@@ -542,7 +562,9 @@ id     identification division.
        01 gtk-widget           usage pointer.
        01 gtk-data             usage pointer.
 
-       procedure division using by value gtk-widget gtk-data.
+       procedure division using
+           by value gtk-widget
+           gtk-data.
 
        display
            "clicked (check)" gtk-widget " with " gtk-data upon syserr
@@ -576,7 +598,9 @@ id     identification division.
        01 gtk-widget           usage pointer.
        01 gtk-data             usage pointer.
 
-       procedure division using by value gtk-widget gtk-data.   
+       procedure division using
+           by value gtk-widget
+           gtk-data.   
 
        display
            "activated " gtk-widget " with " gtk-data upon syserr
@@ -622,8 +646,10 @@ link   01 builder-xmlfile            pic x any length.
           05 gtk-builder             usage pointer.
           05 gtk-builtwindow         usage pointer.
        
-code   procedure division using builder-xmlfile builder-connect
-           returning gtk-builder-data.
+code   procedure division using
+           builder-xmlfile
+           builder-connect
+         returning gtk-builder-data.
 
        call "gtk_builder_new" returning gtk-builder end-call
 
@@ -701,7 +727,7 @@ code   procedure division using
            window-type
            width-hint
            height-hint
-           returning gtk-window-data.
+         returning gtk-window-data.
 
       *> Start up the GIMP/Gnome Tool Kit
        call "gtk_init" using
@@ -1070,6 +1096,10 @@ id     identification division.
            function all intrinsic.
 
 data   data division.
+       working-storage section.
+       01 width-hint                 usage binary-long value 240.
+       01 height-hint                usage binary-long value 320.
+     
 link   linkage section.
        01 gtk-container              usage pointer.
        01 horizontal-adjustment      usage pointer.
@@ -1080,13 +1110,27 @@ link   linkage section.
           05 filler                  binary-long.
 
 code   procedure division using
-           gtk-container horizontal-adjustment vertical-adjustment
-           returning gtk-scrolled-window-data.
+           gtk-container
+           horizontal-adjustment
+           vertical-adjustment
+         returning gtk-scrolled-window-data.
 
       *> Define a scrolled-window
        call "gtk_scrolled_window_new" using
            by reference null null
            returning gtk-scrolled-window
+       end-call
+
+       call "gtk_scrolled_window_set_min_content_height" using
+           by value gtk-scrolled-window
+           by value width-hint
+           returning omitted
+       end-call
+
+       call "gtk_scrolled_window_set_min_content_height" using
+           by value gtk-scrolled-window
+           by value height-hint
+           returning omitted
        end-call
 
       *> Add the frame to the window
@@ -1128,8 +1172,10 @@ link   linkage section.
           05 filler                  usage pointer.
           05 filler                  binary-long.
 
-code   procedure division using gtk-container label-text
-           returning gtk-label-data.
+code   procedure division using
+           gtk-container
+           label-text
+         returning gtk-label-data.
 
       *> Add a label
        call "gtk_label_new" using
@@ -1251,7 +1297,9 @@ link   linkage section.
           05 filler                  usage pointer.
           05 filler                  binary-long.
 
-code   procedure division using gtk-container entry-callback
+code   procedure division using
+           gtk-container
+           entry-callback
          returning gtk-textview-data.
 
       *> Add a multiline text entry
@@ -1307,8 +1355,10 @@ link   linkage section.
           05 filler                  binary-long.
 
 code   procedure division using
-           gtk-container button-label button-callback
-           returning gtk-button-data.
+           gtk-container
+           button-label
+           button-callback
+         returning gtk-button-data.
 
       *> Add a labelled button
        call "gtk_button_new_with_label" using
@@ -1372,7 +1422,7 @@ code   procedure division using
            button-label
            button-value
            button-callback
-           returning gtk-check-button-data.
+         returning gtk-check-button-data.
 
       *> Add a labelled button
        call "gtk_check_button_new_with_label" using
@@ -1748,8 +1798,9 @@ link   linkage section.
           05 filler                  binary-long.
 
 code   procedure division using
-           gtk-container image-filename
-           returning gtk-image-data.
+           gtk-container
+           image-filename
+         returning gtk-image-data.
 
       *> Create an image from file
        call "gtk_image_new_from_file" using
@@ -1797,8 +1848,9 @@ link   linkage section.
           05 filler                  usage pointer.
           05 filler                  binary-long.
 
-code   procedure division
-           using gtk-container returning gtk-spinner-data.
+code   procedure division using
+           gtk-container
+         returning gtk-spinner-data.
 
       *> Create an image from file
        call "gtk_spinner_new"
@@ -1823,6 +1875,68 @@ done   goback.
       *>****
           
 
+      *>****F* cobweb/new-yelp
+      *> Purpose:
+      *> Define a new GNOME help viewer
+      *> Input:
+      *>   URI pic x any
+      *> Output:
+      *>   A new yelp widget, with URI preloaded
+      *> Source:
+id     identification division.
+       function-id. new-yelp.
+
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 extraneous                 usage binary-long.
+
+       01 gtk-expand                 usage binary-long       external.
+       01 gtk-fill                   usage binary-long       external.
+       01 gtk-padding                usage binary-long       external.
+
+link   linkage section.
+       01 gtk-container              usage pointer.
+       01 help-url                   pic x any length.
+       01 gtk-yelp-data. 
+          05 gtk-yelp                usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
+
+code   procedure division using
+           gtk-container
+           help-url
+         returning gtk-yelp-data.
+
+      *> Create a Yelp Viewer
+       call "yelp_view_new"
+           returning gtk-yelp
+       end-call
+
+       if gtk-yelp not equal null then
+           call "yelp_view_load" using
+               by value gtk-yelp
+               by content concatenate(trim(help-url), x"00")
+               returning omitted
+           end-call
+
+          *> Add the yelp view to the container
+           call "gtk_container_add" using
+               by value gtk-container
+               by value gtk-yelp
+               returning omitted
+           end-call
+       end-if
+
+done   goback.
+       end function new-yelp.
+      *>****
+
+          
       *>****F* cobweb/new-vte
       *> Purpose:
       *> Define a new virtual terminal
@@ -1845,6 +1959,10 @@ data   data division.
        working-storage section.
        01 extraneous                 usage binary-long.
 
+       01 expanding                  usage binary-long value 1.
+       01 filling                    usage binary-long value 1.
+       01 pad                        usage binary-long value 4.
+
 link   linkage section.
        01 gtk-container              usage pointer.
        01 vte-command                pic x any length.
@@ -1855,39 +1973,55 @@ link   linkage section.
           05 filler                  usage pointer.
           05 filler                  binary-long.
 
-code   procedure division
-           using gtk-container vte-command vte-cols vte-rows
-           returning gtk-vte-data.
+code   procedure division using
+           gtk-container
+           vte-command
+           vte-cols
+           vte-rows
+         returning gtk-vte-data.
 
       *> Create a virtual terminal
        call "vte_terminal_new"
            returning gtk-vte
        end-call
-       call "vte_terminal_set_size" using
-           by value gtk-vte vte-cols vte-rows
-           returning omitted
-       end-call
-       
-      *> Start session with command, in current working dir
-       call "vte_terminal_fork_command" using
-           by value gtk-vte
-           by content concatenate(trim(vte-command), x"00")
-           by reference null null z"."
-           by value 0 0 0
-           returning omitted
-       end-call
 
-      *> Add the vte to the container
-       call "gtk_container_add" using
-           by value gtk-container
-           by value gtk-vte
-           returning omitted
-       end-call
+       if gtk-vte not equal null then
+           call "vte_terminal_set_size" using
+               by value gtk-vte vte-cols vte-rows
+               returning omitted
+           end-call
+           
+          *> Start session with command, in current working dir
+           call "vte_terminal_fork_command" using
+               by value gtk-vte
+               by content concatenate(trim(vte-command), x"00")
+               by reference null null z"."
+               by value 0 0 0
+               returning omitted
+           end-call
+    
+          *> Add the vte to the container
+          *> call "gtk_container_add" using
+          *>     by value gtk-container
+          *>     by value gtk-vte
+          *>     returning omitted
+          *> end-call
+
+           call "gtk_box_pack_start" using
+               by value gtk-container
+               by value gtk-vte
+               by value expanding
+               by value filling
+               by value pad
+               returning omitted
+           end-call
+           
+       end-if
 
 done   goback.
        end function new-vte.
       *>****
-          
+
 
       *> ********************************************************
       *> helper functions
@@ -1922,7 +2056,10 @@ link   linkage section.
        01 extraneous                 usage binary-long.
 
 code   procedure division using
-           gtk-widget the-trigger callback-byname returning extraneous.
+           gtk-widget
+           the-trigger
+           callback-byname
+         returning extraneous.
 
       *> Connect signal to action, wrapped in voidcall
        set cobweb-callback to entry callback-byname
@@ -1979,8 +2116,11 @@ link   linkage section.
        01 extraneous                 usage binary-long.
 
 code   procedure division using
-           gtk-builder builder-name builder-event callback-byname
-           returning extraneous.
+           gtk-builder
+           builder-name
+           builder-event
+           callback-byname
+         returning extraneous.
 
       *> look up the object name
        call "gtk_builder_get_object" using
@@ -2238,8 +2378,10 @@ link   linkage section.
        01 the-text-entry       pic x any length.
        01 extraneous           usage binary-long.
 
-code   procedure division using gtk-entry the-text-entry
-           returning extraneous.
+code   procedure division using
+           gtk-entry
+           the-text-entry
+         returning extraneous.
 
        call "gtk_entry_set_text" using
                by value gtk-entry
@@ -2390,8 +2532,9 @@ link   linkage section.
           05 filler            binary-long.
 
 code   procedure division using
-           gtk-builder builder-idname
-           returning gtk-widget-data.
+           gtk-builder
+           builder-idname
+         returning gtk-widget-data.
 
        call "gtk_builder_get_object" using
            by value gtk-builder
@@ -2428,9 +2571,9 @@ link   linkage section.
        01 message-id           usage binary-long.
 
 code   procedure division using
-               gtk-statusbar-data
-               text-message
-           returning message-id.
+           gtk-statusbar-data
+           text-message
+         returning message-id.
 
        
        call "gtk_statusbar_push" using
@@ -2599,7 +2742,9 @@ data   data division.
        01 gtk-widget           usage pointer.
        01 gtk-data             usage pointer.
 
-code   procedure division using by value gtk-widget gtk-data.   
+code   procedure division using
+           by value gtk-widget
+           gtk-data.   
 
        call "gtk_show_about_dialog" using
            by value gtk-window
@@ -2643,7 +2788,9 @@ data   data division.
        01 gtk-widget           usage pointer.
        01 gtk-data             usage pointer.
 
-code   procedure division using by value gtk-widget gtk-data.   
+code   procedure division using
+           by value gtk-widget
+           gtk-data.   
 
       *> find the GTKBuilder sample XML name for the textview
        call "gtk_builder_get_object" using

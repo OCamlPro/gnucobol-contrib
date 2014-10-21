@@ -1,6 +1,6 @@
 # cobweb-gui early alpha, assumes cobweb-gtk library is local
 cobweb-gui: cobweb-gui.cob cobweb-gtk.cob voidcall_gtk.c cobweb-gtk-widgets.cpy colours-tui.cob Makefile
-	cobc -v -b -g -debug cobweb-gtk.cob voidcall_gtk.c `pkg-config --libs gtk+-3.0` -lvte2_90 
+	cobc -v -b -g -debug cobweb-gtk.cob voidcall_gtk.c `pkg-config --libs gtk+-3.0` -lvte2_90 -lyelp
 	LD_RUN_PATH=. cobc -v -x -g -debug cobweb-gui.cob cobweb-gtk.so 
 
 .PHONY: test check
