@@ -59,6 +59,9 @@ id     identification division.
            function new-box
            function new-button-box
            function new-frame
+           function new-menu-bar
+           function new-menu
+           function new-menu-item 
            function new-statusbar
            function new-image
            function new-label
@@ -117,8 +120,8 @@ data   data division.
           05 gtk-window        usage pointer.
           05 filler            usage pointer.
           05 filler            usage binary-long.
-       01 width-hint           usage binary-long value 600.
-       01 height-hint          usage binary-long value 192.
+       01 width-hint           usage binary-long value 800.
+       01 height-hint          usage binary-long value 256.
 
        01 gtk-box-data.
           05 gtk-box           usage pointer.
@@ -203,7 +206,7 @@ data   data division.
           05 filler            usage binary-long.
 
        01 vte-cols             usage binary-c-long value 24.
-       01 vte-rows             usage binary-c-long value 8.
+       01 vte-rows             usage binary-c-long value 11.
 
        01 gtk-yelp-data.
           05 gtk-yelp          usage pointer.
@@ -228,6 +231,9 @@ code   procedure division.
            "           function new-box"                       newline
            "           function new-button-box"                newline
            "           function new-frame"                     newline
+           "           function new-menu-bar"                  newline
+           "           function new-menu"                      newline
+           "           function new-menu-item"                 newline
            "           function new-statusbar"                 newline
            "           function new-image"                     newline
            "           function new-label"                     newline
@@ -274,7 +280,7 @@ code   procedure division.
           *>
           *> test basic windowing using the anonymous widget pile
           *>
-           move 16 to total-widgets
+           move 32 to total-widgets
  
            move 4 to spacing
            move 2 to gtk-padding
@@ -288,6 +294,23 @@ code   procedure division.
            move 0 to homogeneous
            move new-box(widget(1), VERTICAL, spacing, homogeneous)
              to widget-record(7)
+
+           move new-menu-bar(widget(7))
+             to widget-record(17)
+           move new-menu(widget(17), "_File")
+             to widget-record(18)
+           move new-menu-item(widget(18), "_Open",
+                "cobweb-gtk-button-clicked")
+             to widget-record(19)
+           move new-menu-item(widget(18), "Quit",
+                "cobweb-close")
+             to widget-record(20)
+
+           move new-menu(widget(17), "_Help")
+             to widget-record(21)
+           move new-menu-item(widget(21), "_About",
+                "help-about-cobweb")
+             to widget-record(22)
 
            move 1 to homogeneous
            move new-box(widget(7), HORIZONTAL, spacing, homogeneous)
@@ -1020,6 +1043,194 @@ done   goback.
       *>****
 
           
+      *>****F* cobweb/new-menu-bar
+      *> Purpose:
+      *> Define a new menu bar
+      *> Input:
+      *>   gtk-container pointer
+      *> Output:
+      *>   gtk-menu-bar-record, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/menubar.png
+      *> Source:
+id     identification division.
+       function-id. new-menu-bar. 
+
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 expanding                  usage binary-long.
+       01 filling                    usage binary-long.
+       01 pad                        usage binary-long.
+
+link   linkage section.
+       01 gtk-container              usage pointer.
+       01 gtk-menu-bar-data.
+          05 gtk-menu-bar            usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  usage binary-long.
+
+code   procedure division using
+           gtk-container
+         returning gtk-menu-bar-data.
+
+      *> Define a new menu bar
+       call "gtk_menu_bar_new"
+           returning gtk-menu-bar
+       end-call
+
+       move 0 to expanding filling
+       move 3 to pad
+       if gtk-menu-bar not equal null then
+          *> Add the frame to the window
+           call "gtk_box_pack_start" using
+               by value gtk-container
+               by value gtk-menu-bar
+               by value expanding
+               by value filling
+               by value pad
+               returning omitted
+           end-call
+       end-if
+
+done   goback.
+       end function new-menu-bar.
+      *>****
+
+
+      *>****F* cobweb/new-menu
+      *> Purpose:
+      *> Define a new menu
+      *> Input:
+      *>   gtk-container pointer
+      *>   top-level-label pic x any
+      *> Output:
+      *>   gtk-menu-record, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/menubar.png
+      *> Source:
+id     identification division.
+       function-id. new-menu. 
+
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 main-item                  usage pointer.
+       
+link   linkage section.
+       01 gtk-menu-bar               usage pointer.
+       01 menu-label                 pic x any length.
+       01 gtk-menu-data.
+          05 gtk-menu                usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  usage binary-long.
+
+code   procedure division using
+           gtk-menu-bar
+           menu-label  
+         returning gtk-menu-data.
+
+      *> Define a new menu
+       call "gtk_menu_new"
+           returning gtk-menu
+       end-call
+
+      *> Create the submenu association
+       call "gtk_menu_item_new_with_mnemonic" using
+           by content concatenate(trim(menu-label), x"00")
+           returning main-item
+       end-call
+
+       if main-item not equal null then
+           call "gtk_menu_item_set_submenu" using
+               by value main-item
+               by value gtk-menu
+           end-call
+       end-if
+
+       if gtk-menu not equal null then
+          *> Add the menu to the menu-bar
+           call "gtk_menu_shell_append" using
+               by value gtk-menu-bar
+               by value main-item
+               returning omitted
+           end-call
+       end-if
+
+done   goback.
+       end function new-menu.
+      *>****
+
+
+      *>****F* cobweb/new-menu-item
+      *> Purpose:
+      *> Define a new menu-item
+      *> Input:
+      *>   gtk-menu pointer
+      *>   item-label pic x any, underscore before letter for Alt-key
+      *>   callback-name pic x any, attached to "activate"
+      *> Output:
+      *>   gtk-menu-item-record, first field pointer
+      *>   image:https://developer.gnome.org/gtk3/stable/menubar.png
+      *> Source:
+id     identification division.
+       function-id. new-menu-item. 
+
+       environment division.
+       configuration section.
+       repository.
+           function signal-attach
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 extraneous                 usage binary-long.
+
+link   linkage section.
+       01 gtk-menu                   usage pointer.
+       01 mnemonic                   pic x any length.
+       01 entry-callback             pic x any length.
+       01 gtk-menu-item-data.
+          05 gtk-menu-item           usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  usage binary-long.
+
+code   procedure division using
+           gtk-menu
+           mnemonic
+           entry-callback  
+         returning gtk-menu-item-data.
+
+      *> Define a new menu item
+       call "gtk_menu_item_new_with_mnemonic" using
+           by content concatenate(trim(mnemonic), x"00")
+           returning gtk-menu-item
+       end-call
+
+       if gtk-menu-item not equal null then
+          *> Add the item to the menu
+           call "gtk_menu_shell_append" using
+               by value gtk-menu
+               by value gtk-menu-item
+               returning omitted
+           end-call
+
+          *> Connect a signal to "activate".
+           move signal-attach(gtk-menu-item, "activate", entry-callback)
+             to extraneous
+       end-if
+
+done   goback.
+       end function new-menu-item.
+      *>****
+
+
       *>****F* cobweb/new-statusbar
       *> Purpose:
       *> Define a new status bar
@@ -2001,6 +2212,82 @@ code   procedure division using
            end-call
     
           *> Add the vte to the container
+           call "gtk_container_add" using
+               by value gtk-container
+               by value gtk-vte
+               returning omitted
+           end-call
+       end-if
+
+done   goback.
+       end function new-vte.
+      *>****
+
+
+      *>****F* cobweb/new-databox
+      *> Purpose:
+      *> Define a new databox
+      *> Input:
+      *>   
+      *> Output:
+      *>   Given, colours-tui, a compiled GnuCOBOL
+      *>   SCREEN SECTION program in an 80x24 vte
+      *>   image:cobweb-gui11.png
+      *> Source:
+id     identification division.
+       function-id. new-databox.
+
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 extraneous                 usage binary-long.
+
+       01 expanding                  usage binary-long value 1.
+       01 filling                    usage binary-long value 1.
+       01 pad                        usage binary-long value 4.
+
+link   linkage section.
+       01 gtk-container              usage pointer.
+       01 vte-command                pic x any length.
+       01 vte-cols                   usage binary-c-long.
+       01 vte-rows                   usage binary-c-long.
+       01 gtk-vte-data. 
+          05 gtk-vte                 usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
+
+code   procedure division using
+           gtk-container
+           vte-command
+           vte-cols
+           vte-rows
+         returning gtk-vte-data.
+
+      *> Create a virtual terminal
+       call "vte_terminal_new"
+           returning gtk-vte
+       end-call
+
+       if gtk-vte not equal null then
+           call "vte_terminal_set_size" using
+               by value gtk-vte vte-cols vte-rows
+               returning omitted
+           end-call
+           
+          *> Start session with command, in current working dir
+           call "vte_terminal_fork_command" using
+               by value gtk-vte
+               by content concatenate(trim(vte-command), x"00")
+               by reference null null z"."
+               by value 0 0 0
+               returning omitted
+           end-call
+    
+          *> Add the vte to the container
           *> call "gtk_container_add" using
           *>     by value gtk-container
           *>     by value gtk-vte
@@ -2019,7 +2306,7 @@ code   procedure division using
        end-if
 
 done   goback.
-       end function new-vte.
+       end function new-databox.
       *>****
 
 
@@ -2724,6 +3011,86 @@ done   goback.
       *> demo/test functions
       *> ********************************************************
        
+      *>****T* cobweb/help-about-cobweb [selftest]
+      *> Purpose:
+      *>   Display an Help/About dialog box from menu select
+      *> Source:
+id     identification division.
+       program-id. help-about-cobweb.
+
+data   data division.
+       working-storage section.
+       01 gtk-window-data                external.
+          05 gtk-window        usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
+ 
+       linkage section.
+       01 gtk-widget           usage pointer.
+       01 gtk-data             usage pointer.
+
+code   procedure division
+           using
+               gtk-widget
+               gtk-data.   
+
+       call "gtk_show_about_dialog" using
+           by value gtk-window
+           by content
+               z"version", z"0.2",
+               z"comments", z"cobweb-gtk menu self-test"
+               z"copyright", z"Copyright (C) 2014, Brian Tiffin",
+               z"website", "http://http://sourceforge.net/" &
+                          z"projects/open-cobol/",
+               z"program-name", z"cobweb-gtk",
+               z"logo-icon-name", z"gtk-info",
+           by reference null
+       end-call
+ 
+done   goback.
+       end program help-about-cobweb.
+      *>****
+
+
+      *>****T* cobweb/cobweb-close [selftest]
+      *> Purpose:
+      *>   hide test-head window and exit event loop
+      *>   on menu File/Quit 
+      *> Source:
+id     identification division.
+       program-id. cobweb-close.
+
+env    environment division.
+       configuration section.
+repo   repository.
+           function hide-widget
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 extraneous           usage binary-long.
+
+      *> need access to main window, widget(1)
+       COPY cobweb-gtk-widgets.
+
+       linkage section.
+       01 gtk-widget           usage pointer.
+       01 gtk-data             usage pointer.
+
+code   procedure division
+           using
+               gtk-widget
+               gtk-data.   
+
+      *> All this indirection to hide the main window, on menu Quit
+       move hide-widget(widget(1)) to extraneous
+       call "gtk_main_quit" returning omitted end-call
+ 
+done   goback.
+       end program cobweb-close.
+      *>****
+
+
       *>****T* cobweb/help-about-gtk [selftest]
       *> Purpose:
       *>   Display an application Help/About dialog box

@@ -113,8 +113,8 @@ data   data division.
           05 gtk-window        usage pointer.
           05 filler            usage pointer.
           05 filler            usage binary-long.
-       01 width-hint           usage binary-long value 640.
-       01 height-hint          usage binary-long value 640.
+       01 width-hint           usage binary-long value 800.
+       01 height-hint          usage binary-long value 660.
 
        01 gtk-container-data.
           05 gtk-container     usage pointer.
@@ -165,8 +165,13 @@ data   data division.
           05 filler            usage pointer.
           05 filler            usage binary-long.
        01 vte-cols             usage binary-c-long value 80.
-       01 vte-rows             usage binary-c-long value 24.
+       01 vte-rows             usage binary-c-long value 12.
        
+       01 gtk-yelpbox-data.
+          05 gtk-yelpbox       usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
+
        01 gtk-yelpwindow.
           05 gtk-yelp-window   usage pointer.
           05 filler            usage pointer.
@@ -216,11 +221,14 @@ code   procedure division.
 
       *> Other box, down
        move new-box(gtk-container, VERTICAL, spacing, homogeneous) to gtk-verticalbox-data
-       move new-label(gtk-verticalbox, "some credits below") to gtk-label-data
+       move new-label(gtk-verticalbox, "image credits below") to gtk-label-data
        move 80 to entry-chars
        move new-entry(gtk-verticalbox, entry-chars, "cobweb-entry-activated") to gtk-sample-entry-data 
        move new-vte(gtk-verticalbox, "/home/btiffin/lang/cobol/cobweb/gtk/colours-tui", vte-cols, vte-rows) to gtk-vte-data
-       move new-scrolled-window(gtk-verticalbox, NULL, NULL) to gtk-yelpwindow
+       
+      *> Another box, down
+       move new-box(gtk-container, VERTICAL, spacing, homogeneous) to gtk-yelpbox-data
+       move new-scrolled-window(gtk-yelpbox, NULL, NULL) to gtk-yelpwindow
        move new-yelp(gtk-yelpwindow, "cobodoc/index.html") to gtk-yelp-data
 
       *> prefill the and box with a note

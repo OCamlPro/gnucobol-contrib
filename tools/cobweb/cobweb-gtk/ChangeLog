@@ -1,3 +1,6 @@
+2014-10-22 Brian Tiffin <btiffin@gnu.org>
+  * added new-menubar, new-menu, new-menu-item
+
 2014-10-21 Brian Tiffin <btiffin@gnu.org>
   * added new-yelp, GNOME help viewer widget
   * pondering the future how best to handle

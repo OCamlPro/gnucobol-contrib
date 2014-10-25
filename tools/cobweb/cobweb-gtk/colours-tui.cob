@@ -43,11 +43,20 @@ GnuCOB >>SOURCE FORMAT IS FIXED
           05 line 6 column 1 value "Magenta 5" foreground-color magenta.
           05 line 7 column 1 value "Brown   6" foreground-color brown.
           05 line 9 column 1 using a-field     background-color white.
+          05 line 10 column 1 value "code:"
+              background-color black foreground-color white.
+          05 line 10 column 6 using anykey.
 
       *> ***************************************************************
        procedure division.
+       move "first value" to a-field
        accept gnucobol-colours end-accept
+
+       move "second value" to a-field
+       accept gnucobol-colours end-accept
+
        display a-field upon syserr end-display
+       accept omitted end-accept
        goback.
 
        end program colours-tui.
