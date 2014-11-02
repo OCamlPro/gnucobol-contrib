@@ -1,0 +1,20 @@
+In an October 2014 discussion <https://sourceforge.net/p/open-cobol/discussion/lounge/thread/2c5dac3f>,
+it was decided that there needed to be more open-source COBOL code.
+
+So, to improve the situation, here is a small program, get-iso-week, that
+calculates the week of the year.
+
+It comes in two versions:
+  * a more modern version that splits it into a few functions
+  * a COBOL-85 version (compiling successfully in Fujitsu COBOL85)
+
+The program is a translation of get_iso_week() from the FORMATTED-DATE patch
+<https://sourceforge.net/p/open-cobol/patches/19/> and is licensed under the GPL
+v3.
+
+Example usage:
+
+MOVE FUNCTION INTEGER-OF-DATE (20120101) TO day-num
+CALL "get-iso-week" USING day-num, year, week
+DISPLAY "2012-01-01 is in week " week " of " year
+*> Displays "2012-01-01 is in week 52 of 2011".
