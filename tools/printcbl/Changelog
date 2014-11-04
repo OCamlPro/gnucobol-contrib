@@ -1,3 +1,14 @@
+2014-11-01 Vincent B Coen
+	*    v2.01.14 Changed inspect statement from FOR LEADING "FREE"
+	         which does not work as wanted to, FOR ALL "FREE" in the
+	         da000-Check-For-Source section.
+	         This now will reset the source format type as and when it
+	         finds a ">>SOURCE" directive overriding fixed/free that is
+	         supplied when running program. Thanks Brian for finding it.
+
+2014-10-13 Vincent B Coen
+	*    v2.01.13 Removed not used comments where they are (I hope).
+
 2013-10-11 Vincent B Coen
 	*    v2.01.12 Ensure that the NOPRINT statement does NOT get output.
 
@@ -7,10 +18,10 @@
 	        Works perfect for OC v2.0.
 	        This tool has how been placed on the GNU Cobol/Open Cobol
 	        sourceforge sites code at /trunk/contrib/tools/printcbl.
-	     
+
 2013-05-01 Vincent B Coen
 	*    v2.01.10 Cleaned up original code (pre-Alfred) to work on OC v1.1
-		As just needed to replace perform until exit with 
+		As just needed to replace perform until exit with
 		perform forever.
 		This has brought back the screen control for the help screen.
 

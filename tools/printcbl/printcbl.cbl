@@ -1,7 +1,7 @@
-       >>source free
+       >>SOURCE FREE
  identification division.
  program-id.    printcbl.
-*> Author.      Vincent B Coen New verson v2.01.10+) 01/5/13 See Changelog file
+*> Author.      Vincent B Coen New verson v2.01.14+) 01/5/13 See Changelog file
 *>                                                  for all changes.
 *> Tesing Level 1/2
 *>*****************
@@ -14,6 +14,11 @@
 *> 01/06/12 vbc - 'LIST|NOLIST'       working
 *> 02/06/12 vbc - 'EJECT' | '/'       working
 *>           add differing case for the above
+*>
+*>  WARNING: If you run OC v1.1 or CE then you may need to remove
+*> the 2nd printer line 'organisation line sequential' due to a bug
+*> in fileio.c. So far its working correctly in v2.0 & v2.1 as of
+*> 2013/12/04.
 *>
 *>  Please read all of the notes before use!!!
 *>   Notes transferred to a manual in LibreOffice & PDF formats.
@@ -66,7 +71,7 @@
  working-storage section.
 *>======================
 *>
- 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.12".  *> ver.rel.build
+ 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.14".  *> ver.rel.build
 *>
 *>   **************************************
 *>   *     User changeable values here:   ****************************************************
@@ -103,7 +108,7 @@
                                                                   *>    for hole punching, etc.
     "cpi=16.6 " &                                                 *> Change if font size wrong
     "lpi=9' -P ".                                                 *> change if lines per inch wrong
-     03  PSN                pic x(48)      value "HPLJ4TCP ".     *> Change to your Print Spool Name
+     03  PSN                pic x(48) value "Officejet-Pro-8600 ". *> Change to your Print Spool Name
 *>
 *>>>>>>        Change To Your Spool Name for printer
 *> This is the Cups print spool, change it for yours,
@@ -114,12 +119,13 @@
 *>
      03  PR-Name            pic x(32)     value spaces.     *> O/P filename goes here
 *>
- 01  WS-Page-Lines          pic 999       value 99.         *> Change if you do not fill a page or go over to
+ 01  WS-Page-Lines          pic 999       value 48.         *> Change if you do not fill a page or go over to
 *>                                                              a new one without a heading line (see Docs)
 *>
  01  WS-Local-Time-Zone     pic 9         value 3.          *> Defaults to International, See comments below !
 *>
 *> Set WS-Local-Time-Zone ^^ to one of these 88 value's according to your local requirements
+*>    Note that 'implies' does NOT mean the program does anything e.g., changes page size.
 *>
      88  LTZ-Unix                         value 3. *> ccyy/mm/dd  Also implies A4 Paper for prints
      88  LTZ-USA                          value 2. *> mm/dd/ccyy  Also implies US Letter Paper for prints
@@ -260,7 +266,7 @@
  01  Ext-Table-Size         pic 9         value 7.
 *>
 *>   **********************************************************    NOTE: that OC only goes 2-5
-*>   *  Now follows the tables needed for the 9 depth levels  *          ?????????????
+*>   *  Now follows the tables needed for the 9 depth levels  *          or does it
 *>   *  that support the copy verb  within a copy verb.       *
 *>   *  First is ALWAYS the source file.                      *
 *>   **********************************************************
@@ -409,7 +415,7 @@
 *>
 *> Copy of current Copy table block to save accessing a table when processing COPY
 *>
- 01  WS-CRT-Active-Copy-Table     pic s999    comp    value zero.    *> taken from CRT-Table-Size BUT NOT YET UTILISED
+ 01  WS-CRT-Active-Copy-Table     pic s999    comp    value zero.    *> taken from CRT-Table-Size
  01  WS-CRT-Instance.
      03  WS-CRT-Active-Flag       pic 9               value zero.
          88  WS-CRT-Active                            value 1     False is 0.
@@ -424,10 +430,10 @@
      03  WS-CRT-Quote-Found-Flag  pic 9               value zero.
          88  WS-CRT-Quote-Found                       value 1     False is 0.
      03  WS-CRT-Quote-Type        pic x               value space.
-     03  WS-CRT-Literal-Found-Flag    pic 9           value zero.    *>  All new not programmed
-         88  WS-CRT-Literal-Found                     value 1     False is 0. *> not programmed
-     03  WS-CRT-Continue-Flag     pic 9               value zero.    *>  All new not programmed
-         88  WS-CRT-Continue                          value 1     False is 0. *> not programmed
+     03  WS-CRT-Literal-Found-Flag    pic 9           value zero.
+         88  WS-CRT-Literal-Found                     value 1     False is 0.
+     03  WS-CRT-Continue-Flag     pic 9               value zero.
+         88  WS-CRT-Continue                          value 1     False is 0.
      03  WS-CRT-Within-Comment    pic 9               value zero.    *>  All new not programmed
      03  WS-CRT-Within-Bracket    pic 9               value zero.    *>  All new not programmed
      03  WS-CRT-Need-Quotation-Flag   pic 9           value zero.    *>  All new not programmed
@@ -1401,15 +1407,18 @@
      move     function upper-case (Input-Record) to Temp-Input-Record.
      if       Temp-Input-Record (8:8) not = ">>SOURCE"
               go to da000-Exit.
-     inspect  Temp-Input-Record tallying WS-P7 for leading "FREE".
-     inspect  Temp-Input-Record tallying WS-P8 for leading "FIXED".
+ DISPLAY "Found >>SOURCE as " Temp-input-record (8:48) end-display
+     inspect  Temp-Input-Record tallying WS-P7 for all "FREE".  *> was LEADING
+     inspect  Temp-Input-Record tallying WS-P8 for all "FIXED".  *> was LEADING
      if       WS-P8 > zero
               set Fht-Fixed (Fht-Table-Size) to true
               move 72   to WS-End
+*>           DISPLAY " Setting fixed"
      end-if
      if       WS-P7 > zero
               set  Fht-Free (Fht-Table-Size) to true
               move 256  to WS-End
+*>           DISPLAY " Setting free"
      end-if
      move     zero to WS-P7 WS-P8.
 *>
