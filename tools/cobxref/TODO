@@ -1,10 +1,7 @@
-2009-02-13  Vince Coen <vbcoen@btconnect.com>
-        v0.95.68:
+2014-11-02  Vince Coen <vbcoen@btconnect.com>
+        v1.01.11:
 
-1. Support for qualifiers in Working Storage or paragraph/section names etc.
-
-2. Support for taking params through the standard cobol config file/s
-   or via cobc if needed. Depends on Cobc Roger While refers.
-
-3. Code for producing 01 record layout sizing but should it be added?
-
+1. Code for producing 01 record layout sizing but should it be added?
+   See code from COBXREF for IBM ANSI Cobol but currently has many 
+   issues and needs the rewrite around the C# codebase.
+ 

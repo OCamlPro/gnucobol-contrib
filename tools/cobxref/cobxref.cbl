@@ -3,39 +3,54 @@
  program-id.            cobxref.
 *>author.               Vincent Bryan Coen, Applewood Computers,
 *>                      Applewood, Epping Road, Roydon, Essex, UK.
-*>date-written.         28 July 1983 with code going back to 1967.
-*>date-rewriten.        10 March 2007 with code going back to 1983.
-*>date-compiled.        Today & Don't forget to update prog-name for builds
-*>Security.             Copyright (C) 1967-2010, Vincent Bryan Coen.
+*>Date-Written.         28 July 1983 with code going back to 1967.
+*>Date-Rewriten.        10 March 2007 with code going back to 1983.
+*>Date-Compiled.        Today & Don't forget to update prog-name for builds
+*>Security.             Copyright (C) 1967-2014, Vincent Bryan Coen.
 *>                      Distributed under the GNU General Public License
 *>                      v2.0. Only. See the file COPYING for details but
-*>                      for use within Open Cobol ONLY.
+*>                      for use within GNUCobol ONLY.
 *>
-*> Usage.               Cobol Cross Referencer for Open Cobol from v1.0.
+*> Usage.               Cobol Cross Referencer for GNU Cobol from v1.1
+*>                      but code reflects for v2.n.
+*>                      This version (v1.01.nn) if for auto execution via
+*>                      cobc when using the -X parameter and can be used
+*>                      as a stand alone tool see the readme and manual
+*>                      for more parameter details but can be run as
+*>                      cobxref sourcefilename.
+*>                      ===================== WARNING =====================
+*>                      Must only be used after running the source file
+*>                      that is to be cross referenced, through the compiler
+*>                      that results in an error free run.
+*>                      ^^^^^^^^^^^^^^^^^^^^^ WARNING ^^^^^^^^^^^^^^^^^^^^^
 *>**
 *> Calls.               get-reserved-lists.
-*>                 compile with cobc -x cobxref.cbl get-reserved-lists.cbl
+*>                      compile with:
+*>                        cobc -x cobxref.cbl get-reserved-lists.cbl
+*>                        ==========================================
 *>**
 *> Changes.             See Changelog & Prog-Name.
-*>
-*>*************************************************************************
 *>
 *> Copyright Notice.
 *>*****************
 *>
-*> This file/program is part of Cobxref AND Open Cobol and is copyright
-*> (c) Vincent B Coen 1967-2010. This version bears no resemblance to the
+*> This file/program is part of Cobxref AND GNU Cobol and is copyright
+*> (c) Vincent B Coen 1967-2014. This version bears no resemblance to the
 *> original versions running on ICL 1501/1901 and IBM 1401 & 360/30 in the
 *> 1960's and 70's.
-
+*>
+*> A version for running with MVS 3.8J and ANSI Cobol is available for those
+*> users running IBM emulation with Hercules.
+*>
 *> This program is free software; you can redistribute it and/or modify it
 *> under the terms of the GNU General Public License as published by the
-*> Free Software Foundation; version 2 ONLY within Open Cobol, providing
-*> the package continues to be issued or marketed as 'Open Cobol' and
+*> Free Software Foundation; version 3 (and later) ONLY within GNUCobol,
+*> providing the package continues to be issued or marketed as GNUCobol and
 *> is available FREE OF CHARGE AND WITH FULL SOURCE CODE.
 *>
 *> It cannot be included or used with any other Compiler without the
-*> written Authority by the copyright holder, Vincent B Coen.
+*> written Authority by the copyright holder, Vincent B Coen. See the
+*> manual for contact details.
 *>
 *> Cobxref is distributed in the hope that it will be useful, but WITHOUT
 *> ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -58,7 +73,13 @@
  input-Output section.
  file-control.
 *>
-*>  These 2 are needed as OC (& many others) does NOT support real variable length tables and they can get very large
+*>  These 2 are needed as OC (& many others) does NOT support real
+*>    variable length tables and they can get very large
+*>            They are also very handy for debugging also during test
+*>            these two files are not deleted at EOJ but code is present
+*>            currently remarked out to do so.
+*>            These files may well be created at /tmp or /home/username/tmp
+*>            depending on your system settings.
 *>
      select   Supplemental-Part2-In assign Supp-File-2
               organization line sequential.
@@ -124,7 +145,7 @@
      03  SdSortKey         pic x(40).
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v1.01.07".
+ 77  Prog-Name             pic x(13) value "Xref v1.01.11".
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
  77  S-Pointer             Binary-long  value zero.
@@ -210,17 +231,17 @@
 *> section name + 8 chars
  77  HoldFoundWord         pic x(40)       value spaces.
  77  HoldFoundWord2        pic x(40)       value spaces.
- 77  saveSkaDataName       pic x(32)       value spaces.
+ 77  SaveSkaDataName       pic x(32)       value spaces.
  77  Saved-Variable        pic x(32)       value spaces.
- 77  saveSkaWSorPD         pic 9           value zero.
- 77  saveSkaWSorPD2        pic 9           value zero.
+ 77  SaveSkaWSorPD         pic 9           value zero.
+ 77  SaveSkaWSorPD2        pic 9           value zero.
  77  WS-Anal1              pic 9           value zero.
- 77  fs-reply              pic 99          value zeros.
+ 77  FS-Reply              pic 99          value zeros.
  77  SourceFileName        pic x(1024)     value spaces.
  77  Print-FileName        pic x(1024)     value spaces.
  77  Prog-BaseName         pic x(1024)     value spaces.
 *>
-*> in theory Linux can go to 4096 and Windoz 32,767
+*> In theory Linux can go to 4096 and Windoz 32,767 chars
 *>
  77  Temp-Pathname         pic x(1024)     value spaces.
  77  Supp-File-1           pic x(1036)     value spaces.
@@ -235,20 +256,21 @@
  01  HoldID-Module         pic x(32)       value spaces.
 *>
  01  SourceInWS.
-     03  sv1what           pic x(16).
+     03  Sv1what           pic x(16).
      03  filler            pic x(1008).
 *>
  01  wsFoundWord.
      03  wsf1-3.
       04  wsf1-2.
        05  wsf1-1          pic x.
+           88  wsf1-1-Number    values 0 1 2 3 4 5 6 7 8 9.
        05  filler          pic x.
       04  filler           pic x.
      03  filler            pic x(1021).
 *>
  01  wsFoundWord2 redefines wsFoundWord.
      03  wsf3-1            pic 9.                      *> only used for Build-Number
-         88 wsf3-1-numeric           values 0 thru 9.
+         88 wsf3-1-Numeric           values 0 thru 9.
      03  wsf3-2            pic 9.                      *>   processing
      03  filler            pic x(1022).
 *>
@@ -260,7 +282,7 @@
 *>
  01  HDR1.
      03  filler            pic X(10) value "ACS Cobol ".
-     03  H1Prog-Name       pic x(14) value spaces.
+     03  H1Prog-Name       pic x(4)  value spaces.
      03  filler            pic x     value "(".
      03  H1-dd             pic 99.
      03  filler            pic x     value "/".
@@ -273,7 +295,9 @@
      03  H1-Min            pic 99.
      03  filler            pic xx    value ") ".
      03  filler            pic x(20) value "Dictionary File for ".
-     03  h1programid       pic x(60) value spaces.
+     03  h1programid       pic x(32) value spaces.
+     03  filler            pic x(7)  value "  Page ".
+     03  H1-Page           pic zzz9.
 *>
  01  HDR2.
      03  filler            pic X(33) value "All Data/Proc Names".
@@ -362,16 +386,18 @@
      03  filler            pic x(9).
 *>
  01  Error-messages.                      *> Sorry, English msgs Only
-     03 Msg1      pic x(28) value "Aborting: No input stream".
-     03 Msg2      pic x(29) value "Aborting: Early eof on source".
-     03 Msg4      pic x(42) value "Logic Error:Lost1 wsFoundWord2 numeric? = ".
-     03 Msg5      pic x(32) value "Logic Error:Lost2 wsFoundWord2 =".
-     03 Msg6      pic x(34) value "Error: Con table size needs > 5000".
-     03 Msg7      pic x(24) value "bb050 Error: Logic error".
-     03 Msg8      pic x(26) value "Error: Eof on source again".
-     03 Msg9      pic x(34) value "Error: File not present Try Again!".
-     03 Msg10     pic x(36) value "Error: Git Table size exceeds 10,000".
-     03 Msg16     pic x(66) value "Error: Eof on source possible logic error at aa047 ASSUMING again".
+     03 Msg1      pic x(31) value "Msg1  Aborting: No input stream".
+     03 Msg2      pic x(35) value "Msg2  Aborting: Early eof on source".
+     03 Msg4      pic x(48) value "Msg4  Logic Error:Lost1 wsFoundWord2 numeric? = ".
+     03 Msg5      pic x(38) value "Msg5  Logic Error:Lost2 wsFoundWord2 =".
+     03 Msg6      pic x(40) value "Msg6  Error: Con table size needs > 5000".
+     03 Msg7      pic x(30) value "Msg7  bb050 Error: Logic error".
+     03 Msg8      pic x(32) value "Msg8  Error: Eof on source again".
+     03 Msg9      pic x(40) value "Msg9  Error: File not present Try Again!".
+     03 Msg10     pic x(42) value "Msg10 Error: Git Table size exceeds 10,000".
+*> Msg11 - 14 in get-reserved-lists with Msg15 spare
+     03 Msg16     pic x(71) value "Msg16 Error: Eof on source possible logic error at aa047 ASSUMING again".
+     03 Msg17     pic x(79) value "Msg17 Possible prob. with cobc and therefore with no reserved word list updates".
 *>
  01  SectTable.
      03  filler            pic x(9) value "FWLKCRSPI".
@@ -412,10 +438,10 @@
      03  Short-Section-Name          occurs 8.
          05  Sht-Section-Name  pic x(16).
 *>
-*> Here for cb_intrinsic_table in OC see :
-*>   cobc/reserved.c in the open-cobol source directory but Totally ingoring the system_table as not needed/used by xref
+*> Here for cb_intrinsic_table in GOC see :
+*>   cobc/reserved.c in the G/open-cobol source directory but Totally ingoring the system_table as not needed/used by xref
 *>
-*> Also note that the number 0 or 1 indicates if the function/reserved word is implemented in Open Cobol
+*> Also note that the number 0 or 1 indicates if the function/reserved word is implemented in G/Open Cobol
 *>   but xref treats all as being reserved as they are still so, in someone's compiler
 *>
  01  Function-Table.                                                 *> updated by Get-Reserved-Lists.cbl
@@ -519,7 +545,7 @@
      03  filler    values high-values.
          05  filler pic x(31) occurs 165.                        *> pad to 256 entries
 *>
- 01  Function-Table-R redefines Function-Table.                             *> updated by Get-Reserved-Lists.cbl
+ 01  Function-Table-R redefines Function-Table.                  *> updated by Get-Reserved-Lists.cbl
      03  All-Functions       occurs 256 ascending key P-Function indexed by All-Fun-Idx.
          05  P-oc-implemented pic x.
          05  P-Function       pic x(30).
@@ -1111,7 +1137,7 @@
      03  filler    value high-values.
          05  filler  pic x(31)  occurs 447.   *> total of 1024
 *>
- 01  Additional-Reserved-Words-R redefines Additional-Reserved-Words.                *> updated by Get-Reserved-Lists.cbl
+ 01  Additional-Reserved-Words-R redefines Additional-Reserved-Words.      *> updated by Get-Reserved-Lists.cbl
      03  Reserved-Names       occurs 1024 ascending key Resvd-Word indexed by Resvd-Idx.
          05  Resvd-Implemented pic x.
          05  Resvd-Word        pic x(30).
@@ -1157,6 +1183,10 @@
 *> Also
 *>  routines for source reads, get a word, parsers and tokeniser must be rewritten,
 *>   they are still a complete mess.
+*>
+*>  Version 1.10.nn =
+*>  Re-install code for copybooks assuming source is taken from original file
+*>   and not cobc see printcbl v2.01.13 or later for usable source.
 *>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 *>
 *>  Quesions, Questions, Questions,  all I have, is questions!
@@ -1174,7 +1204,7 @@
                                          Resvd-Table-Size.
 *>
      if       ws-Return-Code not = zero
-              display "Possible problem with cobc and therefore with no reserved word list updates".
+              display Msg17.         	*> Possible problem with cobc not in path
 *>
 *> Just in case someone's added names in source code (or in cobc) out of sort order
 *>  We MUST have all tables in sorted order
@@ -1184,7 +1214,7 @@
 *>
      perform  zz180-Open-Source-File thru zz180-Exit.
 *>
-*> Dump All reserved words from tables then stop
+*>  If requested, Dump All reserved words from tables to screen, nothing fancy then stop.
 *>
      if       Dump-Reserved-Words
               perform varying a from 1 by 1 until a > Resvd-Table-Size
@@ -1279,7 +1309,7 @@
                  move function lower-case (wsFoundWord2)  to HoldID
         else
                  move function upper-case (wsFoundWord2)  to HoldID.
-     if       Have-Nested  *> found more than 1 module in source
+     if       Have-Nested            *> found more than 1 module in source
         if       Reports-In-Lower
                  move function lower-case (wsFoundWord2) to HoldID-Module
         else
@@ -1291,12 +1321,16 @@
  aa040-ReadLoop2.
      perform  zz100-Get-A-Source-Record thru zz100-Exit.
      if       SourceInWS (1:14) = "SPECIAL-NAMES."
+       if We-Are-Testing display "Found aa040 SPECIAL-NAMES" end-if
               go to aa041-Get-SN.
      if       SourceInWS (1:13) = "FILE-CONTROL."   *> selects
+       if We-Are-Testing display "Found aa040 FILE-CONTROL" end-if
               go to aa047-GetIO.
      if       SourceInWS (1:12) = "I-O-CONTROL."    *> same area etc
+       if We-Are-Testing display "Found aa040 I-O-CONTROL" end-if
               go to aa048-GetIOC.
      if       SourceInWS (1:12) = "DATA DIVISIO"
+       if We-Are-Testing display "Found aa040 DATA DIVISIO" end-if
               go to aa041-Get-SN.
      perform  aa045-Test-Section thru aa045-Exit.
 *>
@@ -1315,10 +1349,13 @@
      if       a not = zero
               go to aa060-ReadLoop3a.
      if       SourceInWS (1:13) = "INPUT-OUTPUT " or = "DATA DIVISION"
+       if We-Are-Testing display "Found aa041 I-O or DATA DIV" end-if
               go to aa041-Get-SN.
      IF       SourceInWS (1:13) = "FILE-CONTROL."
+       if We-Are-Testing display "Found aa041 FILE-CONTROL" end-if
               go to aa047-GetIO.
      IF       SourceInWS (1:12) = "I-O-CONTROL."
+       if We-Are-Testing display "Found aa041 I_O_CONTROL" end-if
               go to aa048-GetIOC.
 *>
  aa042-Getword.
@@ -1332,7 +1369,7 @@
               go to aa042-Getword.
 *>
      perform  zz110-Get-A-Word thru zz110-Exit.
-     if       wsf1-1 = quote or = "'" or wsf3-1-numeric
+     if       wsf1-1 = quote or = "'" or wsf1-1-number
               go to aa042-Getword.
      perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
      if       a not = zero
@@ -1350,7 +1387,7 @@
           and wsFoundWord2 (1:3) not = "OFF"
               go to aa044-Getword3.
      perform  zz110-Get-A-Word thru zz110-Exit.
-     if       wsf1-1 = quote or = "'" or wsf3-1-numeric
+     if       wsf1-1 = quote or = "'" or wsf1-1-number
               go to aa044-Getword3.
      perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
      if       a not = zero
@@ -1393,7 +1430,7 @@
            or wsFoundWord2 (1:3) = "IS "
               go to aa046-Get-Currency.
 *>
-*> Now Ive got the literal "x"
+*> Now I've got the literal "x"
 *>
      move     wsFoundWord2 (2:1) to Currency-Sign.
      if we-are-testing
@@ -1409,11 +1446,15 @@
      if       a not = zero
               go to aa060-ReadLoop3a.
      IF       SourceInWS (1:12) = "I-O-CONTROL."
+       if We-Are-Testing display "Found aa047 I-O-CONTROL" end-if
               go to aa048-GetIOC.
      if       SourceInWS (1:12) = "DATA DIVISIO"
+       if We-Are-Testing display "Found aa047 DATA DIVISIO" end-if
               go to aa050-ReadLoop3.
      if       SourceInWS (1:12) = "FILE SECTION"
+       if We-Are-Testing display "Found aa047 FILE SECTION" end-if
               go to aa060-ReadLoop3a.
+*>  go to aa047-getio.   *> skip selects during test
 *>
  aa047-Getword.
      perform  zz110-Get-A-Word thru zz110-Exit.
@@ -1449,8 +1490,8 @@
  aa047-Getword3.
      perform  zz110-Get-A-Word thru zz110-Exit.
      if       (wsf1-1 = quote or = "'") AND Word-Delimit = "."
-              go to aa047-GetIO.
-     if       wsf1-1 = quote or = "'" or wsf3-1-numeric
+              go to aa047-GetIO.                               *> End of a SELECT
+     if       wsf1-1 = quote or = "'" or wsf1-1-number
               go to aa047-Getword3.
      perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
      if       a not = zero and Word-Delimit = "."
@@ -1472,7 +1513,7 @@
 *>
  aa048-GetIOC.
      perform  zz110-Get-A-Word thru zz110-Exit.
-     if       wsf1-1 = quote or = "'" or wsf3-1-numeric
+     if       wsf1-1 = quote or = "'" or wsf1-1-number
               go to aa048-GetIOC.
  aa048-Get-Next.
      if       Word-Delimit = "."
@@ -1540,6 +1581,7 @@
               write PrintLine
               write PrintLine
               write PrintLine
+              add  3 to Line-Count
               move  zero to sw-End-Prog
               go    to aa020-Bypass-Open
      end-if
@@ -1599,7 +1641,7 @@
               move spaces to Saved-Variable.
 *>
       if      Build-Number = 01
-         and  (Global-Current-Level = high-values
+         and  (Global-Current-Level = 99
            or HoldWSorPD > 1)
               move zero to sw-Git
               move 1 to Global-Current-Level.
@@ -1656,7 +1698,7 @@
               go to ba040-Clear-To-Next-Period.
      if       wsFoundWord2 (1:z) numeric
               go to ba040-Clear-To-Next-Period.
-     if       wsf3-1-numeric
+     if       wsf1-1-number
               go to ba040-Clear-To-Next-Period.
      if       wsf1-1 = "("
               go to ba040-Clear-To-Next-Period.
@@ -1723,7 +1765,7 @@
 *>
 *> we don't have a reserved word! a = 0 = no
 *>
-      if      Global-Current-Level not = high-values
+      if      Global-Current-Level not = 99
               move Gen-RefNo1   to Global-Current-RefNo
               move wsFoundWord2 (1:32) to Global-Current-Word.
 *>
@@ -1832,7 +1874,7 @@
 *>
      if       a > zero
               go to bb020-GetAWord.
-     if       wsf1-1 numeric
+     if       wsf1-1-Number
               go to bb020-GetAWord.
      if       (wsf1-1 = "-" or = "+")
         and   wsFoundWord2 (2:1) numeric
@@ -2118,7 +2160,8 @@
          and  q = zero
               move 1 to q.
      if       q > zero
-              write PrintLine
+              write PrintLine after 1
+              add   1 to Line-Count
               move zero to q
               move spaces to PrintLine.
 *>
@@ -2207,7 +2250,8 @@
          and  q = zero
               move 1 to q.
      if       q > zero
-              write PrintLine
+              write PrintLine after 1
+              add   1 to Line-Count
               move zero to q
               move 1 to q2
               move spaces to PrintLine.
@@ -2251,7 +2295,8 @@
               move spaces to PrintLine2
               move  Conditions (a) to P-Variables
               move  Variables (a) to P-Conditions
-              write PrintLine2
+              write PrintLine2 after 1
+              add   1 to Line-Count
               go to bc192-Print-Conditions.
 *>
  bc194-Now-Reverse.
@@ -2295,7 +2340,8 @@
               if   q2 = zero
                    move spaces to PrintLine
                    move "None" to XrDataName
-                   write PrintLine
+                   write PrintLine after 1
+                   add   1 to Line-Count
               end-if
               go to bc400-Last-Pass5.
 *>
@@ -2389,7 +2435,7 @@
      if       SkaWSorPD not = 9
               go to bc360-Exit.
 *>
-     if       Line-Count > 60
+     if       Line-Count > 59
               move "Functions" to hdr8-hd
               move zero to Line-Count
               perform zz150-WriteHdb
@@ -2403,7 +2449,8 @@
          and  q = zero
               move 1 to q.
      if       q > zero
-              write PrintLine
+              write PrintLine after 1
+              add   1 to Line-Count
               move zero to q
               move 1 to q2
               move spaces to PrintLine.
@@ -2446,7 +2493,8 @@
               if   S-Pointer = zero
                    move spaces to PrintLine
                    move "None" to XrDataName
-                   write PrintLine
+                   add   1 to Line-Count
+                   write PrintLine after 1
               end-if
               go to bc500-Last-Pass6.
  bc420-IsX5.
@@ -2487,7 +2535,8 @@
  bc440-Check-4Old.
      if       q = 1
               move 1 to S-Pointer
-              write PrintLine.
+              add   1 to Line-Count
+              write PrintLine after 1.
  bc450-Exit.
      exit.
 *>
@@ -2527,7 +2576,8 @@
      if       q = 1
         and   saveSkaWSorPD = 8
               move 1 to S-Pointer
-              write PrintLine.
+              add   1 to Line-Count
+              write PrintLine after 1.
 *>
      move     SkaDataName to saveSkaDataName.
      move     SkaWSorPD to saveSkaWSorPD.
@@ -2546,12 +2596,14 @@
  bc540-Check-4Old.
      if       q = 1 and saveSkaWSorPD = 8
               move 1 to S-Pointer
-              write PrintLine.
+              add   1 to Line-Count
+              write PrintLine after 1.
  bc540-Check-4Old6.
      if       S-Pointer = zero
               move spaces to PrintLine
               move "None" to XrDataName
-              write PrintLine.
+              add   1 to Line-Count
+              write PrintLine  after 1.
  bc550-Exit.
      exit.
 *>
@@ -2573,7 +2625,8 @@
                   move Git-Prog-Name (a) to PL-Prog-Name
               end-if
               move LSect (b) to XrType
-              write PrintLine
+              add   1 to Line-Count
+              write PrintLine after 1
      end-perform.
 *>
  bc600-Exit.
@@ -2601,13 +2654,15 @@
                         move space to XrCond
                     end-if
                     move 1 to b
-                    write PrintLine
+                    add   1 to Line-Count
+                    write PrintLine after 1
               end-if
      end-perform
      if       b = zero
               move spaces to PrintLine
               move "None" to XrDataName
-              write PrintLine.
+              add   1 to Line-Count
+              write PrintLine after 1.
  bc629-Exit.
      exit.
  bc000-Exit.
@@ -2622,7 +2677,10 @@
               move  spaces to Source-List
               move  SourceRecIn to SourceOutput
               move  Gen-RefNo1 to sl-Gen-RefNo1
-              write Source-List.
+              add   1 to Line-Count
+              write Source-List after 1
+              if       Line-Count > 59
+                       perform zz150-WriteHdb.
 *>
  zz030-Write-Sort.
      move     HoldWSorPD to SkaWSorPD.
@@ -2680,7 +2738,7 @@
 *>  can work easier Includes literals " " etc
 *> Doesn't matter if literals get screwed up in this way
 *>
-*>    inspect  SourceInWS replacing all x"09" by space.
+     inspect  SourceInWS replacing all x"09" by space.
      inspect  SourceInWS replacing all ";" by space.
 *>
 *> This could cause a problem in ws so do in proc div
@@ -2798,9 +2856,9 @@
               go to zz110-Exit.
      if       wsf1-1 = space
               go to zz110-Get-A-Word-Unstring.
-     if       wsf1-2 = "*>"                       *> rest of line is comment vbc 26/09/10
+     if       wsf1-2 = "*>"                       *> rest of line is comment so ignore
               go to zz110-Get-A-Word-OverFlow.
-     if       (wsf1-1 numeric
+     if       (wsf1-1-Number
            or wsf1-1 = "-"
            or wsf1-1 = "+")
          and  SourceInWS (S-Pointer2:1) not = space
@@ -2993,6 +3051,11 @@
      exit.
 *>
  zz150-WriteHdb.
+*> Have a blank line for users reading the listing file avoiding the ugly header placement.
+     move     spaces to PrintLine.
+     if       Page-No not = zero
+              write PrintLine after 1.
+*>
      move     spaces to h1programid.
      accept   hddate from date.
      if       hddate not = "000000"
@@ -3014,15 +3077,14 @@
      move     WS-WC-YY  to H1-YY.
      move     WS-WC-HH  to H1-HH.
      move     WS-WC-Min to H1-Min.
-     move     spaces to PrintLine.
-*>     write    PrintLine.
-*>     write    PrintLine from hdr1.
      add      1 to Page-No.
+     move     Page-No to H1-Page.
      if       Page-No = 1
-              write PrintLine from hdr1
+              write PrintLine from hdr1 after 1
      else     write PrintLine from hdr1 after page.
      move     spaces to PrintLine.
-     write    PrintLine.
+     write    PrintLine after 1.
+     move     2 to Line-count.
  zz150-WriteHdb1.
      move     spaces to Hdr5-Prog-Name.
      string   HoldID delimited by space
@@ -3035,6 +3097,7 @@
               before initial "  ".
      write    PrintLine from hdr5-symbols.
      write    PrintLine from hdr6-symbols.
+     add      2 to Line-Count.
      go       to zz150-Exit.
  zz150-WriteHdb2.
      move     spaces to PrintLine.
@@ -3046,6 +3109,7 @@
      write    PrintLine from hdr3.
      move     spaces to PrintLine.
      write    PrintLine.
+     add      4 to Line-Count.
      go       to zz150-Exit.
  zz150-WriteHdb2b.
      move     spaces to PrintLine.
@@ -3055,39 +3119,46 @@
      write    PrintLine from hdr3.
      move     spaces to PrintLine.
      write    PrintLine.
+     add      4 to Line-Count.
      go       to zz150-Exit.
  zz150-WriteHdb3.
      write    PrintLine from hdr8-ws.
      write    PrintLine from hdr3.
      move     spaces to PrintLine.
      write    PrintLine.
+     add      3 to Line-Count.
      go       to zz150-Exit.
  zz150-WriteHdb4.
      write    PrintLine from hdr9.
      move     spaces to PrintLine.
      write    PrintLine.
+     add      2 to Line-Count.
      go       to zz150-Exit.
  zz150-WriteHdb5.
      write    PrintLine from hdr10.
      move     spaces to PrintLine.
      write    PrintLine.
+     add      2 to Line-Count.
      go       to zz150-Exit.
  zz150-WriteHdb6.
      write    PrintLine from hdr9B.
      move     spaces to PrintLine.
      write    PrintLine.
+     add      2 to Line-Count.
      go       to zz150-Exit.
  zz150-WriteHdb7.
      write    PrintLine from hdr11.
      write    PrintLine from hdr12-hyphens.
      move     spaces to PrintLine.
      write    PrintLine.
+     add      3 to Line-Count.
      go       to zz150-Exit.
  zz150-WriteHdb8.
      write    PrintLine from hdr2.
      write    PrintLine from hdr3.
      move     spaces to PrintLine.
      write    PrintLine.
+     add      3 to Line-Count.
      go       to zz150-Exit.
  zz150-Exit.
      exit.
@@ -3111,6 +3182,7 @@
               if sv1What = Section-Name (a2)
                   move a2 to HoldWSorPD
                   move "Y" to GotASection
+       if We-Are-Testing display "Found zz170 " sv1What  end-if
                   if a2 = 8
                       move zero to HoldWSorPD2
                   end-if
@@ -3303,7 +3375,7 @@
 *>
 *> Load the Global Item Table with item associated with 01/FD Global
 *>
-     if       Global-Current-Level = high-values
+     if       Global-Current-Level = 99
               go to zz200-Exit.
      add      1 to Git-Table-Count.
      if       Git-Table-Count > Git-Table-Size

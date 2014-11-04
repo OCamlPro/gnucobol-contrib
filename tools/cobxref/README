@@ -1,83 +1,104 @@
-                        CobXRef
-         http://sourceforge.net/projects/cobxref/
-                http://www.add1tocobol.com
-                http://www.opencobol.com
+			       CobXRef
+		http://sourceforge.net/projects/cobxref/
 
 
-CobXRef is a COBOL cross reference tool that reads a COBOL source file as
-output by OpenCOBOL's cobc with -X, -E or the -save-temps parameter supplied
-and produces a file suitable for printing 'as is' that contains all variables,
+CobXRef is a Cobol cross reference tool that reads a Cobol source file as output
+by GNUCobol's cobc with the -X (or -E or -save-temps) parameter/s supplied and
+produces a file suitable for printing 'as is' that contains all variables,
 procedure paragraphs and section names referenced where they are defined
-as well as where they are used throughout the program or module and optionally
-preceded by a listing of the source. Note that if run via cobc using -E source
-listing will pre-seed the cross reference listing.
+as well as where they are used throughout the program or module as well as
+a lists of unreferenced data names and paragraph & section names.
+
+if used as a stand alone program it will preceded the cross reference report
+by a listing of the original source. Note that version 1.2 (hopefully will be
+released late November 2014) will include the code from printcbl which takes
+in the copy books when used by any COPY verbs in the source to a depth of 9.
+
+NOTE that if run via cobc using -X, source listing will NOT precede the cross
+reference listing as the source file from cobc will have all comment line
+replaced with blank lines and all source moved to the left with formatting
+spaces replaced by just one space for use with the compilers parser.
+
+As this format looks like a dogs dinner, the default operation is to only
+produce a cross reference listing without the source listed as cobc will call
+cobxref with the paramater -R (No source listing).
 
 It will read a source file containing a standalone program or many program &
-modules providing they confirm to the COBOL standard in the same way that 
-OpenCOBOL does.
+modules providing they confirm to the Cobol standard in the same way that
+GNUCobol does.
 
-CobXRef should only be run against source code that has been processed by cobc 
+Cobxref should only be run against source code that has been processed by cobc
 without errors and optionally without warnings when using cobc param -W.
 
-[OpenCOBOL is an open-source COBOL compiler, which translates COBOL programs to
+[GNUCOBOL is an open-source COBOL compiler, which translates COBOL programs to
 C code and compiles it using GCC on multiple platforms and operating systems]
 
-All code and programs are distributed under the GNU General Public License v2.
+All code and programs are distributed under the GNU General Public License v3.
 See COPYING for details.
-
 
 Requirements
 ============
 
-OpenCOBOL package installed and tested working. See documentation supplied with 
-OpenCOBOL. You MUST have run the test procedures including the cobol85 suite.
+GNUCobol package installed and tested fully working.
+See documentation supplied with GNUCobol.
+You MUST have run both sanity checks created by the test procedures including
+within the cobol85 suite as well as the make check procedure.
 
 Installation
 ============
 
 Linux/Unix:
 Compile the source of cobxref.cbl and get-reserved-lists.cbl with the
-OpenCOBOL compiler cobc using the supplied shell script comp-cobxref.sh with
+GNUCobol compiler cobc using the supplied shell script comp-cobxref.sh with
 the command ./comp-cobxref.sh at a command prompt using any terminal program.
 
 Now place cobxref in a directory that is within the PATH making sure that the
 execute flag is set (chmod +x cobxref) although this is done within the script.
 
 Mac OSX:
-Compile the COBOL source as for Linux/Unix.
+Compile the Cobol source as for Linux/Unix.
 
-In the event this does not work, you must have installed and tested OpenCOBOL.
+In the event this does not work, you must have installed and tested GNUCobol.
 Note this will not work 'as is' with Tiny Cobol or ANY other compiler.
 
-Supplied files with the CobXRef tarball:
+Supplied files with the Cobxref tarbel:
 **************************************
 
-Changelog               History of changes made to cobxref sources
-MANUAL                  Usage procedure for cobxref
-cobxref.cbl             Original COBOL source of cobxref
-get-reserved-lists.cbl  COBOL source code of module called by cobxref
-comp-cobxref.sh         Script to compile the COBOL code under bash
-COPYING                 Software License for copying code.
-README                  This file
+Changelog               History of changes made to cobxref sources.
+cobxref.txt		Usage procedure for cobxref.
+cobxref.cbl		Cobol source code of cobxref.
+cobxref.lst		XREF listing for cobxref via -X.
+comp-cobxref.sh         Script to compile the Cobol code under bash.
+COPYING                 -- Ditto but as a text file ----
+COPYING.pdf             Software License for copying code.
+documentation_license.pdf Documentation license for all docs as a pdf
+documentation_license.odt ---  Ditto in LibreOffice format -----
+get-reserved-lists.cbl  Cobol source code of module called by cobxref.
+get-reserved-lists.lst	XREF listing via -X.
+readme                  This file
 TODO                    Lists any outstanding programming or new functionality.
 
 NOTES:
 *****
 
-You must compile using an up to date version of OpenCOBOL (c) / GNU Cobol (c)
-but not less than version 1.1 dated Feb 2009.
+You must compile using an up to date version of GNUCobol (c) but not less
+than version 1.1 dated Feb 2009 but will work best using v2.x.
 
 These notes relate to versions of cobxref prior to the code being added to the
-OpenCOBOL distribution.
+GNUCobol distribution and later.
 
-Please also read MANUAL for instructions on using cobxref.
+Please also read Cobxref.txt for instructions on using cobxref.
 
-As any bug fixes will be applied to the COBOL code please note that
-all bug fixes should only be made to the original COBOL source code.
-A master copy of the sources can be found at the add1tocobol web site.
+As any bug fixes will be applied to the Cobol code please note that
+all bug fixes should only be made to the original Cobol source code.
+A master copy of the sources can be found at the sourceforge web site
+for GNUCobol in the contrib folders located at:
+https://sourceforge.net/p/open-cobol/contrib/HEAD/tree/trunk/tools/cobxref/
 
-Please report all bugs found to the OpenCOBOL forum at www.opencobol.org
-and send a copy to the author at vbcoen@btconnect.com
+and use the "Download snapshot" function shown near the top on the right.
 
+Please report all bugs found to the GNUCobol contrib forum at
+https://sourceforge.net/p/open-cobol/discussion/contrib/
+and send a copy to the author at vbcoen@btconnect.com if urgent/showstopper.
 
-last updated 26/09/2010 (c) Vincent B Coen
+last updated 2nd November, 2014 (c) Vincent B Coen

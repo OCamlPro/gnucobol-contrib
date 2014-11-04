@@ -1,3 +1,34 @@
+2014-1-01  Vince Coen <vbcoen@btconnect.com>
+	v1.01.11  * Last version before adding in COPY library processing so
+	            that the program can be fully used outside cobc control as
+	            the source file provided by cobc has been converted to short
+	            free format with blanks in place of comment lines prior to
+	            processing through the parser etc. Code will come from
+	            current printcbl (v2.01.14).
+	            Clear bug regarding tabs so it can be revoked outside cobc.
+	            Clean up placement of headings on listings after page 1 so
+	            that they sit at the start of a line and not imbedded by
+	            previous line with a ^L (control L) char and users uses less
+	            or an editor to look at the output.
+
+	v1.01.10  * Clearing aa047 bug caused by bad 'if numeric' test against
+	            a pic 9 field changed to a test against pic x vales 0 - 9.
+	            Added/uncommented code for new headings every 60 lines.
+
+2014-07-13  Vince Coen <vbcoen@btconnect.com>
+	v1.01.09  * Added error msg # to error messages.
+	            Added GNU to compiler name for both modules in notices.
+	            Added message numbers Msg11 - Msg14 to get-reserved-lists
+	                   likewise added Msg17 to cobxref - missed it:(
+		    Now trying to trace msg16 aa047 bug that is happening
+		     on get-reserved and cobxref which may have started with
+		     v1.01.7.  More looking needed.
+
+2011-10-02  Vince Coen <vbcoen@btconnect.com>
+        v1.01.08  * Global-Current-Level to use 99 instead of high-values for OC v2.0
+		    No I have no idea why I should need to as highest value on a
+		    numeric field is 99.
+
 2010-09-26  Vince Coen <vbcoen@btconnect.com>
         v1.01.07  * Changed zz170 to make it tighter with less processing steps
                     as original was getting hit hard as seen using the profiler.
