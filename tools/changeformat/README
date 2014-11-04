@@ -1,0 +1,71 @@
+A GnuCOBOL program to change cobol programs to and from free format
+and fixed format.
+
+The script compileall will compile this program and make some sanity
+checks but otherwise can be compiled by running :
+
+cobc -x changeformat.cbl
+chmod +x changeformat
+cp changeformat ~/bin
+
+The last one adds the program into your user bin directory but make
+sure it is already setup and the chmod sets it executable in case
+your system does not do so by default.
+
+Program history, changes and bug fixes are listed in the identification
+division
+
+This program was developed using GnuCOBOL 2.0.0
+Built Oct 10 2013 16:15:17 and Ubuntu 14.04
+running on a Lenovo R61i laptop.
+
+Tested under GnuCobol 2.1.0 under Mageia v4 X64
+on a AMD FX8350 8 core desktop.
+
+Send comments, bugs or criticisms to stevewilliams38@gmail.com
+
+Usage:
+-----
+
+changeformat P1 P2 P3 OP4 OP5 OP6
+ (where OP = Optional parameters and
+        P = mandatory parameters)
+
+P1  = input-source-file
+P2  = output-source-file
+P3  = tofree or tofixed
+OP4 = wd-after
+OP5 - pd-after
+OP6 = nocc1
+
+P1 and P2 Input and Output file names
+P3 specifies translation mode:
+   tofree = convert fixed to free format
+   tofixed = convert free to fixed format
+OP4 ws-after = Use if you want floating comments to be placed after the
+    line otherwise it defaults to before but only prior to the
+    Procedure Division.
+OP5 pd-after = Use if you want floating comments to be placed after the
+    line otherwise it defaults to before but only on and after the
+    Procedure Division.
+OP6 nocc1 = Use if you want the code other than comments to start
+    on cc 1 (column) All comments are always placed on cc 1.
+
+Note that P3, and OP4 to OP6 can be in lower or uppercase.
+
+Example to convert a program from fixed to free format using default
+floating comments placement in working storage (before the line that
+they appear and all floating comments in procedure division to appear
+after the line that they appear and all code to start in column 2
+along with the comments starting in column 1 (fixed default):
+
+changeformat st010.cob ST010.COB tofree pd-after nocc1
+
+
+Another example as above but making all floating comments appear after
+the line instead of the default, before the line:
+
+changeformat st010.cob ST010.COB tofree ws-after pd-after nocc1
+
+
+Updated: 2nd November 2014 (c) Steve Williams.

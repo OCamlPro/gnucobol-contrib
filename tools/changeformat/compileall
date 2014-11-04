@@ -1,0 +1,10 @@
+cobc -x changeformat.cbl
+chmod +x changeformat
+rm changeformat1.cbl
+./changeformat changeformat.cbl changeformat1.cbl tofixed > changeformat.txt
+cobc -x changeformat1.cbl
+chmod +x changeformat1
+rm changeformat2.cbl
+./changeformat1 changeformat1.cbl changeformat2.cbl tofree > changeformat1.txt
+cobc -x changeformat2.cbl
+
