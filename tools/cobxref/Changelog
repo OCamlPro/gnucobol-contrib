@@ -1,4 +1,10 @@
 2014-11-05  Vince Coen <vbcoen@btconnect.com>
+        v1.01.14  * Fix bug where multi braces inside or right of : e.g.,
+                    fred)anything:anything)
+                    
+        v1.01.13  * Replaced when compiled with cobxref name and version.
+                    Ensure that all print sections check linecount > 59.
+
         v1.01.12  * Improved error msg bb053 with more info and
 	            outputing blank lines at req. Rob. Mills
 

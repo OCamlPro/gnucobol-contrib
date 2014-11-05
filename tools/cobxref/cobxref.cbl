@@ -145,7 +145,7 @@
      03  SdSortKey         pic x(40).
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v1.01.12".
+ 77  Prog-Name             pic x(13) value "Xref v1.01.14".
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
  77  S-Pointer             Binary-long  value zero.
@@ -282,18 +282,19 @@
 *>
  01  HDR1.
      03  filler            pic X(10) value "ACS Cobol ".
-     03  H1Prog-Name       pic x(4)  value spaces.
-     03  filler            pic x     value "(".
-     03  H1-dd             pic 99.
-     03  filler            pic x     value "/".
-     03  H1-MM             pic 99.
-     03  filler            pic x     value "/".
-     03  H1-YY             pic 9(4).
-     03  filler            pic x     value "@".
-     03  H1-HH             pic 99.
-     03  filler            pic x     value ":".
-     03  H1-Min            pic 99.
-     03  filler            pic xx    value ") ".
+     03  H1Prog-Name       pic x(23) value spaces.
+*>     03  H1Prog-Name       pic x(4)  value spaces.
+*>     03  filler            pic x     value "(".
+*>     03  H1-dd             pic 99.
+*>     03  filler            pic x     value "/".
+*>     03  H1-MM             pic 99.
+*>     03  filler            pic x     value "/".
+*>     03  H1-YY             pic 9(4).
+*>     03  filler            pic x     value "@".
+*>     03  H1-HH             pic 99.
+*>     03  filler            pic x     value ":".
+*>     03  H1-Min            pic 99.
+*>     03  filler            pic xx    value ") ".
      03  filler            pic x(20) value "Dictionary File for ".
      03  h1programid       pic x(32) value spaces.
      03  filler            pic x(7)  value "  Page ".
@@ -1975,6 +1976,10 @@
               end-if
      end-if
 *>
+*> Next will clear word):xyz for later processing (bb100) 2014-11-05/14
+*>
+     inspect  wsFoundWord2 (s:z2) replacing all ")" by space.
+*>
      inspect  wsFoundWord2 (s:z2) tallying a for all "(".
      inspect  wsFoundWord2 (s:z2) tallying a for all ")".
      if       a > zero                  *> should not have braces now
@@ -2107,7 +2112,7 @@
      if       Git-Table-Count > 1
               sort  Git-Elements ascending Git-Word.
 *> Print order:
-*> Note that although some sections are not yet supported in OC they
+*> Note that although some sections are not yet supported in GC they
 *>       are, in cobxref.
 *>   Xref'd -
 *>     At bc090 = In order: File Section, Working-Storage, Local-Storage,
@@ -2162,6 +2167,10 @@
      if       q > zero
               write PrintLine after 1
               add   1 to Line-Count
+              if  Line-Count > 59
+                  perform  zz150-WriteHdb thru zz150-Exit
+                  perform  zz150-WriteHdb8 thru zz150-Exit
+              end-if
               move zero to q
               move spaces to PrintLine.
 *>
@@ -2252,6 +2261,10 @@
      if       q > zero
               write PrintLine after 1
               add   1 to Line-Count
+              if  Line-Count > 59
+                  perform  zz150-WriteHdb thru zz150-Exit
+                  perform  zz150-WriteHdb2 thru zz150-Exit
+              end-if
               move zero to q
               move 1 to q2
               move spaces to PrintLine.
@@ -2297,6 +2310,10 @@
               move  Variables (a) to P-Conditions
               write PrintLine2 after 1
               add   1 to Line-Count
+              if  Line-Count > 59
+                  perform  zz150-WriteHdb
+                  perform  zz150-WriteHdb7 thru zz150-Exit
+              end-if
               go to bc192-Print-Conditions.
 *>
  bc194-Now-Reverse.
@@ -2335,7 +2352,7 @@
      go       to bc220-IsX3.
  bc210-Read-Sorter3.
      read     Supplemental-Part2-In at end
-              perform bc140-Check-Q
+              perform bc280-Check-Q
               close Supplemental-Part2-In
               if   q2 = zero
                    move spaces to PrintLine
@@ -2381,7 +2398,7 @@
      move     SkaDataName to saveSkaDataName.
      move     SkaWSorPD   to saveSkaWSorPD.
      move     SkaWSorPD2  to saveSkaWSorPD2.
-     perform  bc140-Check-Q.
+     perform  bc280-Check-Q.
  bc250-ConnectC3.
      move     spaces to PrintLine.
      move     SkaDataName to XrDataName.
@@ -2396,11 +2413,27 @@
      go       to bc270-Exit.
  bc260-ConnectD3.
      if       q > 7
-              perform bc140-Check-Q.
+              perform bc280-Check-Q.
      add      1 to q.
      move     SkaRefNo to XrReference (q).
  bc270-Exit.
      exit.
+*>
+ bc280-Check-Q.
+     if       XrDataName not = spaces
+         and  q = zero
+              move 1 to q.
+     if       q > zero
+              write PrintLine after 1
+              add   1 to Line-Count
+              if  Line-Count > 59
+                  perform  zz150-WriteHdb
+                  move     "Procedure" to hdr8-hd
+                  perform  zz150-WriteHdb3 thru zz150-Exit
+              end-if
+              move zero to q
+              move 1 to q2
+              move spaces to PrintLine.
 *>
  bc300-Last-Pass4.
 *>****************
@@ -2536,7 +2569,11 @@
      if       q = 1
               move 1 to S-Pointer
               add   1 to Line-Count
-              write PrintLine after 1.
+              write PrintLine after 1
+              if  Line-Count > 59
+                  perform  zz150-WriteHdb
+                  perform  zz150-WriteHdb4 thru zz150-Exit
+              end-if.
  bc450-Exit.
      exit.
 *>
@@ -2577,8 +2614,11 @@
         and   saveSkaWSorPD = 8
               move 1 to S-Pointer
               add   1 to Line-Count
-              write PrintLine after 1.
-*>
+              write PrintLine after 1
+              if  Line-Count > 59
+                  perform  zz150-WriteHdb
+                  perform  zz150-WriteHdb5 thru zz150-Exit
+              end-if.
      move     SkaDataName to saveSkaDataName.
      move     SkaWSorPD to saveSkaWSorPD.
 *>
@@ -2597,7 +2637,11 @@
      if       q = 1 and saveSkaWSorPD = 8
               move 1 to S-Pointer
               add   1 to Line-Count
-              write PrintLine after 1.
+              write PrintLine after 1
+              if  Line-Count > 59
+                  perform  zz150-WriteHdb
+                  perform  zz150-WriteHdb5 thru zz150-Exit
+              end-if.
  bc540-Check-4Old6.
      if       S-Pointer = zero
               move spaces to PrintLine
@@ -2627,6 +2671,10 @@
               move LSect (b) to XrType
               add   1 to Line-Count
               write PrintLine after 1
+              if  Line-Count > 59
+                  perform  zz150-WriteHdb thru zz150-Exit
+                  perform  zz150-WriteHdb2b thru zz150-Exit
+              end-if
      end-perform.
 *>
  bc600-Exit.
@@ -2656,6 +2704,10 @@
                     move 1 to b
                     add   1 to Line-Count
                     write PrintLine after 1
+                    if  Line-Count > 59
+                        perform  zz150-WriteHdb
+                        perform  zz150-WriteHdb6 thru zz150-Exit
+                    end-if
               end-if
      end-perform
      if       b = zero
@@ -2845,7 +2897,8 @@
 *>*****************************************************************
 *> Note that after unstring sp2 will be at 1st char AFTER delimiter
 *>*****************************************************************
-     unstring SourceInWS delimited by " " or "." into wsFoundWord2 delimiter Word-Delimit pointer S-Pointer2.
+     unstring SourceInWS delimited by " " or "." into wsFoundWord2
+               delimiter Word-Delimit pointer S-Pointer2.
 *> check 1st char
      if       S-Pointer2 > 1024
               go to zz110-Get-A-Word-OverFlow.
@@ -2857,6 +2910,8 @@
               go to zz110-Exit.
      if       wsf1-1 = space
               go to zz110-Get-A-Word-Unstring.
+     if       wsf1-3 = ">>D"                      *> if debug continue ignoring ">>D"
+              go to zz110-Get-A-Word-Unstring.
      if       wsf1-2 = "*>"                       *> rest of line is comment so ignore
               go to zz110-Get-A-Word-OverFlow.
      if       (wsf1-1-Number
@@ -2864,7 +2919,8 @@
            or wsf1-1 = "+")
          and  SourceInWS (S-Pointer2:1) not = space
               move s to S-Pointer2
-              unstring SourceInWS delimited by " " into wsFoundWord2 delimiter Word-Delimit pointer S-Pointer2.
+              unstring SourceInWS delimited by " " into wsFoundWord2
+                         delimiter Word-Delimit pointer S-Pointer2.
 *>
      subtract 2 from S-Pointer2 giving e.
      if       Word-Delimit = space
@@ -3072,12 +3128,12 @@
      string   HoldID delimited by space
               "    " delimited by size
               hd-date-time delimited by size into h1programid.
-     move     function when-compiled to WS-When-Compiled.
-     move     WS-WC-DD  to H1-DD.
-     move     WS-WC-MM  to H1-MM.
-     move     WS-WC-YY  to H1-YY.
-     move     WS-WC-HH  to H1-HH.
-     move     WS-WC-Min to H1-Min.
+*>     move     function when-compiled to WS-When-Compiled.
+*>     move     WS-WC-DD  to H1-DD.
+*>     move     WS-WC-MM  to H1-MM.
+*>     move     WS-WC-YY  to H1-YY.
+*>     move     WS-WC-HH  to H1-HH.
+*>     move     WS-WC-Min to H1-Min.
      add      1 to Page-No.
      move     Page-No to H1-Page.
      if       Page-No = 1
