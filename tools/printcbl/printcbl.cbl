@@ -52,8 +52,8 @@
  environment division.
  input-output section.
  file-control.
-           select Print-File     assign to WS-Print-File-Name
-                                 organization line sequential.
+     select Print-File     assign to WS-Print-File-Name
+                           organization line sequential.
 *>
  data division.
  file section.
@@ -71,7 +71,7 @@
  working-storage section.
 *>======================
 *>
- 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.14".  *> ver.rel.build
+ 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.15".  *> ver.rel.build
 *>
 *>   **************************************
 *>   *     User changeable values here:   ****************************************************
@@ -1857,6 +1857,7 @@
 *>  filename is using Cbl-File-name
 *>
      move     zero to Return-Code.
+     add      1 to Fht-Table-Size.
      if       Fht-Table-Size > Fht-Max-Table-Size                *> 10
               move 24 to Return-Code                             *> RT 24 file table limit exceeded
               display Msg1
@@ -1876,7 +1877,6 @@
 *>
 *> set up New entry in File Table
 *>
-     add      1 to Fht-Table-Size.
      move     Fht-Table-Size to e.
      initialize Fht-Var-Block (e).
      move     Fht-Buffer-Size  to   Fht-Byte-Count (e).

@@ -1,9 +1,14 @@
+2014-11-05 Vincent B Coen
+	*    v2.01.15 Test for table size not done after table was
+		 increased by 1. Silly error but was not expecting
+		 depth to go to 9 let alone higher!
+
 2014-11-01 Vincent B Coen
 	*    v2.01.14 Changed inspect statement from FOR LEADING "FREE"
-	         which does not work as wanted to, FOR ALL "FREE" in the
+	         which does not work to FOR ALL "FREE" in the
 	         da000-Check-For-Source section.
 	         This now will reset the source format type as and when it
-	         finds a ">>SOURCE" directive overriding fixed/free that is
+	         finds a >>SOURCE directlve overriding fixed/free that is
 	         supplied when running program. Thanks Brian for finding it.
 
 2014-10-13 Vincent B Coen
