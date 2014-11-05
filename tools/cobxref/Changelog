@@ -1,4 +1,8 @@
-2014-1-01  Vince Coen <vbcoen@btconnect.com>
+2014-11-05  Vince Coen <vbcoen@btconnect.com>
+        v1.01.12  * Improved error msg bb053 with more info and
+	            outputing blank lines at req. Rob. Mills
+
+2014-11-01  Vince Coen <vbcoen@btconnect.com>
 	v1.01.11  * Last version before adding in COPY library processing so
 	            that the program can be fully used outside cobc control as
 	            the source file provided by cobc has been converted to short

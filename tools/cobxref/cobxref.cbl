@@ -145,7 +145,7 @@
      03  SdSortKey         pic x(40).
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v1.01.11".
+ 77  Prog-Name             pic x(13) value "Xref v1.01.12".
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
  77  S-Pointer             Binary-long  value zero.
@@ -1978,7 +1978,7 @@
      inspect  wsFoundWord2 (s:z2) tallying a for all "(".
      inspect  wsFoundWord2 (s:z2) tallying a for all ")".
      if       a > zero                  *> should not have braces now
-              display "bb053:Logic Error (=" a " B=" b " on " wsFoundWord2 (1:80)
+              display "bb053:Logic Error (A=" a " B=" b " Z2= " Z2 " on " wsFoundWord2 (1:80)
               go to bb020-GetAWord
      end-if
 *>
@@ -2750,10 +2750,11 @@
      perform  zz120-Replace-Multi-Spaces thru zz120-Exit.
      move     Line-End to Source-Line-End.
 *>
-*> count but do not O/P blank lines
+*> count but and O/P blank lines requested by Robert Mills
 *>
       if      d < 1
               perform zz000-Inc-CobolRefNo
+              perform zz000-Outputsource
               go to zz100-Get-A-Source-Record.
 *>
      if       SourceInWS (1:12) = "END PROGRAM "
