@@ -1,0 +1,93 @@
+Cobxref - Cobol Cross Reference program / module for GNU Cobol
+
+Documentation for release version 1.01.11            Dated 2 Nov 2014
+
+Parameters for running program are in the form:
+
+cobxref 1 [2 3 4 5 6 7] where params 2 through 7 are all optional
+
+Note: Param 1 MUST be first param, 2 through 7 can be in any order.
+      param 5 is for testing ONLY.
+      Param 6 for testing against other ref products only
+
+1: SFN [Source File name] (Mandatory)
+
+2: -R	 If used will not print out source code. Otherwise cobxref will always do
+         so prior to cross reference listings. If used with cobc -X param will
+         not produce a source listing (see readme file for more information).
+
+3: -L    reports all in lowercase (defaults to uppercase or actual case used).
+
+4: -DR   Displays All reserved words & then stops. Note: Must still specify a
+         source file even if a dummy.
+
+5: -TEST Produces testing info (and this can be a lot of output).
+         Used for Debugging by or on behalf of programmer.
+
+6: -G    Used in testing: Produces group print out in addition to normal so that
+         comparing xref's with Microfocus or IBM can be more easily done.
+
+7: -H	 Displays program parameter info (same as when run without any params}
+   --H	 as -H
+
+For normal usage just call as 'cobxref sourcefilename.ext' or you can also call it
+using cobc with the -X option. This will not produce a source listing but will
+create the cross reference lists along with the unreferenced working storage
+and procedure names.
+
+This will assume that source is in free format. Otherwise if you run it stand alone
+you MUST be using the compiler directive >>source fixed (or free).
+
+When run standalone, you can supply SFN.ext but v1.1 will not process COPY verbs
+for this you must use v1.2 (to be released late November 2014).
+
+You may have a version of cobc (v2) that gives the option of -X which will also
+call cobxref during compilation. To check for this run cobc -V or cobc -i to
+confirm that you have the -Xref option of v2.
+
+See additional notes in the readme file and also for details of any changes over
+prior releases see the Changelog file.
+
+If compiling from cobol source you can use the supplied shell script
+e.g., comp-cobxref.sh
+
+Note that for testing I added to the cobc command line:
+-Wtruncate
+ Note that cobc will produce various warnings including:
+ cobxref.cbl: In section 'aa000-xref-Data':
+cobxref.cbl: In paragraph 'aa020-Bypass-Open':
+cobxref.cbl: 1269: Warning: Sending field larger than receiving field
+cobxref.cbl: 148: Warning: 'Prog-Name' defined here as PIC X(13)
+cobxref.cbl: 285: Warning: 'H1Prog-Name' defined here as PIC X(4)
+cobxref.cbl: In section 'bb000-Process-Procedure':
+cobxref.cbl: In paragraph 'bb054-spaces':
+cobxref.cbl: 2003: Warning: Sending field larger than receiving field
+cobxref.cbl: 277: Warning: 'wsFoundNewWord' defined here as PIC X(32)
+cobxref.cbl: In section 'zz000-Routines':
+cobxref.cbl: In paragraph 'zz170-Check-4-Section':
+cobxref.cbl: 3183: Warning: Some digits may be truncated
+cobxref.cbl: 165: Warning: 'a2' defined here as USAGE BINARY-CHAR
+cobxref.cbl: 225: Warning: 'HoldWSorPD' defined here as PIC 9
+
+ As GC cannot know that the sending field is limited by z to less than 32 chars,
+ and various warnings of a similar nature.
+ Note that the line address in the warning may be different that above and
+ there may be more messages again of a similar nature.
+
+Please do not make changes without recording the amendment in the source code
+with notation at or near actual code changes. After your tests, please advise of
+changes direct to myself at vbcoen@btconnect.com, through the GNUCobol contrib
+forum.
+
+I have been testing this program against a range of my own code including a
+42,000 line program (works on a IBM z/390 etc, as well as some of the test
+programs & modules provided with GNU cobol.  I now think it is ready
+for general usage but please if you can, test it against another cross reference
+tool to see if it is producing the same results and advise of any discrepancies
+that appear to show that cobxref may be at fault.
+
+
+Please provide any and all reports of bugs through the GNU Cobol forum at
+https://sourceforge.net/p/open-cobol/discussion/contrib
+
+Last updated Updated: 2nd November, 2014 (c) Vincent B Coen.
