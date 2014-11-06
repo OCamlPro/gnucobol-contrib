@@ -28,6 +28,8 @@ program-id. changeformat.
 *>
 *> cobc -x changeformat.cbl
 *> chmod +x changeformat
+*>
+*>  Standard mode :
 *> ./changeformat <inprogram> <outprogram> tofixed/tofree \
 *>     ws-after pd-after nocc1
 *>
@@ -39,6 +41,29 @@ program-id. changeformat.
 *>
 *>  tofree option nocc1 moves uncommented lines starting in
 *>  cc2
+*>
+*> Extended mode: to output input file (with case changed to reflect
+*>   fixed (uppercase) or free (lowercase) to  output path/
+*>
+*> ./changeformat <inprogram> <outputprogram path/> tofixed/tofree \
+*>     ws-after pd-after nocc1
+*>
+*> Example for Extended under linux:
+*>
+*>  ./changeformat st010.cbl ~/cobolsrc/ACAS/stock-fixed/ tofixed
+*>
+*> Note that for windows the slash is a \
+*>
+*> to do a batch run of similar files within a directory with the output files
+*>  in a different directory using the default Linux bash shell
+*>  use supplied chgfmt-all.sh but change for your own usage:
+*>
+*> --------
+*> #!/bin/bash
+*> for i in `ls st0*.cbl`; do changeformat $i ~/cobolsrc/ACAS/stock-fixed/ tofixed; done
+*> exit 0
+*> --------
+*>
 *>=======================================================
 
 *>=======================================================
@@ -75,6 +100,12 @@ program-id. changeformat.
 *> 2014-10-29 v1.0.2
 *>            1) added ws-after pd-after and nocc1
 *>               command line optionss
+*> 2014-11-06 - .03 - Vincent Coen
+*>          * 1. Extra function to support path as 2nd arg to
+*>               allow for block format change/migrations.
+*>               using O/P arg to be path/ | path\
+*>               See sample bash script that would be needed.
+*>
 *>=======================================================
 
 environment division.
@@ -99,14 +130,17 @@ fd  input-file.
 01  input-record pic x(256).
 
 fd  output-file.
-01  output-record pic x(256).
-01  output-record-fixed pic x(80).
+01  output-record        pic x(256).
+01  output-record-fixed  pic x(80).
 
 working-storage section.
-01  Program-Version pic x(15) "chgfmt v1.00.02".
-01  output-file-name pic x(128) value spaces.
-01  output-file-status pic xx.
-
+ 01  Program-Version     pic x(15)     value "chgfmt v1.00.03".
+ 01  Output-File-Name    pic x(512)    value spaces.
+ 01  output-file-status  pic xx.
+*>
+ 01  OS-Slash-Char       pic x         value space.
+ 01  XA                  pic 9999 comp value zero.
+*>
 01  area-a-indent pic 9.
 01  fixed-start pic 999.
 01  fixed-length pic 999.
@@ -116,7 +150,6 @@ working-storage section.
 
 01  input-file-name pic x(128).
 01  input-file-status pic xx.
-
 01  change pic x(16) value spaces.
 01  option1 pic x(8) value spaces.
 01  option2 pic x(8) value spaces.
@@ -248,7 +281,52 @@ start-changeformat.
     or upper-case(option4) or upper-case(option5)
         move 'n' to cc1
     end-if
-
+*>
+*> Code supporting .03 for O/P being a path/ used for bulk conversions
+*>   so 1st, see if it is by seeing what the trailing char is =
+*>   / | \ | or A/N
+*>
+    perform  varying XA from 512 by -1
+              until Output-File-Name (XA:1) not = space
+                or  XA < 2
+    end-perform
+    if       XA < 2
+             move "ERROR: O/P path too short" to run-line
+             perform abort-run
+    end-if
+    move     Output-File-Name (XA:1) to OS-Slash-Char.
+    if       OS-Slash-Char not = "/" and not = "\"
+             go to Start-Normal-Processes
+    end-if
+*>
+    if       Output-File-Name (1:1) = "~"    *> if tilde bad path
+             move "ERROR: Path starts with an Invalid char '~'" to run-line
+             perform abort-run
+    end-if
+    add      1 to XA.
+*>
+*> Now we change the file name case depending on type of process
+*>   eg, TOFIXED = upper or TOFREE = lower
+*>
+    if       Change = "TOFIXED"
+             string   upper-case (Input-File-Name) delimited by size
+                        into Output-File-Name pointer XA
+               on overflow
+                         move "ERROR: Path/name too long (512)" to run-line
+                         perform Abort-Run
+             end-string
+    else
+             string   lower-case (Input-File-Name) delimited by size
+                        into Output-File-Name pointer XA
+               on overflow
+                         move "ERROR: Path/name too long (512)" to run-line
+                         perform Abort-Run
+             end-string
+    end-if.
+*>
+*>  We are done, so can continue with normal processing.
+*>
+ Start-Normal-Processes.
     open output output-file
     perform check-output-file
     evaluate true
@@ -284,9 +362,9 @@ start-changeformat.
 
     close input-file
     close output-file
-
-    stop run
-    .
+    display Program-Version " Completed successfully".
+    stop run.
+*>
 check-output-file.
     if output-file-status <> '00'
         display output-file-status

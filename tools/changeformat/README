@@ -27,6 +27,8 @@ Send comments, bugs or criticisms to stevewilliams38@gmail.com
 Usage:
 -----
 
+Standard mode:
+
 changeformat P1 P2 P3 OP4 OP5 OP6
  (where OP = Optional parameters and
         P = mandatory parameters)
@@ -61,11 +63,32 @@ along with the comments starting in column 1 (fixed default):
 
 changeformat st010.cob ST010.COB tofree pd-after nocc1
 
-
 Another example as above but making all floating comments appear after
 the line instead of the default, before the line:
 
 changeformat st010.cob ST010.COB tofree ws-after pd-after nocc1
 
+Here is a variation called extended mode but using same parameters as
+above with one change for P2.
 
-Updated: 2nd November 2014 (c) Steve Williams.
+P2 output path with a trailing slash i.e., / (for Linux)
+                                        or \ (for native windows)
+
+This will convert the program specified by P1 using the same filename
+ but with the case changed to upper for tofixed or lower for tofree into
+ the path specified by P2.
+
+Example:
+
+changeformat st010.cob ../stock-fixed/ tofree pd-after nocc1
+
+or
+
+changeformat st010.cob ~/cobolsrc/ACAS/stock-fixed/ tofree pd-after nocc1
+
+Note that the trailing / is compulsory in this mode.
+
+If you wish to do a batch of these extended mode operations an example script
+is included called chgfmt.sh
+
+Updated: 6 November 2014 (v1.1.3) (c) Steve Williams.
