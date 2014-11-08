@@ -1,7 +1,14 @@
+2014-11-08  Vince Coen <vbcoen@btconnect.com>
+        v1.01.15  * Fix bug where option -G still produced all other reports.
+                    Now it just produces a all in 1 report similar to MF & IBM.
+                    **********************************************************
+                    Must get round to performing reports one at a time instead
+                    of full-through coding.
+
 2014-11-05  Vince Coen <vbcoen@btconnect.com>
         v1.01.14  * Fix bug where multi braces inside or right of : e.g.,
                     fred)anything:anything)
-                    
+
         v1.01.13  * Replaced when compiled with cobxref name and version.
                     Ensure that all print sections check linecount > 59.
 

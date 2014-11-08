@@ -145,7 +145,7 @@
      03  SdSortKey         pic x(40).
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v1.01.14".
+ 77  Prog-Name             pic x(13) value "Xref v1.01.15".
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
  77  S-Pointer             Binary-long  value zero.
@@ -2147,7 +2147,8 @@
      read     Supplemental-Part2-In at end
               perform bc050-Check-Q
               close Supplemental-Part2-In
-              go to bc090-Last-Pass2.
+              go to bc000-Exit.
+*>              go to bc090-Last-Pass2.
 *>
  bc030-IsX.
      if       SkaDataName = spaces
