@@ -106,6 +106,10 @@ program-id. changeformat.
 *>               using O/P arg to be path/ | path\
 *>               See sample bash script that would be needed.
 *>
+*> 2014-11-13 1. changed compute fixed-start = 65 - t + 1
+*>                    to compute fixed-start = 72 - t + 1
+*>            2. removed subtract 2 from break the
+*>               line before wordx
 *>=======================================================
 
 environment division.
@@ -648,12 +652,7 @@ convert-to-fixed.
         when other
 
 *>          break the line before wordx
-            if wordx > 1
-            and word-length(wordx) = 1
-*>              subtract 2 from wordx
-            else
-                subtract 1 from wordx
-            end-if
+            subtract 1 from wordx
             move word-start(1) to scan-start
             compute fixed-start = 7 - area-a-indent + scan-start end-compute
             compute fixed-length = word-end(wordx) - scan-start + 1
@@ -697,7 +696,7 @@ convert-comment.
     when t <= 65
     and wordx-max > 1
 *>      the comment text will fit right justified in the fixed area
-        compute fixed-start = 65 - t + 1 end-compute
+        compute fixed-start = 72 - t + 1 end-compute
         compute fixed-length = t
         perform increment-coutx-max
         move '*' to comment-output(coutx-max)(7:1)
