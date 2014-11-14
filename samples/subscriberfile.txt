@@ -1,3 +1,0 @@
-localhost 8002 etlcomplete
-localhost 8001 backupcomplete
-
