@@ -45,7 +45,7 @@ Cobol *>
       *> Source:
        REPLACE ==FIELDSIZE== BY ==80==
                ==AREASIZE==  BY ==32768==
-               ==FILESIZE==  BY ==1045876==.
+               ==FILESIZE==  BY ==65536==.
 
 id     identification division.
        program-id. cobweb-gtk.
@@ -77,6 +77,9 @@ id     identification division.
            function new-spinner
            function new-yelp
            function new-vte
+           function new-drawing-area
+           function new-databox
+           function new-combo-box-text
            function rundown-signals
            function signal-attach
            function builder-signal-attach
@@ -85,6 +88,7 @@ id     identification division.
            function statusbar-push
            function statusbar-pop
            function file-contents
+           function combo-box-text-get-active-text
            function gtk-go
            function all intrinsic.
 
@@ -120,7 +124,7 @@ data   data division.
           05 gtk-window        usage pointer.
           05 filler            usage pointer.
           05 filler            usage binary-long.
-       01 width-hint           usage binary-long value 800.
+       01 width-hint           usage binary-long value 400.
        01 height-hint          usage binary-long value 256.
 
        01 gtk-box-data.
@@ -213,6 +217,13 @@ data   data division.
           05 filler            usage pointer.
           05 filler            usage binary-long.
 
+       01 gtk-combo-box-text-data.
+          05 gtk-combo-box-text usage pointer.
+          05 filler            usage pointer.
+          05 filler            usage binary-long.
+       01 include-entry        usage binary-long value 1.
+       01 element-size         usage binary-long value 8.
+
        01 file-length          usage binary-long.
        01 error-code           usage binary-long.
 
@@ -238,6 +249,7 @@ code   procedure division.
            "           function new-image"                     newline
            "           function new-label"                     newline
            "           function new-entry"                     newline
+           "           function new-textview"                  newline
            "           function new-button"                    newline
            "           function new-check-button"              newline
            "           function new-radio-buton"               newline
@@ -248,7 +260,9 @@ code   procedure division.
            "           function new-spinner"                   newline
            "           function new-yelp"                      newline
            "           function new-vte"                       newline
-           "           function new-textview"                  newline
+           "           function new-drawing-area"              newline
+           "           function new-databox"                   newline
+           "           function new-combo-box-text"            newline
            "           function rundown-signals"               newline
            "           function signal-attach"                 newline
            "           function builder-signal-attach"         newline
@@ -263,6 +277,7 @@ code   procedure division.
            "           function statusbar-push"                newline
            "           function statusbar-pop"                 newline
            "           function file-contents"                 newline
+           "           function combo-box-text-get-active-text" newline
            "           function gtk-go"                        newline
            "           function all intrinsic."
        end-display
@@ -323,7 +338,7 @@ code   procedure division.
 
            move new-separator(widget(2), VERTICAL) to widget-record(12)
 
-           move new-image(widget(2), "blue66.png") to widget-record(5)
+           move new-image(widget(2), "white66.png") to widget-record(5)
 
            move new-link-button(widget(2),
                "http://sourceforge.net/p/open-cobol/discussion",
@@ -370,6 +385,11 @@ code   procedure division.
              to extraneous
            move statusbar-pop(widget-record(6)) to extraneous
 
+           move new-combo-box-text(widget-record(2), include-entry,
+               "see-combo-box-text", "Besting Festing Testing         ",
+               element-size)
+             to widget-record(18)
+
           *> hand over control to GTK+ main loop
            move gtk-go(widget(1)) to extraneous
 
@@ -398,7 +418,7 @@ code   procedure division.
            move new-scrolled-window(gtk-frame, NULL, NULL)
              to gtk-scrolled-window-data
 
-           move new-image(gtk-box, "blue66.png")
+           move new-image(gtk-box, "white66.png")
              to gtk-image-data
            move new-label(gtk-box, "Label")
              to gtk-label-data
@@ -1308,8 +1328,8 @@ id     identification division.
 
 data   data division.
        working-storage section.
-       01 width-hint                 usage binary-long value 240.
-       01 height-hint                usage binary-long value 320.
+       01 width-hint                 usage binary-long value 80.
+       01 height-hint                usage binary-long value 120.
      
 link   linkage section.
        01 gtk-container              usage pointer.
@@ -2226,7 +2246,7 @@ done   goback.
 
       *>****F* cobweb/new-databox
       *> Purpose:
-      *> Define a new databox
+      *> Define a new databox, **NOT YET IMPLEMENTED**
       *> Input:
       *>   
       *> Output:
@@ -2236,6 +2256,64 @@ done   goback.
       *> Source:
 id     identification division.
        function-id. new-databox.
+
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 extraneous                 usage binary-long.
+
+       01 expanding                  usage binary-long value 1.
+       01 filling                    usage binary-long value 1.
+       01 pad                        usage binary-long value 4.
+
+link   linkage section.
+       01 gtk-container              usage pointer.
+       01 gtk-databox-data. 
+          05 gtk-databox             usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
+
+code   procedure division using
+           gtk-container
+         returning gtk-databox-data.
+
+      *> Create the databox 
+       call "gtk_databox_new"
+           returning gtk-databox
+       end-call
+
+       call "gtk_box_pack_start"
+           using
+               by value gtk-container
+               by value gtk-databox
+               by value expanding
+               by value filling
+               by value pad
+           returning omitted
+       end-call
+           
+done   goback.
+       end function new-databox.
+      *>****
+
+
+      *>****F* cobweb/new-drawing-area
+      *> Purpose:
+      *> Define a new drawing-area   NOT YET IMPLEMENTED
+      *> Input:
+      *>   width
+      *>   height
+      *>   draw event callback
+      *>   
+      *> Output:
+      *>   A cairo drawing area, painted by draw event callback
+      *> Source:
+id     identification division.
+       function-id. new-drawing-area.
 
        environment division.
        configuration section.
@@ -2306,7 +2384,123 @@ code   procedure division using
        end-if
 
 done   goback.
-       end function new-databox.
+       end function new-drawing-area.
+      *>****
+
+
+      *>****F* cobweb/new-combo-box-text
+      *> Purpose:
+      *> Define a new text list combo box, with or without entry
+      *> and optional string holding text elements of given length
+      *> Input:
+      *>   container
+      *>   with-or-without-entry-flag
+      *>   callback for "changed"
+      *>   optional string of text elements
+      *>   optional length of said elements (default 8) 
+      *>   
+      *> Output:
+      *>   A combox
+      *>   image:https://developer.gnome.org/gtk3/stable/combo-box-text.png
+      *> Source:
+id     identification division.
+       function-id. new-combo-box-text.
+
+       environment division.
+       configuration section.
+       repository.
+           function signal-attach
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 extraneous                 usage binary-long.
+
+       01 expanding                  usage binary-long value 0.
+       01 filling                    usage binary-long value 0.
+       01 pad                        usage binary-long value 4.
+
+       01 element                    usage binary-long.
+       01 element-text               pic x(FIELDSIZE).
+          88 element-empty           value spaces.
+
+link   linkage section.
+       01 gtk-container              usage pointer.
+       01 include-entry              usage binary-long.
+       01 entry-callback             pic x any length.
+       01 fixed-elements             pic x any length.
+       01 element-size               usage binary-long.
+       01 gtk-combo-box-text-data. 
+          05 gtk-combo-box-text      usage pointer.
+          05 filler                  usage pointer.
+          05 filler                  binary-long.
+
+code   procedure division using
+           gtk-container
+           include-entry
+           entry-callback
+           optional fixed-elements
+           optional element-size
+         returning gtk-combo-box-text-data.
+
+      *> Create the new combo box
+       if include-entry not equal 0 then
+           call "gtk_combo_box_text_new_with_entry"
+               returning gtk-combo-box-text
+           end-call
+       else
+           call "gtk_combo_box_text_new"
+               returning gtk-combo-box-text
+           end-call
+       end-if
+           
+       if gtk-combo-box-text not equal null then
+           if fixed-elements not omitted then
+
+               if element-size omitted then
+                   move min(8, length(fixed-elements)) to element-size
+               end-if
+
+               move fixed-elements(1:element-size) to element-text
+               perform varying element from 0 by 1 until element-empty
+                   call "gtk_combo_box_text_append" using
+                       by value gtk-combo-box-text
+                       by reference NULL
+                       by content concatenate(trim(
+                           fixed-elements(
+                               element*element-size + 1:element-size
+                           )), x"00")
+                       returning omitted
+                   end-call
+                   move fixed-elements(
+                               element*element-size + 1:element-size)
+                     to element-text
+               end-perform
+
+               call "gtk_combo_box_set_active" using
+                   by value gtk-combo-box-text
+                   by value 0
+               end-call
+           end-if
+
+           call "gtk_box_pack_start" using
+               by value gtk-container
+               by value gtk-combo-box-text
+               by value expanding
+               by value filling
+               by value pad
+               returning omitted
+           end-call
+
+          *> Connect a signal to "changed".
+           move signal-attach(gtk-combo-box-text, "changed",
+                entry-callback)
+             to extraneous
+
+       end-if
+
+done   goback.
+       end function new-combo-box-text.
       *>****
 
 
@@ -3005,6 +3199,47 @@ code   procedure division using
 done   goback.
        end function file-contents.
       *>****
+
+          
+      *>****F* cobweb/combo-box-text-get-active-text
+      *> Purpose:
+      *> Get the active entry from a combo-box-text 
+      *> Source:
+id     identification division.
+       function-id. combo-box-text-get-active-text. 
+
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 gtk-text-entry       usage pointer.
+       01 gtk-text-buffer      pic x(FIELDSIZE) based.
+
+link   linkage section.
+       01 gtk-entry            usage pointer.
+       01 the-text-entry       pic x(FIELDSIZE).
+
+code   procedure division using gtk-entry
+           returning the-text-entry.
+
+       call "gtk_combo_box_text_get_active_text" using
+               by value gtk-entry
+           returning gtk-text-entry
+       end-call
+       if gtk-text-entry not equal null then
+           set address of gtk-text-buffer to gtk-text-entry
+           initialize the-text-entry
+           string
+               gtk-text-buffer delimited by x"00" into the-text-entry
+           end-string
+       end-if
+
+done   goback.
+       end function combo-box-text-get-active-text.
+      *>****
           
 
       *> ********************************************************
@@ -3173,4 +3408,35 @@ code   procedure division using
  
 done   goback.
        end program see-textview-gtk.
+      *>****
+       
+       
+      *>****T* cobweb/see-combo-box-text [demo]
+      *> Purpose:
+      *>   Self test, connected to sample combo-box
+      *> Source:
+id     identification division.
+       program-id. see-combo-box-text.
+
+       environment division.
+       configuration section.
+       repository.
+           function combo-box-text-get-active-text
+           function all intrinsic.
+
+data   data division.
+       linkage section.
+       01 gtk-widget           usage pointer.
+       01 gtk-data             usage pointer.
+
+code   procedure division using
+           by value gtk-widget
+           gtk-data.   
+
+       display
+           trim(combo-box-text-get-active-text(gtk-widget))
+       end-display
+ 
+done   goback.
+       end program see-combo-box-text.
       *>****

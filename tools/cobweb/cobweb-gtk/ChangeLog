@@ -1,3 +1,6 @@
+2014-11-18 Brian Tiffin <btiffin@gnu.org>
+  * added new-combo-box-text, started planning databox, drawing-area,
+
 2014-10-22 Brian Tiffin <btiffin@gnu.org>
   * added new-menubar, new-menu, new-menu-item
 
