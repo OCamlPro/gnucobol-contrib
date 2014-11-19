@@ -53,43 +53,45 @@ id     identification division.
        environment division.
        configuration section.
        repository.
-           function new-builder
-           function new-window 
-           function new-scrolled-window 
+           function builder-get-object
+           function builder-signal-attach
+           function combo-box-text-get-active-text
+           function combo-box-text-insert
+           function combo-box-text-remove-all
+           function file-contents
+           function gtk-go
            function new-box
+           function new-builder
+           function new-button
            function new-button-box
+           function new-check-button
+           function new-color-button
+           function new-combo-box-text
+           function new-databox
+           function new-drawing-area
+           function new-entry
+           function new-file-chooser-button
            function new-frame
-           function new-menu-bar
-           function new-menu
-           function new-menu-item 
-           function new-statusbar
            function new-image
            function new-label
-           function new-entry
-           function new-textview
-           function new-button
-           function new-check-button
-           function new-radio-button
            function new-link-button
-           function new-color-button
-           function new-file-chooser-button
+           function new-menu
+           function new-menu-bar
+           function new-menu-item 
+           function new-radio-button
+           function new-scrolled-window 
            function new-separator
            function new-spinner
-           function new-yelp
+           function new-statusbar
+           function new-textview
            function new-vte
-           function new-drawing-area
-           function new-databox
-           function new-combo-box-text
+           function new-window 
+           function new-yelp
            function rundown-signals
            function signal-attach
-           function builder-signal-attach
-           function builder-get-object
-           function textview-set-text
-           function statusbar-push
            function statusbar-pop
-           function file-contents
-           function combo-box-text-get-active-text
-           function gtk-go
+           function statusbar-push
+           function textview-set-text
            function all intrinsic.
 
 data   data division.
@@ -224,6 +226,10 @@ data   data division.
        01 include-entry        usage binary-long value 1.
        01 element-size         usage binary-long value 8.
 
+       01 handle-timer-pointer usage program-pointer.
+       01 statusbar-pause      usage binary-long value 100.
+       01 statusbar-timer-tag  usage binary-long             external.
+
        01 file-length          usage binary-long.
        01 error-code           usage binary-long.
 
@@ -236,49 +242,51 @@ code   procedure division.
        end-display
        display
            "       repository."                                newline
-           "           function new-builder"                   newline
-           "           function new-window"                    newline
-           "           function new-scrolled-window"           newline
-           "           function new-box"                       newline
-           "           function new-button-box"                newline
-           "           function new-frame"                     newline
-           "           function new-menu-bar"                  newline
-           "           function new-menu"                      newline
-           "           function new-menu-item"                 newline
-           "           function new-statusbar"                 newline
-           "           function new-image"                     newline
-           "           function new-label"                     newline
-           "           function new-entry"                     newline
-           "           function new-textview"                  newline
-           "           function new-button"                    newline
-           "           function new-check-button"              newline
-           "           function new-radio-buton"               newline
-           "           function new-link-buton"                newline
-           "           function new-color-buton"               newline
-           "           function new-file-chooser-button"       newline
-           "           function new-separator"                 newline
-           "           function new-spinner"                   newline
-           "           function new-yelp"                      newline
-           "           function new-vte"                       newline
-           "           function new-drawing-area"              newline
-           "           function new-databox"                   newline
-           "           function new-combo-box-text"            newline
-           "           function rundown-signals"               newline
-           "           function signal-attach"                 newline
-           "           function builder-signal-attach"         newline
            "           function builder-get-object"            newline
-           "           function show-widget"                   newline
-           "           function hide-widget"                   newline
-           "           function set-sensitive-widget"          newline
+           "           function builder-signal-attach"         newline
+           "           function combo-box-text-get-active-text" newline
+           "           function combo-box-text-insert"         newline
+           "           function combo-box-text-remove-all"     newline
            "           function entry-get-text"                newline
            "           function entry-set-text"                newline
+           "           function file-contents"                 newline
+           "           function gtk-go"                        newline
+           "           function hide-widget"                   newline
+           "           function new-box"                       newline
+           "           function new-builder"                   newline
+           "           function new-button"                    newline
+           "           function new-button-box"                newline
+           "           function new-check-button"              newline
+           "           function new-color-buton"               newline
+           "           function new-combo-box-text"            newline
+           "           function new-databox"                   newline
+           "           function new-drawing-area"              newline
+           "           function new-entry"                     newline
+           "           function new-file-chooser-button"       newline
+           "           function new-frame"                     newline
+           "           function new-image"                     newline
+           "           function new-label"                     newline
+           "           function new-link-buton"                newline
+           "           function new-menu"                      newline
+           "           function new-menu-bar"                  newline
+           "           function new-menu-item"                 newline
+           "           function new-radio-buton"               newline
+           "           function new-scrolled-window"           newline
+           "           function new-separator"                 newline
+           "           function new-spinner"                   newline
+           "           function new-statusbar"                 newline
+           "           function new-textview"                  newline
+           "           function new-vte"                       newline
+           "           function new-window"                    newline
+           "           function new-yelp"                      newline
+           "           function rundown-signals"               newline
+           "           function set-sensitive-widget"          newline
+           "           function show-widget"                   newline
+           "           function signal-attach"                 newline
+           "           function statusbar-pop"                 newline
+           "           function statusbar-push"                newline
            "           function textview-get-text"             newline
            "           function textview-set-text"             newline
-           "           function statusbar-push"                newline
-           "           function statusbar-pop"                 newline
-           "           function file-contents"                 newline
-           "           function combo-box-text-get-active-text" newline
-           "           function gtk-go"                        newline
            "           function all intrinsic."
        end-display
 
@@ -384,6 +392,15 @@ code   procedure division.
            move statusbar-push(widget-record(6), "Hidden Message")
              to extraneous
            move statusbar-pop(widget-record(6)) to extraneous
+           
+           *> try a timer
+           set handle-timer-pointer to entry "handle-timer"
+           call "g_timeout_add" using
+               by value statusbar-pause
+               by value handle-timer-pointer
+               by reference widget-record(6)
+               returning statusbar-timer-tag
+           end-call   
 
            move new-combo-box-text(widget-record(2), include-entry,
                "see-combo-box-text", "Besting Festing Testing         ",
@@ -396,6 +413,13 @@ code   procedure division.
           *> Control can pass back and forth to COBOL subprograms,
           *>  by event, but control flow stops above, until the
           *>  window is torn down and the event loop exits
+
+           *> cancel any statusbar timer
+           call "g_source_remove" using
+               by value statusbar-timer-tag
+               returning omitted
+           end-call
+
            display
                "GNU Cobol: first GTK eventloop terminated normally"
                upon syserr
@@ -451,7 +475,7 @@ code   procedure division.
 
           *> start up another gtk main loop    
            move gtk-go(gtk-window) to extraneous
-    
+
            display
                "GNU Cobol: second GTK eventloop terminated normally"
                upon syserr
@@ -2480,6 +2504,7 @@ code   procedure division using
                call "gtk_combo_box_set_active" using
                    by value gtk-combo-box-text
                    by value 0
+                   returning omitted
                end-call
            end-if
 
@@ -3102,7 +3127,160 @@ code   procedure division using gtk-statusbar-data returning extraneous.
 done   goback.
        end function statusbar-pop.
       *>****
+
           
+      *>****F* cobweb/combo-box-text-insert
+      *> Purpose:
+      *> Insert text to the list of strings stored in a combo box
+      *> Input:
+      *>   combo-box pointer
+      *>   index position (counted from 0, negative for append)
+      *>   id-tag string, can be NULL
+      *>   text string
+      *>   
+      *> Output:
+      *>   New selectable item in the combo-box
+      *>   image:https://developer.gnome.org/gtk3/stable/combo-box-text.png
+      *> Source:
+id     identification division.
+       function-id. combo-box-text-insert.
+
+       environment division.
+       configuration section.
+       repository.
+           function show-widget
+           function all intrinsic.
+
+data   data division.
+link   linkage section.
+       01 gtk-combo-box-text         usage pointer.
+       01 element-position           usage binary-long.
+       01 element-id                 pic x any length.
+       01 element-text               pic x any length.
+       01 extraneous                 usage binary-long.
+
+code   procedure division using
+           gtk-combo-box-text
+           element-position
+           element-id
+           element-text
+         returning extraneous. 
+
+      *> add the new text
+       call "gtk_combo_box_text_insert" using
+           by value gtk-combo-box-text
+           by value element-position
+           by content concatenate(trim(element-id), x"00")
+           by content concatenate(trim(element-text), x"00")
+           returning omitted
+       end-call
+
+      *> mark the new element as the active element
+       if element-position greater than zero then
+           call "gtk_combo_box_set_active" using
+               by value gtk-combo-box-text
+               by value element-position
+               returning omitted
+           end-call
+       else
+           call "gtk_combo_box_set_active" using
+               by value gtk-combo-box-text
+               by value 0
+               returning omitted
+           end-call
+       end-if
+
+       move show-widget(gtk-combo-box-text) to extraneous
+
+done   goback.
+       end function combo-box-text-insert.
+      *>****
+
+
+      *>****F* cobweb/combo-box-text-remove-all
+      *> Purpose:
+      *> Clear all the entries from a combo-box-text
+      *> Input:
+      *>   combo-box pointer
+      *>   
+      *> Output:
+      *>   empty combo-box
+      *>   image:https://developer.gnome.org/gtk3/stable/combo-box-text.png
+      *> Source:
+id     identification division.
+       function-id. combo-box-text-remove-all.
+
+       environment division.
+       configuration section.
+       repository.
+           function show-widget
+           function all intrinsic.
+
+data   data division.
+link   linkage section.
+       01 gtk-combo-box-text         usage pointer.
+       01 extraneous                 usage binary-long.
+
+code   procedure division using gtk-combo-box-text returning extraneous.
+
+      *> clear the list
+       call "gtk_combo_box_text_remove_all" using
+           by value gtk-combo-box-text
+           returning omitted
+       end-call
+
+       move show-widget(gtk-combo-box-text) to extraneous
+
+done   goback.
+       end function combo-box-text-remove-all.
+      *>****
+
+
+      *>****F* cobweb/combo-box-text-get-active-text
+      *> Purpose:
+      *> Get the active entry from a combo-box-text 
+      *> Source:
+id     identification division.
+       function-id. combo-box-text-get-active-text. 
+
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 gtk-text-entry       usage pointer.
+       01 gtk-text-buffer      pic x(FIELDSIZE) based.
+
+link   linkage section.
+       01 gtk-entry            usage pointer.
+       01 the-text-entry       pic x(FIELDSIZE).
+
+code   procedure division using gtk-entry
+           returning the-text-entry.
+
+       call "gtk_combo_box_text_get_active_text" using
+               by value gtk-entry
+           returning gtk-text-entry
+       end-call
+       if gtk-text-entry not equal null then
+           set address of gtk-text-buffer to gtk-text-entry
+           initialize the-text-entry
+           string
+               gtk-text-buffer delimited by x"00" into the-text-entry
+           end-string
+           call "g_free" using
+               by value gtk-text-entry
+               returning omitted
+           end-call
+       end-if
+
+done   goback.
+       end function combo-box-text-get-active-text.
+      *>****
+          
+
       *>****F* cobweb/file-contents
       *> Purpose:
       *> Return file contents as a string
@@ -3201,47 +3379,6 @@ done   goback.
       *>****
 
           
-      *>****F* cobweb/combo-box-text-get-active-text
-      *> Purpose:
-      *> Get the active entry from a combo-box-text 
-      *> Source:
-id     identification division.
-       function-id. combo-box-text-get-active-text. 
-
-       environment division.
-       configuration section.
-       repository.
-           function all intrinsic.
-
-data   data division.
-       working-storage section.
-       01 gtk-text-entry       usage pointer.
-       01 gtk-text-buffer      pic x(FIELDSIZE) based.
-
-link   linkage section.
-       01 gtk-entry            usage pointer.
-       01 the-text-entry       pic x(FIELDSIZE).
-
-code   procedure division using gtk-entry
-           returning the-text-entry.
-
-       call "gtk_combo_box_text_get_active_text" using
-               by value gtk-entry
-           returning gtk-text-entry
-       end-call
-       if gtk-text-entry not equal null then
-           set address of gtk-text-buffer to gtk-text-entry
-           initialize the-text-entry
-           string
-               gtk-text-buffer delimited by x"00" into the-text-entry
-           end-string
-       end-if
-
-done   goback.
-       end function combo-box-text-get-active-text.
-      *>****
-          
-
       *> ********************************************************
       *> demo/test functions
       *> ********************************************************
@@ -3439,4 +3576,72 @@ code   procedure division using
  
 done   goback.
        end program see-combo-box-text.
+      *>****
+
+
+      *>****T* cobweb/handle-timer [demo]
+      *> Purpose:
+      *>   Self test, connected to statusbar
+      *> Source:
+id     identification division.
+       program-id. handle-timer.
+
+       environment division.
+       configuration section.
+       repository.
+           function statusbar-pop
+           function statusbar-push
+           function all intrinsic.
+
+data   data division.
+       working-storage section.
+       01 extraneous              usage binary-long.
+
+       01 handle-timer-pointer    usage program-pointer.
+       01 statusbar-pause         usage binary-long value 1000.
+       01 statusbar-timer-tag     usage binary-long           external.
+
+       01 running-message.
+          03 filler               pic x(14) value "handle timer: ".
+             88 slower                      value "slower timer: ". 
+          03 running-count        pic 9(6).
+          03 filler               pic x value x"00".
+
+       linkage section.
+       01 gtk-statusbar-data.
+          05 gtk-statusbar        usage pointer.
+          05 filler               usage pointer.
+          05 statusbar-context    usage binary-long.
+
+code   procedure division using gtk-statusbar-data.
+
+       add 1 to running-count
+       move statusbar-pop(gtk-statusbar-data)
+         to extraneous 
+       move statusbar-push(gtk-statusbar-data, running-message) 
+         to extraneous
+
+      *> after 42 half second counts, slow it down.
+       if running-count equal 42 then
+           set handle-timer-pointer to entry "handle-timer"
+           call "g_timeout_add" using
+               by value statusbar-pause
+               by value handle-timer-pointer
+               by reference gtk-statusbar-data
+               returning statusbar-timer-tag
+           end-call
+       
+         *> change the statusbar message
+           set slower to true
+           move zero to running-count
+
+          *> false will reset the timer that made the original
+          *> timeout, which isn't the new one, just invoked above  
+           move 0 to return-code 
+       else
+           move 1 to return-code
+       end-if
+ 
+done   goback.
+       end program handle-timer.
       *>****
