@@ -1,0 +1,34 @@
+As of and possible before bugs have created limitations in usage:
+
+The copy books specified after COPY must be in quotes, double or single and
+it is recommended to include the extention as I am not sure of where the error
+is so use COPY "foo.bar".  instead of COPY foo.bar. where .bar is the extention
+name used.
+
+There is no working support for replacing multi lines of a single target, e.g.,
+
+REPLACING ==fred== BY ==joe==   works but
+
+REPLACING ==fred== BY
+==joe
+ albert
+ henry ==
+
+does not.
+
+Some of these errors are the result of code changes between versions and the
+later, is logic issues within the COPY tables and the way it is currently set
+up or not as the case may be.
+
+I will resolve these issues in the new year on the assumption that surgery for
+my eye's works that will be done late in December. The other eye I do not have
+a date for.
+
+Trying to find errors in code is somewhat tricky when working with one 
+semi-good eye that gets blurred because of cataracts. The other eye is permi-
+blurred for which I ham having surgery!
+
+Vincent
+6 December 2014.
+
+
