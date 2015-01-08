@@ -23,7 +23,7 @@
 *>
 *> Author:       Laszlo Erdos - https://www.facebook.com/wortfee
 *>
-*> Date-Written: 2014.12.24
+*> Date-Written: 2015.01.08
 *>
 *> Tectonics:    Example for static link.
 *>               cobc -x -free digits.cob cobjapi.o \
