@@ -75,30 +75,41 @@ documentation_license.pdf Documentation license for all docs as a pdf
 documentation_license.odt ---  Ditto in LibreOffice format -----
 get-reserved-lists.cbl  Cobol source code of module called by cobxref.
 get-reserved-lists.lst	XREF listing via -X.
-readme                  This file
+README                  This file
 TODO                    Lists any outstanding programming or new functionality.
 
 NOTES:
 *****
 
 You must compile using an up to date version of GNUCobol (c) but not less
-than version 1.1 dated Feb 2009 but will work best using v2.x.
-
-These notes relate to versions of cobxref prior to the code being added to the
-GNUCobol distribution and later.
+than version 1.1 dated Feb 2009 but will work best using v2.x. Current testing
+is with v2.1.
 
 Please also read Cobxref.txt for instructions on using cobxref.
 
-As any bug fixes will be applied to the Cobol code please note that
-all bug fixes should only be made to the original Cobol source code.
 A master copy of the sources can be found at the sourceforge web site
 for GNUCobol in the contrib folders located at:
 https://sourceforge.net/p/open-cobol/contrib/HEAD/tree/trunk/tools/cobxref/
 
 and use the "Download snapshot" function shown near the top on the right.
 
+and the latest sources on the primary cobxref SF area at:
+https://sourceforge.net/projects/cobxref/GNUCobol-Cobxref/ cobxref-GNUCobol-Cobxref
+
+and use the "Download snapshot" function shown near the top on the right.
+
+Or you can get the latest archived file:
+
+https://sourceforge.net/projects/cobxref/files/latest/download?source=files
+
+This project area (cobxref) also has the work in progress for the IBM MVS Ansi Cobol version at:
+https://sourceforge.net/projects/cobxref/IBM-MVS-38J-Ansi-Cobol/ cobxref-IBM-MVS-38J-Ansi-Cobol
+
 Please report all bugs found to the GNUCobol contrib forum at
 https://sourceforge.net/p/open-cobol/discussion/contrib/
-and send a copy to the author at vbcoen@btconnect.com if urgent/showstopper.
+and send a copy to the author at vbcoen@gmail.com if urgent/showstopper.
 
-last updated 2nd November, 2014 (c) Vincent B Coen
+Bugs for the IBM version direct to author at vbcoen@gmail.com with a subject of MVS bug.
+
+last updated 14th November, 2014 (c) Vincent B Coen
+
