@@ -317,7 +317,7 @@ Find_Link( char *word_begin,
     {
         switch ( pass )
         {
-        case 0:  /* BWT: 20140829 adding dash */
+        case 0:
             {
                 for ( cur_char = word_begin;
                       ( *cur_char == '_' ) || ( (course_of_action.do_hyphens && *cur_char == '-' )) || utf8_isalnum( *cur_char ) || utf8_ispunct( *cur_char );
@@ -332,7 +332,7 @@ Find_Link( char *word_begin,
                       ( *cur_char == ':' ); cur_char++ );
                 break;
             }
-        case 2:  /* BWT: 20140824, adding dash */
+        case 2:
             {
                 for ( cur_char = word_begin;
                       utf8_isalnum( *cur_char ) || ( *cur_char == '_') || ( (course_of_action.do_hyphens && *cur_char == '-')); 

@@ -3,9 +3,10 @@
 
 
 /*
-Copyright (C) 1994-2007  Frans Slothouber, Jacco van Weert, Petteri Kettunen,
+Copyright (C) 1994-2014  Frans Slothouber, Jacco van Weert, Petteri Kettunen,
 Bernd Koesling, Thomas Aglassinger, Anthon Pang, Stefan Kost, David Druffner,
-Sasha Vasko, Kai Hofmann, Thierry Pierron, Friedrich Haase, and Gergely Budai.
+Sasha Vasko, Kai Hofmann, Thierry Pierron, Friedrich Haase, and Gergely Budai,
+Brian Tiffin.
 
 This file is part of ROBODoc
 
@@ -2049,7 +2050,7 @@ static void Generate_Item(
             /* Get back to working dir */
             RB_Change_Back_To_CWD(  );
         }
-        /* BWT 20140910 include item */
+        /* BWT 20140910 include file with copy piping tool */
         else if ( !Works_Like_SourceItem( item_type ) &&
                   ( item_line->kind == ITEM_LINE_INCLUDE ) )
         {
@@ -2509,7 +2510,7 @@ static void Generate_Item_Line(
                      * switch to the search link state.
                      */
                     state = SEARCH_LINK;
-                }  /* BWT: 20140824 */
+                }
                 else if ( utf8_isalnum( c ) || ( c == '_' ) || (( course_of_action.do_hyphens && c == '-' )) )
                 {
                     state = SEARCH_LINK_START_WORD;
@@ -2535,7 +2536,7 @@ static void Generate_Item_Line(
                      * back to the space skipping state
                      */
                     state = SKIP_SPACE;
-                }  /* BWT: added dash */
+                }
                 else if ( utf8_ispunct( c ) && ( c != '_' ) && ( (course_of_action.do_hyphens && c != '-')) )
                 {
                     /* We found a puntuation character, this end
@@ -2555,7 +2556,7 @@ static void Generate_Item_Line(
             /* In this state we are at the start of a string
              * of alpha numeric characters.
              */
-            {      /* BWT added dash */
+            {
                 if ( utf8_isalnum( c ) || ( c == '_' ) || ( (course_of_action.do_hyphens && c == '-')) )
                 {
                     /* We are not at the second character of
@@ -2565,7 +2566,7 @@ static void Generate_Item_Line(
                      * such a string.
                      */
                     state = SKIP_ALPHANUM;
-                }  /* BWT added dash */
+                }
                 else if ( utf8_ispunct( c ) && ( c != '_' ) && ( (course_of_action.do_hyphens && c != '-')) )
                 {
                     state = SEARCH_LINK;
@@ -2585,7 +2586,7 @@ static void Generate_Item_Line(
                 /* In this state we search for links. We stop
                  * searching if we encounter a space because this
                  * marks end of the word,
-                 */     /* BWT added dash */
+                 */
                 if ( utf8_isalnum( c ) || ( c == '_' ) || ( (course_of_action.do_hyphens && c == '-')) )
                 {
                     /* We are at the start of a word.

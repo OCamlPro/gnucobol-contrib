@@ -1,7 +1,8 @@
 /*
-Copyright (C) 1994-2007  Frans Slothouber, Jacco van Weert, Petteri Kettunen,
+Copyright (C) 1994-2014  Frans Slothouber, Jacco van Weert, Petteri Kettunen,
 Bernd Koesling, Thomas Aglassinger, Anthon Pang, Stefan Kost, David Druffner,
-Sasha Vasko, Kai Hofmann, Thierry Pierron, Friedrich Haase, and Gergely Budai.
+Sasha Vasko, Kai Hofmann, Thierry Pierron, Friedrich Haase, and Gergely Budai,
+Brian Tiffin.
 
 This file is part of ROBODoc
 

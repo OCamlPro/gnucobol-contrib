@@ -1,4 +1,4 @@
-COBODoc Version 4.99.41Cobol Sep 2014.
+COBODoc Version 4.99.42Cobol Sep 2014.
 
 ROBODoc was modified to be more friendly to COBOL sources, by adding
 dash to identifiers.  This will break most other uses of ROBODoc,
@@ -6,7 +6,7 @@ tripping code expressions that use the minus operator.
 
 Also added a |copy piping tool, to include text, as-is.
 
-ROBODoc Version 4.99.41 Feb 2011.
+ROBODoc Version 4.99.42 Jul 2013.
 
 ROBODoc is program documentation tool. The idea is to include for
 every function or procedure a standard header containing all
@@ -51,6 +51,6 @@ o Stefan Kost <kost -a-t- imn.htwk-leipzig.de>
 
 Questions, found a bug or a typo; send an email to [rfsber -a-t- xs4all.nl]
 
-(c) 1994-2011  Frans Slothouber, Petteri Kettunen, and Jacco van Weert 
+(c) 1994-2013  Frans Slothouber, Petteri Kettunen, and Jacco van Weert 
 
 
