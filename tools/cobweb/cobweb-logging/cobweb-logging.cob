@@ -275,7 +275,7 @@ by priority, and most likely end up in ``/var/log/messages``, if default
 configurations are in place.
 
 *By the way, ``LOG-PERROR`` sets an option flag to also send log messages to
-``stderr`` and the LOG-PID sets `a flag to include the process id in the
+``stderr`` and the LOG-PID sets a flag to include the process id in the
 formatted log entry.*
 
 .. note::
