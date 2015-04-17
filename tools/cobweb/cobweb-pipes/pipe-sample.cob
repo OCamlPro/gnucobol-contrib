@@ -51,7 +51,7 @@ GCobol >>SOURCE FORMAT IS FREE
       *> a file pointer
        01 pipe-record.
           05 pipe-pointer      usage pointer.
-          05 filler            usage pointer.
+          05 pipe-return       usage binary-long.
 
       *> return of fgets and fputs
        01 pipe-record-out.
@@ -69,10 +69,12 @@ GCobol >>SOURCE FORMAT IS FREE
       *> write to pipe test?
        if write-test then     
            move pipe-open("cat", "w") to pipe-record
-           move pipe-write(pipe-record, "test 1" & x"0a")
-             to pipe-record-out
-           move pipe-write(pipe-record, "test 2") to pipe-record-out
-           move pipe-close(pipe-record) to return-code
+           if pipe-return not equal 255 then 
+               move pipe-write(pipe-record, "test 1" & x"0a")
+                 to pipe-record-out
+               move pipe-write(pipe-record, "test 2") to pipe-record-out
+               move pipe-close(pipe-record) to return-code
+           end-if
            goback
        end-if
 
@@ -82,14 +84,16 @@ GCobol >>SOURCE FORMAT IS FREE
                "graph -TX -x 1 13 -y -1000 6000" &
                " -X 'Month' -Y 'Pennies' -S 4", "w")
              to pipe-record
-           move pipe-write(pipe-record,
-               "1 1234 2 2345 3 3456 4 1234" &
-               " 5 4567 6 3456 7 5678 8 2345" &
-               " 9 4567 10 3456 11 5678 12 -500")
-             to pipe-record-out
-           move pipe-close(pipe-record) to return-code
-           if return-code not equal 0 then
-               display "return-code: " return-code
+           if pipe-return not equal 255 then 
+               move pipe-write(pipe-record,
+                   "1 1234 2 2345 3 3456 4 1234" &
+                   " 5 4567 6 3456 7 5678 8 2345" &
+                   " 9 4567 10 3456 11 5678 12 -500")
+                 to pipe-record-out
+               move pipe-close(pipe-record) to return-code
+               if return-code not equal 0 then
+                   display "return-code: " return-code
+               end-if
            end-if
            goback
        end-if
@@ -99,24 +103,26 @@ GCobol >>SOURCE FORMAT IS FREE
            move 'units "miles per hour" "furlongs/fortnight" -t'
              to pipe-command
            move pipe-open(pipe-command, "r") to pipe-record
-           move pipe-read(pipe-record, pipe-line) to pipe-record-out
-
-           unstring pipe-line delimited by x"0a" into pipe-line
-               count in read-length
-           end-unstring
-           move pipe-line(1 : read-length) to display-speed
-           display
-               "units reports, " pipe-line(1 : read-length)
-               ", as s9(8)v9(8), 1 mile per hour is "
-               display-speed " furlongs/fortnight" 
-           end-display
+           if pipe-return not equal 255 then 
+               move pipe-read(pipe-record, pipe-line) to pipe-record-out
     
-           move pipe-close(pipe-record) to pipe-status
-           if pipe-status not equal zero then
+               unstring pipe-line delimited by x"0a" into pipe-line
+                   count in read-length
+               end-unstring
+               move pipe-line(1 : read-length) to display-speed
                display
-                   "Yeah, that result is very likey invalid: "
-                   pipe-status upon syserr
+                   "units reports, " pipe-line(1 : read-length)
+                   ", as s9(8)v9(8), 1 mile per hour is "
+                   display-speed " furlongs/fortnight" 
                end-display
+        
+               move pipe-close(pipe-record) to pipe-status
+               if pipe-status not equal zero then
+                   display
+                       "Yeah, that result is very likey invalid: "
+                       pipe-status upon syserr
+                   end-display
+               end-if
            end-if
            goback
        end-if
@@ -136,6 +142,9 @@ GCobol >>SOURCE FORMAT IS FREE
       *> default action, read test using command line arguments
       *> pass args to pipe, display the output
        move pipe-open(trim(command-arguments), "r") to pipe-record
+       if pipe-return equal 255 then 
+           goback
+       end-if
 
       *> the pipe-line may include a newline and will be null terminated
        move pipe-read(pipe-record, pipe-line) to pipe-record-out

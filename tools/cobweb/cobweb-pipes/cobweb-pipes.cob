@@ -56,7 +56,7 @@ GCobol >>SOURCE FORMAT IS FREE
        01 pipe-mode            pic x any length.
        01 pipe-record.
           05 pipe-pointer      usage pointer.
-          05 filler            usage binary-long.
+          05 pipe-return       usage binary-long.
 
       *> ***************************************************************
        procedure division using
@@ -64,20 +64,20 @@ GCobol >>SOURCE FORMAT IS FREE
            pipe-mode
          returning pipe-record.
 
-       call static "popen" using
+       call "popen" using
            by content concatenate(trim(pipe-command), x"00")
            by content concatenate(trim(pipe-mode), x"00")
          returning pipe-pointer
          on exception
              display "link error: popen" upon syserr end-display
-             move 255 to return-code
+             move 255 to pipe-return
              goback
        end-call
 
        if pipe-pointer equal null then
            display "exec error: popen" upon syserr end-display
-           move 255 to return-code
-           goback
+             move 255 to pipe-return
+             goback
        end-if
 
        goback.
@@ -133,7 +133,7 @@ GCobol >>SOURCE FORMAT IS FREE
          returning pipe-read-status
          on exception
              display "link error: fgets" upon syserr end-display
-             move 255 to return-code
+             move 0 to characters-read
              goback
        end-call
 
@@ -186,7 +186,7 @@ GCobol >>SOURCE FORMAT IS FREE
          returning pipe-write-status
          on exception
              display "link error: fputs" upon syserr end-display
-             move 255 to return-code
+             move 255 to pipe-write-status
              goback
        end-call
 
@@ -230,7 +230,7 @@ GCobol >>SOURCE FORMAT IS FREE
          returning pclose-status
          on exception
              display "link error: pclose" upon syserr end-display
-             move 255 to return-code
+             move 255 to pclose-status
              goback
        end-call
 
