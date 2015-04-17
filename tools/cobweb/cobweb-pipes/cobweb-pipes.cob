@@ -51,6 +51,12 @@ GCobol >>SOURCE FORMAT IS FREE
            function all intrinsic.
 
        data division.
+       working-storage section.
+>>IF WIN_NO_POSIX NOT DEFINED
+       78 popen                value "popen".
+>>ELSE
+       78 popen                value "_popen".
+>>END-IF
        linkage section.
        01 pipe-command         pic x any length.
        01 pipe-mode            pic x any length.
@@ -64,7 +70,7 @@ GCobol >>SOURCE FORMAT IS FREE
            pipe-mode
          returning pipe-record.
 
-       call "popen" using
+       call static popen using
            by content concatenate(trim(pipe-command), x"00")
            by content concatenate(trim(pipe-mode), x"00")
          returning pipe-pointer
@@ -126,7 +132,7 @@ GCobol >>SOURCE FORMAT IS FREE
          returning pipe-record-out.
 
        move length(line-buffer) to line-buffer-length
-       call "fgets" using
+       call static "fgets" using
            by reference line-buffer
            by value line-buffer-length
            by value pipe-pointer
@@ -180,7 +186,7 @@ GCobol >>SOURCE FORMAT IS FREE
            line-buffer
          returning pipe-record-out.
 
-       call "fputs" using
+       call static "fputs" using
            by content concatenate(trim(line-buffer), x"00")
            by value pipe-pointer
          returning pipe-write-status
@@ -215,6 +221,11 @@ GCobol >>SOURCE FORMAT IS FREE
 
        data division.
        working-storage section.
+>>IF WIN_NO_POSIX NOT DEFINED
+       78 pclose               value "pclose".
+>>ELSE
+       78 pclose               value "_pclose".
+>>END-IF
 
        linkage section.
        01 pipe-record.
@@ -225,7 +236,7 @@ GCobol >>SOURCE FORMAT IS FREE
       *> ***************************************************************
        procedure division using pipe-record returning pclose-status.
 
-       call "pclose" using
+       call static pclose using
            by value pipe-pointer
          returning pclose-status
          on exception

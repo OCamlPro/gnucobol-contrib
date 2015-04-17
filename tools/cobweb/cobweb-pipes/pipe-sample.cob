@@ -3,21 +3,22 @@ GCobol >>SOURCE FORMAT IS FREE
       *> ***************************************************************
       *>****P* cobweb/pipes
       *> AUTHOR
-      *>   Brian Tiffin
+      *>     Brian Tiffin
       *> DATE
-      *>   20150216
+      *>     20150217
       *> LICENSE
-      *>   GNU General Public License, GPL, 3.0 (or greater)
+      *>     GNU General Public License, GPL, 3.0 (or greater)
       *> PURPOSE
-      *>   Purpose: pipe execute and read or write
+      *>     Purpose: pipe execute and read or write
       *> TECTONICS
-      *>   cobc -x pipes.cob cobweb-pipes.cob -g -debug
+      *>     cobc -x pipe-sample.cob cobweb-pipes.cob -g -debug
+      *> or: cobc -x -DWIN_NO_POSIX pipe-sample.cob cobweb-pipes.cob -g -debug
       *> ***************************************************************
       
        REPLACE ==:BUFFER-SIZE:== BY ==32768==.
 
        identification division.
-       program-id. pipes.
+       program-id. pipe-sample.
 
        environment division.
        configuration section.
@@ -60,6 +61,13 @@ GCobol >>SOURCE FORMAT IS FREE
           05 pipe-write-status usage binary-long.
        01 pipe-status          usage binary-long.
 
+      *> constant for used "cat" command (for using "more" on native win)
+>>IF WIN_NO_POSIX NOT DEFINED
+       78 cat                  value "cat".
+>>ELSE
+       78 cat                  value "more".
+>>END-IF
+
       *> ***************************************************************
        procedure division.
 
@@ -68,7 +76,7 @@ GCobol >>SOURCE FORMAT IS FREE
 
       *> write to pipe test?
        if write-test then     
-           move pipe-open("cat", "w") to pipe-record
+           move pipe-open(cat, "w") to pipe-record
            if pipe-return not equal 255 then 
                move pipe-write(pipe-record, "test 1" & x"0a")
                  to pipe-record-out
@@ -130,7 +138,7 @@ GCobol >>SOURCE FORMAT IS FREE
        if command-arguments equal spaces then
            display
                "cobweb-pipes sample and tests" newline
-               "Usage: pipes [option | shell command]" newline 
+               "Usage: pipe-sample [option | shell command]" newline 
                "  options: --write, write two line to cat`" newline 
                "           --units, call 'units', get speed" newline 
                "           --graph, pop up an X11 graph output" newline 
@@ -172,10 +180,10 @@ GCobol >>SOURCE FORMAT IS FREE
        move pipe-status to return-code
 
        goback.
-       end program pipes.
+       end program pipe-sample.
 >>ELSE
 ============
-pipes usage
+pipe-sample usage
 ============
 
 Introduction
@@ -194,6 +202,6 @@ results.
 Source
 ------
 
-.. code-include::  pipes.cob
+.. code-include::  pipe-sample.cob
    :language: cobol
 >>END-IF
