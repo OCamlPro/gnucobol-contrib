@@ -8,7 +8,7 @@ REPLACE ==SAMPLE== BY ==program-name==.
       *> DATE
       *>   20150405
       *> LICENSE
-      *>   GNU General Public License, GPL, 3.0 (or greater)
+      *>   GNU Lesser General Public License, LGPL, 3.0 (or greater)
       *> PURPOSE
       *>   SAMPLE program.
       *> TECTONICS
@@ -50,6 +50,7 @@ REPLACE ==SAMPLE== BY ==program-name==.
       *>  important than ERR.
        compute new-logging-mask = (2 ** (LOG-ERR + 1)) - 1 end-compute
        move mask-log(new-logging-mask) to default-log-mask
+       display default-log-mask
        move write-log(LOG-INFO, "this is a post mask info test")
          to return-code
        move write-log(LOG-ERR, "this is a post mask error test")

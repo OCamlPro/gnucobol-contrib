@@ -267,8 +267,8 @@ or for finer control
 
     move open-log("cobweb", LOG-PERROR + LOG-PID, LOG-LOCAL3) to return-code
     move write-log(LOG-ERR, "cobweb error message") to return-code
-    move setlogmask(LOG-EMERG) to previous-mask
-    move write-log(LOG-ERR, "another cobweb error message") to return-code 
+    move setlogmask(LOG-EMERG-MASK + LOG-ALERT-MASK + LOG-CRIT-MASK) to previous-mask
+    move write-log(LOG-ERR, "a masked off cobweb error message") to return-code 
 
 ``open-log``, and ``close-log`` are optional; default write-log will be
 by priority, and most likely end up in ``/var/log/messages``, if default
@@ -283,6 +283,25 @@ formatted log entry.*
     The open-log option flags are usually OR'ed together, this uses
     addition, for a similar effect, in this case.
 
+    mask-log accepts a bitmask. To only log EMERG, use value 1,
+    bit 0 on.  For ERR or greater priority (lower values),
+    use 8 + 4 + 2 + 1.  For debugging, use all 8 bits on, 255.
+    cobweb-logging.cpy include priority mask values along with
+    enumerated value expected by write-log.
+
+    *default, on Fedora 21, as shipped, is all bits on*.
+
+Priorities
+----------
+
+* LOG-EMER,        LOG-EMER-MASK, 1
+* LOG-ALERT,      LOG-ALERT-MASK, 2
+* LOG-CRIT,        LOG-CRIT-MASK, 4
+* LOG-ERR,          LOG-ERR-MASK, 8
+* LOG-WARNING, LOG-WARNING-MASK, 16
+* LOG-NOTICE,   LOG-NOTICE-MASK, 32
+* LOG-INFO,       LOG-INFO-MASK, 64
+* LOG-DEBUG,    LOG-DEBUG-MASK, 128
 
 Source
 ------
