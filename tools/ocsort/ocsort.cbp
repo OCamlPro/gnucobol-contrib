@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ocsort" />
+		<Option makefile_is_custom="1" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="ocsort" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/ocsort" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="COPYING" />
+		<Unit filename="INSTALL" />
+		<Unit filename="Makefile" />
+		<Unit filename="README" />
+		<Unit filename="THANKS" />
+		<Unit filename="TODO" />
+		<Unit filename="condfield.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="condfield.h" />
+		<Unit filename="fieldvalue.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="fieldvalue.h" />
+		<Unit filename="file.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="file.h" />
+		<Unit filename="job.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="job.h" />
+		<Unit filename="ocsort.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ocsort.h" />
+		<Unit filename="outrec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="outrec.h" />
+		<Unit filename="parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="parser.h" />
+		<Unit filename="parser.y" />
+		<Unit filename="scanner.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="scanner.h" />
+		<Unit filename="scanner.l" />
+		<Unit filename="sortfield.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sortfield.h" />
+		<Unit filename="utils.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="utils.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,19 @@
+OCSort 0.0.1
+
+OCSort is an open source sort tool, which implement a subset of the functionnality of the Microfocus(c) MFSORT(c) utility.
+
+This program is distributed under the GNU General Public License. See COPYING for details.
+
+Functionnality supported :
+
+	SORT FIELDS (only CH and BI type of field)
+	INCLUDE COND
+	OMIT COND
+	USE (multiple file, and only sequential fixed record length)
+	GIVE (just one file, and only sequential fixed record length)
+	OUTREC FIELDS (not everythin)
+	SUM FIELDS
+
+
+
+
