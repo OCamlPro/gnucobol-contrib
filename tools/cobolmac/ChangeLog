@@ -1,0 +1,31 @@
+This is the Modification History (ChangeLog) for CobolMac.
+
+Note: The items in this list are held in newest first order.
+
+Version: B.00.00  May 2015  Robert W.Mills (robertw-mills@users.sf.net).
+
+  - Reorganised the working storage and code to make later changes easier.
+  - Moved the macro syntax text to the CobolMac manual.
+  - Implemented the $DEFINE command (see item 1 in TODO). This replaces the
+    macro text held in external files with text that is defined in-line.
+  - Removed the -v, -m and -x options as they are no longer required.
+  - Removed the --macro option as the macro syntax is now documented in the
+    CobolMac manual.
+  - Renamed the -q option to --quiet.
+  - Added the --hardwarn option. This causes all warnings to be treated as if
+    they were fatal errors.
+  - Only two status values are returned by the program:
+      - 0 (zero) indicates that the program completed without any errors.
+      - 1 (one) indicates that the program terminated in an error state.
+          A tombstone will have been written to stderr prior to termination.
+          Note: The output file, if created, is incomplete/corrupt.
+  - Implemented the $INCLUDE command.
+
+Version: A.00.00  November 2014  Robert W.Mills (robertw-mills@users.sf.net).
+
+  - Changed version number in preperation for inital release.
+  - This version was never loaded into the GnuCOBOL SVN Repository.
+
+Version: x.00.00  May 2014  Robert W.Mills (robertw-mills@users.sf.net)
+
+  - Start of development.

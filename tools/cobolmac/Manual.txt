@@ -1,0 +1,644 @@
+
+                      CobolMac: a COBOL Macro Preprocessor
+
+                        User Manual for Version B.00.00
+
+
+                            Copyright (C) 2014-2015
+                                      by
+                   Robert W.Mills <robertw-mills@users.sf.net>
+
+--------------------------------------------------------------------------------
+
+Permission is granted to copy, distribute and/or modify this document under the
+terms of the GNU Free Documentation License, Version 1.3 or any later version
+published by the Free Software Foundation; with no Invariant Sections, no Front-
+Cover Texts, and no Back-Cover Texts. A copy of the license is included in the
+section entitled "GNU Free Documentation License".
+
+The program, CobolMac, described by this document is free software: you can
+redistribute it and/or modify it under the terms of the GNU General Public
+License as published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+CobolMac is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License, Version 3,
+along with this program.
+
+--------------------------------------------------------------------------------
+
+0. Table of Contents
+
+  1.0 Description
+
+  2.0 Program Usage
+
+  3.0 CobolMac Commands
+
+    3.1 $DEFINE
+    3.2 $PREPROCESSOR
+    3.3 $INCLUDE
+
+  4.0 Examples
+
+  5.0 Defining and Using Macros
+
+  6.0 Relationship of Formal to Actual Parameters
+
+  7.0 Hewlett-Packard e3000 Preprocessor Commands
+
+    7.1 $CONTROL
+    7.2 $COPYRIGHT
+    7.3 $IF
+    7.4 $PAGE
+    7.5 $SET
+    7.6 $TITLE
+    7.7 $VERSION
+
+--------------------------------------------------------------------------------
+
+1.0 Description
+
+  CobolMac is a COBOL Macro Preprocessor utility that reads a COBOL source file
+  prior to processing by GnuCOBOL's Compiler.
+
+  It is implemented as a command-line filter that emulates the Macro capability
+  available with the Hewlett-Packard e3000 COBOL II/iX Compiler.
+
+  It allows the user to define pre-written code which is incorporated into the
+  source code. Macros can have up to nine formal parameters. In the definition
+  actual parameters are supplied to replace the formal parameters when the macro
+  is called in the source program.
+
+  A good library of pre-tested Macros can greatly speed program writing, and can
+  also be used to assist portability of code, with the differences between COBOL
+  dialects being hidden in the Macro Definitions.
+
+  In Don Nelson's "COBOL 85 for Programmers", he says about the COPY...REPLACING
+  & REPLACE statements:
+
+    "The rules are complex and are actually ambiguous in some cases."
+
+  Right there, that's something of a warning, and he goes on to say much about
+  behaviors to beware of. He also warns that "One problem is that only words are
+  replaced, not parts of words."
+
+  Note: If used to preprocess FIXED FORMAT files then extra care must be taken
+        when defining the macros to ensure that all added code resides in the
+        correct areas - Area A (cols 7 to 11) and Area B (cols 12 to 72).
+
+--------------------------------------------------------------------------------
+
+2.0 Program Usage
+
+  Syntax:
+
+    $ cobolmac [options] <input >output [2>messages]
+
+    $ cat input | cobolmac [options] [2>messages] | cat - >output
+
+  Parameters:
+
+    options        The available values are:
+
+      --help       Display this text and exit.
+      --version    Display the preprocessor version and exit.
+      --hardwarn   Treat all warnings like an error.
+      --verbose    Include Macro Begin/End comment lines.
+      --debug      Display additional error information.
+      --maclib     List the contents of the Macro Library.
+                   Only active if Standard Error has been redirected.
+
+    input          [path/]name of the file Standard Input redirected to.
+
+    output         [path/]name of the file Standard Output redirected to.
+
+    messages       [path/]name of optional file Standard Error redirected to.
+
+  Return Codes:
+
+    0 (zero)       Program completed without any errors.
+    1 (one)        Program terminated in an error state.
+                   Details written to Standard Error prior to termination.
+                   The output file, if created, is incomplete/corrupt.
+
+--------------------------------------------------------------------------------
+
+3.0 CobolMac Commands
+
+  The following commands are supported by the CobolMac Preprocessor.
+
+  3.1 $DEFINE
+
+    The $DEFINE command is used to define a macro. When you define a macro, you
+    associate a macro name with a string of text. It has the following format:
+
+    $DEFINE %macro-name=[string-text]#
+
+    Parameters:
+
+      macro-name   The name of the macro being defined. It consists of an
+                   initial percent sign, %, followed by an alphabetic character,
+                   followed by zero or more alphanumeric characters.
+
+                   The length of the macro name may be up to 70 characters long.
+
+      string-text  Can be any text you choose. However, because this text is
+                   sent to the compiler, it must be a valid COBOL statement or
+                   sentence, with one exception. This exception is the use of
+                   formal parameters in the string-text. Formal parameters are
+                   described later in this section.
+
+    Description:
+
+      Note that string-text is delimited by an equal sign and a hash, '#', sign.
+      The hash sign is the delimiter of the entire definition.
+
+      Nested $DEFINE commands and recursive macros are not supported.
+
+  3.2 $PREPROCESSOR
+
+    The $PREPROCESSOR command allows you to change the default characters used
+    in macro definitions and names.
+
+    It has the following format:
+
+      $PREPROCESSOR parameter=subparameter [, parameter=subparameter ]
+
+    where parameter and subparameter have the following values:
+
+      parameter    Is one of the keywords shown below. Each may be used only
+                   once in a given $PREPROCESSOR command.
+
+        KEYCHAR    Specifies the initial character of all macro names is to be
+                   subparameter.
+
+                   The default character is the % (percent).
+
+        PARMCHAR   Specifies the initial character of all formal parameters in
+                   macro definitions is to be subparameter.
+
+                   The default character is the ! (exclamation mark).
+
+        DELIMITER  Specifies the delimiting character in a macro string-text and
+                   actual parameters is to be subparameter.
+
+                   The default character is the # (hash).
+
+      subparameter Is the character to be used in replacing the currently used
+                   initial character or delimiter.
+
+    Note that care must be taken when you change the initial characters and the
+    string-text delimiter, because there may be cases when you use one of the
+    newly defined characters in your string-text as part of the string-text
+    itself, and not as a delimiter or an initial character.
+
+    The following example shows how the $PREPROCESSOR command is used when you
+    define a macro that invokes another macro (aka a Nested Macro). It is the
+    only time that you should need to use the $PREPROCESSOR command.
+
+      *> Macro ReadError(paragraph#,file-name#,file-status#)
+
+      $define %ReadError=
+      display "Error ", !3, " in paragraph ", !1, " reading file ", !2 end-display
+      goback#
+
+      $preprocessor delimiter=~
+
+      *> Macro ReadFile(paragraph#,file-name#)
+
+      $define %ReadFile=
+      read !2 end-read
+
+      evaluate file-status
+        when read-success
+          perform process-record
+        when end-of-file
+          perform process-eof
+        when other
+          *> Report the error and exit the program.
+          %ReadError(!1#,!2#,file-status#)
+      end-evaluate~
+
+      $preprocessor delimiter=#
+
+    The above example assumes the following:
+
+    * file-status is the file status data item in the files select statement.
+    * read-success is an 88 level under file-status with a value of "00".
+    * end-of-file is an 88 level under file-status with a value of "10".
+    * process-record is a section/paragraph performed when a record is found.
+    * process-eof is a section/paragraph performed when a record is not found.
+
+    Note: If the DELIMITER had not been changed to ~ before the define of the
+    ReadFile macro then the first # character in the call to the ReadError macro
+    would have been treated as the ReadFile macro terminator.
+
+  3.3 $INCLUDE
+
+    The $INCLUDE command allows you to specify an entire file to be read, line
+    by line, into the preprocessor as part of your source file.
+
+    It has the following format:
+
+      $INCLUDE filename
+
+    where filename is the name of the file, including path, whose records are to
+    be read into the preprocessor.
+
+    $INCLUDE commands may be nested to whatever depth you require. That is, the
+    file that is being included may itself have a $INCLUDE command in it. The
+    only limitations are the maximum file size and the available disc space for
+    the preprocessed file.
+
+--------------------------------------------------------------------------------
+
+4.0 Examples
+
+  The file Examples/Macros.inc shows some examples of how Macros are defined.
+
+  Each example is precedded by a comment box that shows the calling syntax and
+  describes the action(s) performed by the Macro.
+
+--------------------------------------------------------------------------------
+
+5.0 Defining and Using Macros
+
+  The preprocessor associates a macro name with a string of text. Macros can
+  have up to nine formal parameters. In the definition actual parameters are
+  supplied to replace the formal parameters when the macro is called in the
+  source program.
+
+    Example:
+
+      $DEFINE %INCA=
+      ADD 1 TO ALPHA-COUNTER.
+      ADD ALPHA-COUNTER TO BETA-COUNTER.
+      *> Increment the values of counters alpha-counter and beta-counter.
+      #
+
+    In the above example, the entire definition of the macro, %INCA, is the
+    following set of sentences:
+
+      ADD 1 TO ALPHA-COUNTER.
+      ADD ALPHA-COUNTER TO BETA-COUNTER.
+      *> Increment the values of counters alpha-counter and beta-counter.
+
+    When the $DEFINE command is processed, the string-text that makes up the
+    definition of the macro is stored exactly as it appears in the command.
+    All end-of-line markers and sequence numbers are saved. The only exception
+    to this rule is that if all characters between the equal sign in the macro
+    definition and the end of the text line in which the definition begins are
+    blank, then only the end-of-line marker is saved, and the macro definition
+    begins in the first column of the next line. This allows you to control the
+    initial column of the macro definition without worrying about the column
+    position of the macro name when it is called. Below is an illustration:
+
+    Macro definition:
+
+      $DEFINE %ADDIT=MOVE SPACES TO DISPLY-ITM.#
+           :
+
+    Macro call:
+
+      DISPLAY DISPLY-ITM.
+      %ADDIT
+           :
+
+    Expanded source code:
+
+      DISPLAY DISPLY-ITM.
+      MOVE SPACES TO DISPLY-ITM.
+           :
+
+    Because the macro definition starts on the same line as the macro name, the
+    definition of the macro replaces the macro call starting in exactly the same
+    column as the macro call.
+
+    $DEFINE %CHECKIF=
+    IF STAT-ITEM EQUAL "10" THEN
+      PERFORM STATUS-REPORT
+    END-IF#
+
+    In this case, because the characters between the equal sign and the end of
+    the line are blamks, the macro definition starts on the next line.
+
+    Thus, when the macro call to %CHECKIF is made, the expanded source appears
+    as shown below.
+
+    Macro call:
+
+      WRITE FILE-OUT.
+      %CHECKIF
+
+    Replacement:
+
+      WRITE FILE-OUT.
+      IF STAT-ITEM EQUAL "10" THEN
+        PERFORM STATUS-REPORT
+      END-IF
+
+  Formal Parameters
+
+    A macro definition may contain up to nine formal parameters. A formal
+    parameter is designated by an exclamation point followed immediately by an
+    integer from the range 1 to 9.
+
+    Formal parameters in a macro definition are replaced by values you assign
+    when you call the macro in your source program, as illustrated below.
+
+    Source program:
+
+      $DEFINE %PERFORM=
+      PERFORM !1
+        VARYING !2 FROM !3 BY !4
+        UNTIL !5.#
+
+      %PERFORM(CHEK-PARA#, CTROL#, INIT#, OFFSET#, A = B#)
+
+    Expanded source program:
+
+      PERFORM CHEK-PARA
+        VARYING CTROL FROM INIT BY OFFSET
+        UNTIL A = B.
+
+  Macro Calls
+
+    There are two different forms of a macro call:
+
+      macro-name
+
+    and
+
+      macro-name(p1#, p2#, p3#, ..., pn#)
+
+
+  Parameters
+
+    macro-name     The name of a macro which has been previously defined in the
+                   source program, using a $DEFINE command.
+
+    p1,p2,...,pn   The actual parameters. Each of p1, p2, and so on may be
+                   either a null string or any combination of characters and
+                   numerals, including spaces. Each actual parameter begins with
+                   the first character after a preceding comma (except p1, which
+                   begins after the left parenthesis), and ends with the pound
+                   sign.
+
+    If no characters are specified for an actual parameter (that is, if an
+    actual parameter is specified by "#"), then a null string replaces its
+    corresponding formal parameter in the macro definition.
+
+    Note from the above format that there can be no intervening spaces between
+    the end of the macro name and the left parenthesis of the actual parameter
+    list.
+
+    The first method of calling a macro is used when the macro definition has no
+    formal parameters.
+
+    The second method must be used when formal parameters are specified in the
+    definition of the macro.
+
+    When a macro name is encountered in a source program, it is replaced by the
+    associated macro definition. Any formal parameters are replaced by actual
+    parameters listed in the macro call.
+
+    With two exceptions, macro names are replaced wherever they occur in the
+    source program, including quoted strings. Macro names are not expanded in a
+    comment, unless the comment itself is found in a macro, and in list and
+    compilation preprocessor commands (such as $CONTROL), where they are not recognized.</p>
+
+--------------------------------------------------------------------------------
+
+6.0 Relationship of Formal to Actual Parameters
+
+  The numeric value of a formal parameter determines which actual parameter in
+  the macro call is to replace it.
+
+  That is, for a formal parameter, !n (where n is 1 through 9), the nth actual
+  parameter from the left in the macro call replaces !n, as illustrated below.
+
+  Example 1
+
+    Macro definition:
+
+      $DEFINE %OPENSTATE=
+      OPEN INPUT !1
+      DISPLAY !2, !3 END-DISPLAY#
+
+    Macro call:
+
+      %OPENSTATE(FILE-IN#, "FILE STATISTICS"#, OPEN-STATS#)
+
+    Result of macro call:
+
+      OPEN INPUT FILE-IN
+      DISPLAY "FILE STATISTICS", OPEN-STATS END-DISPLAY
+
+  Example 2
+
+    Macro definition:
+
+      $DEFINE %COMPUTESUM=COMPUTE !1 = !2 + !3.#
+
+    Macro call:
+
+      %COMPUTESUM(INCREMEN#, OFFSETTER#, 7#)
+
+    Result of macro call:
+
+      COMPUTE INCREMEN = OFFSETTER + 7.
+
+    In the Example 2 above, !3 is replaced by the third parameter in the macro
+    call, which is 7; !2 is replaced by the second parameter, OFFSETTER, and !1
+    is replaced by the first parameter in the call, INCREMEN.
+
+    For a given macro definition, if there is a formal parameter, '!n', and if
+    there are less than 'n' actual parameters in the macro call, then any formal
+    parameter whose numeric value is greater than the number of parameters in
+    the macro call is ignored. This is illustrated in the following example.
+
+  Example 3
+
+    Macro definition:
+
+      $DEFINE %SHOWIT=DISPLAY !1, !2, !3, !5.#
+
+    Macro call:
+
+      %SHOWIT("A"#, " WORD "#, "IS "#, "MISSING"#)
+
+    Result of macro call:
+
+      DISPLAY "A", " WORD ", "IS ", .
+
+    When you specify a formal parameter in a macro definition, you can choose
+    not to use it in the macro call by entering only a comma and a hash sign in
+    the appropriate position within the macro call. This is shown in the next
+    example.
+
+  Example 4
+
+    Macro definition:
+
+      $DEFINE %INITSTUFF=
+      IDENTIFICATION DIVISION.
+      PROGRAM-ID. !1
+      AUTHOR. !2
+      DATE-COMPILED. !3#
+
+    Macro call:
+
+      %INITSTUFF(MACRO-TEST.#, #, Not Yet.#)
+
+    Result of macro call:
+
+      IDENTIFICATION DIVISION.
+      PROGRAM-ID. MACRO-TEST.
+      AUTHOR.
+      DATE-COMPILED. Not Yet.
+
+    The second actual parameter was specified as ", #". When the replacement
+    code is processed, no author name was supplied.
+
+    The format for a macro definition assures that the initial column of each
+    line in the macro definition maps onto the same column when the macro
+    definition is inserted into the source program at macro call time. This
+    could cause a wraparound of the replacement text when actual parameters are
+    substituted in the definition.
+
+--------------------------------------------------------------------------------
+
+7.0 Hewlett-Packard e3000 Preprocessor Commands
+
+
+  The following e3000 Preprocessor Commands are not supported by CobolMac and
+  will automatically be removed from the source file.
+
+  7.1 $CONTROL
+
+    The $CONTROL command is used to control compilation and list options.
+
+    It has the following format:
+
+      $CONTROL [option [, option]...]
+
+    where option is one or more valid options, each separated from the preceding
+    option by a comma and zero or more optional spaces.
+
+    A $CONTROL command may appear anywhere in the source text.
+
+  7.2 $COPYRIGHT
+
+    The $COPYRIGHT command is used to enter a copyright string into your object
+    file.
+
+    It has the following format:
+
+      $COPYRIGHT [string [, string]...]
+
+    where string is the data to be placed into the object file. The characters
+    of string must be preceded and followed by a quotation mark. The total
+    number of characters used in the strings is limited to 116. This includes
+    any blanks appearing in strings, but does not include the quotation marks
+    used to delimit the strings.
+
+    A $COPYRIGHT command may appear anywhere in the source text but is normally
+    placed at the beginning. Only the last $COPYRIGHT command in the source file
+    will be used.
+
+  7.3 $IF
+
+    The $IF command is used to interrogate the compilation software switches
+    (see the $SET command for additional information).
+
+    It has the following format:
+
+      $IF [Xn= {ON }]
+          [    {OFF}]
+
+    where n is an integer in the range 0 through 9.
+
+    A $IF command may appear anywhere in the source text. The appearance of an
+    $IF command with/without a parameter terminates the influence of any
+    preceding $IF command.
+
+  7.4 $PAGE
+
+    The $PAGE command allows you to replace the first line of the title portion
+    of the standard page heading in a listfile, and to advance to the next
+    logical page of the listfile.
+
+    It has the following format:
+
+      $PAGE [string [, string]...]
+
+    where string is the data to be used in replacing the first line of the
+    title. The characters of string must be preceded and followed by a quotation
+    mark. The total number of characters used in the strings is limited to 97.
+    This includes any blanks appearing in strings, but does not include the
+    quotation marks used to delimit the strings.
+
+    A $PAGE command may appear anywhere in the source text. The appearance of a
+    $PAGE command without a parameter does not change the first line of the
+    title.
+
+  7.5 $SET
+
+    The $SET command is used to turn compilation software switches on/off.
+
+    It has the following format:
+
+      $SET [Xn={ON } [, Xn={ON }]...]
+           [   {OFF} [     {OFF}]   ]
+
+    where n is an integer in the range 0 through 9.
+
+    Initially, all compilation switches are set to OFF.
+
+    A $SET command may appear anywhere in the source text. The appearance of a
+    $SET command without a parameter sets all switches to OFF.
+
+  7.6 $TITLE
+
+    The $TITLE command is similar to the $PAGE command in that it can be used to
+    replace the first line of a title in the listfile. However, it can also be
+    used to replace the second line of the title as well as the first, or only
+    the second line. Unlike the $PAGE command, it does no page advancement on
+    the logical page of the listfile.
+
+    It has the following format:
+
+      $TITLE [ (n) ] [string [, string ]...]
+
+    where n is an integer specifying which line of the title (1 or 2) is to be
+    replaced. string has the same format, restrictions and use as in the $PAGE
+    command.
+
+    A $TITLE command may appear anywhere in the source text. The appearance of a
+    $TITLE command without any parameters clears the first line of the title.
+
+  7.7 $VERSION
+
+    The $VERSION command is used to enter a version string into your object file.
+
+    It has the following format:
+
+      $VERSION [string [, string]...]
+
+    where string is the data to be placed into the object file. The characters
+    of string must be preceded and followed by a quotation mark (") or an
+    apostrophe ('). The total number of characters used in the strings is
+    limited to 255. This includes any blanks appearing in strings, but does not
+    include the quotation marks used to delimit the strings.
+
+    A $VERSION command may appear anywhere in the source text but is normally
+    placed at the beginning. Only the last $VERSION command in the source file
+    will be used. Use the program /SYS/PUB/VERSION to display the version
+    strings.
+
+--------------------------------------------------------------------------------
+End of CobolMac B.00.00 User Manual

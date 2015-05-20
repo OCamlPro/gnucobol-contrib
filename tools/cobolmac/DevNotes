@@ -1,0 +1,98 @@
+These are the Developer Notes (DevNotes) for CobolMac.
+
+Note: Please add any information to this file that would be of assistance to the
+      next developer working on this program.
+
+1.  Prior to release of a new version:
+
+      - Add an entry to the ChangeLog file.
+      - Update this file (see the Note: above).
+      - Increment the w100-program-v-uu-ff variable.
+          v  = A letter indicating the VERSION.
+               Increment when a MAJOR change has been made to the utility.
+          uu = A 2-digit number indicating an UPDATE to the current VERSION.
+               Set to 00 when the VERSION changes.
+          ff = A 2-digit number indicating a FIX to the current UPDATE.
+               Set to 00 when the UPDATE changes.
+
+2.  Three temporary files are used by this program. They are created in the /tmp
+    directory and are named 'cobolmac-nnnnnnnnn-n' where 'nnnnnnnnn' is a
+    9-digit random number and 'n' is either 0, 1 or 2.
+
+    File '0' is an indexed file and is used to hold the Macro Library (macrolib).
+
+    Files '1' and '2' are sequential files and are used to store the source code
+    during a processing pass.
+
+3.  The subroutine s022-delete-workfiles will require modification/replacement
+    if the compiler does not support the C$DELETE built-in system subroutine.
+
+4.  What the program does.
+
+    CobolMac will perform at least 4 'processing passes' on the source code.
+
+    Starting with the second pass, the physical files assigned to Work Input and
+    Work Output are swapped.
+
+    The first pass:
+
+      Copies the file assigned to Standard Input to Work Output.
+
+      Records containing the following '$' commands are dropped by the copy as
+      they are not supported by GnuCOBOL:
+
+        $control, $copyright, $if, $page, $set, $title and $version
+
+    The second pass:
+
+      Copies the file assigned to Work Input to Work Output.
+
+      Files named on $INCLUDE command's are copied into Work Output at the
+      point the $INCLUDE command is found.
+
+      Records in the $INCLUDE file containing the following '$' commands are
+      dropped by the copy as they are not supported by GnuCOBOL:
+
+        $control, $copyright, $if, $page, $set, $title and $version
+
+      NOTE: If the $INCLUDE file contains an $INCLUDE command then this pass
+            will be repeated until no more are found. This allows the use of
+            nested $INCLUDE files.
+
+    The third pass:
+
+      Copies the file assigned to Work Input to Work Output.
+
+      All records identified as a macro (starts with the $DEFINE command and is
+      terminated by the macro delimiter) are extracted and written to the Macro
+      Library.
+
+      Records containing the following '$' commands are dropped by the copy as
+      they are not supported by GnuCOBOL:
+
+        $control, $copyright, $if, $page, $set, $title and $version
+
+      NOTEs: The macro delimiter defaults to a '#' but this can be changed by
+             the $PREPROCESSOR command.
+
+             Duplicate macro definitions are ignored and a comment message is
+             inserted into Work Output.
+
+             If the --maclib command line option was specified, then its at this
+             point that the Macro Library is copied to Standard Error.
+
+    The fourth pass (if any $DEFINE commands were found in the third pass):
+
+      Copies the file assigned to Work Input to Work Output.
+
+      Macro 'calls' are replace by their 'definition'. If the 'call' contains
+      parameters then these are resolved.
+
+      NOTE: If the Macro 'definition' contains another 'call' then this pass
+            will be repeated until no more are found. This allows the use of
+            nested Macros.
+
+    The fifth pass:
+
+      Copies the file assigned to Work Input to Standard Output.
+      

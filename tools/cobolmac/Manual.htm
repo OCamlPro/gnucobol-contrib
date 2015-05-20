@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+
+  <head>
+    <meta name="generator" content="HTML Tidy for Linux/x86 (vers 25 March 2009), see www.w3.org">
+    <title>CobolMac: a COBOL Macro Preprocessor User Manual</title>
+  </head>
+  <body>
+
+    <center>
+      <h1>CobolMac: a COBOL Macro Preprocessor</h1>
+      <h2>User Manual for Version B.00.00</h2>
+      <h2>Copyright &copy; 2014-2015 by <a href="mailto:robertw-mills@users.sf.net">Robert W.Mills</a></h2>
+    </center>
+
+    <hr>
+    <p>Permission is granted to copy, distribute and/or modify this document under the terms of the <a href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License</a>, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A copy of the license is included in the section entitled "GNU Free Documentation License".</p>
+    <p>The program, CobolMac, described by this document is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+    <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+    <p>You should have received a copy of the  <a href="http://www.gnu.org/licenses/gpl.html">GNU General Public License</a>, Version 3, along with this program.</p>
+
+    <hr>
+    <h2>Description</h2>
+    <p>CobolMac is a COBOL Macro Preprocessor utility that reads a COBOL source file prior to processing by <a href="https://sourceforge.net/projects/open-cobol/">GnuCOBOL</a>'s Compiler.</p>
+    <p>It is implemented as a command-line filter that emulates the Macro capability available with the Hewlett-Packard HPe3000 COBOL II/iX Compiler.</p>
+    <p>It allows the user to define pre-written code, with up to 9 textual replacement parameters, which is incorporated into the source code. Macros can have up to nine formal parameters. In the definition actual parameters are supplied to replace the formal parameters when the macro is called in the source program.</p>
+    <p>A good library of pre-tested Macros can greatly speed program writing, and can also be used to assist portability of code, with the differences between COBOL dialects being hidden in the Macro Definitions.</p>
+    <p>In Don Nelson's "COBOL 85 for Programmers", he says about the COPY...REPLACING & REPLACE statements: "The rules are complex and are actually ambiguous in some cases." Right there, that's something of a warning, and he goes on to say much about behaviors to beware of. He also warns that "One problem is that only words are replaced, not parts of words."</p>
+
+    <p><font color="red">Note:</font> If used to preprocess FIXED FORMAT files then extra care must be taken when defining the macros to ensure that all added code resides in the correct areas - Area A (cols 7 to 11) and Area B (cols 12 to 72).</p>
+
+    <hr>
+    <h2>Program Usage</h2>
+
+    <h3>Syntax</h3>
+    <blockquote><pre>
+$ cobolmac [options] &lt;input &gt;output [2&gt;messages]
+$ cat input | cobolmac [options] [2&gt;messages] | cat - &gt;output
+</pre></blockquote>
+
+    <h3>Parameters</h3>
+    <blockquote><pre>
+options        The available values are:
+
+  --help       Display this text and exit.
+  --version    Display the preprocessor version and exit.
+  --hardwarn   Treat all warnings like an error.
+  --verbose    Include Macro Begin/End comment lines.
+  --debug      Display additional error information.
+  --maclib     List the contents of the Macro Library.
+               Only active if Standard Error has been redirected.
+
+input          [path/]name of the file Standard Input redirected to.
+
+output         [path/]name of the file Standard Output redirected to.
+
+messages       [path/]name of optional file Standard Error redirected to.
+</pre></blockquote>
+
+    <h3>Return Codes</h3>
+    <blockquote><pre>
+0 (zero)       Program completed without any errors.
+1 (one)        Program terminated in an error state.
+               Details written to Standard Error prior to termination.
+               The output file, if created, is incomplete/corrupt.
+</pre></blockquote>
+
+    <hr>
+    <p>The remainder of this version of the User manual will be made available ASAP.</p>
+
+    <hr>
+    <p>End of CobolMac B.00.00 User Manual</p>
+  </body>
+
+</html>

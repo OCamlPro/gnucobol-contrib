@@ -1,0 +1,111 @@
+GnuCOBOL Contributed Tool: CobolMac
+Version: B.00.00
+
+CobolMac is a COBOL Macro Preprocessor that reads a COBOL source file prior to
+processing by GnuCOBOL's cobc. It associates a macro name with a string of text.
+
+Macros can have up to nine formal parameters. In the definition actual
+parameters are supplied to replace the formal parameters when the macro is
+called in the source program.
+
+[GnuCOBOL is an open-source COBOL compiler, which translates COBOL programs to
+'C' code and compiles it using GCC on multiple platforms and operating systems]
+
+[OpenCobolIDE was used in the development of this utility. It is available from
+<https://github.com/OpenCobolIDE/OpenCobolIDE>]
+
+All code and programs are distributed under the GNU General Public License v3.
+See the file COPYING for details.
+
+Requirements
+------------
+
+GnuCOBOL 2.0 (or greater) package installed and tested fully working. See
+documentation supplied with GnuCOBOL. You MUST have run both sanity checks
+created by the test procedures including within the cobol85 suite as well as the
+make check procedure.
+
+Installation
+------------
+
+Linux/Unix:
+
+  Compile the source of cobolmac.cob with the command:
+
+    ./comp-cobolmac.sh
+
+  at a command prompt using any terminal program.
+
+  Now place cobolmac in a directory that is within the PATH making sure that the
+  execute flag is set (chmod +x cobolmac) although this is done within the
+  script.
+
+Mac OSX:
+
+  Compile the COBOL source as for Linux/Unix.
+
+  In the event this does not work, you must have installed and tested GnuCOBOL.
+
+  Note this might not work 'as is' with Tiny Cobol or ANY other compiler. Check
+  to see if the compiler supports the C$DELETE built-in system subroutine. If
+  not then the s022-delete-workfiles paragraph will need modification to perform
+  this function some other way (for eg. drop into a command shell and issue the
+  file delete/purge commands).
+
+Windows:
+
+  This utility does not yet fully understand the Windows OS. It might compile
+  cleanly but I currently don't have access to a Windows box to confirm this.
+
+  If it does compile and you try to run it then the following message displayed:
+
+    cobolmac/B.00.00 - COBOL Macro Preprocessor.
+    Copyright (c) Robert W. Mills (robertw-mills@users.sf.net), 2014-2015.
+    This is free software; see the source for copying conditions. There is NO
+    WARRANTY; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+      Error: CobolMac has detected that it is running on a Windows OS.
+           : This OS in NOT currently supported.
+
+  and the utility will terminate returning an ERRORLEVEL=1
+
+Supplied files with the CobolMac tarball
+----------------------------------------
+
+Examples/           This folder contains example programs and macro files.
+ChangeLog           History of changes made to the cobolmac source.
+cobolmac            An executable compiled on Linux Mint 17.1 using version
+                    2.0.0 (dated Aug 2014) of GnuCOBOL.
+cobolmac.cob        The COBOL source code for CobolMac B.00.00.
+cobolmac.lst        Listing of cobolmac.cob created by Vincent B Coen's cobxref.
+comp-cobolmac.sh    A bash script to compile the COBOL source code.
+COPYING             Software License for copying code.
+DevNotes            These are my Developer Notes for CobolMac. They may be of
+                    assistance if you want to make any changes to the source
+                    code.
+Manual              Text version of the User Manual/Guide for CobolMac.
+Manual.htm          HTML version of the User Manual/Guide for CobolMac.
+README              This file.
+ToDo                Lists any outstanding programming or new functionality.
+
+NOTES
+-----
+
+As any bug fixes will be applied to the COBOL code please note that all bug
+fixes should only be made to the original COBOL source code. A master copy of
+the sources can be found at the sourceforge web site for GnuCOBOL in the contrib
+folders located at:
+
+  https://sourceforge.net/p/open-cobol/contrib/HEAD/tree/trunk/tools/cobolmac/
+
+and use the "Download snapshot" function shown near the top on the right.
+
+Please report all bugs found to the GnuCOBOL contrib forum at:
+
+  https://sourceforge.net/p/open-cobol/discussion/contrib/
+
+and send a copy to the author at robertw-mills@users.sf.net if urgent and/or a
+show-stopper.
+
+------------------------------------------------------------------------
+Last updated 20th May, 2015 (c) Robert W.Mills

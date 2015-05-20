@@ -1,0 +1,21 @@
+This is the Future Modifications (ToDo) list for CobolMac.
+
+Note: The items in this list are held in newest first order. The status of each
+      item is indicated in the []'s following the item.
+
+5.  Preload standard macro definitions.
+    [to be implemented in version B.01.00]
+
+4.  Add support for the $INCLUDE command.
+    [implemented in version B.00.00]
+
+3.  Support $DEFINE preprocessor commands held in an external file.
+    [implemented in version B.00.00]
+
+2.  Add support for default macro parameter values. This feature is an extension
+    to Hewlett-Packard's implementation.
+    [TBD]
+
+1.  Allow the macro body text to be defined within the source file instead of an
+    external file.
+    [implemented in version B.00.00]
