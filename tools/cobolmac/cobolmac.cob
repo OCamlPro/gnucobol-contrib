@@ -157,7 +157,7 @@ data division.
     01  w100-program-identity.
       05  w100-program-id-line-01.
         10                             pic x(009) value "cobolmac/".
-        10  w100-program-v-uu-ff       pic x(007) value "B.00.00".
+        10  w100-program-v-uu-ff       pic x(007) value "B.01.00".
         10                             pic x(063) value " - COBOL Macro Preprocessor.".
       05  w100-program-id-line-02.
         10  w100-copyright             pic x(079) value "Copyright (c) Robert W. Mills (robertw-mills@users.sf.net), 2014-2015.".
@@ -171,7 +171,8 @@ data division.
                            *>"1234567890123456789012345678901234567890123456789012345678901234567890123456789"
         10  pic x(079) value "  Usage:".
         10  pic x(079) value "    $ cobolmac [options] <input >output [2>messages]".
-        10  pic x(079) value "    $ cat input | cobolmac [options] [2>messages] | cat - >output".
+        10  pic x(079) value "    $ cobolmac [options] <input [2>messages] | program2".
+        10  pic x(079) value "    $ program1 | cobolmac [options] [2>messages] | program2".
         10  pic x(079) value " ".
         10  pic x(079) value "  Parameters:".
         10  pic x(079) value "    options        The available values are:".
@@ -181,10 +182,11 @@ data division.
         10  pic x(079) value "      --verbose    Include Macro Begin/End comment lines.".
         10  pic x(079) value "      --debug      Display additional error information.".
         10  pic x(079) value "      --maclib     List the contents of the Macro Library.".
-        10  pic x(079) value "                   Only active if Standard Error has been redirected.".
         10  pic x(079) value "    input          [path/]name of file Standard Input redirected to.".
         10  pic x(079) value "    output         [path/]name of file Standard Output redirected to.".
         10  pic x(079) value "    messages       optional [path/]name of file Standard Error redirected to.".
+        10  pic x(079) value "    program1       [path/]name of program that writes to Standard Output.".
+        10  pic x(079) value "    program2       [path/]name of program that reads from Standard Input.".
         10  pic x(079) value " ".
         10  pic x(079) value "  Return Codes:".
         10  pic x(079) value "    0 (zero)       Program completed without any errors.".
@@ -196,7 +198,7 @@ data division.
                            *>"         1         2         3         4         5         6         7         "
                            *>"1234567890123456789012345678901234567890123456789012345678901234567890123456789"
       05  w101-usage-lines             redefines w101-usage-text.
-        10  w101-usage-line            pic x(079) occurs 24.
+        10  w101-usage-line            pic x(079) occurs 26.
             *> Update occurs count if number of fillers below w101-usage-text changes.
 
     *> -------------------------------------------------------------------------
@@ -410,19 +412,7 @@ data division.
       88  w902-more-commands                      value "M". *> Default setting.
       88  w902-last-command                       value "L".
 
-    01  . *> File redirection flags
-
-      05  pic x(001) value "N". *> Is Standard Input redirected?
-        88  w903-stdin-not-redirected             value "N". *> Default setting.
-        88  w903-stdin-redirected                 value "R".
-
-      05  pic x(001) value "N". *> Is Standard Output redirected?
-        88  w903-stdout-not-redirected            value "N". *> Default setting.
-        88  w903-stdout-redirected                value "R".
-
-      05  pic x(001) value "N". *> Is Standard Error redirected?
-        88  w903-stderr-not-redirected            value "N". *> Default setting.
-        88  w903-stderr-redirected                value "R".
+    *> w903- is available for use.
 
     01  pic x(001) value "S". *> Are Warnings Hard or Soft?
       88  w904-soft-warnings                      value "S". *> Default setting.
@@ -506,24 +496,6 @@ procedure division.
 
     perform a100-get-operating-system-type
     perform a200-get-command-line-options
-    perform a300-check-stdxxx-redirect
-
-    if w903-stdin-not-redirected then
-      move "a000-initialise (1)" to w600-location
-      move "An input file has not been specified." to w600-message
-      move "Run with --help option for usage details." to w600-message-2
-      move "N/A" to w600-file-status
-      perform z999-abort
-    end-if
-
-    if w903-stdout-not-redirected then
-      move "a000-initialise (2)" to w600-location
-      move "An output file has not been specified." to w600-message
-      move "Run with --help option for usage details." to w600-message-2
-      move "N/A" to w600-file-status
-      perform z999-abort
-    end-if
-
     perform a400-generate-work-filenames
     perform a500-initialise-defaults
 
@@ -619,55 +591,6 @@ procedure division.
       display w101-usage-line(w101-usage-index) upon stderr end-display
 
     end-perform
-
-  .a300-check-stdxxx-redirect.
-    *> -------------------------------------------------------------------------
-    *>  Check if Standard Input, Output and Error have been redirected.
-    *> -------------------------------------------------------------------------
-
-    evaluate true
-
-      when w901-os-is-linux
-
-        call "isatty" using by value 0 end-call *> Check Standard Input.
-        if return-code equal zero then
-          set w903-stdin-redirected to true
-        end-if
-
-        call "isatty" using by value 1 end-call *> Check Standard Output.
-        if return-code equal zero then
-          set w903-stdout-redirected to true
-        end-if
-
-        call "isatty" using by value 2 end-call *> Check Standard Error.
-        if return-code equal zero then
-          set w903-stderr-redirected to true
-        end-if
-
-      when w901-os-is-windows
-
-        call "_isatty" using by value 0 end-call *> Check Standard Input.
-        if return-code equal zero then
-          set w903-stdin-redirected to true
-        end-if
-
-        call "_isatty" using by value 1 end-call *> Check Standard Output.
-        if return-code equal zero then
-          set w903-stdout-redirected to true
-        end-if
-
-        call "_isatty" using by value 2 end-call *> Check Standard Error.
-        if return-code equal zero then
-          set w903-stderr-redirected to true
-        end-if
-
-      when other *> Not Linux or Windows.
-        move "a300-check-if-stdxxx-redirected" to w600-location
-        move "Unable to determine status of Standard Input, Output and Error." to w600-message
-        move "N/A" to w600-file-status
-        perform z999-abort
-
-    end-evaluate
 
   .a400-generate-work-filenames.
     *> -------------------------------------------------------------------------
@@ -1029,39 +952,35 @@ procedure division.
     *>  List the contents of Macro Library on Standard Error (if redirected).
     *> -------------------------------------------------------------------------
 
-    if w903-stderr-redirected then
+    move "d200-list-macrolib (1)" to w600-location
+    perform s014-open-macrolib
 
-      move "d200-list-macrolib (1)" to w600-location
-      perform s014-open-macrolib
+    display space upon stderr end-display
+    display "---------- Start of Macros Library." upon stderr end-display
+    move "d200-list-macrolib (2)" to w600-location
+    perform s016-read-next-macrolib
 
-      display space upon stderr end-display
-      display "---------- Start of Macros Library." upon stderr end-display
-      move "d200-list-macrolib (2)" to w600-location
+    perform
+      until w900-end-of-macrolib
+
+      if macrolib-line-number = zeros then *> 1st line for macro. Output macro name.
+        display space upon stderr end-display
+        display "Macro %", trim(macrolib-name) upon stderr end-display
+      end-if
+
+      display "[" macrolib-line-number "] ", trim(macrolib-data, trailing) upon stderr end-display
+
+      move "d200-list-macrolib (3)" to w600-location
       perform s016-read-next-macrolib
 
-      perform
-        until w900-end-of-macrolib
+    end-perform
 
-        if macrolib-line-number = zeros then *> 1st line for macro. Output macro name.
-          display space upon stderr end-display
-          display "Macro %", trim(macrolib-name) upon stderr end-display
-        end-if
+    display space upon stderr end-display
+    display "---------- End of Macro Library." upon stderr end-display
+    display space upon stderr end-display
 
-        display "[" macrolib-line-number "] ", trim(macrolib-data, trailing) upon stderr end-display
-
-        move "d200-list-macrolib (3)" to w600-location
-        perform s016-read-next-macrolib
-
-      end-perform
-
-      display space upon stderr end-display
-      display "---------- End of Macro Library." upon stderr end-display
-      display space upon stderr end-display
-
-      move "d200-list-macrolib (4)" to w600-location
-      perform s018-close-macrolib
-
-    end-if
+    move "d200-list-macrolib (4)" to w600-location
+    perform s018-close-macrolib
 
   .e000-expand-macro-calls.
     *> -------------------------------------------------------------------------
@@ -1435,7 +1354,7 @@ procedure division.
     goback
 
 *> *****************************************************************************
-*> Start of Subroutines.
+*> Start of Internal Subroutines.
 
   .s000-set-file-error-status.
     *> -------------------------------------------------------------------------
@@ -2053,7 +1972,7 @@ procedure division.
 
 >>D display "-- debug:   keychar = [" w608-keychar "] parmchar = [" w608-parmchar "] delimiter = [" w608-delimiter "]" upon stderr end-display
 
-*> End of Subroutines.
+*> End of Internal Subroutines.
 *> *****************************************************************************
 
 .end program cobolmac.

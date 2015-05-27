@@ -1,7 +1,7 @@
 
                       CobolMac: a COBOL Macro Preprocessor
 
-                        User Manual for Version B.00.00
+                        User Manual for Version B.01.00
 
 
                             Copyright (C) 2014-2015
@@ -98,7 +98,9 @@ along with this program.
 
     $ cobolmac [options] <input >output [2>messages]
 
-    $ cat input | cobolmac [options] [2>messages] | cat - >output
+    $ cobolmac [options] <input [2>messages] | program2
+
+    $ program1 | cobolmac [options] [2>messages] | program2
 
   Parameters:
 
@@ -110,13 +112,16 @@ along with this program.
       --verbose    Include Macro Begin/End comment lines.
       --debug      Display additional error information.
       --maclib     List the contents of the Macro Library.
-                   Only active if Standard Error has been redirected.
 
-    input          [path/]name of the file Standard Input redirected to.
+    input          [path/]name of file Standard Input redirected to.
 
-    output         [path/]name of the file Standard Output redirected to.
+    output         [path/]name of file Standard Output redirected to.
 
-    messages       [path/]name of optional file Standard Error redirected to.
+    messages       optional [path/]name of file Standard Error redirected to.
+
+    program1       [path/]name of program that writes to Standard Output.
+
+    program2       [path/]name of program that reads from Standard Input.
 
   Return Codes:
 
@@ -641,4 +646,4 @@ along with this program.
     strings.
 
 --------------------------------------------------------------------------------
-End of CobolMac B.00.00 User Manual
+End of CobolMac B.01.00 User Manual

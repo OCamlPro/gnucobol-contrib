@@ -2,6 +2,12 @@ This is the Modification History (ChangeLog) for CobolMac.
 
 Note: The items in this list are held in newest first order.
 
+Version: B.01.00  May 2015  Robert W.Mills (robertw-mills@users.sf.net).
+
+  - Removed the stdin/stdout/stderr redirection checks. This makes it more like
+    other utilities in the 'POSIX world'. (BTiffin request).
+  - Updated Manual.txt and Manual.htm to reflect changes.
+
 Version: B.00.00  May 2015  Robert W.Mills (robertw-mills@users.sf.net).
 
   - Reorganised the working storage and code to make later changes easier.
