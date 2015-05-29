@@ -212,7 +212,7 @@ string
 end-string#
 
     *> *************************************************************************
-    *>  %MoveNumber(Number#,Destination#,Column#,Edit#)
+    *>  %MoveNumber(Number#,Destination#,Column#,Format#)
     *> -------------------------------------------------------------------------
     *>  Convert Number to the format specified by Format (available formats are
     *>  listed in this macros working-storage). Converted number is then moved
@@ -222,13 +222,14 @@ end-string#
     01  MoveNumber-macro.
       05  MoveNumber-pointer           pic s9(04) comp.
       05  MoveNumber-edits.
+        *>             vvv - This is the value supplied in Format parameter.
         10  MoveNumber-4v0             pic z(3)9.
         10  MoveNumber-7v2             pic z(6)9.99.
         10  MoveNumber-9v2             pic z(8)9.99.
 
 $define %MoveNumber=
 move !3 to MoveNumber-column
-move !1 to MoveNumber-!4
+add !1 to zero giving MoveNumber-!4 end-add
 
 string
   MoveNumber-!4 delimited by size

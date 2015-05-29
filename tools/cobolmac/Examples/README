@@ -47,7 +47,7 @@ Macros.inc
       Move the string/variable passed in Text to the buffer named in Destination
       starting at the location specified by Column.
 
-    %MoveNumber(Number#,Destination#,Column#,Edit#)
+    %MoveNumber(Number#,Destination#,Column#,Format#)
 
       Convert the number/variable passed in Number to the format specified by
       Format (available formats are listed in this macros working-storage). The
