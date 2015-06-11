@@ -2,6 +2,13 @@ This is the Modification History (ChangeLog) for CobolMac.
 
 Note: The items in this list are held in newest first order.
 
+Version: B.02.00  June 2015  Robert W.Mills (robertw-mills@users.sf.net).
+
+  - Implemented ToDo Item 5 (Preload standard macro definitions).
+  - Replaced home-grown command line option processing with CBL_OC_GETOPT.
+  - Added short (single character) options to go with the existing long options.
+  - Updated Manual.txt and Manual.htm to reflect changes.
+
 Version: B.01.00  May 2015  Robert W.Mills (robertw-mills@users.sf.net).
 
   - Removed the stdin/stdout/stderr redirection checks. This makes it more like

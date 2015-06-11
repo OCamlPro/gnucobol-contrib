@@ -1,7 +1,7 @@
 
                       CobolMac: a COBOL Macro Preprocessor
 
-                        User Manual for Version B.01.00
+                        User Manual for Version B.02.00
 
 
                             Copyright (C) 2014-2015
@@ -35,6 +35,8 @@ along with this program.
   1.0 Description
 
   2.0 Program Usage
+
+    2.1 CobolMac Standard Macros Library
 
   3.0 CobolMac Commands
 
@@ -94,41 +96,47 @@ along with this program.
 
 2.0 Program Usage
 
-  Syntax:
-
+  Usage:
     $ cobolmac [options] <input >output [2>messages]
-
     $ cobolmac [options] <input [2>messages] | program2
-
     $ program1 | cobolmac [options] [2>messages] | program2
 
-  Parameters:
-
-    options        The available values are:
-
-      --help       Display this text and exit.
-      --version    Display the preprocessor version and exit.
-      --hardwarn   Treat all warnings like an error.
-      --verbose    Include Macro Begin/End comment lines.
-      --debug      Display additional error information.
-      --maclib     List the contents of the Macro Library.
+  Options:
+    -h, --help     Display this text and exit.
+    -v, --version  Display the preprocessor version and exit.
+    -H, --hardwarn Treat all warnings like an error.
+    -V, --verbose  Include Macro Begin/End comment lines.
+    -d, --debug    Display additional error information.
+    -m, --maclib   List the contents of the Macro Library.
+    -sfilename, --stdlib=filename
+                   [path/]name of file containing Standard Macros Library.
 
     input          [path/]name of file Standard Input redirected to.
-
     output         [path/]name of file Standard Output redirected to.
-
     messages       optional [path/]name of file Standard Error redirected to.
-
     program1       [path/]name of program that writes to Standard Output.
-
     program2       [path/]name of program that reads from Standard Input.
 
   Return Codes:
-
     0 (zero)       Program completed without any errors.
     1 (one)        Program terminated in an error state.
                    Details written to Standard Error prior to termination.
                    The output file, if created, is incomplete/corrupt.
+
+--------------------------------------------------------------------------------
+
+2.1 Standard Macros Library
+
+  At some point you will find yourself $DEFINEing and using a standard set of
+  macros. When this happens you can add the $DEFINE commands into a file named
+  'cobolmac.standard.macros' and CobolMac will automatically add it to the start
+  of the source programs Working-Storage Section.
+
+  The file cobolmac.standard.macros is assumed to reside in the current working
+  directory.
+
+  The --stdlib=filename (-s:filename) option can be used to point CobolMac to
+  a shared library file.
 
 --------------------------------------------------------------------------------
 
@@ -163,6 +171,14 @@ along with this program.
       The hash sign is the delimiter of the entire definition.
 
       Nested $DEFINE commands and recursive macros are not supported.
+
+      You can place this command anywhere within your source file but it is
+      suggested that you place it within the Working-Storage Section. If you
+      do this then the $DEFINE command can contain any variable definitions
+      required by the macro. Otherwise you will have to either; 1) hard code
+      the variables within the source file, 2) use the COPY command to load
+      a copylibrary module, 3) use the $INCLUDE command to load a file that
+      containing the variable definitions.
 
   3.2 $PREPROCESSOR
 
@@ -258,6 +274,9 @@ along with this program.
     file that is being included may itself have a $INCLUDE command in it. The
     only limitations are the maximum file size and the available disc space for
     the preprocessed file.
+
+    If you use this command to load macro $DEFINE commands then it is suggested
+    you follow the recommendations given above for the $DEFINE command.
 
 --------------------------------------------------------------------------------
 
@@ -646,4 +665,4 @@ along with this program.
     strings.
 
 --------------------------------------------------------------------------------
-End of CobolMac B.01.00 User Manual
+End of CobolMac B.02.00 User Manual

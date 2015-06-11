@@ -4,7 +4,7 @@ Note: The items in this list are held in newest first order. The status of each
       item is indicated in the []'s following the item.
 
 5.  Preload standard macro definitions.
-    [to be implemented in version B.01.00]
+    [implemented in version B.02.00]
 
 4.  Add support for the $INCLUDE command.
     [implemented in version B.00.00]

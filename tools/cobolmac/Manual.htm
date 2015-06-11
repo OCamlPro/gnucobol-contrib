@@ -9,7 +9,7 @@
 
     <center>
       <h1>CobolMac: a COBOL Macro Preprocessor</h1>
-      <h2>User Manual for Version B.01.00</h2>
+      <h2>User Manual for Version B.02.00</h2>
       <h2>Copyright &copy; 2014-2015 by <a href="mailto:robertw-mills@users.sf.net">Robert W.Mills</a></h2>
     </center>
 
@@ -32,35 +32,28 @@
     <hr>
     <h2>Program Usage</h2>
 
-    <h3>Syntax</h3>
+    <h3>Usage</h3>
     <blockquote><pre>
 $ cobolmac [options] &lt;input &gt;output [2&gt;messages]
-
 $ cobolmac [options] &lt;input [2&gt;messages] | program2
-
 $ program1 | cobolmac [options] [2&gt;messages] | program2
 </pre></blockquote>
 
-    <h3>Parameters</h3>
+    <h3>Options</h3>
     <blockquote><pre>
-options        The available values are:
-
-  --help       Display this text and exit.
-  --version    Display the preprocessor version and exit.
-  --hardwarn   Treat all warnings like an error.
-  --verbose    Include Macro Begin/End comment lines.
-  --debug      Display additional error information.
-  --maclib     List the contents of the Macro Library.
-               Only active if Standard Error has been redirected.
+-h, --help     Display this text and exit.
+-v, --version  Display the preprocessor version and exit.
+-H, --hardwarn Treat all warnings like an error.
+-V, --verbose  Include Macro Begin/End comment lines.
+-d, --debug    Display additional error information.
+-m, --maclib   List the contents of the Macro Library.
+-sfilename, --stdlib=filename
+               [path/]name of file containing Standard Macros Library.
 
 input          [path/]name of file Standard Input redirected to.
-
 output         [path/]name of file Standard Output redirected to.
-
 messages       optional [path/]name of file Standard Error redirected to.
-
 program1       [path/]name of program that writes to Standard Output.
-
 program2       [path/]name of program that reads from Standard Input.
 </pre></blockquote>
 
@@ -71,6 +64,12 @@ program2       [path/]name of program that reads from Standard Input.
                Details written to Standard Error prior to termination.
                The output file, if created, is incomplete/corrupt.
 </pre></blockquote>
+
+    <hr>
+    <h2>Standard Macros Library</h2>
+    <p>At some point you will find yourself $DEFINEing and using a standard set of macros. When this happens you can add the $DEFINE commands into a file named 'cobolmac.standard.macros' and CobolMac will automatically add it to the start of the source programs Working-Storage Section.</p>
+    <p>The file cobolmac.standard.macros is assumed to reside in the current working directory.</p>
+    <p>The --stdlib=filename (-s:filename) option can be used to point CobolMac to a shared library file.</p>
 
     <hr>
     <p>The remainder of this version of the User manual will be made available ASAP.</p>

@@ -114,6 +114,11 @@ environment division.
                                        organization is line sequential
                                        file status is w500-file-status
                                        .
+      select optional macrostd         assign to w501-macrostd-filename
+                                       access is sequential
+                                       organization is line sequential
+                                       file status is w500-file-status
+                                       .
 
 data division.
 
@@ -148,6 +153,10 @@ data division.
 
     01  incfile-record                 pic x(256).
 
+    fd  macrostd.
+
+    01  macrostd-record                pic x(256).
+
   working-storage section.
 
     *> -------------------------------------------------------------------------
@@ -157,7 +166,7 @@ data division.
     01  w100-program-identity.
       05  w100-program-id-line-01.
         10                             pic x(009) value "cobolmac/".
-        10  w100-program-v-uu-ff       pic x(007) value "B.01.00".
+        10  w100-program-v-uu-ff       pic x(007) value "B.02.00".
         10                             pic x(063) value " - COBOL Macro Preprocessor.".
       05  w100-program-id-line-02.
         10  w100-copyright             pic x(079) value "Copyright (c) Robert W. Mills (robertw-mills@users.sf.net), 2014-2015.".
@@ -174,14 +183,16 @@ data division.
         10  pic x(079) value "    $ cobolmac [options] <input [2>messages] | program2".
         10  pic x(079) value "    $ program1 | cobolmac [options] [2>messages] | program2".
         10  pic x(079) value " ".
-        10  pic x(079) value "  Parameters:".
-        10  pic x(079) value "    options        The available values are:".
-        10  pic x(079) value "      --help       Display this text and exit.".
-        10  pic x(079) value "      --version    Display the preprocessor version and exit.".
-        10  pic x(079) value "      --hardwarn   Treat all warnings like an error.".
-        10  pic x(079) value "      --verbose    Include Macro Begin/End comment lines.".
-        10  pic x(079) value "      --debug      Display additional error information.".
-        10  pic x(079) value "      --maclib     List the contents of the Macro Library.".
+        10  pic x(079) value "  Options:".
+        10  pic x(079) value "    -h, --help     Display this text and exit.".
+        10  pic x(079) value "    -v, --version  Display the preprocessor version and exit.".
+        10  pic x(079) value "    -H, --hardwarn Treat all warnings like an error.".
+        10  pic x(079) value "    -V, --verbose  Include Macro Begin/End comment lines.".
+        10  pic x(079) value "    -d, --debug    Display additional error information.".
+        10  pic x(079) value "    -m, --maclib   List the contents of the Macro Library.".
+        10  pic x(079) value "    -sfilename, --stdlib=filename".
+        10  pic x(079) value "                   [path/]name of file containing Standard Macros Library.".
+        10  pic x(079) value " ".
         10  pic x(079) value "    input          [path/]name of file Standard Input redirected to.".
         10  pic x(079) value "    output         [path/]name of file Standard Output redirected to.".
         10  pic x(079) value "    messages       optional [path/]name of file Standard Error redirected to.".
@@ -197,8 +208,8 @@ data division.
         10  pic x(079) value "***". *> end of program usage text marker.
                            *>"         1         2         3         4         5         6         7         "
                            *>"1234567890123456789012345678901234567890123456789012345678901234567890123456789"
-      05  w101-usage-lines             redefines w101-usage-text.
-        10  w101-usage-line            pic x(079) occurs 26.
+      05  redefines w101-usage-text.
+        10  w101-usage-line            pic x(079) occurs 28.
             *> Update occurs count if number of fillers below w101-usage-text changes.
 
     *> -------------------------------------------------------------------------
@@ -224,21 +235,43 @@ data division.
 
     01  w302-id-markers.
       05  w302-id-marker-values.
-        10  pic x(002) value "!1".
-        10  pic x(002) value "!2".
-        10  pic x(002) value "!3".
-        10  pic x(002) value "!4".
-        10  pic x(002) value "!5".
-        10  pic x(002) value "!6".
-        10  pic x(002) value "!7".
-        10  pic x(002) value "!8".
-        10  pic x(002) value "!9".
-      05  w302-id-markers-redef        redefines w302-id-marker-values.
+        10  pic x(002)                            value "!1".
+        10  pic x(002)                            value "!2".
+        10  pic x(002)                            value "!3".
+        10  pic x(002)                            value "!4".
+        10  pic x(002)                            value "!5".
+        10  pic x(002)                            value "!6".
+        10  pic x(002)                            value "!7".
+        10  pic x(002)                            value "!8".
+        10  pic x(002)                            value "!9".
+      05  redefines w302-id-marker-values.
         10  w302-id-marker             pic x(002) occurs 9.
 
     *> -------------------------------------------------------------------------
     *>  w4nn - System Intrinsic Parameters.
     *> -------------------------------------------------------------------------
+
+    *>  Parameters required by CBL_OC_GETOPT
+
+    78  w400-short-options                        value "hvHVdms:".
+
+    01  w400-long-options.
+      05  w400-long-option-record      occurs 7 times.
+        10  w400-long-option-name      pic x(025).
+        10  w400-long-option-argument  pic 9(001).
+          88  w400-no-argument                    value zero.
+          88  w400-required-argument              value 1.
+          88  w400-optional-argument              value 2.
+        10                             pointer    value NULL.
+        10  w400-long-option-alias     pic x(004).
+
+    01  w400-long-option-index         pic 9(002) value zero.
+
+    01  w400-long-option-prefix        pic 9(001) value zero.
+
+    01  w400-option-id                 pic x(004).
+
+    01  w400-option-argument           pic x(256).
 
     *> -------------------------------------------------------------------------
     *>  w5nn - File Status, Handles and Buffers.
@@ -285,12 +318,13 @@ data division.
 
       88  w500-not-available                      value "91".
 
-    *> The following 4 variables have to be at the 01 level.
+    *> The following 5 variables have to be at the 01 level.
 
-    01  w501-workin-filename           pic x(256).
-    01  w501-workout-filename          pic x(256).
-    01  w501-macrolib-filename         pic x(256).
-    01  w501-incfile-filename          pic x(256).
+    01  w501-workin-filename           pic x(256) value spaces.
+    01  w501-workout-filename          pic x(256) value spaces.
+    01  w501-macrolib-filename         pic x(256) value spaces.
+    01  w501-incfile-filename          pic x(256) value spaces.
+    01  w501-macrostd-filename         pic x(256) value spaces.
 
     01  w502-work-files.
       05  w502-work-file-one           pic x(256).
@@ -308,13 +342,7 @@ data division.
       05  w600-message-2               pic x(240) value spaces.
       05  w600-file-status             pic x(080) value spaces.
 
-    01  w601-argv-option               pic x(256) value spaces.
-      88  w601-help                               value "--help".
-      88  w601-version                            value "--version".
-      88  w601-hard-warnings                      value "--hardwarn".
-      88  w601-verbose                            value "--verbose".
-      88  w601-debug                              value "--debug".
-      88  w601-list-macrolib                      value "--maclib".
+    *> w601- is available for use.
 
     01  w602-os-type                   pic x(030) value "Other".
       88  w602-os-is-windows                      value "Windows_NT".
@@ -322,7 +350,12 @@ data division.
 
     01  w603-random-number             pic 9(009) value zero.
 
-    *> w604- is available for use.
+    01  w604-getopt-status             pic s9(9) comp.
+      88  w604-no-more-options                    value -1.
+      88  w604-non-option                         value 1.
+      88  w604-option-argument-truncated          value 2.
+      88  w604-valid-option-name                  value 3.
+      88  w604-invalid-option-name                value 63.
 
     01  w605-macro-define-workarea.
       05  w605-define-name             pic x(080).
@@ -403,16 +436,20 @@ data division.
         88  w900-more-incfile                     value "M".
         88  w900-end-of-incfile                   value "E".
 
+      05  pic x(001). *> $INCLUDE end-of-file?
+        88  w900-more-macrostd                    value "M".
+        88  w900-end-of-macrostd                  value "E".
+
     01  pic x(001) value "U". *> What is the Operating System Type?
       88  w901-os-is-unknown                      value "U". *> Default setting.
       88  w901-os-is-linux                        value "L".
       88  w901-os-is-windows                      value "W".
 
-    01  pic x(001) value "M". *> Are there any more Command Line options?
-      88  w902-more-commands                      value "M". *> Default setting.
-      88  w902-last-command                       value "L".
+    *> w902- is available for use.
 
-    *> w903- is available for use.
+    01  pic x(001) value "N". *> Have we processed the working-storage section?
+      88  w903-ws-section-not-found               value "N". *> Default setting.
+      88  w903-ws-section-found                   value "F".
 
     01  pic x(001) value "S". *> Are Warnings Hard or Soft?
       88  w904-soft-warnings                      value "S". *> Default setting.
@@ -516,59 +553,121 @@ procedure division.
     *>  Get the command-line options and validate them.
     *> -------------------------------------------------------------------------
 
-    perform
-      until w902-last-command
+    move "help" to w400-long-option-name(1)
+    move "h" to w400-long-option-alias(1)
+    set w400-no-argument(1) to true
 
-      move low-values to w601-argv-option
-      accept w601-argv-option from argument-value end-accept
+    move "version" to w400-long-option-name(2)
+    move "v" to w400-long-option-alias(2)
+    set w400-no-argument(1) to true
 
-      if w601-argv-option > low-values then *> Found argument.
+    move "hardwarn" to w400-long-option-name(3)
+    move "H" to w400-long-option-alias(3)
+    set w400-no-argument(3) to true
 
-        evaluate true
+    move "verbose" to w400-long-option-name(4)
+    move "V" to w400-long-option-alias(4)
+    set w400-no-argument(4) to true
 
-          when w601-help *> --help
-            perform a210-display-program-usage
-            move zero to return-code
-            goback
+    move "debug" to w400-long-option-name(5)
+    move "d" to w400-long-option-alias(5)
+    set w400-no-argument(5) to true
 
-          when w601-version *> --version
-            display space upon stderr end-display
-            display w100-program-id-line-01 upon stderr end-display
-            display w100-program-id-line-02 upon stderr end-display
-            display w100-program-id-line-03 upon stderr end-display
-            display w100-program-id-line-04 upon stderr end-display
-            display "Built " module-formatted-date upon stderr end-display
-            display space upon stderr end-display
-            move zero to return-code
-            goback
+    move "maclib" to w400-long-option-name(6)
+    move "m" to w400-long-option-alias(6)
+    set w400-no-argument(6) to true
 
-          when w601-hard-warnings *> --hardwarn
+    move "stdlib" to w400-long-option-name(7)
+    move "s" to w400-long-option-alias(7)
+    set w400-required-argument(7) to true
+
+    perform with test after
+      until w604-no-more-options
+
+      move spaces to w400-option-argument
+
+      call 'CBL_OC_GETOPT' using
+        by reference w400-short-options, w400-long-options, w400-long-option-index
+        by value w400-long-option-prefix
+        by reference w400-option-id, w400-option-argument
+      end-call
+
+      move return-code to w604-getopt-status
+
+      evaluate true
+
+        when w604-valid-option-name
+          *> Action(s) to perform if we find a valid option.
+
+          evaluate trim(w400-option-id)
+
+            when "h" *> --help
+              perform a210-display-program-usage
+              move zero to return-code
+              goback
+
+            when "v" *> --version
+              display space upon stderr end-display
+              display w100-program-id-line-01 upon stderr end-display
+              display w100-program-id-line-02 upon stderr end-display
+              display w100-program-id-line-03 upon stderr end-display
+              display w100-program-id-line-04 upon stderr end-display
+              display "Built " module-formatted-date upon stderr end-display
+              display space upon stderr end-display
+              move zero to return-code
+              goback
+
+          when "H" *> --hardwarn
             set w904-hard-warnings to true
 
-          when w601-verbose *> --verbose
+          when "V" *> --verbose
             set w907-include-macro-begin-end to true
 
-          when w601-debug *> --debug
+          when "d" *> --debug
             set w909-internal-debug-on to true
 
-          when w601-list-macrolib *> --maclib
+          when "m" *> --maclib
             set w910-list-macrolib to true
 
-          when other *> Invalid option.
-            move "a200-get-command-line-options" to w600-location
-            move spaces to w600-message
-            string
-              "Invalid command-line option: ", w601-argv-option delimited by size
-              into w600-message
-            end-string
-            move "N/A" to w600-file-status
-            perform z999-abort
+          when "s" *> --stdlib
+            move trim(w400-option-argument) to w501-macrostd-filename
 
-        end-evaluate
+          end-evaluate
 
-      else *> No more options were found.
-        set w902-last-command to true
-      end-if
+        when w604-option-argument-truncated
+          *> Action(s) to perform if we find a valid option BUT the argument has
+          *> been truncated. This situation will occur if the option-argument
+          *> variable is not large enought to hold the required data.
+
+        when w604-invalid-option-name
+          move "a200-get-command-line-options ()" to w600-location
+          move spaces to w600-message
+          string
+            "Invalid command-line option: ", trim(w400-option-id) delimited by size
+            into w600-message
+          end-string
+          move "N/A" to w600-file-status
+          perform z999-abort
+
+        when w604-no-more-options
+          continue
+
+        when other
+          *> If we get here then we have probably detected an return status we are
+          *> unable to handle. Suggest you treat is as a FATAL ERROR.
+          move "a200-get-command-line-options ()" to w600-location
+          move spaces to w600-message
+          string
+            "The CBL_OC_GETOPT routine returned an unknown status "
+            w604-getopt-status
+            "."
+              delimited by size
+            into w600-message
+          end-string
+          move "N/A" to w600-file-status
+          perform z999-abort
+
+      end-evaluate
 
     end-perform
 
@@ -625,8 +724,12 @@ procedure division.
     *> -------------------------------------------------------------------------
 
     move w300-keychar to w608-keychar
-    move w300-parmchar to w608-parmchar.
-    move w300-delimiter to w608-delimiter.
+    move w300-parmchar to w608-parmchar
+    move w300-delimiter to w608-delimiter
+
+    if w501-macrostd-filename = spaces then
+      move "cobolmac.standard.macros" to w501-macrostd-filename
+    end-if
 
   .b000-copy-stdin-to-workout.
     *> -------------------------------------------------------------------------
@@ -651,6 +754,9 @@ procedure division.
     move "b000-copy-stdin-to-workout (3)" to w600-location
     perform s010-open-workout
 
+    move "b000-copy-stdin-to-workout (4)" to w600-location
+    perform s025-open-read-macrostd
+
     perform
       until w900-end-of-stdin
 
@@ -669,20 +775,58 @@ procedure division.
 
       else
         move stdin-record to workout-record
-        move "b000-copy-stdin-to-workout (4)" to w600-location
+        move "b000-copy-stdin-to-workout (5)" to w600-location
         perform s011-write-workout
+
+        if w903-ws-section-not-found and w900-more-macrostd then
+          perform b100-check-for-ws-section
+          if w903-ws-section-found then
+            perform b200-load-macrostd
+          end-if
+        end-if
+
       end-if
 
-      move "b000-copy-stdin-to-workout (5)" to w600-location
+      move "b000-copy-stdin-to-workout (6)" to w600-location
       perform s002-read-stdin
 
     end-perform
 
-    move "b000-copy-stdin-to-workout (6)" to w600-location
+    move "b000-copy-stdin-to-workout (7)" to w600-location
     perform s012-close-workout
 
-    move "b000-copy-stdin-to-workout (7)" to w600-location
+    move "b000-copy-stdin-to-workout (8)" to w600-location
     perform s003-close-stdin
+
+  .b100-check-for-ws-section.
+    *> -------------------------------------------------------------------------
+    *>  Check if we have entered the working-storage section.
+    *> -------------------------------------------------------------------------
+
+    if instr(stdin-record, "working-storage") > zero
+    and instr(stdin-record, "section") > zero then *> Found start of working-storage.
+      set w903-ws-section-found to true
+    end-if
+
+  .b200-load-macrostd.
+    *> -------------------------------------------------------------------------
+    *>  Load Standard Macros file into Work Output.
+    *> -------------------------------------------------------------------------
+
+    perform
+      until w900-end-of-macrostd
+
+      move macrostd-record to workout-record
+      move "b200-load-macrostd (1)" to w600-location
+      perform s011-write-workout
+
+      move "b200-load-macrostd (2)" to w600-location
+      perform s026-read-macrostd
+
+    end-perform
+
+    move "b200-load-macrostd (3)" to w600-location
+    perform s027-close-macrostd
 
   .c000-load-include-files.
     *> -------------------------------------------------------------------------
@@ -1971,6 +2115,60 @@ procedure division.
     end-evaluate
 
 >>D display "-- debug:   keychar = [" w608-keychar "] parmchar = [" w608-parmchar "] delimiter = [" w608-delimiter "]" upon stderr end-display
+
+  .s025-open-read-macrostd.
+    *> -------------------------------------------------------------------------
+    *>  Open Standard Macros and read the first record.
+    *> -------------------------------------------------------------------------
+
+    open input macrostd
+
+    if w500-success then
+      perform s026-read-macrostd
+
+    else if w500-success-optional
+      set w900-end-of-macrostd to true
+
+    else
+      move "s025-open-read-macrostd" to w600-sub-location
+      move "Unable to open Standard Input." to w600-message
+      perform s000-set-file-error-status
+      perform z999-abort
+    end-if end-if
+
+  .s026-read-macrostd.
+    *> -------------------------------------------------------------------------
+    *>  Read the next record from Standard Macros.
+    *> -------------------------------------------------------------------------
+
+    read macrostd end-read
+
+    if w500-success then
+      set w900-more-macrostd to true
+
+    else if w500-end-of-file then
+      set w900-end-of-macrostd to true
+
+    else
+      move "s026-read-macrostd" to w600-sub-location
+      move "Unable to read a record from Standard Macros." to w600-message
+      perform s000-set-file-error-status
+      perform z999-abort
+    end-if end-if
+
+  .s027-close-macrostd.
+    *> -------------------------------------------------------------------------
+    *>  Close Standard Macros.
+    *> -------------------------------------------------------------------------
+
+    close macrostd
+
+    if not w500-success then
+      move "s027-close-macrostd" to w600-sub-location
+      move "Unable to close Standard Macros." to w600-message
+      perform s000-set-file-error-status
+      perform z999-abort
+    end-if
 
 *> End of Internal Subroutines.
 *> *****************************************************************************
