@@ -35,6 +35,8 @@
 *>            - Set Frame to appear centred, regardless of the Monitor 
 *>              resolution.
 *>            - Set default system look and feel.
+*> 2015.06.21 Laszlo Erdos: 
+*>            - Change at drawString.
 *>******************************************************************************
 */
 
@@ -202,7 +204,7 @@ public class JAPI_Thread extends Thread
 	 					{
 	 						if(o[obj] instanceof JAPI_Canvas)
 								((JAPI_Canvas)o[obj]).getoffscreenGraphics().drawLine(x1,y1,x2,y2);
-							((Component)o[obj]).getGraphics().drawLine(x1,y1,x2,y2);
+                            ((Component)o[obj]).getGraphics().drawLine(x1,y1,x2,y2);
 						}
 						else if(o[obj] instanceof Image)
     						((Graphics)o[obj+1]).drawLine(x1,y1,x2,y2);
@@ -578,7 +580,9 @@ public class JAPI_Thread extends Thread
 	 					{
 	 						if(o[obj] instanceof JAPI_Canvas)
 								((JAPI_Canvas)o[obj]).getoffscreenGraphics().drawString(s,x,y);
-							((Component)o[obj]).getGraphics().drawString(s,x,y);
+                            // LE: add else
+                            else
+                                ((Component)o[obj]).getGraphics().drawString(s,x,y);
 						}
 						else if(o[obj] instanceof Image)
     						((Graphics)o[obj+1]).drawString(s,x,y);
