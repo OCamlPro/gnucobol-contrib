@@ -1,5 +1,5 @@
 COBC = cobc
-COBCFLAGS = -x -free
+COBCFLAGS = -x -free -I"../src_cobol"
 # static link
 COBJAPI = ../src_cobol/cobjapi.o
 CJAPI = ../src_c/japilib.o \
