@@ -42,7 +42,7 @@ cobc -c -v %src_c_dir%\japilib.c
 cobc -c -free -v %src_cobol_dir%\cobjapi.cob
 
 :: compile the program
-cobc -x -free -v drawables.cob %COBCOBJ% %COBCLIB%
+cobc -x -free -v -I%src_cobol_dir% drawables.cob %COBCOBJ% %COBCLIB%
 
 
 :eof
