@@ -4,12 +4,24 @@
 *> Purpose:      DES (Data Encryption Standard) in COBOL
 *>               http://en.wikipedia.org/wiki/Data_Encryption_Standard
 *>
-*>               To use this subroutine, simply CALL it as follows: 
+*> Usage:        To use this subroutine, simply CALL it as follows: 
 *>               CALL "COBDES" USING COBDES-LNK
 *>               Fields in COBDES-LNK:
 *>                 <df> - input flag, 0 encryption, 1 decryption 
 *>                 <pw> - input password
 *>                 <data-buff> - input / output data block
+*>
+*>               You can use the DES algorithm only with 8 bytes 
+*>               blocks. It is so designed in the early 1970s at IBM.
+*>               If you have a longer string, then you have to call
+*>               COBDES with 8 bytes blocks more time. For example
+*>               you want to encrypt a 40 bytes long message, then
+*>               you have to call COBDES 5 times.
+*>
+*>               If you want more security, you can encrypt your
+*>               whole message more times with different passwords
+*>               one after another. At the decryption you have to
+*>               use the passwords in reverse order.
 *>
 *> Author:       Laszlo Erdos
 *>               https://www.facebook.com/wortfee
@@ -21,6 +33,8 @@
 *> Date       Change description 
 *> ========== ==========================================================
 *> 04.10.2013 Converted to GnuCOBOL
+*>----------------------------------------------------------------------
+*> 19.09.2015 Usage extended
 *>**********************************************************************
 
 *>**********************************************************************
