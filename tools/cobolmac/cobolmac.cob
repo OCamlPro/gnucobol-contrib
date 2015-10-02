@@ -47,6 +47,20 @@ identification division.
 *>    w101-usage-text in Working-Storage contains the program usage text which
 *>    is displayed by using the --help option.
 *>
+*>  Configuration Settings (set before compiling):
+*>
+*>    CobolMac supports multiple operating systems. Set the value of OS (below)
+*>    to one of the following entries:
+*>
+*>      'LINUX'   for a GNU/Linux version
+*>      'UNIX'    for a UNIX version
+*>      'OSX'     for a Mac OSX version
+*>      'WINDOWS' for a Windows version
+*>      'CYGWIN'  for a Windows/Cygwin version
+*>      'MINGW'   for a Windows/MinGW version
+*>
+        >>DEFINE CONSTANT OS AS 'LINUX'
+*>
 *>  Compilation Instructions:
 *>
 *>    Production:
@@ -71,8 +85,8 @@ environment division.
 
   configuration section.
 
-    source-computer.                   Linux Mint Rebecca; Cinnamon Edition.
-    object-computer.                   Linux Mint Rebecca; Cinnamon Edition.
+    source-computer.                   Linux Mint Rafaela; Cinnamon Edition.
+    object-computer.                   Linux Mint Rafaela; Cinnamon Edition.
 
     repository.
 
@@ -166,7 +180,7 @@ data division.
     01  w100-program-identity.
       05  w100-program-id-line-01.
         10                             pic x(009) value "cobolmac/".
-        10  w100-program-v-uu-ff       pic x(007) value "B.02.00".
+        10  w100-program-v-uu-ff       pic x(007) value "B.03.00".
         10                             pic x(063) value " - COBOL Macro Preprocessor.".
       05  w100-program-id-line-02.
         10  w100-copyright             pic x(079) value "Copyright (c) Robert W. Mills (robertw-mills@users.sf.net), 2014-2015.".
@@ -246,6 +260,44 @@ data division.
         10  pic x(002)                            value "!9".
       05  redefines w302-id-marker-values.
         10  w302-id-marker             pic x(002) occurs 9.
+
+    01  w303-os-specific-variables.
+>>IF OS='LINUX'
+      >>SET OSTYPE AS 'LINUX'
+      05  w303-os-build                pic x(079) value "GNU/Linux".
+      05  w303-dir-file-slash          pic x(001) value "/".
+      05  w303-macrostd-filename       pic x(256) value "cobolmac.standard.macros".
+
+>>ELIF OS='UNIX'
+      >>SET OSTYPE AS 'UNIX'
+      05  w303-os-build                pic x(079) value "UNIX".
+      05  w303-dir-file-slash          pic x(001) value "/".
+      05  w303-macrostd-filename       pic x(256) value "cobolmac.standard.macros".
+
+>>ELIF OS='OSX'
+      >>SET OSTYPE AS 'OSX'
+      05  w303-os-build                pic x(079) value "Mac OSX".
+      05  w303-dir-file-slash          pic x(001) value "/".
+      05  w303-macrostd-filename       pic x(256) value "cobolmac.standard.macros".
+
+>>ELIF OS='WINDOWS'
+      >>SET OSTYPE AS 'WIN32'
+      05  w303-os-build                pic x(079) value "Windows".
+      05  w303-dir-file-slash          pic x(001) value "\".
+      05  w303-macrostd-filename       pic x(256) value "cobolmac.standard.macros".
+
+>>ELIF OS='CYGWIN'
+      >>SET OSTYPE AS 'WIN32'
+      05  w303-os-build                pic x(079) value "Windows/Cygwin".
+      05  w303-dir-file-slash          pic x(001) value "/".
+      05  w303-macrostd-filename       pic x(256) value "cobolmac.standard.macros".
+
+>>ELIF OS='MINGW'
+      >>SET OSTYPE AS 'WIN32'
+      05  w303-os-build                pic x(079) value "Windows/MinGW".
+      05  w303-dir-file-slash          pic x(001) value "\".
+      05  w303-macrostd-filename       pic x(256) value "cobolmac.standard.macros".
+>>END-IF
 
     *> -------------------------------------------------------------------------
     *>  w4nn - System Intrinsic Parameters.
@@ -342,11 +394,9 @@ data division.
       05  w600-message-2               pic x(240) value spaces.
       05  w600-file-status             pic x(080) value spaces.
 
-    *> w601- is available for use.
+    01  w601-temporary-directory       pic x(256) value spaces.
 
-    01  w602-os-type                   pic x(030) value "Other".
-      88  w602-os-is-windows                      value "Windows_NT".
-      88  w602-os-is-other                        value "Other".
+    *> w602- is available for use.
 
     01  w603-random-number             pic 9(009) value zero.
 
@@ -406,6 +456,16 @@ data division.
       05  w611-subparameter-3          pic x(010).
       05  w611-not-used-2              pic x(256).
 
+    *> Delete the following when GnuCOBOL 2.0 has replaced previous versions.
+
+    01  w699-argv-option               pic x(256) value spaces.
+      88  w699-help                               value "-h", "--help".
+      88  w699-version                            value "-v", "--version".
+      88  w699-hard-warnings                      value "-H", "--hardwarn".
+      88  w699-verbose                            value "-V", "--verbose".
+      88  w699-debug                              value "-d", "--debug".
+      88  w699-list-macrolib                      value "-m", "--maclib".
+
     *> -------------------------------------------------------------------------
     *>  w7nn - Hard Coded Messages.
     *> -------------------------------------------------------------------------
@@ -440,10 +500,7 @@ data division.
         88  w900-more-macrostd                    value "M".
         88  w900-end-of-macrostd                  value "E".
 
-    01  pic x(001) value "U". *> What is the Operating System Type?
-      88  w901-os-is-unknown                      value "U". *> Default setting.
-      88  w901-os-is-linux                        value "L".
-      88  w901-os-is-windows                      value "W".
+    *> w901- is available for use.
 
     *> w902- is available for use.
 
@@ -491,6 +548,12 @@ data division.
       88  w913-macro-call-not-found               value "N". *> Default setting.
       88  w913-macro-call-found                   value "F".
 
+    *> Delete following when GnuCOBOL 2.0 has replaced previous versions.
+
+    01  pic x(001) value "M". *> Are there any more Command Line options?
+      88  w999-more-commands                      value "M". *> Default setting.
+      88  w999-last-command                       value "L".
+
 procedure division.
 
   cobolmac-mainline.
@@ -519,36 +582,62 @@ procedure division.
         perform z999-abort
 
       else *> Display message and exit.
-        display w600-message upon stderr end-display
+        display "*W* ", w600-message upon stderr end-display
       end-if
 
     end-if
 
     perform z000-finalise
+    .
 
-  .a000-initialise.
+  a000-initialise.
     *> --------------------------------------------------------------------------
     *>  Start of Program Processing.
     *> --------------------------------------------------------------------------
 
-    perform a100-get-operating-system-type
+    perform a100-find-temporary-directory
     perform a200-get-command-line-options
-    perform a400-generate-work-filenames
-    perform a500-initialise-defaults
+    perform a300-generate-work-filenames
+    perform a400-initialise-defaults
+    .
 
-  .a100-get-operating-system-type.
+  a100-find-temporary-directory.
     *> -------------------------------------------------------------------------
-    *>  Which operating system are we running on?
+    *>  Find name of directory to hold the temporary files.
     *> -------------------------------------------------------------------------
 
-    accept w602-os-type from environment "OP"
-      on exception
-        set w901-os-is-linux to true *> Assume Linux until we find another way.
-      not on exception
-        set w901-os-is-windows to true
-    end-accept
+    move spaces to w601-temporary-directory
 
-  .a200-get-command-line-options.
+    accept w601-temporary-directory from environment "TMPDIR" end-accept
+
+    if w601-temporary-directory = spaces then
+      accept w601-temporary-directory from environment "TEMP" end-accept
+    end-if
+
+    if w601-temporary-directory = spaces then
+      accept w601-temporary-directory from environment "TMP" end-accept
+    end-if
+
+>>IF OSTYPE='WIN32'
+
+    if w601-temporary-directory = spaces then
+      accept w601-temporary-directory from environment "USERPROFILE" end-accept
+    end-if
+
+    if w601-temporary-directory = spaces then
+      move "." to w601-temporary-directory *> Use the current directory.
+    end-if
+
+>>ELSE
+
+    if w601-temporary-directory = spaces then
+      move "/tmp" to w601-temporary-directory
+    end-if
+
+>>END-IF
+    .
+
+  a200-get-command-line-options.
     *> -------------------------------------------------------------------------
     *>  Get the command-line options and validate them.
     *> -------------------------------------------------------------------------
@@ -586,10 +675,15 @@ procedure division.
 
       move spaces to w400-option-argument
 
-      call 'CBL_OC_GETOPT' using
-        by reference w400-short-options, w400-long-options, w400-long-option-index
-        by value w400-long-option-prefix
-        by reference w400-option-id, w400-option-argument
+      call 'CBL_OC_GETOPT'
+        using
+          by reference w400-short-options, w400-long-options, w400-long-option-index
+          by value w400-long-option-prefix
+          by reference w400-option-id, w400-option-argument
+        on exception
+          *> CBL_OC_GETOPT is not available so we need to use the old (B.01.00) method.
+          perform a201-getopt-alternative
+          exit perform
       end-call
 
       move return-code to w604-getopt-status
@@ -607,13 +701,7 @@ procedure division.
               goback
 
             when "v" *> --version
-              display space upon stderr end-display
-              display w100-program-id-line-01 upon stderr end-display
-              display w100-program-id-line-02 upon stderr end-display
-              display w100-program-id-line-03 upon stderr end-display
-              display w100-program-id-line-04 upon stderr end-display
-              display "Built " module-formatted-date upon stderr end-display
-              display space upon stderr end-display
+              perform a220-display-program-version
               move zero to return-code
               goback
 
@@ -640,14 +728,7 @@ procedure division.
           *> variable is not large enought to hold the required data.
 
         when w604-invalid-option-name
-          move "a200-get-command-line-options ()" to w600-location
-          move spaces to w600-message
-          string
-            "Invalid command-line option: ", trim(w400-option-id) delimited by size
-            into w600-message
-          end-string
-          move "N/A" to w600-file-status
-          perform z999-abort
+          display "*W* Unknown command-line option: ", trim(w400-option-id) upon stderr end-display
 
         when w604-no-more-options
           continue
@@ -655,13 +736,10 @@ procedure division.
         when other
           *> If we get here then we have probably detected an return status we are
           *> unable to handle. Suggest you treat is as a FATAL ERROR.
-          move "a200-get-command-line-options ()" to w600-location
+          move "a200-get-command-line-options" to w600-location
           move spaces to w600-message
           string
-            "The CBL_OC_GETOPT routine returned an unknown status "
-            w604-getopt-status
-            "."
-              delimited by size
+            "The CBL_OC_GETOPT routine returned an unknown status ", w604-getopt-status, "." delimited by size
             into w600-message
           end-string
           move "N/A" to w600-file-status
@@ -670,10 +748,72 @@ procedure division.
       end-evaluate
 
     end-perform
+    .
 
-  .a210-display-program-usage.
+  a201-getopt-alternative.
     *> -------------------------------------------------------------------------
-    *>  Display the program usage on Standard Error.
+    *>  An alternative method of getting the command-line options.
+    *>  Only use if the routine CBL_OC_GETOPT is not available.
+    *>  NOTE: The --stdlib (-s) option is not supported.
+    *> -------------------------------------------------------------------------
+
+    *> Tell user what is happening.
+
+    display space upon stderr end-display
+    display "*W* CBL_OC_GETOPT is not available with your version of GnuCOBOL." upon stderr end-display
+    display "*W* An alternative method is being used to read your command line." upon stderr end-display
+    display "*W* The -s and --stdlib options, if used, have been ignored." upon stderr end-display
+    display space upon stderr end-display
+
+    *> Get the command-line options and validate them.
+
+    perform
+      until w999-last-command
+
+      move low-values to w699-argv-option
+      accept w699-argv-option from argument-value end-accept
+
+      if w699-argv-option > low-values then *> Found argument.
+
+        evaluate true
+
+          when w699-help *> -h or --help
+            perform a210-display-program-usage
+            move zero to return-code
+            goback
+
+          when w699-version *> -v or --version
+            perform a220-display-program-version
+            move zero to return-code
+            goback
+
+          when w699-hard-warnings *> -H or --hardwarn
+            set w904-hard-warnings to true
+
+          when w699-verbose *> -V or --verbose
+            set w907-include-macro-begin-end to true
+
+          when w699-debug *> -d or --debug
+            set w909-internal-debug-on to true
+
+          when w699-list-macrolib *> -m or --maclib
+            set w910-list-macrolib to true
+
+          when other *> Unknown/Unsupported option.
+            display "*W* Unknown/Unsupported command-line option: ", w699-argv-option upon stderr end-display
+
+        end-evaluate
+
+      else *> No more options were found.
+        set w999-last-command to true
+      end-if
+
+    end-perform
+    .
+
+  a210-display-program-usage.
+    *> -------------------------------------------------------------------------
+    *>  Display the program usage on the Standard Error stream.
     *> -------------------------------------------------------------------------
 
     display space upon stderr end-display
@@ -690,10 +830,25 @@ procedure division.
       display w101-usage-line(w101-usage-index) upon stderr end-display
 
     end-perform
+    .
 
-  .a400-generate-work-filenames.
+  a220-display-program-version.
     *> -------------------------------------------------------------------------
-    *>  Generate Macro Library, Work Input and Work Output filenames.
+    *>  Display the program version on the Standard Error stream.
+    *> -------------------------------------------------------------------------
+
+    display space upon stderr end-display
+    display w100-program-id-line-01 upon stderr end-display
+    display w100-program-id-line-02 upon stderr end-display
+    display w100-program-id-line-03 upon stderr end-display
+    display w100-program-id-line-04 upon stderr end-display
+    display "Built " module-formatted-date " for " w303-os-build upon stderr end-display
+    display space upon stderr end-display
+    .
+
+  a300-generate-work-filenames.
+    *> -------------------------------------------------------------------------
+    *>  Generate the Macro Library, Work Input and Work Output filenames.
     *> -------------------------------------------------------------------------
 
     compute w603-random-number
@@ -702,25 +857,26 @@ procedure division.
 
     move spaces to w502-work-file-one
     string
-      "/tmp/cobolmac-", w603-random-number, "-1" delimited by size
+      trim(w601-temporary-directory), w303-dir-file-slash, "cobolmac-", w603-random-number, "-1" delimited by size
       into w502-work-file-one
     end-string
 
     move spaces to w502-work-file-two
     string
-      "/tmp/cobolmac-", w603-random-number, "-2" delimited by size
+      trim(w601-temporary-directory), w303-dir-file-slash, "cobolmac-", w603-random-number, "-2" delimited by size
       into w502-work-file-two
     end-string
 
     move spaces to w501-macrolib-filename
     string
-      "/tmp/cobolmac-", w603-random-number, "-0" delimited by size
+      trim(w601-temporary-directory), w303-dir-file-slash, "cobolmac-", w603-random-number, "-0" delimited by size
       into w501-macrolib-filename
     end-string
+    .
 
-  .a500-initialise-defaults.
+  a400-initialise-defaults.
     *> -------------------------------------------------------------------------
-    *>  Initialise default variable values.
+    *>  Initialise the default variable values.
     *> -------------------------------------------------------------------------
 
     move w300-keychar to w608-keychar
@@ -728,12 +884,13 @@ procedure division.
     move w300-delimiter to w608-delimiter
 
     if w501-macrostd-filename = spaces then
-      move "cobolmac.standard.macros" to w501-macrostd-filename
+      move trim(w303-macrostd-filename) to w501-macrostd-filename
     end-if
+    .
 
-  .b000-copy-stdin-to-workout.
+  b000-copy-stdin-to-workout.
     *> -------------------------------------------------------------------------
-    *>  Copy Standard Input to Work Output.
+    *>  Copy the Standard Input stream to the Work Output file.
     *> -------------------------------------------------------------------------
 
     move "b000-copy-stdin-to-workout (1)" to w600-location
@@ -779,7 +936,7 @@ procedure division.
         perform s011-write-workout
 
         if w903-ws-section-not-found and w900-more-macrostd then
-          perform b100-check-for-ws-section
+          perform b100-check-for-working-storage
           if w903-ws-section-found then
             perform b200-load-macrostd
           end-if
@@ -797,20 +954,22 @@ procedure division.
 
     move "b000-copy-stdin-to-workout (8)" to w600-location
     perform s003-close-stdin
+    .
 
-  .b100-check-for-ws-section.
+  b100-check-for-working-storage.
     *> -------------------------------------------------------------------------
-    *>  Check if we have entered the working-storage section.
+    *>  Check if we have found the source files working-storage section.
     *> -------------------------------------------------------------------------
 
     if instr(stdin-record, "working-storage") > zero
     and instr(stdin-record, "section") > zero then *> Found start of working-storage.
       set w903-ws-section-found to true
     end-if
+    .
 
-  .b200-load-macrostd.
+  b200-load-macrostd.
     *> -------------------------------------------------------------------------
-    *>  Load Standard Macros file into Work Output.
+    *>  Load the Standard Macros file into the Work Output file.
     *> -------------------------------------------------------------------------
 
     perform
@@ -827,10 +986,11 @@ procedure division.
 
     move "b200-load-macrostd (3)" to w600-location
     perform s027-close-macrostd
+    .
 
-  .c000-load-include-files.
+  c000-load-include-files.
     *> -------------------------------------------------------------------------
-    *>  Load $INCLUDE file into Work Output.
+    *>  Load the $INCLUDE file into the Work Output file.
     *> -------------------------------------------------------------------------
 
     move w502-work-file-one to w501-workin-filename
@@ -908,10 +1068,11 @@ procedure division.
 
     move "c000-load-include-files (9)" to w600-location
     perform s012-close-workout
+    .
 
-  .d000-load-define-commands.
+  d000-load-define-commands.
     *> -------------------------------------------------------------------------
-    *>  Extract $DEFINEd macros and load into Macro Library.
+    *>  Extract the $DEFINEd macros and load them into the Macro Library file.
     *> -------------------------------------------------------------------------
 
     move w502-work-file-one to w501-workin-filename
@@ -972,8 +1133,9 @@ procedure division.
     if w910-list-macrolib and w911-defined-macros then
       perform d200-list-macrolib
     end-if
+    .
 
-  .d100-process-define-command.
+  d100-process-define-command.
     *> -------------------------------------------------------------------------
     *>  Process the $DEFINE command.
     *> -------------------------------------------------------------------------
@@ -999,10 +1161,11 @@ procedure division.
     else *> We have a new macro. Add it to Macro Library.
       perform d120-add-macro-to-library
     end-if
+    .
 
-  .d110-found-duplicate-macro.
+  d110-found-duplicate-macro.
     *> -------------------------------------------------------------------------
-    *> Found a duplicate macro name. Generate an error or a warning?
+    *> Found a duplicate macro name. Generate an error/warning message.
     *> -------------------------------------------------------------------------
 
     move spaces to w600-message
@@ -1018,7 +1181,7 @@ procedure division.
       perform z999-abort
 
     else *> Write warning messages and continue.
-      display "  WARNING: ", trim(w600-message) upon stderr end-display
+      display "*W* ", trim(w600-message) upon stderr end-display
 
       move workin-record to workout-record
       move "d110-found-duplicate-macro (2)" to w600-location
@@ -1026,7 +1189,7 @@ procedure division.
 
       move spaces to workout-record
       string
-        "*> WARNING: ", trim(w600-message) delimited by size
+        "*> *W* ", trim(w600-message) delimited by size
         into workout-record
       end-string
 
@@ -1034,10 +1197,11 @@ procedure division.
       perform s011-write-workout
 
     end-if
+    .
 
-  .d120-add-macro-to-library.
+  d120-add-macro-to-library.
     *> -------------------------------------------------------------------------
-    *> Add the macro definition to the Macro Library.
+    *> Add the macro definition to the Macro Library file.
     *> -------------------------------------------------------------------------
 
 >>D display "-- debug:     Adding %", trim(w605-define-name), " to Macro Library." upon stderr end-display
@@ -1090,10 +1254,11 @@ procedure division.
       end-if
 
     end-perform
+    .
 
-  .d200-list-macrolib.
+  d200-list-macrolib.
     *> -------------------------------------------------------------------------
-    *>  List the contents of Macro Library on Standard Error (if redirected).
+    *>  List the contents of the Macro Library file to the Standard Error stream.
     *> -------------------------------------------------------------------------
 
     move "d200-list-macrolib (1)" to w600-location
@@ -1125,10 +1290,11 @@ procedure division.
 
     move "d200-list-macrolib (4)" to w600-location
     perform s018-close-macrolib
+    .
 
-  .e000-expand-macro-calls.
+  e000-expand-macro-calls.
     *> -------------------------------------------------------------------------
-    *>  Replace the Macro Calls with code held in the Macro Library.
+    *>  Replace the Macro Calls with code held in the Macro Library file.
     *> -------------------------------------------------------------------------
 
     move "e000-expand-macro-calls (1)" to w600-location
@@ -1181,8 +1347,9 @@ procedure division.
 
     move "e000-expand-macro-calls (7)" to w600-location
     perform s018-close-macrolib
+    .
 
-  .e100-find-macro-call.
+  e100-find-macro-call.
     *> -------------------------------------------------------------------------
     *>  Search the current workin record for a macro call.
     *> -------------------------------------------------------------------------
@@ -1222,8 +1389,9 @@ procedure division.
         set w913-macro-call-not-found to true
       end-if
     end-if end-if
+    .
 
-  .e200-convert-call-to-code.
+  e200-convert-call-to-code.
     *> -------------------------------------------------------------------------
     *>  Replace the macro call with its code.
     *> -------------------------------------------------------------------------
@@ -1252,8 +1420,9 @@ procedure division.
         perform z999-abort
 
     end-evaluate
+    .
 
-  .e210-macro-with-parameters.
+  e210-macro-with-parameters.
     *> -------------------------------------------------------------------------
     *>  Insert the macro code and replace parameter markers with actual values.
     *> -------------------------------------------------------------------------
@@ -1352,8 +1521,9 @@ procedure division.
       move "e210-macro-with-parameters (6)" to w600-location
       perform s011-write-workout
     end-if
+    .
 
-  .e220-macro-without-parameters.
+  e220-macro-without-parameters.
     *> -------------------------------------------------------------------------
     *>  Insert the macro code.
     *> -------------------------------------------------------------------------
@@ -1407,8 +1577,9 @@ procedure division.
       move "e220-macro-without-parameters (6)" to w600-location
       perform s011-write-workout
     end-if
+    .
 
-  .e230-macro-as-a-constant.
+  e230-macro-as-a-constant.
     *> -------------------------------------------------------------------------
     *>  Replace the macro name with its value and write record to workout.
     *> -------------------------------------------------------------------------
@@ -1427,8 +1598,9 @@ procedure division.
 
     move "e230-macro-as-a-constant" to w600-location
     perform s011-write-workout
+    .
 
-  .z000-finalise.
+  z000-finalise.
     *> -------------------------------------------------------------------------
     *>  End of Program Processing.
     *> -------------------------------------------------------------------------
@@ -1438,10 +1610,11 @@ procedure division.
 
     move zero to return-code
     goback
+    .
 
-  .z100-copy-workin-to-stdout.
+  z100-copy-workin-to-stdout.
     *> -------------------------------------------------------------------------
-    *>  Copy Work Input to Standard Output.
+    *>  Copy the Work Input file to the Standard Output stream.
     *> -------------------------------------------------------------------------
 
     move w502-work-file-one to w501-workin-filename
@@ -1465,8 +1638,9 @@ procedure division.
     perform s006-close-stdout
     move "z100-copy-workin-to-stdout (6)" to w600-location
     perform s009-close-workin
+    .
 
-  .z999-abort.
+  z999-abort.
     *> -------------------------------------------------------------------------
     *>  Abnormal Termination Processing.
     *> -------------------------------------------------------------------------
@@ -1496,11 +1670,12 @@ procedure division.
     display space upon stderr end-display
     move 1 to return-code
     goback
+    .
 
 *> *****************************************************************************
 *> Start of Internal Subroutines.
 
-  .s000-set-file-error-status.
+  s000-set-file-error-status.
     *> -------------------------------------------------------------------------
     *>  Set the file error status for display by z999-abort.
     *> -------------------------------------------------------------------------
@@ -1689,7 +1864,7 @@ procedure division.
         *> Nothing extra to say.
 
       when w500-not-available
-        move "91: Notavailable." to w600-file-status
+        move "91: Not available." to w600-file-status
         *> Nothing extra to say.
 
       when other
@@ -1700,10 +1875,11 @@ procedure division.
         end-string
 
     end-evaluate
+    .
 
-  .s001-open-read-stdin.
+  s001-open-read-stdin.
     *> -------------------------------------------------------------------------
-    *>  Open Standard Input and read the first record.
+    *>  Open the Standard Input stream and read the first record.
     *> -------------------------------------------------------------------------
 
     open input stdin
@@ -1716,10 +1892,11 @@ procedure division.
     end-if
 
     perform s002-read-stdin
+    .
 
-  .s002-read-stdin.
+  s002-read-stdin.
     *> -------------------------------------------------------------------------
-    *>  Read the next record from Standard Input.
+    *>  Read the next record from the Standard Input stream.
     *> -------------------------------------------------------------------------
 
     read stdin end-read
@@ -1736,10 +1913,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if end-if
+    .
 
-  .s003-close-stdin.
+  s003-close-stdin.
     *> -------------------------------------------------------------------------
-    *>  Close Standard Input.
+    *>  Close the Standard Input stream.
     *> -------------------------------------------------------------------------
 
     close stdin
@@ -1750,10 +1928,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if
+    .
 
-  .s004-open-stdout.
+  s004-open-stdout.
     *> -------------------------------------------------------------------------
-    *>  Open Standard Output.
+    *>  Open the Standard Output stream.
     *> -------------------------------------------------------------------------
 
     open output stdout
@@ -1764,10 +1943,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if
+    .
 
-  .s005-write-stdout.
+  s005-write-stdout.
     *> -------------------------------------------------------------------------
-    *>  Write a record to Standard Output.
+    *>  Write a record to the Standard Output stream.
     *> -------------------------------------------------------------------------
 
     write stdout-record end-write
@@ -1778,10 +1958,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if
+    .
 
-  .s006-close-stdout.
+  s006-close-stdout.
     *> -------------------------------------------------------------------------
-    *>  Close Standard Output.
+    *>  Close the Standard Output stream.
     *> -------------------------------------------------------------------------
 
     close stdout
@@ -1792,10 +1973,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if
+    .
 
-  .s007-open-read-workin.
+  s007-open-read-workin.
     *> -------------------------------------------------------------------------
-    *>  Open Work Input and read the first record.
+    *>  Open the Work Input file and read the first record.
     *> -------------------------------------------------------------------------
 
     open input workin
@@ -1809,10 +1991,11 @@ procedure division.
     end-if
 
     perform s008-read-workin
+    .
 
-  .s008-read-workin.
+  s008-read-workin.
     *> -------------------------------------------------------------------------
-    *>  Read the next record from Work Input.
+    *>  Read the next record from the Work Input file.
     *> -------------------------------------------------------------------------
 
     read workin end-read
@@ -1830,10 +2013,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if end-if
+    .
 
-  .s009-close-workin.
+  s009-close-workin.
     *> -------------------------------------------------------------------------
-    *>  Close Work Input.
+    *>  Close the Work Input file.
     *> -------------------------------------------------------------------------
 
     close workin
@@ -1845,10 +2029,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if
+    .
 
-  .s010-open-workout.
+  s010-open-workout.
     *> -------------------------------------------------------------------------
-    *>  Open Work Output.
+    *>  Open the Work Output file.
     *> -------------------------------------------------------------------------
 
     open output workout
@@ -1860,10 +2045,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if
+    .
 
-  .s011-write-workout.
+  s011-write-workout.
     *> -------------------------------------------------------------------------
-    *>  Write a record to Work Output.
+    *>  Write a record to the Work Output file.
     *> -------------------------------------------------------------------------
 
     write workout-record end-write
@@ -1875,10 +2061,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if
+    .
 
-  .s012-close-workout.
+  s012-close-workout.
     *> -------------------------------------------------------------------------
-    *>  Close Work Output.
+    *>  Close the Work Output file.
     *> -------------------------------------------------------------------------
 
     close workout
@@ -1890,10 +2077,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if
+    .
 
-  .s013-create-macrolib.
+  s013-create-macrolib.
     *> -------------------------------------------------------------------------
-    *>  Create Macro Library.
+    *>  Create the Macro Library file.
     *> -------------------------------------------------------------------------
 
     open output macrolib
@@ -1907,10 +2095,11 @@ procedure division.
 
     *> Macro Library must be closed before it can be opened for use.
     perform s018-close-macrolib
+    .
 
-  .s014-open-macrolib.
+  s014-open-macrolib.
     *> -------------------------------------------------------------------------
-    *>  Open Macro Library.
+    *>  Open the Macro Library file.
     *> -------------------------------------------------------------------------
 
     open i-o macrolib
@@ -1921,10 +2110,11 @@ procedure division.
       move trim(w501-macrolib-filename) to w600-message-2
       perform z999-abort
     end-if
+    .
 
-  .s015-read-key-macrolib.
+  s015-read-key-macrolib.
     *> -------------------------------------------------------------------------
-    *>  Read a record with the specified key from Macro Library.
+    *>  Read a record with the specified key from the Macro Library file.
     *> -------------------------------------------------------------------------
 
     read macrolib end-read
@@ -1942,10 +2132,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if end-if
+    .
 
-  .s016-read-next-macrolib.
+  s016-read-next-macrolib.
     *> -------------------------------------------------------------------------
-    *>  Read the next record from Macro Library.
+    *>  Read the next record from the Macro Library file.
     *> -------------------------------------------------------------------------
 
     read macrolib next end-read
@@ -1963,10 +2154,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if end-if
+    .
 
-  .s017-write-macrolib.
+  s017-write-macrolib.
     *> -------------------------------------------------------------------------
-    *>  Write a record to Macro Library.
+    *>  Write a record to the Macro Library file.
     *> -------------------------------------------------------------------------
 
     write macrolib-record end-write
@@ -1978,10 +2170,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if
+    .
 
-  .s018-close-macrolib.
+  s018-close-macrolib.
     *> -------------------------------------------------------------------------
-    *>  Close Macro Library.
+    *>  Close the Macro Library file.
     *> -------------------------------------------------------------------------
 
     close macrolib
@@ -1993,10 +2186,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if
+    .
 
-  .s019-open-read-incfile.
+  s019-open-read-incfile.
     *> -------------------------------------------------------------------------
-    *>  Open $INCLUDE file and read the first record.
+    *>  Open the $INCLUDE file and read the first record.
     *> -------------------------------------------------------------------------
 
     open input incfile
@@ -2010,10 +2204,11 @@ procedure division.
     end-if
 
     perform s020-read-incfile
+    .
 
-  .s020-read-incfile.
+  s020-read-incfile.
     *> -------------------------------------------------------------------------
-    *>  Read the next record from $INCLUDE file.
+    *>  Read the next record from the $INCLUDE file.
     *> -------------------------------------------------------------------------
 
     read incfile end-read
@@ -2031,10 +2226,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if end-if
+    .
 
-  .s021-close-incfile.
+  s021-close-incfile.
     *> -------------------------------------------------------------------------
-    *>  Close $INCLUDE file.
+    *>  Close the $INCLUDE file.
     *> -------------------------------------------------------------------------
 
     close incfile
@@ -2046,8 +2242,9 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if
+    .
 
-  .s022-delete-workfiles.
+  s022-delete-workfiles.
     *> -------------------------------------------------------------------------
     *>  Delete the work workfiles.
     *> -------------------------------------------------------------------------
@@ -2055,8 +2252,9 @@ procedure division.
     call "C$DELETE" using w501-workin-filename, 0 end-call
     call "C$DELETE" using w501-workout-filename, 0 end-call
     call "C$DELETE" using w501-macrolib-filename, 0 end-call
+    .
 
-  .s023-swop-work-file-assignments.
+  s023-swop-work-file-assignments.
     *> -------------------------------------------------------------------------
     *>  Swop the Work Input and Work Output file assignments.
     *> -------------------------------------------------------------------------
@@ -2065,10 +2263,11 @@ procedure division.
     move w502-work-file-two to w502-work-file-one
     move w502-work-file-swap to w502-work-file-two
     move spaces to w502-work-file-swap
+    .
 
-  .s024-preprocessor-command.
+  s024-preprocessor-command.
     *> -------------------------------------------------------------------------
-    *>  Change the default characters used in macro definitions and names.
+    *>  Change the default characters used in the macro definitions and names.
     *> -------------------------------------------------------------------------
 
     move trim(workin-record) to workin-record
@@ -2115,10 +2314,11 @@ procedure division.
     end-evaluate
 
 >>D display "-- debug:   keychar = [" w608-keychar "] parmchar = [" w608-parmchar "] delimiter = [" w608-delimiter "]" upon stderr end-display
+    .
 
-  .s025-open-read-macrostd.
+  s025-open-read-macrostd.
     *> -------------------------------------------------------------------------
-    *>  Open Standard Macros and read the first record.
+    *>  Open the Standard Macros file and read the first record.
     *> -------------------------------------------------------------------------
 
     open input macrostd
@@ -2135,10 +2335,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if end-if
+    .
 
-  .s026-read-macrostd.
+  s026-read-macrostd.
     *> -------------------------------------------------------------------------
-    *>  Read the next record from Standard Macros.
+    *>  Read the next record from the Standard Macros file.
     *> -------------------------------------------------------------------------
 
     read macrostd end-read
@@ -2155,10 +2356,11 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if end-if
+    .
 
-  .s027-close-macrostd.
+  s027-close-macrostd.
     *> -------------------------------------------------------------------------
-    *>  Close Standard Macros.
+    *>  Close the Standard Macros file.
     *> -------------------------------------------------------------------------
 
     close macrostd
@@ -2169,11 +2371,12 @@ procedure division.
       perform s000-set-file-error-status
       perform z999-abort
     end-if
+    .
 
 *> End of Internal Subroutines.
 *> *****************************************************************************
 
-.end program cobolmac.
+end program cobolmac.
 
 *> *****************************************************************************
 *> Start of Functions.
@@ -2228,29 +2431,34 @@ procedure division using source-str, search-str returning found-pos.
   instr-mainline.
 
     *> Downshift the source and search strings and get their lengths.
+
     move lower-case(source-str) to source-lstr
     move length(trim(source-lstr, trailing)) to source-length
     move lower-case(search-str) to search-lstr
     move length(trim(search-lstr)) to search-length
 
     *> Return zero if search string longer than source string.
+
     if search-length > source-length then
       move zero to found-pos
       goback
     end-if
 
     *> Return one if the search and source strings are the same.
+      
     if trim(search-lstr) = trim(source-lstr) then
       move 1 to found-pos
       goback
     end-if
 
     *> Calculate where the stop index is (stops us getting a bounds violation).
+    
     compute stop-index
       = (source-length - search-length) + 1
     end-compute
 
     *> Loop until we find the search string or we hit the stop index.
+    
     perform
       varying start-index from 1 by 1
       until (source-lstr(start-index:search-length) = search-lstr(1:search-length))
@@ -2261,16 +2469,19 @@ procedure division using source-str, search-str returning found-pos.
     end-perform
 
     *> If we've found the search string then return where.
+
     if start-index < stop-index then
       move start-index to found-pos
       goback
     end-if
 
     *> If we get here then the search string was not found.
+      
     move zero to found-pos
     goback
+    .
 
-.end function instr.
+end function instr.
 
 *> End of source code.
 *> *****************************************************************************

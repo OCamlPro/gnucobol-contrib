@@ -28,46 +28,46 @@ make check procedure.
 Installation
 ------------
 
-Linux/Unix:
+  CobolMac supports multiple operating systems.
 
-  Compile the source of cobolmac.cob with the command:
+  Prior to compiling the source file you need to make sure that the OS DEFINE
+  command near line 62 is set to one of the following values:
 
-    ./comp-cobolmac.sh
+    'LINUX'   for a GNU/Linux version
+    'UNIX'    for a UNIX version
+    'OSX'     for a Mac OSX version
+    'WINDOWS' for a Windows version
+    'CYGWIN'  for a Windows/Cygwin version
+    'MINGW'   for a Windows/MinGW version
 
-  at a command prompt using any terminal program.
+  Linux/Unix:
 
-  Now place cobolmac in a directory that is within the PATH making sure that the
-  execute flag is set (chmod +x cobolmac) although this is done within the
-  script.
+    Compile the source of cobolmac.cob with the command:
 
-Mac OSX:
+      ./comp-cobolmac.sh
 
-  Compile the COBOL source as for Linux/Unix.
+    at a command prompt using any terminal program.
 
-  In the event this does not work, you must have installed and tested GnuCOBOL.
+    Now place cobolmac in a directory that is within the PATH making sure that
+    the execute flag is set (chmod +x cobolmac) although this is done within the
+    script.
 
-  Note this might not work 'as is' with Tiny Cobol or ANY other compiler. Check
-  to see if the compiler supports the C$DELETE built-in system subroutine. If
-  not then the s022-delete-workfiles paragraph will need modification to perform
-  this function some other way (for eg. drop into a command shell and issue the
-  file delete/purge commands).
+  Mac OSX:
 
-Windows:
+    Compile the source file as for Linux/Unix.
 
-  This utility does not yet fully understand the Windows OS. It might compile
-  cleanly but I currently don't have access to a Windows box to confirm this.
+    In the event this does not work, you must have installed and tested GnuCOBOL.
 
-  If it does compile and you try to run it then the following message displayed:
+    Note this might not work 'as is' with Tiny Cobol or ANY other compiler.
+    Check to see if the compiler supports the C$DELETE built-in system
+    subroutine. If not then the s022-delete-workfiles paragraph will need
+    modification to perform this function some other way (for eg. drop into a
+    command shell and issue the file delete/purge commands).
 
-    cobolmac/B.00.00 - COBOL Macro Preprocessor.
-    Copyright (c) Robert W. Mills (robertw-mills@users.sf.net), 2014-2015.
-    This is free software; see the source for copying conditions. There is NO
-    WARRANTY; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  Windows:
 
-      Error: CobolMac has detected that it is running on a Windows OS.
-           : This OS in NOT currently supported.
-
-  and the utility will terminate returning an ERRORLEVEL=1
+    No instructions available as I do not have access to Windows, Wingows/Cygwin
+    and Windows/MinGW.
 
 Supplied files with the CobolMac tarball
 ----------------------------------------
@@ -77,14 +77,12 @@ ChangeLog           History of changes made to the cobolmac source.
 cobolmac            An executable compiled on Linux Mint 17.1 using version
                     2.0.0 (dated Aug 2014) of GnuCOBOL.
 cobolmac.cob        The COBOL source code for CobolMac B.00.00.
-cobolmac.lst        Listing of cobolmac.cob created by Vincent B Coen's cobxref.
 comp-cobolmac.sh    A bash script to compile the COBOL source code.
 COPYING             Software License for copying code.
 DevNotes            These are my Developer Notes for CobolMac. They may be of
                     assistance if you want to make any changes to the source
                     code.
-Manual              Text version of the User Manual/Guide for CobolMac.
-Manual.htm          HTML version of the User Manual/Guide for CobolMac.
+Manual.txt          User Manual/Guide for CobolMac.
 README              This file.
 ToDo                Lists any outstanding programming or new functionality.
 
@@ -108,4 +106,4 @@ and send a copy to the author at robertw-mills@users.sf.net if urgent and/or a
 show-stopper.
 
 ------------------------------------------------------------------------
-Last updated 20th May, 2015 (c) Robert W.Mills
+Last updated 2nd October, 2015 (c) Robert W.Mills

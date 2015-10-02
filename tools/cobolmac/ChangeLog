@@ -2,6 +2,17 @@ This is the Modification History (ChangeLog) for CobolMac.
 
 Note: The items in this list are held in newest first order.
 
+Version: B.03.00  September 2015  Robert W.Mills (robertw.mills@fsmail.net).
+  - Added support for UNIX, Mac OSX and Windows (native, MinGW and Cygwin).
+  - The built message now includes the supported OS (--version and -v option).
+  - Uses an alternate method to read the command line options if CBL_OC_GETOPT
+    is not available. The --stdlib and -s options are not supported if alternate
+    method is invoked (warning message is displayed if this case happens).
+  - Changed the 'paragraph naming style' that caused problems with the post
+    rev411 compiler.
+  - The HTML version of the manual (Manual.htm) has been deleted.
+  - Updated Manual.txt to reflect changes.
+
 Version: B.02.00  June 2015  Robert W.Mills (robertw-mills@users.sf.net).
 
   - Implemented ToDo Item 5 (Preload standard macro definitions).

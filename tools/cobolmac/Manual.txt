@@ -1,7 +1,7 @@
 
                       CobolMac: a COBOL Macro Preprocessor
 
-                        User Manual for Version B.02.00
+                        User Manual for Version B.03.00
 
 
                             Copyright (C) 2014-2015
@@ -43,6 +43,7 @@ along with this program.
     3.1 $DEFINE
     3.2 $PREPROCESSOR
     3.3 $INCLUDE
+    3.4 $COPY
 
   4.0 Examples
 
@@ -50,15 +51,21 @@ along with this program.
 
   6.0 Relationship of Formal to Actual Parameters
 
-  7.0 Hewlett-Packard e3000 Preprocessor Commands
+  7.0 Supported Platforms.
 
-    7.1 $CONTROL
-    7.2 $COPYRIGHT
-    7.3 $IF
-    7.4 $PAGE
-    7.5 $SET
-    7.6 $TITLE
-    7.7 $VERSION
+   7.1  Configuring the Platform.
+   7.2  Temporary File Location.
+   7.3  Directory/Folder Seperator.
+
+  8.0 Hewlett-Packard e3000 Preprocessor Commands
+
+    8.1 $CONTROL
+    8.2 $COPYRIGHT
+    8.3 $IF
+    8.4 $PAGE
+    8.5 $SET
+    8.6 $TITLE
+    8.7 $VERSION
 
 --------------------------------------------------------------------------------
 
@@ -123,6 +130,30 @@ along with this program.
                    Details written to Standard Error prior to termination.
                    The output file, if created, is incomplete/corrupt.
 
+  Note: The Standard Output from CobolMac can be piped directly to GnuCOBOL so
+        the preprocessed source can be compiled. This method negates the need
+        for a permenant file to hold the preprocessed source.
+
+        Replace 'program2' with 'cobc -x /dev/stdin -o object' where '-x' is the
+        required GnuCOBOL options, and 'object' is the [path/]name for the
+        compiled program/module.
+
+  Note: Missing CBL_OC_GETOPT work-around.
+
+        CobolMac B.02.00 replaced its home-grown command line option processing
+        with calls to the CBL_OC_GETOPT system routine. This was fine for those
+        who had a revision of GnuCOBOL 2.0 that contained it.
+
+        Those who had earlier revisions or Report-Writer or OpenCOBOL found they
+        were unable to use CobolMac as it would abort.
+
+        To fix this problem I have added the home-grown processing and some
+        additional code to invoke it if the call to CBL_OC_GETOPT fails. Due to
+        limitations within the home-grown code it is unable to handle either the
+        --stdlib or -s options.
+
+        A message will be displayed on stderr if the home-grown code is invoked.
+
 --------------------------------------------------------------------------------
 
 2.1 Standard Macros Library
@@ -132,11 +163,13 @@ along with this program.
   'cobolmac.standard.macros' and CobolMac will automatically add it to the start
   of the source programs Working-Storage Section.
 
-  The file cobolmac.standard.macros is assumed to reside in the current working
-  directory.
+  The reason for placing the contents of 'cobolmac.standard.macros' within the
+  Working-Storage Section is so you can also include any variable definitions
+  that are specific to the macros.
 
-  The --stdlib=filename (-s:filename) option can be used to point CobolMac to
-  a shared library file.
+  The file cobolmac.standard.macros is assumed to reside in the current working
+  directory. The --stdlib (-s) option can be used to point CobolMac to a library
+  file with a different name and/or in a different location.
 
 --------------------------------------------------------------------------------
 
@@ -146,137 +179,181 @@ along with this program.
 
   3.1 $DEFINE
 
-    The $DEFINE command is used to define a macro. When you define a macro, you
-    associate a macro name with a string of text. It has the following format:
+    The $DEFINE command is used to associate a string of text with a macro name.
+    When the preprocessor encounters a defined macro name in the source program,
+    it invokes the macro and passes the associated string of text.
 
-    $DEFINE %macro-name=[string-text]#
+    SYNTAX
 
-    Parameters:
+      The $DEFINE command has the following format:
 
-      macro-name   The name of the macro being defined. It consists of an
-                   initial percent sign, %, followed by an alphabetic character,
-                   followed by zero or more alphanumeric characters.
+      $DEFINE %macro-name=[string-text]#
 
-                   The length of the macro name may be up to 70 characters long.
+    PARAMETERS
 
-      string-text  Can be any text you choose. However, because this text is
+      macro-name   the name of the macro being defined.
+
+                   macro-name is limited to a length of 30 characters and is,
+                   by default, prefixed by a '%' (percent).
+
+      string-text  a string of text to replace occurrences of the macro call
+                   within the body of the program code.
+
+                   Can be any text you choose. However, because this text is
                    sent to the compiler, it must be a valid COBOL statement or
                    sentence, with one exception. This exception is the use of
                    formal parameters in the string-text. Formal parameters are
                    described later in this section.
 
-    Description:
+                   string-text may contain formal parameters (referred to as
+                   variables). They are designated by an integer in the range 1
+                   to 9 that are, by default, prefixed by an '!' (exclamation).
 
-      Note that string-text is delimited by an equal sign and a hash, '#', sign.
-      The hash sign is the delimiter of the entire definition.
+    DESCRIPTION
+
+      This command may appear anywhere in your source program.
+
+      The $DEFINE command is, by default, terminated by a '#' (hash).
 
       Nested $DEFINE commands and recursive macros are not supported.
 
-      You can place this command anywhere within your source file but it is
-      suggested that you place it within the Working-Storage Section. If you
-      do this then the $DEFINE command can contain any variable definitions
-      required by the macro. Otherwise you will have to either; 1) hard code
-      the variables within the source file, 2) use the COPY command to load
-      a copylibrary module, 3) use the $INCLUDE command to load a file that
-      containing the variable definitions.
+      The macro-name prefix, formal parameter prefix and $DEFINE terminator can
+      be changed by using the $PREPROCESSOR command (see below).
 
   3.2 $PREPROCESSOR
 
-    The $PREPROCESSOR command allows you to change the default characters used
-    in macro definitions and names.
+    The $PREPROCESSOR command allows you to change the default character used in
+    the macro definitions and names.
 
-    It has the following format:
+    SYNTAX
 
-      $PREPROCESSOR parameter=subparameter [, parameter=subparameter ]
+      The $PREPROCESSOR command has the following format:
 
-    where parameter and subparameter have the following values:
+        $PREPROCESSOR parameter=new-char [, ...]
 
-      parameter    Is one of the keywords shown below. Each may be used only
-                   once in a given $PREPROCESSOR command.
+    PARAMETERS
 
-        KEYCHAR    Specifies the initial character of all macro names is to be
-                   subparameter.
+      parameter    is one of the following:
 
-                   The default character is the % (percent).
+                     KEYCHAR     the macro-name prefix character.
+                                 The default character is % (percent).
 
-        PARMCHAR   Specifies the initial character of all formal parameters in
-                   macro definitions is to be subparameter.
+                     PARMCHAR    the formal parameter prefix character used
+                                 within the macro text-string.
 
-                   The default character is the ! (exclamation mark).
+                                 The default character is ! (exclamation).
 
-        DELIMITER  Specifies the delimiting character in a macro string-text and
-                   actual parameters is to be subparameter.
+                     DELIMITER   the character that delimits the end of macro
+                                 text strings and the actual parameters used
+                                 with macro calls.
 
-                   The default character is the # (hash).
+                                 The default character is # (hash).
 
-      subparameter Is the character to be used in replacing the currently used
-                   initial character or delimiter.
+      new-char     specifies the new character to be used for the specified
+                   parameter.
 
-    Note that care must be taken when you change the initial characters and the
-    string-text delimiter, because there may be cases when you use one of the
-    newly defined characters in your string-text as part of the string-text
-    itself, and not as a delimiter or an initial character.
+    DESCRIPTION
 
-    The following example shows how the $PREPROCESSOR command is used when you
-    define a macro that invokes another macro (aka a Nested Macro). It is the
-    only time that you should need to use the $PREPROCESSOR command.
+      You must ensure that any parameter you change does not contain a character
+      that will appear in the $DEFINE text-string. If it does then processing of
+      the $DEFINE will terminated early or give unexpected results.
 
-      *> Macro ReadError(paragraph#,file-name#,file-status#)
+      The following example shows how the $PREPROCESSOR command is used when you
+      define a macro that invokes another macro (aka a Nested Macro). It is the
+      only time that you should need to use the $PREPROCESSOR command.
 
-      $define %ReadError=
-      display "Error ", !3, " in paragraph ", !1, " reading file ", !2 end-display
-      goback#
+        *> Macro ReadError(paragraph#,file-name#,file-status#)
 
-      $preprocessor delimiter=~
+        $define %ReadError=
+        display
+          "Error ", !3, " in paragraph ", !1, " reading file ", !2
+        end-display
+        goback#
 
-      *> Macro ReadFile(paragraph#,file-name#)
+        *> Change the macro delimiter to something other than #. If this is not
+        *> done then the first # character in the call to the %ReadError macro
+        *> will be treated as the %ReadFile macro terminator.
 
-      $define %ReadFile=
-      read !2 end-read
+        $preprocessor delimiter=~
 
-      evaluate file-status
-        when read-success
-          perform process-record
-        when end-of-file
-          perform process-eof
-        when other
-          *> Report the error and exit the program.
-          %ReadError(!1#,!2#,file-status#)
-      end-evaluate~
+        *> Macro ReadFile(paragraph#,file-name#)
 
-      $preprocessor delimiter=#
+        $define %ReadFile=
+        read !2 end-read
+        evaluate file-status
+          when read-success
+            perform process-record
+          when end-of-file
+            perform process-eof
+          when other *> Report the error and exit the program.
+            %ReadError(!1#,!2#,file-status#)
+        end-evaluate~
 
-    The above example assumes the following:
+        *> Return the macro define terminator to its default value.
 
-    * file-status is the file status data item in the files select statement.
-    * read-success is an 88 level under file-status with a value of "00".
-    * end-of-file is an 88 level under file-status with a value of "10".
-    * process-record is a section/paragraph performed when a record is found.
-    * process-eof is a section/paragraph performed when a record is not found.
+        $preprocessor delimiter=#
 
-    Note: If the DELIMITER had not been changed to ~ before the define of the
-    ReadFile macro then the first # character in the call to the ReadError macro
-    would have been treated as the ReadFile macro terminator.
+      The above example assumes the following:
+
+        * file-status is a pic x(2) data item assigned to the FILE STATUS option
+          in the files SELECT statement.
+        * read-success is an 88 level under file-status with a value of "00".
+        * end-of-file is an 88 level under file-status with a value of "10".
+        * process-record and process-eof is an existing section/paragraph.
 
   3.3 $INCLUDE
 
-    The $INCLUDE command allows you to specify an entire file to be read, line
-    by line, into the preprocessor as part of your source file.
+    The $INCLUDE command allows you to specify a file to be copied into your
+    source program.
 
-    It has the following format:
+    SYNTAX
 
-      $INCLUDE filename
+      The $INCLUDE command has the following format:
 
-    where filename is the name of the file, including path, whose records are to
-    be read into the preprocessor.
+        $INCLUDE filename
 
-    $INCLUDE commands may be nested to whatever depth you require. That is, the
-    file that is being included may itself have a $INCLUDE command in it. The
-    only limitations are the maximum file size and the available disc space for
-    the preprocessed file.
+    PARAMETERS
 
-    If you use this command to load macro $DEFINE commands then it is suggested
-    you follow the recommendations given above for the $DEFINE command.
+      filename     the name of the file, including path, to be copied into your
+                   source program.
+
+    DESCRIPTION
+
+      This command may appear anywhere in your source program.
+
+      $INCLUDE commands may be nested to whatever depth you require. That is,
+      the file that is being copied may itself have $INCLUDE commands in it.
+
+      If you use this command to load macro $DEFINE commands then its suggested
+      you follow the recommendations given above for the $DEFINE command.
+
+  3.4 $COPY [note: this command has not yet been implemented]
+
+    The $COPY command allows you to specify a copybook module, held in a library
+    file, to be copied into your source program.
+
+    SYNTAX
+
+      The $COPY command has the following format:
+
+        $COPY copybook IN|OF library
+
+    PARAMETERS
+
+      copybook     the name of the module to be copied into your source program.
+
+      library      the name of the library file, including path, in which the
+                   module to be copied resides. DO NOT include a file extension.
+
+                   library must be an indexed file, with the .cpylib extension,
+                   that was created by the cpylibeditor program.
+
+    DESCRIPTION
+
+      This command may appear anywhere in your source program.
+
+      This command does not currently allow the use of the REPLACING...BY phrase
+      that is available with the COPY statement.
 
 --------------------------------------------------------------------------------
 
@@ -536,13 +613,65 @@ along with this program.
 
 --------------------------------------------------------------------------------
 
-7.0 Hewlett-Packard e3000 Preprocessor Commands
+7.0 Supported Platforms
+
+ 7.1  Configuring the Platform.
+
+    CobolMac originally only supported the GNU/Linux platform. It now supports
+    the following Platforms:
+
+      GNU/Linux
+      UNIX
+      Mac OSX
+      Windows
+      Windows/MinGW
+      Windows/Cygwin
+
+    Prior to compiling CobolMac you must set the value of the CDF variable named
+    OS to the required value (see the 'Configuration Settings' comments in the
+    source file header for details).
+
+  7.2  Temporary File Location.
+
+    The following logic is used to find the location where the temporary files,
+    used by this program, are to be placed.
+
+    * Check the TMPDIR environment variable.
+      If it exists and contains a value then use it else continue.
+
+    * Check the TEMP environment variable.
+      If it exists and contains a value then use it else continue.
+
+    * Check the TMP environment variable.
+      If it exists and contains a value then use it else continue.
+
+    * If running on a Windows (Native, Cygwin, or MinGW) platform then ...
+
+      * Check the USERPROFILE environment variable.
+        If it exists and contains a value then use it else use "." (dot).
+
+    * If not running on a Windows platform then use "/tmp".
+
+    Note: This may change when GnuCOBOL 2.0 becomes the official release.
+
+  7.3  Directory Seperator.
+
+    The directory separator is platform dependent. The character used is set by
+    value of the CDF variable named OS as follows:
+
+      / (slash) for GNU/Linux, UNIX, Mac OSX and Windows/Cygwin.
+
+      \ (backslash) for Windows and Windows/MinGW.
+
+--------------------------------------------------------------------------------
+
+8.0 Hewlett-Packard e3000 Preprocessor Commands
 
 
   The following e3000 Preprocessor Commands are not supported by CobolMac and
   will automatically be removed from the source file.
 
-  7.1 $CONTROL
+  8.1 $CONTROL
 
     The $CONTROL command is used to control compilation and list options.
 
@@ -555,7 +684,7 @@ along with this program.
 
     A $CONTROL command may appear anywhere in the source text.
 
-  7.2 $COPYRIGHT
+  8.2 $COPYRIGHT
 
     The $COPYRIGHT command is used to enter a copyright string into your object
     file.
@@ -574,7 +703,7 @@ along with this program.
     placed at the beginning. Only the last $COPYRIGHT command in the source file
     will be used.
 
-  7.3 $IF
+  8.3 $IF
 
     The $IF command is used to interrogate the compilation software switches
     (see the $SET command for additional information).
@@ -590,7 +719,7 @@ along with this program.
     $IF command with/without a parameter terminates the influence of any
     preceding $IF command.
 
-  7.4 $PAGE
+  8.4 $PAGE
 
     The $PAGE command allows you to replace the first line of the title portion
     of the standard page heading in a listfile, and to advance to the next
@@ -610,7 +739,7 @@ along with this program.
     $PAGE command without a parameter does not change the first line of the
     title.
 
-  7.5 $SET
+  8.5 $SET
 
     The $SET command is used to turn compilation software switches on/off.
 
@@ -626,7 +755,7 @@ along with this program.
     A $SET command may appear anywhere in the source text. The appearance of a
     $SET command without a parameter sets all switches to OFF.
 
-  7.6 $TITLE
+  8.6 $TITLE
 
     The $TITLE command is similar to the $PAGE command in that it can be used to
     replace the first line of a title in the listfile. However, it can also be
@@ -645,7 +774,7 @@ along with this program.
     A $TITLE command may appear anywhere in the source text. The appearance of a
     $TITLE command without any parameters clears the first line of the title.
 
-  7.7 $VERSION
+  8.7 $VERSION
 
     The $VERSION command is used to enter a version string into your object file.
 
@@ -665,4 +794,4 @@ along with this program.
     strings.
 
 --------------------------------------------------------------------------------
-End of CobolMac B.02.00 User Manual
+End of CobolMac B.03.00 User Manual
