@@ -1,7 +1,7 @@
 
    ____      _           _  _     _
   / ___|___ | |__   ___ | || \   / | __ _  ___       A COBOL Macro Preprocessor
- | |   / _ \| |_ \ /   \| ||  \_/  |/ _` |/ __|      Manual for Version B.03.xx
+ | |   / _ \| |_ \ /   \| ||  \_/  |/ _` |/ __|
  | |__| (_) | |_) | (_) | || |\_/| | (_| | (__       Copyright (C) 2014-2015
   \____\___/|_|__/ \___/|_||_|   |_|\__,_|\___|      RobertW-Mills@users.sf.net
 
@@ -21,83 +21,6 @@ called in the source program.
 
 All code and programs are distributed under the GNU General Public License v3.
 See the file COPYING for details.
-
-Requirements
-------------
-
-GnuCOBOL 2.0 (or greater) package installed and tested fully working. See
-documentation supplied with GnuCOBOL. You MUST have run both sanity checks
-created by the test procedures including within the cobol85 suite as well as the
-make check procedure.
-
-Installation
-------------
-
-  CobolMac supports multiple operating systems.
-
-  Prior to compiling the source file you need to make sure that the OS DEFINE
-  command near line 62 is set to one of the following values:
-
-    'LINUX'   for a GNU/Linux version
-    'UNIX'    for a UNIX version
-    'OSX'     for a Mac OSX version
-    'WINDOWS' for a Windows version
-    'CYGWIN'  for a Windows/Cygwin version
-    'MINGW'   for a Windows/MinGW version
-
-  Linux/Unix:
-
-    Compile the source of cobolmac.cob with the command:
-
-      ./comp-cobolmac.sh
-
-    at a command prompt using any terminal program.
-
-    Now place cobolmac in a directory that is within the PATH making sure that
-    the execute flag is set (chmod +x cobolmac) although this is done within the
-    script.
-
-  Mac OSX:
-
-    Compile the source file as for Linux/Unix.
-
-    In the event this does not work, you must have installed and tested GnuCOBOL.
-
-    Note this might not work 'as is' with Tiny Cobol or ANY other compiler.
-    Check to see if the compiler supports the C$DELETE built-in system
-    subroutine. If not then the s022-delete-workfiles paragraph will need
-    modification to perform this function some other way (for eg. drop into a
-    command shell and issue the file delete/purge commands).
-
-  Windows:
-
-    I do not have access to Windows, Wingows/Cygwin and Windows/MinGW but I
-    understand that the following commands should work [YMMV]:
-
-      Native Windows & Windows/MinGW:
-
-        cobc -x [drive:][path/to/]cobolmac.cob
-
-      Windows/Cygwin:
-
-        cobc -x [drive:][path\to\]cobolmac.cob
-
-Supplied files with the CobolMac tarball
-----------------------------------------
-
-Examples/           This folder contains example programs and macro files.
-ChangeLog           History of changes made to the cobolmac source.
-cobolmac            An executable compiled on Linux Mint 17.2 using version
-                    2.0.0 (dated Aug 2014) of GnuCOBOL.
-cobolmac.cob        The COBOL source code for CobolMac B.03.00.
-comp-cobolmac.sh    A bash script to compile the COBOL source code.
-COPYING             Software License for copying code.
-DevNotes            These are my Developer Notes for CobolMac. They may be of
-                    assistance if you want to make any changes to the source
-                    code.
-Manual.txt          User Manual/Guide for CobolMac.
-README              This file.
-ToDo                Lists any outstanding programming or new functionality.
 
 NOTES
 -----

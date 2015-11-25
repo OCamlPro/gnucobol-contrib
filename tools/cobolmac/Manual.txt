@@ -1,10 +1,11 @@
 
    ____      _           _  _     _
   / ___|___ | |__   ___ | || \   / | __ _  ___       A COBOL Macro Preprocessor
- | |   / _ \| |_ \ /   \| ||  \_/  |/ _` |/ __|      Manual for Version B.03.xx
+ | |   / _ \| |_ \ /   \| ||  \_/  |/ _` |/ __|
  | |__| (_) | |_) | (_) | || |\_/| | (_| | (__       Copyright (C) 2014-2015
   \____\___/|_|__/ \___/|_||_|   |_|\__,_|\___|      RobertW-Mills@users.sf.net
 
+      User Manual/Guide for version B.03.xx
 
 --------------------------------------------------------------------------------
 
@@ -28,46 +29,58 @@ along with this program.
 
 --------------------------------------------------------------------------------
 
-0. Table of Contents
+0.  Table of Contents
 
-  1.0 Description
+  1.0  Description
 
-  2.0 Program Usage
+  2.0  Program Usage
 
-    2.1 CobolMac Standard Macros Library
+    2.1  CobolMac Standard Macros Library
 
-  3.0 CobolMac Commands
+  3.0  CobolMac Commands
 
-    3.1 $DEFINE
-    3.2 $PREPROCESSOR
-    3.3 $INCLUDE
-    3.4 $COPY
+    3.1  $DEFINE
+    3.2  $PREPROCESSOR
+    3.3  $INCLUDE
+    3.4  $COPY
 
-  4.0 Examples
+  4.0  Examples
 
-  5.0 Defining and Using Macros
+  5.0  Defining and Using Macros
 
-  6.0 Relationship of Formal to Actual Parameters
+  6.0  Relationship of Formal to Actual Parameters
 
-  7.0 Supported Platforms.
+  7.0  Installation
 
-   7.1  Configuring the Platform.
-   7.2  Temporary File Location.
-   7.3  Directory/Folder Seperator.
+    7.1  Requirements
 
-  8.0 Hewlett-Packard e3000 Preprocessor Commands
+    7.2  Configuration
 
-    8.1 $CONTROL
-    8.2 $COPYRIGHT
-    8.3 $IF
-    8.4 $PAGE
-    8.5 $SET
-    8.6 $TITLE
-    8.7 $VERSION
+    7.3  Temporary File Location
+
+    7.4  Directory/Folder Seperator
+
+    7.5  Compiling
+
+      7.5.1  Linux/Unix
+      7.5.2  Mac OSX
+      7.5.3  Windows
+
+  8.0  Hewlett-Packard e3000 Preprocessor Commands
+
+    8.1  $CONTROL
+    8.2  $COPYRIGHT
+    8.3  $IF
+    8.4  $PAGE
+    8.5  $SET
+    8.6  $TITLE
+    8.7  $VERSION
+
+  9.0  Files supplied with CobolMac
 
 --------------------------------------------------------------------------------
 
-1.0 Description
+1.0  Description
 
   CobolMac is a COBOL Macro Preprocessor utility that reads a COBOL source file
   prior to processing by GnuCOBOL's Compiler.
@@ -99,7 +112,7 @@ along with this program.
 
 --------------------------------------------------------------------------------
 
-2.0 Program Usage
+2.0  Program Usage
 
   Usage:
     $ cobolmac [options] <input >output [2>messages]
@@ -154,7 +167,7 @@ along with this program.
 
 --------------------------------------------------------------------------------
 
-2.1 Standard Macros Library
+2.1  Standard Macros Library
 
   At some point you will find yourself $DEFINEing and using a standard set of
   macros. When this happens you can add the $DEFINE commands into a file named
@@ -171,11 +184,11 @@ along with this program.
 
 --------------------------------------------------------------------------------
 
-3.0 CobolMac Commands
+3.0  CobolMac Commands
 
   The following commands are supported by the CobolMac Preprocessor.
 
-  3.1 $DEFINE
+  3.1  $DEFINE
 
     The $DEFINE command is used to associate a string of text with a macro name.
     When the preprocessor encounters a defined macro name in the source program,
@@ -218,7 +231,7 @@ along with this program.
       The macro-name prefix, formal parameter prefix and $DEFINE terminator can
       be changed by using the $PREPROCESSOR command (see below).
 
-  3.2 $PREPROCESSOR
+  3.2  $PREPROCESSOR
 
     The $PREPROCESSOR command allows you to change the default character used in
     the macro definitions and names.
@@ -299,7 +312,7 @@ along with this program.
         * end-of-file is an 88 level under file-status with a value of "10".
         * process-record and process-eof is an existing section/paragraph.
 
-  3.3 $INCLUDE
+  3.3  $INCLUDE
 
     The $INCLUDE command allows you to specify a file to be copied into your
     source program.
@@ -325,7 +338,7 @@ along with this program.
       If you use this command to load macro $DEFINE commands then its suggested
       you follow the recommendations given above for the $DEFINE command.
 
-  3.4 $COPY [note: this command has not yet been implemented]
+  3.4  $COPY [note: this command has not yet been implemented]
 
     The $COPY command allows you to specify a copybook module, held in a library
     file, to be copied into your source program.
@@ -355,7 +368,7 @@ along with this program.
 
 --------------------------------------------------------------------------------
 
-4.0 Examples
+4.0  Examples
 
   The file Examples/Macros.inc shows some examples of how Macros are defined.
 
@@ -364,7 +377,7 @@ along with this program.
 
 --------------------------------------------------------------------------------
 
-5.0 Defining and Using Macros
+5.0  Defining and Using Macros
 
   The preprocessor associates a macro name with a string of text. Macros can
   have up to nine formal parameters. In the definition actual parameters are
@@ -508,11 +521,12 @@ along with this program.
     With two exceptions, macro names are replaced wherever they occur in the
     source program, including quoted strings. Macro names are not expanded in a
     comment, unless the comment itself is found in a macro, and in list and
-    compilation preprocessor commands (such as $CONTROL), where they are not recognized.</p>
+    compilation preprocessor commands (such as $CONTROL), where they are not
+    recognized.
 
 --------------------------------------------------------------------------------
 
-6.0 Relationship of Formal to Actual Parameters
+6.0  Relationship of Formal to Actual Parameters
 
   The numeric value of a formal parameter determines which actual parameter in
   the macro call is to replace it.
@@ -611,25 +625,31 @@ along with this program.
 
 --------------------------------------------------------------------------------
 
-7.0 Supported Platforms
+7.0  Installation
 
- 7.1  Configuring the Platform.
+  7.1  Requirements
 
-    CobolMac originally only supported the GNU/Linux platform. It now supports
-    the following Platforms:
+    GnuCOBOL 2.0 (or greater) package installed and tested fully working. See
+    documentation supplied with GnuCOBOL. You MUST have run both sanity checks
+    created by the test procedures including within the cobol85 suite as well as
+    the make check procedure.
 
-      GNU/Linux
-      UNIX
-      Mac OSX
-      Windows
-      Windows/MinGW
-      Windows/Cygwin
+  7.2  Configuration
+
+    CobolMac supports multiple operating systems.
 
     Prior to compiling CobolMac you must set the value of the CDF variable named
     OS to the required value (see the 'Configuration Settings' comments in the
     source file header for details).
 
-  7.2  Temporary File Location.
+      'LINUX'   for a GNU/Linux version
+      'UNIX'    for a UNIX version
+      'OSX'     for a Mac OSX version
+      'WINDOWS' for a Windows version
+      'CYGWIN'  for a Windows/Cygwin version
+      'MINGW'   for a Windows/MinGW version
+
+  7.3  Temporary File Location
 
     The following logic is used to find the location where the temporary files,
     used by this program, are to be placed.
@@ -652,7 +672,7 @@ along with this program.
 
     Note: This may change when GnuCOBOL 2.0 becomes the official release.
 
-  7.3  Directory Seperator.
+  7.4  Directory Seperator
 
     The directory separator is platform dependent. The character used is set by
     value of the CDF variable named OS as follows:
@@ -661,15 +681,59 @@ along with this program.
 
       \ (backslash) for Windows and Windows/MinGW.
 
+  7.5  Compiling
+
+    7.5.1  Linux/Unix
+
+      Compile the source of cobolmac.cob with the command:
+
+        ./comp-cobolmac.sh
+
+      at a command prompt using any terminal program.
+
+      Now place cobolmac in a directory that is within the PATH making sure that
+      the execute flag is set (chmod +x cobolmac) although this is done within
+      the script.
+
+    7.5.2  Mac OSX
+
+      Compile the source file as for Linux/Unix.
+
+      In the event this does not work, you must have installed and tested
+      GnuCOBOL.
+
+      Note this might not work 'as is' with Tiny Cobol or ANY other compiler.
+      Check to see if the compiler supports the C$DELETE built-in system
+      subroutine. If not then the s022-delete-workfiles paragraph will need
+      modification to perform this function some other way (for eg. drop into a
+      command shell and issue the file delete/purge commands).
+
+    7.5.3  Windows
+
+      I do not have access to Windows, Wingows/Cygwin and Windows/MinGW but I
+      understand that the following commands should work [YMMV]:
+
+        Windows/MinGW and Windows/Cygwin (inside the terminal program):
+
+          Use the command ./comp-cobolmac.sh at the command prompt.
+
+        Windows/MinGW and Windows/Cygwin (outside the terminal program):
+
+          cobc -x [drive:][path/to/]cobolmac.cob
+
+        Native Windows:
+
+          cobc -x [drive:][path\to\]cobolmac.cob
+
 --------------------------------------------------------------------------------
 
-8.0 Hewlett-Packard e3000 Preprocessor Commands
+8.0  Hewlett-Packard e3000 Preprocessor Commands
 
 
   The following e3000 Preprocessor Commands are not supported by CobolMac and
   will automatically be removed from the source file.
 
-  8.1 $CONTROL
+  8.1  $CONTROL
 
     The $CONTROL command is used to control compilation and list options.
 
@@ -682,7 +746,7 @@ along with this program.
 
     A $CONTROL command may appear anywhere in the source text.
 
-  8.2 $COPYRIGHT
+  8.2  $COPYRIGHT
 
     The $COPYRIGHT command is used to enter a copyright string into your object
     file.
@@ -701,7 +765,7 @@ along with this program.
     placed at the beginning. Only the last $COPYRIGHT command in the source file
     will be used.
 
-  8.3 $IF
+  8.3  $IF
 
     The $IF command is used to interrogate the compilation software switches
     (see the $SET command for additional information).
@@ -717,7 +781,7 @@ along with this program.
     $IF command with/without a parameter terminates the influence of any
     preceding $IF command.
 
-  8.4 $PAGE
+  8.4  $PAGE
 
     The $PAGE command allows you to replace the first line of the title portion
     of the standard page heading in a listfile, and to advance to the next
@@ -737,7 +801,7 @@ along with this program.
     $PAGE command without a parameter does not change the first line of the
     title.
 
-  8.5 $SET
+  8.5  $SET
 
     The $SET command is used to turn compilation software switches on/off.
 
@@ -753,7 +817,7 @@ along with this program.
     A $SET command may appear anywhere in the source text. The appearance of a
     $SET command without a parameter sets all switches to OFF.
 
-  8.6 $TITLE
+  8.6  $TITLE
 
     The $TITLE command is similar to the $PAGE command in that it can be used to
     replace the first line of a title in the listfile. However, it can also be
@@ -772,7 +836,7 @@ along with this program.
     A $TITLE command may appear anywhere in the source text. The appearance of a
     $TITLE command without any parameters clears the first line of the title.
 
-  8.7 $VERSION
+  8.7  $VERSION
 
     The $VERSION command is used to enter a version string into your object file.
 
@@ -790,6 +854,24 @@ along with this program.
     placed at the beginning. Only the last $VERSION command in the source file
     will be used. Use the program /SYS/PUB/VERSION to display the version
     strings.
+
+--------------------------------------------------------------------------------
+
+9.0  Files supplied with CobolMac
+
+  Examples/           This folder contains example programs and macro files.
+  ChangeLog           History of changes made to the cobolmac source.
+  cobolmac            An executable compiled on Linux Mint 17.2 using version
+                      2.0.0 (dated Aug 2014) of GnuCOBOL.
+  cobolmac.cob        The COBOL source code for CobolMac B.03.00.
+  comp-cobolmac.sh    A bash script to compile the COBOL source code.
+  COPYING             Software License for copying code.
+  DevNotes            These are my Developer Notes for CobolMac. They may be
+                      of assistance if you want to make any changes to the
+                      source code.
+  Manual.txt          User Manual/Guide for CobolMac.
+  README              "Your reading it".
+  ToDo                Lists any outstanding programming or new functionality.
 
 --------------------------------------------------------------------------------
 End of CobolMac B.03.xx User Manual
