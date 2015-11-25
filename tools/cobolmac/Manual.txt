@@ -1,12 +1,10 @@
 
-                      CobolMac: a COBOL Macro Preprocessor
+   ____      _           _  _     _
+  / ___|___ | |__   ___ | || \   / | __ _  ___       A COBOL Macro Preprocessor
+ | |   / _ \| |_ \ /   \| ||  \_/  |/ _` |/ __|      Manual for Version B.03.xx
+ | |__| (_) | |_) | (_) | || |\_/| | (_| | (__       Copyright (C) 2014-2015
+  \____\___/|_|__/ \___/|_||_|   |_|\__,_|\___|      RobertW-Mills@users.sf.net
 
-                        User Manual for Version B.03.00
-
-
-                            Copyright (C) 2014-2015
-                                      by
-                   Robert W.Mills <robertw-mills@users.sf.net>
 
 --------------------------------------------------------------------------------
 
@@ -794,4 +792,4 @@ along with this program.
     strings.
 
 --------------------------------------------------------------------------------
-End of CobolMac B.03.00 User Manual
+End of CobolMac B.03.xx User Manual

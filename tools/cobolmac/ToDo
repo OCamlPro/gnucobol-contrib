@@ -3,6 +3,10 @@ This is the Future Modifications (ToDo) list for CobolMac.
 Note: The items in this list are held in newest first order. The status of each
       item is indicated in the []'s following the item.
 
+7.  Add support for Copybook Libraries (hold multiple copybooks in single file).
+
+6.  Replace ISAM with SQLite3.
+
 5.  Preload standard macro definitions.
     [implemented in version B.02.00]
 

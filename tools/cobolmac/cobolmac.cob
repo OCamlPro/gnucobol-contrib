@@ -4,6 +4,19 @@ identification division.
 
   program-id.                          cobolmac.
 
+*> TODO:
+*>
+*>   Modify paragraph e200-convert-call-to-code.
+*>
+*>     Replace the 3 performs of e230-macro-as-a-constant with the following code:
+*>
+*>       move substitue-case(workin-record, w606-call-name, trim(macrolib-code-line))
+*>         to workout-record
+*>       move "e200-convert-call-to-code (n)" to w600-location
+*>       perform s011-write-workout
+*>
+*>     If it works then remove the performs and the performed paragraph.
+*>
 *> -----------------------------------------------------------------------------
 *>  CobolMac: a COBOL Macro Preprocessor.
 *> -----------------------------------------------------------------------------
@@ -180,7 +193,7 @@ data division.
     01  w100-program-identity.
       05  w100-program-id-line-01.
         10                             pic x(009) value "cobolmac/".
-        10  w100-program-v-uu-ff       pic x(007) value "B.03.00".
+        10  w100-program-v-uu-ff       pic x(007) value "B.03.01".
         10                             pic x(063) value " - COBOL Macro Preprocessor.".
       05  w100-program-id-line-02.
         10  w100-copyright             pic x(079) value "Copyright (c) Robert W. Mills (robertw-mills@users.sf.net), 2014-2015.".
@@ -192,33 +205,33 @@ data division.
       05  w101-usage-text.
                            *>"         1         2         3         4         5         6         7         "
                            *>"1234567890123456789012345678901234567890123456789012345678901234567890123456789"
-        10  pic x(079) value "  Usage:".
-        10  pic x(079) value "    $ cobolmac [options] <input >output [2>messages]".
-        10  pic x(079) value "    $ cobolmac [options] <input [2>messages] | program2".
-        10  pic x(079) value "    $ program1 | cobolmac [options] [2>messages] | program2".
-        10  pic x(079) value " ".
-        10  pic x(079) value "  Options:".
-        10  pic x(079) value "    -h, --help     Display this text and exit.".
-        10  pic x(079) value "    -v, --version  Display the preprocessor version and exit.".
-        10  pic x(079) value "    -H, --hardwarn Treat all warnings like an error.".
-        10  pic x(079) value "    -V, --verbose  Include Macro Begin/End comment lines.".
-        10  pic x(079) value "    -d, --debug    Display additional error information.".
-        10  pic x(079) value "    -m, --maclib   List the contents of the Macro Library.".
-        10  pic x(079) value "    -sfilename, --stdlib=filename".
-        10  pic x(079) value "                   [path/]name of file containing Standard Macros Library.".
-        10  pic x(079) value " ".
-        10  pic x(079) value "    input          [path/]name of file Standard Input redirected to.".
-        10  pic x(079) value "    output         [path/]name of file Standard Output redirected to.".
-        10  pic x(079) value "    messages       optional [path/]name of file Standard Error redirected to.".
-        10  pic x(079) value "    program1       [path/]name of program that writes to Standard Output.".
-        10  pic x(079) value "    program2       [path/]name of program that reads from Standard Input.".
-        10  pic x(079) value " ".
-        10  pic x(079) value "  Return Codes:".
-        10  pic x(079) value "    0 (zero)       Program completed without any errors.".
-        10  pic x(079) value "    1 (one)        Program terminated in an error state.".
-        10  pic x(079) value "                   Details written to Standard Error prior to termination.".
-        10  pic x(079) value "                   The output file, if created, is incomplete/corrupt.".
-        10  pic x(079) value " ".
+        10  pic x(316) value "  Usage:                                                                       " &
+                             "    $ cobolmac [options] <input >output [2>messages]                           " &
+                             "    $ cobolmac [options] <input [2>messages] | program2                        " &
+                             "    $ program1 | cobolmac [options] [2>messages] | program2                    ".
+        10  pic x(079) value spaces.
+        10  pic x(711) value "  Options:                                                                     " &
+                             "    -h, --help     Display this text and exit.                                 " &
+                             "    -v, --version  Display the preprocessor version and exit.                  " &
+                             "    -H, --hardwarn Treat all warnings like an error.                           " &
+                             "    -V, --verbose  Include Macro Begin/End comment lines.                      " &
+                             "    -d, --debug    Display additional error information.                       " &
+                             "    -m, --maclib   List the contents of the Macro Library.                     " &
+                             "    -sfilename, --stdlib=filename                                              " &
+                             "                   [path/]name of file containing Standard Macros Library.     ".
+        10  pic x(079) value spaces.
+        10  pic x(395) value "    input          [path/]name of file Standard Input redirected to.           " &
+                             "    output         [path/]name of file Standard Output redirected to.          " &
+                             "    messages       optional [path/]name of file Standard Error redirected to.  " &
+                             "    program1       [path/]name of program that writes to Standard Output.      " &
+                             "    program2       [path/]name of program that reads from Standard Input.      ".
+        10  pic x(079) value spaces.
+        10  pic x(395) value "  Return Codes:                                                                " &
+                             "    0 (zero)       Program completed without any errors.                       " &
+                             "    1 (one)        Program terminated in an error state.                       " &
+                             "                   Details written to Standard Error prior to termination.     " &
+                             "                   The output file, if created, is incomplete/corrupt.         ".
+        10  pic x(079) value spaces.
         10  pic x(079) value "***". *> end of program usage text marker.
                            *>"         1         2         3         4         5         6         7         "
                            *>"1234567890123456789012345678901234567890123456789012345678901234567890123456789"
@@ -477,6 +490,22 @@ data division.
     *> -------------------------------------------------------------------------
     *>  w9nn - Process Control Switches.
     *> -------------------------------------------------------------------------
+
+    *> Only the 88 levels are named thus preventing entry of undefined values.
+    *> Use the SET verb to set the required condition to TRUE.
+    *> If there is a default condition it must be placed first in the list.
+    *>
+    *> Example entry without a default value:
+    *>
+    *>   01  pic x(001). *> description/reason for this switch.
+    *>     88  w9nn-condition-one                 value "1".
+    *>     88  w9nn-condition-two                 value "2".
+    *>
+    *> Example entry with a default value:
+    *>
+    *>   01  pic x(001) value "1". *> description/reason for this switch.
+    *>     88  w9nn-condition-one                 value "1". *> Default setting.
+    *>     88  w9nn-condition-two                 value "2".
 
     01  . *> End-of-file flags.
 
@@ -928,7 +957,7 @@ procedure division.
       or instr(stdin-record, "$control") > zero
       or instr(stdin-record, "$version") > zero
       or instr(stdin-record, "$copyright") > zero then
-        move "This record type is not supported." to workout-record
+        move "This record type is not supported." to workout-record *> This is not used anywhere.
 
       else
         move stdin-record to workout-record
@@ -1037,7 +1066,7 @@ procedure division.
           or instr(incfile-record, "$control") > zero
           or instr(incfile-record, "$version") > zero
           or instr(incfile-record, "$copyright") > zero then
-            move "This record type is not supported." to workout-record
+            move "This record type is not supported." to workout-record *> This is not used anywhere.
 
           else
             move incfile-record to workout-record
@@ -1101,7 +1130,7 @@ procedure division.
       or instr(workin-record, "$control") > zero
       or instr(workin-record, "$version") > zero
       or instr(workin-record, "$copyright") > zero then
-        move "This record type is not supported." to workout-record
+        move "This record type is not supported." to workout-record *> This is not used anywhere.
 
       else if instr(workin-record, "$preprocessor") > zero then *> $PREPROCESSOR command found.
         perform s024-preprocessor-command
@@ -1148,7 +1177,7 @@ procedure division.
         w605-define-code
     end-unstring
 
->>D display "-- debug:   Looking in Macro Library for %", trim(w605-define-name), "." upon stderr end-display
+*>D display "-- debug:   Looking in Macro Library for %", trim(w605-define-name), "." upon stderr end-display
 
     move trim(w605-define-name) to macrolib-name
     move zeros to macrolib-line-number
@@ -1204,7 +1233,7 @@ procedure division.
     *> Add the macro definition to the Macro Library file.
     *> -------------------------------------------------------------------------
 
->>D display "-- debug:     Adding %", trim(w605-define-name), " to Macro Library." upon stderr end-display
+*>D display "-- debug:     Adding %", trim(w605-define-name), " to Macro Library." upon stderr end-display
 
     set w911-defined-macros to true
     set w905-define-delimiter-not-found to true
@@ -1360,35 +1389,38 @@ procedure division.
     move zero to w606-call-start
     move instr(workin-record, w300-keychar) to w606-call-start
 
-    if w606-call-start = zero then *> Macro keychar not found.
-      set w913-macro-call-not-found to true
+    evaluate true
 
-    else if (w607-comment-start > 0) and (w606-call-start > w607-comment-start) then *> Macro keychar found in a comment.
-      set w913-macro-call-not-found to true
-
-    else
-      *> Extract the 'word' following the macro keychar.
-      move spaces to w606-call-name, w606-call-name-delimiter
-      add 1 to w606-call-start giving w606-call-name-start end-add
-      unstring workin-record delimited by "(" or ")" or "." or space or '"' or ","
-        into
-          w606-call-name delimiter in w606-call-name-delimiter
-        with pointer w606-call-name-start
-      end-unstring
-      *> Look in the Macro Library to see if this 'word' is a valid macro name.
-      move trim(w606-call-name) to macrolib-name
-      move zeros to macrolib-line-number
-      move "e100-find-macro-call" to w600-location
-      perform s015-read-key-macrolib
-      if w906-macrolib-key-found then *> We've found a macro call.
-        move macrolib-name to w610-macrolib-name
-        add 1 to w606-call-count end-add
-        set w913-macro-call-found to true
-
-      else *> It is not a macro call.
+      when w606-call-start = zero *> Macro keychar not found.
         set w913-macro-call-not-found to true
-      end-if
-    end-if end-if
+
+      when (w607-comment-start > 0) and (w606-call-start > w607-comment-start) *> Macro keychar found in a comment.
+        set w913-macro-call-not-found to true
+
+      when other
+        *> Extract the 'word' following the macro keychar.
+        move spaces to w606-call-name, w606-call-name-delimiter
+        add 1 to w606-call-start giving w606-call-name-start end-add
+        unstring workin-record delimited by "(" or ")" or "." or space or '"' or ","
+          into
+            w606-call-name delimiter in w606-call-name-delimiter
+          with pointer w606-call-name-start
+        end-unstring
+        *> Look in the Macro Library to see if this 'word' is a valid macro name.
+        move trim(w606-call-name) to macrolib-name
+        move zeros to macrolib-line-number
+        move "e100-find-macro-call" to w600-location
+        perform s015-read-key-macrolib
+        if w906-macrolib-key-found then *> We've found a macro call.
+          move macrolib-name to w610-macrolib-name
+          add 1 to w606-call-count end-add
+          set w913-macro-call-found to true
+
+        else *> It is not a macro call.
+          set w913-macro-call-not-found to true
+        end-if
+
+    end-evaluate
     .
 
   e200-convert-call-to-code.
@@ -1399,6 +1431,7 @@ procedure division.
     evaluate w606-call-name-delimiter
 
       when "("
+>>D     display "macro [", trim(workin-record, trailing) upon syserr end-display
         perform e210-macro-with-parameters
 
       when " "
@@ -1406,15 +1439,24 @@ procedure division.
 
       when "."
         perform e230-macro-as-a-constant
+*>      move substitue-case(workin-record, w606-call-name, trim(macrolib-code-line)) to workout-record
+*>      move "e200-convert-call-to-code (1)" to w600-location
+*>      perform s011-write-workout
 
       when ")"
         perform e230-macro-as-a-constant
+*>      move substitue-case(workin-record, w606-call-name, trim(macrolib-code-line)) to workout-record
+*>      move "e200-convert-call-to-code (2)" to w600-location
+*>      perform s011-write-workout
 
       when ","
         perform e230-macro-as-a-constant
+*>      move substitue-case(workin-record, w606-call-name, trim(macrolib-code-line)) to workout-record
+*>      move "e200-convert-call-to-code (3)" to w600-location
+*>      perform s011-write-workout
 
       when other
-        move "e200-convert-call-to-code" to w600-location
+        move "e200-convert-call-to-code (4)" to w600-location
         move "Unable to determine the macro call type." to w600-message
         move "N/A" to w600-file-status
         perform z999-abort
@@ -1451,6 +1493,8 @@ procedure division.
 
     subtract 1 from w606-call-parms-count end-subtract
 
+>>D display "  num parms [", w606-call-parms-count upon syserr end-display
+
     if w907-include-macro-begin-end then
       move spaces to workout-record
       string
@@ -1461,17 +1505,19 @@ procedure division.
       perform s011-write-workout
     end-if
 
-    if macrolib-code-line <> space then *> Filter out an initial blank line in the macro definition.
+    if macrolib-code-line <> space then *> Filters out an initial blank line in the macro definition.
 
-      perform with test after
-        varying w606-call-parm-number from 1 by 1
-          until w606-call-parm-number = w301-max-call-parms
-
-        if instr(macrolib-code-line, w302-id-marker(w606-call-parm-number)) > zero then *> Found parameter.
-          move SUBSTITUTE(macrolib-code-line, w302-id-marker(w606-call-parm-number), trim(w606-call-parm(w606-call-parm-number))) to macrolib-code-line
-        end-if
-
-      end-perform
+      move substitute(macrolib-code-line,
+                      w302-id-marker(1), trim(w606-call-parm(1))
+                      w302-id-marker(2), trim(w606-call-parm(2))
+                      w302-id-marker(3), trim(w606-call-parm(3))
+                      w302-id-marker(4), trim(w606-call-parm(4))
+                      w302-id-marker(5), trim(w606-call-parm(5))
+                      w302-id-marker(6), trim(w606-call-parm(6))
+                      w302-id-marker(7), trim(w606-call-parm(7))
+                      w302-id-marker(8), trim(w606-call-parm(8))
+                      w302-id-marker(9), trim(w606-call-parm(9))
+                      ) to macrolib-code-line
 
       move spaces to workout-record
       move macrolib-code-line to workout-record(w606-call-start:)
@@ -1489,15 +1535,17 @@ procedure division.
     perform
       until w900-end-of-macrolib
 
-      perform with test after
-        varying w606-call-parm-number from 1 by 1
-          until w606-call-parm-number = w301-max-call-parms
-
-        if instr(macrolib-code-line, w302-id-marker(w606-call-parm-number)) > zero then *> Found parameter.
-          move SUBSTITUTE(macrolib-code-line, w302-id-marker(w606-call-parm-number), trim(w606-call-parm(w606-call-parm-number))) to macrolib-code-line
-        end-if
-
-      end-perform
+      move substitute(macrolib-code-line,
+                      w302-id-marker(1), trim(w606-call-parm(1))
+                      w302-id-marker(2), trim(w606-call-parm(2))
+                      w302-id-marker(3), trim(w606-call-parm(3))
+                      w302-id-marker(4), trim(w606-call-parm(4))
+                      w302-id-marker(5), trim(w606-call-parm(5))
+                      w302-id-marker(6), trim(w606-call-parm(6))
+                      w302-id-marker(7), trim(w606-call-parm(7))
+                      w302-id-marker(8), trim(w606-call-parm(8))
+                      w302-id-marker(9), trim(w606-call-parm(9))
+                      ) to macrolib-code-line
 
       move spaces to workout-record
       move macrolib-code-line to workout-record(w606-call-start:)
@@ -1901,18 +1949,21 @@ procedure division.
 
     read stdin end-read
 
-    if w500-success then
-      set w900-more-stdin to true
+    evaluate true
 
-    else if w500-end-of-file then
-      set w900-end-of-stdin to true
+      when w500-success
+        set w900-more-stdin to true
 
-    else
-      move "s002-read-stdin" to w600-sub-location
-      move "Unable to read a record from Standard Input." to w600-message
-      perform s000-set-file-error-status
-      perform z999-abort
-    end-if end-if
+      when w500-end-of-file
+        set w900-end-of-stdin to true
+
+      when other
+        move "s002-read-stdin" to w600-sub-location
+        move "Unable to read a record from Standard Input." to w600-message
+        perform s000-set-file-error-status
+        perform z999-abort
+
+    end-evaluate
     .
 
   s003-close-stdin.
@@ -2000,19 +2051,22 @@ procedure division.
 
     read workin end-read
 
-    if w500-success then
-      set w900-more-workin to true
+    evaluate true
 
-    else if w500-end-of-file then
-      set w900-end-of-workin to true
+      when w500-success
+        set w900-more-workin to true
 
-    else
-      move "s005-read-workin" to w600-sub-location
-      move "Unable to read a record from Work Input." to w600-message
-      move trim(w501-workin-filename) to w600-message-2
-      perform s000-set-file-error-status
-      perform z999-abort
-    end-if end-if
+      when w500-end-of-file
+        set w900-end-of-workin to true
+
+      when other
+        move "s005-read-workin" to w600-sub-location
+        move "Unable to read a record from Work Input." to w600-message
+        move trim(w501-workin-filename) to w600-message-2
+        perform s000-set-file-error-status
+        perform z999-abort
+
+    end-evaluate
     .
 
   s009-close-workin.
@@ -2119,19 +2173,22 @@ procedure division.
 
     read macrolib end-read
 
-    if w500-success then
-      set w906-macrolib-key-found to true
+    evaluate true
 
-    else if w500-key-not-exists then
-      set w906-macrolib-key-not-found to true
+      when w500-success
+        set w906-macrolib-key-found to true
 
-    else
-      move "s015-read-key-macrolib" to w600-sub-location
-      move "Unable to read a record from Macro Library." to w600-message
-      move trim(w501-macrolib-filename) to w600-message-2
-      perform s000-set-file-error-status
-      perform z999-abort
-    end-if end-if
+      when w500-key-not-exists
+        set w906-macrolib-key-not-found to true
+
+      when other
+        move "s015-read-key-macrolib" to w600-sub-location
+        move "Unable to read a record from Macro Library." to w600-message
+        move trim(w501-macrolib-filename) to w600-message-2
+        perform s000-set-file-error-status
+        perform z999-abort
+
+    end-evaluate
     .
 
   s016-read-next-macrolib.
@@ -2141,19 +2198,22 @@ procedure division.
 
     read macrolib next end-read
 
-    if w500-success then
-      set w900-more-macrolib to true
+    evaluate true
 
-    else if w500-end-of-file then
-      set w900-end-of-macrolib to true
+      when w500-success
+        set w900-more-macrolib to true
 
-    else
-      move "s016-read-next-macrolib" to w600-sub-location
-      move "Unable to read a record from Macro Library." to w600-message
-      move trim(w501-macrolib-filename) to w600-message-2
-      perform s000-set-file-error-status
-      perform z999-abort
-    end-if end-if
+      when w500-end-of-file
+        set w900-end-of-macrolib to true
+
+      when other
+        move "s016-read-next-macrolib" to w600-sub-location
+        move "Unable to read a record from Macro Library." to w600-message
+        move trim(w501-macrolib-filename) to w600-message-2
+        perform s000-set-file-error-status
+        perform z999-abort
+
+    end-evaluate
     .
 
   s017-write-macrolib.
@@ -2213,19 +2273,22 @@ procedure division.
 
     read incfile end-read
 
-    if w500-success then
-      set w900-more-incfile to true
+    evaluate true
 
-    else if w500-end-of-file then
-      set w900-end-of-incfile to true
+      when w500-success
+        set w900-more-incfile to true
 
-    else
-      move "s020-read-incfile" to w600-sub-location
-      move "Unable to read a record from $INCLUDE file." to w600-message
-      move trim(w501-incfile-filename) to w600-message-2
-      perform s000-set-file-error-status
-      perform z999-abort
-    end-if end-if
+      when w500-end-of-file
+        set w900-end-of-incfile to true
+
+      when other
+        move "s020-read-incfile" to w600-sub-location
+        move "Unable to read a record from $INCLUDE file." to w600-message
+        move trim(w501-incfile-filename) to w600-message-2
+        perform s000-set-file-error-status
+        perform z999-abort
+
+    end-evaluate
     .
 
   s021-close-incfile.
@@ -2323,18 +2386,21 @@ procedure division.
 
     open input macrostd
 
-    if w500-success then
-      perform s026-read-macrostd
+    evaluate true
 
-    else if w500-success-optional
-      set w900-end-of-macrostd to true
+      when w500-success
+        perform s026-read-macrostd
 
-    else
-      move "s025-open-read-macrostd" to w600-sub-location
-      move "Unable to open Standard Input." to w600-message
-      perform s000-set-file-error-status
-      perform z999-abort
-    end-if end-if
+      when w500-success-optional
+        set w900-end-of-macrostd to true
+
+      when other
+        move "s025-open-read-macrostd" to w600-sub-location
+        move "Unable to open Standard Input." to w600-message
+        perform s000-set-file-error-status
+        perform z999-abort
+
+    end-evaluate
     .
 
   s026-read-macrostd.
@@ -2344,18 +2410,21 @@ procedure division.
 
     read macrostd end-read
 
-    if w500-success then
-      set w900-more-macrostd to true
+    evaluate true
 
-    else if w500-end-of-file then
-      set w900-end-of-macrostd to true
+      when w500-success
+        set w900-more-macrostd to true
 
-    else
-      move "s026-read-macrostd" to w600-sub-location
-      move "Unable to read a record from Standard Macros." to w600-message
-      perform s000-set-file-error-status
-      perform z999-abort
-    end-if end-if
+      when w500-end-of-file
+        set w900-end-of-macrostd to true
+
+      when other
+        move "s026-read-macrostd" to w600-sub-location
+        move "Unable to read a record from Standard Macros." to w600-message
+        perform s000-set-file-error-status
+        perform z999-abort
+
+    end-evaluate
     .
 
   s027-close-macrostd.
@@ -2445,20 +2514,20 @@ procedure division using source-str, search-str returning found-pos.
     end-if
 
     *> Return one if the search and source strings are the same.
-      
+
     if trim(search-lstr) = trim(source-lstr) then
       move 1 to found-pos
       goback
     end-if
 
     *> Calculate where the stop index is (stops us getting a bounds violation).
-    
+
     compute stop-index
       = (source-length - search-length) + 1
     end-compute
 
     *> Loop until we find the search string or we hit the stop index.
-    
+
     perform
       varying start-index from 1 by 1
       until (source-lstr(start-index:search-length) = search-lstr(1:search-length))
@@ -2476,7 +2545,7 @@ procedure division using source-str, search-str returning found-pos.
     end-if
 
     *> If we get here then the search string was not found.
-      
+
     move zero to found-pos
     goback
     .

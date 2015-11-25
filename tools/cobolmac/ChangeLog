@@ -2,7 +2,13 @@ This is the Modification History (ChangeLog) for CobolMac.
 
 Note: The items in this list are held in newest first order.
 
-Version: B.03.00  September 2015  Robert W.Mills (robertw.mills@fsmail.net).
+Version: B.03.01  November 2015  Robert W.Mills (robertw-mills@users.sf.net).
+  - Corrected bug in parameter/value substitution.
+  - Minor change to Manual.txt (added 'logo').
+  - Minor changes to README (added 'logo' and Windows compile suggestions).
+  - Added 2 items to ToDo.
+
+Version: B.03.00  September 2015  Robert W.Mills (robertw-mills@users.sf.net).
   - Added support for UNIX, Mac OSX and Windows (native, MinGW and Cygwin).
   - The built message now includes the supported OS (--version and -v option).
   - Uses an alternate method to read the command line options if CBL_OC_GETOPT
