@@ -1,5 +1,6 @@
 /*
- *  Copyright (C) 2009 Cedric ISSALY
+ *  Copyright (C) 2009 Cedric ISSALY 
+ *  Copyright (C) 2015 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -21,6 +22,49 @@
 #ifndef OCSORT_H_INCLUDED
 #define OCSORT_H_INCLUDED
 
-#define OCSORT_ALLOCATE		50
+#define _CRT_NONSTDC_NO_DEPRECATE 
+
+// x64 ini
+
+#ifdef	_MSC_VER
+#ifdef VBISAM_LIB
+#ifdef __cplusplus
+#define DLL_EXPIMP extern "C" __declspec(dllexport)
+#else
+#define DLL_EXPIMP extern __declspec(dllexport)
+#endif
+#else
+#ifdef __cplusplus
+#define DLL_EXPIMP extern "C" __declspec(dllimport)
+#else
+#define DLL_EXPIMP extern __declspec(dllimport)
+#endif
+#endif
+#else
+#ifdef __cplusplus
+#define DLL_EXPIMP extern "C"
+#else
+#define DLL_EXPIMP extern
+#endif
+#endif
+// x64 end
+
+
+#define OCSORT_ALLOCATE				50
+#define OCSORT_ALLOCATE_MEMSIZE		512000000 
+
+#define OCSORT_MAX_BUFF_REK			32768+8
+
+// value 1 : generate temp file fixed name : cob17, cob18, cob19, cob1a, cob1b
+#define OCSORT_DEBUG                0  // 0 no debug - 1 debug
+#define OCSORT_TESTCMD 0
+#define OCSORT_VERSION "01.00.00"
+
+// Return Code
+#define OC_RTC_OK	 0
+#define OC_RTC_ERROR 16
+
+void OCSort_Usage ( void ) ;
+void OCSort_Version( void ) ;
 
 #endif // OCSORT_H_INCLUDED

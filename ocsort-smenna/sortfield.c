@@ -1,5 +1,6 @@
 /*
- *  Copyright (C) 2009 Cedric ISSALY
+ *  Copyright (C) 2009 Cedric ISSALY 
+ *  Copyright (C) 2015 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -20,7 +21,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "sortfield.h"
+#include "job.h"
+#include "sumfield.h"
 #include "ocsort.h"
 #include "utils.h"
 
@@ -112,4 +114,13 @@ int sortField_getType(struct sortField_t *sortField) {
 }
 int sortField_getDirection(struct sortField_t *sortField) {
 	return sortField->direction;
+}
+
+int sortField_addDefinition(struct sortField_t *sortField) {
+	sortField_addQueue(&(globalJob->sortField), sortField);
+	return 0;
+}
+int sortField_setDefinition(struct sortField_t *sortField) {
+	globalJob->sortField=sortField;
+	return 0;
 }

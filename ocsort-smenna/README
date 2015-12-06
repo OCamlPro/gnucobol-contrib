@@ -1,19 +1,69 @@
-OCSort 0.0.1
+OCSort 1.0.0 
 
 OCSort is an open source sort tool, which implement a subset of the functionnality of the Microfocus(c) MFSORT(c) utility.
 
 This program is distributed under the GNU General Public License. See COPYING for details.
 
+OCSort requires the following external libraries to be installed:
+  GNUCOBOL (1.1.0)  LIBCOB
+  GNUCOBOL (1.1.0)  MPIR
+
 Functionnality supported :
-
-	SORT FIELDS (only CH and BI type of field)
-	INCLUDE COND
-	OMIT COND
-	USE (multiple file, and only sequential fixed record length)
-	GIVE (just one file, and only sequential fixed record length)
-	OUTREC FIELDS (not everythin)
-	SUM FIELDS
-
-
-
-
+___________________________________________________________________________________    
+ OCSort	Help                                                                       
+___________________________________________________________________________________
+ Syntax = Uppercase sensitive                                                      
+___________________________________________________________________________________
+Usage with file parameters   : OCSORT TAKE filename          
+    filename is textfile with command for sort. 
+    For comment into file put '*' in first column.                      
+___________________________________________________________________________________
+Usage with command line                                                            
+OCSORT                                                                             
+	SORT | MERGE                                                                   
+		FIELDS (start,length,type,[A|D], ...)           |                          
+		FIELDS ((start,length,type,[A|D], ...),FORMAT=TYPE	|                 	       
+		FIELDS=COPY 							                          	       
+	USE  FILENAME ORG [LS|SQ|SQMF] RECORD [[F,Record Len] | [V,MIN,MAX Record Len]]
+	GIVE FILENAME ORG [LS|SQ|SQMF] RECORD [[F,Record Len] | [V,MIN,MAX Record Len]]
+	INCLUDE|OMIT COND=(CONDITION) [FORMAT=TYPE]                                    
+	   (CONDITION) (pos,len,type,cond,[AND|OR],pos,len,type)					   
+	               (pos,len,type,cond,[X|C|Z]'[value]')							   
+	               (cond,[AND|OR],cond)											   
+	INREC FIELDS=(FIELD-SPEC...)                                                   
+	SUM FIELDS = (pos,len,type, ...)                                               
+	SUM FIELDS = (NONE)  or   SUM FIELDS = NONE									   
+	OUTREC FIELDS=(FIELD-SPEC...)                                                  
+	OUTFIL                                                                         
+		FILES/FNAMES= (enviroment variable)                                        
+		STARTREC=nn                                                                
+		ENDREC=nn                                                                  
+		[SAVE|[INCLUDE|OMIT] (CONDITION) [FORMAT=TYPE]]                            
+		SPLIT                                                                      
+	OUTREC = (FIELD-SPEC...)                                                       
+	OPTION                                                                         
+	       SKIPREC=nn, STOPAFT=nn                                                  
+	       VLSCMP VLSHRT EQUALS REMOVECC                                           
+___________________________________________________________________________________
+Format Type                                                                        
+___________________________________________________________________________________
+	CH = Char                                                                      
+	BI = Binary   binary-byteorder: native                                         
+	PD = Packed   binary-byteorder: native                                         
+	ZD = Zoned    max 18 digits                                                    
+___________________________________________________________________________________
+File Organization                                                                  
+___________________________________________________________________________________
+    LS  = Line Sequential                                                          
+    SQ  = Sequential Fixed or Variable (first 4 byte  record len )                 
+    SQMF= Sequential (Header file + first 2/4 byte record len )                    
+___________________________________________________________________________________
+Variables Environment                                                              
+___________________________________________________________________________________
+OCSORT_EMULATE     Value 0 for OCSORT, 1 for MF Emulator                           
+OCSORT_MEMSIZE     Memory Allocation in byte(Default 512000000 byte)                
+OCSORT_TESTCMD     Value 0 for normal operations , 1 for ONLY test command line    
+OCSORT_DEBUG       Value 0 for normal operations , 1 for DEBUG, 2 for DEBUG Parser 
+OCSORT_PATHTMP     Pathname for temporary files							   	       
+OCSORT_STATISTICS  0 for normal operations , 1 for Summary, 2 for Details          
+___________________________________________________________________________________

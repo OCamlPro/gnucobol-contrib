@@ -1,5 +1,6 @@
-/*
+/* 
  *  Copyright (C) 2009 Cedric ISSALY
+ *  Copyright (C) 2015 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -19,12 +20,31 @@
 */
 
 #ifndef FIELDVALUE_H_INCLUDED
-#define FIELDVALUE_H_INCLUDED
+#define FIELDVALUE_H_INCLUDED 
+#include <stdint.h>
+#include <stdio.h>
 
-struct fieldValue_t;
-struct fieldValue_t *fieldValue_constructor(char *type, char *value);
+
+//
+#include <libcob.h>
+
+
+struct fieldValue_t {
+	int occursion;
+	int type;
+	char *value;
+	int64_t value64;
+	int generated_length;
+	char *generated_value;
+	struct 	cob_field_attr* pCobFAttr;
+	struct  cob_field*	  pCobField;
+};
+
+struct fieldValue_t *fieldValue_constructor( char *type,  char *value, int nTypeF);
+struct fieldValue_t *fieldValue_constructor2(char *type,  char *value, int nTypeF);
+void fieldValue_destructor(struct fieldValue_t *fieldValue);
 int fieldValue_print(struct fieldValue_t *fieldValue);
-int fieldValue_test(struct fieldValue_t *fieldValue, char *record, int length);
+int fieldValue_test(struct fieldValue_t *fieldValue, unsigned char *record, int length);
 int fieldValue_getGeneratedLength(struct fieldValue_t *fieldValue);
 char *fieldValue_getGeneratedValue(struct fieldValue_t *fieldValue);
 #endif // FIELDVALUE_H_INCLUDED
