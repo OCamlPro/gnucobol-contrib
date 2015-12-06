@@ -1,0 +1,260 @@
+# depslib dependency file v1.0
+1260130005 source:/home/patv30m/ocsort/ocsort/file.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"file.h"
+	"utils.h"
+
+1263742190 /home/patv30m/ocsort/ocsort/file.h
+
+1263850128 source:/home/patv30m/ocsort/ocsort/job.c
+	<stdlib.h>
+	<string.h>
+	<stdio.h>
+	<errno.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<unistd.h>
+	<fcntl.h>
+	"ocsort.h"
+	"job.h"
+	"file.h"
+	"sortfield.h"
+	"condfield.h"
+	"outrec.h"
+	"parser.h"
+	"scanner.h"
+	"utils.h"
+
+1263847770 /home/patv30m/ocsort/ocsort/job.h
+
+1263849804 source:/home/patv30m/ocsort/ocsort/ocsort.c
+	<stdio.h>
+	"ocsort.h"
+	"job.h"
+
+1258901150 source:/home/patv30m/ocsort/ocsort/lex.yy.c
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	<stdlib.h>
+	<inttypes.h>
+	"parser.tab.h"
+	<unistd.h>
+
+1258901150 /home/patv30m/ocsort/ocsort/parser.tab.h
+
+1258901150 source:/home/patv30m/ocsort/ocsort/parser.tab.c
+	"ocsort.h"
+	"file.h"
+	"job.h"
+	"sortfield.h"
+	"utils.h"
+	<stddef.h>
+	<libintl.h>
+	<alloca.h>
+	<malloc.h>
+	<stdlib.h>
+	<stdlib.h>
+	<stdio.h>
+
+1258914144 /home/patv30m/ocsort/ocsort/ocsort.h
+
+1263328871 /home/patv30m/ocsort/ocsort/sortfield.h
+
+1263846541 /home/patv30m/ocsort/ocsort/utils.h
+
+1263330644 source:/home/patv30m/ocsort/ocsort/sortfield.c
+	<stdio.h>
+	<stdlib.h>
+	"sortfield.h"
+	"ocsort.h"
+	"utils.h"
+
+1263847211 source:/home/patv30m/ocsort/ocsort/utils.c
+	<string.h>
+	"utils.h"
+
+1263847203 source:/home/patv30m/ocsort/ocsort/parser.c
+	<stdio.h>
+	"ocsort.h"
+	"file.h"
+	"job.h"
+	"sortfield.h"
+	"condfield.h"
+	"fieldvalue.h"
+	"outrec.h"
+	"utils.h"
+	<stddef.h>
+	<libintl.h>
+	<alloca.h>
+	<malloc.h>
+	<stdlib.h>
+	<stdlib.h>
+	<stdio.h>
+
+1263847203 source:/home/patv30m/ocsort/ocsort/scanner.c
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	<stdlib.h>
+	<inttypes.h>
+	"parser.h"
+	<unistd.h>
+
+1263847203 /home/patv30m/ocsort/ocsort/parser.h
+
+1263847203 /home/patv30m/ocsort/ocsort/scanner.h
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	<stdlib.h>
+	<inttypes.h>
+	<unistd.h>
+
+1263738065 /home/patv30m/ocsort/ocsort/condfield.h
+
+1263739123 source:/home/patv30m/ocsort/ocsort/condfield.c
+	<stdio.h>
+	<stdlib.h>
+	"condfield.h"
+	"ocsort.h"
+	"utils.h"
+	"fieldvalue.h"
+
+1263849123 source:/home/patv30m/ocsort/ocsort/fieldvalue.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"fieldvalue.h"
+	"utils.h"
+
+1263849013 /home/patv30m/ocsort/ocsort/fieldvalue.h
+
+1263848548 /home/patv30m/ocsort/ocsort/outrec.h
+
+1263849739 source:/home/patv30m/ocsort/ocsort/outrec.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"outrec.h"
+	"fieldvalue.h"
+
+1263850434 source:/home/patv30m/ocsort/trunk/condfield.c
+	<stdio.h>
+	<stdlib.h>
+	"condfield.h"
+	"ocsort.h"
+	"utils.h"
+	"fieldvalue.h"
+
+1263850434 /home/patv30m/ocsort/trunk/condfield.h
+
+1263850434 /home/patv30m/ocsort/trunk/ocsort.h
+
+1263850434 /home/patv30m/ocsort/trunk/utils.h
+
+1263850434 /home/patv30m/ocsort/trunk/fieldvalue.h
+
+1263850434 source:/home/patv30m/ocsort/trunk/fieldvalue.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"fieldvalue.h"
+	"utils.h"
+
+1263850434 source:/home/patv30m/ocsort/trunk/file.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"file.h"
+	"utils.h"
+
+1263850434 /home/patv30m/ocsort/trunk/file.h
+
+1263850434 source:/home/patv30m/ocsort/trunk/job.c
+	<stdlib.h>
+	<string.h>
+	<stdio.h>
+	<errno.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<unistd.h>
+	<fcntl.h>
+	"ocsort.h"
+	"job.h"
+	"file.h"
+	"sortfield.h"
+	"condfield.h"
+	"outrec.h"
+	"parser.h"
+	"scanner.h"
+	"utils.h"
+
+1263850434 /home/patv30m/ocsort/trunk/job.h
+
+1263850434 /home/patv30m/ocsort/trunk/sortfield.h
+
+1263850434 /home/patv30m/ocsort/trunk/outrec.h
+
+1263850434 /home/patv30m/ocsort/trunk/parser.h
+
+1263850434 /home/patv30m/ocsort/trunk/scanner.h
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	<stdlib.h>
+	<inttypes.h>
+	<unistd.h>
+
+1263850434 source:/home/patv30m/ocsort/trunk/ocsort.c
+	<stdio.h>
+	"ocsort.h"
+	"job.h"
+
+1263850434 source:/home/patv30m/ocsort/trunk/outrec.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"outrec.h"
+	"fieldvalue.h"
+
+1263850434 source:/home/patv30m/ocsort/trunk/parser.c
+	<stdio.h>
+	"ocsort.h"
+	"file.h"
+	"job.h"
+	"sortfield.h"
+	"condfield.h"
+	"fieldvalue.h"
+	"outrec.h"
+	"utils.h"
+	<stddef.h>
+	<libintl.h>
+	<alloca.h>
+	<malloc.h>
+	<stdlib.h>
+	<stdlib.h>
+	<stdio.h>
+
+1263850434 source:/home/patv30m/ocsort/trunk/scanner.c
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	<stdlib.h>
+	<inttypes.h>
+	"parser.h"
+	<unistd.h>
+
+1263850434 source:/home/patv30m/ocsort/trunk/sortfield.c
+	<stdio.h>
+	<stdlib.h>
+	"sortfield.h"
+	"ocsort.h"
+	"utils.h"
+
+1263850434 source:/home/patv30m/ocsort/trunk/utils.c
+	<string.h>
+	"utils.h"
+
