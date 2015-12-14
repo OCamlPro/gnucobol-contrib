@@ -1,61 +1,84 @@
-This is the Modification History (ChangeLog) for CobolMac.
+Version B.04.00, December 2015, Robert W.Mills (robertw-mills@users.sf.net):
 
-Note: The items in this list are held in newest first order.
+- Added the *--stdin* (*-i*) and *--stdout* (*-o*) options. These options are required to enable *CobolMac* to be used as a *HackEdit* preprocessor. These options are **not** supported by the alternative method used to read the command line options if the *CBL_OC_GETOPT* system routine is not available.
 
-Version: B.03.01  November 2015  Robert W.Mills (robertw-mills@users.sf.net).
-  - Corrected bug in parameter/value substitution.
-  - Minor change to Manual.txt (added 'logo').
-  - Minor changes to README (added 'logo' and Windows compile suggestions).
-  - Added 2 items to ToDo.
+- Replaced the *--verbose* (*-V*) option, Include Macro Begin/End comment lines, with *--quiet* (*-q*), Suppress the Macro Begin/End comment lines.
 
-Version: B.03.00  September 2015  Robert W.Mills (robertw-mills@users.sf.net).
-  - Added support for UNIX, Mac OSX and Windows (native, MinGW and Cygwin).
-  - The built message now includes the supported OS (--version and -v option).
-  - Uses an alternate method to read the command line options if CBL_OC_GETOPT
-    is not available. The --stdlib and -s options are not supported if alternate
-    method is invoked (warning message is displayed if this case happens).
-  - Changed the 'paragraph naming style' that caused problems with the post
-    rev411 compiler.
-  - The HTML version of the manual (Manual.htm) has been deleted.
-  - Updated Manual.txt to reflect changes.
+- The *CobolMac* User Guide is now supplied in HTML format. The source text is held within the *CobolMac* source file in ReStructuredText format. It is extracted by *ocdoc* and then passed to *Doccutils* which generates the HTML file. The *Modification History*, *Planned Enhancements* and *Developer Notes* are held in external files (ChangeLog, ToDo and DevNotes) which are merged into the User Guide when *Docutils* generates it.
 
-Version: B.02.00  June 2015  Robert W.Mills (robertw-mills@users.sf.net).
+- Updated documentation to reflect changes.
 
-  - Implemented ToDo Item 5 (Preload standard macro definitions).
-  - Replaced home-grown command line option processing with CBL_OC_GETOPT.
-  - Added short (single character) options to go with the existing long options.
-  - Updated Manual.txt and Manual.htm to reflect changes.
+Version B.03.01  November 2015  Robert W.Mills (robertw-mills@users.sf.net):
 
-Version: B.01.00  May 2015  Robert W.Mills (robertw-mills@users.sf.net).
+- Corrected bug in parameter/value substitution.
 
-  - Removed the stdin/stdout/stderr redirection checks. This makes it more like
-    other utilities in the 'POSIX world'. (BTiffin request).
-  - Updated Manual.txt and Manual.htm to reflect changes.
+- Minor change to documentation (added 'logo').
 
-Version: B.00.00  May 2015  Robert W.Mills (robertw-mills@users.sf.net).
+- Minor changes to the *README* file (added 'logo' and Windows compile suggestions).
 
-  - Reorganised the working storage and code to make later changes easier.
-  - Moved the macro syntax text to the CobolMac manual.
-  - Implemented the $DEFINE command (see item 1 in TODO). This replaces the
-    macro text held in external files with text that is defined in-line.
-  - Removed the -v, -m and -x options as they are no longer required.
-  - Removed the --macro option as the macro syntax is now documented in the
-    CobolMac manual.
-  - Renamed the -q option to --quiet.
-  - Added the --hardwarn option. This causes all warnings to be treated as if
-    they were fatal errors.
-  - Only two status values are returned by the program:
-      - 0 (zero) indicates that the program completed without any errors.
-      - 1 (one) indicates that the program terminated in an error state.
-          A tombstone will have been written to stderr prior to termination.
-          Note: The output file, if created, is incomplete/corrupt.
-  - Implemented the $INCLUDE command.
+- Added 2 items to Planned Enhancements (*ToDo* file).
 
-Version: A.00.00  November 2014  Robert W.Mills (robertw-mills@users.sf.net).
+Version B.03.00  September 2015  Robert W.Mills (robertw-mills@users.sf.net):
 
-  - Changed version number in preperation for inital release.
-  - This version was never loaded into the GnuCOBOL SVN Repository.
+- Added support for *UNIX*, *Apple Mac OS X* and *Windows* (*native*, *MinGW* and *Cygwin*).
 
-Version: x.00.00  May 2014  Robert W.Mills (robertw-mills@users.sf.net)
+- The built message, now includes the supported OS (*--version* & *-v* option).
 
-  - Start of development.
+- Uses an alternate method to read the command line options if the *CBL_OC_GETOPT* system routine is not available. The *--stdlib* (*-s*) option is not supported if alternate method is invoked (warning message is displayed if this case happens).
+
+- Changed the *paragraph naming style* that caused problems with the post rev411 *GnuCOBOL* compiler.
+
+- The *HTML* version of the documentation has been deleted.
+
+- Updated documentation to reflect changes.
+
+Version B.02.00  June 2015  Robert W.Mills (robertw-mills@users.sf.net):
+
+- Implemented the *Preload standard macro definitions* planned enhancement.
+
+- Replaced the home-grown command line option processing with calls to the *CBL_OC_GETOPT* system routine.
+
+- Added short (single character) options to go with the existing long options.
+
+- Updated documentation to reflect changes.
+
+Version B.01.00  May 2015  Robert W.Mills (robertw-mills@users.sf.net):
+
+- Removed the *stdin*/*stdout*/*stderr* redirection checks. This makes it more like other utilities in the *POSIX* world. (BTiffin request).
+
+- Updated documentation to reflect changes.
+
+Version B.00.00  May 2015  Robert W.Mills (robertw-mills@users.sf.net):
+
+- Reorganised the working storage and code to make later changes easier.
+
+- Moved the macro syntax text to the *CobolMac* Manual.
+
+- Implemented the *$DEFINE* command. This replaced the macro text held in external files with text that is defined in-line.
+
+- Removed the *-v*, *-m* and *-x* options as they are no longer required.
+
+- Removed the *--macro* option as the macro syntax is now documented in the *CobolMac* Manual.
+
+- Renamed the *-q* option to *--quiet*.
+
+- Added the *--hardwarn* option. This causes all warnings to be treated as if they were fatal errors.
+
+- Only two status values are returned by the program:
+
+  0. Zero indicates that the program completed without any errors.
+  1. One indicates that the program terminated in an error state.
+     A tombstone will have been written to Standard Error (stderr) prior to termination and the output file, if created, will be incomplete and/or corrupt.
+
+- Implemented the *$INCLUDE* command.
+
+Version A.00.00  November 2014  Robert W.Mills (robertw-mills@users.sf.net):
+
+- Changed version number in preperation for inital release.
+
+- This version was never loaded into the *GnuCOBOL* SVN Repository.
+
+Version x.00.00  May 2014  Robert W.Mills (robertw-mills@users.sf.net):
+
+- Start of development.
+

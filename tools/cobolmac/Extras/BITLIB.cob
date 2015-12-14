@@ -15,45 +15,38 @@ identification division.
 *>   are times when it becomes necessary to change/test individual bits, which
 *>   is made possible by this set of routines.
 *>
-*>   The calling sequence for these routines is as follows:
+*> Avaliable routines:
 *>
-*>     CALL "routine" USING TARGET-WORD
-*>                          BIT-NUMBER
-*>                          BIT-RESULT
-*>     END-CALL
+*>   SETBIT will set 'ON' the bit identified by BIT-NUMBER.
+*>   The contents of TARGET-WORD will be changed accordingly.
 *>
-*>     TARGET-WORD is the two-byte (16-bit) area within the COBOL program that
-*>     is to be processed. The bits are numbered from right to left.
+*>   UNSETBIT will set 'OFF' the bit identified by BIT-NUMBER.
+*>   The contents of TARGET-WORD will be changed accordingly.
 *>
-*>     BIT-NUMBER identifies which bit is to be processed. Only one bit can be
-*>     processed with each call.
+*>   FLIPBIT will change (toggle) the bit identified by BIT-NUMBER.
+*>   If 'ON' it will set it 'OFF' and if 'OFF' it will set it 'ON'.
+*>   The contents of TARGET-WORD will be changed accordingly.
 *>
-*>     BIT-RESULT will contain the result: 0 (zero) is OFF and 1 is ON.
+*>   TESTBIT will interrogate the bit identified by BIT-NUMBER and place the
+*>   result (zero or one) in BIT-RESULT.
+*>   The contents of TARGET-WORD will be unchanged.
+*>
+*> Syntax:
+*>
+*>   CALL "routine" USING TARGET-WORD, BIT-NUMBER, BIT-RESULT END-CALL
+*>
+*> Parameters:
+*>
+*>   TARGET-WORD is the two-byte (16-bit) area within the COBOL program that is
+*>   to be processed. The bits are numbered from right to left.
+*>
+*>   BIT-NUMBER identifies which bit is to be processed. Only one bit can be
+*>   processed with each call.
+*>
+*>   BIT-RESULT will contain the result: 0 (zero) is OFF and 1 is ON.
 *>     The following values may also be returned (message set to stderr):
 *>       -1 (minus one) indicates that BIT-NUMBER was invalid.
 *>       -2 (minus two) indicates that TARGET-WORD is negative.
-*>
-*>     The "routine" names are as follows:
-*>
-*>       SETBIT
-*>
-*>         Set the bit identified by BIT-NUMBER to ON.
-*>         The contents of TARGET-WORD will be changed accordingly.
-*>
-*>       UNSETBIT
-*>
-*>         Set the bit identified by BIT-NUMBER to OFF.
-*>         The contents of TARGET-WORD will be changed accordingly.
-*>
-*>       FLIPBIT
-*>
-*>         Set the bit identified by BIT-NUMBER to ON (if OFF) or OFF (if ON).
-*>         The contents of TARGET-WORD will be changed accordingly.
-*>
-*>       TESTBIT
-*>
-*>         Test the bit identified by BIT-NUMBER and place result in BIT-RESULT.
-*>         The contents of TARGET-WORD will be unchanged.
 *>
 *> <plug>
 *>
@@ -115,7 +108,7 @@ procedure division.
 
   entry "SETBIT" using TARGET-WORD, BIT-NUMBER, BIT-RESULT.
     *> -------------------------------------------------------------------------
-    *>  Turn ON the specified bit.
+    *>  Turn 'ON' the specified bit.
     *> -------------------------------------------------------------------------
 
     perform s001-validate-input
@@ -133,7 +126,7 @@ procedure division.
 
   entry "UNSETBIT" using TARGET-WORD, BIT-NUMBER, BIT-RESULT.
     *> -------------------------------------------------------------------------
-    *>  Turn OFF the specified bit.
+    *>  Turn 'OFF' the specified bit.
     *> -------------------------------------------------------------------------
 
     perform s001-validate-input
@@ -151,7 +144,7 @@ procedure division.
 
   entry "FLIPBIT" using TARGET-WORD, BIT-NUMBER, BIT-RESULT.
     *> -------------------------------------------------------------------------
-    *>  Flip the specified bit. ON becomes OFF and OFF becomes ON.
+    *>  Flip (toggle) the specified bit. 'ON' -> 'OFF' and 'OFF' -> 'ON'.
     *> -------------------------------------------------------------------------
 
     perform s001-validate-input
@@ -173,7 +166,7 @@ procedure division.
 
   entry "TESTBIT" using TARGET-WORD, BIT-NUMBER, BIT-RESULT.
     *> -------------------------------------------------------------------------
-    *>  Report if the specified bit is ON or OFF.
+    *>  Report if the specified bit is 'ON' or 'OFF'.
     *> -------------------------------------------------------------------------
 
     perform s001-validate-input
@@ -213,7 +206,7 @@ procedure division.
 
   s002-expand-target-word.
     *> -------------------------------------------------------------------------
-    *>  Expand the TARGET-WORD into an 'array of bits'.
+    *>  Expand TARGET-WORD into an 'array of bits'.
     *> -------------------------------------------------------------------------
 
     move TARGET-WORD to TARGET-WORD-work
@@ -228,14 +221,14 @@ procedure division.
 
     end-perform
 
->>D display "Expanded TARGET-WORD is [", TARGET-WORD-expanded, "]" end-display
+>>D display "Expanded TARGET-WORD is [", TARGET-WORD-expanded, "]" upon stderr end-display
 
     exit
     .
 
   s003-rebuild-target-word.
     *> -------------------------------------------------------------------------
-    *>  Rebuild the TARGET-WORD from the 'array of bits'.
+    *>  Rebuild TARGET-WORD from the 'array of bits'.
     *> -------------------------------------------------------------------------
 
     perform with test after
@@ -249,7 +242,7 @@ procedure division.
 
     move TARGET-WORD-work to TARGET-WORD
 
->>D display "TARGET-WORD is now [", TARGET-WORD, "]" end-display
+>>D display "TARGET-WORD is now [", TARGET-WORD, "]" upon stderr end-display
 
     exit
     .

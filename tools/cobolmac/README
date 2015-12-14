@@ -1,45 +1,50 @@
+   ____      _           _ __  __
+  / ___|___ | |__   ___ | |  \/  | __ _  ___       A COBOL Macro Preprocessor
+ | |   / _ \| '_ \ /   \| | |\/| |/ _` |/ __|
+ | |__| (_) | |_) | (_) | | |  | | (_| | (__       Copyright (C) 2014-2015
+  \____\___/|_.__/ \___/|_|_|  |_|\__,_|\___|      RobertW-Mills@users.sf.net
 
-   ____      _           _  _     _
-  / ___|___ | |__   ___ | || \   / | __ _  ___       A COBOL Macro Preprocessor
- | |   / _ \| |_ \ /   \| ||  \_/  |/ _` |/ __|
- | |__| (_) | |_) | (_) | || |\_/| | (_| | (__       Copyright (C) 2014-2015
-  \____\___/|_|__/ \___/|_||_|   |_|\__,_|\___|      RobertW-Mills@users.sf.net
+--------------------------------------------------------------------------------
 
+CobolMac is a COBOL source preprocessor that emulates the macro capability that
+is available with the Hewlett-Packard HPe3000 COBOL II/ix compiler.
 
-CobolMac is a COBOL Macro Preprocessor that reads a COBOL source file prior to
-processing by GnuCOBOL's cobc. It associates a macro name with a string of text.
+It associates a macro name with a string of text. Macros can have up to nine
+formal parameters. In the definition actual parameters are supplied to replace
+the formal parameters when the macro is called in the source program.
 
-Macros can have up to nine formal parameters. In the definition actual
-parameters are supplied to replace the formal parameters when the macro is
-called in the source program.
+The processed source code can then be passed to a COBOL compiler to create an
+executable or library module.
 
-[GnuCOBOL is an open-source COBOL compiler, which translates COBOL programs to
-'C' code and compiles it using GCC on multiple platforms and operating systems]
+All code and programs are distributed under the GNU General Public License
+Version 3, 29 June 2007. See the file COPYING for details.
 
-[OpenCobolIDE was used in the development of this utility. It is available from
-<https://github.com/OpenCobolIDE/OpenCobolIDE>]
+CobolMac was developed using the following software:
 
-All code and programs are distributed under the GNU General Public License v3.
-See the file COPYING for details.
+  GnuCOBOL 2.0 -- An open-source COBOL compiler. It translates COBOL programs to
+  'C' code and compiles it using GCC on multiple platforms.
 
-NOTES
------
+  OpenCobolIDE -- An integrated development environment for GnuCOBOL. It is
+  available from <https://github.com/OpenCobolIDE/OpenCobolIDE>]
 
-As any bug fixes will be applied to the COBOL code please note that all bug
-fixes should only be made to the original COBOL source code. A master copy of
-the sources can be found at the sourceforge web site for GnuCOBOL in the contrib
-folders located at:
+NOTE: CobolMac has NOT been tested with OpenCobol 1.1 & GnuCOBOL 1.1
+
+--------------------------------------------------------------------------------
+
+Bug fixes will be applied to CobolMac Master Copy on sourceforge.
+
+A master copy of the sources can be found at the sourceforge web site for
+GnuCOBOL in the contrib folders located at:
 
   https://sourceforge.net/p/open-cobol/contrib/HEAD/tree/trunk/tools/cobolmac/
 
-and use the "Download snapshot" function shown near the top on the right.
+Use the "Download snapshot" function shown near the top on the right.
 
 Please report all bugs found to the GnuCOBOL contrib forum at:
 
   https://sourceforge.net/p/open-cobol/discussion/contrib/
 
-and send a copy to the author at robertw-mills@users.sf.net if urgent and/or a
-show-stopper.
+and send a copy to the author if urgent and/or a show-stopper.
 
-------------------------------------------------------------------------
-Last updated 25th November, 2015 (c) Robert W.Mills
+--------------------------------------------------------------------------------
+Last updated 14th December, 2015 (c) Robert W.Mills

@@ -1,0 +1,52 @@
+   ____      _           _ __  __
+  / ___|___ | |__   ___ | |  \/  | __ _  ___       A COBOL Macro Preprocessor
+ | |   / _ \| '_ \ /   \| | |\/| |/ _` |/ __|
+ | |__| (_) | |_) | (_) | | |  | | (_| | (__       Copyright (C) 2014-2015
+  \____\___/|_.__/ \___/|_|_|  |_|\__,_|\___|      RobertW-Mills@users.sf.net
+
+--------------------------------------------------------------------------------
+
+The following files are supplied with CobolMac.
+
+(root) directory:
+
+  ChangeLog      Modification History. Documents the 'development' of CobolMac.
+                 Is merged into the User Guide when its generated.
+
+  cobolmac.cob   Latest COBOL source code for CobolMac.
+
+  cobolmac.css   Stylesheet used by Docutils to generate the User Guide.
+                 Adds colour highlighting to the COBOL code (freeformat).
+                 Customises some of the html4css1.css stylesheet settings.
+
+  cobolmac.html  User Guide in HTML format.
+
+  comp-cobolmac.sh
+                 Shell script to compile the CobolMac source code.
+
+  CONTENTS       You are reading it.
+
+  COPYING        GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+  DevNotes       Developer Notes: May be of assistance when making changes.
+                 Is merged into the User Guide when its generated.
+
+  html4css1.css  Default cascading style sheet for the HTML output of Docutils.
+
+  README         General description of CobolMac.
+
+  ToDo           Planned Enhancements: A list of scheduled changes to be done.
+                 Is merged into the User Guide when its generated.
+
+Extras directory:
+
+  This directory contains aditional programs and routines. Some are 'used' by
+  CobolMac and some 'require' CobolMac. See the README file contained in it.
+
+Macros directory:
+
+  This directory contains CobolMac Macro definition files. See the README file
+  contained in it.
+
+--------------------------------------------------------------------------------
+Last updated 14th December, 2015 (c) Robert W.Mills

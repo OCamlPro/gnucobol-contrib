@@ -1,0 +1,887 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
+<title>CobolMac User Guide for Version B.04</title>
+<style type="text/css">
+
+/*
+:Author:    Robert W.Mills
+:Email:     RobertW-Mills@users.sf.net
+:Copyright: This stylesheet has been placed in the public domain.
+:Date:      December 2015
+
+Stylesheet for use with Docutils. It is used to create the CobolMac User Guide.
+*/
+
+@import url(html4css1.css);
+
+h2 {
+  font-size: 100% }
+
+h3 {
+  font-size: 90%;
+  margin: 1em }
+
+/* The following adds colour highlighting to COBOL code (freeformat). */
+
+/* generated with ``pygmentize -S default -f html -a pre.code`` */
+pre.code .hll { background-color: #ffffcc }
+pre.code  { background: #f8f8f8; }
+pre.code .c { color: #408080; font-style: italic } /* Comment */
+pre.code .err { border: 1px solid #FF0000 } /* Error */
+pre.code .k { color: #008000; font-weight: bold } /* Keyword */
+pre.code .o { color: #666666 } /* Operator */
+pre.code .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+pre.code .cp { color: #BC7A00 } /* Comment.Preproc */
+pre.code .c1 { color: #408080; font-style: italic } /* Comment.Single */
+pre.code .cs { color: #408080; font-style: italic } /* Comment.Special */
+pre.code .gd { color: #A00000 } /* Generic.Deleted */
+pre.code .ge { font-style: italic } /* Generic.Emph */
+pre.code .gr { color: #FF0000 } /* Generic.Error */
+pre.code .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+pre.code .gi { color: #00A000 } /* Generic.Inserted */
+pre.code .go { color: #808080 } /* Generic.Output */
+pre.code .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+pre.code .gs { font-weight: bold } /* Generic.Strong */
+pre.code .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+pre.code .gt { color: #0040D0 } /* Generic.Traceback */
+pre.code .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+pre.code .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+pre.code .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+pre.code .kp { color: #008000 } /* Keyword.Pseudo */
+pre.code .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+pre.code .kt { color: #B00040 } /* Keyword.Type */
+pre.code .m { color: #666666 } /* Literal.Number */
+pre.code .s { color: #BA2121 } /* Literal.String */
+pre.code .na { color: #7D9029 } /* Name.Attribute */
+pre.code .nb { color: #008000 } /* Name.Builtin */
+pre.code .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+pre.code .no { color: #880000 } /* Name.Constant */
+pre.code .nd { color: #AA22FF } /* Name.Decorator */
+pre.code .ni { color: #999999; font-weight: bold } /* Name.Entity */
+pre.code .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+pre.code .nf { color: #0000FF } /* Name.Function */
+pre.code .nl { color: #A0A000 } /* Name.Label */
+pre.code .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+pre.code .nt { color: #008000; font-weight: bold } /* Name.Tag */
+pre.code .nv { color: #19177C } /* Name.Variable */
+pre.code .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+pre.code .w { color: #bbbbbb } /* Text.Whitespace */
+pre.code .mf { color: #666666 } /* Literal.Number.Float */
+pre.code .mh { color: #666666 } /* Literal.Number.Hex */
+pre.code .mi { color: #666666 } /* Literal.Number.Integer */
+pre.code .mo { color: #666666 } /* Literal.Number.Oct */
+pre.code .sb { color: #BA2121 } /* Literal.String.Backtick */
+pre.code .sc { color: #BA2121 } /* Literal.String.Char */
+pre.code .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+pre.code .s2 { color: #BA2121 } /* Literal.String.Double */
+pre.code .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+pre.code .sh { color: #BA2121 } /* Literal.String.Heredoc */
+pre.code .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+pre.code .sx { color: #008000 } /* Literal.String.Other */
+pre.code .sr { color: #BB6688 } /* Literal.String.Regex */
+pre.code .s1 { color: #BA2121 } /* Literal.String.Single */
+pre.code .ss { color: #19177C } /* Literal.String.Symbol */
+pre.code .bp { color: #008000 } /* Name.Builtin.Pseudo */
+pre.code .vc { color: #19177C } /* Name.Variable.Class */
+pre.code .vg { color: #19177C } /* Name.Variable.Global */
+pre.code .vi { color: #19177C } /* Name.Variable.Instance */
+pre.code .il { color: #666666 } /* Literal.Number.Integer.Long */
+
+/* End of stylesheet. */
+
+</style>
+</head>
+<body>
+<div class="document" id="cobolmac-user-guide-for-version-b-04">
+<h1 class="title">CobolMac User Guide for Version B.04</h1>
+
+<div class="sidebar">
+<p class="first sidebar-title">Table of Contents</p>
+<div class="contents local last topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#license" id="id12">License</a></li>
+<li><a class="reference internal" href="#description" id="id13">Description</a></li>
+<li><a class="reference internal" href="#cobolmac-commands" id="id14">CobolMac Commands</a><ul>
+<li><a class="reference internal" href="#define" id="id15">$DEFINE</a><ul>
+<li><a class="reference internal" href="#syntax" id="id16">SYNTAX</a></li>
+<li><a class="reference internal" href="#parameters" id="id17">PARAMETERS</a></li>
+<li><a class="reference internal" href="#id1" id="id18">DESCRIPTION</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#preprocessor" id="id19">$PREPROCESSOR</a><ul>
+<li><a class="reference internal" href="#id2" id="id20">SYNTAX</a></li>
+<li><a class="reference internal" href="#id3" id="id21">PARAMETERS</a></li>
+<li><a class="reference internal" href="#id4" id="id22">DESCRIPTION</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#include" id="id23">$INCLUDE</a><ul>
+<li><a class="reference internal" href="#id5" id="id24">SYNTAX</a></li>
+<li><a class="reference internal" href="#id6" id="id25">PARAMETERS</a></li>
+<li><a class="reference internal" href="#id7" id="id26">DESCRIPTION</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#copy" id="id27">$COPY</a><ul>
+<li><a class="reference internal" href="#id8" id="id28">SYNTAX</a></li>
+<li><a class="reference internal" href="#id9" id="id29">PARAMETERS</a></li>
+<li><a class="reference internal" href="#id10" id="id30">DESCRIPTION</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#calling-macros" id="id31">Calling Macros</a><ul>
+<li><a class="reference internal" href="#id11" id="id32">Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#standard-macros-library" id="id33">Standard Macros Library</a></li>
+<li><a class="reference internal" href="#command-line" id="id34">Command line</a><ul>
+<li><a class="reference internal" href="#usage" id="id35">Usage</a></li>
+<li><a class="reference internal" href="#options" id="id36">Options</a></li>
+<li><a class="reference internal" href="#return-codes" id="id37">Return Codes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuration-settings" id="id38">Configuration Settings</a></li>
+<li><a class="reference internal" href="#compilation-instructions" id="id39">Compilation Instructions</a><ul>
+<li><a class="reference internal" href="#linux-unix" id="id40">Linux/UNIX</a></li>
+<li><a class="reference internal" href="#apple-mac-os-x" id="id41">Apple Mac OS X</a></li>
+<li><a class="reference internal" href="#windows" id="id42">Windows</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installation" id="id43">Installation</a><ul>
+<li><a class="reference internal" href="#requirements" id="id44">Requirements</a></li>
+<li><a class="reference internal" href="#temporary-files" id="id45">Temporary Files</a></li>
+<li><a class="reference internal" href="#directory-seperator" id="id46">Directory Seperator</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#quotes-about-macros" id="id47">Quotes about Macros</a></li>
+<li><a class="reference internal" href="#migration-from-hpe3000-cobol-ix" id="id48">Migration from HPe3000 COBOL/ix</a></li>
+<li><a class="reference internal" href="#modification-history" id="id49">Modification History</a></li>
+<li><a class="reference internal" href="#planned-enhancements" id="id50">Planned Enhancements</a></li>
+<li><a class="reference internal" href="#developer-notes" id="id51">Developer Notes</a></li>
+</ul>
+</div>
+</div>
+<pre class="literal-block">
+  ____      _           _ __  __
+ / ___|___ | |__   ___ | |  \/  | __ _  ___
+| |   / _ \| '_ \ / _ \| | |\/  |/ _` |/ __|
+| |__| (_) | |_) | (_) | | |  | | (_| | (__
+ \____\___/|_.__/ \___/|_|_|  |_|\__,_|\___|
+</pre>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Author:</th><td class="field-body">Robert W.Mills</td>
+</tr>
+<tr class="field"><th class="field-name">Date:</th><td class="field-body">December 2015</td>
+</tr>
+<tr class="field"><th class="field-name">Rights:</th><td class="field-body">Copyright © 2014-2015, Robert W.Mills.</td>
+</tr>
+<tr class="field"><th class="field-name">Email:</th><td class="field-body"><a class="reference external" href="mailto:RobertW-Mills&#64;users.sf.net">RobertW-Mills&#64;users.sf.net</a></td>
+</tr>
+<tr class="field"><th class="field-name">Purpose:</th><td class="field-body">A COBOL Macro Preprocessor.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="license">
+<h1><a class="toc-backref" href="#id12">License</a></h1>
+<blockquote>
+<p>This program is free software: you can redistribute it and/or modify it   under the terms of the GNU General Public License as published by the Free   Software Foundation, either version 3 of the License, or (at your option)   any later version.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or   FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for   more details.</p>
+<p>You should have received a copy of the GNU General Public License along with   this program. If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/#GPL">http://www.gnu.org/licenses/#GPL</a>&gt;.</p>
+</blockquote>
+</div>
+<div class="section" id="description">
+<h1><a class="toc-backref" href="#id13">Description</a></h1>
+<blockquote>
+<p><em>CobolMac</em> is a COBOL source preprocessor that emulates the macro capability   that is available with the Hewlett-Packard HPe3000 COBOL II/ix compiler.</p>
+<p>It associates a macro name with a string of text. Macros can have up to   nine formal parameters. In the definition actual parameters are supplied   to replace the formal parameters when the macro is called in the source   program.</p>
+<p>The processed source code can then be passed to a COBOL compiler to create   an executable or library module.</p>
+</blockquote>
+</div>
+<div class="section" id="cobolmac-commands">
+<h1><a class="toc-backref" href="#id14">CobolMac Commands</a></h1>
+<blockquote>
+The following commands are supported by the <em>CobolMac</em> Preprocessor.</blockquote>
+<div class="section" id="define">
+<h2><a class="toc-backref" href="#id15">$DEFINE</a></h2>
+<blockquote>
+The <em>$DEFINE</em> command is used to associate a string of text with a macro   name. When the preprocessor encounters a defined macro name in the source   program, it invokes the macro and passes the associated string of text.</blockquote>
+<div class="section" id="syntax">
+<h3><a class="toc-backref" href="#id16">SYNTAX</a></h3>
+<blockquote>
+<p>The <em>$DEFINE</em> command has the following format:</p>
+<blockquote>
+$DEFINE %macro-name=[string-text]#</blockquote>
+</blockquote>
+</div>
+<div class="section" id="parameters">
+<h3><a class="toc-backref" href="#id17">PARAMETERS</a></h3>
+<blockquote>
+<p><em>macro-name</em> is the name of the macro being defined. It is limited to a length of 30 characters and is, by default, prefixed by a '%' (percent).</p>
+<p><em>string-text</em> is the string of text to replace occurrences of the macro call within the body of the program code.</p>
+<p>It can be any text you choose. However, because this text is sent to the compiler, it must be a valid COBOL statement or sentence, with one exception. This exception is the use of formal parameters in the <em>string-text</em>. Formal parameters are described later in this section.</p>
+<p><em>string-text</em> may contain formal parameters (referred to as variables). They are designated by an integer in the range 1 to 9 that are, by default, prefixed by an '!' (exclamation).</p>
+</blockquote>
+</div>
+<div class="section" id="id1">
+<h3><a class="toc-backref" href="#id18">DESCRIPTION</a></h3>
+<blockquote>
+<p>This command may appear anywhere in your source program.</p>
+<p>The <em>$DEFINE</em> command is, by default, terminated by a '#' (hash).</p>
+<p>Recursive macros are not supported.</p>
+<p>The macro-name prefix, formal parameter prefix and <em>$DEFINE</em> terminator     can be changed by using the <em>$PREPROCESSOR</em> command (see below).</p>
+</blockquote>
+</div>
+</div>
+<div class="section" id="preprocessor">
+<h2><a class="toc-backref" href="#id19">$PREPROCESSOR</a></h2>
+<blockquote>
+The <em>$PREPROCESSOR</em> command allows you to change the default character used   in the macro definitions and names.</blockquote>
+<div class="section" id="id2">
+<h3><a class="toc-backref" href="#id20">SYNTAX</a></h3>
+<blockquote>
+<p>The <em>$PREPROCESSOR</em> command has the following format:</p>
+<blockquote>
+$PREPROCESSOR parameter=new-char [, ...]</blockquote>
+</blockquote>
+</div>
+<div class="section" id="id3">
+<h3><a class="toc-backref" href="#id21">PARAMETERS</a></h3>
+<blockquote>
+<p><em>parameter</em> is one of the following:</p>
+<blockquote>
+<p>KEYCHAR is the macro-name prefix character. The default character is the % (percent).</p>
+<p>PARMCHAR is the formal parameter prefix character used within the macro text-string. The default character is the ! (exclamation).</p>
+<p>DELIMITER is the character that delimits the end of macro text strings and the actual parameters used with macro calls. The default character is the # (hash).</p>
+<p><em>new-char</em> specifies the new character to be used for the specified parameter.</p>
+</blockquote>
+</blockquote>
+</div>
+<div class="section" id="id4">
+<h3><a class="toc-backref" href="#id22">DESCRIPTION</a></h3>
+<blockquote>
+<p>You must ensure that any parameter you change does not contain a character that will appear in the <em>$DEFINE</em> text-string. If it does then processing of the <em>$DEFINE</em> will terminated early or give unexpected results.</p>
+<p>The following example shows how the <em>$PREPROCESSOR</em> command is used when you define a macro that invokes another macro (aka a Nested Macro). It is the only time that you should need to use the <em>$PREPROCESSOR</em> command.</p>
+<pre class="code cobolfree literal-block">
+<span class="c">*&gt; Macro ReadError(paragraph#,file-name#,file-status#)
+</span>
+<span class="p">$</span><span class="nv">define</span> <span class="p">%</span><span class="nv">ReadError</span><span class="o">=</span>
+<span class="kr">display
+  </span><span class="s2">&quot;Error &quot;</span><span class="p">,</span> <span class="p">!</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot; in paragraph &quot;</span><span class="p">,</span> <span class="p">!</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot; reading file &quot;</span><span class="p">,</span> <span class="p">!</span><span class="mi">2
+</span><span class="kr">end-display</span>
+<span class="kr">goback</span><span class="p">#</span>
+
+<span class="c">*&gt; Change the macro delimiter to something other than #. If this is not
+*&gt; done then the first # character in the call to the %ReadError macro
+*&gt; will be treated as the %ReadFile macro terminator.
+</span>
+<span class="c">*&gt; Macro ReadFile(paragraph#,file-name#)
+</span><span class="p">$</span><span class="nv">preprocessor</span> <span class="kp">delimiter</span><span class="o">=</span><span class="p">~</span>
+
+<span class="p">$</span><span class="nv">define</span> <span class="p">%</span><span class="nv">ReadFile</span><span class="o">=</span>
+<span class="kr">read </span><span class="p">!</span><span class="mi">2 </span><span class="kr">end-read</span>
+<span class="kr">evaluate</span> <span class="nv">file-status</span>
+  <span class="kr">when</span> <span class="nv">read-success</span>
+    <span class="kr">perform</span> <span class="nv">process-record</span>
+  <span class="kr">when</span> <span class="nv">end-of-file</span>
+    <span class="kr">perform</span> <span class="nv">process-eof</span>
+  <span class="kr">when</span> <span class="kp">other </span><span class="c">*&gt; Report the error and exit the program.
+</span>    <span class="p">%</span><span class="nv">ReadError</span><span class="p">(!</span><span class="mi">1</span><span class="p">#,!</span><span class="mi">2</span><span class="p">#,</span><span class="nv">file-status</span><span class="p">#)</span>
+<span class="kr">end-evaluate</span><span class="p">~</span>
+
+<span class="c">*&gt; Return the macro define terminator to its default value.
+</span><span class="p">$</span><span class="nv">preprocessor</span> <span class="kp">delimiter</span><span class="o">=</span><span class="p">#</span>
+</pre>
+<p><strong>Note:</strong> The above example assumes the following:</p>
+<ul class="simple">
+<li>file-status is a pic x(2) data item assigned to the FILE STATUS option in the files SELECT statement.</li>
+<li>read-success is an 88 level under file-status with a value of &quot;00&quot;.</li>
+<li>end-of-file is an 88 level under file-status with a value of &quot;10&quot;.</li>
+<li>process-record and process-eof is an existing section/paragraph.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="include">
+<h2><a class="toc-backref" href="#id23">$INCLUDE</a></h2>
+<blockquote>
+The <em>$INCLUDE</em> command allows you to specify a file to be copied into your   source program.</blockquote>
+<div class="section" id="id5">
+<h3><a class="toc-backref" href="#id24">SYNTAX</a></h3>
+<blockquote>
+<p>The <em>$INCLUDE</em> command has the following format:</p>
+<blockquote>
+$INCLUDE filename</blockquote>
+</blockquote>
+</div>
+<div class="section" id="id6">
+<h3><a class="toc-backref" href="#id25">PARAMETERS</a></h3>
+<blockquote>
+<em>filename</em> is the name of the file, including path, to be copied into your source program.</blockquote>
+</div>
+<div class="section" id="id7">
+<h3><a class="toc-backref" href="#id26">DESCRIPTION</a></h3>
+<blockquote>
+<p>This command may appear anywhere in your source program.</p>
+<p><em>$INCLUDE</em> commands may be nested to whatever depth you require. That is, the file that is being copied may itself have $INCLUDE commands in it.</p>
+<p>If you use this command to load macro $DEFINE commands then its suggested you follow the recommendations given above for the $DEFINE command.</p>
+</blockquote>
+</div>
+</div>
+<div class="section" id="copy">
+<h2><a class="toc-backref" href="#id27">$COPY</a></h2>
+<blockquote>
+<p><strong>Not yet implemented as it is a planned enhancement.</strong></p>
+<p>The <em>$COPY</em> command allows you to specify a copybook module, held in a   library, to be copied into your source program.</p>
+</blockquote>
+<div class="section" id="id8">
+<h3><a class="toc-backref" href="#id28">SYNTAX</a></h3>
+<blockquote>
+<p>The <em>$COPY</em> command has the following format:</p>
+<blockquote>
+$COPY copybook IN|OF library</blockquote>
+</blockquote>
+</div>
+<div class="section" id="id9">
+<h3><a class="toc-backref" href="#id29">PARAMETERS</a></h3>
+<blockquote>
+<p><em>copybook</em> is the name of the module to be copied into your source program.</p>
+<p><em>library</em> is the name of the library file, including path, in which the module resides. The <em>library</em> file must have been created by the <em>cpylibeditor</em> program. <strong>DO NOT</strong> include the .cpylib file extension.</p>
+</blockquote>
+</div>
+<div class="section" id="id10">
+<h3><a class="toc-backref" href="#id30">DESCRIPTION</a></h3>
+<blockquote>
+This command may appear anywhere in your source program.</blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="calling-macros">
+<h1><a class="toc-backref" href="#id31">Calling Macros</a></h1>
+<blockquote>
+<p>There are two different forms of a macro call:</p>
+<blockquote>
+<em>%macroname</em></blockquote>
+<p>and</p>
+<blockquote>
+<em>%macroname(p1#, p2#, p3#, ..., p9#)</em></blockquote>
+</blockquote>
+<div class="section" id="id11">
+<h2><a class="toc-backref" href="#id32">Parameters</a></h2>
+<blockquote>
+<p><em>%macroname</em> is the name of a macro which has been previously defined in the  source program, using a <em>$DEFINE</em> command.</p>
+<p><em>p1</em>, <em>p2</em>, ..., <em>p9</em> is the actual parameters. Each of parameters may be  either a null string or any combination of characters and numerals,  including spaces. Each actual parameter begins with the first character  after a preceding comma (except <em>p1</em>, which begins after the left  parenthesis), and ends with the # (hash) character.</p>
+<p>If no characters are specified for an actual parameter (that is, if an  actual parameter is specified by &quot;#&quot;), then a null string replaces its  corresponding formal parameter in the macro definition.</p>
+<p><strong>Note:</strong> There can be no intervening spaces between the end of <em>macroname</em>  and the left parenthesis of the actual parameter list.</p>
+<p>The first form of calling a macro is used when the macro definition has no  formal parameters.</p>
+<p>The second form must be used when formal parameters are specified in the  definition of the macro.</p>
+<p>When a macro name is encountered in a source program, it is replaced by the  associated macro definition. Any formal parameters are replaced by actual  parameters listed in the macro call.</p>
+<p>With one exception, macro names are replaced wherever they occur in the  source program, including quoted strings. Macro names are not expanded in a   comment, unless the comment itself is found in a macro.</p>
+</blockquote>
+</div>
+</div>
+<div class="section" id="standard-macros-library">
+<h1><a class="toc-backref" href="#id33">Standard Macros Library</a></h1>
+<blockquote>
+<p>At some point you will find yourself using a standard set of macros. When   this happens you can add the <em>$DEFINE</em> commands into a file named   <em>cobolmac.standard.macros</em> and <em>CobolMac</em> will automatically add them to   the start of your source programs Working-Storage Section.</p>
+<p>The reason for placing the contents of <em>cobolmac.standard.macros</em> within   the Working-Storage Section is so you can also include any variable   definitions that are specific to the macros.</p>
+<p>The file <em>cobolmac.standard.macros</em> is assumed to reside in the current   working directory. The <em>--stdlib</em> (<em>-s</em>) option can be used to point   <em>CobolMac</em> to a library file with a different name and/or in a different   location.</p>
+</blockquote>
+</div>
+<div class="section" id="command-line">
+<h1><a class="toc-backref" href="#id34">Command line</a></h1>
+<blockquote>
+<p><em>CobolMac</em> runs in two forms.</p>
+<ol class="arabic simple">
+<li>Without arguments, <em>CobolMac</em> will act as a pipe filter. Reading from   Standard In (stdin), expanding the macro calls, and writing processed   code to Standard Out (stdout).</li>
+<li>The <em>CobolMac</em> command also takes an input filename, output filename, and   several options (see Usage below).</li>
+</ol>
+<p>In both forms, any error and warning messages will be written to Standard   Error (stderr). stderr can be redirected to a file by adding the following   to the command line</p>
+<blockquote>
+2&gt;filename</blockquote>
+<p>where <em>filename</em> is the name of the file to hold the messages. <em>filename</em> can   optionally include a directory path.</p>
+<p>Note: <em>CobolMac</em> assumes that it is preprocessing FREE FORMAT files. If used   to preprocess a FIXED FORMAT file then extra care must be taken when   defining the macros to ensure that all added code resides in the   correct areas - Area A (cols 7 to 11) and Area B (cols 12 to 72).</p>
+</blockquote>
+<div class="section" id="usage">
+<h2><a class="toc-backref" href="#id35">Usage</a></h2>
+<blockquote>
+<p>$ program1 | cobolmac [options] [2&gt;stderr] | program2</p>
+<p>$ cobolmac [options] --stdin=input --stdout=output [2&gt;stderr]</p>
+<p>$ cobolmac [options] &lt;input [2&gt;stderr] | program2</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">&nbsp;</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>input</td>
+<td>[path/]name of file Standard Input redirected to.</td>
+</tr>
+<tr><td>output</td>
+<td>[path/]name of file Standard Output redirected to.</td>
+</tr>
+<tr><td>stderr</td>
+<td>optional [path/]name of file Standard Error redirected to.</td>
+</tr>
+<tr><td>program1</td>
+<td>[path/]name of program that writes to Standard Output.</td>
+</tr>
+<tr><td>program2</td>
+<td>[path/]name of program that reads from Standard Input.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+<div class="section" id="options">
+<h2><a class="toc-backref" href="#id36">Options</a></h2>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="18%" />
+<col width="74%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Short</th>
+<th class="head">Long</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>-h</td>
+<td>--help</td>
+<td>Display the help text and exit.</td>
+</tr>
+<tr><td>-v</td>
+<td>--version</td>
+<td>Display the version id and exit.</td>
+</tr>
+<tr><td>-H</td>
+<td>--hardwarn</td>
+<td>Treat all warnings like an error.</td>
+</tr>
+<tr><td>-V</td>
+<td>--verbose</td>
+<td>Include Macro Begin/End comment lines. (default)</td>
+</tr>
+<tr><td>-q</td>
+<td>--quiet</td>
+<td>Suppress the Macro Begin/End comment lines.</td>
+</tr>
+<tr><td>-d</td>
+<td>--debug</td>
+<td>Display additional error information.</td>
+</tr>
+<tr><td>-m</td>
+<td>--maclib</td>
+<td>List the contents of the Macro Library.</td>
+</tr>
+<tr><td>-sfile</td>
+<td>--stdlib=file</td>
+<td>[path/]name of <em>file</em> holding Standard Macros Library.
+Overrides the <em>cobolmac.standard.macros</em> default.</td>
+</tr>
+<tr><td>-ifile</td>
+<td>--stdin=file</td>
+<td>[path/]name of <em>file</em> containg source code.
+Overrides the Standard Input (stdin).</td>
+</tr>
+<tr><td>-ofile</td>
+<td>--stdout=file</td>
+<td>[path/]name of <em>file</em> to write processed code to.
+Overrides the Standard Output (stdout).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> <em>CobolMac</em>, by default, will use the <em>CBL_OC_GETOPT</em> system routine   to process the command line options. If the compiler you are using does   not have this routine then <em>CobolMac</em> will use its own internal   routine. Due to limitations with this routine, the options <em>--stdin</em>   (<em>-i</em>), <em>--stdout</em> (<em>-o</em>) and <em>--stdlib</em> (<em>-s</em>) are not supported. If this   happens then the following messages will be displayed on stderr.</p>
+<pre class="literal-block">
+*W* CBL_OC_GETOPT is not available with your version of COBOL.
+*W* An alternative method is being used to read your command line.
+*W* The --stdlib, --stdin and --stdout options are not supported.
+</pre>
+</blockquote>
+</div>
+<div class="section" id="return-codes">
+<h2><a class="toc-backref" href="#id37">Return Codes</a></h2>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Code</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>0 (zero)</td>
+<td>Program completed without any errors.</td>
+</tr>
+<tr><td>1 (one)</td>
+<td>Program terminated in an error state.
+Details sent to Standard Error (stderr) prior to exit.
+The output file, if created, is incomplete/corrupt.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+</div>
+<div class="section" id="configuration-settings">
+<h1><a class="toc-backref" href="#id38">Configuration Settings</a></h1>
+<blockquote>
+<p><em>CobolMac</em> supports multiple operating systems.</p>
+<p>Set the <strong>OS</strong> constant to one of the following values before compiling.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">OS Value</th>
+<th class="head">Operating System</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>LINUX</td>
+<td>GNU/Linux</td>
+</tr>
+<tr><td>UNIX</td>
+<td>UNIX</td>
+</tr>
+<tr><td>OSX</td>
+<td>Apple Mac OS X</td>
+</tr>
+<tr><td>WINDOWS</td>
+<td>Windows (Native)</td>
+</tr>
+<tr><td>CYGWIN</td>
+<td>Windows (Cygwin)</td>
+</tr>
+<tr><td>MINGW</td>
+<td>Windows (MinGW)</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+<div class="section" id="compilation-instructions">
+<h1><a class="toc-backref" href="#id39">Compilation Instructions</a></h1>
+<div class="section" id="linux-unix">
+<h2><a class="toc-backref" href="#id40">Linux/UNIX</a></h2>
+<blockquote>
+<p>Compile the <em>CobolMac</em> source (cobolmac.cob) by entering the following command within any terminal program.</p>
+<blockquote>
+cobc -x cobolmac.cob</blockquote>
+<p>Now place the file cobolmac in a directory that is within your PATH, making sure that the execute flag is set (chmod +x cobolmac).</p>
+</blockquote>
+</div>
+<div class="section" id="apple-mac-os-x">
+<h2><a class="toc-backref" href="#id41">Apple Mac OS X</a></h2>
+<blockquote>
+<p>Compile the source file as for Linux/Unix.</p>
+<p>This might not work 'as is' with Tiny Cobol or ANY other compiler. Check to see if the compiler supports the C$DELETE built-in system subroutine. If not then the <em>s022-delete-workfiles</em> paragraph will need modification to perform this function some other way (for eg. drop into a command shell and issue the file delete/purge commands).</p>
+</blockquote>
+</div>
+<div class="section" id="windows">
+<h2><a class="toc-backref" href="#id42">Windows</a></h2>
+<blockquote>
+<p>I do not have access to Windows, Wingows/Cygwin or Windows/MinGW but I understand that the following commands should work [YMMV].</p>
+<p>Windows/MinGW and Windows/Cygwin (inside the terminal program):</p>
+<blockquote>
+Compile the source file as for Linux/Unix.</blockquote>
+<p>Windows/MinGW and Windows/Cygwin (outside the terminal program):</p>
+<blockquote>
+cobc -x [<em>drive</em>:][path/to/]cobolmac.cob</blockquote>
+<p>Native Windows:</p>
+<blockquote>
+cobc -x [<em>drive</em>:][path\to\]cobolmac.cob</blockquote>
+</blockquote>
+</div>
+</div>
+<div class="section" id="installation">
+<h1><a class="toc-backref" href="#id43">Installation</a></h1>
+<div class="section" id="requirements">
+<h2><a class="toc-backref" href="#id44">Requirements</a></h2>
+<blockquote>
+<strong>GnuCOBOL:</strong> Version 2.0 (or greater) installed and tested fully working.
+See the documentation supplied with <em>GnuCOBOL</em>. You MUST have run both the   sanity checks created by the test procedures included within the cobol85   suite as well as the make check procedure.</blockquote>
+</div>
+<div class="section" id="temporary-files">
+<h2><a class="toc-backref" href="#id45">Temporary Files</a></h2>
+<blockquote>
+<p>The following environment variables are used to find where the temporary files,   used by <em>CobolMac</em>, are to be placed.</p>
+<ul class="simple">
+<li>If TMPDIR exists and contains a value then use it, else continue.</li>
+<li>If TEMP exists and contains a value then use it, else continue.</li>
+<li>If TMP exists and contains a value then use it, else continue.</li>
+<li>If running on a Windows (Native, Cygwin, or MinGW) platform then<ul>
+<li>If USERPROFILE exists and contains a value then use it, else use &quot;.&quot; (dot).</li>
+</ul>
+</li>
+<li>If <strong>not</strong> running on a Windows platform then use &quot;/tmp&quot;.</li>
+</ul>
+<p><strong>GnuCOBOL:</strong> This may change when version 2.0 is the official release.</p>
+</blockquote>
+</div>
+<div class="section" id="directory-seperator">
+<h2><a class="toc-backref" href="#id46">Directory Seperator</a></h2>
+<blockquote>
+<p>The directory separator is <em>Operating System</em> dependent. The character used   is set by the value of the <em>CDF</em> variable named <strong>OS</strong> (see Configuration   Settings) as follows.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Seperator</th>
+<th class="head">Operating System</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>/ (slash)</td>
+<td>GNU/Linux, UNIX, Apple Mac OS X and Windows/Cygwin.</td>
+</tr>
+<tr><td>\ (backslash)</td>
+<td>Windows and Windows/MinGW.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+</div>
+<div class="section" id="quotes-about-macros">
+<h1><a class="toc-backref" href="#id47">Quotes about Macros</a></h1>
+<blockquote>
+<p>A good library of pre-tested Macros can greatly speed program writing, and   can also be used to assist portability of code, with the differences between   COBOL dialects being hidden in the Macro Definitions.</p>
+<blockquote>
+-- Anonymouse</blockquote>
+<p>RE: the COPY...REPLACING and REPLACE statements.</p>
+<p>&quot;The rules are complex and are actually ambiguous in some cases.&quot;</p>
+<p>&quot;One problem is that only words are replaced, not parts of words.&quot;</p>
+<blockquote>
+-- Don Nelson in &quot;COBOL 85 for Programmers&quot;</blockquote>
+</blockquote>
+</div>
+<div class="section" id="migration-from-hpe3000-cobol-ix">
+<h1><a class="toc-backref" href="#id48">Migration from HPe3000 COBOL/ix</a></h1>
+<blockquote>
+<p>The following Hewlett-Packard HPe3000 COBOL II/ix preprocessor commands   are <strong>not</strong> supported by <em>CobolMac</em>. They will be automatically dropped   from the source file and any files that are read in by the $INCLUDE and   $COPY commands.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Command</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>$CONTROL</td>
+<td>Controls compilation and list options.</td>
+</tr>
+<tr><td>$COPYRIGHT</td>
+<td>Enters a copyright string into the object file.</td>
+</tr>
+<tr><td>$IF</td>
+<td>Interrogates the compilation software switches.</td>
+</tr>
+<tr><td>$PAGE</td>
+<td>Advance to the next logical page in the listfile.
+Allows replacement of the 1st page header line.</td>
+</tr>
+<tr><td>$SET</td>
+<td>Turns compilation switches on/off.</td>
+</tr>
+<tr><td>$TITLE</td>
+<td>Allows replacement of the page header lines.</td>
+</tr>
+<tr><td>$VERSION</td>
+<td>Enters a version string into the object file.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+<div class="section" id="modification-history">
+<h1><a class="toc-backref" href="#id49">Modification History</a></h1>
+<blockquote>
+<p>Version B.04.00, December 2015, Robert W.Mills (<a class="reference external" href="mailto:robertw-mills&#64;users.sf.net">robertw-mills&#64;users.sf.net</a>):</p>
+<ul class="simple">
+<li>Added the <em>--stdin</em> (<em>-i</em>) and <em>--stdout</em> (<em>-o</em>) options. These options are required to enable <em>CobolMac</em> to be used as a <em>HackEdit</em> preprocessor. These options are <strong>not</strong> supported by the alternative method used to read the command line options if the <em>CBL_OC_GETOPT</em> system routine is not available.</li>
+<li>Added the <em>--quiet</em> (<em>-q</em>) option [suppress the Macro Begin/End comment lines] and made the <em>--verbose</em> (<em>-V</em>) option [Include Macro Begin/End comment lines] the default setting.</li>
+<li>The <em>CobolMac</em> User Guide is now supplied in HTML format. The source text is held within the <em>CobolMac</em> source file in ReStructuredText format. It is extracted by <em>ocdoc</em> and then passed to <em>Doccutils</em> which generates the HTML file. The <em>Modification History</em>, <em>Planned Enhancements</em> and <em>Developer Notes</em> are held in external files (ChangeLog, ToDo and DevNotes) which are merged into the User Guide when <em>Docutils</em> generates it.</li>
+<li>Updated documentation to reflect changes.</li>
+</ul>
+<p>Version B.03.01  November 2015  Robert W.Mills (<a class="reference external" href="mailto:robertw-mills&#64;users.sf.net">robertw-mills&#64;users.sf.net</a>):</p>
+<ul class="simple">
+<li>Corrected bug in parameter/value substitution.</li>
+<li>Minor change to documentation (added 'logo').</li>
+<li>Minor changes to the <em>README</em> file (added 'logo' and Windows compile suggestions).</li>
+<li>Added 2 items to Planned Enhancements (<em>ToDo</em> file).</li>
+</ul>
+<p>Version B.03.00  September 2015  Robert W.Mills (<a class="reference external" href="mailto:robertw-mills&#64;users.sf.net">robertw-mills&#64;users.sf.net</a>):</p>
+<ul class="simple">
+<li>Added support for <em>UNIX</em>, <em>Apple Mac OS X</em> and <em>Windows</em> (<em>native</em>, <em>MinGW</em> and <em>Cygwin</em>).</li>
+<li>The built message, now includes the supported OS (<em>--version</em> &amp; <em>-v</em> option).</li>
+<li>Uses an alternate method to read the command line options if the <em>CBL_OC_GETOPT</em> system routine is not available. The <em>--stdlib</em> (<em>-s</em>) option is not supported if alternate method is invoked (warning message is displayed if this case happens).</li>
+<li>Changed the <em>paragraph naming style</em> that caused problems with the post rev411 <em>GnuCOBOL</em> compiler.</li>
+<li>The <em>HTML</em> version of the documentation has been deleted.</li>
+<li>Updated documentation to reflect changes.</li>
+</ul>
+<p>Version B.02.00  June 2015  Robert W.Mills (<a class="reference external" href="mailto:robertw-mills&#64;users.sf.net">robertw-mills&#64;users.sf.net</a>):</p>
+<ul class="simple">
+<li>Implemented the <em>Preload standard macro definitions</em> planned enhancement.</li>
+<li>Replaced the home-grown command line option processing with calls to the <em>CBL_OC_GETOPT</em> system routine.</li>
+<li>Added short (single character) options to go with the existing long options.</li>
+<li>Updated documentation to reflect changes.</li>
+</ul>
+<p>Version B.01.00  May 2015  Robert W.Mills (<a class="reference external" href="mailto:robertw-mills&#64;users.sf.net">robertw-mills&#64;users.sf.net</a>):</p>
+<ul class="simple">
+<li>Removed the <em>stdin</em>/<em>stdout</em>/<em>stderr</em> redirection checks. This makes it more like other utilities in the <em>POSIX</em> world. (BTiffin request).</li>
+<li>Updated documentation to reflect changes.</li>
+</ul>
+<p>Version B.00.00  May 2015  Robert W.Mills (<a class="reference external" href="mailto:robertw-mills&#64;users.sf.net">robertw-mills&#64;users.sf.net</a>):</p>
+<ul class="simple">
+<li>Reorganised the working storage and code to make later changes easier.</li>
+<li>Removed the <em>--macro</em> (display macro syntax) option as the text has been moved to the <em>CobolMac</em> User Guide.</li>
+<li>Implemented the <em>$DEFINE</em> command. This replaced the macro text held in external files with text that is defined in-line.</li>
+<li>Removed the <em>-v</em> (include macro lines with leading '<em>&gt;&gt;')&quot;, *-m</em> (override macro file location) and <em>-x</em> (override macro file extension) options as they are no longer required.</li>
+<li>Removed the <em>--macro</em> option as the macro syntax is now documented in the <em>CobolMac</em> Manual.</li>
+<li>Renamed the <em>-q</em> option to <em>--quiet</em>.</li>
+<li>Added the <em>--hardwarn</em> option. This causes all warnings to be treated as if they were fatal errors.</li>
+<li>Only two status values are returned by the program:<ol class="arabic" start="0">
+<li>Zero indicates that the program completed without any errors.</li>
+<li>One indicates that the program terminated in an error state.
+A tombstone will have been written to Standard Error (stderr) prior to termination and the output file, if created, will be incomplete and/or corrupt.</li>
+</ol>
+</li>
+<li>Implemented the <em>$INCLUDE</em> command.</li>
+</ul>
+<p>Version A.00.00  November 2014  Robert W.Mills (<a class="reference external" href="mailto:robertw-mills&#64;users.sf.net">robertw-mills&#64;users.sf.net</a>):</p>
+<ul class="simple">
+<li>Changed version number in preperation for inital release.</li>
+<li>This version was never loaded into the <em>GnuCOBOL</em> SVN Repository.</li>
+</ul>
+<p>Version x.00.00  May 2014  Robert W.Mills (<a class="reference external" href="mailto:robertw-mills&#64;users.sf.net">robertw-mills&#64;users.sf.net</a>):</p>
+<ul class="simple">
+<li>Start of development.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="planned-enhancements">
+<h1><a class="toc-backref" href="#id50">Planned Enhancements</a></h1>
+<blockquote>
+<p>The items in this list are held in 'newest first' order.</p>
+<ul class="simple">
+<li>Increase the number of macro parameters from the current limit of 9. Do we hard-code the new limit or add it as a runtime switch that overrides a current/default limit of 9?</li>
+<li>Add support for Copybook Libraries (hold multiple copybooks in single file).</li>
+<li>Replace ISAM with SQLite3.</li>
+<li>Add support for default macro parameter values. This feature is an extension to Hewlett-Packard's implementation.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="developer-notes">
+<h1><a class="toc-backref" href="#id51">Developer Notes</a></h1>
+<blockquote>
+<p>This sections contains information that may be of assistance to the next developer working on this program.</p>
+<ol class="arabic simple">
+<li>Prior to release of a new version:</li>
+</ol>
+<blockquote>
+<ul>
+<li><p class="first">Add an entry to the Modification History (<em>ChangeLog</em> file).</p>
+</li>
+<li><p class="first">Update the Developer Notes (<em>DevNotes</em> file), if required.</p>
+</li>
+<li><dl class="first docutils">
+<dt>Increment the programs <em>w100-program-v-uu-ff</em> variable.</dt>
+<dd><dl class="first last docutils">
+<dt><em>v</em>  = A letter indicating the VERSION.</dt>
+<dd><p class="first last">Increment when a MAJOR change has been made.</p>
+</dd>
+<dt><em>uu</em> = A 2-digit number indicating an UPDATE to the current VERSION.</dt>
+<dd><p class="first last">Set to 00 when the VERSION changes.</p>
+</dd>
+<dt><em>ff</em> = A 2-digit number indicating a FIX to the current UPDATE.</dt>
+<dd><p class="first last">Set to 00 when the UPDATE changes.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+<ol class="arabic simple" start="2">
+<li>Three temporary files are used by this program. They are created in the /tmp directory and are named <em>cobolmac-nnnnnnnnn-n</em> where <em>nnnnnnnnn</em> is a 9-digit random number and <em>n</em> is either 0, 1 or 2.</li>
+</ol>
+<blockquote>
+<p>File '0' is an indexed file and is used to hold the Macro Library (macrolib).</p>
+<p>Files '1' and '2' are sequential files and are used to store the source code during a processing pass.</p>
+</blockquote>
+<ol class="arabic simple" start="3">
+<li>The <em>s022-delete-workfiles</em> paragraph will require modification/replacement if the compiler does not support the <em>C$DELETE</em> built-in system subroutine.</li>
+<li>What the program does.</li>
+</ol>
+<blockquote>
+<p><em>CobolMac</em> will perform at least 4 'processing passes' on the source code.</p>
+<p>Starting with the second pass, the physical files assigned to Work Input and Work Output are swapped.</p>
+<p>The first pass:</p>
+<blockquote>
+<p>Copies the file assigned to Standard Input to Work Output.</p>
+<p>Records containing the following '$' commands are dropped by the copy as they are not supported by <em>GnuCOBOL</em>:</p>
+<blockquote>
+<em>$control</em>, <em>$copyright</em>, <em>$if</em>, <em>$page</em>, <em>$set</em>, <em>$title</em> and <em>$version</em></blockquote>
+</blockquote>
+<p>The second pass:</p>
+<blockquote>
+<p>Copies the file assigned to Work Input to Work Output.</p>
+<p>Files named on <em>$INCLUDE</em> command's are copied into Work Output at the point the <em>$INCLUDE</em> command is found.</p>
+<p>Records in the <em>$INCLUDE</em> file containing the following '$' commands are dropped by the copy as they are not supported by <em>GnuCOBOL</em>:</p>
+<blockquote>
+<em>$control</em>, <em>$copyright</em>, <em>$if</em>, <em>$page</em>, <em>$set</em>, <em>$title</em> and <em>$version</em></blockquote>
+<p>If the <em>$INCLUDE</em> file contains an <em>$INCLUDE</em> command then this pass will be repeated until no more are found. This allows the use of nested <em>$INCLUDE</em> files.</p>
+</blockquote>
+<p>The third pass:</p>
+<blockquote>
+<p>Copies the file assigned to Work Input to Work Output.</p>
+<p>All records identified as a macro (starts with the <em>$DEFINE</em> command and is terminated by the macro delimiter) are extracted and written to the Macro Library.</p>
+<p>Records containing the following '$' commands are dropped by the copy as they are not supported by <em>GnuCOBOL</em>:</p>
+<blockquote>
+<em>$control</em>, <em>$copyright</em>, <em>$if</em>, <em>$page</em>, <em>$set</em>, <em>$title</em> and <em>$version</em></blockquote>
+<p>The macro delimiter defaults to a '#' but this can be changed by the <em>$PREPROCESSOR</em> command.</p>
+<p>Duplicate macro definitions are ignored and a comment message is inserted into Work Output.</p>
+<p>If the <em>--maclib</em> command line option was specified, then its at this point that the Macro Library is copied to Standard Error.</p>
+</blockquote>
+<p>The fourth pass (if any <em>$DEFINE</em> commands were found in the third pass):</p>
+<blockquote>
+<p>Copies the file assigned to Work Input to Work Output.</p>
+<p>Macro <em>calls</em> are replace by their <em>definition</em>. If the <em>call</em> contains parameters then these are resolved.</p>
+<p>If the Macro <em>definition</em> contains another <em>call</em> then this pass will be repeated until no more are found. This allows the use of nested Macros.</p>
+</blockquote>
+<p>The fifth pass:</p>
+<blockquote>
+Copies the file assigned to Work Input to Standard Output.</blockquote>
+</blockquote>
+</blockquote>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+End of CobolMac User Guide
+</div>
+</body>
+</html>

@@ -1,0 +1,187 @@
+*> ** >>SOURCE FORMAT IS FREE
+
+*>
+*> Test program for SQL3I4GC [SQLite3 Interface for GnuCOBOL].
+*>
+*> Written by Robert W.Mills, November 2015.
+*>
+
+*> TECTONICS
+*>   Install the SQLite3 library (sqlite.org), if required.
+*>   prompt$ cobolmac --stdin=SQL3I4GC-test.mac --stdout=SQL3I4GC-test.cob
+*>   prompt$ cobc -x -fdebugging-line SQL3I4GC-test.cob -lsqlite3
+*>   prompt$ ./SQL3I4GC-test
+*>   prompt$ rm foo.sdb    # to delete test database when finished.
+
+identification division.
+
+  program-id.                          SQL3I4GC-test.
+
+environment division.
+
+  configuration section.
+
+    repository.
+
+      function all intrinsic.
+
+data division.
+
+  working-storage section.
+
+$include /home/robert/Programming/Cobol/sql3i4gc.inc
+
+    01  foo-column-number.
+      05  fcn-line-no                  pic s9(04) comp value 0.
+      05  fcn-line-text                pic s9(04) comp value 1.
+
+    01  sql-statements.
+      05  create-table-foo             pic x(046) value
+            "create table foo(line_no int, line_text text);".
+      05  insert-into-foo-1            pic x(066) value
+            "insert into foo (line_no, line_text) values (1, 'this is line 1');".
+      05  insert-into-foo-2            pic x(066) value
+            "insert into foo (line_no, line_text) values (2, 'this is line 2');".
+      05  insert-into-foo-3            pic x(066) value
+            "insert into foo (line_no, line_text) values (3, 'this is line 3');".
+      05  select-from-foo              pic x(018) value
+            "select * from foo;".
+
+    01  foo-heading-1.
+      05                               pic x(001) value spaces.
+      05  fh-line-no                   pic x(007).
+      05                               pic x(003) value spaces.
+      05  fh-line-text                 pic x(060).
+      05                               pic x(001) value spaces.
+
+    01  foo-heading-2.
+      05                               pic x(001) value spaces.
+      05                               pic x(007) value all "-".
+      05                               pic x(003) value spaces.
+      05                               pic x(060) value all "-".
+      05                               pic x(001) value spaces.
+
+    01  foo-detail.
+      05                               pic x(004) value spaces.
+      05  fd-line-no                   pic 9(004).
+      05                               pic x(003) value spaces.
+      05  fd-line-text                 pic x(060).
+      05                               pic x(001) value spaces.
+
+procedure division.
+
+testsqlite3-mainline.
+
+>>D display "- opening database" end-display
+
+  %DBOPEN("test.sdb"#)
+
+  if not database-ok then
+    %DBERROR
+  end-if
+
+>>D display "- creating table foo" end-display
+
+  %DBSQL(create-table-foo#)
+
+  if not database-ok then
+    %DBERROR
+  end-if
+
+>>D display "- adding record(s) to table foo" end-display
+
+  %DBSQL(insert-into-foo-1#)
+
+  if not database-ok then
+    %DBERROR
+  end-if
+
+  %DBSQL(insert-into-foo-2#)
+
+  if not database-ok then
+    %DBERROR
+  end-if
+
+  %DBSQL(insert-into-foo-3#)
+
+  if not database-ok then
+    %DBERROR
+  end-if
+
+>>D display "- selecting all records from foo" end-display
+
+  %DBCOMPILE(select-from-foo#, sql-object#)
+
+  if not database-ok then
+    %DBERROR
+  end-if
+
+  %DBEXECUTE(sql-object#)
+
+  evaluate true
+
+    when database-row
+
+      perform print-column-headings
+
+      perform get-print-data
+        until database-done
+
+      display space end-display
+      display "-- End of Report --" end-display
+
+    when database-done
+      *> The SQL statement finished executing successfully.
+      continue
+
+    when database-busy
+      *> Probably unable to apply required database locks.
+      %DBERROR
+
+    when other
+      %DBERROR
+
+  end-evaluate
+
+  %DBDELETE(sql-object#)
+
+>>D display "- closing database" end-display
+
+  %DBCLOSE
+
+  move zero to return-code
+  goback
+  .
+
+print-column-headings.
+
+  *> Get the line-no and line-text column headings.
+
+  %DBGETCOLNAME(sql-object#,fcn-line-no#,fh-line-no#)
+  %DBGETCOLNAME(sql-object#,fcn-line-text#,fh-line-text#)
+
+  *> Print the column heading lines.
+
+  display foo-heading-1 end-display
+  display foo-heading-2 end-display
+  .
+
+get-print-data.
+
+  *> Get the line-no and line-text values.
+
+  %DBGETCOLVALUE(sql-object#, fcn-line-no#, column-integer#)
+  move column-integer to fd-line-no
+  %DBGETCOLVALUE(sql-object#, fcn-line-text#, column-value#)
+  move column-text to fd-line-text
+
+  *> Print the detail line.
+
+  display foo-detail end-display
+
+  *> Get the next row.
+
+  %DBEXECUTE(sql-object#)
+  .
+
+end program SQL3I4GC-test.

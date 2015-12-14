@@ -1,0 +1,36 @@
+  ____      _           _ __  __               _____      _
+ / ___|___ | |__   ___ | |  \/  | __ _  ___   | ____|_  _| |_ _ __ __ _ ___
+| |   / _ \| '_ \ / _ \| | |\/| |/ _` |/ __|  |  _| \ \/ / __| '__/ _` / __|
+| |__| (_) | |_) | (_) | | |  | | (_| | (__   | |___ >  <| |_| | | (_| \__ \
+ \____\___/|_.__/ \___/|_|_|  |_|\__,_|\___|  |_____/_/\_\\__|_|  \__,_|___/
+
+--------------------------------------------------------------------------------
+
+This folder contains additional programs and routines that the CobolMac author
+hopes you will find usefull.
+
+Some are 'used' by CobolMac and some 'require' CobolMac. In some cases there are
+CobolMac Macros available to simplify the use of a routine.
+
+The text below will indicate if it falls into one of these categories.
+
+--------------------------------------------------------------------------------
+
+  BITLIB.cob     Bit Manipulation Library for COBOL (BITLIB).
+
+  BITLIB-test.cob
+                 Test program for Bit Manipulation Library for COBOL (BITLIB).
+
+  README         You are reading it.
+
+  SQL3I4GC-test.cob
+                 Preprocessed source of SQL3I4GC-test.mac that can be compiled
+                 by GnuCOBOL 2.0.
+
+  SQL3I4GC-test.mac
+                 Test progran for SQLite3 Interface for GnuCOBOL (Macro Version).
+                 Compilation instructions are contained within the file.
+                 Requires preprocessing by CobolMac.
+
+--------------------------------------------------------------------------------
+Last updated 14th December, 2015 (c) Robert W.Mills

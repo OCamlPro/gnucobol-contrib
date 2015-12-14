@@ -483,6 +483,22 @@ data division.
     *>  w7nn - Hard Coded Messages.
     *> -------------------------------------------------------------------------
 
+    *> Information (*I*) messages:
+
+*>  01  w700-                          constant "*I* ?.".
+
+    *> Warning (*W*) messages:
+
+*>  01  w701-                          constant "*W* ?.".
+
+    *> Error (*E*) messages:
+
+*>  01  w702-                          constant "*E* ?.".
+
+    *> Prompts and other messages:
+
+*>  01  w703-                          constant "?.".
+
     *> -------------------------------------------------------------------------
     *>  w8nn - Printer Output Lines.
     *> -------------------------------------------------------------------------
@@ -704,11 +720,12 @@ procedure division.
 
       move spaces to w400-option-argument
 
-      call 'CBL_OC_GETOPT'
-        using
-          by reference w400-short-options, w400-long-options, w400-long-option-index
-          by value w400-long-option-prefix
-          by reference w400-option-id, w400-option-argument
+      call 'CBL_OC_GETOPT' using by reference w400-short-options,
+                                 by reference w400-long-options,
+                                 by reference w400-long-option-index,
+                                 by value w400-long-option-prefix,
+                                 by reference w400-option-id,
+                                 by reference w400-option-argument
         on exception
           *> CBL_OC_GETOPT is not available so we need to use the old (B.01.00) method.
           perform a201-getopt-alternative
@@ -734,20 +751,20 @@ procedure division.
               move zero to return-code
               goback
 
-          when "H" *> --hardwarn
-            set w904-hard-warnings to true
+            when "H" *> --hardwarn
+              set w904-hard-warnings to true
 
-          when "V" *> --verbose
-            set w907-include-macro-begin-end to true
+            when "V" *> --verbose
+              set w907-include-macro-begin-end to true
 
-          when "d" *> --debug
-            set w909-internal-debug-on to true
+            when "d" *> --debug
+              set w909-internal-debug-on to true
 
-          when "m" *> --maclib
-            set w910-list-macrolib to true
+            when "m" *> --maclib
+              set w910-list-macrolib to true
 
-          when "s" *> --stdlib
-            move trim(w400-option-argument) to w501-macrostd-filename
+            when "s" *> --stdlib
+              move trim(w400-option-argument) to w501-macrostd-filename
 
           end-evaluate
 
@@ -871,7 +888,7 @@ procedure division.
     display w100-program-id-line-02 upon stderr end-display
     display w100-program-id-line-03 upon stderr end-display
     display w100-program-id-line-04 upon stderr end-display
-    display "Built " module-formatted-date " for " w303-os-build upon stderr end-display
+    display "Built ", module-formatted-date, " for ", w303-os-build upon stderr end-display
     display space upon stderr end-display
     .
 
