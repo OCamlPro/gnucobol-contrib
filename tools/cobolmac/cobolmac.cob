@@ -4,102 +4,613 @@ identification division.
 
   program-id.                          cobolmac.
 
-*> TODO:
+*><* ====================================
+*><* CobolMac User Guide for Version B.04
 *>
-*>   Modify paragraph e200-convert-call-to-code.
+*>   Only modify the above line when there is a MAJOR or VERSION change.
 *>
-*>     Replace the 3 performs of e230-macro-as-a-constant with the following code:
-*>
-*>       move substitue-case(workin-record, w606-call-name, trim(macrolib-code-line))
-*>         to workout-record
-*>       move "e200-convert-call-to-code (n)" to w600-location
-*>       perform s011-write-workout
-*>
-*>     If it works then remove the performs and the performed paragraph.
-*>
-*> -----------------------------------------------------------------------------
-*>  CobolMac: a COBOL Macro Preprocessor.
-*> -----------------------------------------------------------------------------
-*>
-*>  This program is free software: you can redistribute it and/or modify it
-*>  under the terms of the GNU General Public License as published by the Free
-*>  Software Foundation, either version 3 of the License, or (at your option)
-*>  any later version.
-*>
-*>  This program is distributed in the hope that it will be useful, but WITHOUT
-*>  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-*>  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-*>  more details.
-*>
-*>  You should have received a copy of the GNU General Public License along with
-*>  this program. If not, see <http://www.gnu.org/licenses/>.
-*>
-*> -----------------------------------------------------------------------------
-*>
-*>  Description:
-*>
-*>    CobolMac is a COBOL Macro Preprocessor tool that reads a COBOL source file
-*>    prior to processing by GnuCOBOL's cobc.
-*>
-*>    It associates a macro name with a string of text. Macros can have up to
-*>    nine formal parameters. In the definition actual parameters are supplied
-*>    to replace the formal parameters when the macro is called in the source
-*>    program.
-*>
-*>    CobolMac is implemented as a command-line filter that emulates the macro
-*>    capability that is available with the Hewlett-Packard HPe3000 COBOL II/iX
-*>    Compiler.
-*>
-*>    Note: CobolMac assumes that it is preprocessing FREE FORMAT files. If used
-*>          to preprocess a FIXED FORMAT file then extra care must be taken when
-*>          defining the macros to ensure that all added code resides in the
-*>          correct areas - Area A (cols 7 to 11) and Area B (cols 12 to 72).
-*>
-*>  Usage:
-*>
-*>    w101-usage-text in Working-Storage contains the program usage text which
-*>    is displayed by using the --help option.
-*>
-*>  Configuration Settings (set before compiling):
-*>
-*>    CobolMac supports multiple operating systems. Set the value of OS (below)
-*>    to one of the following entries:
-*>
-*>      'LINUX'   for a GNU/Linux version
-*>      'UNIX'    for a UNIX version
-*>      'OSX'     for a Mac OSX version
-*>      'WINDOWS' for a Windows version
-*>      'CYGWIN'  for a Windows/Cygwin version
-*>      'MINGW'   for a Windows/MinGW version
-*>
+*><* ====================================
+*><*
+*><* .. sidebar:: Table of Contents
+*><*
+*><*     .. contents:: :local:
+*><*
+*><* ::
+*><*
+*><*    ____      _           _ __  __
+*><*   / ___|___ | |__   ___ | |  \/  | __ _  ___
+*><*  | |   / _ \| '_ \ / _ \| | |\/  |/ _` |/ __|
+*><*  | |__| (_) | |_) | (_) | | |  | | (_| | (__
+*><*   \____\___/|_.__/ \___/|_|_|  |_|\__,_|\___|
+*><*
+*><* :Author:   Robert W.Mills
+*><* :Date:     December 2015
+*><* :Rights:   Copyright © 2014-2015, Robert W.Mills.
+*><* :Email:    RobertW-Mills@users.sf.net
+*><* :Purpose:  A COBOL Macro Preprocessor.
+*><*
+*><* -------
+*><* License
+*><* -------
+*><*
+*><*   This program is free software: you can redistribute it and/or modify it
+*><+    under the terms of the GNU General Public License as published by the Free
+*><+    Software Foundation, either version 3 of the License, or (at your option)
+*><+    any later version.
+*><*
+*><*   This program is distributed in the hope that it will be useful, but WITHOUT
+*><+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+*><+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+*><+    more details.
+*><*
+*><*   You should have received a copy of the GNU General Public License along with
+*><+    this program. If not, see <http://www.gnu.org/licenses/#GPL>.
+*><*
+*><* -----------
+*><* Description
+*><* -----------
+*><*
+*><*   *CobolMac* is a COBOL source preprocessor that emulates the macro capability
+*><+    that is available with the Hewlett-Packard HPe3000 COBOL II/ix compiler.
+*><*
+*><*   It associates a macro name with a string of text. Macros can have up to
+*><+    nine formal parameters. In the definition actual parameters are supplied
+*><+    to replace the formal parameters when the macro is called in the source
+*><+    program.
+*><*
+*><*   The processed source code can then be passed to a COBOL compiler to create
+*><+    an executable or library module.
+*><*
+*><* -----------------
+*><* CobolMac Commands
+*><* -----------------
+*><*
+*><*   The following commands are supported by the *CobolMac* Preprocessor.
+*><*
+*><* $DEFINE
+*><* ~~~~~~~
+*><*
+*><*   The *$DEFINE* command is used to associate a string of text with a macro
+*><+    name. When the preprocessor encounters a defined macro name in the source
+*><+    program, it invokes the macro and passes the associated string of text.
+*><*
+*><* SYNTAX
+*><* ######
+*><*
+*><*     The *$DEFINE* command has the following format:
+*><*
+*><*       $DEFINE %macro-name=[string-text]#
+*><*
+*><* PARAMETERS
+*><* ##########
+*><*
+*><*     *macro-name* is the name of the macro being defined. It is limited to a
+*><+  length of 30 characters and is, by default, prefixed by a '%' (percent).
+*><*
+*><*     *string-text* is the string of text to replace occurrences of the macro
+*><+  call within the body of the program code.
+*><*
+*><*     It can be any text you choose. However, because this text is sent to the
+*><+  compiler, it must be a valid COBOL statement or sentence, with one exception.
+*><+  This exception is the use of formal parameters in the *string-text*. Formal
+*><+  parameters are described later in this section.
+*><*
+*><*     *string-text* may contain formal parameters (referred to as variables).
+*><+  They are designated by an integer in the range 1 to 9 that are, by default,
+*><+  prefixed by an '!' (exclamation).
+*><*
+*><* DESCRIPTION
+*><* ###########
+*><*
+*><*     This command may appear anywhere in your source program.
+*><*
+*><*     The *$DEFINE* command is, by default, terminated by a '#' (hash).
+*><*
+*><*     Recursive macros are not supported.
+*><*
+*><*     The macro-name prefix, formal parameter prefix and *$DEFINE* terminator
+*><+      can be changed by using the *$PREPROCESSOR* command (see below).
+*><*
+*><* $PREPROCESSOR
+*><* ~~~~~~~~~~~~~
+*><*
+*><*   The *$PREPROCESSOR* command allows you to change the default character used
+*><+    in the macro definitions and names.
+*><*
+*><* SYNTAX
+*><* ######
+*><*
+*><*     The *$PREPROCESSOR* command has the following format:
+*><*
+*><*       $PREPROCESSOR parameter=new-char [, ...]
+*><*
+*><* PARAMETERS
+*><* ##########
+*><*
+*><*     *parameter* is one of the following:
+*><*
+*><*       KEYCHAR is the macro-name prefix character. The default character is
+*><+  the % (percent).
+*><*
+*><*       PARMCHAR is the formal parameter prefix character used within the macro
+*><+  text-string. The default character is the ! (exclamation).
+*><*
+*><*       DELIMITER is the character that delimits the end of macro text strings
+*><+  and the actual parameters used with macro calls. The default character is
+*><+  the # (hash).
+*><*
+*><*       *new-char* specifies the new character to be used for the specified
+*><+  parameter.
+*><*
+*><* DESCRIPTION
+*><* ###########
+*><*
+*><*   You must ensure that any parameter you change does not contain a character
+*><+  that will appear in the *$DEFINE* text-string. If it does then processing of
+*><+  the *$DEFINE* will terminated early or give unexpected results.
+*><*
+*><*   The following example shows how the *$PREPROCESSOR* command is used when
+*><+  you define a macro that invokes another macro (aka a Nested Macro). It is
+*><+  the only time that you should need to use the *$PREPROCESSOR* command.
+*><*
+*><*   .. code:: cobolfree
+*><*
+*><*     *> Macro ReadError(paragraph#,file-name#,file-status#)
+*><*
+*><*     $define %ReadError=
+*><*     display
+*><*       "Error ", !3, " in paragraph ", !1, " reading file ", !2
+*><*     end-display
+*><*     goback#
+*><*
+*><*     *> Change the macro delimiter to something other than #. If this is not
+*><*     *> done then the first # character in the call to the %ReadError macro
+*><*     *> will be treated as the %ReadFile macro terminator.
+*><*
+*><*     *> Macro ReadFile(paragraph#,file-name#)
+*><*     $preprocessor delimiter=~
+*><*
+*><*     $define %ReadFile=
+*><*     read !2 end-read
+*><*     evaluate file-status
+*><*       when read-success
+*><*         perform process-record
+*><*       when end-of-file
+*><*         perform process-eof
+*><*       when other *> Report the error and exit the program.
+*><*         %ReadError(!1#,!2#,file-status#)
+*><*     end-evaluate~
+*><*
+*><*     *> Return the macro define terminator to its default value.
+*><*     $preprocessor delimiter=#
+*><*
+*><*   **Note:** The above example assumes the following:
+*><*
+*><*   - file-status is a pic x(2) data item assigned to the FILE STATUS option
+*><+  in the files SELECT statement.
+*><*   - read-success is an 88 level under file-status with a value of "00".
+*><*   - end-of-file is an 88 level under file-status with a value of "10".
+*><*   - process-record and process-eof is an existing section/paragraph.
+*><*
+*><* $INCLUDE
+*><* ~~~~~~~~
+*><*
+*><*   The *$INCLUDE* command allows you to specify a file to be copied into your
+*><+    source program.
+*><*
+*><* SYNTAX
+*><* ######
+*><*
+*><*     The *$INCLUDE* command has the following format:
+*><*
+*><*       $INCLUDE filename
+*><*
+*><* PARAMETERS
+*><* ##########
+*><*
+*><*     *filename* is the name of the file, including path, to be copied into
+*><+  your source program.
+*><*
+*><* DESCRIPTION
+*><* ###########
+*><*
+*><*     This command may appear anywhere in your source program.
+*><*
+*><*     *$INCLUDE* commands may be nested to whatever depth you require. That
+*><+  is, the file that is being copied may itself have $INCLUDE commands in it.
+*><*
+*><*     If you use this command to load macro $DEFINE commands then its suggested
+*><+  you follow the recommendations given above for the $DEFINE command.
+*><*
+*><* $COPY
+*><* ~~~~~
+*><*
+*><*   **Not yet implemented as it is a planned enhancement.**
+*><*
+*><*   The *$COPY* command allows you to specify a copybook module, held in a
+*><+    library, to be copied into your source program.
+*><*
+*><* SYNTAX
+*><* ######
+*><*
+*><*     The *$COPY* command has the following format:
+*><*
+*><*       $COPY copybook IN|OF library
+*><*
+*><* PARAMETERS
+*><* ##########
+*><*
+*><*     *copybook* is the name of the module to be copied into your source program.
+*><*
+*><*     *library* is the name of the library file, including path, in which the
+*><+  module resides. The *library* file must have been created by the *cpylibeditor*
+*><+  program. **DO NOT** include the .cpylib file extension.
+*><*
+*><* DESCRIPTION
+*><* ###########
+*><*
+*><*     This command may appear anywhere in your source program.
+*><*
+*><* --------------
+*><* Calling Macros
+*><* --------------
+*><*
+*><*   There are two different forms of a macro call:
+*><*
+*><*     *%macroname*
+*><*
+*><*   and
+*><*
+*><*     *%macroname(p1#, p2#, p3#, ..., p9#)*
+*><*
+*><* Parameters
+*><* ~~~~~~~~~~
+*><*
+*><*  *%macroname* is the name of a macro which has been previously defined in the
+*><+   source program, using a *$DEFINE* command.
+*><*
+*><*  *p1*, *p2*, ..., *p9* is the actual parameters. Each of parameters may be
+*><+   either a null string or any combination of characters and numerals,
+*><+   including spaces. Each actual parameter begins with the first character
+*><+   after a preceding comma (except *p1*, which begins after the left
+*><+   parenthesis), and ends with the # (hash) character.
+*><*
+*><*  If no characters are specified for an actual parameter (that is, if an
+*><+   actual parameter is specified by "#"), then a null string replaces its
+*><+   corresponding formal parameter in the macro definition.
+*><*
+*><*  **Note:** There can be no intervening spaces between the end of *macroname*
+*><+   and the left parenthesis of the actual parameter list.
+*><*
+*><*  The first form of calling a macro is used when the macro definition has no
+*><+   formal parameters.
+*><*
+*><*  The second form must be used when formal parameters are specified in the
+*><+   definition of the macro.
+*><*
+*><*  When a macro name is encountered in a source program, it is replaced by the
+*><+   associated macro definition. Any formal parameters are replaced by actual
+*><+   parameters listed in the macro call.
+*><*
+*><*  With one exception, macro names are replaced wherever they occur in the
+*><+   source program, including quoted strings. Macro names are not expanded in a
+*><+    comment, unless the comment itself is found in a macro.
+*><*
+*><* -----------------------
+*><* Standard Macros Library
+*><* -----------------------
+*><*
+*><*   At some point you will find yourself using a standard set of macros. When
+*><+    this happens you can add the *$DEFINE* commands into a file named
+*><+    *cobolmac.standard.macros* and *CobolMac* will automatically add them to
+*><+    the start of your source programs Working-Storage Section.
+*><*
+*><*   The reason for placing the contents of *cobolmac.standard.macros* within
+*><+    the Working-Storage Section is so you can also include any variable
+*><+    definitions that are specific to the macros.
+*><*
+*><*   The file *cobolmac.standard.macros* is assumed to reside in the current
+*><+    working directory. The *--stdlib* (*-s*) option can be used to point
+*><+    *CobolMac* to a library file with a different name and/or in a different
+*><+    location.
+*><*
+*><* ------------
+*><* Command line
+*><* ------------
+*><*
+*><*   *CobolMac* runs in two forms.
+*><*
+*><*   1. Without arguments, *CobolMac* will act as a pipe filter. Reading from
+*><+    Standard In (stdin), expanding the macro calls, and writing processed
+*><+    code to Standard Out (stdout).
+*><*
+*><*   2. The *CobolMac* command also takes an input filename, output filename, and
+*><+    several options (see Usage below).
+*><*
+*><*   In both forms, any error and warning messages will be written to Standard
+*><+    Error (stderr). stderr can be redirected to a file by adding the following
+*><+    to the command line
+*><*
+*><*     2>filename
+*><*
+*><*   where *filename* is the name of the file to hold the messages. *filename* can
+*><+    optionally include a directory path.
+*><*
+*><*   Note: *CobolMac* assumes that it is preprocessing FREE FORMAT files. If used
+*><+    to preprocess a FIXED FORMAT file then extra care must be taken when
+*><+    defining the macros to ensure that all added code resides in the
+*><+    correct areas - Area A (cols 7 to 11) and Area B (cols 12 to 72).
+*><*
+*><* Usage
+*><* ~~~~~
+*><*
+*><*   $ program1 | cobolmac [options] [2>stderr] | program2
+*><*
+*><*   $ cobolmac [options] --stdin=input --stdout=output [2>stderr]
+*><*
+*><*   $ cobolmac [options] <input [2>stderr] | program2
+*><*
+*><*   +--------+------------------------------------------------------------------+
+*><*   |        |Description                                                       |
+*><*   +========+==================================================================+
+*><*   |input   |[path/]name of file Standard Input redirected to.                 |
+*><*   +--------+------------------------------------------------------------------+
+*><*   |output  |[path/]name of file Standard Output redirected to.                |
+*><*   +--------+------------------------------------------------------------------+
+*><*   |stderr  |optional [path/]name of file Standard Error redirected to.        |
+*><*   +--------+------------------------------------------------------------------+
+*><*   |program1|[path/]name of program that writes to Standard Output.            |
+*><*   +--------+------------------------------------------------------------------+
+*><*   |program2|[path/]name of program that reads from Standard Input.            |
+*><*   +--------+------------------------------------------------------------------+
+*><*
+*><* Options
+*><* ~~~~~~~
+*><*
+*><*   +------+-------------+------------------------------------------------------+
+*><*   |Short |Long         |Description                                           |
+*><*   +======+=============+======================================================+
+*><*   |-h    |--help       |Display the help text and exit.                       |
+*><*   +------+-------------+------------------------------------------------------+
+*><*   |-v    |--version    |Display the version id and exit.                      |
+*><*   +------+-------------+------------------------------------------------------+
+*><*   |-H    |--hardwarn   |Treat all warnings like an error.                     |
+*><*   +------+-------------+------------------------------------------------------+
+*><*   |-V    |--verbose    |Include Macro Begin/End comment lines. (default)      |
+*><*   +------+-------------+------------------------------------------------------+
+*><*   |-q    |--quiet      |Suppress the Macro Begin/End comment lines.           |
+*><*   +------+-------------+------------------------------------------------------+
+*><*   |-d    |--debug      |Display additional error information.                 |
+*><*   +------+-------------+------------------------------------------------------+
+*><*   |-m    |--maclib     |List the contents of the Macro Library.               |
+*><*   +------+-------------+------------------------------------------------------+
+*><*   |-sfile|--stdlib=file|[path/]name of *file* holding Standard Macros Library.|
+*><*   |      |             |Overrides the *cobolmac.standard.macros* default.     |
+*><*   +------+-------------+------------------------------------------------------+
+*><*   |-ifile|--stdin=file |[path/]name of *file* containg source code.           |
+*><*   |      |             |Overrides the Standard Input (stdin).                 |
+*><*   +------+-------------+------------------------------------------------------+
+*><*   |-ofile|--stdout=file|[path/]name of *file* to write processed code to.     |
+*><*   |      |             |Overrides the Standard Output (stdout).               |
+*><*   +------+-------------+------------------------------------------------------+
+*><*
+*><*   **Note:** *CobolMac*, by default, will use the *CBL_OC_GETOPT* system routine
+*><+    to process the command line options. If the compiler you are using does
+*><+    not have this routine then *CobolMac* will use its own internal
+*><+    routine. Due to limitations with this routine, the options *--stdin*
+*><+    (*-i*), *--stdout* (*-o*) and *--stdlib* (*-s*) are not supported. If this
+*><+    happens then the following messages will be displayed on stderr.
+*><*
+*><*   ::
+*><*
+*><*       *W* CBL_OC_GETOPT is not available with your version of COBOL.
+*><*       *W* An alternative method is being used to read your command line.
+*><*       *W* The --stdlib, --stdin and --stdout options are not supported.
+*><*
+*><* Return Codes
+*><* ~~~~~~~~~~~~
+*><*
+*><*   +--------+------------------------------------------------------------------+
+*><*   |Code    |Description                                                       |
+*><*   +========+==================================================================+
+*><*   |0 (zero)|Program completed without any errors.                             |
+*><*   +--------+------------------------------------------------------------------+
+*><*   |1 (one) |Program terminated in an error state.                             |
+*><*   |        |Details sent to Standard Error (stderr) prior to exit.            |
+*><*   |        |The output file, if created, is incomplete/corrupt.               |
+*><*   +--------+------------------------------------------------------------------+
+*><*
+*><* ----------------------
+*><* Configuration Settings
+*><* ----------------------
+*><*
+*><*   *CobolMac* supports multiple operating systems.
+*><*
+*><*   Set the **OS** constant to one of the following values before compiling.
+*><*
+*><*   +--------+----------------+
+*><*   |OS Value|Operating System|
+*><*   +========+================+
+*><*   |LINUX   |GNU/Linux       |
+*><*   +--------+----------------+
+*><*   |UNIX    |UNIX            |
+*><*   +--------+----------------+
+*><*   |OSX     |Apple Mac OS X  |
+*><*   +--------+----------------+
+*><*   |WINDOWS |Windows (Native)|
+*><*   +--------+----------------+
+*><*   |CYGWIN  |Windows (Cygwin)|
+*><*   +--------+----------------+
+*><*   |MINGW   |Windows (MinGW) |
+*><*   +--------+----------------+
+*><*
         >>DEFINE CONSTANT OS AS 'LINUX'
-*>
-*>  Compilation Instructions:
-*>
-*>    Production:
-*>
-*>      cobc -x cobolmac.cob
-*>
-*>    Development (enable ALL warnings and debugging lines):
-*>
-*>      cobc -x -W -fdebugging-line cobolmac.cob
-*>
-*>  Modification History:
-*>
-*>    See the ChangeLog file.
-*>
-*>  Developer Notes:
-*>
-*>    See the DevNotes file.
-*>
+
+*><* ------------------------
+*><* Compilation Instructions
+*><* ------------------------
+*><*
+*><* Linux/UNIX
+*><* ~~~~~~~~~~
+*><*
+*><*   Compile the *CobolMac* source (cobolmac.cob) by entering the following
+*><+  command within any terminal program.
+*><*
+*><*     cobc -x cobolmac.cob
+*><*
+*><*   Now place the file cobolmac in a directory that is within your PATH,
+*><+  making sure that the execute flag is set (chmod +x cobolmac).
+*><*
+*><* Apple Mac OS X
+*><* ~~~~~~~~~~~~~~
+*><*
+*><*   Compile the source file as for Linux/Unix.
+*><*
+*><*   This might not work 'as is' with Tiny Cobol or ANY other compiler.
+*><+  Check to see if the compiler supports the C\$DELETE built-in system
+*><+  subroutine. If not then the *s022-delete-workfiles* paragraph will need
+*><+  modification to perform this function some other way (for eg. drop into a
+*><+  command shell and issue the file delete/purge commands).
+*><*
+*><* Windows
+*><* ~~~~~~~
+*><*
+*><*   I do not have access to Windows, Wingows/Cygwin or Windows/MinGW but I
+*><+  understand that the following commands should work [YMMV].
+*><*
+*><*   Windows/MinGW and Windows/Cygwin (inside the terminal program):
+*><*
+*><*     Compile the source file as for Linux/Unix.
+*><*
+*><*   Windows/MinGW and Windows/Cygwin (outside the terminal program):
+*><*
+*><*     cobc -x [*drive*:][path/to/]cobolmac.cob
+*><*
+*><*   Native Windows:
+*><*
+*><*     cobc -x [*drive*:][path\\to\\]cobolmac.cob
+*><*
+*><* ------------
+*><* Installation
+*><* ------------
+*><*
+*><* Requirements
+*><* ~~~~~~~~~~~~
+*><*
+*><*   **GnuCOBOL:** Version 2.0 (or greater) installed and tested fully working.
+*><*   See the documentation supplied with *GnuCOBOL*. You MUST have run both the
+*><+    sanity checks created by the test procedures included within the cobol85
+*><+    suite as well as the make check procedure.
+*><*
+*><* Temporary Files
+*><* ~~~~~~~~~~~~~~~
+*><*
+*><*   The following environment variables are used to find where the temporary files,
+*><+    used by *CobolMac*, are to be placed.
+*><*
+*><*   - If TMPDIR exists and contains a value then use it, else continue.
+*><*
+*><*   - If TEMP exists and contains a value then use it, else continue.
+*><*
+*><*   - If TMP exists and contains a value then use it, else continue.
+*><*
+*><*   - If running on a Windows (Native, Cygwin, or MinGW) platform then
+*><*
+*><*     - If USERPROFILE exists and contains a value then use it, else use "." (dot).
+*><*
+*><*   - If **not** running on a Windows platform then use "/tmp".
+*><*
+*><*   **GnuCOBOL:** This may change when version 2.0 is the official release.
+*><*
+*><* Directory Seperator
+*><* ~~~~~~~~~~~~~~~~~~~
+*><*
+*><*   The directory separator is *Operating System* dependent. The character used
+*><+    is set by the value of the *CDF* variable named **OS** (see Configuration
+*><+    Settings) as follows.
+*><*
+*><*   +--------------+------------------------------------------------------------+
+*><*   |Seperator     |Operating System                                            |
+*><*   +==============+============================================================+
+*><*   |/ (slash)     |GNU/Linux, UNIX, Apple Mac OS X and Windows/Cygwin.         |
+*><*   +--------------+------------------------------------------------------------+
+*><*   |\\ (backslash)|Windows and Windows/MinGW.                                  |
+*><*   +--------------+------------------------------------------------------------+
+*><*
+*><* -------------------
+*><* Quotes about Macros
+*><* -------------------
+*><*
+*><*   A good library of pre-tested Macros can greatly speed program writing, and
+*><+    can also be used to assist portability of code, with the differences between
+*><+    COBOL dialects being hidden in the Macro Definitions.
+*><*
+*><*      -- Anonymouse
+*><*
+*><*   RE: the COPY...REPLACING and REPLACE statements.
+*><*
+*><*   "The rules are complex and are actually ambiguous in some cases."
+*><*
+*><*   "One problem is that only words are replaced, not parts of words."
+*><*
+*><*      -- Don Nelson in "COBOL 85 for Programmers"
+*><*
+*><* -------------------------------
+*><* Migration from HPe3000 COBOL/ix
+*><* -------------------------------
+*><*
+*><*   The following Hewlett-Packard HPe3000 COBOL II/ix preprocessor commands
+*><+    are **not** supported by *CobolMac*. They will be automatically dropped
+*><+    from the source file and any files that are read in by the $INCLUDE and
+*><+    $COPY commands.
+*><*
+*><*   +----------+----------------------------------------------------------------+
+*><*   |Command   |Description                                                     |
+*><*   +==========+================================================================+
+*><*   |$CONTROL  |Controls compilation and list options.                          |
+*><*   +----------+----------------------------------------------------------------+
+*><*   |$COPYRIGHT|Enters a copyright string into the object file.                 |
+*><*   +----------+----------------------------------------------------------------+
+*><*   |$IF       |Interrogates the compilation software switches.                 |
+*><*   +----------+----------------------------------------------------------------+
+*><*   |$PAGE     |Advance to the next logical page in the listfile.               |
+*><*   |          |Allows replacement of the 1st page header line.                 |
+*><*   +----------+----------------------------------------------------------------+
+*><*   |$SET      |Turns compilation switches on/off.                              |
+*><*   +----------+----------------------------------------------------------------+
+*><*   |$TITLE    |Allows replacement of the page header lines.                    |
+*><*   +----------+----------------------------------------------------------------+
+*><*   |$VERSION  |Enters a version string into the object file.                   |
+*><*   +----------+----------------------------------------------------------------+
+*><*
+*><* --------------------
+*><* Modification History
+*><* --------------------
+*><*
+*><*   .. include:: ChangeLog
+*><*
+*><* --------------------
+*><* Planned Enhancements
+*><* --------------------
+*><*
+*><*   .. include:: ToDo
+*><*
+*><* ---------------
+*><* Developer Notes
+*><* ---------------
+*><*
+*><*   .. include:: DevNotes
+*><*
+*><* .. footer:: End of CobolMac User Guide
+*><*
 *> -----------------------------------------------------------------------------
 
 environment division.
 
   configuration section.
 
-    source-computer.                   Linux Mint Rafaela; Cinnamon Edition.
-    object-computer.                   Linux Mint Rafaela; Cinnamon Edition.
+    source-computer.                   Linux Mint Rosa; Cinnamon Edition.
+    object-computer.                   Linux Mint Rosa; Cinnamon Edition.
 
     repository.
 
@@ -115,7 +626,17 @@ environment division.
                                        organization is line sequential
                                        file status is w500-file-status
                                        .
+      select stdinfile                 assign to w501-stdin-filename
+                                       access is sequential
+                                       organization is line sequential
+                                       file status is w500-file-status
+                                       .
       select stdout                    assign to display
+                                       access is sequential
+                                       organization is line sequential
+                                       file status is w500-file-status
+                                       .
+      select stdoutfile                assign to w501-stdout-filename
                                        access is sequential
                                        organization is line sequential
                                        file status is w500-file-status
@@ -151,24 +672,22 @@ data division.
 
   file section.
 
-    fd  stdin.
-
+  fd  stdin.
     01  stdin-record                   pic x(256).
+  fd  stdinfile.
+    01  stdinfile-record               pic x(256).
 
-    fd  stdout.
-
+  fd  stdout.
     01  stdout-record                  pic x(256).
+  fd  stdoutfile.
+    01  stdoutfile-record              pic x(256).
 
-    fd  workin.
-
+  fd  workin.
     01  workin-record                  pic x(256).
-
-    fd  workout.
-
+  fd  workout.
     01  workout-record                 pic x(256).
 
-    fd  macrolib.
-
+  fd  macrolib.
     01  macrolib-record.
       05  macrolib-key.
         10  macrolib-name              pic x(030).
@@ -176,12 +695,10 @@ data division.
       05  macrolib-data.
         10  macrolib-code-line         pic x(256).
 
-    fd  incfile.
-
+  fd  incfile.
     01  incfile-record                 pic x(256).
 
-    fd  macrostd.
-
+  fd  macrostd.
     01  macrostd-record                pic x(256).
 
   working-storage section.
@@ -193,7 +710,7 @@ data division.
     01  w100-program-identity.
       05  w100-program-id-line-01.
         10                             pic x(009) value "cobolmac/".
-        10  w100-program-v-uu-ff       pic x(007) value "B.03.01".
+        10  w100-program-v-uu-ff       pic x(007) value "B.04.00". *> Version.Update.Fix
         10                             pic x(063) value " - COBOL Macro Preprocessor.".
       05  w100-program-id-line-02.
         10  w100-copyright             pic x(079) value "Copyright (c) Robert W. Mills (robertw-mills@users.sf.net), 2014-2015.".
@@ -203,40 +720,48 @@ data division.
     01  w101-program-usage.
       05  w101-usage-index             pic s9(04) comp.
       05  w101-usage-text.
-                           *>"         1         2         3         4         5         6         7         "
-                           *>"1234567890123456789012345678901234567890123456789012345678901234567890123456789"
-        10  pic x(316) value "  Usage:                                                                       " &
-                             "    $ cobolmac [options] <input >output [2>messages]                           " &
-                             "    $ cobolmac [options] <input [2>messages] | program2                        " &
-                             "    $ program1 | cobolmac [options] [2>messages] | program2                    ".
-        10  pic x(079) value spaces.
-        10  pic x(711) value "  Options:                                                                     " &
-                             "    -h, --help     Display this text and exit.                                 " &
-                             "    -v, --version  Display the preprocessor version and exit.                  " &
-                             "    -H, --hardwarn Treat all warnings like an error.                           " &
-                             "    -V, --verbose  Include Macro Begin/End comment lines.                      " &
-                             "    -d, --debug    Display additional error information.                       " &
-                             "    -m, --maclib   List the contents of the Macro Library.                     " &
-                             "    -sfilename, --stdlib=filename                                              " &
-                             "                   [path/]name of file containing Standard Macros Library.     ".
-        10  pic x(079) value spaces.
-        10  pic x(395) value "    input          [path/]name of file Standard Input redirected to.           " &
-                             "    output         [path/]name of file Standard Output redirected to.          " &
-                             "    messages       optional [path/]name of file Standard Error redirected to.  " &
-                             "    program1       [path/]name of program that writes to Standard Output.      " &
-                             "    program2       [path/]name of program that reads from Standard Input.      ".
-        10  pic x(079) value spaces.
-        10  pic x(395) value "  Return Codes:                                                                " &
-                             "    0 (zero)       Program completed without any errors.                       " &
-                             "    1 (one)        Program terminated in an error state.                       " &
-                             "                   Details written to Standard Error prior to termination.     " &
-                             "                   The output file, if created, is incomplete/corrupt.         ".
-        10  pic x(079) value spaces.
-        10  pic x(079) value "***". *> end of program usage text marker.
-                           *>"         1         2         3         4         5         6         7         "
-                           *>"1234567890123456789012345678901234567890123456789012345678901234567890123456789"
+                            *>"         1         2         3         4         5         6         7         "
+                            *>"1234567890123456789012345678901234567890123456789012345678901234567890123456789"
+        10  pic x(316)  value "  Usage:                                                                       " &
+                              "    $ program1 | cobolmac [options] [2>stderr] | program2                      " &
+                              "    $ cobolmac [options] --stdin=input --stdout=output [2>stderr]              " &
+                              "    $ cobolmac [options] <input [2>stderr] | program2                          ".
+        10  pic x(079)  value spaces.
+        10  pic x(1343) value "  Options:                                                                     " &
+                              "    -h, --help     Display the help text and exit.                             " &
+                              "    -v, --version  Display the version id and exit.                            " &
+                              "    -H, --hardwarn Treat all warnings like an error.                           " &
+                              "    -V, --verbose  Include Macro Begin/End comment lines (default)             " &
+                              "    -q, --quiet    Suppress the Macro Begin/End comment lines.                 " &
+                              "    -d, --debug    Display additional error information.                       " &
+                              "    -m, --maclib   List the contents of the Macro Library.                     " &
+                              "    -sfile, --stdlib=file                                                      " &
+                              "                   [path/]name of file holding Standard Macros Library.        " &
+                              "                   Overrides the *cobolmac.standard.macros* default.           " &
+                              "    -ifile, --stdin=file                                                       " &
+                              "                   [path/]name of file containing source code.                 " &
+                              "                   Overrides the Standard Input (stdin).                       " &
+                              "    -ofile, --stdout=file                                                      " &
+                              "                   [path/]name of file to write processed code to.             " &
+                              "                   Overrides the Standard Output (stdout).                     ".
+        10  pic x(079)  value spaces.
+        10  pic x(395)  value "    input          [path/]name of file Standard Input redirected to.           " &
+                              "    output         [path/]name of file Standard Output redirected to.          " &
+                              "    stderr         optional [path/]name of file Standard Error redirected to.  " &
+                              "    program1       [path/]name of program that writes to Standard Output.      " &
+                              "    program2       [path/]name of program that reads from Standard Input.      ".
+        10  pic x(079)  value spaces.
+        10  pic x(395)  value "  Return Codes:                                                                " &
+                              "    0 (zero)       Program completed without any errors.                       " &
+                              "    1 (one)        Program terminated in an error state.                       " &
+                              "                   Details written to Standard Error prior to termination.     " &
+                              "                   The output file, if created, is incomplete/corrupt.         ".
+        10  pic x(079)  value spaces.
+        10  pic x(079)  value "***". *> end of program usage text marker.
+                            *>"         1         2         3         4         5         6         7         "
+                            *>"1234567890123456789012345678901234567890123456789012345678901234567890123456789"
       05  redefines w101-usage-text.
-        10  w101-usage-line            pic x(079) occurs 28.
+        10  w101-usage-line            pic x(079) occurs 36.
             *> Update occurs count if number of fillers below w101-usage-text changes.
 
     *> -------------------------------------------------------------------------
@@ -318,10 +843,10 @@ data division.
 
     *>  Parameters required by CBL_OC_GETOPT
 
-    78  w400-short-options                        value "hvHVdms:".
+    78  w400-short-options                        value "hvHVqdms:i:o:".
 
     01  w400-long-options.
-      05  w400-long-option-record      occurs 7 times.
+      05  w400-long-option-record      occurs 10 times.
         10  w400-long-option-name      pic x(025).
         10  w400-long-option-argument  pic 9(001).
           88  w400-no-argument                    value zero.
@@ -383,13 +908,15 @@ data division.
 
       88  w500-not-available                      value "91".
 
-    *> The following 5 variables have to be at the 01 level.
+    *> The following 7 variables have to be at the 01 level.
 
     01  w501-workin-filename           pic x(256) value spaces.
     01  w501-workout-filename          pic x(256) value spaces.
     01  w501-macrolib-filename         pic x(256) value spaces.
     01  w501-incfile-filename          pic x(256) value spaces.
     01  w501-macrostd-filename         pic x(256) value spaces.
+    01  w501-stdin-filename            pic x(256) value spaces.
+    01  w501-stdout-filename           pic x(256) value spaces.
 
     01  w502-work-files.
       05  w502-work-file-one           pic x(256).
@@ -409,7 +936,7 @@ data division.
 
     01  w601-temporary-directory       pic x(256) value spaces.
 
-    *> w602- is available for use.
+    01  w602-temp-record               pic x(256).
 
     01  w603-random-number             pic 9(009) value zero.
 
@@ -469,15 +996,16 @@ data division.
       05  w611-subparameter-3          pic x(010).
       05  w611-not-used-2              pic x(256).
 
-    *> Delete the following when GnuCOBOL 2.0 has replaced previous versions.
+    *> Used by paragraph a201-getopt-alternative.
 
-    01  w699-argv-option               pic x(256) value spaces.
-      88  w699-help                               value "-h", "--help".
-      88  w699-version                            value "-v", "--version".
-      88  w699-hard-warnings                      value "-H", "--hardwarn".
-      88  w699-verbose                            value "-V", "--verbose".
-      88  w699-debug                              value "-d", "--debug".
-      88  w699-list-macrolib                      value "-m", "--maclib".
+    01  w612-argv-option               pic x(256) value spaces.
+      88  w612-help                               value "-h", "--help".
+      88  w612-version                            value "-v", "--version".
+      88  w612-hard-warnings                      value "-H", "--hardwarn".
+      88  w612-verbose                            value "-V", "--verbose".
+      88  w612-quiet                              value "-q", "--quiet".
+      88  w612-debug                              value "-d", "--debug".
+      88  w612-list-macrolib                      value "-m", "--maclib".
 
     *> -------------------------------------------------------------------------
     *>  w7nn - Hard Coded Messages.
@@ -545,9 +1073,13 @@ data division.
         88  w900-more-macrostd                    value "M".
         88  w900-end-of-macrostd                  value "E".
 
-    *> w901- is available for use.
+    01  pic x(001) value "N". *> Has the --stdin option been used?
+      88  w901-stdin-option-not-used              value "N". *> Default setting.
+      88  w901-stdin-option-used                  value "U".
 
-    *> w902- is available for use.
+    01  pic x(001) value "N". *> Has the --stdout option been used?
+      88  w902-stdout-option-not-used             value "N". *> Default setting.
+      88  w902-stdout-option-used                 value "U".
 
     01  pic x(001) value "N". *> Have we processed the working-storage section?
       88  w903-ws-section-not-found               value "N". *> Default setting.
@@ -565,9 +1097,9 @@ data division.
       88  w906-macrolib-key-found                 value "F".
       88  w906-macrolib-key-not-found             value "N".
 
-    01  pic x(001) value "E". *> Do we output a Macro Begin/End Marker?
-      88  w907-exclude-macro-begin-end            value "E". *> Default setting.
-      88  w907-include-macro-begin-end            value "I".
+    01  pic x(001) value "I". *> Do we output a Macro Begin/End Marker?
+      88  w907-include-macro-begin-end            value "I". *> Default setting.
+      88  w907-exclude-macro-begin-end            value "E".
 
     01  pic x(001). *> Are there any more Macro Calls?
       88  w908-more-macro-calls                   value "M".
@@ -592,6 +1124,10 @@ data division.
     01  pic x(001) value "N". *> Have we found a Macro Call?
       88  w913-macro-call-not-found               value "N". *> Default setting.
       88  w913-macro-call-found                   value "F".
+
+    01  pic x(001). *> Have we found a Macro Call?
+      88  w914-unsupported-cmd                    value "U".
+      88  w914-supported-cmd                      value "S".
 
     *> Delete following when GnuCOBOL 2.0 has replaced previous versions.
 
@@ -703,17 +1239,29 @@ procedure division.
     move "V" to w400-long-option-alias(4)
     set w400-no-argument(4) to true
 
-    move "debug" to w400-long-option-name(5)
-    move "d" to w400-long-option-alias(5)
+    move "quiet" to w400-long-option-name(5)
+    move "q" to w400-long-option-alias(5)
     set w400-no-argument(5) to true
 
-    move "maclib" to w400-long-option-name(6)
-    move "m" to w400-long-option-alias(6)
+    move "debug" to w400-long-option-name(6)
+    move "d" to w400-long-option-alias(6)
     set w400-no-argument(6) to true
 
-    move "stdlib" to w400-long-option-name(7)
-    move "s" to w400-long-option-alias(7)
-    set w400-required-argument(7) to true
+    move "maclib" to w400-long-option-name(7)
+    move "m" to w400-long-option-alias(7)
+    set w400-no-argument(7) to true
+
+    move "stdlib" to w400-long-option-name(8)
+    move "s" to w400-long-option-alias(8)
+    set w400-required-argument(8) to true
+
+    move "stdin" to w400-long-option-name(9)
+    move "i" to w400-long-option-alias(9)
+    set w400-required-argument(9) to true
+
+    move "stdout" to w400-long-option-name(10)
+    move "o" to w400-long-option-alias(10)
+    set w400-required-argument(10) to true
 
     perform with test after
       until w604-no-more-options
@@ -757,6 +1305,9 @@ procedure division.
             when "V" *> --verbose
               set w907-include-macro-begin-end to true
 
+            when "q" *> --quiet
+              set w907-exclude-macro-begin-end to true
+
             when "d" *> --debug
               set w909-internal-debug-on to true
 
@@ -765,6 +1316,14 @@ procedure division.
 
             when "s" *> --stdlib
               move trim(w400-option-argument) to w501-macrostd-filename
+
+            when "i" *> --stdin
+              set w901-stdin-option-used to true
+              move trim(w400-option-argument) to w501-stdin-filename
+
+            when "o" *> --stdout
+              set w902-stdout-option-used to true
+              move trim(w400-option-argument) to w501-stdout-filename
 
           end-evaluate
 
@@ -806,9 +1365,9 @@ procedure division.
     *> Tell user what is happening.
 
     display space upon stderr end-display
-    display "*W* CBL_OC_GETOPT is not available with your version of GnuCOBOL." upon stderr end-display
+    display "*W* CBL_OC_GETOPT is not available with your version of COBOL." upon stderr end-display
     display "*W* An alternative method is being used to read your command line." upon stderr end-display
-    display "*W* The -s and --stdlib options, if used, have been ignored." upon stderr end-display
+    display "*W* The --stdlib, --stdin and --stdout options are not supported." upon stderr end-display
     display space upon stderr end-display
 
     *> Get the command-line options and validate them.
@@ -816,37 +1375,40 @@ procedure division.
     perform
       until w999-last-command
 
-      move low-values to w699-argv-option
-      accept w699-argv-option from argument-value end-accept
+      move low-values to w612-argv-option
+      accept w612-argv-option from argument-value end-accept
 
-      if w699-argv-option > low-values then *> Found argument.
+      if w612-argv-option > low-values then *> Found argument.
 
         evaluate true
 
-          when w699-help *> -h or --help
+          when w612-help *> -h or --help
             perform a210-display-program-usage
             move zero to return-code
             goback
 
-          when w699-version *> -v or --version
+          when w612-version *> -v or --version
             perform a220-display-program-version
             move zero to return-code
             goback
 
-          when w699-hard-warnings *> -H or --hardwarn
+          when w612-hard-warnings *> -H or --hardwarn
             set w904-hard-warnings to true
 
-          when w699-verbose *> -V or --verbose
+          when w612-verbose *> -V or --verbose
             set w907-include-macro-begin-end to true
 
-          when w699-debug *> -d or --debug
+          when w612-quiet *> -q or --quiet
+            set w907-exclude-macro-begin-end to true
+
+          when w612-debug *> -d or --debug
             set w909-internal-debug-on to true
 
-          when w699-list-macrolib *> -m or --maclib
+          when w612-list-macrolib *> -m or --maclib
             set w910-list-macrolib to true
 
           when other *> Unknown/Unsupported option.
-            display "*W* Unknown/Unsupported command-line option: ", w699-argv-option upon stderr end-display
+            display "*W* Unknown/Unsupported command-line option: ", w612-argv-option upon stderr end-display
 
         end-evaluate
 
@@ -967,13 +1529,11 @@ procedure division.
         set w912-more-include-files to true
       end-if
 
-      if instr(stdin-record, "$if") > zero
-      or instr(stdin-record, "$set") > zero
-      or instr(stdin-record, "$page") > zero
-      or instr(stdin-record, "$title") > zero
-      or instr(stdin-record, "$control") > zero
-      or instr(stdin-record, "$version") > zero
-      or instr(stdin-record, "$copyright") > zero then
+      move stdin-record to w602-temp-record
+
+      perform s028-check-for-unsupported-cmd
+
+      if w914-unsupported-cmd then
         move "This record type is not supported." to workout-record *> This is not used anywhere.
 
       else
@@ -1076,13 +1636,11 @@ procedure division.
             set w912-more-include-files to true
           end-if
 
-          if instr(incfile-record, "$if") > zero
-          or instr(incfile-record, "$set") > zero
-          or instr(incfile-record, "$page") > zero
-          or instr(incfile-record, "$title") > zero
-          or instr(incfile-record, "$control") > zero
-          or instr(incfile-record, "$version") > zero
-          or instr(incfile-record, "$copyright") > zero then
+          move incfile-record to w602-temp-record
+
+          perform s028-check-for-unsupported-cmd
+
+          if w914-unsupported-cmd then
             move "This record type is not supported." to workout-record *> This is not used anywhere.
 
           else
@@ -1140,13 +1698,11 @@ procedure division.
     perform
       until w900-end-of-workin
 
-      if instr(workin-record, "$if") > zero
-      or instr(workin-record, "$set") > zero
-      or instr(workin-record, "$page") > zero
-      or instr(workin-record, "$title") > zero
-      or instr(workin-record, "$control") > zero
-      or instr(workin-record, "$version") > zero
-      or instr(workin-record, "$copyright") > zero then
+      move workin-record to w602-temp-record
+
+      perform s028-check-for-unsupported-cmd
+
+      if w914-unsupported-cmd then
         move "This record type is not supported." to workout-record *> This is not used anywhere.
 
       else if instr(workin-record, "$preprocessor") > zero then *> $PREPROCESSOR command found.
@@ -1444,6 +2000,17 @@ procedure division.
     *> -------------------------------------------------------------------------
     *>  Replace the macro call with its code.
     *> -------------------------------------------------------------------------
+
+    *> TODO:
+    *>
+    *>   Replace the 3 performs of e230-macro-as-a-constant with the following code:
+    *>
+    *>     move substitue-case(workin-record, w606-call-name, trim(macrolib-code-line))
+    *>       to workout-record
+    *>     move "e200-convert-call-to-code (n)" to w600-location
+    *>     perform s011-write-workout
+    *>
+    *>   If it works then remove the performs and the performed paragraph.
 
     evaluate w606-call-name-delimiter
 
@@ -1944,10 +2511,14 @@ procedure division.
 
   s001-open-read-stdin.
     *> -------------------------------------------------------------------------
-    *>  Open the Standard Input stream and read the first record.
+    *>  Open the Standard Input stream/file and read the first record.
     *> -------------------------------------------------------------------------
 
-    open input stdin
+    if w901-stdin-option-not-used then
+      open input stdin
+    else
+      open input stdinfile
+    end-if
 
     if not w500-success then
       move "s001-open-read-stdin" to w600-sub-location
@@ -1961,10 +2532,14 @@ procedure division.
 
   s002-read-stdin.
     *> -------------------------------------------------------------------------
-    *>  Read the next record from the Standard Input stream.
+    *>  Read the next record from the Standard Input stream/file.
     *> -------------------------------------------------------------------------
 
-    read stdin end-read
+    if w901-stdin-option-not-used then
+      read stdin end-read
+    else
+      read stdinfile into stdin-record end-read
+    end-if
 
     evaluate true
 
@@ -1985,10 +2560,14 @@ procedure division.
 
   s003-close-stdin.
     *> -------------------------------------------------------------------------
-    *>  Close the Standard Input stream.
+    *>  Close the Standard Input stream/file.
     *> -------------------------------------------------------------------------
 
-    close stdin
+    if w901-stdin-option-not-used then
+      close stdin
+    else
+      close stdinfile
+    end-if
 
     if not w500-success then
       move "s003-close-stdin" to w600-sub-location
@@ -2000,10 +2579,14 @@ procedure division.
 
   s004-open-stdout.
     *> -------------------------------------------------------------------------
-    *>  Open the Standard Output stream.
+    *>  Open the Standard Output stream/file.
     *> -------------------------------------------------------------------------
 
-    open output stdout
+    if w902-stdout-option-not-used then
+      open output stdout
+    else
+      open output stdoutfile
+    end-if
 
     if not w500-success then
       move "s004-open-stdout" to w600-sub-location
@@ -2015,10 +2598,14 @@ procedure division.
 
   s005-write-stdout.
     *> -------------------------------------------------------------------------
-    *>  Write a record to the Standard Output stream.
+    *>  Write a record to the Standard Output stream/file.
     *> -------------------------------------------------------------------------
 
-    write stdout-record end-write
+    if w902-stdout-option-not-used then
+      write stdout-record end-write
+    else
+      write stdoutfile-record from stdout-record end-write
+    end-if
 
     if not w500-success then
       move "s005-write-stdout" to w600-sub-location
@@ -2030,10 +2617,14 @@ procedure division.
 
   s006-close-stdout.
     *> -------------------------------------------------------------------------
-    *>  Close the Standard Output stream.
+    *>  Close the Standard Output stream/file.
     *> -------------------------------------------------------------------------
 
-    close stdout
+    if w902-stdout-option-not-used then
+      close stdout
+    else
+      close stdoutfile
+    end-if
 
     if not w500-success then
       move "s006-close-stdout" to w600-sub-location
@@ -2456,6 +3047,24 @@ procedure division.
       move "Unable to close Standard Macros." to w600-message
       perform s000-set-file-error-status
       perform z999-abort
+    end-if
+    .
+
+  s028-check-for-unsupported-cmd.
+    *> -------------------------------------------------------------------------
+    *>  Check if we have found an unsupported HP compiler command.
+    *> -------------------------------------------------------------------------
+
+    if instr(w602-temp-record, "$if") > zero
+    or instr(w602-temp-record, "$set") > zero
+    or instr(w602-temp-record, "$page") > zero
+    or instr(w602-temp-record, "$title") > zero
+    or instr(w602-temp-record, "$control") > zero
+    or instr(w602-temp-record, "$version") > zero
+    or instr(w602-temp-record, "$copyright") > zero then
+      set w914-unsupported-cmd to true
+    else
+      set w914-supported-cmd to true
     end-if
     .
 
