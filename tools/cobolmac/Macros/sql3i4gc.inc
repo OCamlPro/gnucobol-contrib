@@ -1,5 +1,5 @@
 *> *****************************************************************************
-*>  SQL3I4GC [SQLite3 Interface for GnuCOBOL] -- Macro Version: A.00.00 [ALPHA]
+*>  SQL3I4GC [SQLite3 Interface for GnuCOBOL] -- Macro Version: A.00.01 [ALPHA]
 *>  Single Database Object Version (c) Copyright Robert W.Mills, 2015-2015.
 *> -----------------------------------------------------------------------------
 *>  Note: Requires that the SQLite3 Library (www.sqlite.org) has been installed.
@@ -369,8 +369,8 @@ move sqlite3-status to database-status#
 *> -----------------------------------------------------------------------------
 *> %DBRESET(sql-object#)
 *> -----------------------------------------------------------------------------
-*> Deletes an SQLite3 SQL Object. This must be done for all SQL Objects before
-*> the database is closed. Failure to do so will result in "memory leaks".
+*> Resets an SQLite3 SQL Object back to its initial state. The Object can then
+*> be re-executed.
 *>
 *> input values:
 *> - sql-object is a usage pointer variable that points to the SQLite3 SQL
