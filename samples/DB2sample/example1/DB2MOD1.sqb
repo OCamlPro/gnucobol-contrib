@@ -1,0 +1,205 @@
+      *>************************************************************************
+      *>  This file is part of DB2sample.
+      *>
+      *>  DB2MOD1.cob is free software: you can redistribute it and/or 
+      *>  modify it under the terms of the GNU Lesser General Public License as 
+      *>  published by the Free Software Foundation, either version 3 of the
+      *>  License, or (at your option) any later version.
+      *>
+      *>  DB2MOD1.cob is distributed in the hope that it will be useful, 
+      *>  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+      *>  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+      *>  See the GNU Lesser General Public License for more details.
+      *>
+      *>  You should have received a copy of the GNU Lesser General Public  
+      *>  License along with DB2MOD1.cob.
+      *>  If not, see <http://www.gnu.org/licenses/>.
+      *>************************************************************************
+      
+      *>************************************************************************
+      *> Program:      DB2MOD1.sqb
+      *>
+      *> Purpose:      DB2 sample module
+      *>
+      *> Author:       Laszlo Erdos - https://www.facebook.com/wortfee
+      *>
+      *> Date-Written: 2015.12.24
+      *>
+      *> Tectonics:    DB2 precompile:
+      *>               db2cmd -i -w -c db2 -tvf db2_precompile1.sql
+      *>               
+      *>               Compile under cygwin:
+      *>               cobc -m -std=mf DB2MOD1.cbl \
+      *>               -I/cygdrive/c/IBM/SQLLIB/include/cobol_mf \
+      *>               -L/cygdrive/c/IBM/SQLLIB/lib -ldb2api
+      *>
+      *> Usage:        To use this module, simply CALL it as follows: 
+      *>               CALL "DB2MOD1" USING LN-MOD
+      *>
+      *>               Implemented features:
+      *>               - connect to DB2
+      *>               - connect reset
+      *>
+      *>************************************************************************
+      *> Date       Name / Change description 
+      *> ========== ============================================================
+      *> 2015.12.24 Laszlo Erdos: 
+      *>            - first version. 
+      *>************************************************************************
+      
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. DB2MOD1.
+      
+       ENVIRONMENT DIVISION.
+      
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+      *> linkage for DB2SQLMSG.cob   
+       COPY "LNSQLMSG.cpy".
+
+      *> SQL communication area
+       COPY "sqlca.cbl".
+       
+      *> SQL status
+       01 WS-SQL-STATUS                PIC S9(9) COMP-5.
+          88 SQL-STATUS-OK             VALUE    0.
+          88 SQL-STATUS-NOT-FOUND      VALUE  100.
+          88 SQL-STATUS-DUP            VALUE -803.
+       
+      *> SQL declare variables 
+       EXEC SQL BEGIN DECLARE SECTION END-EXEC.
+      *> connect fields with variable length 
+       01 HV-DBALIAS.
+          49 HV-DBALIAS-LEN            PIC S9(4) COMP-5.
+          49 HV-DBALIAS-BUF            PIC X(9).
+       01 HV-USERID.                   
+          49 HV-USERID-LEN             PIC S9(4) COMP-5.
+          49 HV-USERID-BUF             PIC X(20).
+       01 HV-PSWD.                     
+          49 HV-PSWD-LEN               PIC S9(4) COMP-5.
+          49 HV-PSWD-BUF               PIC X(20).
+       EXEC SQL END   DECLARE SECTION END-EXEC.
+       
+       LINKAGE SECTION.
+       COPY "LNMOD1.cpy".
+       
+       PROCEDURE DIVISION USING LN-MOD.
+      
+      *>------------------------------------------------------------------------
+       MAIN-DB2MOD1 SECTION.
+      *>------------------------------------------------------------------------
+
+          INITIALIZE LN-MSG
+      
+          EVALUATE TRUE
+             WHEN V-LN-FNC-CONNECT
+                PERFORM CONNECT
+          
+             WHEN V-LN-FNC-CONNECT-RESET
+                PERFORM CONNECT-RESET
+                
+             WHEN OTHER
+                MOVE "Wrong linkage function" 
+                  TO LN-MSG-1 OF LN-MOD
+          END-EVALUATE
+      
+          GOBACK
+      
+          .
+       MAIN-DB2MOD1-EX.
+          EXIT.
+          
+      *>------------------------------------------------------------------------
+       CONNECT SECTION.
+      *>------------------------------------------------------------------------
+
+          MOVE LN-DBALIAS OF LN-MOD TO HV-DBALIAS-BUF
+          MOVE FUNCTION STORED-CHAR-LENGTH(HV-DBALIAS-BUF) 
+            TO HV-DBALIAS-LEN
+          
+          MOVE LN-USERID  OF LN-MOD TO HV-USERID-BUF
+          MOVE FUNCTION STORED-CHAR-LENGTH(HV-USERID-BUF) 
+            TO HV-USERID-LEN
+          
+          MOVE LN-PSWD    OF LN-MOD TO HV-PSWD-BUF   
+          MOVE FUNCTION STORED-CHAR-LENGTH(HV-PSWD-BUF) 
+            TO HV-PSWD-LEN
+       
+          PERFORM SQL-CONNECT
+
+          PERFORM COPY-SQL-MSG-IN-LINKAGE
+          
+          .
+       CONNECT-EX.
+          EXIT.
+
+      *>------------------------------------------------------------------------
+       CONNECT-RESET SECTION.
+      *>------------------------------------------------------------------------
+
+          PERFORM SQL-CONNECT-RESET
+
+          PERFORM COPY-SQL-MSG-IN-LINKAGE
+          
+          .
+       CONNECT-RESET-EX.
+          EXIT.
+
+      *>------------------------------------------------------------------------
+       COPY-SQL-MSG-IN-LINKAGE SECTION.
+      *>------------------------------------------------------------------------
+
+      *>  get SQL message with DB2 functions: sqlgintp, sqlggstt
+          CALL "DB2SQLMSG" USING SQLCA
+                                 LN-SQLMSG
+          END-CALL
+           
+          MOVE SQLCODE         
+            TO LN-SQLCODE              OF LN-MOD
+          MOVE SQLSTATE       
+            TO LN-SQLSTATE             OF LN-MOD
+          MOVE LN-MSG-1                OF LN-SQLMSG         
+            TO LN-MSG-1                OF LN-MOD
+          MOVE LN-MSG-2                OF LN-SQLMSG         
+            TO LN-MSG-2                OF LN-MOD
+          MOVE LN-MSG-3                OF LN-SQLMSG         
+            TO LN-MSG-3                OF LN-MOD
+          MOVE LN-MSG-4                OF LN-SQLMSG         
+            TO LN-MSG-4                OF LN-MOD
+           
+          .
+       COPY-SQL-MSG-IN-LINKAGE-EX.
+          EXIT.
+
+      *>------------------------------------------------------------------------
+       SQL-CONNECT SECTION.
+      *>------------------------------------------------------------------------
+
+          EXEC SQL  
+               CONNECT TO    :HV-DBALIAS 
+                       USER  :HV-USERID
+                       USING :HV-PSWD
+          END-EXEC
+          
+          MOVE SQLCODE TO WS-SQL-STATUS
+          
+          .
+       SQL-CONNECT-EX.
+          EXIT.
+      
+      *>------------------------------------------------------------------------
+       SQL-CONNECT-RESET SECTION.
+      *>------------------------------------------------------------------------
+
+          EXEC SQL  
+               CONNECT RESET
+          END-EXEC
+          
+          MOVE SQLCODE TO WS-SQL-STATUS
+          
+          .
+       SQL-CONNECT-RESET-EX.
+          EXIT.
+      
+       END PROGRAM DB2MOD1.
+      

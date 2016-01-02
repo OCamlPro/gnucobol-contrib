@@ -1,0 +1,569 @@
+      *>************************************************************************
+      *>  This file is part of DB2sample.
+      *>
+      *>  DB2MOD4.cob is free software: you can redistribute it and/or 
+      *>  modify it under the terms of the GNU Lesser General Public License as 
+      *>  published by the Free Software Foundation, either version 3 of the
+      *>  License, or (at your option) any later version.
+      *>
+      *>  DB2MOD4.cob is distributed in the hope that it will be useful, 
+      *>  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+      *>  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+      *>  See the GNU Lesser General Public License for more details.
+      *>
+      *>  You should have received a copy of the GNU Lesser General Public  
+      *>  License along with DB2MOD4.cob.
+      *>  If not, see <http://www.gnu.org/licenses/>.
+      *>************************************************************************
+      
+      *>************************************************************************
+      *> Program:      DB2MOD4.sqb
+      *>
+      *> Purpose:      DB2 sample module
+      *>
+      *> Author:       Laszlo Erdos - https://www.facebook.com/wortfee
+      *>
+      *> Date-Written: 2015.12.24
+      *>
+      *> Tectonics:    DB2 precompile:
+      *>               db2cmd -i -w -c db2 -tvf db2_precompile4.sql
+      *>               
+      *>               Compile under cygwin:
+      *>               cobc -m -std=mf DB2MOD4.cbl \
+      *>               -I/cygdrive/c/IBM/SQLLIB/include/cobol_mf \
+      *>               -L/cygdrive/c/IBM/SQLLIB/lib -ldb2api
+      *>
+      *> Usage:        To use this module, simply CALL it as follows: 
+      *>               CALL "DB2MOD4" USING LN-MOD
+      *>
+      *>               Implemented features:
+      *>               - connect to DB2
+      *>               - connect reset
+      *>               - select book
+      *>               - insert book
+      *>               - update book
+      *>
+      *>************************************************************************
+      *> Date       Name / Change description 
+      *> ========== ============================================================
+      *> 2015.12.24 Laszlo Erdos: 
+      *>            - first version. 
+      *>************************************************************************
+      
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. DB2MOD4.
+      
+       ENVIRONMENT DIVISION.
+      
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+      *> linkage for DB2SQLMSG.cob   
+       COPY "LNSQLMSG.cpy".
+
+      *> SQL communication area
+       COPY "sqlca.cbl".
+       
+      *> SQL status
+       01 WS-SQL-STATUS                PIC S9(9) COMP-5.
+          88 SQL-STATUS-OK             VALUE    0.
+          88 SQL-STATUS-NOT-FOUND      VALUE  100.
+          88 SQL-STATUS-DUP            VALUE -803.
+       
+      *> SQL declare variables 
+       EXEC SQL BEGIN DECLARE SECTION END-EXEC.
+      *> host variables for the table BOOK
+       01 HV-BOOK.
+         05 ISBN                       PIC S9(13)V COMP-3.
+         05 AUTHOR                     PIC X(40).
+         05 TITLE                      PIC X(60).
+         05 PUB-DATE                   PIC X(10).
+         05 PAGE-NR                    PIC S9(4)V COMP-3.
+         05 INSERT-USER                PIC X(20).
+         05 INSERT-TIMESTAMP           PIC X(26).
+         05 LUPD-USER                  PIC X(20).
+         05 LUPD-TIMESTAMP             PIC X(26).
+         05 LUPD-COUNTER               PIC S9(6)V COMP-3.
+         05 INDICATOR-TAB-BOOK.
+           20 ISBN-I                   PIC S9(4) COMP-5.
+           20 AUTHOR-I                 PIC S9(4) COMP-5.
+           20 TITLE-I                  PIC S9(4) COMP-5.
+           20 PUB-DATE-I               PIC S9(4) COMP-5.
+           20 PAGE-NR-I                PIC S9(4) COMP-5.
+           20 INSERT-USER-I            PIC S9(4) COMP-5.
+           20 INSERT-TIMESTAMP-I       PIC S9(4) COMP-5.
+           20 LUPD-USER-I              PIC S9(4) COMP-5.
+           20 LUPD-TIMESTAMP-I         PIC S9(4) COMP-5.
+           20 LUPD-COUNTER-I           PIC S9(4) COMP-5.
+
+      *> to save last update values     
+       01 HV-LUPD-TIMESTAMP-SAVE       PIC X(26).
+       01 HV-LUPD-COUNTER-SAVE         PIC S9(6)V COMP-3.
+           
+      *> connect fields with variable length 
+       01 HV-DBALIAS.
+          49 HV-DBALIAS-LEN            PIC S9(4) COMP-5.
+          49 HV-DBALIAS-BUF            PIC X(9).
+       01 HV-USERID.                   
+          49 HV-USERID-LEN             PIC S9(4) COMP-5.
+          49 HV-USERID-BUF             PIC X(20).
+       01 HV-PSWD.                     
+          49 HV-PSWD-LEN               PIC S9(4) COMP-5.
+          49 HV-PSWD-BUF               PIC X(20).
+       EXEC SQL END   DECLARE SECTION END-EXEC.
+       
+       LINKAGE SECTION.
+       COPY "LNMOD4.cpy".
+       
+       PROCEDURE DIVISION USING LN-MOD.
+      
+      *>------------------------------------------------------------------------
+       MAIN-DB2MOD4 SECTION.
+      *>------------------------------------------------------------------------
+
+          INITIALIZE LN-MSG
+      
+          EVALUATE TRUE
+             WHEN V-LN-FNC-CONNECT
+                PERFORM CONNECT
+          
+             WHEN V-LN-FNC-CONNECT-RESET
+                PERFORM CONNECT-RESET
+
+             WHEN V-LN-FNC-SELECT
+                PERFORM SELECT-BOOK
+
+             WHEN V-LN-FNC-INSERT
+                PERFORM INSERT-BOOK
+                
+             WHEN V-LN-FNC-UPDATE
+                PERFORM UPDATE-BOOK
+                
+             WHEN OTHER
+                MOVE "Wrong linkage function" 
+                  TO LN-MSG-1 OF LN-MOD
+          END-EVALUATE
+      
+          GOBACK
+      
+          .
+       MAIN-DB2MOD4-EX.
+          EXIT.
+          
+      *>------------------------------------------------------------------------
+       CONNECT SECTION.
+      *>------------------------------------------------------------------------
+
+          MOVE LN-DBALIAS OF LN-MOD TO HV-DBALIAS-BUF
+          MOVE FUNCTION STORED-CHAR-LENGTH(HV-DBALIAS-BUF) 
+            TO HV-DBALIAS-LEN
+          
+          MOVE LN-USERID  OF LN-MOD TO HV-USERID-BUF
+          MOVE FUNCTION STORED-CHAR-LENGTH(HV-USERID-BUF) 
+            TO HV-USERID-LEN
+          
+          MOVE LN-PSWD    OF LN-MOD TO HV-PSWD-BUF   
+          MOVE FUNCTION STORED-CHAR-LENGTH(HV-PSWD-BUF) 
+            TO HV-PSWD-LEN
+       
+          PERFORM SQL-CONNECT
+
+          PERFORM COPY-SQL-MSG-IN-LINKAGE
+          
+          .
+       CONNECT-EX.
+          EXIT.
+
+      *>------------------------------------------------------------------------
+       CONNECT-RESET SECTION.
+      *>------------------------------------------------------------------------
+
+          PERFORM SQL-CONNECT-RESET
+
+          PERFORM COPY-SQL-MSG-IN-LINKAGE
+          
+          .
+       CONNECT-RESET-EX.
+          EXIT.
+
+      *>------------------------------------------------------------------------
+       SELECT-BOOK SECTION.
+      *>------------------------------------------------------------------------
+
+          INITIALIZE HV-BOOK
+          MOVE LN-INP-ISBN             OF LN-MOD 
+            TO ISBN                    OF HV-BOOK
+      
+          PERFORM SQL-SELECT-BOOK
+
+          PERFORM COPY-SQL-MSG-IN-LINKAGE
+
+          EVALUATE TRUE
+          WHEN     SQL-STATUS-OK
+             MOVE ISBN                    OF HV-BOOK
+               TO LN-OUT-ISBN             OF LN-MOD
+             MOVE AUTHOR                  OF HV-BOOK
+               TO LN-OUT-AUTHOR           OF LN-MOD
+             MOVE TITLE                   OF HV-BOOK
+               TO LN-OUT-TITLE            OF LN-MOD
+             MOVE PUB-DATE                OF HV-BOOK
+               TO LN-OUT-PUB-DATE         OF LN-MOD
+             MOVE PAGE-NR                 OF HV-BOOK
+               TO LN-OUT-PAGE-NR          OF LN-MOD
+             MOVE INSERT-USER             OF HV-BOOK
+               TO LN-OUT-INSERT-USER      OF LN-MOD
+             MOVE INSERT-TIMESTAMP        OF HV-BOOK
+               TO LN-OUT-INSERT-TIMESTAMP OF LN-MOD
+             MOVE LUPD-USER               OF HV-BOOK
+               TO LN-OUT-LUPD-USER        OF LN-MOD
+             MOVE LUPD-TIMESTAMP          OF HV-BOOK
+               TO LN-OUT-LUPD-TIMESTAMP   OF LN-MOD
+             MOVE LUPD-COUNTER            OF HV-BOOK
+               TO LN-OUT-LUPD-COUNTER     OF LN-MOD
+      
+          WHEN     SQL-STATUS-NOT-FOUND
+             MOVE "No book found with this ISBN number: "
+               TO LN-MSG-1                OF LN-MOD
+             MOVE ISBN                    OF HV-BOOK  
+               TO LN-MSG-2                OF LN-MOD
+      
+          WHEN     OTHER
+             CONTINUE
+          END-EVALUATE
+          
+          .
+       SELECT-BOOK-EX.
+          EXIT.
+
+      *>------------------------------------------------------------------------
+       INSERT-BOOK SECTION.
+      *>------------------------------------------------------------------------
+
+          INITIALIZE HV-BOOK
+          MOVE LN-INP-ISBN             OF LN-MOD 
+            TO ISBN                    OF HV-BOOK
+          MOVE LN-INP-AUTHOR           OF LN-MOD   
+            TO AUTHOR                  OF HV-BOOK
+          MOVE LN-INP-TITLE            OF LN-MOD
+            TO TITLE                   OF HV-BOOK
+          MOVE LN-INP-PUB-DATE         OF LN-MOD
+            TO PUB-DATE                OF HV-BOOK
+          MOVE LN-INP-PAGE-NR          OF LN-MOD
+            TO PAGE-NR                 OF HV-BOOK
+      *>  user fields
+          MOVE LN-USERID               OF LN-MOD
+            TO INSERT-USER             OF HV-BOOK
+          MOVE LN-USERID               OF LN-MOD
+            TO LUPD-USER               OF HV-BOOK
+          MOVE 0
+            TO LUPD-COUNTER            OF HV-BOOK
+            
+          PERFORM SQL-INSERT-BOOK
+
+          PERFORM COPY-SQL-MSG-IN-LINKAGE
+          
+          EVALUATE TRUE
+          WHEN     SQL-STATUS-OK
+             PERFORM SQL-COMMIT
+             PERFORM COPY-SQL-MSG-IN-LINKAGE
+      
+          WHEN     SQL-STATUS-DUP
+             PERFORM SQL-ROLLBACK
+             MOVE "A book exists yet with this ISBN number: "
+               TO LN-MSG-1                OF LN-MOD
+             MOVE ISBN                    OF HV-BOOK  
+               TO LN-MSG-2                OF LN-MOD
+      
+          WHEN     OTHER
+             PERFORM SQL-ROLLBACK
+          END-EVALUATE
+          
+          .
+       INSERT-BOOK-EX.
+          EXIT.
+
+      *>------------------------------------------------------------------------
+       UPDATE-BOOK SECTION.
+      *>------------------------------------------------------------------------
+
+      *>  first select the book
+          INITIALIZE HV-BOOK
+          MOVE LN-INP-ISBN             OF LN-MOD 
+            TO ISBN                    OF HV-BOOK
+      
+          PERFORM SQL-SELECT-BOOK
+      
+          PERFORM COPY-SQL-MSG-IN-LINKAGE
+          
+          EVALUATE TRUE
+          WHEN     SQL-STATUS-OK
+             CONTINUE
+      
+          WHEN     SQL-STATUS-NOT-FOUND
+             INITIALIZE LN-MSG OF LN-MOD
+             MOVE "The book record is not up to date, " &
+                  "please select it again." 
+               TO LN-MSG-1 OF LN-MOD
+             EXIT SECTION
+      
+          WHEN     OTHER
+             EXIT SECTION
+          END-EVALUATE
+
+      *>  check LUPD (last update) fields
+          IF (LN-INP-LUPD-TIMESTAMP OF LN-MOD
+              NOT = LUPD-TIMESTAMP  OF HV-BOOK)
+          OR (LN-INP-LUPD-COUNTER   OF LN-MOD
+              NOT = LUPD-COUNTER    OF HV-BOOK)
+          THEN
+             INITIALIZE LN-MSG OF LN-MOD
+             MOVE "The book record is not up to date, " &
+                  "please select it again." 
+               TO LN-MSG-1 OF LN-MOD
+             EXIT SECTION
+          END-IF
+          
+      *>  save last update values from linkage    
+          MOVE LN-INP-LUPD-TIMESTAMP OF LN-MOD
+            TO HV-LUPD-TIMESTAMP-SAVE 
+          MOVE LN-INP-LUPD-COUNTER   OF LN-MOD
+            TO HV-LUPD-COUNTER-SAVE   
+          
+      *>  copy values from linkage    
+          INITIALIZE HV-BOOK
+          MOVE LN-INP-ISBN             OF LN-MOD 
+            TO ISBN                    OF HV-BOOK
+          MOVE LN-INP-AUTHOR           OF LN-MOD   
+            TO AUTHOR                  OF HV-BOOK
+          MOVE LN-INP-TITLE            OF LN-MOD
+            TO TITLE                   OF HV-BOOK
+          MOVE LN-INP-PUB-DATE         OF LN-MOD
+            TO PUB-DATE                OF HV-BOOK
+          MOVE LN-INP-PAGE-NR          OF LN-MOD
+            TO PAGE-NR                 OF HV-BOOK
+      *>  user fields
+          MOVE LN-USERID               OF LN-MOD
+            TO LUPD-USER               OF HV-BOOK
+      *>  last update counter
+          IF LN-INP-LUPD-COUNTER OF LN-MOD >= 999999
+          THEN
+      *>     reset counter
+             MOVE 0 TO LUPD-COUNTER OF HV-BOOK
+          ELSE
+             COMPUTE LUPD-COUNTER OF HV-BOOK
+                   = LN-INP-LUPD-COUNTER OF LN-MOD + 1
+             END-COMPUTE
+          END-IF          
+            
+          PERFORM SQL-UPDATE-BOOK
+
+          PERFORM COPY-SQL-MSG-IN-LINKAGE
+          
+          EVALUATE TRUE
+          WHEN     SQL-STATUS-OK
+             PERFORM SQL-COMMIT
+             PERFORM COPY-SQL-MSG-IN-LINKAGE
+      
+          WHEN     SQL-STATUS-NOT-FOUND
+             PERFORM SQL-ROLLBACK
+             INITIALIZE LN-MSG OF LN-MOD
+             MOVE "The book record is not up to date, " &
+                  "please select it again." 
+               TO LN-MSG-1 OF LN-MOD
+      
+          WHEN     OTHER
+             PERFORM SQL-ROLLBACK
+          END-EVALUATE
+          
+          .
+       UPDATE-BOOK-EX.
+          EXIT.
+          
+      *>------------------------------------------------------------------------
+       COPY-SQL-MSG-IN-LINKAGE SECTION.
+      *>------------------------------------------------------------------------
+
+      *>  get SQL message with DB2 functions: sqlgintp, sqlggstt
+          CALL "DB2SQLMSG" USING SQLCA
+                                 LN-SQLMSG
+          END-CALL
+           
+          MOVE SQLCODE         
+            TO LN-SQLCODE              OF LN-MOD
+          MOVE SQLSTATE       
+            TO LN-SQLSTATE             OF LN-MOD
+          MOVE LN-MSG-1                OF LN-SQLMSG         
+            TO LN-MSG-1                OF LN-MOD
+          MOVE LN-MSG-2                OF LN-SQLMSG         
+            TO LN-MSG-2                OF LN-MOD
+          MOVE LN-MSG-3                OF LN-SQLMSG         
+            TO LN-MSG-3                OF LN-MOD
+          MOVE LN-MSG-4                OF LN-SQLMSG         
+            TO LN-MSG-4                OF LN-MOD
+           
+          .
+       COPY-SQL-MSG-IN-LINKAGE-EX.
+          EXIT.
+          
+      *>------------------------------------------------------------------------
+       SQL-CONNECT SECTION.
+      *>------------------------------------------------------------------------
+
+          EXEC SQL  
+               CONNECT TO    :HV-DBALIAS 
+                       USER  :HV-USERID
+                       USING :HV-PSWD
+          END-EXEC
+
+          MOVE SQLCODE TO WS-SQL-STATUS
+          
+          .
+       SQL-CONNECT-EX.
+          EXIT.
+      
+      *>------------------------------------------------------------------------
+       SQL-CONNECT-RESET SECTION.
+      *>------------------------------------------------------------------------
+
+          EXEC SQL  
+               CONNECT RESET
+          END-EXEC
+
+          MOVE SQLCODE TO WS-SQL-STATUS
+          
+          .
+       SQL-CONNECT-RESET-EX.
+          EXIT.
+
+      *>------------------------------------------------------------------------
+       SQL-COMMIT SECTION.
+      *>------------------------------------------------------------------------
+
+          EXEC SQL  
+               COMMIT
+          END-EXEC
+
+          MOVE SQLCODE TO WS-SQL-STATUS
+          
+          .
+       SQL-COMMIT-EX.
+          EXIT.
+
+      *>------------------------------------------------------------------------
+       SQL-ROLLBACK SECTION.
+      *>------------------------------------------------------------------------
+
+          EXEC SQL  
+               ROLLBACK
+          END-EXEC
+
+          MOVE SQLCODE TO WS-SQL-STATUS
+          
+          .
+       SQL-ROLLBACK-EX.
+          EXIT.
+          
+      *>------------------------------------------------------------------------
+       SQL-SELECT-BOOK SECTION.
+      *>------------------------------------------------------------------------
+
+          EXEC SQL
+               SELECT ISBN                
+                    , AUTHOR              
+                    , TITLE               
+                    , PUB_DATE            
+                    , PAGE_NR                
+                    , INSERT_USER         
+                    , INSERT_TIMESTAMP    
+                    , LUPD_USER           
+                    , LUPD_TIMESTAMP      
+                    , LUPD_COUNTER        
+               INTO   :HV-BOOK.ISBN   
+                    , :HV-BOOK.AUTHOR  
+                    , :HV-BOOK.TITLE               
+                    , :HV-BOOK.PUB-DATE            
+                    , :HV-BOOK.PAGE-NR                
+                    , :HV-BOOK.INSERT-USER         
+                    , :HV-BOOK.INSERT-TIMESTAMP    
+                    , :HV-BOOK.LUPD-USER           
+                    , :HV-BOOK.LUPD-TIMESTAMP      
+                    , :HV-BOOK.LUPD-COUNTER        
+               FROM   BOOK
+               WHERE  ISBN = :HV-BOOK.ISBN
+          END-EXEC
+
+          MOVE SQLCODE TO WS-SQL-STATUS
+          
+          .
+       SQL-SELECT-BOOK-EX.
+          EXIT.
+
+      *>------------------------------------------------------------------------
+       SQL-INSERT-BOOK SECTION.
+      *>------------------------------------------------------------------------
+
+          EXEC SQL
+               INSERT INTO BOOK
+               (  ISBN         
+                , AUTHOR              
+                , TITLE               
+                , PUB_DATE            
+                , PAGE_NR                
+                , INSERT_USER         
+                , INSERT_TIMESTAMP    
+                , LUPD_USER           
+                , LUPD_TIMESTAMP      
+                , LUPD_COUNTER        
+               )
+               VALUES
+               (  :HV-BOOK.ISBN
+                , :HV-BOOK.AUTHOR  
+                , :HV-BOOK.TITLE               
+                , :HV-BOOK.PUB-DATE            
+                , :HV-BOOK.PAGE-NR                
+                , :HV-BOOK.INSERT-USER         
+                , CURRENT_TIMESTAMP    
+                , :HV-BOOK.LUPD-USER           
+                , CURRENT_TIMESTAMP     
+                , :HV-BOOK.LUPD-COUNTER        
+               )
+          END-EXEC
+
+          MOVE SQLCODE TO WS-SQL-STATUS
+          
+          .
+       SQL-INSERT-BOOK-EX.
+          EXIT.
+
+      *>------------------------------------------------------------------------
+       SQL-UPDATE-BOOK SECTION.
+      *>------------------------------------------------------------------------
+
+          EXEC SQL
+               UPDATE BOOK
+               SET       AUTHOR
+                      = :HV-BOOK.AUTHOR
+                      ,  TITLE
+                      = :HV-BOOK.TITLE
+                      ,  PUB_DATE
+                      = :HV-BOOK.PUB-DATE
+                      ,  PAGE_NR
+                      = :HV-BOOK.PAGE-NR
+                      ,  LUPD_USER
+                      = :HV-BOOK.LUPD-USER
+                      ,  LUPD_TIMESTAMP
+                      =  CURRENT_TIMESTAMP
+                      ,  LUPD_COUNTER
+                      = :HV-BOOK.LUPD-COUNTER
+               WHERE  ISBN           = :HV-BOOK.ISBN
+               AND    LUPD_TIMESTAMP = :HV-LUPD-TIMESTAMP-SAVE
+               AND    LUPD_COUNTER   = :HV-LUPD-COUNTER-SAVE        
+          END-EXEC
+          
+          MOVE SQLCODE TO WS-SQL-STATUS
+          
+          .
+       SQL-UPDATE-BOOK-EX.
+          EXIT.
+          
+       END PROGRAM DB2MOD4.
+      
