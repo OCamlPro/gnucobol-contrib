@@ -1,5 +1,5 @@
-/* 
- *  Copyright (C) 2015 Sauro Menna
+/*
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -42,11 +42,14 @@ void SumField_ResetTotSingle(struct SumField_t *SumField);
 int64_t SumField_SetTot(struct SumField_t *SumField, int64_t nTot64);
 int64_t SumField_GetTot(struct SumField_t *SumField);
 int64_t SumField_AddTot(struct SumField_t *SumField, int64_t nTot64);
-int SumField_GetDigit(struct SumField_t *SumField );
+//int SumField_GetDigit(struct SumField_t *SumField );
 int SumField_setFunction( int nVal );
 int SumField_addDefinition(struct SumField_t *SumField);
 int SumField_SumField(const void *pRek);
 int SumField_SumFieldUpdateRek(const void *pRek);
 int SumField_ResetTot(struct job_t* job);
 
+int SumFields_KeyCheck(struct job_t* job, int* bIsWrited, unsigned char* szKeyPrec, unsigned int* nLenPrec, 
+						unsigned char* szKeyCurr,  unsigned int* nLenRek, unsigned char* szKeySave,  unsigned int* nLenSave, 
+                        unsigned char* szPrecSumFields, unsigned char* szSaveSumFields, unsigned char* szBuffRek, int nSplit);
 #endif // SUMFIELD_H_INCLUDED

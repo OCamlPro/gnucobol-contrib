@@ -1,6 +1,6 @@
 /*
- *  Copyright (C) 2009 Cedric ISSALY 
- *  Copyright (C) 2015 Sauro Menna
+ *  Copyright (C) 2009 Cedric ISSALY
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -52,8 +52,7 @@
 
 #define OCSORT_ALLOCATE				50
 #define OCSORT_ALLOCATE_MEMSIZE		512000000 
-
-#define OCSORT_MAX_BUFF_REK			32768+8
+#define OCSORT_MAX_BUFF_REK			32768+SIZEINT64
 
 // value 1 : generate temp file fixed name : cob17, cob18, cob19, cob1a, cob1b
 #define OCSORT_DEBUG                0  // 0 no debug - 1 debug
@@ -64,6 +63,7 @@
 #define OC_RTC_OK	 0
 #define OC_RTC_ERROR 16
 
+void OCSort_Config( void );
 void OCSort_Usage ( void ) ;
 void OCSort_Version( void ) ;
 

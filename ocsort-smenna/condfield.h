@@ -1,6 +1,6 @@
-/* 
+/*
  *  Copyright (C) 2009 Cedric ISSALY
- *  Copyright (C) 2015 Sauro Menna
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -71,6 +71,9 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
 int condField_compare(struct condField_t *condField, unsigned char *record);
 int GetValueForType(struct condField_t *condField, unsigned char *record, unsigned char* ValueChar1, unsigned char* ValueChar2);
 
+int condField_addDefinition(struct condField_t *condField);
+
+int condField_addQueue(struct condField_t **condField, struct condField_t *condFieldToAdd);
 int condField_addInclude(struct condField_t *condField);
 int condField_addOmit(struct condField_t *condField);
 int condField_setCondFieldsTypeAll(int nTypeCond, int nVal);

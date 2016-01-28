@@ -1,6 +1,6 @@
-/* 
+/*
  *  Copyright (C) 2009 Cedric ISSALY
- *  Copyright (C) 2015 Sauro Menna
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -54,7 +54,7 @@ void file_destructor(struct file_t *file) {
 
 
 int file_print(struct file_t *file) {
-	printf("%s %s (%d,%d) %s\n",
+	fprintf(stdout,"%s %s (%d,%d) %s\n",
 		file->name,
 		utils_getFileFormatName(file->format),
 		file->recordLength,
@@ -97,6 +97,8 @@ int file_setMaxLength(struct file_t *file, int maxLength) {
 	return 0;
 }
 int file_setOrganization(struct file_t *file, int organization) {
+	if (organization == -1)
+		return -1;
 	file->organization=organization;
 	file->nOrgType = file->format + file->organization * 10;
 	return 0;
@@ -107,11 +109,9 @@ char *file_getName(struct file_t *file) {
 int file_getRecordLength(struct file_t *file) {
 	return file->recordLength;
 }
-int file_getMaxLength(struct file_t *file) {
-	if (file_getOrganization(file) == FILE_ORGANIZATION_LINESEQUENTIAL)
-		return file->maxLength+NUMCHAREOL;
-	else
-		return file->maxLength;
+
+unsigned int file_getMaxLength(struct file_t *file) {
+	return file->maxLength;
 }
 int file_SetMF(struct file_t *file) {
 	file->bIsSeqMF = 1;

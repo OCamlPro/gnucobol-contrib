@@ -1,7 +1,39 @@
+/*
+ *  Copyright (C) 2009 Cedric ISSALY
+ *  Copyright (C) 2016 Sauro Menna
+ *
+ *	This file is part of OCSort.
+ *
+ *  OCSort is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  OCSort is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with OCSort.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
 %{
-#include <io.h>  
-#include "parser.h"
-void yyerror(const char *error) {
+  #include <stdio.h>
+  #include <stdlib.h>
+  #ifndef _MSC_VER
+	  #define _strdup strdup
+	  #include "utils.h"
+	  #define xstrtoll   strtoll
+  #else
+	  #include <io.h>
+	  #define isatty _isatty
+	  #define fileno _fileno
+	  #define xstrtoll    _strtoi64
+  #endif
+  #include "parser.h"
+  char * pEnd;
+  void yyerror(const char *error) {
 	printf("Error : %s\n",error);
 	if(yytext != NULL)
 		printf("Error near element : %s\n", yytext);
@@ -12,32 +44,17 @@ void yyerror(const char *error) {
 %option noyywrap nounput batch
 %option case-insensitive
 
-	/*	DIGIT		[0-9]{1,5}
-		DIGITBIG	[0-9]{6,32} */
-
 DIGIT		[0-9]{1,5}
-DIGITBIG	[0-9]{6,32} 
-
+DIGITBIG	[0-9]{6,32}
 SIGN		[+]|[-]
-
 ORDER       [A]|[D]
-
-		  /* original scanner for string		STRING		[a-zA-Z0-9\./]* */
-	      /* version modified for : separator	STRING		[a-zA-Z0-9\.\/\\\:\_\;]*  */
-
 STRING		[a-zA-Z0-9_.]*
-SPECHR      [,;:#\[\]!£$%&()]
-
+SPECHR      [,;:#\[\]!£$%&()\/]
 BLANK		[ \t]*  
-LITERAL		\"{STRING}|{BLANK}\"
+LITERAL		["][']{STRING}|{BLANK}[']["]
+XFIELDTYPE	CH|BI|PD|ZD|FI
+CHARTYPE    C|X|Z
 
-FIELDYPE	CH|BI|PD|ZD|FI
-
-/*  TOKEND      END  */
-
-/* ok \"[^\"]*\" */
-
-/*   "'"[^']*[']{2,}"'"	{yylval.string=malloc(strlen(yytext)-1);  */
 
 %%
 
@@ -69,45 +86,29 @@ FIELDYPE	CH|BI|PD|ZD|FI
 "STOPAFT"	return STOPAFT;
 
 "END"		return TOKSKIP;
-"REMOVECC"	printf("ENGSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
-",REMOVECC"	printf("ENGSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
-"CONVERT"	printf("ENGSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
-",CONVERT"	printf("ENGSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
-"EQUALS"	printf("ENGSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
-",EQUALS"	printf("ENGSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
-"NODETAIL"  printf("ENGSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
-",NODETAIL"  printf("ENGSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
+"REMOVECC"	printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
+",REMOVECC"	printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
+"CONVERT"	printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
+",CONVERT"	printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
+"EQUALS"	printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
+",EQUALS"	printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
+"NODETAIL"  printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
+",NODETAIL"  printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
 
 
 ","{BLANK}"AND"{BLANK}","		return AND;
 ","{BLANK}"OR"{BLANK}","		return OR;
 
  
-	/* yylval.string[0] = yytext[0]; return ORDER; */
-{ORDER}				yylval.string = _strdup(yytext) ; return ORDER; 
-{DIGIT}				yylval.number = atoi(yytext) ; return NUMBER;  
-
-   /* in questo caso ritorna una stringa che poi deve essere trasformata in numero */
-
-	
-{SIGN}{DIGIT}		yylval.number = atoi(yytext) ; return NUMBER;
-
-{DIGITBIG}			yylval.string = _strdup(yytext) ; return SIGNDIGITBIG;
-
-{SIGN}{DIGITBIG}	yylval.string = _strdup(yytext) ; return SIGNDIGITBIG; 
-
-		/* return a string for conversion 
-			{yylval.number = atol(yytext+1) ; 
-				if(yytext[0] == '-')
-					yylval.number = yylval.number * -1;
-				return NUMBER;
-				}
-		*/
+{ORDER}				yylval.string = _strdup(yytext) ;				return ORDER; 
+{DIGIT}				yylval.number = strtol(yytext, &pEnd, 10) ;		return DIGIT;  
+{SIGN}{DIGIT}		yylval.number = strtol(yytext, &pEnd, 10) ;		return DIGIT; 
+{DIGITBIG}			yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;		return SIGNDIGITBIG;  
+{SIGN}{DIGITBIG}	yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;		return SIGNDIGITBIG;  
 
 
-
-			/* String C'      NFNAME=''ZZ_FIX_'   */
-	/*  {  "'"*"''"*"'" */
+   /* String C'      NFXA=''KK_NEW_'   */
+   /*  {  "'"*"''"*"'" */
 "'"{STRING}*{SPECHR}*{STRING}*"''"{STRING}*{SPECHR}*{STRING}*"'"
 			{ 
 			 yylval.string=malloc(strlen(yytext)-1);
@@ -115,37 +116,17 @@ FIELDYPE	CH|BI|PD|ZD|FI
 			 yylval.string[strlen(yytext)-2]=0;
 			 return STRING;
 			 }
-
-
-			/* String C''';'   */
-	/*
-	"'''"{STRING}*{SPECHR}*"'"	{yylval.string=malloc(strlen(yytext)-1);
-				 memcpy(yylval.string,yytext+1,strlen(yytext)-2);
-				 yylval.string[strlen(yytext)-2]=0;
-				 return STRING;}
-
-	*/
-				/* String C'  WHERE GD_DATARIL ='''   */
-				/* old "'"[^']*[']{2,}"'"	{yylval.string=malloc(strlen(yytext)-1); */
-	/*
-	"'"[^']*[']{2,}{STRING}*{SPECHR}*"'"	{yylval.string=malloc(strlen(yytext)-1);
-				 memcpy(yylval.string,yytext+1,strlen(yytext)-2);
-				 yylval.string[strlen(yytext)-2]=0;
-				 return STRING;}
-
-	*/
+   /* String C''';'   */
 "'"[^']*"'"	{yylval.string=malloc(strlen(yytext)-1);
 					 memcpy(yylval.string,yytext+1,strlen(yytext)-2);
 					 yylval.string[strlen(yytext)-2]=0;
 					 return STRING;}
 
 
-{FIELDYPE}	yylval.string = _strdup(yytext) ; return FIELDTYPE;
-
-{LITERAL}	yylval.string = _strdup(yytext) ; return LITERAL;
-
-{STRING}	yylval.string = _strdup(yytext) ; return STRING;
-
+{XFIELDTYPE}	yylval.string = _strdup(yytext) ; return XFIELDTYPE;
+{CHARTYPE}		yylval.string = _strdup(yytext) ; return CHARTYPE; 
+{LITERAL}		yylval.string = _strdup(yytext) ; return LITERAL;
+{STRING}		yylval.string = _strdup(yytext) ; return STRING;
 {BLANK}		
 .			return yytext[0];
 %%

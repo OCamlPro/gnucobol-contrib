@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.7.  */ 
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Bison interface for Yacc-like parsers in C
    
@@ -74,13 +74,14 @@ extern int yydebug;
      SKIPREC = 283,
      STOPAFT = 284,
      TOKSKIP = 285,
-     NUMBER = 286,
-     STRING = 287,
-     FIELDTYPE = 288,
-     ORDER = 289,
-     COPY = 290,
-     LITERAL = 291,
-     SIGNDIGITBIG = 292
+     STRING = 286,
+     XFIELDTYPE = 287,
+     CHARTYPE = 288,
+     DIGIT = 289,
+     ORDER = 290,
+     COPY = 291,
+     LITERAL = 292,
+     SIGNDIGITBIG = 293
    };
 #endif
 
@@ -89,19 +90,20 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 3 "parser.y"
+#line 23 "parser.y"
  
 	int number;
-	int number64;
+	long lnumber;
+	long long llnumber;
 	char *string;
 	char character;
-	struct condField_t *condField;
+	struct condField_t  *condField;
 	struct fieldValue_t *fieldValue;
-	struct SumField_t *SumField;
+	struct SumField_t   *SumField;
 
 
 /* Line 2058 of yacc.c  */
-#line 105 "parser.h"
+#line 107 "parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

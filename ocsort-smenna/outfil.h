@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015 Sauro Menna 
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -29,8 +29,8 @@ struct outfil_t{
 	struct condField_t	*outfil_omitCond;
 	struct outrec_t 	*outfil_outrec;
 
-	int	outfil_nStartRec;		// StartRek for outfil
-	int	outfil_nEndRec;			// EndRek for outfil
+	int64_t	outfil_nStartRec;		// StartRek for outfil
+	int64_t	outfil_nEndRec;			// EndRek for outfil
 	int	nSave;
 
 	int   nSplit;			// (SPLIT SPLITBY -SPLIT1R=n-)	
@@ -49,8 +49,8 @@ void outfil_destructor(struct outfil_t *outfil);
 int outfil_print(struct outfil_t *outfil);
 struct outfil_t *outfil_getNext(struct outfil_t *outfil);
 int outfil_addQueue(struct outfil_t **outfil, struct outfil_t *outfilToAdd);
-int outfil_SetStartRec(struct outfil_t* outfil, int nStartRek);
-int outfil_SetEndRec(struct outfil_t* outfil, int nEndRek);
+int outfil_SetStartRec(struct outfil_t* outfil, int64_t nStartRek);
+int outfil_SetEndRec(struct outfil_t* outfil, int64_t nEndRek);
 int outfil_SetSave(struct outfil_t *outfil);
 int setOutfilFiles(struct outfil_t *outfil, struct file_t * file);
 int setOutfilIncludeCondField(struct outfil_t* outfil, struct condField_t * condfield);
@@ -60,6 +60,6 @@ int outfil_addoutfilrec(struct outrec_t *outrec);
 int outfil_setOutfilFiles(struct outfil_t *outfil, struct file_t * file);
 int outfil_open_files( struct job_t *job  );
 int outfil_close_files(  struct job_t *job  );
-int outfil_write_buffer( struct job_t *job, unsigned char* buffer_pointer, int  nLenRek, unsigned char* szBuffRek );
+int outfil_write_buffer( struct job_t *job, unsigned char* buffer_pointer, unsigned int  nLenRek, unsigned char* szBuffRek, int nSplitPosPnt);
 
 #endif

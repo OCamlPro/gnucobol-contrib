@@ -1,6 +1,6 @@
-/* 
+/*
  *  Copyright (C) 2009 Cedric ISSALY
- *  Copyright (C) 2015 Sauro Menna
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -29,8 +29,8 @@
 #include "utils.h"
 #include "fieldvalue.h"
 #include "sortfield.h"
-#include "sumfield.h"
-
+#include "sumfield.h" 
+ 
 struct condField_t *condField_constructor_condition(int position, int length, int type, int condition, struct fieldValue_t *fieldValue) {
 	struct condField_t *condField=(struct condField_t *)malloc(sizeof(struct condField_t));
 	condField->type=COND_TYPE_CONDITION;
@@ -39,14 +39,14 @@ struct condField_t *condField_constructor_condition(int position, int length, in
 	condField->condition.type=type;
 	condField->condition.condition=condition;
 	condField->condition.fieldValue=fieldValue;
-		if (fieldValue->generated_length !=  length)		// uniform length
+	if (fieldValue->generated_length !=  length)		// uniform length
 		fieldValue->generated_length = length;
-	condField->next=NULL;
+	condField->next=NULL; 
 	return condField;
-}
+} 
 struct condField_t *condField_constructor_operation(int operation, struct condField_t *first, struct condField_t *second) {
 	struct condField_t *condField=(struct condField_t *)malloc(sizeof(struct condField_t));
-	condField->type=COND_TYPE_OPERATION;
+	condField->type=COND_TYPE_OPERATION; 
 	condField->operation.operation=operation;
 	condField->operation.first=first;
 	condField->operation.second=second;
@@ -92,6 +92,22 @@ void condField_destructor(struct condField_t *condField) {
 //
 	free(condField);
 }
+ 
+int condField_addDefinition(struct condField_t *condField) {
+	condField_addQueue(&(globalJob->tmpCondField), condField);
+	return 0;
+}
+
+int condField_addQueue(struct condField_t **condField, struct condField_t *condFieldToAdd) {
+	struct condField_t *f;
+	if (*condField==NULL) {
+		*condField=condFieldToAdd;
+	} else {
+		for (f=*condField;f->next!=NULL;f=f->next);
+		f->next=condFieldToAdd;
+	}
+	return 0;
+}
 
 struct condField_t *condField_getNext(struct condField_t *condField) {
 	if (condField==NULL) {
@@ -103,7 +119,7 @@ struct condField_t *condField_getNext(struct condField_t *condField) {
 int condField_print(struct condField_t *condField) {
 	switch (condField->type) {
 		case COND_TYPE_CONDITION:
-			printf("%d,%d,%s,%s,",
+			fprintf(stdout,"%d,%d,%s,%s,",
 					condField->condition.position+1,
 					condField->condition.length,
 					utils_getFieldTypeName(condField->condition.type),
@@ -113,13 +129,13 @@ int condField_print(struct condField_t *condField) {
 		case COND_TYPE_OPERATION:
 			if (condField->operation.first != NULL)	{
 				condField_print(condField->operation.first);
-				printf(",%s,",utils_getCondOperationName(condField->operation.operation));
+				fprintf(stdout,",%s,",utils_getCondOperationName(condField->operation.operation));
 			}
 			if (condField->operation.second != NULL)
 				condField_print(condField->operation.second);
 			break;
 		case COND_TYPE_COND_FIELDS:
-			printf("%d,%d,%s,%s,%d,%d,%s",
+			fprintf(stdout,"%d,%d,%s,%s,%d,%d,%s",
 					condField->condition_field.position1+1,
 					condField->condition_field.length1,
 					utils_getFieldTypeName(condField->condition_field.type1),
@@ -167,8 +183,8 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
 					}
 
 					if ((job->nVLSCMP == 0) && (job->nVLSHRT == 0)) {
-						printf("*OCSort*S091* OCSORT - ERROR : Record len:%ld < of condition(position):%ld, condition(length):%ld\n", job->LenCurrRek, condField->condition.position, condField->condition.length);
-						printf("*OCSort*S091* OCSORT - TERMINATED\n");
+						fprintf(stderr,"*OCSort*S100* OCSORT - ERROR : Record len:%ld < of condition(position):%ld, condition(length):%ld\n", job->LenCurrRek, condField->condition.position, condField->condition.length);
+						fprintf(stderr,"*OCSort*S101* OCSORT - TERMINATED\n");
 						exit(OC_RTC_ERROR);
 					}
 					else
@@ -176,9 +192,9 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
 				}
 			}
 			if (nTcmp == 0)
-				result=fieldValue_test((struct fieldValue_t *)condField->condition.fieldValue, (char*) record+condField->condition.position,condField->condition.length);
+				result=fieldValue_test((struct fieldValue_t *)condField->condition.fieldValue, (unsigned char*) record+condField->condition.position,condField->condition.length);
 			else
-				result=fieldValue_test((struct fieldValue_t *)condField->condition.fieldValue, (char*) szBufVLSCMP+condField->condition.position,condField->condition.length);
+				result=fieldValue_test((struct fieldValue_t *)condField->condition.fieldValue, (unsigned char*) szBufVLSCMP+condField->condition.position,condField->condition.length);
 			switch (condField->condition.condition) {
 				case COND_CONDITION_EQUAL:
 					nVerify = (result==0);
@@ -234,7 +250,7 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
 	return 0;
 }
 /*
-Permissable Field-to-Field Comparisons for INCLUDE/OMIT
+Permissible Field-to-Field Comparisons for INCLUDE/OMIT
 =================================
 Field Format| BI| CH| ZD| PD| FI|
 =================================
@@ -262,7 +278,7 @@ int condField_compare(struct condField_t *condField, unsigned char *record) {
 	// assume same lenght
 	// if (condField->condition_field.length1 != condField->condition_field.length2)
 
-	result=memcmp((char*)szCharField1,(char*)szCharField2,condField->condition_field.length1);
+	result=memcmp((unsigned char*)szCharField1,(unsigned char*)szCharField2,condField->condition_field.length1);
 
 	return result;
 }
@@ -275,9 +291,10 @@ int GetValueForType(struct condField_t *condField, unsigned char *record, unsign
 	 {
 			case FIELD_TYPE_CHARACTER:
 			case FIELD_TYPE_BINARY:
+			case FIELD_TYPE_FIXED:
 			case FIELD_TYPE_ZONED:
 			case FIELD_TYPE_PACKED:
-				memcpy(ValueChar1, (char*) record+condField->condition_field.position1, condField->condition_field.length1);
+				memcpy(ValueChar1, (unsigned char*) record+condField->condition_field.position1, condField->condition_field.length1);
 				break;
 			default:
 				break;
@@ -287,9 +304,10 @@ int GetValueForType(struct condField_t *condField, unsigned char *record, unsign
 	 {
 			case FIELD_TYPE_CHARACTER:
 			case FIELD_TYPE_BINARY:
+			case FIELD_TYPE_FIXED:
 			case FIELD_TYPE_ZONED:
 			case FIELD_TYPE_PACKED:
-				memcpy(ValueChar2, (char*) record+condField->condition_field.position2, condField->condition_field.length2);
+				memcpy(ValueChar2, (unsigned char*) record+condField->condition_field.position2, condField->condition_field.length2);
 				break;
 			default:
 				break;
@@ -297,20 +315,20 @@ int GetValueForType(struct condField_t *condField, unsigned char *record, unsign
 	return 0;
 }
 
-//int job_setIncludeCondField(struct condField_t *condField) {
 int condField_addInclude(struct condField_t *condField) {
+	//-->>
 	globalJob->includeCondField=condField;
 	return 0;
 }
-//int job_setOmitCondField(struct condField_t *condField) {
+
 int condField_addOmit(struct condField_t *condField) {
+	//-->>
 	globalJob->omitCondField=condField;
 	return 0;
 }
 
 
 // FORMAT=xx set or all conditions
-//int job_setCondFieldsTypeAll( int nTypeCond, int nVal) {
 int condField_setCondFieldsTypeAll( int nTypeCond, int nVal) {
 	struct condField_t *condField;
 	if (nTypeCond == 1) // Include
@@ -335,8 +353,8 @@ int condField_setCondFieldsTypeAll( int nTypeCond, int nVal) {
 	}
 	return 0;
 }
+
 // FORMAT=xx set or all Fields SORT / MERGE
-//int job_setFormatFieldsTypeAll( int nTypeFormat, int nVal) {
 int condField_setFormatFieldsTypeAll( int nTypeFormat, int nVal) {
 //-->>nTypeFormat;			// 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields
 //-->>nTypeIncludeOmit;		// 0= Nothing, 1 = Include, 2 = Omit

@@ -1,6 +1,6 @@
-/* 
- *  Copyright (C) 2009 Cedric ISSALY 
- *  Copyright (C) 2015 Sauro Menna
+/*
+ *  Copyright (C) 2009 Cedric ISSALY
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -20,16 +20,31 @@
 */
 
 #include <string.h>
-#include <stdio.h>
+#include <stdio.h> 
 #include <stdlib.h> 
-#include <windows.h>
+#include <time.h>
+// #ifdef _WIN32
+#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+	#include <windows.h>
+#else
+	#include <limits.h>
+	#include <strings.h>
+#endif
+
+#include "libocsort.h"
 #include "utils.h"
 
 // s.m.
 // inserita funzione per gestione del test case sensitive
+
+// #ifdef _WIN32
+/*
+#ifdef _MSC_VER
 int strcasecmp ( const char *str1, const char *str2) {
  	return _stricmp( str1, str2 );
 }
+#endif
+*/
 int utils_parseFileFormat(const char *format) {
 if (!strcasecmp(format,"F")) {
 		return FILE_TYPE_FIXED;
@@ -48,9 +63,10 @@ int utils_parseFileOrganization(const char *organization) {
 		return FILE_ORGANIZATION_SEQUENTIAL;
 	} else if (!strcasecmp(organization,"LS")) {
 		return FILE_ORGANIZATION_LINESEQUENTIAL;
-	} else if (!strcasecmp(organization,"SQMF")) {		//SEQ MF
-		return FILE_ORGANIZATION_SEQUENTIALMF;
+//future use	} else if (!strcasecmp(organization,"SQMF")) {		//SEQ MF
+//future use		return FILE_ORGANIZATION_SEQUENTIALMF;
 	} else {
+		fprintf(stderr,"*OCSort*P001 - Error parsing organization : %s invalid\n", organization);
 		return -1;
 	}
 }
@@ -95,7 +111,7 @@ int utils_parseSortDirection(const char *direction) {
 	}
 }
 
-
+ 
 int utils_parseCondCondition(const char *condition) {
 	if (!strcasecmp(condition,"EQ")) {
 		return COND_CONDITION_EQUAL;
@@ -145,8 +161,8 @@ const char *utils_getFileOrganizationName(int organization) {
 			return "SQ";
 		case FILE_ORGANIZATION_LINESEQUENTIAL:
 			return "LS";
-		case FILE_ORGANIZATION_SEQUENTIALMF:
-			return "SQMF";
+//FUTURE USE		case FILE_ORGANIZATION_SEQUENTIALMF:
+//FUTURE USE			return "SQMF";
 		default:
 			return "";
 	}
@@ -170,15 +186,31 @@ const char *utils_getFieldTypeName(int type) {
 	switch(type) {
 		case FIELD_TYPE_CHARACTER:
 			return "CH";
+/* BI Binary
+PIC 9(n) COMP|BINARY|COMP-4|COMP-5
+		n = 1 to 4	len 2 BI
+		n = 5 to 9	len	4 BI
+		n >= 10		len	8 BI
+*/
 		case FIELD_TYPE_BINARY:
 			return "BI";
-// s.m.
+/* Packed
+PIC 9(n) COMP-3|PACKED-DECIMAL or 
+PIC S9(n) COMP-3|PACKED-DECIMAL
+	len (n/2)+1 PD
+*/
 		case FIELD_TYPE_PACKED:
 			return "PD";
 // s.m.
 		case FIELD_TYPE_ZONED:
 			return "ZD";
-// s.m.
+// 
+/* FI Fixed 
+	PIC S9(n) COMP|BINARY|COMP-4|COMP-5
+		n = 1 to 4	len 2 FI
+		n = 5 to 9	len 4 FI
+		n >= 10		len 8 FI
+*/			
 		case FIELD_TYPE_FIXED:
 			return "FI";
 		default:
@@ -244,13 +276,13 @@ int utils_GenPadSize(int nLR)
 	int	   ny;
 
 	n1 = nLR;
-	n2 = 4;
+	n2 = SIZEINT;
 
 	nj = n1/n2;
 	nk = (long) (n1/n2);
-	ny = (int) (nj*4) - (nk*4);
+	ny = (int) (nj*SIZEINT) - (nk*SIZEINT);
 	if (ny > 0)
-		ny = 4 - ny;
+		ny = SIZEINT - ny;
 	return ny;
 }
 unsigned short int Endian_Word_Conversion(unsigned short int word) {
@@ -259,32 +291,58 @@ unsigned short int Endian_Word_Conversion(unsigned short int word) {
 unsigned long int Endian_DWord_Conversion(unsigned long int dword) {
    return ((dword>>24)&0x000000FF) | ((dword>>8)&0x0000FF00) | ((dword<<8)&0x00FF0000) | ((dword<<24)&0xFF000000);
 }
-int  file_stat_win (char* filename ) 
+
+void util_print_time_elap( const char* szMex )
 {
+   time_t st;
+   struct tm *info;
+   time( &st );
+   info = localtime( &st );
+   fprintf(stdout,"%s - %s", szMex, asctime(info));
 
-	DWORD attrib = GetFileAttributesA(filename);
+   //-->> printf("Current local time and date: %s", asctime(info));
+	//-->>printf("%s - %04d-%02d-%02d %02d:%02d:%02d\n" , szMex,
+	//-->>	info->tm_year,info->tm_mon,info->tm_mday, info->tm_hour,info->tm_min,info->tm_sec); //,st.wMilliseconds);
 
-    //-- printf("Information for %s\n",argv[1]);
-    printf("=======================================================================\n");
-    printf("File Permissions: %s\t\n", filename);
-	printf( (attrib & FILE_ATTRIBUTE_READONLY            )   ? "READONLY           " : "_");
-	printf( (attrib & FILE_ATTRIBUTE_HIDDEN              )   ? "HIDDEN             " : "_");
-	printf( (attrib & FILE_ATTRIBUTE_SYSTEM              )   ? "SYSTEM             " : "_");
-	printf( (attrib & FILE_ATTRIBUTE_DIRECTORY           )   ? "DIRECTORY          " : "_");
-	printf( (attrib & FILE_ATTRIBUTE_ARCHIVE             )   ? "ARCHIVE            " : "_");
-	printf( (attrib & FILE_ATTRIBUTE_DEVICE              )   ? "DEVICE             " : "_");
-	printf( (attrib & FILE_ATTRIBUTE_NORMAL              )   ? "NORMAL             " : "_");
-	printf( (attrib & FILE_ATTRIBUTE_TEMPORARY           )   ? "TEMPORARY          " : "_");
-	printf( (attrib & FILE_ATTRIBUTE_SPARSE_FILE         )   ? "SPARSE_FILE        " : "_");
-	printf( (attrib & FILE_ATTRIBUTE_REPARSE_POINT       )   ? "REPARSE_POINT      " : "_");
-	printf( (attrib & FILE_ATTRIBUTE_COMPRESSED          )   ? "COMPRESSED         " : "_");
-	printf( (attrib & FILE_ATTRIBUTE_OFFLINE             )   ? "OFFLINE            " : "_");
-	printf( (attrib & FILE_ATTRIBUTE_NOT_CONTENT_INDEXED )   ? "NOT_CONTENT_INDEXED" : "_");
-	printf( (attrib & FILE_ATTRIBUTE_ENCRYPTED           )   ? "ENCRYPTED          " : "_");
-	printf( (attrib & FILE_ATTRIBUTE_VIRTUAL             )   ? "VIRTUAL            " : "_");
-    printf("\n=======================================================================\n");
-    printf("\n");
- 
-//    printf("The file %s a symbolic link\n\n", (S_ISLNK(fileStat.st_mode)) ? "is" : "is not");
+   return;
+}
+// #ifndef _WIN32
+
+#if	defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
+unsigned long GetTickCount(void) {
+	if (globalJob->ndeb > 0) {
+		struct timespec timenow;
+		if (clock_gettime(CLOCK_MONOTONIC, &timenow))
+					return 0;
+		return timenow.tv_sec * 1000.0 + timenow.tv_nsec / 1000000.0;
+	}
+	return 0L;
+}
+#endif
+
+
+int utils_SetOptionSortNum(char* optSort, int64_t nNum) {
+	if (strcasecmp(optSort,"SKIPREC")==0)
+			globalJob->nSkipRec=nNum;
+	if (strcasecmp(optSort,"STOPAFT")==0)
+			globalJob->nStopAft=nNum;
 	return 0;
+};
+
+int utils_SetOptionSort(char* optSort) {
+
+	if (!strcasecmp(optSort,"COPY")) {
+			job_SetTypeOP('M');
+			job_SetFieldCopy(1);
+		return 0;
+	} else if (!strcasecmp(optSort,"VLSCMP")) {
+				globalJob->nVLSCMP = 1;
+				return 0;
+	} else if (!strcasecmp(optSort,"VLSHRT")) {
+				globalJob->nVLSHRT = 1;
+				return 0;
+	} else {
+		return -1;
+	}
+	return -1;
 }

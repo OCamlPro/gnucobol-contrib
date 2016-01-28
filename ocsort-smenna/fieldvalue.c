@@ -1,6 +1,6 @@
 /*
- *  Copyright (C) 2009 Cedric ISSALY 
- *  Copyright (C) 2015 Sauro Menna
+ *  Copyright (C) 2009 Cedric ISSALY
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -26,21 +26,20 @@
 #include <stddef.h>
 
 
-#include <libcob.h>
+#include "ocsort.h"
+#include "libocsort.h"
 #include "fieldvalue.h"
 #include "utils.h"
 #include "job.h"
 
+
 struct cob_field_attr ;
 struct cob_field ;
-
-
+ 
 struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF) {
 	int i,j;
 	unsigned char buffer[3];
 	struct fieldValue_t *fieldValue=(struct fieldValue_t *)malloc(sizeof(struct fieldValue_t));
-	fieldValue->pCobFAttr = (struct cob_field_attr *) malloc(sizeof(struct cob_field_attr));
-	fieldValue->pCobField = (struct cob_field *)malloc(sizeof(struct cob_field));
 	fieldValue->type=utils_parseFieldValueType(type[strlen(type)-1]);
 	if (strlen(type)>1) {
 		type[strlen(type)-1]=0;
@@ -48,8 +47,11 @@ struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF)
 	} else {
 		fieldValue->occursion=1;
 	}
-	fieldValue->value=value;
+	fieldValue->value=strdup(value);
+	
 	job_RescanCmdSpecialChar(fieldValue->value);
+	job_RescanCmdSpecialChar(value);
+
 		switch (fieldValue->type) {
 		case FIELD_VALUE_TYPE_Z:
 				fieldValue->generated_length=fieldValue->occursion;
@@ -100,23 +102,42 @@ struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF)
 			fieldValue->generated_value[fieldValue->generated_length]=0;
 			break;
 		default:
-			printf("WARNING\n");
+			fprintf(stdout,"*OCSort*S810* ERROR Field Type unknow %n\n", fieldValue->type);
+            exit(OC_RTC_ERROR); 
 			break;
 	}
+	fieldValue->pCobField.data = NULL;
 	return fieldValue;
 }
 
 struct fieldValue_t *fieldValue_constructor2(char *type, char *value, int nTypeF) {
 	int i;
+	char szB1 [256];
 	struct fieldValue_t *fieldValue=(struct fieldValue_t *)malloc(sizeof(struct fieldValue_t));
 	fieldValue->type=utils_parseFieldValueType(type[strlen(type)-1]);
-	fieldValue->occursion=atoi(type);
-	fieldValue->value= value;
-	job_RescanCmdSpecialChar(fieldValue->value);
+	memset(szB1, 0x00, sizeof(szB1));
+	if (strlen(type) > 1) {
+		memcpy(szB1, type, strlen(type)-1);	//36C'xx'
+		fieldValue->occursion=atoi(szB1);
+	}
+	else	
+	{
+		fieldValue->occursion=atoi(value);	// 80:X		(padding blank record fix reclen = 80)
+	}
+	fieldValue->value=strdup(value);
+	if (strlen(fieldValue->value) > 0) {
+		job_RescanCmdSpecialChar(fieldValue->value);
+		job_RescanCmdSpecialChar(value);
+	}
+	else
+		fieldValue->occursion=1;
+	
+
+
 	switch (fieldValue->type) {
 		case FIELD_VALUE_TYPE_Z:
 				fieldValue->generated_length=fieldValue->occursion;
-				fieldValue->generated_length = strlen(value);
+				// ?? fieldValue->generated_length = strlen(value);
 				if (nTypeF == 0) {
 					fieldValue->generated_value=(char *)malloc(sizeof(char)*fieldValue->generated_length+1);
 					for(i=0;i<fieldValue->occursion;i++) {
@@ -147,51 +168,43 @@ struct fieldValue_t *fieldValue_constructor2(char *type, char *value, int nTypeF
 				memcpy(fieldValue->generated_value+i*strlen(value),value,strlen(value));
 			}
 			fieldValue->generated_value[fieldValue->generated_length]=0;
+           
 			break;
 		default:
-			printf("WARNING\n");
+			fprintf(stdout,"*OCSort*S811* ERROR Field Value Type unknow %n\n", fieldValue->type);
+            exit(OC_RTC_ERROR); 
 			break;
 	}
+	fieldValue->pCobField.data = NULL;
 	return fieldValue;
 }
 
 void fieldValue_destructor(struct fieldValue_t *fieldValue) {
 
-	// new allocation
-	if (fieldValue->pCobFAttr != NULL)
-		free(fieldValue->pCobFAttr);
-	if (fieldValue->pCobField != NULL)
-		free(fieldValue->pCobField);
-   //
-	if (fieldValue->value != NULL)
-			free(fieldValue->value);
 	if (fieldValue->generated_value != NULL)
-			free(fieldValue->generated_value);
+		free(fieldValue->generated_value);
+	if (fieldValue->value != NULL)
+		free(fieldValue->value);
 	free(fieldValue);
-
 	return;
 }
 
 
 int fieldValue_print(struct fieldValue_t *fieldValue) {
 	if (fieldValue->occursion>1) {
-		printf("%d",fieldValue->occursion);
+		fprintf(stdout,"%d",fieldValue->occursion);
 	}
-	printf("%s",utils_getFieldValueTypeName(fieldValue->type));
+	fprintf(stdout,"%s",utils_getFieldValueTypeName(fieldValue->type));
 	if (strlen(fieldValue->value)>0) {
-		printf("'%s'",fieldValue->value);
+			fprintf(stdout,"'%s'",fieldValue->value);
 	}
  	return 0;
 }
 int fieldValue_test(struct fieldValue_t *fieldValue, unsigned char *record, int length) {
 	int used_length;
 	int result;
-	//struct cob_field_attr		CobFAttr;
-	struct cob_field_attr*		pFieldAttr; 
 	unsigned char*				pFieldBuf;
 	unsigned char				FieldBuf[32];
-	//struct cob_field			CobF;
-	struct cob_field*			pCobF;
 	int64_t						mValue64 = 0;
 	int lenFieldSize	= 0;
 	int lenFieldDigit	= 0;
@@ -200,28 +213,24 @@ int fieldValue_test(struct fieldValue_t *fieldValue, unsigned char *record, int 
 	switch (fieldValue->type) {
 		case FIELD_VALUE_TYPE_Z:
 			lenFieldSize = used_length;
- 			lenFieldDigit = 0;
-			pFieldAttr = (struct cob_field_attr*)fieldValue->pCobFAttr;
-			pFieldAttr->type = COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_SEPARATE |COB_FLAG_SIGN_LEADING;//COB_TYPE_NUMERIC_DISPLAY;// Type
-			pFieldAttr->digits = lenFieldDigit;
-			pFieldAttr->scale = 0;
-			pFieldAttr->flags = COB_FLAG_SIGN_LEADING; // 1; // COB_FLAG_SIGN_SEPARATE
-			pFieldAttr->pic = NULL;
-	 
-// warning			pFieldBuf = &FieldBuf;
+ 			lenFieldDigit = 0;		
+			fieldValue->pCobFAttr.type = COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_SEPARATE |COB_FLAG_SIGN_LEADING;//COB_TYPE_NUMERIC_DISPLAY;// Type
+			fieldValue->pCobFAttr.digits = lenFieldDigit;
+			fieldValue->pCobFAttr.scale = 0;
+			fieldValue->pCobFAttr.flags = COB_FLAG_SIGN_LEADING; // 1; // COB_FLAG_SIGN_SEPARATE
+			fieldValue->pCobFAttr.pic = NULL;
 			pFieldBuf = (unsigned char*) &FieldBuf;
 			memset (pFieldBuf, 0, lenFieldSize);
-	 	 
-			pCobF = fieldValue->pCobField;
-			pCobF->attr = pFieldAttr;
-			pCobF->data = pFieldBuf;
-			pCobF->size = lenFieldSize;
+			
+			fieldValue->pCobField.attr = &fieldValue->pCobFAttr; //pFieldAttr;
+			fieldValue->pCobField.data = pFieldBuf;
+			fieldValue->pCobField.size = lenFieldSize;
 
-			memset(pCobF->data, 0x00, lenFieldSize);
-			memcpy(pCobF->data, (char*) record, used_length);
+			memset(fieldValue->pCobField.data, 0x00, lenFieldSize);
+			memcpy(fieldValue->pCobField.data, (char*) record, used_length); 
 			memset(pFieldBuf+lenFieldSize, 0x00, 1);
 
-			mValue64 = cob_get_llint((struct cob_field*) pCobF);
+			mValue64 = cob_get_llint(&fieldValue->pCobField);
 
 			if (fieldValue->value64 ==  mValue64)
 				result = 0;
@@ -232,25 +241,32 @@ int fieldValue_test(struct fieldValue_t *fieldValue, unsigned char *record, int 
 		break;
 
 		case FIELD_VALUE_TYPE_X:
-		// s.m. original 	result=memcmp(fieldValue->generated_value,record,used_length);
 			result=memcmp((char*)fieldValue->generated_value,(char*)record,used_length);
 		break;
-
-
 		case FIELD_VALUE_TYPE_C:
-		// s.m. original 	result=memcmp(fieldValue->generated_value,record,used_length);
 			result=memcmp((char*)fieldValue->generated_value,(char*)record,used_length);
 		break;
 		default:
-		printf("WARNING fieldValue->type  not recognized. \n");
+        fprintf(stdout,"*OCSort*S812* ERROR Field Value Type unknow %n\n", fieldValue->type);
+        exit(OC_RTC_ERROR); 
 		break;
 
 	}
 	return result;
 }
 int fieldValue_getGeneratedLength(struct fieldValue_t *fieldValue) {
+/*
+// verify if fix len - case 80:X
+	if (fieldValue->nPadding == 1){	// case 80:X
+		if ((unsigned int) fieldValue->generated_length > globalJob->outputLength)
+			return (fieldValue->generated_length - globalJob->outputLength);	// padding
+		else
+			return (globalJob->outputLength - fieldValue->generated_length);	// padding
+	}
+*/
 	return fieldValue->generated_length;
 }
 char *fieldValue_getGeneratedValue(struct fieldValue_t *fieldValue) {
+
 	return fieldValue->generated_value;
 }

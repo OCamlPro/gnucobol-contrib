@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015 Sauro Menna 
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -30,18 +30,23 @@
 
 #include <time.h>
 //-->> 
-#include <libcob.h>
+#include "libocsort.h"
 
 
 // s.m. insert
-#include <io.h> 
-#include <fcntl.h> 
-#include <share.h>
+
 #include <string.h>
 #include <stddef.h>
 #include <string.h>
 #include <math.h>
-#include <windows.h>
+
+//#ifdef _WIN32
+#ifdef _MSC_VER
+	#include <io.h> 
+	#include <windows.h>
+	#include <fcntl.h> 
+	#include <share.h>
+#endif
 
 //
 //-->> #include "oclib.h"
@@ -54,11 +59,10 @@
 #include "parser.h"
 #include "scanner.h"
 #include "sortfield.h"
-#include "SumField.h"
+#include "sumfield.h"
 #include "utils.h"
 #include "outfil.h"
 
-#include <stdlib.h>
 
 #ifdef _MSC_VER
 	#include <crtdbg.h>
@@ -103,13 +107,13 @@ void outfil_destructor(struct outfil_t *outfil) {
 //	free(file);
 }
 
-int outfil_SetStartRec(struct outfil_t *outfil, int nStartRec) {
+int outfil_SetStartRec(struct outfil_t *outfil, int64_t nStartRec) {
 	
 	outfil->outfil_nStartRec = nStartRec;
 	return 0;
 }
 
-int  outfil_SetEndRec(struct outfil_t *outfil, int nEndRec) {
+int  outfil_SetEndRec(struct outfil_t *outfil, int64_t nEndRec) {
 	
 	outfil->outfil_nEndRec = nEndRec;
 	return 0;
@@ -161,20 +165,17 @@ int outfil_SetSave(struct outfil_t *outfil) {
 	return 0;
 }
 
-//int job_addoutfil(struct outfil_t *outfil) {
 int outfil_addDefinition(struct outfil_t* outfil) {
 	outfil_addQueue(&(globalJob->outfil), outfil);
 	return 0;
 }
 
-//int job_addoutfilrec(struct outrec_t *outrec) {
 int outfil_addoutfilrec(struct outrec_t *outrec) {
 	outrec_addQueue(&(globalJob->outfil->outfil_outrec), outrec);
 	return 0;
 }
 
 
-//int job_setOutfilFiles(struct outfil_t *outfil, struct file_t * file) {
 int outfil_setOutfilFiles(struct outfil_t *outfil, struct file_t * file) {
 	outfil->outfil_File = file;
 	return 0;
@@ -184,15 +185,15 @@ int outfil_open_files( struct job_t *job ) {
 	struct outfil_t *pOutfil;
 	struct file_t  *file;
 	char* pEnvFileName = NULL;
-	char szFileName[MAX_PATH1];
-	char szFileNameEnv[MAX_PATH1];
+	char szFileName[FILENAME_MAX];
+	char szFileNameEnv[FILENAME_MAX];
 
 	int nbyteRead=0;
 	for (pOutfil=job->outfil; pOutfil != NULL; pOutfil=outfil_getNext(pOutfil)) {
 		for (file=pOutfil->outfil_File; file != NULL; file=file_getNext(file)) {
 			pEnvFileName = NULL;
-			memset(szFileName, 0x00, MAX_PATH1);
-			memset(szFileNameEnv, 0x00, MAX_PATH1);
+			memset(szFileName, 0x00, FILENAME_MAX);
+			memset(szFileNameEnv, 0x00, FILENAME_MAX);
 			sprintf(szFileName, "%s", file_getName(file));	// Environment Variable
 			sprintf(szFileNameEnv, "%s", file_getName(file));	// Environment Variable
 		// Retry name from Environment
@@ -203,15 +204,15 @@ int outfil_open_files( struct job_t *job ) {
 			}
 			else
 			{
-				fprintf(stderr,"*OCSort*W005* OUTFIL Warning Environment variable %s for file. NOT FOUND\n",file_getName(job->outputFile));
-				fprintf(stderr,"*OCSort*W005* OUTFIL Force %s into file name.\n",file_getName(job->outputFile));
+				fprintf(stderr,"*OCSort*W005* OUTFIL Warning Environment variable %s for file NOT FOUND.\n", szFileNameEnv);
+				fprintf(stderr,"*OCSort*W005* OUTFIL Force %s into file name.\n", szFileNameEnv);
 			}
 			file->handleFile = open(szFileNameEnv,_O_WRONLY | O_BINARY | _O_CREAT | _O_TRUNC, _S_IREAD | _S_IWRITE);
 			if (file->handleFile <= 0){
 				fprintf(stderr,"*OCSort*S051* Cannot open file %s : %s\n",szFileNameEnv,strerror(errno));
-				file_stat_win (szFileNameEnv);
 				return -1;
 			}
+            /* future use
 			if (file_getOrganization(file) == FILE_ORGANIZATION_SEQUENTIALMF){
 				file_SetMF(file);  //				file->bIsSeqMF = 1;
 				file->pHeaderMF =(unsigned char *) malloc(HEADER_MF);
@@ -222,6 +223,7 @@ int outfil_open_files( struct job_t *job ) {
 				}
 				GetHeaderInfo(job, file->pHeaderMF); // Analyze header for file seq MF
 			}
+            */
 		}
 	}
 
@@ -245,12 +247,13 @@ int outfil_close_files(  struct job_t *job  ) {
 
 // Write for OUTFIL
 // don't use buffered
-int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, int  byteRead, unsigned char* szBuffRek ) {
+int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsigned int  byteRead, unsigned char* szBuffRek, int nSplitPosPnt) {
 
 	struct outfil_t *pOutfil;
 	int useRecord;
 	int nNumWrite;
 	int nEWC;
+	unsigned int nLenRecOut=0;
 
 	// check if present SAVE e memorize pointer
 	if (job->pSaveOutfil == NULL){
@@ -269,8 +272,11 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, int  b
 			pOutfil=job->outfil;	
 	
 	nNumWrite=0;
+	nLenRecOut = job->outputLength;
+
 	for (pOutfil=job->outfil; pOutfil != NULL; pOutfil=outfil_getNext(pOutfil)) 
 	{
+		nLenRecOut = job->outputLength;
 		useRecord = 1;
 		// 
 		if (job->pSaveOutfil == pOutfil)	// skip
@@ -284,49 +290,58 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, int  b
 				continue;
 
 		// check Include
-		if (pOutfil->outfil_includeCond !=NULL && condField_test(pOutfil->outfil_includeCond,(char*) recordBuffer, job)==0) 
+		if (pOutfil->outfil_includeCond !=NULL && condField_test(pOutfil->outfil_includeCond,(unsigned char*) recordBuffer, job)==0) 
 				useRecord=0;
 		// check Omit
-		if (pOutfil->outfil_omitCond != NULL && condField_test(pOutfil->outfil_omitCond,(char*) recordBuffer, job)==1) 
+		if (pOutfil->outfil_omitCond != NULL && condField_test(pOutfil->outfil_omitCond,(unsigned char*) recordBuffer, job)==1) 
 				useRecord=0;
 		
 		
-// Verifi Outfil- Outrek
+// Verify Outfil- Outrek
 		if (pOutfil->outfil_outrec != NULL) {
 			memset(szBuffRek, 0x00, pOutfil->outfil_File->maxLength);
-			byteRead = outrec_copy(pOutfil->outfil_outrec, szBuffRek, recordBuffer, pOutfil->outfil_File->maxLength, byteRead, file_getFormat(pOutfil->outfil_File), file_GetMF(pOutfil->outfil_File), job);
-			memcpy(recordBuffer, szBuffRek, byteRead);
+			byteRead = outrec_copy(pOutfil->outfil_outrec, szBuffRek, recordBuffer, pOutfil->outfil_File->maxLength, byteRead, file_getFormat(pOutfil->outfil_File), file_GetMF(pOutfil->outfil_File), job, nSplitPosPnt);
+			memcpy(recordBuffer, szBuffRek, byteRead+nSplitPosPnt);
+			nLenRecOut = byteRead ;		// For outrec force length of record copy
 		}
 		// write record
 		if (useRecord == 1)
 		{
 			if (byteRead > 0)
 			{
+	// Padding or truncate record output
+    // From manual SORT
+	// OUTFIL not check LRECL for padding and truncating
+
+				if (byteRead < nLenRecOut) {
+					if ((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_SEQUENTIAL) &&
+								(file_getFormat(job->outputFile) == FILE_TYPE_FIXED) ) {						// attention for Variable
+						memset(recordBuffer+nSplitPosPnt+byteRead, 0x00, nLenRecOut - byteRead); // padding
+					}
+					if (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) 
+						memset(recordBuffer+nSplitPosPnt+byteRead, 0x20, nLenRecOut - byteRead); // padding
+				}
+
+				if (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) {
+		#ifndef _WIN32
+					(recordBuffer+nSplitPosPnt)[nLenRecOut] = 0x0a;
+					nLenRecOut+=1;
+		#else
+					(recordBuffer+nSplitPosPnt)[nLenRecOut]   = 0x0d;
+					(recordBuffer+nSplitPosPnt)[nLenRecOut+1] = 0x0a;
+					nLenRecOut+=2;
+		#endif
+				}
+
 				// Write record len
 				// File Variable, get lenght but not for Line Sequential
 				if ((file_getFormat(pOutfil->outfil_File) == FILE_TYPE_VARIABLE) && 
-					(file_getOrganization(pOutfil->outfil_File) != FILE_ORGANIZATION_LINESEQUENTIAL))
-				{
-					nEWC = Endian_Word_Conversion(byteRead);
-					write(pOutfil->outfil_File->handleFile, &nEWC, 4);  // len of record Big Endian
+					(file_getOrganization(pOutfil->outfil_File) != FILE_ORGANIZATION_LINESEQUENTIAL)){
+					nEWC = Endian_Word_Conversion(nLenRecOut);
+					write(pOutfil->outfil_File->handleFile, &nEWC, SIZEINT);  // len of record Big Endian
 				}
-		#ifndef _WIN32
-						if (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL){
-							recordBuffer[nLenRek] = 0x0a;
-							nLenRek+=1;
-						}
-		#else
-//-->>	warning					if (((recordBuffer+byteRead-2) != 0x0d) || ((recordBuffer+byteRead-1) != 0x0a)) {
-						if ((recordBuffer[byteRead-2] != 0x0d) || (recordBuffer[byteRead-1] != 0x0a)) {
-							recordBuffer[byteRead]   = 0x0d;
-							recordBuffer[byteRead+1] = 0x0a;
-							byteRead+=2;
-						}
-		#endif
-				//}
-
 				// write record 
-				if (write(pOutfil->outfil_File->handleFile, recordBuffer, byteRead)<0) {
+				if (write(pOutfil->outfil_File->handleFile, recordBuffer+nSplitPosPnt, nLenRecOut)<0) {
 					fprintf(stderr,"*OCSort*S053* Cannot write to file %s : %s\n",file_getName(job->outputFile),strerror(errno));
 					if ((close(pOutfil->outfil_File->handleFile))<0) {
 						fprintf(stderr,"*OCSort*S054* Cannot close file %s : %s\n",file_getName(job->outputFile),strerror(errno));
@@ -348,16 +363,35 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, int  b
 	{
 		if (byteRead > 0)
 		{
+	// Padding or truncate record output
+			if (byteRead < job->outputLength) {
+				if ((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_SEQUENTIAL) &&
+							(file_getFormat(job->outputFile) == FILE_TYPE_FIXED) ) {						// attention for Variable
+					memset(recordBuffer+nSplitPosPnt+byteRead, 0x00, job->outputLength - byteRead); // padding
+				}
+				if (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) 
+					memset(recordBuffer+nSplitPosPnt+byteRead, 0x20, job->outputLength - byteRead); // padding
+			}
+			if (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) {
+	#ifndef _WIN32
+				(recordBuffer+nSplitPosPnt)[nLenRecOut] = 0x0a;
+				byteRead+=1;
+	#else
+				(recordBuffer+nSplitPosPnt)[nLenRecOut]   = 0x0d;
+				(recordBuffer+nSplitPosPnt)[nLenRecOut+1] = 0x0a;
+				byteRead+=2;
+	#endif
+			}
 			// Write record len
 			// File Variable, get lenght but not for Line Sequential
 			if ((file_getFormat(job->pSaveOutfil->outfil_File) == FILE_TYPE_VARIABLE) && 
 				(file_getOrganization(job->pSaveOutfil->outfil_File) != FILE_ORGANIZATION_LINESEQUENTIAL))
 			{
-				nEWC = Endian_Word_Conversion(byteRead);
-				write(job->pSaveOutfil->outfil_File->handleFile, &nEWC, 4);  // len of record Big Endian
+				nEWC = Endian_Word_Conversion(nLenRecOut);
+				write(job->pSaveOutfil->outfil_File->handleFile, &nEWC, SIZEINT);  // len of record Big Endian
 			}
 			// write record 
-			if (write(job->pSaveOutfil->outfil_File->handleFile, recordBuffer, byteRead)<0) {
+			if (write(job->pSaveOutfil->outfil_File->handleFile, recordBuffer+nSplitPosPnt, nLenRecOut)<0) {
 				fprintf(stderr,"*OCSort*S055* Cannot write to file %s : %s\n",file_getName(job->outputFile),strerror(errno));
 				if ((close(job->pSaveOutfil->outfil_File->handleFile))<0) {
 					fprintf(stderr,"*OCSort*S056* Cannot close file %s : %s\n",file_getName(job->outputFile),strerror(errno));

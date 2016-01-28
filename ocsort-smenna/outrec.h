@@ -1,6 +1,6 @@
 /*
- *  Copyright (C) 2009 Cedric ISSALY 
- *  Copyright (C) 2015 Sauro Menna
+ *  Copyright (C) 2009 Cedric ISSALY
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -45,12 +45,15 @@ struct outrec_t {
 			struct fieldValue_t *fieldValue;
 		} change_position;
 		struct {
+			int posAbsRec;
 			struct fieldValue_t *fieldValue;
+			char type;
 		} change;
 		struct {		
 			int posAbsRec;
 			int position;
 			int length;
+
 		} range_position;		//3
 	};
 	struct outrec_t *next;
@@ -68,7 +71,7 @@ int outrec_addQueue(struct outrec_t **outrec,struct outrec_t *outrec_add);
 struct outrec_t *outrec_getNext(struct outrec_t *outrec);
 int outrec_print(struct outrec_t *outrec);
 int outrec_getLength(struct outrec_t *outrec);
-int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job);
+int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos);
 int outrec_addDefinition(struct outrec_t *outrec);
 
 #endif // OUTREC_H_INCLUDED

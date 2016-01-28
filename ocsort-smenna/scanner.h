@@ -1,5 +1,5 @@
 #ifndef yyHEADER_H
-#define yyHEADER_H 1 
+#define yyHEADER_H 1
 #define yyIN_HEADER 1
 
 #line 6 "scanner.h"
@@ -414,7 +414,7 @@ extern int yylex (void);
 #undef YY_DECL
 #endif
 
-#line 151 "scanner.l"
+#line 132 "scanner.l"
 
 
 #line 421 "scanner.h"

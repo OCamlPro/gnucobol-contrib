@@ -1,6 +1,6 @@
 /*
- *  Copyright (C) 2009 Cedric ISSALY 
- *  Copyright (C) 2015 Sauro Menna
+ *  Copyright (C) 2009 Cedric ISSALY
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -22,20 +22,30 @@
 #ifndef JOB_H_INCLUDED
 #define JOB_H_INCLUDED
 
-#include <io.h>
+
 #include <stdio.h>
 #include <stddef.h>
 #include <stdint.h>
 
-#ifdef _MSC_VER
-  #define INLINE __forceinline /* use __forceinline (VC++ specific) */
+// linux 
+
+//#ifndef _WIN32
+
+#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+	#include <io.h>
 #else
-  #define INLINE inline        /* use standard inline */
+	#include <limits.h>
+	#include <sys/io.h>
+	#include <time.h>
+	#include <fcntl.h>
 #endif
 
-#define MAX_FILES_INPUT 16	// Number of max files in input for merge
+#include "utils.h"
+#include "mmfioc.h"
 
-#define EM_MFSORT 1	// Emulate MFSORT
+#define MAX_FILES_INPUT 16	// Number of max files in input for merge and temporary files
+
+// future use #define EM_MFSORT 1	// Emulate MFSORT
 
 struct file_t;
 struct sortField_t;
@@ -43,41 +53,22 @@ struct condField_t;
 struct outrec_t;
 struct inrec_t;
 struct SumField_t;
+struct mmfio_t;
 
 struct job_t;
-/**/
-static const unsigned char packed_bytes[] = {
-	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
-	0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19,
-	0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29,
-	0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
-	0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49,
-	0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59,
-	0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69,
-	0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79,
-	0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89,
-	0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99
-};
-/**/
+
 
 #define	COB_FILE_BUFF		4096
 #define	COB_MEDIUM_BUFF		8192
 #define	COB_LARGE_BUFF		16384
-#ifndef _WIN32
-	#define MAX_PATH1       MAX_PATH
-#else
-	#define MAX_PATH1       FILENAME_MAX
-#endif
+
 #define MAX_RECSIZE			32752 
-
-#define	MAX_SIZE_CACHE_WRITE		65536*62
-#define	MAX_SIZE_CACHE_WRITE_FINAL	65536*62
-//#define MAX_READSAVE			4096
-
-#define  MAX_HANDLE_TEMPFILE	16
+#define MAX_HANDLE_TEMPFILE	16
+#define SIZEINT				4
+#define SIZEINT64			8
 
 char	cob_tmp_buff[COB_MEDIUM_BUFF];
-char	cob_tmp_temp[MAX_PATH1];
+char	cob_tmp_temp[FILENAME_MAX];
 
 
 struct job_t {
@@ -87,24 +78,29 @@ struct job_t {
 	struct file_t *outputFile;
 	struct file_t *inputFile;
 	char   szCmdLineCommand[8192];	// Copy from command line
+	int    bIsTake;
+	char   szTakeFileName[8192];	// Take FileName
 	char   job_typeOP; // 'S' for sort, 'M' for Merge
 	int	   array_FileTmpHandle[MAX_HANDLE_TEMPFILE];
-	char   array_FileTmpName[MAX_HANDLE_TEMPFILE][MAX_PATH1];
+	char   array_FileTmpName[MAX_HANDLE_TEMPFILE][FILENAME_MAX];
 	int    nIndextmp;
 	int    nIndextmp2;  
 	int	   nNumTmpFile;
-	char   arrayFileInCmdLine[256][MAX_PATH1];
+	char   arrayFileInCmdLine[256][FILENAME_MAX];
 	int    nMaxFileIn;
-	char   arrayFileOutCmdLine[256][MAX_PATH1];
+	char   arrayFileOutCmdLine[256][FILENAME_MAX];
 	int    nMaxFileOut;
 	int    nCountSrt[MAX_HANDLE_TEMPFILE];
 	int    nMaxHandle;
+	int	   nCurrFileInput;
+	int	   nByteOrder;							// 0 = Native - 1 = BigEndian
 	struct sortField_t *sortField;
 	struct condField_t *includeCondField;
 	struct condField_t *omitCondField;
+	struct condField_t *tmpCondField;
 	struct outrec_t *outrec;
 	struct inrec_t	*inrec;
-	int sumFields;
+	int		sumFields;
 	struct SumField_t *SumField;
 	int		bIsFieldCopy;		// SORT-MERGE FIELDS=COPY
 	int64_t		recordNumberTotal;
@@ -116,9 +112,9 @@ struct job_t {
 	unsigned char*  recordData;
 	unsigned char*  buffertSort;
 	struct BufferedReader_t* reader;
-	int			m_SeekOrder;
-	int inputLength;
-	int outputLength;
+	int	m_SeekOrder;
+	unsigned int inputLength;
+	unsigned int outputLength;
 	int nLastPosKey;
 	int bReUseSrtFile;
 	int64_t	lPositionFile;		// File pointer position 
@@ -127,17 +123,17 @@ struct job_t {
 	int64_t	ulMemSizeSort;
 	int64_t	ulMemSizeAlloc;		// Max size mem 
 	int64_t	ulMemSizeAllocSort;		// Max size mem 
-	char   strPathTempFile[MAX_PATH1]; // path temporary file
-	int				bIsPresentSegmentation;		// File segmentation
-	int             desc;
-	int             nLenKeys;
+	char    strPathTempFile[FILENAME_MAX]; // path temporary file
+	int		bIsPresentSegmentation;		// File segmentation
+	int     desc;
+	int     nLenKeys;
 	unsigned long   LenCurrRek;
 	int		nTypeEmul;		// 0 stardard OC, 1 emulate MFSORT
 	int		nTestCmdLine;	// 0 normal, 1 test command line
-	int		nSlot;
+	// int		nSlot;
 	int		nMlt;
-	int		nSkipRec;
-	int		nStopAft;
+	int64_t	nSkipRec;
+	int64_t	nStopAft;
 // Outfil
 	struct outfil_t*	outfil;
 	int		nOutfil_Split;		// Flag for split
@@ -160,11 +156,12 @@ int job_load(struct job_t *job, int argc, char **argv);
 int job_check(struct job_t *job);
 int job_loadFiles(struct job_t *job);
 int job_sort(struct job_t *job);
-int job_save(struct job_t *job);
-int job_merge(struct job_t *job);
-int job_save_final(struct job_t *job);
+int job_save_out(struct job_t *job);
+int job_save_tempfile(struct job_t *job);
+int job_save_tempfinal(struct job_t *job);
 
-INLINE int job_ReadFileCobStr(struct BufferedReader_t * reader, int* descTmp, int* nLR, unsigned char* szBuffRek, int** ptrBuf, int nFirst);
+INLINE int job_ReadFileTemp(struct mmfio_t* descTmp, int* nLR, unsigned char* szBuffRek, int nFirst);
+
 int job_print(struct job_t *job);
 int job_GetTypeOp(struct job_t *job);
 
@@ -172,7 +169,7 @@ INLINE int job_GetKeys(const void *szBufferIn, void *szKeyOut);
 int job_GetLenKeys( void );
 int job_GetLastPosKeys( void);
 
-INLINE int job_IdentifyBuf(int* ptrBuf, int nMaxEle);
+INLINE int job_IdentifyBuf(unsigned char** ptrBuf, int nMaxEle);
 int job_print_final(struct job_t *job, time_t* timeStart);
 int job_SetTypeOP (char typeOP);
 int job_merge_files(struct job_t *job);
@@ -192,23 +189,21 @@ int job_RedefinesFileName( struct job_t *job);
 int job_NormalOperations(struct job_t *job);
 int job_CloneFileForOutfil( struct job_t *job);
 
-int job_SetOptionSort(char* optSort);
-int job_SetOptionSortNum(char* optSort, int nNum);
-
 int	job_scanCmdSpecialChar(char* bufnew);
 int	job_RescanCmdSpecialChar(char* bufnew);
-int GetHeaderInfo(struct job_t* job, unsigned char* szHead);
-int SetHeaderInfo(struct job_t* job, unsigned char* szHead);
+// int GetHeaderInfo(struct job_t* job, unsigned char* szHead);
+// int SetHeaderInfo(struct job_t* job, unsigned char* szHead);
 
 void job_ReviewMemeAlloc ( struct job_t *job  );
+INLINE int64_t utils_GetValueRekBIFI(unsigned char* pRek, int nLenField, int nType);
 
 INLINE int job_compare_key(const void *first, const void *second);
-INLINE int job_compare_rek(const void *first, const void *second);
+INLINE int job_compare_rek(const void *first, const void *second, int bCheckPosPnt);
 INLINE int job_compare_qsort(const void *first, const void *second);
 
-int job_IdentifyBufMerge(int* ptrBuf, int nMaxElements);
-int job_ReadFileMerge(struct BufferedReader_t * reader, struct file_t* file, int* descTmp, int* nLR, unsigned char* szBuffRek, int** ptrBuf, int nFirst);
-int read_textfile_buff(int nHandle, unsigned char* szBuffRek, int nMaxRek, struct BufferedReader_t * reader, int bIsFirstTime, int nLastPosKey);
-
+INLINE int job_IdentifyBufMerge(unsigned char** ptrBuf, int nMaxElements);
+INLINE int job_ReadFileMerge(struct BufferedReader_t * reader, struct file_t* file, int* descTmp, int* nLR, unsigned char* szBuffRek, int nFirst);
+INLINE int read_textfile_buff(int nHandle, unsigned char* szBuffRek, int nMaxRek, struct BufferedReader_t * reader, int bIsFirstTime, int nLastPosKey);
+INLINE int job_write_output( unsigned int nLenRecOut, unsigned int nLenRek, struct job_t* job, int desc, int nSplitPosPnt, unsigned char* recordBuffer, unsigned char* bufferwriteglobal, int* position_buf_write);
 
 #endif // JOB_H_INCLUDED

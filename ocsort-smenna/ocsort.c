@@ -1,6 +1,6 @@
 /*
- *  Copyright (C) 2009 Cedric ISSALY 
- *  Copyright (C) 2015 Sauro Menna
+ *  Copyright (C) 2009 Cedric ISSALY
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -29,51 +29,34 @@
 #ifdef _MSC_VER
 	#include <crtdbg.h>
 #endif
-#include <Windows.h>
 
-//.-->> #define  COB_KEYWORD_INLINE inline
-//-->> 
-#include <libcob.h>
+//#ifdef	_WIN32
+#ifdef _MSC_VER
+	#include <Windows.h>
+#else
+	#include <time.h>
+#endif
 
-/* i64 ini
-#include <libcob\byteswap.h>
-#include <libcob\call.h>
-#include <libcob\common.h>
-#include <libcob\fileio.h>
-#include <libcob\move.h>
-#include <libcob\numeric.h>
-#include <libcob\screenio.h>
-#include <libcob\strings.h>
-#include <libcob\termio.h>
-#include <libcob\intrinsic.h>
-#include <libcob\codegen.h>
-*/
-
-//-->> #include "oclib.h"
+#include "libocsort.h"
 #include "ocsort.h"
 #include "job.h"
-
+#include "utils.h"
 
 /* Module initialization indicator */
 static unsigned int	initialized = 0;
 
 /* Module structure pointer */
+//
 static cob_module	*module = NULL;
-
 /* Global variable pointer */
 cob_global		*cob_glob_ptr;
-
-
 extern int yydebug;
 void yyset_debug(int ndbg);
 
 int main_prod(int argc, char **argv);
-int main_test(int argc, char **argv);
-
 int main(int argc, char **argv) {
 
 	int rtc = 0;
-
 	if (argc >= 2)
 	{
 		if (strstr(argv[1], "--help") != NULL) {
@@ -84,56 +67,52 @@ int main(int argc, char **argv) {
 			OCSort_Version() ;
 			return OC_RTC_OK;
 		}
+		if (strstr(argv[1], "--config") != NULL){
+			OCSort_Config() ;
+			return OC_RTC_OK;
+		}
 	}	
 	if (argc < 2) {
-		printf ("ocsort. Nothing to do.\n");
-		printf ("Usage: ocsort <command>\n");
-		printf ("       Execute command\n");
-		printf ("or   : ocsort TAKE <filename params>\n");
-		printf ("       Read and execute command from filename params\n");
-		printf ("or   : --help\n");
-		printf ("       Print help\n");
-		printf ("or   : --version\n");
-		printf ("       Print version information\n");
+		fprintf(stdout,"________________________________________________________________________\n");
+		fprintf(stdout,"ocsort Version %s\n", OCSORT_VERSION); 
+		fprintf(stdout,"Copyright (C) 2009-2016 Cedric ISSALY / Sauro Menna\n");
+		fprintf(stdout,"________________________________________________________________________\n");
+		fprintf(stdout,"ocsort. Nothing to do.\n");
+		fprintf(stdout,"Usage: ocsort <command>\n");
+		fprintf(stdout,"       Execute command\n");
+		fprintf(stdout,"or   : ocsort TAKE <filename params>\n");
+		fprintf(stdout,"       Read and execute command from filename params\n");
+		fprintf(stdout,"or   : --help\n");
+		fprintf(stdout,"       Print help\n");
+		fprintf(stdout,"or   : --version\n");
+		fprintf(stdout,"       Print version information\n");
+		fprintf(stdout,"or   : --config\n");
+		fprintf(stdout,"       Print values of environment variables\n");
 		return OC_RTC_ERROR;
 	}
 
 	rtc = main_prod(argc,argv);
 //
-//-->>		
+//-->>		 
 #ifdef _DEBUG
 	#ifdef _MSC_VER
 		_CrtDumpMemoryLeaks();
 	#endif
 #endif
-//
-	return rtc;
+//   
+ 	return rtc;
 }
 
-int foo(int *pValue) 
-{
-    *pValue = 6;
-	return 0;
-}
-int foo2(int *pValue)
-{
-    *pValue = 6;
-	return 0;
-}
- 
 int main_prod(int argc, char **argv) {
 
 // debug	
-	SYSTEMTIME st;
-
+//	SYSTEMTIME st;
+	time_t timeStart;
 	struct job_t *job;
 	int nRC = -2;
 	int nContinueSrtTmp=0;
 
-	time_t timeStart;
 	time (&timeStart);
-
-	// s.m. 	
 	yydebug=0; // no debug  
 	// yydebug=1; // yes debug
 	
@@ -142,8 +121,8 @@ int main_prod(int argc, char **argv) {
 	// -->> yyset_debug(1);	// set debug scanner on
 
 	cob_init(argc, argv);
+	//
 	cob_module_enter(&module, &cob_glob_ptr, 0);
-
 	nContinueSrtTmp = 0;
 	job=job_constructor();
 	if (job != NULL)
@@ -176,105 +155,53 @@ int main_prod(int argc, char **argv) {
 				{
 					do {
 						nContinueSrtTmp = 0;
-
-	// debug
-		if (job->nStatistics == 2) {
-			GetLocalTime(&st);
-			printf("Before job_loadFiles - %04d-%02d-%02d %02d:%02d:%02d:%03d\n" ,
-				st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond,st.wMilliseconds);
-		} 		
-							
-
 						nRC = job_loadFiles(job);
-
-	// debug
-		if (job->nStatistics == 2) {
- 			GetLocalTime(&st);
- 			printf("After  job_loadFiles - %04d-%02d-%02d %02d:%02d:%02d:%03d\n" ,
- 				st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond,st.wMilliseconds);
-		}
-
+						if (job->nStatistics == 2) 
+								util_print_time_elap("After  job_loadFiles     ");
 						if (nRC == -2)
 							nContinueSrtTmp = 1;
 						if (nRC == -1)
 							break;
-
-	// debug
-		if (job->nStatistics == 2) {
- 			GetLocalTime(&st);
- 			printf("Before job_sort      - %04d-%02d-%02d %02d:%02d:%02d:%03d\n" ,
- 				st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond,st.wMilliseconds);
-		}
-
 						nRC = job_sort(job); 
-
-	// debug
-		if (job->nStatistics == 2) {
-	 		GetLocalTime(&st);
- 			printf("After  job_sort      - %04d-%02d-%02d %02d:%02d:%02d:%03d\n" ,
-	 			st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond,st.wMilliseconds);
-		}
-
-							if (nRC == -1)
-								break;
-
-	// debug
-		if (job->nStatistics == 2) {
-		 	GetLocalTime(&st);
-		 	printf("Before job_save      - %04d-%02d-%02d %02d:%02d:%02d:%03d\n" ,
-		 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond,st.wMilliseconds);
-		}
-
-						nRC = job_save(job);
-
-	// debug
-		if (job->nStatistics == 2) {
-		 	GetLocalTime(&st);
-		 	printf("After  job_save      - %04d-%02d-%02d %02d:%02d:%02d:%03d\n" ,
-		 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond,st.wMilliseconds);
-		}
-
+						if (job->nStatistics == 2) 
+								util_print_time_elap("After  job_sort          ");
+						if (nRC == -1)
+							break;
+						if (job->bIsPresentSegmentation == 0)
+							nRC = job_save_out(job);
+						else
+							nRC = job_save_tempfile(job);
+						if (job->nStatistics == 2) 				
+							util_print_time_elap("After  job_save          ");
+					
 						if (nRC == -1)
 								break;
 					} while (nContinueSrtTmp == 1);
 
-				// in questo punto inserire la parte di SAVE con il supporto dei file temporanei
-		if (job->nStatistics == 2) {
-		 	GetLocalTime(&st);
-			printf("Before job_save_final- %04d-%02d-%02d %02d:%02d:%02d:%03d\n" ,
-				st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond,st.wMilliseconds);
-		}
-					if (nRC >= 0)
-						job_save_final(job);
-	// debug
-		if (job->nStatistics == 2) {
-		 	GetLocalTime(&st);
-		 	printf("After  job_save_final- %04d-%02d-%02d %02d:%02d:%02d:%03d\n" ,
-		 		st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond,st.wMilliseconds);
-		}
+					if (nRC >= 0) {
+						job_save_tempfinal(job);
+						if ((job->nStatistics == 2) &&  (job->bIsPresentSegmentation == 1))
+							util_print_time_elap("After  job_save_tempfinal");
+					}
+				}
+					else
+						nRC = job_merge_files(job);
+			
+				if (nRC >= 0)				
+					job_print_final(job, & timeStart);
 				}
 				else
 				{
-					nRC = job_merge_files(job);
+					printf("OCSort - TEST COMMAND LINE PARAMETERS \n");
 				}
 			}
-			if (nRC >= 0)				
-				job_print_final(job, & timeStart);
 		}
-		else
-		{
-			printf("OCSort - TEST COMMAND LINE PARAMETERS \n");
-		}
-	}
 //-->>	
 	job_destroy(job);
 //-->>		
 	job_destructor(job);
 
-
-//-->>    cob_module_leave(module);
-	// cob_terminate_routines();
-	cob_tidy();
+	cobtidy();
 
 	if (nRC == 0)
 		printf("Sort OK\n");
@@ -287,38 +214,3 @@ int main_prod(int argc, char **argv) {
 }
 
 
-#define BUFFER_SIZE 4096
-int main_test(int argc, char **argv) {
-	FILE *f;
-	char buffer[BUFFER_SIZE+1];
-	char *fbuffer[2];
-	struct job_t *job;
-	int i=0;
-	fbuffer[1]=buffer;
-
-	if (argc!=2) {
-		printf("parameter error\n");
-		return 0;
-	}
-
-	if ((f=fopen(argv[1],"r"))==NULL) {
-		perror("Cannot open file");
-		return 0;
-	}
-	yydebug=0;
-	while (fgets(buffer,BUFFER_SIZE, f)!=NULL) {
-
-		job=job_constructor();
-		printf("Trying line %d : '%s'\n",i++,buffer);
-		if (job_load(job, 2, fbuffer)) {
-			printf("Error on load\n");
-		} else {
-			job_print(job);
-		}
-		if (job_check(job)) {
-			printf("Error on check\n");
-		}
-	}
-	fclose(f);
-	return 0;
-}

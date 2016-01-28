@@ -1,15 +1,18 @@
-OCSort 1.0.0 (beta)   Windows environment. 
+OCSort 1.0.0 (beta)   Windows environment.
 
 
 INSTALL
 
  *Requirements
-	GNU C compiler (version ???, work with 4.3.2)
-	GNU Make (version ???, work with 3.81)
-	GNU Bison (version ???, work with 2.4.1)
-	GNU Flex (version ???, work with 2.5.35)
+	GNU C compiler  (version ???, work with 4.3.2)
+	GNU Make        (version ???, work with 3.81)
+	GNU Bison       (version ???, work with 2.4.1)
+	GNU Flex        (version ???, work with 2.5.35)
 
-    GNU Cobol (Version 1.1.0)  library and inlcude file for : libcob - mpir
+    GNU Cobol (Version 1.1.0)  library and include file for : libcob - mpir
+    OR
+    GNU Cobol (Version 2.0.0)  library and include file for : libcob - mpir
+    
     
  *Install
     ONLY Windows environment.
@@ -20,7 +23,7 @@ INSTALL
     Search on internet, you will probably found a documentation for Microfocus(c) MFSORT(c) utility.
     Check for the functionnality implemented (listed in README) to see in this fit your needs.
 
-    OCSort -help   for help from command line.
+    OCSort --help   for help from command line.
     
     Setting environment variable for best performance and view details of statistics.
     

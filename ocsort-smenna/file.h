@@ -1,6 +1,6 @@
 /*
  *  Copyright (C) 2009 Cedric ISSALY
- *  Copyright (C) 2015 Sauro Menna 
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -53,7 +53,7 @@ int file_setOrganization(struct file_t *file, int organization);
 char *file_getName(struct file_t *file);
 int file_getFormat(struct file_t *file);
 int file_getRecordLength(struct file_t *file);
-int file_getMaxLength(struct file_t *file);
+unsigned int file_getMaxLength(struct file_t *file);
 int file_getOrganization(struct file_t *file);
 int file_SetMF(struct file_t *file);
 int file_GetMF(struct file_t *file);

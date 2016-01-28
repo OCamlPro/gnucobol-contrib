@@ -1,6 +1,6 @@
-/* 
+/*
  *  Copyright (C) 2009 Cedric ISSALY
- *  Copyright (C) 2015 Sauro Menna
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -26,7 +26,7 @@
 
 
 //
-#include <libcob.h>
+#include "libocsort.h"
 
 
 struct fieldValue_t {
@@ -36,12 +36,12 @@ struct fieldValue_t {
 	int64_t value64;
 	int generated_length;
 	char *generated_value;
-	struct 	cob_field_attr* pCobFAttr;
-	struct  cob_field*	  pCobField;
+	cob_field_attr pCobFAttr;
+	cob_field	  pCobField;
 };
 
-struct fieldValue_t *fieldValue_constructor( char *type,  char *value, int nTypeF);
-struct fieldValue_t *fieldValue_constructor2(char *type,  char *value, int nTypeF);
+struct fieldValue_t* fieldValue_constructor( char *type,  char *value, int nTypeF);
+struct fieldValue_t* fieldValue_constructor2(char *type,  char *value, int nTypeF);
 void fieldValue_destructor(struct fieldValue_t *fieldValue);
 int fieldValue_print(struct fieldValue_t *fieldValue);
 int fieldValue_test(struct fieldValue_t *fieldValue, unsigned char *record, int length);

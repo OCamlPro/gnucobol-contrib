@@ -1,6 +1,7 @@
 /*
- *  Copyright (C) 2014 Geoff McLane 
- *  Copyright (C) 2015 Sauro Menna
+ *  Copyright (C) 2014 Geoff McLane
+
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -21,13 +22,17 @@
 
 #ifndef _MMFIOC_H_
 #define _MMFIOC_H_
-#include <windows.h>
+//#ifdef _WIN32
+
+#if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+	#include <windows.h>
+#endif
 #include <math.h>
 #include <stdint.h>
+#include <string.h>
+
 #include "job.h"
-#define MAX_SLOT_SEEKENV  48
-#define MAX_SLOT_SEEK	10
-#define MAX_MLTP_BYTE	16
+#include "utils.h"
 
 #define MMF_ERR_ZERO_BYTE_FILE           "Cannot open zero byte file."
 #define MMF_ERR_INVALID_SET_FILE_POINTER "The file pointer cannot be set to specified location."
@@ -59,14 +64,24 @@ struct mmfio_t
 {
 	unsigned char		m_cRefCount;
 	enum OPENFLAGS		m_eOpenflags;
+//#ifdef _WIN32
+#if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	void*				m_hFileMapping;
+#else
+	int				m_hFileMapping;
+#endif
 	unsigned char*		m_pbFile;
 	int64_t				m_dwBytesInView;
 	int64_t				m_qwFileSize;
 	int64_t				m_nViewBegin;
 	int64_t				m_nCurPos;
 	int64_t				m_nSeekPos;
+//#ifdef _WIN32
+#if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	void*				m_hFile;
+#else
+	int					m_hFile;
+#endif
 	unsigned long		m_dwAllocGranularity;
 	long				m_lExtendOnWriteLength;
 	unsigned long		m_dwflagsFileMapping;

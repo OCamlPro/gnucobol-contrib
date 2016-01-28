@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015 Sauro Menna 
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -72,18 +72,17 @@ struct inrec_t *inrec_constructor_padding(int nAbsPos, unsigned char *chfieldVal
 	int nDif=0;
 	int nsp=0;
 	char szVal[12];
-	char* pszChar;
-	int cChar = ' ';
-	pszChar = malloc(4);
-	memset(pszChar, 0x00, 4);
 	inrec->type=INREC_TYPE_CHANGE;
 	nsp = strlen((char*)chfieldValue)-1;
 	memset(szVal, 0x00, 12);
-	if (nPosAbsRec == -1)
-		sprintf(szVal,"%ld%s", (nAbsPos), chfieldValue);
+	if (nPosAbsRec == 0)
+		sprintf((char*) szVal,"%05ld", (nAbsPos));
 	else
-		sprintf(szVal,"%ld%s", (nAbsPos - nPosAbsRec), chfieldValue);
-	inrec->change.fieldValue = fieldValue_constructor(szVal, pszChar, TYPE_STRUCT_STD);
+		if ((nAbsPos-1) > nPosAbsRec)
+			sprintf((char*) szVal,"%05ld", (nAbsPos-1 - nPosAbsRec + 1 ));
+		else
+			sprintf((char*) szVal,"%05ld", (nPosAbsRec - nAbsPos-1 + 1));
+	inrec->change.fieldValue = fieldValue_constructor2((char*) chfieldValue, szVal, TYPE_STRUCT_STD);
 	inrec->next=NULL;
 	return inrec;
 }
@@ -92,14 +91,17 @@ struct inrec_t *inrec_constructor_subst(unsigned char *chfieldValue) {
 	struct inrec_t *inrec=(struct inrec_t *)malloc(sizeof(struct inrec_t));
 	int nj=0;
 	int nsp=0;
-	char* pVal;
+	char szSubstType[10];
+	char szSubstValue[10];
 	inrec->type=INREC_TYPE_CHANGE;
 	nsp = strlen((char*)chfieldValue)-1;
-	pVal = (char*) malloc(2);
-	memset(pVal, 0x00, 2);
-	if (nsp > 0)
-		memcpy(pVal, chfieldValue+nsp, 1);
-	inrec->change.fieldValue = fieldValue_constructor((char*)chfieldValue, pVal, TYPE_STRUCT_STD);
+	memset(szSubstValue, 0x00, nsp+1);
+	memset(szSubstType, 0x00,  2);
+	memcpy(szSubstValue, chfieldValue, nsp);
+	
+	memcpy((char*)szSubstValue, chfieldValue, nsp);
+	memcpy(szSubstType, (char*)chfieldValue+nsp, 1);	// TYpe
+	inrec->change.fieldValue = fieldValue_constructor((char*)szSubstType, (char*)szSubstValue, TYPE_STRUCT_STD);
 	inrec->next=NULL;
 	return inrec;
 }
@@ -107,7 +109,7 @@ struct inrec_t *inrec_constructor_subst(unsigned char *chfieldValue) {
 struct inrec_t *inrec_constructor_substnchar(int ntimes, unsigned char *chfieldValue) {
 	struct inrec_t *inrec=(struct inrec_t *)malloc(sizeof(struct inrec_t));
 	inrec->type=INREC_TYPE_CHANGE;
-	memset(inrec->change.fieldValue, (int)chfieldValue, ntimes);
+	memset(inrec->change.fieldValue, (int)(*chfieldValue), ntimes);
 	inrec->next=NULL;
 	return inrec;
 }
@@ -145,17 +147,17 @@ struct inrec_t *inrec_getNext(struct inrec_t *inrec) {
 int inrec_print(struct inrec_t *inrec) {
 	switch (inrec->type) {
 		case INREC_TYPE_RANGE:
-			printf("%d,%d",inrec->range.position+1,inrec->range.length);
+			fprintf(stdout, "%d,%d",inrec->range.position+1,inrec->range.length);
 			break;
 		case INREC_TYPE_CHANGE_POSITION:
-			printf("%d:",inrec->change_position.position);
+			fprintf(stdout, "%d:",inrec->change_position.position);
 			fieldValue_print(inrec->change_position.fieldValue);
 			break;
 		case INREC_TYPE_CHANGE:
 			fieldValue_print(inrec->change.fieldValue);
 			break;
 		case INREC_TYPE_RANGE_POSITION:
-			printf("%d:%d,%d",inrec->range_position.posAbsRec, inrec->range_position.position+1, inrec->range_position.length);
+			fprintf(stdout, "%d:%d,%d",inrec->range_position.posAbsRec, inrec->range_position.position+1, inrec->range_position.length);
 			break;
 		default:
 			break;
@@ -186,17 +188,73 @@ int inrec_getLength(struct inrec_t *inrec) {
 	}
 	return length;
 }
+int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos) {
+	int position=0;
+	int nSplit = 0;
+	struct inrec_t *i;
+	int nIRangeLen = 0;
+	if (nIsMF == 1)  // EMUALTE MFSORT  position is 1 for DFSORT position is +4 
+	if (job_EmuleMFSort() == 2) // DFSort   // 0 Normal yes shift, 1 MF no shift
+	{
+		if (nFileFormat == FILE_TYPE_VARIABLE)
+			nSplit = -4;		// Postion 
+	}
+	for (i=inrec;i!=NULL;i=i->next) {
+		switch (i->type) {
+			case INREC_TYPE_RANGE:
+// 20160408 record input len 
+				nIRangeLen = i->range.length;
+				if (nIRangeLen == -1)		// outrec pos, -1  (for variable)
+					nIRangeLen = inputLength - i->range.position - nSplit;
+				if ((i->range.position+nSplit+ nIRangeLen) <= inputLength)
+					memcpy(output+position+nSplitPos+nSplit, input+i->range.position+nSplitPos+nSplit, nIRangeLen);
+				else
+					// copy only chars present in input for max len input
+					memcpy(output+position+nSplitPos+nSplit, input+i->range.position+nSplitPos+nSplit, abs(inputLength - (i->range.position+nSplit)));
+				position+=nIRangeLen;
+				break;
+			case INREC_TYPE_CHANGE_POSITION:
+				memcpy(output+position+nSplitPos+nSplit, fieldValue_getGeneratedValue(i->change_position.fieldValue),fieldValue_getGeneratedLength(i->change_position.fieldValue));
+				position+=fieldValue_getGeneratedLength(i->change_position.fieldValue);
+				break;
+			case INREC_TYPE_CHANGE:
+				memcpy(output+position+nSplitPos+nSplit, fieldValue_getGeneratedValue(i->change.fieldValue),fieldValue_getGeneratedLength(i->change.fieldValue));
+				position+=fieldValue_getGeneratedLength(i->change.fieldValue);
+				break;
+			case INREC_TYPE_RANGE_POSITION:
+// 20160408 record input len 
+				//-->>nORangeLen = o->range.length;
+				nIRangeLen = i->range_position.length;
+				if (nIRangeLen == -1)		// outrec pos, -1  (for variable)
+					nIRangeLen = inputLength - i->range_position.position - nSplit;
+				
+				if ((i->range_position.position+nSplitPos+nSplit+nIRangeLen) <= inputLength)
+					memcpy(output+i->range_position.posAbsRec+position+nSplitPos+nSplit, input+i->range_position.position+nSplitPos+nSplit, nIRangeLen);
+				else
+					// copy only char present in input for max len input
+					memcpy(output+i->range_position.posAbsRec+position+nSplitPos+nSplit, input+i->range_position.position+nSplitPos+nSplit, abs(inputLength - (i->range_position.position+nSplit)));
+				position = (i->range_position.posAbsRec+nIRangeLen);
+				break;
+			default:
+				break;
+		}
+	}
+//	return position;
+	return position;  // position contains a first position of buffer
+}
+
+/*
 int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF) {
 	int position=0;
 	int nSplitPos = 0;
 	struct inrec_t *i;
 	// for File Variable +4 byte position
 	if (nFileFormat == FILE_TYPE_VARIABLE)
-		nSplitPos = 4;
+		nSplitPos = SIZEINT;
 	if ((nIsMF == 1) && (outputLength < 4096))
 		nSplitPos = 2;
 	if ((nIsMF == 1) && (outputLength >= 4096))
-		nSplitPos = 4;
+		nSplitPos = SIZEINT;
 	//
 	for (i=inrec;i!=NULL;i=i->next) {
 		switch (i->type) {
@@ -222,7 +280,7 @@ int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *inpu
 	}
 	return position;
 }
-// int job_addInrec(struct inrec_t *inrec) {
+*/
 int inrec_addDefinition(struct inrec_t *Inrec) {
 	inrec_addQueue(&(globalJob->inrec), Inrec);
 	return 0;

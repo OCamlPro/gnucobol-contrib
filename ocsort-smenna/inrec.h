@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015 Sauro Menna 
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -67,7 +67,9 @@ int inrec_addQueue(struct inrec_t **inrec,struct inrec_t *inrec_add);
 struct inrec_t *inrec_getNext(struct inrec_t *inrec);
 int inrec_print(struct inrec_t *inrec);
 int inrec_getLength(struct inrec_t *inrec);
-int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF);
+//int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF);
+int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos);
+
 int inrec_addDefinition(struct inrec_t *Inrec);
 
 #endif // INREC_H_INCLUDED

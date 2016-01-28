@@ -1,6 +1,6 @@
-/* 
+/*
  *  Copyright (C) 2009 Cedric ISSALY
- *  Copyright (C) 2015 Sauro Menna
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -24,25 +24,35 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include <io.h>
-#include <fcntl.h>
+// #ifdef	_WIN32
+#ifdef _MSC_VER
+	#include <windows.h>
+	#include <io.h>
+	#include <fcntl.h>
+#else
+	#if !defined(__MINGW32__) && !defined(__MINGW64__)
+		#include <sys/io.h>
+		#include <sys/types.h>
+		#include <sys/stat.h>
+    #endif		
+	#include <unistd.h>
+#endif
 
-/*
-INLINE int write_buffered (int  desc, int buffer_pointer, int  nLenRek, int  bufferwriteglobal, int* position_buf_write);
-INLINE int write_buffered_save_final (int  desc, int buffer_pointer, int  nLenRek, int  bufferwriteglobal, int* position_buf_write);
-INLINE int write_buffered_final (int  desc, int  buffer_pointer, int  nLenRek, int  bufferwriteglobal, int* position_buf_write);
-*/
-INLINE int write_buffered (int		desc, 
-		            int		buffer_pointer, 
-			        int		nLenRek, 
-				    int		bufferwriteglobal,
-					int*	position_buf_write
-					)
+#define	MAX_SIZE_CACHE_WRITE		65536*62 //65536*62*2   //62
+#define	MAX_SIZE_CACHE_WRITE_FINAL	65536*62 //65536*62*2   //62
+
+
+static INLINE int write_buffered (int		desc, 
+						   unsigned char*	buffer_pointer, 
+						   int				nLenRek, 
+						   unsigned char**	bufferwriteglobal,
+						   int*				position_buf_write
+						  )
 {
 	int nSplit;
     int tempPosition = *position_buf_write + nLenRek;  
     if (tempPosition > MAX_SIZE_CACHE_WRITE) {
-		if (_write(desc, (unsigned char*)(bufferwriteglobal), (unsigned int) *position_buf_write) < 0) 
+		if (_write(desc, (unsigned char*)(*bufferwriteglobal), (unsigned int) *position_buf_write) < 0) 
 		{
     		fprintf(stderr,"*OCSort*S069* Cannot write output file  %s\n",strerror(errno));
     		return -1;
@@ -50,41 +60,39 @@ INLINE int write_buffered (int		desc,
     	*position_buf_write=0;
     }
 	nSplit = *position_buf_write;
-	memmove((unsigned char*)bufferwriteglobal+nSplit, (unsigned char*)buffer_pointer, nLenRek);
+	memmove((unsigned char*)(*bufferwriteglobal+nSplit), (unsigned char*)buffer_pointer, nLenRek);
    *position_buf_write=*position_buf_write+nLenRek;
     return 0;
 }
 
-INLINE int write_buffered_save_final (int		desc, 
-		            int		buffer_pointer, 
-			        int		nLenRek, 
-				    int		bufferwriteglobal,
-					int*	position_buf_write
-					)
+static INLINE int write_buffered_save_final (int		desc, 
+									 unsigned char*		buffer_pointer, 
+										     int		nLenRek, 
+								    unsigned char**		bufferwriteglobal,
+											 int*		position_buf_write
+											)
 {
     if (*position_buf_write + nLenRek > MAX_SIZE_CACHE_WRITE_FINAL) {
-    	if (_write(desc, (unsigned char*)(bufferwriteglobal), (unsigned int) *position_buf_write) < 0) 
+    	if (_write(desc, (unsigned char*)(*bufferwriteglobal), (unsigned int) *position_buf_write) < 0) 
     	{
     		fprintf(stderr,"*OCSort*S070* Cannot write output file  %s\n",strerror(errno));
     		return -1;
     	}
     	*position_buf_write=0;
     }
-	memmove((unsigned char*)bufferwriteglobal+(*position_buf_write), (unsigned char*)buffer_pointer, nLenRek);
+	memmove((unsigned char*)(*bufferwriteglobal+(*position_buf_write)), (unsigned char*)buffer_pointer, nLenRek);
    *position_buf_write=*position_buf_write+nLenRek;
     return 0;
 }
 
-INLINE int write_buffered_final (int  desc, 
-						int		buffer_pointer, 
-						int		nLenRek, 
-						int  bufferwriteglobal,
+static INLINE int write_buffered_final (int  desc, 
+						unsigned char**  bufferwriteglobal,
 						int*	position_buf_write
 					)
 {
 	if (*position_buf_write == 0)
 		return 0;
-    if (write(desc, (unsigned char*)bufferwriteglobal , *position_buf_write) < 0) 
+    if (write(desc, (unsigned char*)*bufferwriteglobal , *position_buf_write) < 0) 
     {
     	fprintf(stderr,"*OCSort*S040* Cannot write output file  %s\n",strerror(errno));
     	return -1;

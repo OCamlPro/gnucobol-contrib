@@ -1,6 +1,6 @@
-/* 
+/*
  *  Copyright (C) 2009 Cedric ISSALY
- *  Copyright (C) 2015 Sauro Menna
+ *  Copyright (C) 2016 Sauro Menna
  *
  *	This file is part of OCSort.
  *
@@ -21,17 +21,79 @@
 
 #ifndef UTILS_H_INCLUDED
 #define UTILS_H_INCLUDED
-
+ 
 #include <stdio.h>
 #include <stddef.h>
 #include <stdint.h>
-#include "job.h"
 
-#ifndef _WIN32
+//#ifndef _WIN32
+//#ifndef _MSC_VER
+//-->>#if	!defined(__MINGW32__) && !defined(__MINGW64__)
+#if	defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
+	#include <unistd.h>
+	#include <time.h>
+	#include <strings.h>
 	#define NUMCHAREOL 1		// UNIX
+	typedef unsigned long DWORD;
+	typedef unsigned short WORD;
+	typedef unsigned int UNINT32;
+
+	typedef unsigned char       BYTE;
+	//typedef BYTE far            *LPBYTE;
+	typedef BYTE             *LPBYTE;
+	typedef BYTE             *PBYTE;
+	typedef const char 	    *LPCSTR, *PCSTR;
+	typedef long LONG;
+
+	#if !defined(__MINGW32__) && !defined(__MINGW64__)
+		typedef int HANDLE;
+		#define INVALID_HANDLE_VALUE 0
+		#define _S_IREAD	S_IREAD
+		#define _S_IWRITE	S_IWRITE
+
+		#define _O_TRUNC 	O_TRUNC
+		#define _O_RDONLY	O_RDONLY
+		#define _O_CREAT 	O_CREAT 
+		#define _O_BINARY 	O_BINARY
+		#define O_BINARY 	0
+		#define _O_WRONLY   O_WRONLY
+	#endif
+
+	
+	
+	#define FALSE	0
+	#define TRUE	1
+
+	#define _atoi64 atoll
+	#define _strdup strdup
+	#define _open open
+	#define _read read
+	#define _close close
+	#define _write write
+	#define _stricmp strcasecmp
+	#define strnicmp strncasecmp
+	#define _strdup  strdup
+
 #else
 	#define NUMCHAREOL 2		// WINDOWS
+
 #endif
+
+#if defined(__MINGW32__) || defined(__MINGW64__)
+	#include <fcntl.h>
+	#include <windows.h>
+	#include <sys/stat.h>
+#endif
+
+//#ifdef _MSC_VER
+#if defined(_MSC_VER) 
+  #define INLINE __forceinline /* use __forceinline (VC++ specific) */
+#else
+  #define INLINE __inline__ //			 inline        /* use standard inline */
+#endif
+
+
+#include "job.h"
 
 
 #define FILE_TYPE_FIXED			0
@@ -44,7 +106,7 @@
 #define FILE_ORGANIZATION_LINESEQUENTIAL	4//3
 #define FILE_ORGANIZATION_SEQUENTIALMF		5//4
 
-
+/**/
 #define FILE_ORGTYPE_TMP		 0
 #define FILE_ORGTYPE_IXFIX		10
 #define FILE_ORGTYPE_IXVAR		11
@@ -56,7 +118,7 @@
 #define FILE_ORGTYPE_LSVAR		41
 #define FILE_ORGTYPE_SQFIXMF	50
 #define FILE_ORGTYPE_SQVARMF	51
-
+/**/
 
 #define FIELD_TYPE_CHARACTER	0
 #define FIELD_TYPE_BINARY		1
@@ -87,6 +149,18 @@
 #define FIELD_VALUE_TYPE_C	2
 #define FIELD_VALUE_TYPE_F	3 // FIXED
 
+#define MAX_SLOT_SEEKENV  48
+#define MAX_SLOT_SEEK	1
+#define MAX_MLTP_BYTE	63
+
+
+#ifdef _WIN32
+	#define charSep '\\'
+	#define strSep  "\\"
+#else
+	#define charSep '/'
+	#define strSep  "/"
+#endif
 
 
 int utils_parseFileFormat(const char *format);
@@ -104,13 +178,22 @@ const char *utils_getFieldValueTypeName(int type);
 const char *utils_getSortDirectionName(int direction);
 const char *utils_getCondConditionName(int condition);
 const char *utils_getCondOperationName(int operation);
+int utils_SetOptionSort(char* optSort);
+int utils_SetOptionSortNum(char* optSort, int64_t nNum);
 
 int utils_setFieldTypInt(char * strType);
-
 int utils_GenPadSize(int nLR);
+
+void util_print_time_elap( const  char* szMex );
 
 unsigned short int Endian_Word_Conversion(unsigned short int word) ;
 unsigned long int Endian_DWord_Conversion(unsigned long int dword) ;
-int file_stat_win (char* filename );
+
+
+//#ifndef _WIN32
+#if defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
+	unsigned long  GetTickCount(void);  
+#endif
+
 
 #endif // UTILS_H_INCLUDED
