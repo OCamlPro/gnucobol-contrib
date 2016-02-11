@@ -55,7 +55,7 @@ Installation:
 7) Run process in Linux environment
      in /script folder execute
      
-    ./<script_name>.sh             # example  : ./execgen.sh example_gen.cfg
+    ./<script_name>.sh             # example  : ./execgen.sh 
   
   This script <script_name>.sh :
     compile program for check data generated  (name present in config file)
@@ -69,5 +69,5 @@ Installation:
 7) Run process in Windows environment
      in \script folder execute
      
-     <script_name>.bat             # example  : execgen.bat example_gen.cfg
+     <script_name>.bat             # example  : execgen.bat 
      This script is the same of linux.
