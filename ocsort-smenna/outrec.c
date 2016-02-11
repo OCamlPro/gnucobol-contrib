@@ -70,30 +70,19 @@ struct outrec_t *outrec_constructor_padding(int nAbsPos, unsigned char *chfieldV
 	outrec->type=OUTREC_TYPE_CHANGE;
 	memset(szVal, 0x00, 12);
 	if (nPosAbsRec == 0)
-		sprintf((char*) szVal,"%05ld", (nAbsPos));
+		sprintf((char*) szVal,"%05d", (nAbsPos));
 	else
 		if ((nAbsPos-1) > nPosAbsRec)
-			sprintf((char*) szVal,"%05ld", (nAbsPos-1 - nPosAbsRec + 1 ));
+			sprintf((char*) szVal,"%05d", (nAbsPos-1 - nPosAbsRec + 1 ));
 		else
-			sprintf((char*) szVal,"%05ld", (nPosAbsRec - nAbsPos-1 + 1));
-	outrec->change.fieldValue = fieldValue_constructor2((char*) chfieldValue, szVal, TYPE_STRUCT_STD);
+			sprintf((char*) szVal,"%05d", (nPosAbsRec - nAbsPos-1 + 1));
+	outrec->change.fieldValue = fieldValue_constr_newF((char*) chfieldValue, szVal, TYPE_STRUCT_STD);
 	outrec->change.posAbsRec = nAbsPos;
 	outrec->change.type = *chfieldValue;
 	outrec->next=NULL;
 	return outrec;
 }
-
-/*
-struct outrec_t *outrec_constructor_padding(struct fieldValue_t *fieldValue) {
-	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
-	outrec->type=OUTREC_TYPE_PAD_POSITION;
-	outrec->pad_position.fieldValue = fieldValue;
-	outrec->pad_position.posAbsRec=0;
-	outrec->next=NULL;
-	return outrec;
-}
-*/
-// 
+ 
 struct outrec_t *outrec_constructor_subst(unsigned char *chfieldValue) {
 	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
 	int nj=0;
@@ -108,7 +97,7 @@ struct outrec_t *outrec_constructor_subst(unsigned char *chfieldValue) {
 	
 	memcpy((char*)szSubstValue, chfieldValue, nsp);
 	memcpy(szSubstType, (char*)chfieldValue+nsp, 1);	// TYpe
-	outrec->change.fieldValue = fieldValue_constructor2((char*)szSubstType, (char*)szSubstValue, TYPE_STRUCT_STD);
+	outrec->change.fieldValue = fieldValue_constr_newF((char*)szSubstType, (char*)szSubstValue, TYPE_STRUCT_STD);
 	outrec->change.posAbsRec = -2;	// For print
 	outrec->change.type = 0x00;
 

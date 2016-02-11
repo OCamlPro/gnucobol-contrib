@@ -49,8 +49,12 @@ struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF)
 	}
 	fieldValue->value=strdup(value);
 	
-	job_RescanCmdSpecialChar(fieldValue->value);
-	job_RescanCmdSpecialChar(value);
+	if (strlen(fieldValue->value) > 0) {
+		job_RescanCmdSpecialChar(fieldValue->value);
+		job_RescanCmdSpecialChar(value);
+	}
+	else
+		fieldValue->occursion=1;
 
 		switch (fieldValue->type) {
 		case FIELD_VALUE_TYPE_Z:
@@ -102,7 +106,7 @@ struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF)
 			fieldValue->generated_value[fieldValue->generated_length]=0;
 			break;
 		default:
-			fprintf(stdout,"*OCSort*S810* ERROR Field Type unknow %n\n", fieldValue->type);
+			fprintf(stdout,"*OCSort*S810* ERROR Field Type unknow %d\n", fieldValue->type);
             exit(OC_RTC_ERROR); 
 			break;
 	}
@@ -110,7 +114,7 @@ struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF)
 	return fieldValue;
 }
 
-struct fieldValue_t *fieldValue_constructor2(char *type, char *value, int nTypeF) {
+struct fieldValue_t *fieldValue_constr_newF(char *type, char *value, int nTypeF) {
 	int i;
 	char szB1 [256];
 	struct fieldValue_t *fieldValue=(struct fieldValue_t *)malloc(sizeof(struct fieldValue_t));
@@ -171,7 +175,7 @@ struct fieldValue_t *fieldValue_constructor2(char *type, char *value, int nTypeF
            
 			break;
 		default:
-			fprintf(stdout,"*OCSort*S811* ERROR Field Value Type unknow %n\n", fieldValue->type);
+			fprintf(stdout,"*OCSort*S811* ERROR Field Value Type unknow %d\n", fieldValue->type);
             exit(OC_RTC_ERROR); 
 			break;
 	}
@@ -247,7 +251,7 @@ int fieldValue_test(struct fieldValue_t *fieldValue, unsigned char *record, int 
 			result=memcmp((char*)fieldValue->generated_value,(char*)record,used_length);
 		break;
 		default:
-        fprintf(stdout,"*OCSort*S812* ERROR Field Value Type unknow %n\n", fieldValue->type);
+        fprintf(stdout,"*OCSort*S812* ERROR Field Value Type unknow %d\n", fieldValue->type);
         exit(OC_RTC_ERROR); 
 		break;
 

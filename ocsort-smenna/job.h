@@ -33,12 +33,15 @@
 
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	#include <io.h>
+	#define _strtoll    _strtoi64
 #else
 	#include <limits.h>
 	#include <sys/io.h>
 	#include <time.h>
 	#include <fcntl.h>
+	#define _strtoll   strtoll
 #endif
+
 
 #include "utils.h"
 #include "mmfioc.h"

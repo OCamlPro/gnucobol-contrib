@@ -291,7 +291,7 @@ int SumField_SumField(const void *pRek) {
 
 				break;
 			default:
-				fprintf(stderr,"*OCSort*S092* ERROR Type for SUM FIELDS:Pos:%ld - Len:%ld - Type:%c \n", SumField_getPosition(SumField), SumField_getLength(SumField), SumField_getType(SumField));
+				fprintf(stderr,"*OCSort*S092* ERROR Type for SUM FIELDS:Pos:%d - Len:%d - Type:%c \n", SumField_getPosition(SumField), SumField_getLength(SumField), SumField_getType(SumField));
 				break;
 		}
 	}
@@ -309,7 +309,7 @@ int SumField_SumFieldUpdateRek(const void *pRek) {
 	long int	SPK2=0;
 	long int	SPK3=0;
 
-	unsigned char        szZoned[32];
+	unsigned char        szZoned[33];
 	char        szPrintf[10];
 	char        szLen[10];
 	int64_t				mValue64 = 0;
@@ -369,11 +369,12 @@ int SumField_SumFieldUpdateRek(const void *pRek) {
 				memset(szZoned,		0x00, sizeof szZoned);
 				memset(szPrintf,	0x00, sizeof szPrintf);
 
-				// Esempio per inserire gli zeri in testa : 	%0nd  n = num interi			
+				// Esempio per inserire gli zeri in testa con il segno: 	%+0nd  n = num interi			
 				//sprintf(szLen,   "%I64d", SumField_getLength(SumField) + 1); // sign on first char
-				sprintf(szLen,   "%d", SumField_getLength(SumField)); // sign on first char
-				strncat(szPrintf,	"%0", 3);
-				strncat(szPrintf,	szLen, 2);
+				sprintf(szLen,   "%d", SumField_getLength(SumField)+1); // sign on first char
+				strncat(szPrintf,	"%+0", 3);
+				//strncat(szPrintf,	szLen, 2);
+				strncat(szPrintf,	szLen, strlen(szLen));
 			#ifdef	_MSC_VER
 					strncat(szPrintf,	 "I64d", 4);
 			#else
@@ -382,11 +383,10 @@ int SumField_SumFieldUpdateRek(const void *pRek) {
 				sprintf((char*) szZoned,   szPrintf, nTot);
 				if (nTot < 0)
 					szZoned[SumField_getLength(SumField)] += 0x40; //Negative
-				
-				memcpy((char*) pRek+(SumField_getPosition(SumField)-1), szZoned, SumField_getLength(SumField));
+				memcpy((unsigned char*) pRek+(SumField_getPosition(SumField)-1), &szZoned[1], SumField_getLength(SumField));
 				break;
 			default:
-				fprintf(stderr,"*OCSort*S093* ERROR Type for SUM FIELDS:Pos:%ld - Len:%ld - Type:%c \n", SumField_getPosition(SumField), SumField_getLength(SumField), SumField_getType(SumField));
+				fprintf(stderr,"*OCSort*S093* ERROR Type for SUM FIELDS:Pos:%d - Len:%d - Type:%c \n", SumField_getPosition(SumField), SumField_getLength(SumField), SumField_getType(SumField));
 				break;
 		}
 	}

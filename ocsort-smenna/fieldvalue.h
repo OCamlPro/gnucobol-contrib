@@ -41,7 +41,7 @@ struct fieldValue_t {
 };
 
 struct fieldValue_t* fieldValue_constructor( char *type,  char *value, int nTypeF);
-struct fieldValue_t* fieldValue_constructor2(char *type,  char *value, int nTypeF);
+struct fieldValue_t* fieldValue_constr_newF(char *type,  char *value, int nTypeF);
 void fieldValue_destructor(struct fieldValue_t *fieldValue);
 int fieldValue_print(struct fieldValue_t *fieldValue);
 int fieldValue_test(struct fieldValue_t *fieldValue, unsigned char *record, int length);

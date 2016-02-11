@@ -79,15 +79,15 @@ int main(int argc, char **argv) {
 		fprintf(stdout,"________________________________________________________________________\n");
 		fprintf(stdout,"ocsort. Nothing to do.\n");
 		fprintf(stdout,"Usage: ocsort <command>\n");
-		fprintf(stdout,"       Execute command\n");
+		fprintf(stdout,"              Execute command\n");
 		fprintf(stdout,"or   : ocsort TAKE <filename params>\n");
-		fprintf(stdout,"       Read and execute command from filename params\n");
-		fprintf(stdout,"or   : --help\n");
-		fprintf(stdout,"       Print help\n");
-		fprintf(stdout,"or   : --version\n");
-		fprintf(stdout,"       Print version information\n");
-		fprintf(stdout,"or   : --config\n");
-		fprintf(stdout,"       Print values of environment variables\n");
+		fprintf(stdout,"              Read and execute command from filename params\n");
+		fprintf(stdout,"or   : ocsort --help\n");
+		fprintf(stdout,"              Print help\n");
+		fprintf(stdout,"or   : ocsort --version\n");
+		fprintf(stdout,"              Print version information\n");
+		fprintf(stdout,"or   : ocsort --config\n");
+		fprintf(stdout,"              Print values of environment variables\n");
 		return OC_RTC_ERROR;
 	}
 

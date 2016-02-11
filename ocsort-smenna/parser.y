@@ -63,6 +63,7 @@
 	int current_sortField=0;
 	int nPosAbsRec=0;
 	int nRtc=0;
+	char* pszInt;
 
 	extern int nTypeFieldsCmd;
 	char szTmp[5];
@@ -239,24 +240,26 @@ fieldvalue: CHARTYPE  STRING  {
 		free($2); 
 }		
 		| DIGIT STRING {
-		char* pszInt;
+		// char* pszInt;
 		pszInt = (char*) malloc(32);		 
-		sprintf(pszInt, "%ld", $1);
-		$$=fieldValue_constructor2((char*)$1, $2, TYPE_STRUCT_STD);
+		sprintf(pszInt, "%d", $1);
+		//-->>ok $$=fieldValue_constr_newF((char*)$1, (char*)$2, TYPE_STRUCT_STD);
+		$$=fieldValue_constr_newF((char*)pszInt, (char*)$2, TYPE_STRUCT_STD);
 		free($2); 
-		free(pszInt); 
+		(pszInt); 
 }			// 80X
 	// new
 		| DIGIT CHARTYPE {
-		char* pszInt;
+		// char* pszInt;
 		pszInt = (char*) malloc(32);		 
-		sprintf(pszInt, "%ld", $1);
-		$$=fieldValue_constructor2((char*)$1, $2, TYPE_STRUCT_STD);
+		sprintf(pszInt, "%d", $1);
+		// ok ok $$=fieldValue_constr_newF((char*)$1, (char*)$2, TYPE_STRUCT_STD);
+		$$=fieldValue_constr_newF((char*)pszInt, (char*)$2, TYPE_STRUCT_STD);
 		free($2); 
 		free(pszInt); 
 }			// 80:X
 		| STRING STRING {
-//-->>		$$=fieldValue_constructor2($1, $2, TYPE_STRUCT_STD);
+//-->>		$$=fieldValue_constr_newF($1, $2, TYPE_STRUCT_STD);
 		$$=fieldValue_constructor($1, $2, TYPE_STRUCT_STD);
 		free($1); 
 		free($2); 
@@ -266,15 +269,15 @@ fieldvalue: CHARTYPE  STRING  {
 ;
 
 fieldvalueconst:  DIGIT {
-		char* pszInt;
+		//char* pszInt;
 		pszInt = (char*) malloc(32);		 
-		sprintf(pszInt, "%ld", $1);
+		sprintf(pszInt, "%d", $1);
 		$$=(struct fieldValue_t *) fieldValue_constructor((char*)"Z",pszInt, TYPE_STRUCT_STD);
 		free(pszInt); 
 }
 		| SIGNDIGITBIG  {
 		char szType[] = "Z";
-		char* pszInt;
+		//char* pszInt;
 		pszInt = (char*) malloc(32);		 
 		#ifdef	_MSC_VER
 			sprintf(pszInt, "%I64ld", $1);
@@ -485,8 +488,12 @@ outrec: DIGIT ',' DIGIT {
 		| DIGIT ':' DIGIT ',' DIGIT {
 		if (current_outrec==1) {
 			struct outrec_t *outrec=outrec_constructor_range_position($1, $3, $5);
+			if (nstate_outfil==1) {
+				outfil_addoutfilrec(outrec);
+			} else {
+				outrec_addDefinition(outrec);
+			}
 			nPosAbsRec = outrec->range_position.posAbsRec + outrec->range_position.length;
-			outrec_addDefinition(outrec);
 		}
 }
 	
@@ -507,7 +514,11 @@ outrec: DIGIT ',' DIGIT {
 			struct outrec_t *outrec=outrec_constructor_padding($1, $3, nPosAbsRec);
 			if ($1 > nPosAbsRec) 
 				nPosAbsRec = $1;
-			outrec_addDefinition(outrec);
+			if (nstate_outfil==1) {
+				outfil_addoutfilrec(outrec);
+			} else {
+				outrec_addDefinition(outrec);
+			}
 		}
 		free($3); 
 }
@@ -515,7 +526,11 @@ outrec: DIGIT ',' DIGIT {
 		| CHARTYPE {
 		if (current_outrec==1) {
 			struct outrec_t *outrec=outrec_constructor_subst($1);
-			outrec_addDefinition(outrec);
+			if (nstate_outfil==1) {
+				outfil_addoutfilrec(outrec);
+			} else {
+				outrec_addDefinition(outrec);
+			}
 			nPosAbsRec += fieldValue_getGeneratedLength(outrec->change.fieldValue);
 		}
 }			
@@ -632,6 +647,7 @@ inrec: DIGIT ',' DIGIT {
 			inrec_addDefinition(inrec);
 			nPosAbsRec += fieldValue_getGeneratedLength(inrec->change.fieldValue);
 		}
+		free($1);
 }			
 
 		| fieldvalue {

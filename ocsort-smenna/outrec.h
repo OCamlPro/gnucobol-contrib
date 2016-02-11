@@ -53,7 +53,6 @@ struct outrec_t {
 			int posAbsRec;
 			int position;
 			int length;
-
 		} range_position;		//3
 	};
 	struct outrec_t *next;

@@ -44,7 +44,9 @@ struct inrec_t {
 			struct fieldValue_t *fieldValue;
 		} change_position;		//1
 		struct {
+			int posAbsRec;
 			struct fieldValue_t *fieldValue;
+			char type;
 		} change;				//2
 		struct {		
 			int posAbsRec;

@@ -89,9 +89,9 @@
 #if defined(_MSC_VER) 
   #define INLINE __forceinline /* use __forceinline (VC++ specific) */
 #else
-  #define INLINE __inline__ //			 inline        /* use standard inline */
+//fix for ubuntu envronment  #define INLINE __inline__ //			 inline        /* use standard inline */
+  #define INLINE 
 #endif
-
 
 #include "job.h"
 

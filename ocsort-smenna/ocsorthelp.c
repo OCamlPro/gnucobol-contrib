@@ -62,12 +62,12 @@ void OCSort_Config ( void )
 	fprintf(stdout,"Copyright (C) 2009-2016 Cedric ISSALY / Sauro Menna\n");
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"\n");
-	fprintf(stdout,"OCSORT_BYTEORDER             : %ld", job->nByteOrder);
+	fprintf(stdout,"OCSORT_BYTEORDER             : %d", job->nByteOrder);
 	if (job->nByteOrder == 0)
 		fprintf(stdout," - Native\n");
 	else
 		fprintf(stdout," - Bigendian\n");
-	fprintf(stdout,"OCSORT_DEBUG                 : %ld", job->ndeb);
+	fprintf(stdout,"OCSORT_DEBUG                 : %d", job->ndeb);
 	if (job->ndeb == 0)
 		fprintf(stdout," - No info debug\n");
 	else
@@ -79,12 +79,12 @@ void OCSort_Config ( void )
 	fprintf(stdout,"OCSORT_MEMSIZE               : %7ld MByte\n", (job->ulMemSizeAlloc+job->ulMemSizeAllocSort)/1024000);
 	fprintf(stdout,"         Memory size for key : %7ld MByte\n", (job->ulMemSizeAllocSort/1024000));
 	fprintf(stdout,"        Memory size for data : %7ld MByte\n", (job->ulMemSizeAlloc/1024000));
-	fprintf(stdout,"OCSORT_MLT                   : %7ld Pages for cache MemoryMappedFile\n", job->nMlt);
+	fprintf(stdout,"OCSORT_MLT                   : %7d  Pages for cache MemoryMappedFile\n", job->nMlt);
 	fprintf(stdout,"  MemoryMappedFile page size : %7.2f MByte\n", (double)(job->nMlt * page_size)/1024000);
 	fprintf(stdout,"            System page size : %7ld Bytes\n", page_size);
 	fprintf(stdout,"OCSORT_PATHTMP               : %s\n",  job->strPathTempFile);
 //	fprintf(stdout,"OCSORT_SLOT       - Numbers of slot for MemoryMappedFile                       : %ld\n", job->nSlot);
-	fprintf(stdout,"OCSORT_STATISTICS            : %ld", job->nStatistics);
+	fprintf(stdout,"OCSORT_STATISTICS            : %d", job->nStatistics);
 	if (job->nStatistics == 0) 
 		fprintf(stdout," - Statistics Minimal informations\n");
 	else
@@ -92,7 +92,7 @@ void OCSort_Config ( void )
 			fprintf(stdout," - Statistics Summary\n");
 		else
 			fprintf(stdout," - Statistics Detail\n");       
-	fprintf(stdout,"OCSORT_TESTCMD               : %ld", job->nTestCmdLine);
+	fprintf(stdout,"OCSORT_TESTCMD               : %d", job->nTestCmdLine);
 	if (job->nTestCmdLine == 0)
 		fprintf(stdout," - Normal operations\n");
 	else
