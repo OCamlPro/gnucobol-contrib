@@ -1,0 +1,30 @@
+ocsort_gentestcase
+
+
+INSTALL
+
+ *Requirements
+	GNU C compiler  (version ???, work with 4.3.2)
+	GNU Make        (version ???, work with 3.81)
+
+    GNU Cobol (Version 1.1.0)  library and include file for : libcob - mpir
+    OR
+    GNU Cobol (Version 2.0.0)  library and include file for : libcob - mpir
+    
+    
+ *Install
+    Linux / Windows environment:    
+    After checkout in folder build_linux modify 
+    1) compile.sh # change the paths according to your needs
+    2) Makefile   # change the paths according to your needs / local setup
+    3) chmod 777 compile.sh  #enable for execution only for linux
+    
+    For linux   :     ./compile.sh 
+	For windows :     make
+
+ *Usage
+    ocsort_gentestcase <file name config>
+    ocsort_gentestcase --help  for help from command line.
+    ocsort_gentestcase --gen   to generate file config
+    
+    

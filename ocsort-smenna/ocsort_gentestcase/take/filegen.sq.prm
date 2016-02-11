@@ -1,0 +1,34 @@
+* ----------------------------------------------------------------------------
+* File generated from ocsort_gentestcase
+* ----------------------------------------------------------------------------
+* pathgen     =../files\
+* filename    =filegen.sq
+* organization=SQ
+* record      =F
+* lenmin      =00030
+* lenmax      =00100
+* numrec      =00100
+* ----------------------------------------------------------------------------
+*                             Record definition
+* Field : 00001 - Pos=00001, Len=00005, Type=PR
+* Field : 00002 - Pos=00006, Len=00005, Type=PD, Order=A, KeySequence=3
+* Field : 00003 - Pos=00011, Len=00009, Type=CH, Order=A, KeySequence=1
+* Field : 00004 - Pos=00020, Len=00003, Type=BI, Order=A, KeySequence=2
+* Field : 00005 - Pos=00023, Len=00003, Type=FI, Order=A, KeySequence=4
+* Field : 00006 - Pos=00026, Len=00010, Type=FX
+* Field : 00007 - Pos=00036, Len=00010, Type=CH, Order=D, KeySequence=6
+* Field : 00008 - Pos=00046, Len=00003, Type=FX
+* Field : 00009 - Pos=00049, Len=00005, Type=CH
+* Field : 00010 - Pos=00054, Len=00012, Type=ZD, Order=A, KeySequence=5
+* ----------------------------------------------------------------------------
+*                             Key definition
+* Key   : Order 00003 - KeySequence=1 - Pos=00011, Len=00009, Type=CH
+* Key   : Order 00004 - KeySequence=2 - Pos=00020, Len=00003, Type=BI
+* Key   : Order 00002 - KeySequence=3 - Pos=00006, Len=00005, Type=PD
+* Key   : Order 00005 - KeySequence=4 - Pos=00023, Len=00003, Type=FI
+* Key   : Order 00010 - KeySequence=5 - Pos=00054, Len=00012, Type=ZD
+* Key   : Order 00007 - KeySequence=6 - Pos=00036, Len=00010, Type=CH
+* ----------------------------------------------------------------------------
+ USE  ../files\filegen.sq       ORG SQ RECORD F,00100 
+ GIVE ../files\filegen.sq.srt   ORG SQ RECORD F,00100 
+ SORT FIELDS=(00011,00009,CH,A,00020,00003,BI,A,00006,00005,PD,A,00023,00003,FI,A,00054,00012,ZD,A,00036,00010,CH,D)

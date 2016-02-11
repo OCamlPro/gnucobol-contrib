@@ -1,0 +1,73 @@
+
+ocsort_gentestcase
+
+Tool for support testcase OCSort
+    Make file data, 
+    Generate File TAKE command for OCSort, 
+    Program COBOL for check data generated, 
+    Program COBOL for check data sorted, inspired by FAQ and How-To GNUCobol( verify program ),
+    Generate script for execution
+    
+**
+Requirements
+       gcc   - c compiler installed
+       cobc  - GNUCOBOL installed
+       ocort - installed
+**
+Installation:
+1) Check/Make folder in ocsort_gentestcase
+        subfolder:
+              bin           - executable
+              config        - config file (structure of file) 
+              files         - file output
+              script        - script for execution
+              scr           - source Cobol
+              take          - file script for OCSort.
+              
+2) Compile ocsort_gentestcase
+    After checkout in folder build_linux modify 
+    1) compile.sh # change the paths according to your needs
+    2) Makefile   # change the paths according to your needs / local setup
+    3) chmod 777 compile.sh  #enable for execution only for linux
+    
+    For linux   :     ./compile.sh 
+	For windows :     make
+
+3) Create modules   
+    in ../script
+    ../bin/ocsort_gentestcase --gen  #Create file config < example_gen.cfg> with all entries 
+    chmod 777 execgen.sh
+
+4) Rename and modify  file  example_gen.cfg
+
+5) Copy ocsort executable in bin folder
+        
+6) Execute generator
+    ./execgen  <filename config>   # example : ./execgen.sh  example_gen.cfg (parameter name is config file)
+    execgen
+    Make file data, 
+    Generate File TAKE command for OCSort, 
+    Program COBOL for check data generated, 
+    Program COBOL for check data sorted,
+    Generate script for execution
+ 
+
+7) Run process in Linux environment
+     in /script folder execute
+     
+    ./<script_name>.sh             # example  : ./execgen.sh example_gen.cfg
+  
+  This script <script_name>.sh :
+    compile program for check data generated  (name present in config file)
+    compile program for check data sorted     (name present in config file)
+    Set variable FGENFILE  with pathname and filename for file generated  (name present in config file)
+    Execute COBOL program for check data produced by ocsort_gentestcase
+    Execute OCSort with parameter name of file TAKE for sort (name present in config file) 
+    Set variable FGENFILE  with pathname and filename for file sorted  (name present in config file)
+    Execute Cobol program for check file sorted 
+    
+7) Run process in Windows environment
+     in \script folder execute
+     
+     <script_name>.bat             # example  : execgen.bat example_gen.cfg
+     This script is the same of linux.
