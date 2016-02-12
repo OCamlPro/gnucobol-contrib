@@ -1,4 +1,4 @@
-OCSort 1.0.0 (beta)   Windows environment.
+OCSort 1.0.0 (beta).
 
 
 INSTALL
@@ -15,15 +15,21 @@ INSTALL
     
     
  *Install
-    ONLY Windows environment.
-	Prey your god(s), and type "make". You should have an ocsort
-	No help provided.
+    Linux / Windows environment:    
+    After checkout in folder build_linux modify 
+    1) compile.sh # change the paths according to your needs
+    2) Makefile   # change the paths according to your needs / local setup
+    3) chmod 777 compile.sh  #enable for execution only for linux
+    
+    For linux   :     ./compile.sh 
+	For windows :     make
 
  *Usage
-    Search on internet, you will probably found a documentation for Microfocus(c) MFSORT(c) utility.
+    OCSort --help   for help from command line.
+    Folder testcase for example of commands.
+    
     Check for the functionnality implemented (listed in README) to see in this fit your needs.
 
-    OCSort --help   for help from command line.
     
     Setting environment variable for best performance and view details of statistics.
     

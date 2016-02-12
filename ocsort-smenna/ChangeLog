@@ -1,0 +1,11 @@
+
+2016-02-11  Sauro Menna  <smenna@users.sourceforge.net>
+	* Update Version 1.0.0 - by Sauro Menna 
+    * Version 1.0.0 updated.
+    * FIX : INLINE macro [Problem in Ubuntu environment]
+            SumField - Fix Update Record - ZD (Zoned)
+            Sort Field - Fix Sort Key - BI (Binary)
+
+2015-12-01  Sauro Menna  <smenna@users.sourceforge.net>
+
+	* Version 1.0.0 released.
