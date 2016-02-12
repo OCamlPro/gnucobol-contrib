@@ -1,0 +1,31 @@
+* ----------------------------------------------------------------------------
+* File generated from ocsort_gentestcase
+* ----------------------------------------------------------------------------
+* pathgen     =../files\
+* filename    =filegen.LS
+* organization=LS
+* record      =F
+* lenmin      =00030
+* lenmax      =00100
+* numrec      =00100
+* ----------------------------------------------------------------------------
+*                             Record definition
+* Field : 00001 - Pos=00001, Len=00005, Type=PR, Order=D, KeySequence=1
+* Field : 00002 - Pos=00006, Len=00005, Type=ZD, Order=A, KeySequence=2
+* Field : 00003 - Pos=00011, Len=00009, Type=CH, Order=A, KeySequence=3
+* Field : 00004 - Pos=00020, Len=00003, Type=CH
+* Field : 00005 - Pos=00023, Len=00003, Type=ZD
+* Field : 00006 - Pos=00026, Len=00010, Type=FX
+* Field : 00007 - Pos=00036, Len=00010, Type=CH
+* Field : 00008 - Pos=00046, Len=00003, Type=FX
+* Field : 00009 - Pos=00049, Len=00005, Type=CH
+* Field : 00010 - Pos=00054, Len=00012, Type=ZD
+* ----------------------------------------------------------------------------
+*                             Key definition
+* Key   : Order 00001 - KeySequence=1 - Pos=00001, Len=00005, Type=PR
+* Key   : Order 00002 - KeySequence=2 - Pos=00006, Len=00005, Type=ZD
+* Key   : Order 00003 - KeySequence=3 - Pos=00011, Len=00009, Type=CH
+* ----------------------------------------------------------------------------
+ USE  ../files\filegen.LS       ORG LS RECORD F,00100 
+ GIVE ../files\filegen.LS.srt   ORG LS RECORD F,00100 
+ SORT FIELDS=(00001,00005,CH,D,00006,00005,ZD,A,00011,00009,CH,A)
