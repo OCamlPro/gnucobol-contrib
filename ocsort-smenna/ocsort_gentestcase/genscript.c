@@ -160,7 +160,7 @@ int gen_script_linux (struct params_t* params, struct key_t** pKey )
 	write_line(pFile, (char*)"if [ \"$RTC\" == \"0\" ] ; then 	\n");
 
 	for (i=0; i < n_ocsort_top; i++) {
-		strcpy(pBuf, "EXPORT ");
+		strcpy(pBuf, "export ");
 		strcat(pBuf, szocsort_top[i]);
 		write_line(pFile, (char*)pBuf);
 	}

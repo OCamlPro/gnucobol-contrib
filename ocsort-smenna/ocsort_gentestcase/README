@@ -1,13 +1,29 @@
 
 ocsort_gentestcase
 
-Tool for support testcase OCSort
-    Make file data, 
-    Generate File TAKE command for OCSort, 
-    Program COBOL for check data generated, 
-    Program COBOL for check data sorted, inspired by FAQ and How-To GNUCobol( verify program ),
-    Generate script for execution
-    
+The question is : How can check if my sorted file is really sorted ? ?
+The answer is   : Write Cobol program that reads data file and checks the value of the keys.
+
+The goal of this project is generate file for sort and check that output of sort is correctly order.
+This tool is created for support testcase OCSort.
+Inspired by "FAQ and How-To" 5.54   What is OCSort? of GNUCobol( program-id. verify. ).
+
+ocsort_gentestcase creates:
+    Data File               # Input for ocsort
+    File TAKE command       # command for sort 
+    Program COBOL  Data     # for check data generated (Read file at end)
+    Program COBOL  Sort     # for check sorted data
+    Script for execution    # Contains a sequence of operation:  
+                                 1) Compile COBOL  Data
+                                 2) Compile COBOL  Sort
+                                 3) Setting value for file name
+                                 4) Execute Cobol program Data
+                                 5) Execute sort (ocsort TAKE filename)
+                                 6) Execute Cobol program Sort
+                                 Every step check return code of execution.
+                                 When Cobol program Sort find a error, display the values of current record, 
+                                 revious record and stop excution.
+  
 **
 Requirements
        gcc   - c compiler installed
@@ -30,21 +46,25 @@ Installation:
     2) Makefile   # change the paths according to your needs / local setup
     3) chmod 777 compile.sh  #enable for execution only for linux
     
+    Copy compile.sh file
     For linux   :     ./compile.sh 
 	For windows :     make
 
 3) Create modules   
     in ../script
-    ../bin/ocsort_gentestcase --gen  #Create file config < example_gen.cfg> with all entries 
     chmod 777 execgen.sh
+    in ../config
+    ../bin/ocsort_gentestcase --gen  #Create file config < example_gen.cfg> with all entries 
 
 4) Rename and modify  file  example_gen.cfg
 
-5) Copy ocsort executable in bin folder
+5) Verify/Copy ocsort executable in bin folder
         
 6) Execute generator
+    in ../script
     ./execgen  <filename config>   # example : ./execgen.sh  example_gen.cfg (parameter name is config file)
-    execgen
+
+    The script execgen
     Make file data, 
     Generate File TAKE command for OCSort, 
     Program COBOL for check data generated, 

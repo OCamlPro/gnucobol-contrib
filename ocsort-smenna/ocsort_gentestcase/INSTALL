@@ -4,8 +4,8 @@ ocsort_gentestcase
 INSTALL
 
  *Requirements
-	GNU C compiler  (version ???, work with 4.3.2)
-	GNU Make        (version ???, work with 3.81)
+	GNU C compiler  (the same of ocsort)
+	GNU Make        (the same of ocsort)
 
     GNU Cobol (Version 1.1.0)  library and include file for : libcob - mpir
     OR
@@ -22,7 +22,7 @@ INSTALL
     For linux   :     ./compile.sh 
 	For windows :     make
 
- *Usage
+ *Usage:
     ocsort_gentestcase <file name config>
     ocsort_gentestcase --help  for help from command line.
     ocsort_gentestcase --gen   to generate file config

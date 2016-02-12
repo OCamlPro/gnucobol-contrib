@@ -1,4 +1,3 @@
-
 ## :: Generator for
 ## ::     File output
 ## ::     Program Cobol for check data generated

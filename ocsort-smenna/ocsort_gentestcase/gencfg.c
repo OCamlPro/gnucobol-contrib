@@ -203,8 +203,8 @@ int	read_fileCFG ( char* szCmdLine, struct params_t* pParams , struct key_t** pK
 				if (pParams->PathSrc[strlen(pParams->PathSrc)-1] !=  '\\' ) 
 					strcat(pParams->PathSrc, "\\");
 			#else
-				if (pParams->PathGen[strlen(pParams->PathGen)-1] !=  '/' ) 
-					strcat(pParams->PathGen, "/");
+				if (pParams->PathSrc[strlen(pParams->PathSrc)-1] !=  '/' ) 
+					strcat(pParams->PathSrc, "/");
 			#endif
 		}
 
@@ -215,8 +215,8 @@ int	read_fileCFG ( char* szCmdLine, struct params_t* pParams , struct key_t** pK
 				if (pParams->PathTake[strlen(pParams->PathTake)-1] !=  '\\' ) 
 					strcat(pParams->PathTake, "\\");
 			#else
-				if (pParams->PathGen[strlen(pParams->PathGen)-1] !=  '/' ) 
-					strcat(pParams->PathGen, "/");
+				if (pParams->PathTake[strlen(pParams->PathTake)-1] !=  '/' ) 
+					strcat(pParams->PathTake, "/");
 			#endif
 		}
 
@@ -227,8 +227,8 @@ int	read_fileCFG ( char* szCmdLine, struct params_t* pParams , struct key_t** pK
 				if (pParams->PathBatsh[strlen(pParams->PathBatsh)-1] !=  '\\' ) 
 					strcat(pParams->PathBatsh, "\\");
 			#else
-				if (pParams->PathGen[strlen(pParams->PathGen)-1] !=  '/' ) 
-					strcat(pParams->PathGen, "/");
+				if (pParams->PathBatsh[strlen(pParams->PathBatsh)-1] !=  '/' ) 
+					strcat(pParams->PathBatsh, "/");
 			#endif
 		}
 		
