@@ -9,9 +9,25 @@
 	* Released OCSort User's Guide  (in doc folder)
 	* Update Version 1.0.0 - by Sauro Menna 
     * Enabled project in Linux Environment 
+    * Disable MF file handler
     * FIX : INLINE macro [Problem in Ubuntu environment]
             SumField - Fix Update Record - ZD (Zoned)
             Sort Field - Fix Sort Key - BI (Binary)
 
 2015-12-01  Sauro Menna  <smenna@users.sourceforge.net>
 	* Version 1.0.0 released.
+    New features:
+    1) Dynamic Memory Allocation for operations
+    2) Temporary files for sorting Big File > 2GByte
+    3) Merge files (max 16 files)
+    4) Read and write Line Sequential (LS) and Sequential Variable
+    5) Statistics and error message
+    6) Data type. New FI (Binary unsigned), PD (Packed) and ZD (Zoned - max 18 digits)
+    7) Reader and writer buffered
+    8) Memory Mapped Files for fast read files
+    9) Environment Variable -
+        - Folder for Temporary files,
+        - Check the command line (NO Operations)
+        - Memory Allocation for Variable FNAME / FILES in OUTFIL
+        - Statistics Details
+    10) File conversion Fix from/to Variable or LS from/to SQ
