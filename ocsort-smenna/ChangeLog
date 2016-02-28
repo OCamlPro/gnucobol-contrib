@@ -1,11 +1,17 @@
 
-2016-02-11  Sauro Menna  <smenna@users.sourceforge.net>
+2016-02-28  Sauro Menna  <smenna@users.sourceforge.net>
 	* Update Version 1.0.0 - by Sauro Menna 
-    * Version 1.0.0 updated.
+    * Enabled case insensitive for all commands and statements
+    * Insert build_windows for vc10 and vc 14
+    * FIX : warnings for vc14
+
+2016-02-11  Sauro Menna  <smenna@users.sourceforge.net>
+	* Released OCSort User's Guide  (in doc folder)
+	* Update Version 1.0.0 - by Sauro Menna 
+    * Enabled project in Linux Environment 
     * FIX : INLINE macro [Problem in Ubuntu environment]
             SumField - Fix Update Record - ZD (Zoned)
             Sort Field - Fix Sort Key - BI (Binary)
 
 2015-12-01  Sauro Menna  <smenna@users.sourceforge.net>
-
 	* Version 1.0.0 released.

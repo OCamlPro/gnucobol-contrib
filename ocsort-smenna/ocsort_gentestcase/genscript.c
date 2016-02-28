@@ -132,29 +132,29 @@ int gen_script_linux (struct params_t* params, struct key_t** pKey )
 	sprintf((char*) pBuf, "      cobc -x -std=mf -debug -Wall -D_FILE_OFFSET_BITS=\"64\" -o ../bin/%s ../src/%s.cbl\n", params->PgmCheckData, params->PgmCheckData);
 	write_line(pFile, (char*) pBuf);
 
-	write_line(pFile, (char*)"	export RTC=$?\n");
+	write_line(pFile, (char*)"export RTC=$?\n");
 	write_line(pFile, (char*)"else\n");
-	write_line(pFile, (char*)"	export RTC=1\n");
+	write_line(pFile, (char*)"export RTC=1\n");
 	write_line(pFile, (char*)"fi\n");
 
 	write_line(pFile, (char*)"if [ \"$RTC\" == \"0\" ] ; then 	\n");
 	sprintf((char*) pBuf, "     cobc -x -std=mf -debug -Wall -D_FILE_OFFSET_BITS=\"64\" -o ../bin/%s ../src/%s.cbl\n", params->PgmCheckSort, params->PgmCheckSort);
 	write_line(pFile, (char*) pBuf);
-	write_line(pFile, (char*)"	export RTC=$?\n");
+	write_line(pFile, (char*)"export RTC=$?\n");
 	write_line(pFile, (char*)"else\n");
-	write_line(pFile, (char*)"	export RTC=1\n");
+	write_line(pFile, (char*)"export RTC=1\n");
 	write_line(pFile, (char*)"fi\n");
 
 
 	write_line(pFile, (char*)"if [ \"$RTC\" == \"0\" ] ; then 	\n");
-	sprintf((char*) pBuf, "      export FGENFILE=%s%s\n", params->PathGen, params->szFileName);
+	sprintf((char*) pBuf, "export FGENFILE=%s%s\n", params->PathGen, params->szFileName);
 	write_line(pFile, (char*) pBuf);
 
 	sprintf((char*) pBuf, (char*)"      ../bin/%s\n",params->PgmCheckData);
 	write_line(pFile, (char*) pBuf);
-	write_line(pFile, (char*)"	    export RTC=$?\n");
+	write_line(pFile, (char*)"export RTC=$?\n");
 	write_line(pFile, (char*)"else\n");
-	write_line(pFile, (char*)"	    export RTC=1\n");
+	write_line(pFile, (char*)"export RTC=1\n");
 	write_line(pFile, (char*)"fi\n");
 
 	write_line(pFile, (char*)"if [ \"$RTC\" == \"0\" ] ; then 	\n");
@@ -167,24 +167,24 @@ int gen_script_linux (struct params_t* params, struct key_t** pKey )
 
 
 
-	sprintf((char*) pBuf, (char*)"      ../bin/ocsort TAKE  ../take/%s.prm\n", params->szFileName);
+	sprintf((char*) pBuf, (char*)"../bin/ocsort TAKE  ../take/%s.prm\n", params->szFileName);
 	write_line(pFile, (char*) pBuf);
-	write_line(pFile, (char*)"	export RTC=$?\n");
+	write_line(pFile, (char*)"export RTC=$?\n");
 	write_line(pFile, (char*)"else\n");
-	write_line(pFile, (char*)"	export RTC=1\n");
+	write_line(pFile, (char*)"export RTC=1\n");
 	write_line(pFile, (char*)"fi\n");
 
 
 	write_line(pFile, (char*)"##  checkdata sortede by OCSort \n");
 	write_line(pFile, (char*)"if [ \"$RTC\" == \"0\" ] ; then 	\n");
-	sprintf((char*) pBuf, "      export FGENFILE=%s%s.srt\n", params->PathGen, params->szFileName);
+	sprintf((char*) pBuf, "export FGENFILE=%s%s.srt\n", params->PathGen, params->szFileName);
 	write_line(pFile, (char*) pBuf);
 	sprintf((char*) pBuf, (char*)"     ../bin/%s\n", params->PgmCheckSort);
 	write_line(pFile, (char*) pBuf);
 
-	write_line(pFile, (char*)"	export RTC=$?\n");
+	write_line(pFile, (char*)"export RTC=$?\n");
 	write_line(pFile, (char*)"else\n");
-	write_line(pFile, (char*)"	export RTC=1\n");
+	write_line(pFile, (char*)"export RTC=1\n");
 	write_line(pFile, (char*)"fi\n");
 
 	write_line(pFile, (char*)"if [ \"$RTC\" == \"0\" ] ; then 	\n");

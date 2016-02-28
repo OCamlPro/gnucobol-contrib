@@ -1,6 +1,6 @@
 OCSort 1.0.0
 
-OCSort is an open source sort tool, which implement a subset of the functionnality of the Microfocus(c) MFSORT(c) utility.
+OCSort is an open source sort tool, which implement a subset of the functionality of the Microfocus(c) MFSORT(c) utility.
 
 This program is distributed under the GNU General Public License. See COPYING for details.
 
@@ -16,17 +16,17 @@ LINUX
     flex 2.5.37    
     gcc (GCC) 4.8.3 20140911 (Red Hat 4.8.3-9)
     
-Functionnality supported :
+Functionality supported :
 ___________________________________________________________________________________
  ocsort	Help                                                                       
 ___________________________________________________________________________________
- Syntax = Uppercase sensitive                                                      
+ Syntax = case insensitive                                                      
  Return code : 0 (ok) - 16 (error)                                                 
 ___________________________________________________________________________________
 Usage with file parameters   : ocsort TAKE filename                                
 ___________________________________________________________________________________
 Usage with command line                                                            
-OCSORT                                                                             
+ocsort                                                                             
 	SORT | MERGE                                                                   
 		FIELDS (START,LENGTH,TYPE,[A|D], ...)           |                          
 		FIELDS ((START,LENGTH,[A|D], ...),FORMAT=TYPE	|                 	       

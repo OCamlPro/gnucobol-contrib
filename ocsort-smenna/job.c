@@ -22,6 +22,8 @@
 #include <sys/stat.h>
 #include <malloc.h>
 #include <time.h>
+#include <ctype.h>
+
 #include "libocsort.h"
 
 //#ifdef	_WIN32
@@ -542,16 +544,23 @@ int	job_scanPrioritySearch(char* buffer)
 	char strGIVE[] = " GIVE ";
 	char * pchUse  = NULL;
 	char * pchGive = NULL;
+
+	char*  pBufUpp;
+
+	pBufUpp = (char*) malloc(sizeof(char)*(strlen(buffer) + 1));
+	util_covertToUpper(buffer, pBufUpp);
+
 	// Priority Search
 	// USE ---- GIVE  or   GIVE --- USE
 
-	pchUse	= strstr(buffer, strUSE);
-	pchGive = strstr(buffer, strGIVE);
+	pchUse	= strstr(pBufUpp, strUSE);
+	pchGive = strstr(pBufUpp, strGIVE);
 
 
 	if ((pchUse == NULL) || (pchGive == NULL))
 		return -1;
 
+	free(pBufUpp);
 	if (pchUse <= pchGive)	
 		return 0;			// Before USE, after GIVE
 	return 1;				// Before GIVE, after USE
@@ -679,7 +688,7 @@ int job_PutIntoArrayFile( char* pszBufOut,  char* pszBufIn, int nLength)
 	return nLength-nSplit;
 }
 
-int	job_FileInputBuffer (struct job_t *job, char* szSearch, char* bufnew, int nPosStart)
+int	job_FileInputBuffer (struct job_t *job, char* szBuffIn, char* bufnew, int nPosStart)
 {
 	char szFileName[1024];
 	char strUSE[]  = " USE ";
@@ -688,13 +697,19 @@ int	job_FileInputBuffer (struct job_t *job, char* szSearch, char* bufnew, int nP
 	char * pch1;
 	char * pch2;
 	char * pch3;
+	char * szSearch;
 	int  nSp1=1;
 	int  nSp2=0;
 	int  nSp3=0;
 	int  nFirstRound=0;
 	int  pk=0;
-	int nPosNull=0;
+	int  nPosNull=0;
+	int  bFound = 0;
 	// file input
+
+	szSearch = (char*) malloc(sizeof(char)*(strlen(szBuffIn) + 1));
+	util_covertToUpper(szBuffIn, szSearch);
+
 	pch1=szSearch+nPosStart;
 	pch2=szSearch+nPosStart;
 	pch3=szSearch+nPosStart;
@@ -702,9 +717,11 @@ int	job_FileInputBuffer (struct job_t *job, char* szSearch, char* bufnew, int nP
 	while (pch1 != NULL){
 		pch1 = strstr (pch1, strUSE);
 		if (pch1 != NULL){
+			bFound = 1;
 			nSp1 = pch1 - szSearch;
 			if (nFirstRound == 1) {
-				strncat(bufnew, pch2, pch1-pch2 );
+				// strncat(bufnew, pch2, pch1-pch2 );
+				strncat(bufnew, szBuffIn+(pch2-szSearch), pch1-pch2 );
 				pch2 = pch2 + (pch1 - pch2);
 			}
 			pch2 = strstr (szSearch+nSp1-1, strORG);
@@ -722,12 +739,13 @@ int	job_FileInputBuffer (struct job_t *job, char* szSearch, char* bufnew, int nP
 			if (pch2 != NULL){
 				nSp2 = pch2 - szSearch;
 				if (nFirstRound == 0) {
-					strncat(bufnew, szSearch, nSp1);
+					strncat(bufnew, szBuffIn, nSp1);
 					nFirstRound=1;
 				} 
 				// in questo punto aggiungere il nome file 
 				nSp2 = pch2 - pch1 - strlen(strUSE);
-				nPosNull = job_PutIntoArrayFile(job->arrayFileInCmdLine[job->nMaxFileIn], pch1+strlen(strUSE), nSp2);
+				//nPosNull = job_PutIntoArrayFile(job->arrayFileInCmdLine[job->nMaxFileIn], pch1+strlen(strUSE), nSp2);
+				nPosNull = job_PutIntoArrayFile(job->arrayFileInCmdLine[job->nMaxFileIn], szBuffIn+(pch1-szSearch)+strlen(strUSE), nSp2);
 				job->arrayFileInCmdLine[job->nMaxFileIn][nPosNull]=0x00;
 				job->nMaxFileIn++;
 				memset(szFileName, 0x00, 1024);
@@ -748,21 +766,27 @@ int	job_FileInputBuffer (struct job_t *job, char* szSearch, char* bufnew, int nP
 		}
 		else
 		{
-			fprintf(stderr,"*OCSort*S201* ERROR : Command USE not found or lower case, use uppercase\n");
-			exit(OC_RTC_ERROR);
+			if (bFound == 0) {
+				fprintf(stderr,"*OCSort*S201* ERROR : Command USE not found or lower case, use uppercase\n");
+				exit(OC_RTC_ERROR);
+			}
 		}
 	}
 	if (job->nMaxFileIn <= 0) {
 		fprintf(stderr,"*OCSort*S086* ERROR: Problem NO file input\n");
+		free(szSearch);
 		return -1;
 	}
 	if (pch2 != NULL)
-		strcat(bufnew, pch2);
+//-->>		strcat(bufnew, pch2);
+		strcat(bufnew, szBuffIn+(pch2-szSearch));
+	free(szSearch);
 	return (nSp1);
 }
 
 
-int	job_FileOutputBuffer (struct job_t *job, char* szSearch, char* bufnew, int nPosStart)
+int	job_FileOutputBuffer (struct job_t *job, char* szBuffIn, char* bufnew, int nPosStart)
+
 {
 	char szFileName[1024];
 	char strGIVE[]	 = " GIVE ";
@@ -774,10 +798,16 @@ int	job_FileOutputBuffer (struct job_t *job, char* szSearch, char* bufnew, int n
 	int  nSp1=1;
 	int  nSp2=0;
 	int  nSp3=0;
+	char * szSearch;
 	int  nFirstRound=0;
 	int  pk=0;
 	int nPosNull = 0;
+	int  bFound = 0;
 	// file input
+
+	szSearch = (char*) malloc(sizeof(char)*(strlen(szBuffIn) + 1));
+	util_covertToUpper(szBuffIn, szSearch);
+
 	pch1=szSearch+nPosStart;
 	pch2=szSearch+nPosStart;
 	pch3=szSearch+nPosStart;
@@ -785,9 +815,11 @@ int	job_FileOutputBuffer (struct job_t *job, char* szSearch, char* bufnew, int n
 	while (pch1 != NULL){
 		pch1 = strstr (pch1, strGIVE);
 		if (pch1 != NULL){
+			bFound = 1;
 			nSp1 = pch1 - szSearch;
 			if (nFirstRound == 1) {
-				strncat(bufnew, pch2, pch1-pch2 );
+				//strncat(bufnew, pch2, pch1-pch2 );
+				strncat(bufnew, szBuffIn+(pch2-szSearch), pch1-pch2 );
 				pch2 = pch2 + (pch1 - pch2);
 			}
 			pch2 = strstr (szSearch+nSp1-1, strORG);
@@ -800,12 +832,13 @@ int	job_FileOutputBuffer (struct job_t *job, char* szSearch, char* bufnew, int n
 			if (pch2 != NULL){
 				nSp2 = pch2 - szSearch;
 				if (nFirstRound == 0) {
-					strncat(bufnew, szSearch, nSp1);
+					strncat(bufnew, szBuffIn, nSp1);
 					nFirstRound=1;
 				} 
 				// 
 				nSp2 = pch2 - pch1 - strlen(strGIVE);
-				nPosNull = job_PutIntoArrayFile(job->arrayFileOutCmdLine[job->nMaxFileOut],  pch1+strlen(strGIVE), nSp2);
+				//nPosNull = job_PutIntoArrayFile(job->arrayFileOutCmdLine[job->nMaxFileOut],  pch1+strlen(strGIVE), nSp2);
+				nPosNull = job_PutIntoArrayFile(job->arrayFileOutCmdLine[job->nMaxFileOut], szBuffIn+(pch1-szSearch)+strlen(strGIVE), nSp2);
 				job->arrayFileOutCmdLine[job->nMaxFileOut][nPosNull] = 0x00;
 				job->nMaxFileOut++;
 				memset(szFileName, 0x00, 1024);
@@ -818,14 +851,32 @@ int	job_FileOutputBuffer (struct job_t *job, char* szSearch, char* bufnew, int n
 				strcat(bufnew,		szFileName);	// concat new file name
 				pch1 = pch2 + nSp3;
 			}
+			else
+			{
+				fprintf(stderr,"*OCSort*S212* ERROR : Command ORG not found or lower case, use uppercase\n");
+				exit(OC_RTC_ERROR);
+			}
+		}
+		else
+		{
+			if (bFound == 0) {
+				fprintf(stderr,"*OCSort*S211* ERROR : Command USE not found or lower case, use uppercase\n");
+				exit(OC_RTC_ERROR);
+			}
 		}
 	}
+//			}
+//		}
+//	}
 	if (job->nMaxFileOut <= 0) {
 		fprintf(stderr,"*OCSort*S087* ERROR: Problem NO file output\n");
+		free(szSearch);
 		return -1; 
 	}
 	if (pch2 != NULL)
-		strcat(bufnew, pch2);
+	//	strcat(bufnew, pch2);
+		strcat(bufnew, szBuffIn+(pch2-szSearch));
+	free(szSearch);
 	return (nSp1);
 }
 
@@ -958,9 +1009,9 @@ int job_print_final(struct job_t *job, time_t* timeStart)
 	//-->>if (job->nStatistics == 1) {
 		//-->>fprintf(stdout,"\n");
 		fprintf(stdout,"========================================================\n");
-		fprintf(stdout,"Record Number Total       : %ld\n", job->recordNumberTotal);
-		fprintf(stdout,"Record Write Sort Total   : %ld\n", job->recordWriteSortTotal);
-		fprintf(stdout,"Record Write Output Total : %ld\n", job->recordWriteOutTotal);
+		fprintf(stdout,"Record Number Total       : %lld\n", job->recordNumberTotal);
+		fprintf(stdout,"Record Write Sort Total   : %lld\n", job->recordWriteSortTotal);
+		fprintf(stdout,"Record Write Output Total : %lld\n", job->recordWriteOutTotal);
 		fprintf(stdout,"========================================================\n");
 	//-->>}
 	if (job->nStatistics == 2)	{
@@ -971,8 +1022,8 @@ int job_print_final(struct job_t *job, time_t* timeStart)
 		}
 
 		fprintf(stdout,"\n");
-		fprintf(stdout,"Memory size for OCSort data     : %10ld\n", job->ulMemSizeAlloc);
-		fprintf(stdout,"Memory size for OCSort key      : %10ld\n", job->ulMemSizeAllocSort);
+		fprintf(stdout,"Memory size for OCSort data     : %10lld\n", job->ulMemSizeAlloc);
+		fprintf(stdout,"Memory size for OCSort key      : %10lld\n", job->ulMemSizeAllocSort);
 		fprintf(stdout,"BufferedReader MAX_BUFFER       : %10d\n", MAX_BUFFER);
 		fprintf(stdout,"MAX_SIZE_CACHE_WRITE            : %10d\n", MAX_SIZE_CACHE_WRITE);
 		fprintf(stdout,"MAX_SIZE_CACHE_WRITE_FINAL      : %10d\n", MAX_SIZE_CACHE_WRITE_FINAL);
@@ -1077,10 +1128,10 @@ int job_print(struct job_t *job) {
 			printf("FIELDS = COPY \n");
 
 		if (job->nSkipRec > 0)
-			fprintf(stderr,"SKIPREC = %ld\n", job->nSkipRec);
+			fprintf(stderr,"SKIPREC = %lld\n", job->nSkipRec);
 
 		if (job->nStopAft > 0)
-			fprintf(stderr,"STOPAFT = %ld\n", job->nStopAft);
+			fprintf(stderr,"STOPAFT = %lld\n", job->nStopAft);
 
 		if (job->includeCondField!=NULL) {
 			printf("INCLUDE COND : (");
@@ -1184,9 +1235,9 @@ int job_print(struct job_t *job) {
 				if (outfil->nSplit > 0)
 					printf("\t\tSPLIT \n");
 				if (outfil->outfil_nStartRec >= 0)
-					printf("\t\tSTARTREC = %ld\n", outfil->outfil_nStartRec);
+					printf("\t\tSTARTREC = %lld\n", outfil->outfil_nStartRec);
 				if (outfil->outfil_nEndRec >= 0)
-					printf("\t\tENDREC = %ld\n", outfil->outfil_nEndRec);
+					printf("\t\tENDREC = %lld\n", outfil->outfil_nEndRec);
 			}
 	//--		printf(")\n");
 		}
@@ -3648,6 +3699,7 @@ int job_merge_files(struct job_t *job) {
 
 job_merge_files_exit:
 
+	free(bufferwriteglobal);
 	free(szBuffRek);
 	free(recordBuffer);
 	free(recordBufferPrevious);

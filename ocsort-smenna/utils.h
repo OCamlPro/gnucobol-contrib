@@ -185,6 +185,7 @@ int utils_setFieldTypInt(char * strType);
 int utils_GenPadSize(int nLR);
 
 void util_print_time_elap( const  char* szMex );
+void util_covertToUpper(char *strIn, char* strOut);
 
 unsigned short int Endian_Word_Conversion(unsigned short int word) ;
 unsigned long int Endian_DWord_Conversion(unsigned long int dword) ;

@@ -537,11 +537,12 @@ int generate_file ( struct params_t* params, struct key_t** pKey )
 		}
 
 		write(desc, pBuf, params->nLenMax+nEOL);
-		if(n%100000==0)
-			fprintf(stdout,"record written %ld\n", n);
+		if((n%100000==0) && (n>0))
+			fprintf(stdout,"records written %ld\n", n);
 
 
 	}
+	fprintf(stdout,"Total records written %ld\n", n);
 
 	close(desc);
 

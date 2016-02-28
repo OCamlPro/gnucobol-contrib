@@ -204,10 +204,10 @@ int main_prod(int argc, char **argv) {
 	cobtidy();
 
 	if (nRC == 0)
-		printf("Sort OK\n");
+		printf("OCSort - Sort OK\n");
 	else
 	{
-		printf("Sort ERROR\n");  
+		printf("OCSort - Sort ERROR\n");  
 		nRC = OC_RTC_ERROR;
 	}
 	return nRC;

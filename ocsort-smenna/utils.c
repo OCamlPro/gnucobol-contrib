@@ -346,3 +346,16 @@ int utils_SetOptionSort(char* optSort) {
 	}
 	return -1;
 }
+
+void util_covertToUpper(char *strIn, char* strOut){
+    char* pIn;
+	char* pOut;
+    pIn =strIn;
+	pOut=strOut;
+    while(*pIn != 0x00) {
+		*pOut=toupper(*pIn);
+		pIn++;
+		pOut++;
+	}
+    return ;
+}

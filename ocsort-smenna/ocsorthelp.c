@@ -76,9 +76,9 @@ void OCSort_Config ( void )
 		else
 			fprintf(stdout," - Info debug Parser/Scanner\n");
 
-	fprintf(stdout,"OCSORT_MEMSIZE               : %7ld MByte\n", (job->ulMemSizeAlloc+job->ulMemSizeAllocSort)/1024000);
-	fprintf(stdout,"         Memory size for key : %7ld MByte\n", (job->ulMemSizeAllocSort/1024000));
-	fprintf(stdout,"        Memory size for data : %7ld MByte\n", (job->ulMemSizeAlloc/1024000));
+	fprintf(stdout,"OCSORT_MEMSIZE               : %7lld MByte\n", (job->ulMemSizeAlloc+job->ulMemSizeAllocSort)/1024000);
+	fprintf(stdout,"         Memory size for key : %7lld MByte\n", (job->ulMemSizeAllocSort/1024000));
+	fprintf(stdout,"        Memory size for data : %7lld MByte\n", (job->ulMemSizeAlloc/1024000));
 	fprintf(stdout,"OCSORT_MLT                   : %7d  Pages for cache MemoryMappedFile\n", job->nMlt);
 	fprintf(stdout,"  MemoryMappedFile page size : %7.2f MByte\n", (double)(job->nMlt * page_size)/1024000);
 	fprintf(stdout,"            System page size : %7ld Bytes\n", page_size);
@@ -115,7 +115,7 @@ void OCSort_Usage ( void )
 	printf("___________________________________________________________________________________\n");
 	printf(" ocsort	Help                                                                       \n");
 	printf("___________________________________________________________________________________\n");
-	printf(" Syntax = Uppercase sensitive                                                      \n");
+	printf(" Syntax = case insensitive                                                         \n");
 	printf(" Return code : 0 (ok) - 16 (error)                                                 \n");
 	printf("___________________________________________________________________________________\n");
 	printf("Usage with file parameters   : ocsort TAKE filename                                \n");

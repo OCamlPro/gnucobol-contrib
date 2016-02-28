@@ -240,36 +240,29 @@ fieldvalue: CHARTYPE  STRING  {
 		free($2); 
 }		
 		| DIGIT STRING {
-		// char* pszInt;
 		pszInt = (char*) malloc(32);		 
 		sprintf(pszInt, "%d", $1);
-		//-->>ok $$=fieldValue_constr_newF((char*)$1, (char*)$2, TYPE_STRUCT_STD);
 		$$=fieldValue_constr_newF((char*)pszInt, (char*)$2, TYPE_STRUCT_STD);
 		free($2); 
 		(pszInt); 
 }			// 80X
 	// new
 		| DIGIT CHARTYPE {
-		// char* pszInt;
 		pszInt = (char*) malloc(32);		 
 		sprintf(pszInt, "%d", $1);
-		// ok ok $$=fieldValue_constr_newF((char*)$1, (char*)$2, TYPE_STRUCT_STD);
 		$$=fieldValue_constr_newF((char*)pszInt, (char*)$2, TYPE_STRUCT_STD);
 		free($2); 
 		free(pszInt); 
 }			// 80:X
 		| STRING STRING {
-//-->>		$$=fieldValue_constr_newF($1, $2, TYPE_STRUCT_STD);
 		$$=fieldValue_constructor($1, $2, TYPE_STRUCT_STD);
 		free($1); 
 		free($2); 
-		// free(pszInt); 
 }
 	
 ;
 
 fieldvalueconst:  DIGIT {
-		//char* pszInt;
 		pszInt = (char*) malloc(32);		 
 		sprintf(pszInt, "%d", $1);
 		$$=(struct fieldValue_t *) fieldValue_constructor((char*)"Z",pszInt, TYPE_STRUCT_STD);
@@ -277,13 +270,8 @@ fieldvalueconst:  DIGIT {
 }
 		| SIGNDIGITBIG  {
 		char szType[] = "Z";
-		//char* pszInt;
 		pszInt = (char*) malloc(32);		 
-		#ifdef	_MSC_VER
-			sprintf(pszInt, "%I64ld", $1);
-		#else
-			sprintf(pszInt, "%lld", $1);
-		#endif
+		sprintf(pszInt, "%lld", $1);
 		$$=(struct fieldValue_t *) fieldValue_constructor((char*)szType, pszInt, TYPE_STRUCT_STD);
 		free(pszInt); 
 }

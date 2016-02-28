@@ -5,13 +5,11 @@ Windows
 MinGW
 bison (GNU Bison) 2.7
 Written by Robert Corbett and Richard Stallman.
-
 Copyright (C) 2012 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 win_flex 2.5.37
-
 gcc (GCC) 4.8.1
 Copyright (C) 2013 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
@@ -20,23 +18,23 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 LINUX
 
-gcc --version
+[]$ gcc --version
 gcc (GCC) 4.8.3 20140911 (Red Hat 4.8.3-9)
 Copyright (C) 2013 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-bison --version
+[]$ bison --version
 bison (GNU Bison) 2.7
 Written by Robert Corbett and Richard Stallman.
 Copyright (C) 2012 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-flex --version
+[]$ flex --version
 flex 2.5.37
 
-
-cobc --version
+[]$ cobc --version
 cobc (OpenCOBOL) 2.0.0
 Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Keisuke Nishida
 Copyright (C) 2006-2012 Roger While
