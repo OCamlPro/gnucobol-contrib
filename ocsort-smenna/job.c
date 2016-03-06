@@ -905,6 +905,8 @@ int job_MakeCmdLine(char* szF, char* buf)
 	memset(buf, 0x00, sizeof (4096));
 		do {
 			  c = fgetc (pFile);
+			  if( feof(pFile) )
+				 break ;
 			  printf("%c", c);
 			  //-->>if (c == '*')  	// skip for carriage return or line feed
 			  if ((c == '*') && (nNewLine == 1))
