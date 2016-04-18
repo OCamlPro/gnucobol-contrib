@@ -6,7 +6,8 @@
       *> mission to destroy all Klingons, which also maneu-  *
       *> ver and fire on the Enterprise.                     *
       *>******************************************************
-      *> Tectonics: cobc -free -x ctrek.cob
+      *> Tectonics:
+      *>   cobc -free -x ctrek.cob -cb_conf=perform-osvs:yes
       *>******************************************************
 
        identification division.
@@ -24,6 +25,10 @@
       *>
       *> Original source:
       *> <http://www.dunnington.u-net.com/public/startrek/ctrek.cob>
+      *>
+      *> Brian Tiffin <btiffin@users.sf.net>, 2010-03-24:
+      *> btiffin updates, it actually works now, when compiled with
+      *>  perform-osvs:yes  This allows thru with overlapping exits
 
        environment division.
        configuration section.
@@ -61,22 +66,22 @@
        01  kcntr                     pic 99.
        01  x                         pic 999.
        01  y                         pic 999.
-       01  ws-date                   pic 9(4) comp-5.
+       01  ws-date                   pic 9(4).
        01  time-flag                 pic 9.
            88  time-flag-set         value 1.
        01  max-no                    pic 999.
        01  hq1                       pic 9.
        01  hq2                       pic 9.
-       01  t-store                   pic 9(4) comp-5.
+       01  t-store                   pic 9(4).
        01  attack-flag               pic 9.
            88  klingons-attacking    value 1.
        01  too-late-flag             pic 9.
            88  too-late              value 1.
        01  bye-k                     pic 99.
        01  var1                      pic 99 value 1.
-       01  var2                      pic 9(6) comp-5.
-       01  var3                      pic 9(6) comp-5.
-       01  var4                      pic 9(4) comp-5.
+       01  var2                      pic 9(6).
+       01  var3                      pic 9(6).
+       01  var4                      pic 9(4).
        01  var4-an                   pic x(4).
        01  var5                      pic zzz999.
        01  var6                      pic zzzz99.
@@ -96,7 +101,7 @@
                "a4hfxnc89kd3jxf5dks3hb3m1".
        01  genrte-result             pic 9.
            88  no-way                value 1.
-       01  fuel-count                pic s9(5) comp-5.
+       01  fuel-count                pic s9(5).
        01  torps                     pic 9 value 5.
        01  prt-lines.
            05  con-red.
@@ -119,9 +124,9 @@
        01  vab1                      pic 9.
        01  vab2                      pic 99.
        01  roll-x                    pic 999v.
-       01  shield-cnt                pic s9(4) comp-5.
+       01  shield-cnt                pic s9(4).
        01  shield-cnt-an             pic x(4).
-       01  damage-cnt                pic 9(6) comp-5.
+       01  damage-cnt                pic 9(6).
        01  scan-keep.
            05  cv                    pic 99 occurs 18 times.
        01  scan-ctr                  pic 99.
@@ -162,10 +167,10 @@
        01  klingons                  pic 99.
        01  romulons                  pic 99.
        01  lst-reply                 pic x(3).
-           88  yes-lst               value "yes".
-       01  rev-str                   pic 9(6) comp-5.
-       01  seed-x                    pic v9(6) comp-5.
-       01  seed-ast                  pic 9(6)v9(6) comp-5.
+           88  yes-lst               values "yes" "y".
+       01  rev-str                   pic 9(6).
+       01  seed-x                    pic v9(6).
+       01  seed-ast                  pic 9(6)v9(6).
        01  ws-time.
            05  ws-hour               pic 99.
            05  ws-min                pic 99.
@@ -194,7 +199,7 @@
        01  mod-ctr                   pic 99.
        01  md-row.
            05  md-sub                pic x occurs 28 times.
-       01  dm-var4                   pic 9(4) comp-5.
+       01  dm-var4                   pic 9(4).
 
        01  ct-k                      pic 99.
        01  ct-r                      pic 99.
@@ -202,12 +207,12 @@
        01  dist-r                    pic 99.
        01  dist-b                    pic 99.
        01  tal4                      pic 9.
-       01  kh-tl                     pic 9(5) comp-5.
+       01  kh-tl                     pic 9(5).
        01  str-a                     pic 99.
        01  str-r                     pic 99.
        01  str-x                     pic 99.
-       01  cx                        pic 999 comp-5.
-       01  dx                        pic 999 comp-5.
+       01  cx                        pic 999.
+       01  dx                        pic 999.
        01  cx-1                      pic 9.
        01  dx-1                      pic 9.
        01  e1                        pic 99.
@@ -662,6 +667,10 @@
            go to 3000-exit.
 
        3060-com.
+           display "Do you want to rethink that decision? "
+           accept lst-reply
+           if yes-lst
+               go to 3000-exit.
            move 1 to indicate-x.
            display "      ".
            display "*ENTERPRISE STRANDED - CAPTAIN BOOKED* ".
@@ -1363,7 +1372,7 @@
                varying tr2 from 0 by 1 until tr2 > 2
                after tr1 from 0 by 1 until tr1 > 2.
            display "      ".
-           display "=========================".
+           display "====" qt1 "===============" qt3 "====".
            display "=       =       =       =".
            display "= " cv (1) "," cv (2) " = " cv (3) "," cv (4) " = " cv (5) "," cv (6) " = ".
            display "=       =       =       =".
@@ -1539,8 +1548,7 @@
            if nx > 24
                move 0 to nx.
            add 1 to nx.
-      *> Used to be if char (nx) numeric
-           if nx equal nx
+           if char(nx) numeric
                move 1 to genrte-result
            else
                move 0 to indicate-y
