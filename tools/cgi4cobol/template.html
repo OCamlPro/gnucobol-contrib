@@ -1,0 +1,37 @@
+<html>
+<head>
+<title> %%title%% </title>
+</head>
+<body>
+<h1> %%title%% </h1>
+<p>Received from %%request_method%% (%%content_length%% bytes) : <pre>%%$0%%</pre></p>
+<table border=1 width="50%">
+<tr>
+<th align=right>  A </th>
+<th align=right>  B </th>
+<th align=right> D[1] </th>
+<th align=right> D[2] </th>
+<th align=right> D[3] </th>
+</tr>
+    <tr>
+    <td align=right> %%fieldA%% </td>
+    <td align=right> %%fieldB%% </td>
+    <td align=right> %%fieldD1%% </td>
+    <td align=right> %%fieldD2%% </td>
+    <td align=right> %%fieldD3%% </td>
+    </tr>
+    <tr><td colSpan=5> C: "%%fieldC%%" </td></tr>
+</table>
+<br />
+<form action="%%program%%" method="POST">
+<p>Type some text (5 bytes) <input type="text" name="A" value="%%fieldA%%"></p>
+<p>Specify a number <input type="number" name="B" value="%%fieldB%%"></p>
+<p>Type some text in a repeating field: <input type="text" name="D" value="%%fieldD1%%"> 
+                                     <input type="text" name="D" value="%%fieldD2%%"> 
+                                     <input type="text" name="D" value="%%fieldD3%%"></p>
+<p>See some text wrapping: <textarea name="E" rows="3" cols="10">%%fieldE%%</textarea></p>
+<p>Sample output when not found: "%%notfound%%"</p>
+<p>The complete parameters passed: <pre>%%tplFields%%</pre></p>
+<input type=submit>
+</body>
+</html>
