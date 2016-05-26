@@ -188,6 +188,7 @@
        DISPLAY "SHA3-224 test case 1 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-224 test case 1!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-224-OUTPUT
     END-IF
     
     .
@@ -224,6 +225,7 @@
        DISPLAY "SHA3-224 test case 2 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-224 test case 2!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-224-OUTPUT
     END-IF
     
     .
@@ -261,6 +263,7 @@
        DISPLAY "SHA3-224 test case 3 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-224 test case 3!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-224-OUTPUT
     END-IF
     
     .
@@ -300,6 +303,7 @@
        DISPLAY "SHA3-224 test case 4 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-224 test case 4!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-224-OUTPUT
     END-IF
     
     .
@@ -336,6 +340,7 @@
        DISPLAY "SHA3-224 test case 5 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-224 test case 5!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-224-OUTPUT
     END-IF
     
     .
@@ -373,6 +378,7 @@
        DISPLAY "SHA3-256 test case 1 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-256 test case 1!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-256-OUTPUT
     END-IF
     
     .
@@ -410,6 +416,7 @@
        DISPLAY "SHA3-256 test case 2 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-256 test case 2!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-256-OUTPUT
     END-IF
     
     .
@@ -448,6 +455,7 @@
        DISPLAY "SHA3-256 test case 3 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-256 test case 3!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-256-OUTPUT
     END-IF
     
     .
@@ -488,6 +496,7 @@
        DISPLAY "SHA3-256 test case 4 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-256 test case 4!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-256-OUTPUT
     END-IF
     
     .
@@ -525,6 +534,7 @@
        DISPLAY "SHA3-256 test case 5 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-256 test case 5!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-256-OUTPUT
     END-IF
     
     .
@@ -562,6 +572,7 @@
        DISPLAY "SHA3-384 test case 1 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-384 test case 1!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-384-OUTPUT
     END-IF
     
     .
@@ -599,6 +610,7 @@
        DISPLAY "SHA3-384 test case 2 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-384 test case 2!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-384-OUTPUT
     END-IF
     
     .
@@ -637,6 +649,7 @@
        DISPLAY "SHA3-384 test case 3 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-384 test case 3!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-384-OUTPUT
     END-IF
     
     .
@@ -677,6 +690,7 @@
        DISPLAY "SHA3-384 test case 4 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-384 test case 4!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-384-OUTPUT
     END-IF
     
     .
@@ -714,6 +728,7 @@
        DISPLAY "SHA3-384 test case 5 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-384 test case 5!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-384-OUTPUT
     END-IF
     
     .
@@ -752,6 +767,7 @@
        DISPLAY "SHA3-512 test case 1 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-512 test case 1!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-512-OUTPUT
     END-IF
     
     .
@@ -790,6 +806,7 @@
        DISPLAY "SHA3-512 test case 2 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-512 test case 2!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-512-OUTPUT
     END-IF
     
     .
@@ -829,6 +846,7 @@
        DISPLAY "SHA3-512 test case 3 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-512 test case 3!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-512-OUTPUT
     END-IF
     
     .
@@ -870,6 +888,7 @@
        DISPLAY "SHA3-512 test case 4 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-512 test case 4!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-512-OUTPUT
     END-IF
     
     .
@@ -908,6 +927,7 @@
        DISPLAY "SHA3-512 test case 5 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHA3-512 test case 5!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHA3-512-OUTPUT
     END-IF
     
     .
@@ -947,6 +967,7 @@
        DISPLAY "SHAKE128 test case 1 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHAKE128 test case 1!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHAKE128-OUTPUT(1:32)
     END-IF
     
     .
@@ -986,6 +1007,7 @@
        DISPLAY "SHAKE128 test case 2 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHAKE128 test case 2!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHAKE128-OUTPUT(1:32)
     END-IF
     
     .
@@ -1025,6 +1047,7 @@
        DISPLAY "SHAKE128 test case 3 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHAKE128 test case 3!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHAKE128-OUTPUT(1:32)
     END-IF
     
     .
@@ -1065,6 +1088,7 @@
        DISPLAY "SHAKE256 test case 1 passed."     END-DISPLAY
     ELSE
        DISPLAY "Error in SHAKE256 test case 1!!!" END-DISPLAY
+       CALL "CBL_OC_DUMP" using WS-SHAKE256-OUTPUT(1:64)
     END-IF
     
     .

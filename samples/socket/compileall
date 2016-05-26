@@ -1,0 +1,55 @@
+rm tcpipserver
+cobc -x -W tcpipserver.cbl \
+  get_errno.c \
+  errnomessage.cbl \
+  httpstatus.cbl \
+  connecttoserver.cbl \
+  gettimestamp.cbl
+chmod +x tcpipserver
+
+rm tcpipclient
+cobc -x -W tcpipclient.cbl \
+  get_errno.c \
+  errnomessage.cbl \
+  httpstatus.cbl \
+  connecttoserver.cbl \
+  gettimestamp.cbl
+chmod +x tcpipclient
+
+rm RESTclient
+cobc -x -W RESTclient.cbl \
+  get_errno.c \
+  errnomessage.cbl \
+  httpstatus.cbl \
+  connecttoserver.cbl \
+  gettimestamp.cbl
+chmod +x RESTclient
+
+rm messagesend
+cobc -x -W messagesend.cbl \
+  get_errno.c \
+  errnomessage.cbl \
+  httpstatus.cbl \
+  connecttoserver.cbl \
+  gettimestamp.cbl
+chmod +x messagesend
+
+rm messagereceive
+cobc -x -W messagereceive.cbl \
+  get_errno.c \
+  errnomessage.cbl \
+  httpstatus.cbl \
+  connecttoserver.cbl \
+  gettimestamp.cbl
+chmod +x messagereceive
+
+rm messagepublish
+cobc -x -W messagepublish.cbl \
+  get_errno.c \
+  errnomessage.cbl \
+  httpstatus.cbl \
+  connecttoserver.cbl \
+  gettimestamp.cbl
+chmod +x messagepublish
+
+

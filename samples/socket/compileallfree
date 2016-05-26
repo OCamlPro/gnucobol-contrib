@@ -1,0 +1,72 @@
+#run this after running compileallfixed
+./changeformat changeformat1.cbl changeformat2.cbl tofree
+rm changeformat2
+cobc -x changeformat2.cbl
+chmod +x changeformat2
+
+./changeformat errnomessage1.cbl errnomessage2.cbl tofree
+./changeformat httpstatus1.cbl httpstatus2.cbl tofree
+./changeformat connecttoserver1.cbl connecttoserver2.cbl tofree
+./changeformat gettimestamp1.cbl gettimestamp2.cbl tofree
+
+./changeformat tcpipserver1.cbl tcpipserver2.cbl tofree
+rm tcpipserver2
+cobc -x -W tcpipserver2.cbl \
+  get_errno.c \
+  errnomessage2.cbl \
+  httpstatus2.cbl \
+  connecttoserver2.cbl \
+  gettimestamp2.cbl
+chmod +x tcpipserver2
+
+./changeformat tcpipclient1.cbl tcpipclient2.cbl tofree
+rm tcpipclient2
+cobc -x -W tcpipclient2.cbl \
+  get_errno.c \
+  errnomessage2.cbl \
+  httpstatus2.cbl \
+  connecttoserver2.cbl \
+  gettimestamp2.cbl
+chmod +x tcpipclient2
+
+./changeformat RESTclient1.cbl RESTclient2.cbl tofree
+rm RESTclient2
+cobc -x -W RESTclient2.cbl \
+  get_errno.c \
+  errnomessage2.cbl \
+  httpstatus2.cbl \
+  connecttoserver2.cbl \
+  gettimestamp2.cbl
+chmod +x RESTclient2
+
+./changeformat messagesend1.cbl messagesend2.cbl tofree
+rm messagesend2
+cobc -x -W messagesend2.cbl \
+  get_errno.c \
+  errnomessage2.cbl \
+  httpstatus2.cbl \
+  connecttoserver2.cbl \
+  gettimestamp2.cbl
+chmod +x messagesend2
+
+./changeformat messagereceive1.cbl messagereceive2.cbl tofree
+rm messagereceive1
+cobc -x -W messagereceive2.cbl \
+  get_errno.c \
+  errnomessage2.cbl \
+  httpstatus2.cbl \
+  connecttoserver2.cbl \
+  gettimestamp2.cbl
+chmod +x messagereceive2
+
+./changeformat messagepublish1.cbl messagepublish2.cbl tofree
+rm messagepublish2
+cobc -x -W messagepublish2.cbl \
+  get_errno.c \
+  errnomessage2.cbl \
+  httpstatus2.cbl \
+  connecttoserver2.cbl \
+  gettimestamp2.cbl
+chmod +x messagepublish2
+
+
