@@ -59,6 +59,7 @@
 	#define COBSOCK_read(x,y,z)		recv(x,y,z,0)	// read from socket
 	#define COBSOCK_write(x,y,z)	send(x,y,z,0)	// write to socket
 	#define COBSOCK_close			closesocket		// close socket
+	#define snprintf				_snprintf
 #else
 	#define COBSOCK_read(x,y,z)		read(x,y,z)
 	#define COBSOCK_write(x,y,z)	write(x,y,z)

@@ -26,7 +26,7 @@
 
 // includes independent from OS
 //
-#include <string>
+#include <string.h>
 #include <set>
 #include <stdio.h>
 
@@ -389,7 +389,7 @@ void _cobsocket_dump_sockets()
 	printf("\t_cobsocket_dump_sockets called\r\n");
 #endif
 
-	printf("\tNumber of active sockets: %d\r\n", st_sockets.size());
+	printf("\tNumber of active sockets: %d\r\n", (int)st_sockets.size());
 	for(unsigned int l_i = 0; l_i < st_sockets.size(); l_i++)
 	{
 		printf("\t%X\r\n", *l_iter);
@@ -922,7 +922,7 @@ int _cobsocket_readn(char* p_socket, char* p_bytes, char* p_data, unsigned int p
 
 	// store the number of bytes we have read into buffer
 	//
-	sprintf(l_buf,"%.5d",l_bytes);
+	snprintf(l_buf,5,"%.5d",l_bytes);
 	memcpy(p_bytes,l_buf,5);
 
 	return l_ret;
@@ -1118,7 +1118,7 @@ int _cobsocket_close(char* p_socket) // close socket
 		l_adr[15]='\0';
 
 		// Trim address
-		for(l_i = strlen(l_adr)-1; l_i >= 0; l_i--)
+		for(l_i = (int)strlen(l_adr)-1; l_i >= 0; l_i--)
 		{
 			if(l_adr[l_i] != ' ') break;
 			else l_adr[l_i] = '\0';
@@ -1148,7 +1148,7 @@ int _cobsocket_close(char* p_socket) // close socket
 		if(!p2) return 99;
 		if(!p3) return 99;
 		
-		return _cobsocket_readn(p1,p2,p3, (l_code == 8) ? tc_cob2unsigned(p4,6) : 0);
+		return _cobsocket_readn(p1,p2,p3, (l_code == 8) ? cob2unsigned(p4,6) : 0);
 
 	// Write data and wait for response
 	//
@@ -1161,7 +1161,7 @@ int _cobsocket_close(char* p_socket) // close socket
 
 		// first send some data
 		//
-	   	l_ret = _cobsocket_writen(p1,tc_cob2unsigned(p2,5),p4);
+	   	l_ret = _cobsocket_writen(p1,cob2unsigned(p2,5),p4);
 		switch(l_ret)
 		{
 		case 0: // no error
@@ -1232,7 +1232,7 @@ int _cobsocket_close(char* p_socket) // close socket
 		if(!p1) return 99;
 		if(!p2) return 99;
 
-		return _cobsocket_next_read(p1, p2, (l_code == 10) ? tc_cob2unsigned(p3,6) : 0);
+		return _cobsocket_next_read(p1, p2, (l_code == 10) ? cob2unsigned(p3,6) : 0);
 
 	// Get last error message from OS or socket-subsystem
 	//

@@ -1,10 +1,10 @@
-      * Diese Programm implementiert einen Multi-Socket-Server
-      * der mehrere Verbindungen halten und neue akzeptieren kann.
-      * Er nimmt Daten von Clients entgegen und reagiert auf 
-      * deren Kommandos zum Schliessen einer aktiven Verbindung.
-
        IDENTIFICATION DIVISION.         
        PROGRAM-ID. MULTISRV.
+
+      * This program implements a socket-server which can 
+      * keep multiple connections and allows new ones.
+      * It reads data from clients and reacts to their commands
+      * to close active Connections.
        
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
@@ -29,75 +29,102 @@
        PROCEDURE DIVISION.
        MAIN-PARAGRAPH.
 
-      * Socket oeffnen      
-              display "Oeffne Server-Socket..."
+      * Create Socket
+              display "creating server-socket..."
               end-display
               call "CBL_OC_SOCKET" 
                    using "00" PORT LISTEN giving RESULT
               end-call
-              perform handle-error.
+              perform handle-CRITICAL-error.
 
-      * Auf eine Verbindung warten die gelesen werden kann
+      * Wait for a connection that could be read
        HANDLE-READ.
 
-              display 'Warte auf eingehende Verbindung/'
-                      'eingehende Daten ...'
+              display 'waiting for incoming connection / data ...'
               end-display
               call 'CBL_OC_SOCKET'
                    using "10" LISTEN HNDL TOUT giving RESULT
               end-call.
               evaluate RESULT
-              when 0
-                     display 'Daten verfuegbar ...'
+                 when 0
+                     display 'data is available ...'
                      end-display
-              when 5
-                     display 'Timeout abgelaufen ...'
+                 when 5
+                     display 'timeout is over ...'
                      end-display
                      go to HANDLE-READ
-              when other
+                 when other
                      perform handle-error
               end-evaluate.
               
-      * Daten vom Client empfangen
-              display 'Empfange Daten ...'
+      * Receive data from Client
+              display 'receiving data ...'
               end-display
               move 10 to RECV.
               move SPACES to BUFF.
               call 'CBL_OC_SOCKET'
                      using "04" HNDL RECV BUFF giving RESULT
               end-call.
-              perform handle-error
+              if result = 2
+                 perform handle-error
+                 display 'Client is not available any more.'
+                 end-display
+                 display 'closing client connection ...'
+                 end-display
+                 call "CBL_OC_SOCKET"
+                        using "06" HNDL giving RESULT
+                 end-call
+                 perform handle-error
+              else
+                 perform handle-error
+                 move BUFF to OUT
+                 display "client says: " OUT
+                 end-display
 
-              move SPACES to OUT.
-              move BUFF to OUT.
-              display "Client sagt: " OUT
-              end-display
-
-              if BUFF = 'close' then
-                     display 'Client signalisiert Ende  ...'
-                     end-display
-                     call "CBL_OC_SOCKET"
-                            using "06" HNDL giving RESULT
-                     end-call
-                     perform handle-error
+                 if BUFF = 'close' then
+                    display 'client sent end of connection ...'
+                    end-display
+                    display 'closing client connection ...'
+                    end-display
+                    call "CBL_OC_SOCKET"
+                           using "06" HNDL giving RESULT
+                    end-call
+                    perform handle-error
+                 end-if
               end-if
 
               go to HANDLE-READ.
       
               stop run.
               
-      * Fehler behandeln        
+      * Handle error, display result
        HANDLE-ERROR SECTION.
-       00.
+      *00.
               if RESULT not= 0 
               then
-                   display 'Rueckgabewert: ' RESULT
+                   display 'Return-Code: ' RESULT
                    end-display
                    call 'CBL_OC_SOCKET' using '98' ERRMSG giving RESULT
                    end-call
-                   display 'OS-FEHLER: ' RESULT ': ' ERRMSG
+                   display 'OS-Error: ' RESULT ': ' ERRMSG
                    end-display
-                   display 'Druecken Sie ENTER'
+                   display 'Press ENTER to go on... '
+                   end-display
+                   accept dummy
+                   end-accept
+              end-if
+              .
+       HANDLE-CRITICAL-ERROR SECTION.
+      *00.
+              if RESULT not= 0 
+              then
+                   display 'Return-Code: ' RESULT
+                   end-display
+                   call 'CBL_OC_SOCKET' using '98' ERRMSG giving RESULT
+                   end-call
+                   display 'OS-Error: ' RESULT ': ' ERRMSG
+                   end-display
+                   display 'Press ENTER to stop the server'
                    end-display
                    accept dummy
                    end-accept
