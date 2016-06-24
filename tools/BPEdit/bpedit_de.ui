@@ -38,7 +38,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Doppelklick für Breakpoint, STRG+G für &quot;Gehe zu Zeile&quot;</string>
+          <string>Doppelklick für Breakpoint, [STRG]+[G] für &quot;Gehe zu Zeile&quot;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>

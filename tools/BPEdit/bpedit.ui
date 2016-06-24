@@ -38,7 +38,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Doppelklick für Breakpoint, STRG+G für &quot;Gehe zu Zeile&quot;</string>
+          <string>Use double click for creating a breakpoint, [CTRL]+[G] for &quot;GoTo Line&quot;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -51,7 +51,7 @@
        <item>
         <widget class="QPushButton" name="saveButton">
          <property name="text">
-          <string>Speichern</string>
+          <string>Save to breakpoint list</string>
          </property>
         </widget>
        </item>
@@ -114,7 +114,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Suchtext hier eingeben:    </string>
+            <string>Insert search string here: </string>
            </property>
           </widget>
          </item>
@@ -124,7 +124,7 @@
          <item>
           <widget class="QPushButton" name="searchButton">
            <property name="text">
-            <string>Weitersuchen</string>
+            <string>Search Next</string>
            </property>
           </widget>
          </item>
