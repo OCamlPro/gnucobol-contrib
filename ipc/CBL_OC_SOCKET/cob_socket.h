@@ -15,6 +15,8 @@
 	#else
 	#define COB_SOCKET_API __declspec(dllimport)
 	#endif
+#else
+	#define COB_SOCKET_API
 #endif
 
 // data types
@@ -68,12 +70,13 @@
 
 // function header for external call
 //
-#ifdef WIN32
-	extern "C" COB_SOCKET_API int CBL_OC_SOCKET(char* p_code, char* p1, char* p2, char* p3, char* p4, char* p5, char* p6, char* pdummy);
-#else
-	extern "C" int CBL_OC_SOCKET(char* p_code, char* p1, char* p2, char* p3, char* p4, char* p5, char* p6, char* pdummy);
+#ifdef __cplusplus
+extern "C" {
 #endif
-
+COB_SOCKET_API int CBL_OC_SOCKET (char* p_code, char* p1, char* p2, char* p3, char* p4, char* p5, char* p6, char* pdummy);
+#ifdef __cplusplus
+}
+#endif
 // Some pragmas
 //
 #ifdef WIN32
