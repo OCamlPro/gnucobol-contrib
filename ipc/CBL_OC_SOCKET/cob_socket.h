@@ -1,10 +1,21 @@
+/*
+   Copyright (C) 2010-2014,2016 Free Software Foundation, Inc.
 
-// Der folgende ifdef-Block zeigt die Standardlösung zur Erstellung von Makros, die das Exportieren 
-// aus einer DLL vereinfachen. Alle Dateien in dieser DLL wurden mit dem in der Befehlszeile definierten
-// Symbol COB_SOCKET_EXPORTS kompiliert. Dieses Symbol sollte für kein Projekt definiert werden, das
-// diese DLL verwendet. Auf diese Weise betrachtet jedes andere Projekt, dessen Quellcodedateien diese Datei 
-// einbeziehen, COB_SOCKET_API-Funktionen als aus einer DLL importiert, während diese DLL mit diesem 
-// Makro definierte Symbole als exportiert betrachtet.
+   cob_socket including this file is in preparation to be a part of GnuCOBOL.
+
+   The GnuCOBOL runtime library is free software: you can redistribute it
+   and/or modify it under the terms of the GNU Lesser General Public License
+   as published by the Free Software Foundation, either version 3 of the
+   License, or (at your option) any later version.
+
+   cob_socket is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public License
+   along with cob_socket.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 
 // macros for DLL export
@@ -79,6 +90,6 @@ COB_SOCKET_API int CBL_OC_SOCKET (char* p_code, char* p1, char* p2, char* p3, ch
 #endif
 // Some pragmas
 //
-#ifdef WIN32
+#ifdef _MSC_VER
 	#pragma warning(disable:4786)   
 #endif

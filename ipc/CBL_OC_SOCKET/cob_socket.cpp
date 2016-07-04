@@ -1,3 +1,22 @@
+/*
+   Copyright (C) 2010-2014,2016 Free Software Foundation, Inc.
+
+   cob_socket including this file is in preparation to be a part of GnuCOBOL.
+
+   The GnuCOBOL runtime library is free software: you can redistribute it
+   and/or modify it under the terms of the GNU Lesser General Public License
+   as published by the Free Software Foundation, either version 3 of the
+   License, or (at your option) any later version.
+
+   cob_socket is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public License
+   along with cob_socket.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 //#define DEBUG 1
 
 // our own headers
@@ -50,12 +69,7 @@
 //
 // specific functions which should not be accessed from outside
 
-
-
-
-/*
- * Former cob_convert.h
- */
+// conversion function
 
 static unsigned cob2unsigned(char* p_data, unsigned int p_size)
 {
