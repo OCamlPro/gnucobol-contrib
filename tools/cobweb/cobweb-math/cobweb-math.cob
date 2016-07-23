@@ -5,7 +5,7 @@ GCobol >>SOURCE FORMAT IS FREE
       *> AUTHOR
       *>   Brian Tiffin
       *> DATE
-      *>   20160721  Modified: 2016-07-23/17:02-0400
+      *>   20160721  Modified: 2016-07-23/17:09-0400
       *> LICENSE
       *>   Copyright 2016 Brian Tiffin
       *>   GNU Lesser General Public License, LGPL, 3.0 (or superior)
@@ -18,7 +18,7 @@ GCobol >>SOURCE FORMAT IS FREE
        program-id. cobweb-math.
        author. Brian Tiffin.
        date-written. 2016-07-15/10:20-0400.
-       date-modified. 2016-07-23/17:02-0400.
+       date-modified. 2016-07-23/17:09-0400.
        date-compiled.
        installation.
        remarks.
@@ -34,7 +34,7 @@ GCobol >>SOURCE FORMAT IS FREE
            locale canadian is "en_CA.UTF-8".
 
        repository.
-           function evaluate-basic
+           function evaluate-math
            function create-equation
            function evaluate-equation
            function destroy-equation
@@ -114,7 +114,8 @@ GCobol >>SOURCE FORMAT IS FREE
        if demoing then
            *> simple math
            display "cobweb-math internal demo"
-           display calculation " = " evaluate-basic(calculation)
+           display calculation " = " evaluate-math(calculation)
+           display evaluate-math("5 +")
            display space
 
            *> two variable equation, with derivative 
@@ -429,9 +430,9 @@ GCobol >>SOURCE FORMAT IS FREE
       *>****
 
       *> ***************************************************************
-      *>****F* cobweb-math/evaluate-basic
+      *>****F* cobweb-math/evaluate-math
        identification division.
-       function-id. evaluate-basic.
+       function-id. evaluate-math.
 
        environment division.
        configuration section.
@@ -487,7 +488,7 @@ GCobol >>SOURCE FORMAT IS FREE
 
        :EXCEPTION-HANDLERS:
 
-       end function evaluate-basic.
+       end function evaluate-math.
       *>****
 
       *> ***************************************************************
@@ -639,7 +640,7 @@ and so on.  Convenience functions exist for equations that use
 
 Convenience functions include:
 
-- evaluate-basic(calculation) to answer  (for use as a calculator)
+- evaluate-math(calculation) to answer  (for use as a calculator)
 - evaluate-x(evaluator, x) to answer
 - evaluate-xy(evaluator, x, y) to answer
 - evaluate-xyz(evaluator, x, y, z) to answer

@@ -389,7 +389,7 @@ and so on.  Convenience functions exist for equations that use</p>
 <p><tt class="docutils literal">x</tt>, <tt class="docutils literal">y</tt>, and <tt class="docutils literal">z</tt> as the variable names.</p>
 <p>Convenience functions include:</p>
 <ul class="simple">
-<li>evaluate-basic(calculation) to answer  (for use as a calculator)</li>
+<li>evaluate-math(calculation) to answer  (for use as a calculator)</li>
 <li>evaluate-x(evaluator, x) to answer</li>
 <li>evaluate-xy(evaluator, x, y) to answer</li>
 <li>evaluate-xyz(evaluator, x, y, z) to answer</li>
@@ -506,7 +506,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
 </span>      <span class="comment">*&gt; AUTHOR
 </span>      <span class="comment">*&gt;   Brian Tiffin
 </span>      <span class="comment">*&gt; DATE
-</span>      <span class="comment">*&gt;   20160721  Modified: 2016-07-23/17:05-0400
+</span>      <span class="comment">*&gt;   20160721  Modified: 2016-07-23/17:09-0400
 </span>      <span class="comment">*&gt; LICENSE
 </span>      <span class="comment">*&gt;   Copyright 2016 Brian Tiffin
 </span>      <span class="comment">*&gt;   GNU Lesser General Public License, LGPL, 3.0 (or superior)
@@ -519,7 +519,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
        <span class="keyword reserved">program-id</span><span class="punctuation">.</span> <span class="name variable">cobweb-math</span><span class="punctuation">.</span>
        <span class="name variable">author</span><span class="punctuation">.</span> <span class="name variable">Brian</span> <span class="name variable">Tiffin</span><span class="punctuation">.</span>
        <span class="name variable">date-written</span><span class="punctuation">.</span> <span class="literal number integer">2016</span><span class="operator">-</span><span class="literal number integer">07</span><span class="operator">-</span><span class="literal number integer">15</span><span class="operator">/</span><span class="literal number integer">10</span><span class="punctuation">:</span><span class="literal number integer">20</span><span class="operator">-</span><span class="literal number integer">0400</span><span class="punctuation">.</span>
-       <span class="name variable">date-modified</span><span class="punctuation">.</span> <span class="literal number integer">2016</span><span class="operator">-</span><span class="literal number integer">07</span><span class="operator">-</span><span class="literal number integer">23</span><span class="operator">/</span><span class="literal number integer">17</span><span class="punctuation">:</span><span class="literal number integer">05</span><span class="operator">-</span><span class="literal number integer">0400</span><span class="punctuation">.</span>
+       <span class="name variable">date-modified</span><span class="punctuation">.</span> <span class="literal number integer">2016</span><span class="operator">-</span><span class="literal number integer">07</span><span class="operator">-</span><span class="literal number integer">23</span><span class="operator">/</span><span class="literal number integer">17</span><span class="punctuation">:</span><span class="literal number integer">09</span><span class="operator">-</span><span class="literal number integer">0400</span><span class="punctuation">.</span>
        <span class="name variable">date-compiled</span><span class="punctuation">.</span>
        <span class="name variable">installation</span><span class="punctuation">.</span>
        <span class="name variable">remarks</span><span class="punctuation">.</span>
@@ -535,7 +535,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
            <span class="keyword pseudo">locale</span> <span class="name variable">canadian</span> <span class="keyword pseudo">is </span><span class="literal string double">&quot;en_CA.UTF-8&quot;</span><span class="punctuation">.</span>
 
        <span class="keyword pseudo">repository</span><span class="punctuation">.</span>
-           <span class="keyword pseudo">function</span> <span class="name variable">evaluate-basic</span>
+           <span class="keyword pseudo">function</span> <span class="name variable">evaluate-math</span>
            <span class="keyword pseudo">function</span> <span class="name variable">create-equation</span>
            <span class="keyword pseudo">function</span> <span class="name variable">evaluate-equation</span>
            <span class="keyword pseudo">function</span> <span class="name variable">destroy-equation</span>
@@ -615,8 +615,8 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
       </span> <span class="keyword reserved">if</span> <span class="name variable">demoing</span> <span class="keyword reserved">then
            </span><span class="comment">*&gt; simple math
 </span>           <span class="keyword reserved">display </span><span class="literal string double">&quot;cobweb-math internal demo&quot;</span>
-           <span class="keyword reserved">display</span> <span class="name variable">calculation</span> <span class="literal string double">&quot; = &quot;</span> <span class="name variable">evaluate-basic</span><span class="punctuation">(</span><span class="name variable">calculation</span><span class="punctuation">)</span>
-           <span class="keyword reserved">display</span> <span class="name variable">evaluate-basic</span><span class="punctuation">(</span><span class="literal string double">&quot;5 +&quot;</span><span class="punctuation">)</span>
+           <span class="keyword reserved">display</span> <span class="name variable">calculation</span> <span class="literal string double">&quot; = &quot;</span> <span class="name variable">evaluate-math</span><span class="punctuation">(</span><span class="name variable">calculation</span><span class="punctuation">)</span>
+           <span class="keyword reserved">display</span> <span class="name variable">evaluate-math</span><span class="punctuation">(</span><span class="literal string double">&quot;5 +&quot;</span><span class="punctuation">)</span>
            <span class="keyword reserved">display</span> <span class="name constant">space
 
            </span><span class="comment">*&gt; two variable equation, with derivative
@@ -931,9 +931,9 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
       <span class="comment">*&gt;****
 </span>
       <span class="comment">*&gt; ***************************************************************
-</span>      <span class="comment">*&gt;****F* cobweb-math/evaluate-basic
+</span>      <span class="comment">*&gt;****F* cobweb-math/evaluate-math
 </span>       <span class="keyword reserved">identification</span> <span class="keyword reserved">division</span><span class="punctuation">.</span>
-       <span class="keyword pseudo">function-id</span><span class="punctuation">.</span> <span class="name variable">evaluate-basic</span><span class="punctuation">.</span>
+       <span class="keyword pseudo">function-id</span><span class="punctuation">.</span> <span class="name variable">evaluate-math</span><span class="punctuation">.</span>
 
        <span class="keyword reserved">environment</span> <span class="keyword reserved">division</span><span class="punctuation">.</span>
        <span class="keyword reserved">configuration</span> <span class="keyword reserved">section</span><span class="punctuation">.</span>
@@ -989,7 +989,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
 
        <span class="punctuation">:</span><span class="name variable">EXCEPTION-HANDLERS</span><span class="punctuation">:</span>
 
-       <span class="keyword reserved">end</span> <span class="keyword pseudo">function</span> <span class="name variable">evaluate-basic</span><span class="punctuation">.</span>
+       <span class="keyword reserved">end</span> <span class="keyword pseudo">function</span> <span class="name variable">evaluate-math</span><span class="punctuation">.</span>
       <span class="comment">*&gt;****
 </span>
       <span class="comment">*&gt; ***************************************************************
@@ -1141,7 +1141,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
 
 <span class="name variable">Convenience</span> <span class="name variable">functions</span> <span class="name variable">include</span><span class="punctuation">:</span>
 
-<span class="operator">-</span> <span class="name variable">evaluate-basic</span><span class="punctuation">(</span><span class="name variable">calculation</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">answer</span>  <span class="punctuation">(</span><span class="keyword pseudo">for</span> <span class="keyword reserved">use</span> <span class="keyword pseudo">as</span> <span class="name variable">a</span> <span class="name variable">calculator</span><span class="punctuation">)</span>
+<span class="operator">-</span> <span class="name variable">evaluate-math</span><span class="punctuation">(</span><span class="name variable">calculation</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">answer</span>  <span class="punctuation">(</span><span class="keyword pseudo">for</span> <span class="keyword reserved">use</span> <span class="keyword pseudo">as</span> <span class="name variable">a</span> <span class="name variable">calculator</span><span class="punctuation">)</span>
 <span class="operator">-</span> <span class="name variable">evaluate-x</span><span class="punctuation">(</span><span class="name variable">evaluator</span><span class="punctuation">,</span> <span class="name variable">x</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">answer</span>
 <span class="operator">-</span> <span class="name variable">evaluate-xy</span><span class="punctuation">(</span><span class="name variable">evaluator</span><span class="punctuation">,</span> <span class="name variable">x</span><span class="punctuation">,</span> <span class="name variable">y</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">answer</span>
 <span class="operator">-</span> <span class="name variable">evaluate-xyz</span><span class="punctuation">(</span><span class="name variable">evaluator</span><span class="punctuation">,</span> <span class="name variable">x</span><span class="punctuation">,</span> <span class="name variable">y</span><span class="punctuation">,</span> <span class="name variable">z</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">answer</span>
@@ -1325,7 +1325,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
        <span class="keyword pseudo">repository</span><span class="punctuation">.</span>
            <span class="keyword pseudo">function</span> <span class="name variable">create-equation</span>
            <span class="keyword pseudo">function</span> <span class="name variable">evaluate-equation</span>
-           <span class="keyword pseudo">function</span> <span class="name variable">evaluate-basic</span>
+           <span class="keyword pseudo">function</span> <span class="name variable">evaluate-math</span>
            <span class="keyword pseudo">function</span> <span class="name variable">destroy-equation</span>
            <span class="keyword pseudo">function</span> <span class="keyword pseudo">all</span> <span class="keyword pseudo">intrinsic</span><span class="punctuation">.</span>
 
@@ -1338,7 +1338,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
        <span class="literal number integer">01 </span><span class="name variable">extraneous</span>           <span class="keyword pseudo">usage</span> <span class="keyword type">binary-long</span><span class="punctuation">.</span>
 
        <span class="literal number integer">01 </span><span class="name variable">calculation</span><span class="punctuation">.</span>
-          <span class="literal number integer">05 </span><span class="keyword pseudo">value </span><span class="literal string double">&quot;6 * 7&quot;</span><span class="punctuation">.</span>
+          <span class="literal number integer">05 </span><span class="keyword pseudo">value </span><span class="literal string double">&quot;(1 + 2 * 3 / 4 - 5)^6&quot;</span><span class="punctuation">.</span>
 
        <span class="literal number integer">01 </span><span class="name variable">equation</span>             <span class="keyword type">pic x(40)</span><span class="punctuation">.</span>
        <span class="literal number integer">01 </span><span class="name variable">show-input</span>           <span class="keyword type">pic +9.99</span><span class="punctuation">.</span>
@@ -1350,7 +1350,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
       <span class="comment">*&gt; some simple math
 </span>       <span class="keyword reserved">display </span><span class="literal string double">&quot;cobweb-math (libmatheval) demonstration&quot;</span>
 
-       <span class="keyword reserved">display</span> <span class="name variable">calculation</span> <span class="literal string double">&quot; = &quot;</span> <span class="name variable">evaluate-basic</span><span class="punctuation">(</span><span class="name variable">calculation</span><span class="punctuation">)</span>
+       <span class="keyword reserved">display</span> <span class="name variable">calculation</span> <span class="literal string double">&quot; = &quot;</span> <span class="name variable">evaluate-math</span><span class="punctuation">(</span><span class="name variable">calculation</span><span class="punctuation">)</span>
        <span class="keyword reserved">display</span> <span class="name constant">space
 
       </span><span class="comment">*&gt; a more complex example
@@ -1440,7 +1440,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
 <p>Subject to change, but that produces</p>
 <pre class="literal-block">
 cobweb-math (libmatheval) demonstration
-6 * 7 = 42
+(1 + 2 * 3 / 4 - 5)^6 = 244.140625
  
  f(x) = (((x^2)*sin(x))+42)
 f'(x) = (((2*x)*sin(x))+((x^2)*cos(x)))

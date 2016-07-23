@@ -6,7 +6,7 @@
        repository.
            function create-equation
            function evaluate-equation
-           function evaluate-basic
+           function evaluate-math
            function destroy-equation
            function all intrinsic.
 
@@ -19,7 +19,7 @@
        01 extraneous           usage binary-long.
 
        01 calculation.
-          05 value "6 * 7".
+          05 value "(1 + 2 * 3 / 4 - 5)^6".
  
        01 equation             pic x(40).
        01 show-input           pic +9.99.
@@ -31,7 +31,7 @@
       *> some simple math       
        display "cobweb-math (libmatheval) demonstration"
 
-       display calculation " = " evaluate-basic(calculation)
+       display calculation " = " evaluate-math(calculation)
        display space
 
       *> a more complex example
