@@ -31,10 +31,7 @@
       *> some simple math       
        display "cobweb-math (libmatheval) demonstration"
 
-       move create-equation(calculation, "") to demo-evaluator-record
-       move evaluate-basic(demo-evaluator) to ans
-       display calculation " = " ans
-       move destroy-equation(demo-evaluator-record) to extraneous
+       display calculation " = " evaluate-basic(calculation)
        display space
 
       *> a more complex example

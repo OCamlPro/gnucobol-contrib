@@ -389,7 +389,7 @@ and so on.  Convenience functions exist for equations that use</p>
 <p><tt class="docutils literal">x</tt>, <tt class="docutils literal">y</tt>, and <tt class="docutils literal">z</tt> as the variable names.</p>
 <p>Convenience functions include:</p>
 <ul class="simple">
-<li>evaluate-basic(evaluator) to answer  (for use a a calculator)</li>
+<li>evaluate-basic(calculation) to answer  (for use as a calculator)</li>
 <li>evaluate-x(evaluator, x) to answer</li>
 <li>evaluate-xy(evaluator, x, y) to answer</li>
 <li>evaluate-xyz(evaluator, x, y, z) to answer</li>
@@ -506,7 +506,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
 </span>      <span class="comment">*&gt; AUTHOR
 </span>      <span class="comment">*&gt;   Brian Tiffin
 </span>      <span class="comment">*&gt; DATE
-</span>      <span class="comment">*&gt;   20160721  Modified: 2016-07-23/06:05-0400
+</span>      <span class="comment">*&gt;   20160721  Modified: 2016-07-23/16:34-0400
 </span>      <span class="comment">*&gt; LICENSE
 </span>      <span class="comment">*&gt;   Copyright 2016 Brian Tiffin
 </span>      <span class="comment">*&gt;   GNU Lesser General Public License, LGPL, 3.0 (or superior)
@@ -519,7 +519,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
        <span class="keyword reserved">program-id</span><span class="punctuation">.</span> <span class="name variable">cobweb-math</span><span class="punctuation">.</span>
        <span class="name variable">author</span><span class="punctuation">.</span> <span class="name variable">Brian</span> <span class="name variable">Tiffin</span><span class="punctuation">.</span>
        <span class="name variable">date-written</span><span class="punctuation">.</span> <span class="literal number integer">2016</span><span class="operator">-</span><span class="literal number integer">07</span><span class="operator">-</span><span class="literal number integer">15</span><span class="operator">/</span><span class="literal number integer">10</span><span class="punctuation">:</span><span class="literal number integer">20</span><span class="operator">-</span><span class="literal number integer">0400</span><span class="punctuation">.</span>
-       <span class="name variable">date-modified</span><span class="punctuation">.</span> <span class="literal number integer">2016</span><span class="operator">-</span><span class="literal number integer">07</span><span class="operator">-</span><span class="literal number integer">23</span><span class="operator">/</span><span class="literal number integer">06</span><span class="punctuation">:</span><span class="literal number integer">05</span><span class="operator">-</span><span class="literal number integer">0400</span><span class="punctuation">.</span>
+       <span class="name variable">date-modified</span><span class="punctuation">.</span> <span class="literal number integer">2016</span><span class="operator">-</span><span class="literal number integer">07</span><span class="operator">-</span><span class="literal number integer">23</span><span class="operator">/</span><span class="literal number integer">16</span><span class="punctuation">:</span><span class="literal number integer">34</span><span class="operator">-</span><span class="literal number integer">0400</span><span class="punctuation">.</span>
        <span class="name variable">date-compiled</span><span class="punctuation">.</span>
        <span class="name variable">installation</span><span class="punctuation">.</span>
        <span class="name variable">remarks</span><span class="punctuation">.</span>
@@ -535,6 +535,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
            <span class="keyword pseudo">locale</span> <span class="name variable">canadian</span> <span class="keyword pseudo">is </span><span class="literal string double">&quot;en_CA.UTF-8&quot;</span><span class="punctuation">.</span>
 
        <span class="keyword pseudo">repository</span><span class="punctuation">.</span>
+           <span class="keyword pseudo">function</span> <span class="name variable">evaluate-basic</span>
            <span class="keyword pseudo">function</span> <span class="name variable">create-equation</span>
            <span class="keyword pseudo">function</span> <span class="name variable">evaluate-equation</span>
            <span class="keyword pseudo">function</span> <span class="name variable">destroy-equation</span>
@@ -562,8 +563,6 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
           <span class="literal number integer">05 </span><span class="name variable">variable-value</span>    <span class="keyword pseudo">usage</span> <span class="keyword pseudo">float-long</span> <span class="keyword pseudo">occurs</span> <span class="name variable">NAME-LIMIT</span> <span class="keyword pseudo">times</span><span class="punctuation">.</span>
        <span class="literal number integer">01 </span><span class="name variable">answer</span>               <span class="keyword pseudo">usage</span> <span class="keyword pseudo">float-long</span><span class="punctuation">.</span>
 
-       <span class="literal number integer">01 </span><span class="name variable">counter</span>              <span class="keyword pseudo">usage</span> <span class="keyword type">binary-long</span><span class="punctuation">.</span>
-
        <span class="literal number integer">01 </span><span class="name variable">cli</span>                  <span class="keyword type">pic x(80)</span><span class="punctuation">.</span>
           <span class="literal number integer">88 </span><span class="name variable">helping</span>               <span class="keyword pseudo">values </span><span class="literal string double">&quot;help&quot;</span><span class="punctuation">,</span> <span class="literal string double">&quot;-help&quot;</span><span class="punctuation">,</span> <span class="literal string double">&quot;--help&quot;</span><span class="punctuation">.</span>
           <span class="literal number integer">88 </span><span class="name variable">demoing</span>               <span class="keyword pseudo">value </span><span class="literal string double">&quot;demo&quot;</span><span class="punctuation">.</span>
@@ -583,6 +582,8 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
           <span class="literal number integer">88 </span><span class="name variable">want-answer</span>           <span class="keyword pseudo">values </span><span class="literal string double">&quot;ans&quot;</span><span class="punctuation">.</span>
        <span class="literal number integer">01 </span><span class="name variable">got-equal</span>            <span class="keyword type">pic x</span><span class="punctuation">.</span>
 
+       <span class="literal number integer">01 </span><span class="name variable">calculation</span><span class="punctuation">.</span>
+          <span class="literal number integer">05 </span><span class="keyword pseudo">value </span><span class="literal string double">&quot;(1 + 2 * 3 / 4 - 5)^3&quot;</span><span class="punctuation">.</span>
        <span class="literal number integer">01 </span><span class="name variable">equation</span><span class="punctuation">.</span>
           <span class="literal number integer">05 </span><span class="keyword pseudo">value </span><span class="literal string double">&quot;x^4 + sin(x^2) + 2*x^y + 42&quot;</span><span class="punctuation">.</span>
        <span class="literal number integer">01 </span><span class="name variable">x</span>                    <span class="keyword pseudo">usage</span> <span class="keyword pseudo">float-long</span> <span class="keyword pseudo">value</span> <span class="literal number integer">1</span><span class="punctuation">.</span><span class="literal number integer">0</span><span class="punctuation">.</span>
@@ -612,7 +613,13 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
       </span> <span class="keyword reserved">end-if
 
       </span> <span class="keyword reserved">if</span> <span class="name variable">demoing</span> <span class="keyword reserved">then
-          </span> <span class="keyword reserved">move</span> <span class="name variable">create-equation</span><span class="punctuation">(</span><span class="name variable">equation</span><span class="punctuation">,</span> <span class="literal string double">&quot;derivative, variables&quot;</span><span class="punctuation">)</span>
+           </span><span class="comment">*&gt; simple math
+</span>           <span class="keyword reserved">display </span><span class="literal string double">&quot;cobweb-math internal demo&quot;</span>
+           <span class="keyword reserved">display</span> <span class="name variable">calculation</span> <span class="literal string double">&quot; = &quot;</span> <span class="name variable">evaluate-basic</span><span class="punctuation">(</span><span class="name variable">calculation</span><span class="punctuation">)</span>
+           <span class="keyword reserved">display</span> <span class="name constant">space
+
+           </span><span class="comment">*&gt; two variable equation, with derivative
+</span>           <span class="keyword reserved">move</span> <span class="name variable">create-equation</span><span class="punctuation">(</span><span class="name variable">equation</span><span class="punctuation">,</span> <span class="literal string double">&quot;derivative, variables&quot;</span><span class="punctuation">)</span>
              <span class="keyword pseudo">to</span> <span class="name variable">evaluator-record</span>
 
            <span class="keyword reserved">display </span><span class="literal string double">&quot;Given: &quot;</span> <span class="name variable">equation</span>
@@ -645,12 +652,12 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
           </span> <span class="keyword reserved">move</span> <span class="literal number integer">2</span><span class="punctuation">.</span><span class="literal number integer">0 </span><span class="keyword pseudo">to</span> <span class="name variable">variable-value</span><span class="punctuation">(</span><span class="literal number integer">1</span><span class="punctuation">)</span>
            <span class="keyword reserved">move</span> <span class="literal number integer">8</span><span class="punctuation">.</span><span class="literal number integer">0 </span><span class="keyword pseudo">to</span> <span class="name variable">variable-value</span><span class="punctuation">(</span><span class="literal number integer">2</span><span class="punctuation">)</span>
            <span class="keyword reserved">move</span> <span class="name variable">evaluate-equation</span><span class="punctuation">(</span><span class="name variable">evaluator</span><span class="punctuation">,</span> <span class="name variable">variable-count</span><span class="punctuation">,</span>
-                                  <span class="name variable">name-list</span><span class="punctuation">,</span> <span class="name variable">value-list</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">answer</span>
+                                  <span class="name variable">variable-names</span><span class="punctuation">,</span> <span class="name variable">value-list</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">answer</span>
            <span class="keyword reserved">display </span><span class="literal string double">&quot;f(&quot;</span> <span class="name variable">variable-value</span><span class="punctuation">(</span><span class="literal number integer">1</span><span class="punctuation">)</span> <span class="literal string double">&quot;, &quot;</span> <span class="name variable">variable-value</span><span class="punctuation">(</span><span class="literal number integer">2</span><span class="punctuation">)</span>
                    <span class="literal string double">&quot;)  = &quot;</span> <span class="name variable">answer</span>
 
            <span class="keyword reserved">move</span> <span class="name variable">evaluate-equation</span><span class="punctuation">(</span><span class="name variable">evaluator-prime</span><span class="punctuation">,</span> <span class="name variable">variable-count</span><span class="punctuation">,</span>
-                                  <span class="name variable">name-list</span><span class="punctuation">,</span> <span class="name variable">value-list</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">answer</span>
+                                  <span class="name variable">variable-names</span><span class="punctuation">,</span> <span class="name variable">value-list</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">answer</span>
            <span class="keyword reserved">display </span><span class="literal string double">&quot;f'(&quot;</span> <span class="name variable">variable-value</span><span class="punctuation">(</span><span class="literal number integer">1</span><span class="punctuation">)</span> <span class="literal string double">&quot;, &quot;</span> <span class="name variable">variable-value</span><span class="punctuation">(</span><span class="literal number integer">2</span><span class="punctuation">)</span>
                    <span class="literal string double">&quot;) = &quot;</span> <span class="name variable">answer</span>
 
@@ -927,25 +934,60 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
 </span>       <span class="keyword reserved">identification</span> <span class="keyword reserved">division</span><span class="punctuation">.</span>
        <span class="keyword pseudo">function-id</span><span class="punctuation">.</span> <span class="name variable">evaluate-basic</span><span class="punctuation">.</span>
 
+       <span class="keyword reserved">environment</span> <span class="keyword reserved">division</span><span class="punctuation">.</span>
+       <span class="keyword reserved">configuration</span> <span class="keyword reserved">section</span><span class="punctuation">.</span>
+       <span class="keyword pseudo">repository</span><span class="punctuation">.</span>
+           <span class="keyword pseudo">function</span> <span class="keyword pseudo">all</span> <span class="keyword pseudo">intrinsic</span><span class="punctuation">.</span>
+
        <span class="keyword reserved">data</span> <span class="keyword reserved">division</span><span class="punctuation">.</span>
        <span class="keyword reserved">working-storage</span> <span class="keyword reserved">section</span><span class="punctuation">.</span>
        <span class="literal number integer">01 </span><span class="name variable">ans</span>                  <span class="keyword pseudo">usage</span> <span class="keyword pseudo">float-long</span><span class="punctuation">.</span>
        <span class="literal number integer">01 </span><span class="name variable">x</span>                    <span class="keyword pseudo">usage</span> <span class="keyword pseudo">float-long</span> <span class="keyword pseudo">value</span> <span class="literal number integer">0</span><span class="punctuation">.</span><span class="literal number integer">0</span><span class="punctuation">.</span>
 
+       <span class="punctuation">:</span><span class="name variable">EVALUATOR-RECORD</span><span class="punctuation">:</span>
+
        <span class="keyword reserved">linkage</span> <span class="keyword reserved">section</span><span class="punctuation">.</span>
-       <span class="literal number integer">01 </span><span class="name variable">given-evaluator</span>      <span class="keyword pseudo">usage</span> <span class="keyword pseudo">pointer</span><span class="punctuation">.</span>
+       <span class="literal number integer">01 </span><span class="name variable">calculation</span>          <span class="keyword type">pic x</span> <span class="name variable">any</span> <span class="keyword pseudo">length</span><span class="punctuation">.</span>
        <span class="literal number integer">01 </span><span class="name variable">result</span>               <span class="keyword pseudo">usage</span> <span class="keyword pseudo">float-long</span><span class="punctuation">.</span>
 
-       <span class="keyword reserved">procedure</span> <span class="keyword reserved">division</span> <span class="keyword pseudo">using</span> <span class="name variable">given-evaluator</span> <span class="keyword pseudo">returning</span> <span class="name variable">result</span><span class="punctuation">.</span>
+       <span class="keyword reserved">procedure</span> <span class="keyword reserved">division</span> <span class="keyword pseudo">using</span> <span class="name variable">calculation</span> <span class="keyword pseudo">returning</span> <span class="name variable">result</span><span class="punctuation">.</span>
 
-       <span class="keyword reserved">call </span><span class="literal string double">&quot;evaluate_x&quot;</span> <span class="keyword pseudo">using
-         </span> <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">given-evaluator</span>
+      <span class="comment">*&gt; compile given equation
+</span>       <span class="keyword reserved">call </span><span class="literal string double">&quot;evaluator_create&quot;</span> <span class="keyword pseudo">using
+          </span> <span class="keyword pseudo">by</span> <span class="keyword pseudo">content</span> <span class="name function">concatenate</span><span class="punctuation">(</span><span class="name function">trim</span><span class="punctuation">(</span><span class="name variable">calculation</span><span class="punctuation">),</span> <span class="name variable">x</span><span class="literal string double">&quot;00&quot;</span><span class="punctuation">)</span>
+           <span class="keyword pseudo">returning</span> <span class="name variable">evaluator</span>
+           <span class="keyword pseudo">on</span> <span class="keyword pseudo">exception
+              </span> <span class="keyword reserved">display </span><span class="literal string double">&quot;error: cannot initialize evaluator (-lmatheval)&quot;</span>
+                  <span class="keyword pseudo">upon</span> <span class="name variable">syserr</span>
+               <span class="keyword reserved">perform</span> <span class="name variable">soft-exception</span>
+               <span class="keyword reserved">goback
+      </span> <span class="keyword reserved">end-call
+      </span> <span class="keyword reserved">if</span> <span class="name variable">evaluator</span> <span class="operator word">equal</span> <span class="keyword pseudo">null</span> <span class="keyword reserved">then
+          </span> <span class="keyword reserved">display </span><span class="literal string double">&quot;error: could not compute &quot;</span> <span class="name function">trim</span><span class="punctuation">(</span><span class="name variable">calculation</span><span class="punctuation">)</span>
+              <span class="keyword pseudo">upon</span> <span class="name variable">syserr</span>
+           <span class="keyword reserved">goback
+      </span> <span class="keyword reserved">end-if
+
+      </span><span class="comment">*&gt; x is actually unused
+</span>       <span class="keyword reserved">call </span><span class="literal string double">&quot;evaluate_x&quot;</span> <span class="keyword pseudo">using
+         </span> <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">evaluator</span>
           <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">x</span>
           <span class="keyword pseudo">by</span> <span class="keyword pseudo">reference</span> <span class="name variable">ans</span>
        <span class="keyword reserved">end-call
 
+      </span><span class="comment">*&gt; free up library resources
+</span>       <span class="keyword reserved">if</span> <span class="name variable">evaluator</span> <span class="operator word">not</span> <span class="operator word">equal</span> <span class="keyword pseudo">null</span> <span class="keyword reserved">then
+          </span> <span class="keyword reserved">call </span><span class="literal string double">&quot;evaluator_destroy&quot;</span> <span class="keyword pseudo">using
+              </span> <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">evaluator</span>
+               <span class="keyword pseudo">returning</span> <span class="keyword pseudo">omitted
+          </span> <span class="keyword reserved">end-call
+      </span> <span class="keyword reserved">end-if
+
       </span> <span class="keyword reserved">move</span> <span class="name variable">ans</span> <span class="keyword pseudo">to</span> <span class="name variable">result</span>
        <span class="keyword reserved">goback</span><span class="punctuation">.</span>
+
+       <span class="punctuation">:</span><span class="name variable">EXCEPTION-HANDLERS</span><span class="punctuation">:</span>
+
        <span class="keyword reserved">end</span> <span class="keyword pseudo">function</span> <span class="name variable">evaluate-basic</span><span class="punctuation">.</span>
       <span class="comment">*&gt;****
 </span>
@@ -965,11 +1007,15 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
 
        <span class="keyword reserved">procedure</span> <span class="keyword reserved">division</span> <span class="keyword pseudo">using</span> <span class="name variable">given-evaluator</span> <span class="name variable">x</span> <span class="keyword pseudo">returning</span> <span class="name variable">result</span><span class="punctuation">.</span>
 
-       <span class="keyword reserved">call </span><span class="literal string double">&quot;evaluate_x&quot;</span> <span class="keyword pseudo">using
-         </span> <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">given-evaluator</span>
-          <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">x</span>
-          <span class="keyword pseudo">by</span> <span class="keyword pseudo">reference</span> <span class="name variable">ans</span>
-       <span class="keyword reserved">end-call
+       <span class="keyword reserved">if</span> <span class="name variable">given-evaluator</span> <span class="operator word">not</span> <span class="operator word">equal</span> <span class="keyword pseudo">null</span> <span class="keyword reserved">then
+          </span> <span class="keyword reserved">call </span><span class="literal string double">&quot;evaluate_x&quot;</span> <span class="keyword pseudo">using
+             </span> <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">given-evaluator</span>
+              <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">x</span>
+              <span class="keyword pseudo">by</span> <span class="keyword pseudo">reference</span> <span class="name variable">ans</span>
+           <span class="keyword reserved">end-call
+      </span> <span class="keyword reserved">else
+          </span> <span class="keyword reserved">display </span><span class="literal string double">&quot;error: invalid evaluator&quot;</span> <span class="keyword pseudo">upon</span> <span class="name variable">syserr</span>
+       <span class="keyword reserved">end-if
 
       </span> <span class="keyword reserved">move</span> <span class="name variable">ans</span> <span class="keyword pseudo">to</span> <span class="name variable">result</span>
        <span class="keyword reserved">goback</span><span class="punctuation">.</span>
@@ -998,11 +1044,15 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
 
        <span class="keyword reserved">procedure</span> <span class="keyword reserved">division</span> <span class="keyword pseudo">using</span> <span class="name variable">given-evaluator</span> <span class="name variable">x</span> <span class="name variable">y</span> <span class="keyword pseudo">returning</span> <span class="name variable">result</span><span class="punctuation">.</span>
 
-       <span class="keyword reserved">call </span><span class="literal string double">&quot;evaluate_xy&quot;</span> <span class="keyword pseudo">using
-         </span> <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">given-evaluator</span>
-          <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">x</span> <span class="name variable">y</span>
-          <span class="keyword pseudo">by</span> <span class="keyword pseudo">reference</span> <span class="name variable">ans</span>
-       <span class="keyword reserved">end-call
+       <span class="keyword reserved">if</span> <span class="name variable">given-evaluator</span> <span class="operator word">not</span> <span class="operator word">equal</span> <span class="keyword pseudo">null</span> <span class="keyword reserved">then
+          </span> <span class="keyword reserved">call </span><span class="literal string double">&quot;evaluate_xy&quot;</span> <span class="keyword pseudo">using
+             </span> <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">given-evaluator</span>
+              <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">x</span> <span class="name variable">y</span>
+              <span class="keyword pseudo">by</span> <span class="keyword pseudo">reference</span> <span class="name variable">ans</span>
+           <span class="keyword reserved">end-call
+      </span> <span class="keyword reserved">else
+          </span> <span class="keyword reserved">display </span><span class="literal string double">&quot;error: invalid evaluator&quot;</span> <span class="keyword pseudo">upon</span> <span class="name variable">syserr</span>
+       <span class="keyword reserved">end-if
 
       </span> <span class="keyword reserved">move</span> <span class="name variable">ans</span> <span class="keyword pseudo">to</span> <span class="name variable">result</span>
        <span class="keyword reserved">goback</span><span class="punctuation">.</span>
@@ -1032,11 +1082,15 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
 
        <span class="keyword reserved">procedure</span> <span class="keyword reserved">division</span> <span class="keyword pseudo">using</span> <span class="name variable">given-evaluator</span> <span class="name variable">x</span> <span class="name variable">y</span> <span class="name variable">z</span> <span class="keyword pseudo">returning</span> <span class="name variable">result</span><span class="punctuation">.</span>
 
-       <span class="keyword reserved">call </span><span class="literal string double">&quot;evaluate_xyz&quot;</span> <span class="keyword pseudo">using
-         </span> <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">given-evaluator</span>
-          <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">x</span> <span class="name variable">y</span> <span class="name variable">z</span>
-          <span class="keyword pseudo">by</span> <span class="keyword pseudo">reference</span> <span class="name variable">ans</span>
-       <span class="keyword reserved">end-call
+       <span class="keyword reserved">if</span> <span class="name variable">given-evaluator</span> <span class="operator word">not</span> <span class="operator word">equal</span> <span class="keyword pseudo">null</span> <span class="keyword reserved">then
+          </span> <span class="keyword reserved">call </span><span class="literal string double">&quot;evaluate_xyz&quot;</span> <span class="keyword pseudo">using
+             </span> <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">given-evaluator</span>
+              <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">x</span> <span class="name variable">y</span> <span class="name variable">z</span>
+              <span class="keyword pseudo">by</span> <span class="keyword pseudo">reference</span> <span class="name variable">ans</span>
+           <span class="keyword reserved">end-call
+      </span> <span class="keyword reserved">else
+          </span> <span class="keyword reserved">display </span><span class="literal string double">&quot;error: invalid evaluator&quot;</span> <span class="keyword pseudo">upon</span> <span class="name variable">syserr</span>
+       <span class="keyword reserved">end-if
 
       </span> <span class="keyword reserved">move</span> <span class="name variable">ans</span> <span class="keyword pseudo">to</span> <span class="name variable">result</span>
        <span class="keyword reserved">goback</span><span class="punctuation">.</span>
@@ -1086,7 +1140,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
 
 <span class="name variable">Convenience</span> <span class="name variable">functions</span> <span class="name variable">include</span><span class="punctuation">:</span>
 
-<span class="operator">-</span> <span class="name variable">evaluate-basic</span><span class="punctuation">(</span><span class="name variable">evaluator</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">answer</span>  <span class="punctuation">(</span><span class="keyword pseudo">for</span> <span class="keyword reserved">use</span> <span class="name variable">a</span> <span class="name variable">a</span> <span class="name variable">calculator</span><span class="punctuation">)</span>
+<span class="operator">-</span> <span class="name variable">evaluate-basic</span><span class="punctuation">(</span><span class="name variable">calculation</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">answer</span>  <span class="punctuation">(</span><span class="keyword pseudo">for</span> <span class="keyword reserved">use</span> <span class="keyword pseudo">as</span> <span class="name variable">a</span> <span class="name variable">calculator</span><span class="punctuation">)</span>
 <span class="operator">-</span> <span class="name variable">evaluate-x</span><span class="punctuation">(</span><span class="name variable">evaluator</span><span class="punctuation">,</span> <span class="name variable">x</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">answer</span>
 <span class="operator">-</span> <span class="name variable">evaluate-xy</span><span class="punctuation">(</span><span class="name variable">evaluator</span><span class="punctuation">,</span> <span class="name variable">x</span><span class="punctuation">,</span> <span class="name variable">y</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">answer</span>
 <span class="operator">-</span> <span class="name variable">evaluate-xyz</span><span class="punctuation">(</span><span class="name variable">evaluator</span><span class="punctuation">,</span> <span class="name variable">x</span><span class="punctuation">,</span> <span class="name variable">y</span><span class="punctuation">,</span> <span class="name variable">z</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">answer</span>
@@ -1209,7 +1263,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
        <span class="literal number integer">01 </span><span class="punctuation">:</span><span class="name variable">tag</span><span class="punctuation">:</span><span class="name variable">value-list</span><span class="punctuation">.</span>
           <span class="literal number integer">05 </span><span class="punctuation">:</span><span class="name variable">tag</span><span class="punctuation">:</span><span class="name variable">variable-value</span>    <span class="keyword pseudo">usage</span> <span class="keyword pseudo">float-long
                                   </span> <span class="keyword pseudo">occurs </span><span class="punctuation">:</span><span class="name variable">tag</span><span class="punctuation">:</span><span class="name variable">NAME-LIMIT</span> <span class="keyword pseudo">times</span><span class="punctuation">.</span>
-       <span class="literal number integer">01 </span><span class="punctuation">:</span><span class="name variable">tag</span><span class="punctuation">:</span><span class="name variable">answer</span>               <span class="keyword pseudo">usage</span> <span class="keyword pseudo">float-long</span><span class="punctuation">.</span>
+       <span class="literal number integer">01 </span><span class="punctuation">:</span><span class="name variable">tag</span><span class="punctuation">:</span><span class="name variable">lme-result</span>           <span class="keyword pseudo">usage</span> <span class="keyword pseudo">float-long</span><span class="punctuation">.</span>
 </pre>
 </div>
 <div class="section" id="wrapmath-c">
@@ -1295,10 +1349,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
       <span class="comment">*&gt; some simple math
 </span>       <span class="keyword reserved">display </span><span class="literal string double">&quot;cobweb-math (libmatheval) demonstration&quot;</span>
 
-       <span class="keyword reserved">move</span> <span class="name variable">create-equation</span><span class="punctuation">(</span><span class="name variable">calculation</span><span class="punctuation">,</span> <span class="literal string double">&quot;&quot;</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">demo-evaluator-record</span>
-       <span class="keyword reserved">move</span> <span class="name variable">evaluate-basic</span><span class="punctuation">(</span><span class="name variable">demo-evaluator</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">ans</span>
-       <span class="keyword reserved">display</span> <span class="name variable">calculation</span> <span class="literal string double">&quot; = &quot;</span> <span class="name variable">ans</span>
-       <span class="keyword reserved">move</span> <span class="name variable">destroy-equation</span><span class="punctuation">(</span><span class="name variable">demo-evaluator-record</span><span class="punctuation">)</span> <span class="keyword pseudo">to</span> <span class="name variable">extraneous</span>
+       <span class="keyword reserved">display</span> <span class="name variable">calculation</span> <span class="literal string double">&quot; = &quot;</span> <span class="name variable">evaluate-basic</span><span class="punctuation">(</span><span class="name variable">calculation</span><span class="punctuation">)</span>
        <span class="keyword reserved">display</span> <span class="name constant">space
 
       </span><span class="comment">*&gt; a more complex example

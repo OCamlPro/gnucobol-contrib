@@ -5,7 +5,7 @@ GCobol >>SOURCE FORMAT IS FREE
       *> AUTHOR
       *>   Brian Tiffin
       *> DATE
-      *>   20160721  Modified: 2016-07-23/06:05-0400
+      *>   20160721  Modified: 2016-07-23/16:34-0400
       *> LICENSE
       *>   Copyright 2016 Brian Tiffin
       *>   GNU Lesser General Public License, LGPL, 3.0 (or superior)
@@ -18,7 +18,7 @@ GCobol >>SOURCE FORMAT IS FREE
        program-id. cobweb-math.
        author. Brian Tiffin.
        date-written. 2016-07-15/10:20-0400.
-       date-modified. 2016-07-23/06:05-0400.
+       date-modified. 2016-07-23/16:34-0400.
        date-compiled.
        installation.
        remarks.
@@ -34,6 +34,7 @@ GCobol >>SOURCE FORMAT IS FREE
            locale canadian is "en_CA.UTF-8".
 
        repository.
+           function evaluate-basic
            function create-equation
            function evaluate-equation
            function destroy-equation
@@ -61,8 +62,6 @@ GCobol >>SOURCE FORMAT IS FREE
           05 variable-value    usage float-long occurs NAME-LIMIT times.
        01 answer               usage float-long.
 
-       01 counter              usage binary-long.
-
        01 cli                  pic x(80).
           88 helping               values "help", "-help", "--help".
           88 demoing               value "demo".
@@ -82,6 +81,8 @@ GCobol >>SOURCE FORMAT IS FREE
           88 want-answer           values "ans".
        01 got-equal            pic x.
 
+       01 calculation.
+          05 value "(1 + 2 * 3 / 4 - 5)^3".
        01 equation.
           05 value "x^4 + sin(x^2) + 2*x^y + 42".
        01 x                    usage float-long value 1.0.
@@ -111,6 +112,12 @@ GCobol >>SOURCE FORMAT IS FREE
        end-if
 
        if demoing then
+           *> simple math
+           display "cobweb-math internal demo"
+           display calculation " = " evaluate-basic(calculation)
+           display space
+
+           *> two variable equation, with derivative 
            move create-equation(equation, "derivative, variables")
              to evaluator-record
 
@@ -144,12 +151,12 @@ GCobol >>SOURCE FORMAT IS FREE
            move 2.0 to variable-value(1)
            move 8.0 to variable-value(2)
            move evaluate-equation(evaluator, variable-count,
-                                  name-list, value-list) to answer 
+                                  variable-names, value-list) to answer 
            display "f(" variable-value(1) ", " variable-value(2)
                    ")  = " answer
 
            move evaluate-equation(evaluator-prime, variable-count,
-                                  name-list, value-list) to answer 
+                                  variable-names, value-list) to answer 
            display "f'(" variable-value(1) ", " variable-value(2)
                    ") = " answer
 
@@ -426,25 +433,60 @@ GCobol >>SOURCE FORMAT IS FREE
        identification division.
        function-id. evaluate-basic.
 
+       environment division.
+       configuration section.
+       repository.
+           function all intrinsic.
+
        data division.
        working-storage section.
        01 ans                  usage float-long.
        01 x                    usage float-long value 0.0.
 
+       :EVALUATOR-RECORD:
+
        linkage section.
-       01 given-evaluator      usage pointer.
+       01 calculation          pic x any length.
        01 result               usage float-long.
 
-       procedure division using given-evaluator returning result.
+       procedure division using calculation returning result.
 
+      *> compile given equation
+       call "evaluator_create" using
+           by content concatenate(trim(calculation), x"00")
+           returning evaluator
+           on exception
+               display "error: cannot initialize evaluator (-lmatheval)"
+                  upon syserr
+               perform soft-exception
+               goback
+       end-call
+       if evaluator equal null then
+           display "error: could not compute " trim(calculation)
+              upon syserr
+           goback
+       end-if
+
+      *> x is actually unused
        call "evaluate_x" using
-          by value given-evaluator
+          by value evaluator
           by value x
           by reference ans
        end-call
 
+      *> free up library resources
+       if evaluator not equal null then
+           call "evaluator_destroy" using
+               by value evaluator
+               returning omitted
+           end-call
+       end-if
+
        move ans to result
        goback.
+
+       :EXCEPTION-HANDLERS:
+
        end function evaluate-basic.
       *>****
 
@@ -464,11 +506,15 @@ GCobol >>SOURCE FORMAT IS FREE
 
        procedure division using given-evaluator x returning result.
 
-       call "evaluate_x" using
-          by value given-evaluator
-          by value x
-          by reference ans
-       end-call
+       if given-evaluator not equal null then
+           call "evaluate_x" using
+              by value given-evaluator
+              by value x
+              by reference ans
+           end-call
+       else
+           display "error: invalid evaluator" upon syserr
+       end-if
 
        move ans to result
        goback.
@@ -497,11 +543,15 @@ GCobol >>SOURCE FORMAT IS FREE
 
        procedure division using given-evaluator x y returning result.
 
-       call "evaluate_xy" using
-          by value given-evaluator
-          by value x y
-          by reference ans
-       end-call
+       if given-evaluator not equal null then
+           call "evaluate_xy" using
+              by value given-evaluator
+              by value x y
+              by reference ans
+           end-call
+       else
+           display "error: invalid evaluator" upon syserr
+       end-if
 
        move ans to result
        goback.
@@ -531,11 +581,15 @@ GCobol >>SOURCE FORMAT IS FREE
 
        procedure division using given-evaluator x y z returning result.
 
-       call "evaluate_xyz" using
-          by value given-evaluator
-          by value x y z
-          by reference ans
-       end-call
+       if given-evaluator not equal null then
+           call "evaluate_xyz" using
+              by value given-evaluator
+              by value x y z
+              by reference ans
+           end-call
+       else
+           display "error: invalid evaluator" upon syserr
+       end-if
 
        move ans to result
        goback.
@@ -585,7 +639,7 @@ and so on.  Convenience functions exist for equations that use
 
 Convenience functions include:
 
-- evaluate-basic(evaluator) to answer  (for use a a calculator)
+- evaluate-basic(calculation) to answer  (for use as a calculator)
 - evaluate-x(evaluator, x) to answer
 - evaluate-xy(evaluator, x, y) to answer
 - evaluate-xyz(evaluator, x, y, z) to answer
