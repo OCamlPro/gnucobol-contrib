@@ -5,7 +5,7 @@ GCobol >>SOURCE FORMAT IS FREE
       *> AUTHOR
       *>   Brian Tiffin
       *> DATE
-      *>   20160721  Modified: 2016-07-23/16:34-0400
+      *>   20160721  Modified: 2016-07-23/17:02-0400
       *> LICENSE
       *>   Copyright 2016 Brian Tiffin
       *>   GNU Lesser General Public License, LGPL, 3.0 (or superior)
@@ -18,7 +18,7 @@ GCobol >>SOURCE FORMAT IS FREE
        program-id. cobweb-math.
        author. Brian Tiffin.
        date-written. 2016-07-15/10:20-0400.
-       date-modified. 2016-07-23/16:34-0400.
+       date-modified. 2016-07-23/17:02-0400.
        date-compiled.
        installation.
        remarks.
@@ -465,14 +465,14 @@ GCobol >>SOURCE FORMAT IS FREE
            display "error: could not compute " trim(calculation)
               upon syserr
            goback
+       else
+          *> x is actually unused
+           call "evaluate_x" using
+              by value evaluator
+              by value x
+              by reference ans
+           end-call
        end-if
-
-      *> x is actually unused
-       call "evaluate_x" using
-          by value evaluator
-          by value x
-          by reference ans
-       end-call
 
       *> free up library resources
        if evaluator not equal null then

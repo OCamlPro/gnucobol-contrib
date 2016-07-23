@@ -506,7 +506,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
 </span>      <span class="comment">*&gt; AUTHOR
 </span>      <span class="comment">*&gt;   Brian Tiffin
 </span>      <span class="comment">*&gt; DATE
-</span>      <span class="comment">*&gt;   20160721  Modified: 2016-07-23/16:34-0400
+</span>      <span class="comment">*&gt;   20160721  Modified: 2016-07-23/17:05-0400
 </span>      <span class="comment">*&gt; LICENSE
 </span>      <span class="comment">*&gt;   Copyright 2016 Brian Tiffin
 </span>      <span class="comment">*&gt;   GNU Lesser General Public License, LGPL, 3.0 (or superior)
@@ -519,7 +519,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
        <span class="keyword reserved">program-id</span><span class="punctuation">.</span> <span class="name variable">cobweb-math</span><span class="punctuation">.</span>
        <span class="name variable">author</span><span class="punctuation">.</span> <span class="name variable">Brian</span> <span class="name variable">Tiffin</span><span class="punctuation">.</span>
        <span class="name variable">date-written</span><span class="punctuation">.</span> <span class="literal number integer">2016</span><span class="operator">-</span><span class="literal number integer">07</span><span class="operator">-</span><span class="literal number integer">15</span><span class="operator">/</span><span class="literal number integer">10</span><span class="punctuation">:</span><span class="literal number integer">20</span><span class="operator">-</span><span class="literal number integer">0400</span><span class="punctuation">.</span>
-       <span class="name variable">date-modified</span><span class="punctuation">.</span> <span class="literal number integer">2016</span><span class="operator">-</span><span class="literal number integer">07</span><span class="operator">-</span><span class="literal number integer">23</span><span class="operator">/</span><span class="literal number integer">16</span><span class="punctuation">:</span><span class="literal number integer">34</span><span class="operator">-</span><span class="literal number integer">0400</span><span class="punctuation">.</span>
+       <span class="name variable">date-modified</span><span class="punctuation">.</span> <span class="literal number integer">2016</span><span class="operator">-</span><span class="literal number integer">07</span><span class="operator">-</span><span class="literal number integer">23</span><span class="operator">/</span><span class="literal number integer">17</span><span class="punctuation">:</span><span class="literal number integer">05</span><span class="operator">-</span><span class="literal number integer">0400</span><span class="punctuation">.</span>
        <span class="name variable">date-compiled</span><span class="punctuation">.</span>
        <span class="name variable">installation</span><span class="punctuation">.</span>
        <span class="name variable">remarks</span><span class="punctuation">.</span>
@@ -616,6 +616,7 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
            </span><span class="comment">*&gt; simple math
 </span>           <span class="keyword reserved">display </span><span class="literal string double">&quot;cobweb-math internal demo&quot;</span>
            <span class="keyword reserved">display</span> <span class="name variable">calculation</span> <span class="literal string double">&quot; = &quot;</span> <span class="name variable">evaluate-basic</span><span class="punctuation">(</span><span class="name variable">calculation</span><span class="punctuation">)</span>
+           <span class="keyword reserved">display</span> <span class="name variable">evaluate-basic</span><span class="punctuation">(</span><span class="literal string double">&quot;5 +&quot;</span><span class="punctuation">)</span>
            <span class="keyword reserved">display</span> <span class="name constant">space
 
            </span><span class="comment">*&gt; two variable equation, with derivative
@@ -966,14 +967,14 @@ engine inside <tt class="docutils literal"><span class="pre">cobweb-math.cob</sp
           </span> <span class="keyword reserved">display </span><span class="literal string double">&quot;error: could not compute &quot;</span> <span class="name function">trim</span><span class="punctuation">(</span><span class="name variable">calculation</span><span class="punctuation">)</span>
               <span class="keyword pseudo">upon</span> <span class="name variable">syserr</span>
            <span class="keyword reserved">goback
+      </span> <span class="keyword reserved">else
+          </span><span class="comment">*&gt; x is actually unused
+</span>           <span class="keyword reserved">call </span><span class="literal string double">&quot;evaluate_x&quot;</span> <span class="keyword pseudo">using
+             </span> <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">evaluator</span>
+              <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">x</span>
+              <span class="keyword pseudo">by</span> <span class="keyword pseudo">reference</span> <span class="name variable">ans</span>
+           <span class="keyword reserved">end-call
       </span> <span class="keyword reserved">end-if
-
-      </span><span class="comment">*&gt; x is actually unused
-</span>       <span class="keyword reserved">call </span><span class="literal string double">&quot;evaluate_x&quot;</span> <span class="keyword pseudo">using
-         </span> <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">evaluator</span>
-          <span class="keyword pseudo">by</span> <span class="keyword pseudo">value</span> <span class="name variable">x</span>
-          <span class="keyword pseudo">by</span> <span class="keyword pseudo">reference</span> <span class="name variable">ans</span>
-       <span class="keyword reserved">end-call
 
       </span><span class="comment">*&gt; free up library resources
 </span>       <span class="keyword reserved">if</span> <span class="name variable">evaluator</span> <span class="operator word">not</span> <span class="operator word">equal</span> <span class="keyword pseudo">null</span> <span class="keyword reserved">then
