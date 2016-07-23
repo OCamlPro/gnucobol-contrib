@@ -3,12 +3,11 @@ cobweb-math
 
 Evaluation of mathematical equations, given at runtime, using GNU libmatheval.
 
-Defines some GnuCOBOL user defined functions that allow expressions to be
-created and evaluated given character data equations and a table of values that
-correspond to variable names in the equations.  Supports automatic computation
-of the first order derivative of the given equation.  The library includes a
-small read=evaluate-print-loop for quick calculations, but it is really meant
-to provide a little bit of end-user application programmability. 
+Defines some GnuCOBOL user defined functions that allow mathematical
+expressions to be created and evaluated. Supports automatic computation of the
+first order derivative of the given equation.  The library includes a small
+read-evaluate-print-loop for quick calculations, but it is really meant to
+provide a little bit of end-user application programmability. 
 
     prompt$ cobcrun cobweb-math
     REPL: x = number (or ans) or equation in relation to x
