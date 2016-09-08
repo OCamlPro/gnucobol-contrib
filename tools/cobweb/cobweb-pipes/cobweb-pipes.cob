@@ -3,16 +3,25 @@ GCobol >>SOURCE FORMAT IS FREE
       *> ***************************************************************
       *>****R* cobweb/cobweb-pipes
       *> AUTHOR
-      *>   Brian Tiffin
+      *>   Brian Tiffin, Simon Sobisch
       *> DATE
-      *>   20150216 and 20150417
+      *>   20150216, 20150417 Brian Tiffin
+      *>            creation of cobweb-pipes
+      *>   20150417 Simon Sobisch
+      *>            Added WIN_NO_POSIX for use in native Windows environments
+      *>            use STATIC clause for C library calls
+      *>   20160908 Simon Sobisch
+      *>            Added missing implementation for characters-read,
+      *>            reset pipe-pointer on pclose, initialize fields
       *> LICENSE
       *>   GNU Lesser General Public License, LGPL, 3.0 (or greater)
       *> PURPOSE
       *>   cobweb-pipes program. Read OR Write on most POSIX systems
       *>   pipe-open, pipe-read, pipe-write, pipe-close
       *> TECTONICS
-      *>   cobc -x program.cob cobweb-pipes.cob -g -debug
+      *>   cobc -x program.cob cobweb-pipes.cob -debug
+      *>    or (for WIN_NO_POSIX)
+      *>   cobc -x program.cob cobweb-pipes.cob -debug -DWIN_NO_POSIX
       *> SOURCE
       *> ***************************************************************
        identification division.
@@ -35,7 +44,7 @@ GCobol >>SOURCE FORMAT IS FREE
       *>****F* cobweb-pipes/pipe-open
       *> PURPOSE
       *>   Open a pipe channel, Read or Write
-      *> INPUTS 
+      *> INPUTS
       *>   shell command, pic x any
       *>   pipe open mode, "r" or "w", not both on POSIX, but maybe Mac
       *> OUTPUTS
@@ -76,14 +85,15 @@ GCobol >>SOURCE FORMAT IS FREE
          returning pipe-pointer
          on exception
              display "link error: popen" upon syserr end-display
-             move 255 to pipe-return
+             set  pipe-pointer to NULL
+             move 255          to pipe-return
              goback
        end-call
 
        if pipe-pointer equal null then
            display "exec error: popen" upon syserr end-display
-             move 255 to pipe-return
-             goback
+           move 255          to pipe-return
+           goback
        end-if
 
        goback.
@@ -95,7 +105,7 @@ GCobol >>SOURCE FORMAT IS FREE
       *>****F* cobweb-pipes/pipe-read
       *> PURPOSE
       *>   Read from a pipe.
-      *> INPUTS 
+      *> INPUTS
       *>   pipe record, first field pointer
       *>   line buffer, pic x any
       *> OUTPUTS
@@ -131,6 +141,8 @@ GCobol >>SOURCE FORMAT IS FREE
            line-buffer
          returning pipe-record-out.
 
+       move spaces              to line-buffer
+       move 0                   to characters-read
        move length(line-buffer) to line-buffer-length
        call static "fgets" using
            by reference line-buffer
@@ -139,10 +151,12 @@ GCobol >>SOURCE FORMAT IS FREE
          returning pipe-read-status
          on exception
              display "link error: fgets" upon syserr end-display
-             move 0 to characters-read
              goback
        end-call
-
+       if pipe-read-status not = NULL
+          inspect line-buffer
+            tallying characters-read for characters before x'00'
+       end-if
        goback.
        end function pipe-read.
       *>****
@@ -152,7 +166,7 @@ GCobol >>SOURCE FORMAT IS FREE
       *>****F* cobweb-pipes/pipe-write
       *> PURPOSE
       *>   Write to a pipe channel
-      *> INPUTS 
+      *> INPUTS
       *>   pipe record, first field pointer
       *>   line buffer
       *> OUTPUTS
@@ -205,7 +219,7 @@ GCobol >>SOURCE FORMAT IS FREE
       *>****F* cobweb-pipes/pipe-close
       *> PURPOSE
       *>   Close a pipe channel
-      *> INPUTS 
+      *> INPUTS
       *>   pipe record, first field pointer
       *> OUTPUTS
       *>   pipe close status, integer
@@ -245,6 +259,7 @@ GCobol >>SOURCE FORMAT IS FREE
              goback
        end-call
 
+       set  pipe-pointer  to NULL
        goback.
        end function pipe-close.
       *>****
