@@ -1,10 +1,10 @@
 ID DIVISION.
-PROGRAM-ID. GC56DATEPICDEMO.
+PROGRAM-ID. GC56DATEPICKERDEMO.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DEMO OF GC56DATEPICKER
 *> Tectonics:  cobc -x GC56DATEPICDEMO.COB (use GnuCOBOL 2.0 or greater)
-*> Usage:      GC56DATEPICDEMO
+*> Usage:      GC56DATEPICKERDEMO
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
@@ -89,4 +89,4 @@ accept omitted
 
 goback.
 
-End Program GC56DATEPICDEMO.
+End Program GC56DATEPICKERDEMO.
