@@ -5,7 +5,7 @@ PROGRAM-ID. GC01BOX is initial.
 *> Purpose:    DISPLAY A BOX ON SCREEN WITH OPTIONS AND SPECIAL EFFECTS
 *> Tectonics:  cobc -m GC01BOX.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC01BOX using BOX-AREA
-*> Parameters: look at GC01BOX.cpy  (use with copy Version: 1.0 2016.06.15)
+*> Parameters: look at GC01BOX.CPY  (use with copy Version: 1.0 2016.06.15)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
 *> Version:    1.0 2016.06.15
@@ -22,7 +22,7 @@ WORKING-STORAGE SECTION.
 01 yellow  constant as 6.  *> or Brown
 01 white   constant as 7.
 
-01 wInt        BINARY-SHORT. *>  SIGNED.
+01  wInt        BINARY-SHORT.
 01  wChar   pic x  value space.
 01  i    pic 999.
 01  j    pic 999.
@@ -126,24 +126,24 @@ else
 *> ***********************************************************************************
 *> display a 3D box
 *> ***********************************************************************************
- perform varying i from box-r1 by 1 until i > box-r2         *> write rows
+ perform   varying i from box-r1 by 1 until i > box-r2       *> write rows
    perform varying j from box-c1 by 1 until j > box-c2       *> write cols
      evaluate true
        *> 1st box row
-       when i = box-r1 and j = box-c1          move L(1:1) to wChar           *> upper left corner
-                               if Box-3D = "R" move 0 to box-fco end-if
-                               if Box-3D = "E" move 7 to box-fco end-if
+       when i = box-r1 and j = box-c1          move L(1:1) to wChar          *> upper left corner
+                               if Box-3D = "R" move black to box-fco end-if
+                               if Box-3D = "E" move white to box-fco end-if
        when i = box-r1 and (j > box-c1 and j < box-c2) move L(2:1) to wChar  *> upper horizontal line
-                               if Box-3D = "R" move 0 to box-fco end-if
-                               if Box-3D = "E" move 7 to box-fco end-if
+                               if Box-3D = "R" move black to box-fco end-if
+                               if Box-3D = "E" move white to box-fco end-if
        when i = box-r1 and j = box-c2          move L(3:1) to wChar          *> upper right corner
-                               if Box-3D = "R" move 7 to box-fco end-if
-                               if Box-3D = "E" move 0 to box-fco end-if
+                               if Box-3D = "R" move black to box-fco end-if
+                               if Box-3D = "E" move white to box-fco end-if
 
        *> intermediate rows
        when (i > box-r1 and i < box-r2) and j = box-c1                  move L(4:1) to wChar *> left vertical line
-                               if Box-3D = "R" move 0 to box-fco end-if
-                               if Box-3D = "E" move 7 to box-fco end-if
+                               if Box-3D = "R" move black to box-fco end-if
+                               if Box-3D = "E" move white to box-fco end-if
        when (i > box-r1 and i < box-r2) and (j > box-c1 and j < box-c2)                   *> box fill character
              if Box-fill = "Y" move L(5:1) to wChar  else exit perform cycle end-if
        when (i > box-r1 and i < box-r2) and j = box-c2                                    *> right vertical line
@@ -152,24 +152,24 @@ else
                                    display X"DB" at line i col k with background-color black foreground-color black end-display
                                 end-if
                                                                         move L(6:1) to wChar
-                               if Box-3D = "R" move 7 to box-fco end-if
-                               if Box-3D = "E" move 0 to box-fco end-if
+                               if Box-3D = "R" move white to box-fco end-if
+                               if Box-3D = "E" move black to box-fco end-if
 
        *> last box row
        when i = box-r2 and j = box-c1                  move L(7:1) to wChar           *> lower left corner
-                               if Box-3D = "R" move 0 to box-fco end-if
-                               if Box-3D = "E" move 7 to box-fco end-if
+                               if Box-3D = "R" move black to box-fco end-if
+                               if Box-3D = "E" move white to box-fco end-if
        when i = box-r2 and (j > box-c1 and j < box-c2) move L(8:1) to wChar            *> lower horizontal line
-                               if Box-3D = "R" move 7 to box-fco end-if
-                               if Box-3D = "E" move 0 to box-fco end-if
+                               if Box-3D = "R" move white to box-fco end-if
+                               if Box-3D = "E" move black to box-fco end-if
        when i = box-r2 and j = box-c2                                               *> lower right corner
                                                                     move L(9:1) to wChar
                                *> display a shadow a right of the box if requested
                                if box-shadow = "Y" compute k = j + 1 end-compute
                                   display X"DB" at line i col k with background-color black foreground-color black end-display
                                end-if
-                               if Box-3D = "R" move 7 to box-fco end-if
-                               if Box-3D = "E" move 0 to box-fco end-if
+                               if Box-3D = "R" move white to box-fco end-if
+                               if Box-3D = "E" move black to box-fco end-if
      end-evaluate
 
      if box-fco = 7 *> display with highlight only if fore color is white (no highlight if black)
@@ -202,7 +202,6 @@ TitleCount.
      add 1 to t
      if Box-titDes(t:1) = low-value go TitleCountEx else go to TitleCount end-if.
 TitleCountEx.
-*>     compute wTitleCol = Box-c1 + ((Box-c2 - Box-c1) / 2)  - (t / 2) - 1 end-compute.
        compute wTitleCol = Box-c1 + ((Box-c2 - Box-c1) / 2)  - (t / 2)     end-compute.
      move 0 to t.
 TitleDisplayLoop.
@@ -219,6 +218,6 @@ TitleDisplayLoop.
      go TitleDisplayLoop.
 TitleDisplayEx.
 
-goback.
+GOBACK.
 
 End Program GC01BOX.
