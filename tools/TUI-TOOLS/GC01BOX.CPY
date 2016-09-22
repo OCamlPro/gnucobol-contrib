@@ -28,12 +28,20 @@
 *> tit       Y= display a title
 *> titDes    string to be displayed as title
 *>                                       c1
+*>           Example               r1 ->  +----------- TTTTTTTTT -------------+
+*>           style = 1         displays:  |                                   |
+*>                                        |                                   |
+*>                                        |                                   |
+*>                                        +-----------------------------------+ <- r2
+*>                                                                           c2
+*>           where ' TTTTTTTTT ' is the title of the box if requested (optional)
+*>                                             c1
 *>           Example               r1 ->  ABBBBBBBBBBBB TTTTTTTTT BBBBBBBBBBBBC
-*>           style = ABCDEFGHZ displays:  DEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEF
-*>                                        DEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEF
+*>           style = C         displays:  DEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEF
+*>           custom = ABCDEFGHZ           DEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEF
 *>                                        DEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEF
 *>                                        GHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHI <- r2
-*>                                                                     c2
+*>                                                                           c2
 *>           where ' TTTTTTTTT ' is the title of the box if requested (optional)
 *> ***********************************************************************************
    03 Box-rc.
@@ -44,13 +52,13 @@
          07 Box-r2   pic 9(03) value 025.
          07 Box-c2   pic 9(03) value 080.
    03 Box-Parameters.
-      05 Box-bco     pic 9(01) value 7.       *> back color of the box
-      05 Box-fco     pic 9(01) value 7.       *> fore color of the box (the frame)
-      05 Box-fcoH    pic X(01) value "Y".         *> Hilight Foreground ?
+      05 Box-bco     pic 9(01) value 7.           *> back color of the box
+      05 Box-fco     pic 9(01) value 7.           *> fore color of the box  (the frame)
+      05 Box-fcoH    pic X(01) value "Y".         *> Y = Hilight Foreground (the frame of the box)
       05 Box-style   pic X(01) value "D".         *> S, D, 1, 2, 3, N, C
       05 Box-custom  PIC X(09) VALUE "ABCDEFGHI". *> UL, UC, UR, ML, MC, MR, LL, LC, LR
-      05 Box-fill    pic X(01) value "Y".         *> filled box
-      05 Box-shadow  pic x(01) value 'N'.         *> box with shadow
+      05 Box-fill    pic X(01) value "Y".         *> Y = filled box
+      05 Box-shadow  pic x(01) value 'N'.         *> Y = box with shadow
       05 Box-3D      pic x(01) value 'N'.         *> N=no3D, 3D effect: R= Recessed, E= Embossed/Relief
       05 Box-add1c   pic x(01) value 'N'.         *> enlarge box for a better 3D effect
       05 Box-beep    pic x(01) value 'N'.         *> Y = ring the bell
