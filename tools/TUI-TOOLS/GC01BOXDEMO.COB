@@ -192,10 +192,9 @@ move yellow to Box-Fco
 move '005015015060' to Box-rc.
 
 Changing-BoxRefresh.
-*> display ' ' AT 0101 WITH ERASE EOS
 call x'E4'
 move yellow to wFco
-move black to wBco
+move black  to wBco
 display
  'cursor      left/right/up/down = enlarge the box              ' at 1809 with background-color  wBco foreground-color wFco highlight
  'ALT-cursor  left/right/up/down = shrink the box               ' at 1909 with background-color  wBco foreground-color wFco highlight
