@@ -37,7 +37,7 @@
 *>           at first display of the menu. when you exit from the menu
 *>           the active item will have '1' other items will have blank.
 *> Bu-r      row & col where the button starts on screen
-*> Mn-c      first row & col are 01, 01, last are 25,80 (row 25 col 80)
+*> Bu-c      first row & col are 01, 01, last are 25,80 (row 25 col 80)
 *>           buttons can be displayed in every position, also sparse.
 *>           buttons can be also all overlapped (you will have a list-box)
 *>
