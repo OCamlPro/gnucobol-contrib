@@ -3,7 +3,7 @@ PROGRAM-ID. GC58SAVERCLOCK.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    SCREENSAVER DISPLAYING A MOVING CLOCK and optionally A SCROLLING STRING
-*> Tectonics:  cobc -m GC58SAVERCLOCK.COB  (use GnuCOBOL 2.0 or greater)
+*> Tectonics:  cobc -x GC58SAVERCLOCK.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC58SAVERCLOCK using SAVER01-AREA
 *> Parameters: look at GC58SAVERCLOCK.cpy  (use with copy Version: 1.0 2016.06.15)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
