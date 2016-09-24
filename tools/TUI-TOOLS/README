@@ -26,6 +26,9 @@ GC01BOX.COB
 call it to display boxes on screen, you can specify back/fore colors, size, position, 
 single/double/custom borders, 3D effect and so on.
 
+GC03YESNO.COB 
+call it to display a BOX with a simple message and two big buttons YES & NO on screen, you can specify back/fore colors, size, position, and so on.
+
 GC09BUTTONS.COB 
 call it to display buttons on screen, you can specify number of buttons, back/fore colors, size, position, and so on.
 
@@ -38,5 +41,7 @@ you can specify back/fore colors, size, position,
 single/double/custom borders, 3D effect and so on.
 User can browse days, months and years to pick-up a date.
 
+GC58SAVERCLOCK.COB
+call it to display a screen saver with a big clock moving randomly on screen
 
 
