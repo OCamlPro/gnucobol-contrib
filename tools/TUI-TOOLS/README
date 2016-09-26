@@ -1,39 +1,40 @@
-GnuCOBOL TT TEXT USER INTERFACE (TUI) TOOLS COLLECTON
-GnuCOBOL is a great product but it has not functions for an easy management of text user interfaces. 
-You need usual objects like: boxes, message boxes, buttons, dropdown menus, and so on.
-Of course, these functions have to be developed with GnuCOBOL. 
-And, for COBOL programmers, it has to be just pure COBOL (!), no C wrappers (!).
+*** GnuCOBOL TEXT USER INTERFACE (TUI) TOOLS COLLECTON ***
+
+GnuCOBOL is a great product but it needs functions for an easy management of text user interfaces. 
+Usual objects like: bar menu, drop-down menu, buttons, message boxes, and so on.
+Of course, these functions have to be developed with GnuCOBOL itself. 
+And, for COBOL programmers, it has to be just PURE COBOL (!), without C wrappers (!).
 This is my contribution to the project.
-You will find objects like callable function to display box, menu, buttons ...
-With management of: position, size, colors, borders, shadows, titles, 3D effect ...
+You will find COBOL programs you can "CALL" to manage menus, display box, buttons ...
+You can choose: position, size, colors, borders, shadows, titles, 3D effect ...
 
 You'll find commented source files. 
-Documentation of parameters are inside the copy books.
+Documentation of parameters are inside the copybooks.
 I also have prepared demo programs to demonstrate how to "call" the programs and some of the main effects.
-I call these modules "GnuCOBOL TT = TUI (TEXT USER INTERFACE) TOOLS COLLECTION"
+I have called those modules "GnuCOBOL TT = TUI (TEXT USER INTERFACE) TOOLS COLLECTION"
 The sources have been compiled with GnuCOBOL 2.0.
 
 I used the Arnold Trembley pack for Windows MinGW (download it , unpack it, and the compiler is ready to use !). 
 I used OpendCOBOLIDE, another very very nice product that I reccomend.
 The development of programs has been on a Windows 10 64bit machine.
 
-Please, let me know if you have any suggestions to improve the functions.
-Your suggestion will be very useful and welcome.
+Please, let me know if you have any suggestion to improve the functions.
+Your suggestions will be very useful and welcome.
 
 The collection is made by folllowing programs (I will upload other modules in the future)
 
 GC01BOX.COB 
 call it to display boxes on screen, you can specify back/fore colors, size, position, 
-single/double/custom borders, 3D effect and so on.
+single/double/custom borders, 3D effect and so on. This funcion is mainly used by other modules.
 
 GC03YESNO.COB 
 call it to display a BOX with a simple message and two big buttons YES & NO on screen, you can specify back/fore colors, size, position, and so on.
 
 GC09BUTTONS.COB 
-call it to display buttons on screen, you can specify number of buttons, back/fore colors, size, position, and so on.
+call it to display buttons on screen, you can specify number of buttons, back/fore colors, size, position, text of buttons and so on.
 
 GC21MENU.COB 
-call it to display menu on creen, you can specify number of items, back/fore colors, position, and so on.
+call it to display menus on screen, you can manage bar menu, dropdown menu, specify number of items, text and length of items, back/fore colors, position, and so on.
 
 GC56DATEPICKER.COB
 call it to display a one month calendar (regular or small size)
