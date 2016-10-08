@@ -1,19 +1,23 @@
 *** GCTTC: GnuCOBOL TI (TEXT USER INTERFACE) TOOLS COLLECTON ***
 
-Although the textual interfaces are now replaced by graphical interfaces, a good compiler must allow to develop complete applications in an easy way even with textual user interfaces.
+Although the textual interfaces are now replaced by graphical interfaces, a good compiler 
+must allow to develop complete applications in an easy way even with textual user interfaces.
 
-For this GnuCOBOL needs to generate applications with those objects that allow a classically user interfaces friendly and in line with all other programming languages on windows and unix platform.
+For this GnuCOBOL needs to generate applications with those objects that allow a classically 
+user interfaces friendly and in line with all other programming languages on windows and unix platform.
 
 GCTTC is a collection of COBOL modules (sources) useful for this purpose.
-GCTTC includes modules to manage classical TUI objects like: dropdown menus, multiple-choice Buttons, buttons of YES NO type, calendar for selecting a date, on-screen messages, boxes, selection with radio buttons, check boxes and so on.
+GCTTC includes modules to manage classical TUI objects like: dropdown menus, multiple-choice Buttons, 
+buttons of YES NO type, calendar for selecting a date, on-screen messages, boxes, 
+selection with radio buttons, check boxes and so on.
 
 All modules have been developed exclusively using GnuCOBOL (Pure COBOL no C wrappers).
 
 The collection includes several modules, is expected to introduce more features  in the future. 
 Anyone can add new objects / functions to the collection.
 
-You will find COBOL programs that you can "CALL" from your source to manage dropdown menus, display box, buttons ...
-You can choose: position, size, colors, borders, shadows, titles, 3D effect ...
+You will find COBOL programs that you can "CALL" from your source to manage dropdown menus, 
+display box, buttons ... You can choose: position, size, colors, borders, shadows, titles, 3D effect ...
 
 You'll find commented source files. Documentation of parameters are inside the copybooks.
 I also have prepared some demo programs to demonstrate how to "call" the programs and some of the main effects.
@@ -22,9 +26,10 @@ The sources have been compiled with GnuCOBOL 2.0.
 
 The programs are called GnnXXXXXX. 
 Where nn = a code that identifies the function and xxxxx = a brief description of the function.
-For each object there is a COBOL source and a COPY book in which there are all the execution parameters of the function and parameter to be returned to the caller.
+For each object there is a COBOL source and a COPY book in which there are all the execution parameters 
+of the function and parameter to be returned to the caller.
 
-I used the Arnold Trembley pack for Windows MinGW (download it, unpack it, and the compiler is ready to use !). 
+I used the Arnold Trembley pack for Windows MinGW (download it,unpack it,and the compiler is ready to use!). 
 I used OpendCOBOLIDE, another very very nice product that I reccomend.
 The development of programs has been on a Windows 10 64bit machine.
 
@@ -34,17 +39,20 @@ Your suggestions will be very useful and welcome.
 The collection is made by folllowing programs (I will upload other modules in the future)
 
 GC01BOX.COB 
-call it to display boxes on screen, you can specify back/fore colors, size, position, 
-single/double/custom borders, 3D effect and so on. This function is mainly developed to be used by other modules.
+call it to display boxes on screen, you can specify back/fore colors, size, position, single/double/custom 
+borders, 3D effect and so on. This function is mainly developed to be used by other modules.
 
 GC03YESNO.COB 
-call it to display a BOX with a simple message and two big buttons YES & NO on screen, you can specify back/fore colors, size, position, and so on.
+call it to display a BOX with a simple message and two big buttons YES & NO on screen, 
+you can specify back/fore colors, size, position, and so on.
 
 GC09BUTTONS.COB 
-call it to display multiple buttons on screen, you can specify number of buttons, back/fore colors, size, position, text of buttons and so on.
+call it to display multiple buttons on screen, you can specify number of buttons, back/fore colors, 
+size, position, text of buttons and so on.
 
 GC21MENU.COB 
-call it to display menus on screen, you can manage bar menu, dropdown menu, specify number of items, text and length of items, back/fore colors, position, messages associated to menu items, and so on.
+call it to display menus on screen, you can manage bar menu, dropdown menu, specify number of items, 
+text and length of items, back/fore colors, position, messages associated to menu items, and so on.
 
 GC56DATEPICKER.COB
 call it to display a one month calendar (regular or small size)
