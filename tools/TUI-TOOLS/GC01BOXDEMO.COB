@@ -3,13 +3,15 @@ program-id. GC01BOXDEMO.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DEMO OF GC01BOX - DRAWS BOXES ON SCREEN
-*> Tectonics:  cobc -x GC01BOXDEMO.COB (use GnuCOBOL 2.0 or greater)
+*> Tectonics:  cobc -x -free GC01BOXDEMO.COB (use GnuCOBOL 2.0 or greater)
 *> Usage:      GC01BOXDEMO
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
 *> Version:    1.0 2016.06.15
 *> Changelog:  1.0 first release.
+*>             2.0 use GC98KEYCODES.CPY ,
+*>                 use CALL GETCH instead of ACCEPT OMITTED and other minor changes
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -36,10 +38,11 @@ WORKING-STORAGE SECTION.
 01  wB        pic 9(01) value 0.
 01  wFlipFlop pic 9(01) value 0.
 
-01  result     usage binary-long.
-01  wresult    pic S9(8).
+01 wVisibilityNew  BINARY-SHORT .
+01 wVisibilityOld  BINARY-SHORT .
 
 COPY 'GC01BOX.CPY'.
+COPY 'GC98KEYCODE.CPY'.
 
 *> ***********************************************************************************
 *>           P R O C E D U R E   D I V I S I O N
@@ -50,10 +53,10 @@ set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
 set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
 display wDummy at 2579 with blank screen end-display
-*> hide the cursor (use always a display or an accept at .... before to have a call to "initscr"
-move 0 to wInt
-call static 'curs_set' using by value wInt end-call
-
+*> hide the cursor
+*> use always a "display at ..." or an "accept at lincol ..." before to have a call to "initscr"
+move 0 to wVisibilityNew
+call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
 
 *> ***********************************************************************************
 *> BOX N.1 (use default colors & settings)
@@ -66,7 +69,8 @@ move ' DEMO OF GC01BOX TUI TOOL ' & x'00' to Box-titDes
 call  GC01BOX using BOX-AREA
 
 display "....+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8" at 2501 with  Background-Color 00 Foreground-Color 06 Highlight end-display
-accept omitted
+*> accept omitted
+call static "getch" returning Key-Pressed end-call
 
 *> ***********************************************************************************
 *> BOX N.1A  - SOLID FRAME BOX
@@ -80,7 +84,8 @@ move '003006022074' to Box-rc
 move 'Y'                     to Box-tit
 move Z' box - title '  to Box-titDes
 call GC01BOX using BOX-AREA
-accept omitted
+*> accept omitted
+call static "getch" returning Key-Pressed end-call
 
 initialize Box-area ALL TO VALUE
 move '005009012023' to Box-rc
@@ -92,7 +97,8 @@ move 'N'      to Box-shadow
 *> move 'Y' to Box-beep
 
 call GC01BOX using BOX-AREA
-accept omitted
+*> accept omitted
+call static "getch" returning Key-Pressed end-call
 
 initialize Box-area ALL TO VALUE
 move '015009020025' to Box-rc.
@@ -102,7 +108,8 @@ move 'D' to Box-style
 move 'E' to Box-3D
 move 'N' to Box-shadow
 call GC01BOX using BOX-AREA.
-accept omitted
+*> accept omitted
+call static "getch" returning Key-Pressed end-call
 
 initialize Box-area ALL TO VALUE
 move '005030019046' to Box-rc.
@@ -112,7 +119,8 @@ move 'S' to Box-style
 move 'N' to Box-3D
 move 'Y' to Box-shadow
 call GC01BOX using BOX-AREA.
-accept omitted
+*> accept omitted
+call static "getch" returning Key-Pressed end-call
 
 initialize Box-area ALL TO VALUE
 move '007051' to Box-r1c1.
@@ -123,7 +131,8 @@ move 'S' to Box-style
 move 'N' to Box-3D
 move 'Y' to Box-shadow
 call GC01BOX using BOX-AREA.
-accept omitted
+*> accept omitted
+call static "getch" returning Key-Pressed end-call
 
 initialize Box-area ALL TO VALUE
 move green   to Box-bco.
@@ -134,7 +143,8 @@ move 'S' to Box-style
 move 'N' to Box-3D
 move 'Y' to Box-shadow
 call GC01BOX using BOX-AREA.
-accept omitted.
+*> accept omitted
+call static "getch" returning Key-Pressed end-call
 
 initialize Box-area ALL TO VALUE
 set Box-bco to white.
@@ -176,15 +186,11 @@ move '018050020067' to Box-rc.
 call GC01BOX using BOX-AREA.
 display "Button2" at 019056 with  Background-Color 07 Foreground-Color 00 end-display
 
-accept omitted.
+*> accept omitted
+call static "getch" returning Key-Pressed end-call.
 
 
 Changing-Box.
-*> move '002002024078' to Box-rc
-*> move 'Y'                     to Box-tit
-*> move ' DEMO OF GC01BOX TUI TOOL ' & x'00' to Box-titDes
-*> call  GC01BOX using BOX-AREA.
-
 initialize Box-area ALL TO VALUE
 move "S"    to Box-style
 move blue   to Box-Bco
@@ -193,68 +199,62 @@ move '005015015060' to Box-rc.
 
 Changing-BoxRefresh.
 call x'E4'
+move blue   to wBco
 move yellow to wFco
-move black  to wBco
-display
- 'cursor      left/right/up/down = enlarge the box              ' at 1809 with background-color  wBco foreground-color wFco highlight
- 'ALT-cursor  left/right/up/down = shrink the box               ' at 1909 with background-color  wBco foreground-color wFco highlight
- 'CTRL-cursor left/right/up/down = move the box                 ' at 2009 with background-color  wBco foreground-color wFco highlight
- 'F1/F2= change fore/backcolor: F3= change borders; F4= toggle title ' at 2109 with background-color  wBco foreground-color wFco highlight
- 'F5= toggle shadow; F6= change 3D borders                           ' at 2209 with background-color  wBco foreground-color wFco highlight
- 'Enter= exit; Escape= exit                                          ' at 2309 with background-color  wBco foreground-color wFco highlight
-end-display
+
+display 'cursor      left/right/up/down = enlarge the box                   ' at 1809 with background-color  wBco foreground-color wFco highlight
+display 'Alt-Cursor  left/right/up/down = shrink the box                    ' at 1909 with background-color  wBco foreground-color wFco highlight
+display 'Ctrl-Cursor left/right/up/down = move the box                      ' at 2009 with background-color  wBco foreground-color wFco highlight
+display 'F1/F2= change fore/backcolor: F3= change borders; F4= toggle title ' at 2109 with background-color  wBco foreground-color wFco highlight
+display 'F5= toggle shadow; F6= change 3D borders                           ' at 2209 with background-color  wBco foreground-color wFco highlight
+display 'Enter= exit; Escape= exit                                          ' at 2309 with background-color  wBco foreground-color wFco highlight
+
 call GC01BOX using box-area.
 
 display "key pressed: "  at 2356 with background-color 01 foreground-color 07 end-display
-display     wresult      at 2369 with background-color 01 foreground-color 07 end-display
+display     Key-Pressed  at 2369 with background-color 01 foreground-color 07 end-display
 
-call static "getch" returning result end-call
-move result to wresult.
+call static "getch" returning Key-Pressed end-call
 
-    EVALUATE TRUE
-     when wresult = 77     *> 77=Cursor right -->
+EVALUATE Key-Pressed
+     when Key-CursRight
           compute Box-c2 = Box-c2 + 1
-     when wresult = 75     *> 77=Cursor left  <--
+     when Key-CursLeft
           compute Box-c1 = Box-c1 - 1
-     when wresult = 80     *> 80= Cursor down
+     when Key-CursDn
           compute Box-r2 = Box-r2 + 1
-     when wresult = 72     *> 72= Cursor up
+     when Key-CursUp
           compute Box-r1 = Box-r1 - 1
-     when wresult = 157    *> 104= ALT-cursor right -->
+     when Key-Alt-CursRight
           compute Box-c1 = Box-c1 + 1
-     when wresult = 155     *> 104= ALT-cursor left <--
+     when Key-Alt-CursLeft
           compute Box-c2 = Box-c2 - 1
-     when wresult = 160     *> 160= ALT-cursor down
+     when Key-Alt-CursDn
           compute Box-r1 = Box-r1 + 1
-     when wresult = 152     *> 152= ALT-cursor up
+     when Key-Alt-CursUp
           compute Box-r2 = Box-r2 - 1
-     when wresult = 115     *> CTRL-cursor <--
+     when Key-Ctrl-CursLeft
           compute Box-c1 = Box-c1 - 1
           compute Box-c2 = Box-c2 - 1
-     when wresult = 116     *> CTRL-cursor -->
+     when Key-Ctrl-CursRight
           compute Box-c1 = Box-c1 + 1
           compute Box-c2 = Box-c2 + 1
-     when wresult = 141     *> CTRL-cursor up
+     when Key-Ctrl-CursUp
           compute Box-r1 = Box-r1 - 1
           compute Box-r2 = Box-r2 - 1
-     when wresult = 145     *> CTRL-cursor down
+     when Key-Ctrl-CursDn
           compute Box-r1 = Box-r1 + 1
           compute Box-r2 = Box-r2 + 1
-
-     *> 84= F1 change Fore Color
-     when wresult = 84
+     when Key-F1                                        *> F1 change Fore Color
          add 1 to Box-Fco Box-titFco
          If Box-Fco > 7 move 0 to Box-Fco Box-titFco end-if
-     *> 85= F2 change Back Color
-     when wresult = 85
+     when Key-F2                                        *> F2 change Back Color
          add 1 to Box-Bco Box-titBco
          If Box-Bco > 7 move 0 to Box-Bco Box-titBco end-if
-     *> 86= F3 change borders
-     when wresult = 86
+     when Key-F3                                        *> F3 change borders
          add 1 to wB  if wB > 6 move 1 to wB end-if
          move wBorder (wB:1) to Box-Style
-     *> 87= F4 toggle title
-     when wresult = 87
+     when Key-F4                                        *> F4 toggle title
          if wFlipFlop = 0
             move 1 to wFlipFlop
             move "N" to Box-tit
@@ -265,9 +265,7 @@ move result to wresult.
             move Box-Fco to Box-titFco
             move x'B4' & ' Title Box ' & x'C3' & x'00' to Box-TitDes
          end-if
-     *> 88= F5 toggle shadow
-     *> (warning to eliminate shadow you have to restore backgroud after saved !)
-     when wresult = 88
+     when Key-F5   *> F5 toggle shadow (warning to eliminate shadow you have to restore backgroud after saved !)
          if wFlipFlop = 0
             move 1 to wFlipFlop
             move "N" to Box-shadow
@@ -275,22 +273,20 @@ move result to wresult.
             move 0 to wFlipFlop
             move "Y" to Box-shadow
          end-if
-     *> 89= F6 toggle 3D
-     when wresult = 89
+     when Key-F6                                         *> F6 toggle 3D
          add 1 to w3  if w3 > 3 move 1 to w3 end-if
          move w3D(w3:1) to Box-3D
-     *> 27= Escape
-     when wresult = 27
+     when Key-Escape
          go to Exit-Program
-     *> 13= Enter
-     when wresult = 13
+     when Key-Enter
           go to Exit-Program
+END-EVALUATE
 
-     END-EVALUATE.
-
-     go to Changing-BoxRefresh
-.
+     go to Changing-BoxRefresh .
 Exit-Program.
-goback.
+   *> re-show the cursor
+   move 2 to wVisibilityNew
+   call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call.
+   goback.
 
 End Program GC01BOXDEMO.
