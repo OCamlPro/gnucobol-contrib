@@ -1,17 +1,18 @@
-ID DIVISION.
+       >> SOURCE FORMAT IS FREE
+IDENTIFICATION DIVISION.
 program-id. GC01BOXDEMO.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DEMO OF GC01BOX - DRAWS BOXES ON SCREEN
-*> Tectonics:  cobc -x -free GC01BOXDEMO.COB (use GnuCOBOL 2.0 or greater)
+*> Tectonics:  cobc -x GC01BOXDEMO.COB (use GnuCOBOL 2.0 or greater)
 *> Usage:      GC01BOXDEMO
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
 *> Version:    1.0 2016.06.15
 *> Changelog:  1.0 first release.
-*>             2.0 use GC98KEYCODES.CPY ,
-*>                 use CALL GETCH instead of ACCEPT OMITTED and other minor changes
+*>             2.0 introduced use of GC98KEYCODES.CPY and
+*>                 use of CALL GETCH instead of ACCEPT OMITTED and other minor changes
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -76,12 +77,12 @@ call static "getch" returning Key-Pressed end-call
 *> BOX N.1A  - SOLID FRAME BOX
 *> ***********************************************************************************
 initialize Box-area ALL TO VALUE
-move "3" to Box-style
-move blue to Box-Bco
-move yellow to Box-Fco
+move "3"            to Box-style
+move blue           to Box-Bco
+move yellow         to Box-Fco
 move '003006022074' to Box-rc
 *> TITLE BOX
-move 'Y'                     to Box-tit
+move 'Y'               to Box-tit
 move Z' box - title '  to Box-titDes
 call GC01BOX using BOX-AREA
 *> accept omitted
@@ -189,8 +190,8 @@ display "Button2" at 019056 with  Background-Color 07 Foreground-Color 00 end-di
 *> accept omitted
 call static "getch" returning Key-Pressed end-call.
 
-
 Changing-Box.
+
 initialize Box-area ALL TO VALUE
 move "S"    to Box-style
 move blue   to Box-Bco
@@ -198,6 +199,7 @@ move yellow to Box-Fco
 move '005015015060' to Box-rc.
 
 Changing-BoxRefresh.
+
 call x'E4'
 move blue   to wBco
 move yellow to wFco
@@ -265,7 +267,7 @@ EVALUATE Key-Pressed
             move Box-Fco to Box-titFco
             move x'B4' & ' Title Box ' & x'C3' & x'00' to Box-TitDes
          end-if
-     when Key-F5   *> F5 toggle shadow (warning to eliminate shadow you have to restore backgroud after saved !)
+     when Key-F5   *> F5 toggle shadow to eliminate shadow we restore backgroud
          if wFlipFlop = 0
             move 1 to wFlipFlop
             move "N" to Box-shadow
@@ -282,11 +284,12 @@ EVALUATE Key-Pressed
           go to Exit-Program
 END-EVALUATE
 
-     go to Changing-BoxRefresh .
-Exit-Program.
-   *> re-show the cursor
-   move 2 to wVisibilityNew
-   call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call.
-   goback.
+go to Changing-BoxRefresh .
 
+Exit-Program.
+
+*> re-show the cursor
+move 2 to wVisibilityNew
+call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call.
+goback.
 End Program GC01BOXDEMO.
