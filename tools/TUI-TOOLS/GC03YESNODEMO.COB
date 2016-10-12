@@ -1,3 +1,4 @@
+       >> SOURCE FORMAT IS FREE
 ID DIVISION.
 PROGRAM-ID. GC03YESNODEMO.
 *> ***********************************************************************************
