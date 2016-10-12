@@ -1,3 +1,4 @@
+       >> SOURCE FORMAT IS FREE
 IDENTIFICATION DIVISION.
 PROGRAM-ID. GC56DATEPICKER is initial.
 *> ***********************************************************************************
@@ -148,6 +149,7 @@ WORKING-STORAGE SECTION.
 01  wDayDesS-IT  Pic x(21) value " Do Lu Ma Me Gi Ve Sa".
 
 COPY 'GC01BOX.CPY'.
+COPY 'GC98KEYCODE.CPY'.
 
 LINKAGE SECTION.
 COPY 'GC56DATEPICKER.CPY'.
@@ -159,8 +161,6 @@ PROCEDURE DIVISION using DatePicker-Area.
 *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
 set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
 set environment 'COB_SCREEN_ESC'        TO 'Y'.
-
-
 
 if Dtp-DateSel = space
    move function current-date to wscurrent
@@ -220,14 +220,7 @@ move cdate to date-a.
     *> hide the cursor
     move 0 to wVisibilityNew
     call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
-
-    *> display "Enter date AAAAMMGG or 0 to get current day>>" with no advancing.
-    *> accept date-a.
-    *> if date-a = 0
-       *> move function current-date to wscurrent
-       *> move cdate to date-a
-       *>  end-if
-       .
+    .
 0100-start2.
 
     initialize calendar all to value
@@ -306,32 +299,35 @@ end-search1.
 *> ***********************************************************************************
 *> WAIT FOR A KEY
 *> ***********************************************************************************
-    call static "getch" returning result end-call
-    move result to wresult.
+    call static "getch" returning Key-Pressed end-call
 
-    *> display "key pressed: "  at 2501 with background-color 01 foreground-color 07 end-display
-    *> display     wresult      at 2515 with background-color 01 foreground-color 07 end-display
+    EVALUATE Key-Pressed
 
-    EVALUATE TRUE
-
-    *> 81=PgDn or 32=Space Bar or Tab
-    when wresult = 81 or 32 or 09
+    when Key-PgDn *> also Key-space also Key-Tab
          compute date-aRMM = date-aRMM + 1
          if date-aRMM > 12
             compute date-aRAAAA = date-aRAAAA + 1
             move 1 to date-aRMM
          end-if
-
-     *> 73=PgUp
-     when wresult = 73
+    when Key-space
+         compute date-aRMM = date-aRMM + 1
+         if date-aRMM > 12
+            compute date-aRAAAA = date-aRAAAA + 1
+            move 1 to date-aRMM
+         end-if
+     when Key-Tab
+         compute date-aRMM = date-aRMM + 1
+         if date-aRMM > 12
+            compute date-aRAAAA = date-aRAAAA + 1
+            move 1 to date-aRMM
+         end-if
+     when Key-PgUp
          compute date-aRMM = date-aRMM - 1
          if date-aRMM < 1
             compute date-aRAAAA = date-aRAAAA - 1
             move 12 to date-aRMM
          end-if
-
-     *> 77=Cursor right -->
-     when wresult = 77
+     when Key-CursRight
           if mday(i) = 0
              set i to 1
              compute date-aRMM = date-aRMM + 1
@@ -342,16 +338,12 @@ end-search1.
           else
              compute date-aRGG = date-aRGG + 1
           end-if
-
-     *> 77=Cursor left  <--
-     when wresult = 75
+     when Key-CursLeft
          compute date-aRGG = date-aRGG - 1
-
-     *> 80= Cursor down
-     when wresult = 80
-            set i up by 7
-            move i to Wind
-            if i > 42 or mday(i) = 0
+     when Key-CursDn
+          set i up by 7
+          move i to Wind
+          if i > 42 or mday(i) = 0
              set i to 1
              compute date-aRMM = date-aRMM + 1
              if date-aRMM > 12
@@ -359,13 +351,11 @@ end-search1.
                 move 1 to date-aRMM
              end-if
              if date-aRGG = 31 and date-aRMM = 04 or 06 or 09 or 11 move 30 to date-aRGG end-if
-             if (date-aRGG = 31 or 30 or 29) and date-aRMM = 02                   move 28 to date-aRGG end-if
+             if (date-aRGG = 31 or 30 or 29) and date-aRMM = 02     move 28 to date-aRGG end-if
           else
              compute date-aRGG = date-aRGG + 7
           end-if
-
-     *> 72= Cursor up
-     when wresult = 72
+     when Key-CursUp
           set i down by 7
           if i < 0 or mday(i) = 0
              set i to 1
@@ -377,40 +367,31 @@ end-search1.
            else
               compute date-aRGG = date-aRGG - 7
            end-if
-
-    *> + = next year
-    when wresult = 43
+    when Key-plus
             compute date-aRAAAA = date-aRAAAA + 1
-
-    *> - = previous year
-    when wresult = 45
+    when Key-minus
             compute date-aRAAAA = date-aRAAAA - 1
-
      *> 71= Home - do to pick up current date
-     when wresult = 71
+     when Key-Home
           move function current-date to wscurrent
           move cdate to date-a
-
-     *> 84= F1 change Fore Color
-     when wresult = 84
+     *> F1 change Fore Color
+     when Key-F1
          add 1 to Dtp-Fco Dtp-titFco
          If Dtp-Fco > 7 move 0 to Dtp-Fco Dtp-titFco end-if
          go to 0100-start
-
-     *> 85= F2 change Back Color
-     when wresult = 85
+     *> F2 change Back Color
+     when Key-F2
          add 1 to Dtp-Bco Dtp-titBco
          If Dtp-Bco > 7 move 0 to Dtp-Bco Dtp-titBco end-if
          go to 0100-start
-
-     *> 86= F3 change borders
-     when wresult = 86
+     *> F3 change borders
+     when Key-F3
          add 1 to wB  if wB > 6 move 1 to wB end-if
          move wBorder (wB:1) to Dtp-Style
          go to 0100-start
-
-     *> 87= F4 toggle title
-     when wresult = 87
+     *> F4 toggle title
+     when Key-F4
          if wFlipFlop = 0
             move 1 to wFlipFlop
             move "N" to Dtp-tit
@@ -419,10 +400,9 @@ end-search1.
             move "Y" to Dtp-tit
          end-if
          go to 0100-start
-
-     *> 88= F5 toggle shadow
+     *> F5 toggle shadow
      *> (warning to eliminate shadow you have to restore backgroud after saved !)
-     when wresult = 88
+     when Key-F5
          if wFlipFlop = 0
             move 1 to wFlipFlop
             move "N" to Dtp-shadow
@@ -431,9 +411,8 @@ end-search1.
             move "Y" to Dtp-shadow
          end-if
          go to 0100-start
-
-     *> 89= F6 toggle Language EN / IT
-     when wresult = 89
+     *> F6 toggle Language EN / IT
+     when Key-F6
          compute wlin = Box-r1 + 3
          compute wCol = Box-c1 + 1
          if wFlipFlop = 0
@@ -451,31 +430,23 @@ end-search1.
                when Dtp-Dim = 'S' move wDayDesS-EN  to wDayDesS
             end-evaluate
          end-if
-
          evaluate true
             when Dtp-Dim = 'N' display wDayDes  at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
             when Dtp-Dim = 'S' display wDayDesS at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
          end-evaluate
-
          go to 0100-start2
-
-     *> 90= F7 toggle 3D
-     when wresult = 90
+     *> F7 toggle 3D box border
+     when Key-F7
          add 1 to w3  if w3 > 3 move 1 to w3 end-if
          move w3D(w3:1) to Dtp-3D
          go to 0100-start
-
-     *> 27= Escape
-     when wresult = 27
+     when Key-Escape
          move wDate   to Dtp-DateSel
          move wResult to Dtp-Key
          go to End-Program
-
-     *> 13= Enter
-     when wresult = 13
-         move wDate   to Dtp-DateSel
-         move wResult to Dtp-Key
-         *> display ' Date Selected = ' Dtp-DateSel accept omitted
+     when Key-Enter
+         move wDate       to Dtp-DateSel
+         move Key-Pressed to Dtp-Key
          go to End-Program
 
      END-EVALUATE.
