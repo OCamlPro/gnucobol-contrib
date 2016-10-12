@@ -1,3 +1,4 @@
+       >> SOURCE FORMAT IS FREE
 ID DIVISION.
 PROGRAM-ID. GC56DATEPICKERDEMO.
 *> ***********************************************************************************
@@ -30,7 +31,7 @@ WORKING-STORAGE SECTION.
 
 copy 'GC01BOX.CPY'.
 copy 'GC56DATEPICKER.CPY'.
-
+COPY 'GC98KEYCODE.CPY'.
 
 *> ***********************************************************************************
 *>           P R O C E D U R E   D I V I S I O N
@@ -50,13 +51,12 @@ move "R" to Box-3D
 move 'Y' to Box-tit
 move z' Date Picker DEMO ' to Box-titDES
 call GC01BOX using BOX-AREA
-display
- 'Use cursor keys: right/left, up/down to browse on dates           ' at 1709 with background-color  Box-Bco foreground-color blue highlight
- 'PgDown, Tab, Space bar = next month; PgUp= previous month         ' at 1809 with background-color  Box-Bco foreground-color blue highlight
- '+ = next year;  - = previuos year; Home= jump to current date     ' at 1909 with background-color  Box-Bco foreground-color blue highlight
- 'F1/F2= change fore/backcolor: F3= change borders; F4= toggle title' at 2009 with background-color  Box-Bco foreground-color blue highlight
- 'F5= toggle shadow; F6= toggle language EN/IT F7= change 3D borders' at 2109 with background-color  Box-Bco foreground-color blue highlight
- 'Enter= select the date & return to caller; Escape= exit           ' at 2209 with background-color  Box-Bco foreground-color blue highlight
+display 'Use cursor keys: right/left, up/down to browse on dates           ' at 1709 with background-color  Box-Bco foreground-color blue highlight
+display 'PgDown, Tab, Space bar = next month; PgUp= previous month         ' at 1809 with background-color  Box-Bco foreground-color blue highlight
+display '+ = next year;  - = previuos year; Home= jump to current date     ' at 1909 with background-color  Box-Bco foreground-color blue highlight
+display 'F1/F2= change fore/backcolor: F3= change borders; F4= toggle title' at 2009 with background-color  Box-Bco foreground-color blue highlight
+display 'F5= toggle shadow; F6= toggle language EN/IT F7= change 3D borders' at 2109 with background-color  Box-Bco foreground-color blue highlight
+display 'Enter= select the date & return to caller; Escape= exit           ' at 2209 with background-color  Box-Bco foreground-color blue highlight
 
 MOVE 'N' to Dtp-shadow
 Move 'S' to Dtp-Style
@@ -66,10 +66,11 @@ move '004013' to Dtp-r1c1
 call GC56DATEPICKER  using DatePicker-Area cancel GC56DATEPICKER
 
 display 'User has selected: '  at 2309 with background-color  Box-Bco foreground-color red highlight
-        Dtp-DateSel            at 2328 with background-color  Box-Bco foreground-color red highlight
-        ' - With key: '        at 2337 with background-color  Box-Bco foreground-color red highlight
-        Dtp-Key                at 2350 with background-color  Box-Bco foreground-color red highlight
-accept omitted
+display  Dtp-DateSel           at 2328 with background-color  Box-Bco foreground-color red highlight
+display ' - With key: '        at 2337 with background-color  Box-Bco foreground-color red highlight
+display   Dtp-Key              at 2350 with background-color  Box-Bco foreground-color red highlight
+*> accept omitted
+call static "getch" returning Key-Pressed end-call
 
 
 move '20190907' to Dtp-DateSel
@@ -82,10 +83,11 @@ move '004042' to Dtp-r1c1
 call GC56DATEPICKER  using DatePicker-Area cancel GC56DATEPICKER
 
 display 'User has selected: '  at 2309 with background-color  Box-Bco foreground-color red highlight
-        Dtp-DateSel            at 2328 with background-color  Box-Bco foreground-color red highlight
-        ' - With key: '        at 2337 with background-color  Box-Bco foreground-color red highlight
-        Dtp-Key                at 2350 with background-color  Box-Bco foreground-color red highlight
-accept omitted
+display Dtp-DateSel            at 2328 with background-color  Box-Bco foreground-color red highlight
+display ' - With key: '        at 2337 with background-color  Box-Bco foreground-color red highlight
+display Dtp-Key                at 2350 with background-color  Box-Bco foreground-color red highlight
+*> accept omitted
+call static "getch" returning Key-Pressed end-call
 
 goback.
 
