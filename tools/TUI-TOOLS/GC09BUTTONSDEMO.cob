@@ -1,3 +1,4 @@
+       >> SOURCE FORMAT IS FREE
 ID DIVISION.
 program-id. GC09BUTTONSDEMO.
 *> ***********************************************************************************
