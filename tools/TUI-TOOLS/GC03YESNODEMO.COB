@@ -27,6 +27,7 @@ WORKING-STORAGE SECTION.
 
 COPY 'GC01BOX.CPY'.
 COPY 'GC03YESNO.CPY'.
+COPY 'GC98KEYCODE.CPY'.
 
 *> **************************************************************
 *>           P R O C E D U R E   D I V I S I O N
@@ -62,7 +63,8 @@ display "return value = "  at 022015  Yn-YESNO  at 022030
 display "return Key   = "  at 023015  Yn-Key    at 023030
         with background-color 01 foreground-color 07 end-display
 
-accept omitted.
+*> accept omitted
+call static "getch" returning Key-Pressed end-call.
 
 goback.
 
