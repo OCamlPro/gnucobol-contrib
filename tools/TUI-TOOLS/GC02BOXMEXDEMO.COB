@@ -31,7 +31,7 @@ WORKING-STORAGE SECTION.
 
 copy 'GC01BOX.CPY'.
 copy 'GC02BOXMEX.CPY'.
-
+COPY 'GC98KEYCODE.CPY'.
 
 *> ***********************************************************************************
 *>           P R O C E D U R E   D I V I S I O N
@@ -61,7 +61,8 @@ move '002005024075' to Box-rc
 move 'S'            to Box-style
 call GC01BOX using Box-Area.
 
-accept omitted.
+*> accept omitted
+call static "getch" returning Key-Pressed end-call
 
 initialize Boxmex-Area ALL TO VALUE
 move low-value to Bxm-tabmex
@@ -81,7 +82,8 @@ move 'Y'                     to Bxm-tit
 move ' About ' & x'00'       to Bxm-titDes
 
 call GC02BOXMEX using BOXMEX-AREA.
-accept omitted.
+*> accept omitted
+call static "getch" returning Key-Pressed end-call.
 
 *> ***********************************************************************************
 *>      MESSAGE N.2
@@ -141,7 +143,8 @@ move 'E' to Bxm-3D
 move 'S' to Bxm-Style
 
 call GC02BOXMEX using BOXMEX-AREA.
-accept omitted.
+*> accept omitted
+call static "getch" returning Key-Pressed end-call.
 
 *> ***********************************************************************************
 *>      MESSAGE N.4
@@ -182,7 +185,8 @@ move 'E' to Bxm-3D
 move 'S' to Bxm-Style
 move "R" to Bxm-3D
 call GC02BOXMEX using BOXMEX-AREA.
-accept omitted.
+*> accept omitted
+call static "getch" returning Key-Pressed end-call.
 
 *> ***********************************************************************************
 *>      MESSAGE N.6
@@ -219,7 +223,8 @@ move 'Y' to Bxm-Shadow
 move 'N' to Bxm-3D
 move 'D' to Bxm-Style
 call GC02BOXMEX using BOXMEX-AREA.
-accept omitted.
+*> accept omitted
+call static "getch" returning Key-Pressed end-call.
 
 
 goback.
