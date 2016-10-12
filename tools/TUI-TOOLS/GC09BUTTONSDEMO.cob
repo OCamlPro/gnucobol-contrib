@@ -28,6 +28,7 @@ WORKING-STORAGE SECTION.
 
 COPY 'GC09BUTTONS.CPY'.
 COPY 'GC01BOX.CPY'.
+COPY 'GC98KEYCODE.CPY'.
 
 *> **************************************************************
 *>           P R O C E D U R E   D I V I S I O N
@@ -68,7 +69,8 @@ STRING " Bu-Selected: " Bu-Selected into wSTRING.
 DISPLAY wSTRING AT 021004 with foreground-color white background-color green.
 STRING " Bu-Key:      " Bu-Key   into wSTRING.
 DISPLAY wSTRING AT 022004 with foreground-color white background-color green.
-accept omitted
+*> accept omitted
+call static "getch" returning Key-Pressed end-call.
 
 *> **********************************************************  BUTTONS NUMBER 2
 set  Box-bco  to white
@@ -170,7 +172,8 @@ STRING " Bu-Selected: " Bu-Selected into wSTRING.
 DISPLAY wSTRING AT 020004 with foreground-color white background-color green.
 STRING " Bu-Key:      " Bu-Key   into wSTRING.
 DISPLAY wSTRING AT 021004 with foreground-color white background-color green.
-accept omitted
+*> accept omitted
+call static "getch" returning Key-Pressed end-call.
 
 *> **********************************************************  BUTTONS NUMBER 5
 *> DISPLAY THE BOX
@@ -203,7 +206,8 @@ STRING " Bu-Selected: " Bu-Selected into wSTRING.
 DISPLAY wSTRING AT 020004 with foreground-color white background-color green.
 STRING " Bu-Key:      " Bu-Key   into wSTRING.
 DISPLAY wSTRING AT 021004 with foreground-color white background-color green.
-accept omitted
+*> accept omitted
+call static "getch" returning Key-Pressed end-call.
 goback.
 
 
