@@ -448,7 +448,8 @@ end-search1.
          move wDate       to Dtp-DateSel
          move Key-Pressed to Dtp-Key
          go to End-Program
-
+     when other
+         continue
      END-EVALUATE.
 
      *> loop to display new day / new month
