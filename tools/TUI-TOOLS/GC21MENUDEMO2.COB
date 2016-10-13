@@ -47,6 +47,7 @@ copy     'GC21MENU.CPY'.
 copy      'GC01BOX.CPY'.
 copy    'GC03YESNO.CPY'.
 copy   'GC02BOXMEX.CPY'.
+COPY  'GC98KEYCODE.CPY'.
 
 01  wDummy        pic x(01) VALUE ' '.
 *> 01  GnuCOBOLdemo1 pic x(480) value
@@ -135,7 +136,8 @@ MainEx.
             at 0401 with foreground-color white background-color red
    DISPLAY ' ----------------------------------------------'
             at 0501 with foreground-color white background-color red
-   ACCEPT OMITTED.
+   *> ACCEPT OMITTED
+   ACCEPT wDUMMY with NO-ECHO
    GOBACK.
 
 *> *************************************************************
@@ -232,9 +234,9 @@ RunChoice.
     *> **********************************************************
     when 1
      EVALUATE wMn-Selected-MenuDrDn
-      when 1 DISPLAY ' ITEM 1 - ITEM 1 ' at 018040 END-DISPLAY ACCEPT OMITTED
-      when 2 DISPLAY ' ITEM 1 - ITEM 2 ' at 018040 END-DISPLAY ACCEPT OMITTED
-      when 3 DISPLAY ' ITEM 1 - ITEM 3 ' at 018040 END-DISPLAY ACCEPT OMITTED
+      when 1 DISPLAY ' ITEM 1 - ITEM 1 ' at 018040 END-DISPLAY ACCEPT wDUMMY with NO-ECHO
+      when 2 DISPLAY ' ITEM 1 - ITEM 2 ' at 018040 END-DISPLAY ACCEPT wDUMMY with NO-ECHO
+      when 3 DISPLAY ' ITEM 1 - ITEM 3 ' at 018040 END-DISPLAY ACCEPT wDUMMY with NO-ECHO
       when 4
       when 5
       when 6
@@ -254,7 +256,7 @@ RunChoice.
     *> **********************************************************
     when 2
      EVALUATE wMn-Selected-MenuDrDn
-      when 1 DISPLAY ' ITEM 2 - ITEM 1 ' at 018040 END-DISPLAY ACCEPT OMITTED
+      when 1 DISPLAY ' ITEM 2 - ITEM 1 ' at 018040 END-DISPLAY ACCEPT wDUMMY with NO-ECHO
       when 2 continue
       when 3 continue
       when 4 continue
@@ -270,7 +272,7 @@ RunChoice.
     *> **********************************************************
     when 3
      EVALUATE wMn-Selected-MenuDrDn
-      when 1 DISPLAY ' ITEM 3 - ITEM 1 ' at 018040 END-DISPLAY ACCEPT OMITTED
+      when 1 DISPLAY ' ITEM 3 - ITEM 1 ' at 018040 END-DISPLAY ACCEPT wDUMMY with NO-ECHO
       when 2 continue
       when 3 continue
       when 4 continue
@@ -293,9 +295,9 @@ RunChoice.
     *> **********************************************************
     when 4
      EVALUATE wMn-Selected-MenuDrDn
-      when 1 DISPLAY ' ITEM 4 - ITEM 1 ' at 018040 END-DISPLAY ACCEPT OMITTED
-      when 2 DISPLAY ' ITEM 4 - ITEM 2 ' at 018040 END-DISPLAY ACCEPT OMITTED
-      when 3 DISPLAY ' ITEM 4 - ITEM 3 ' at 018040 END-DISPLAY ACCEPT OMITTED
+      when 1 DISPLAY ' ITEM 4 - ITEM 1 ' at 018040 END-DISPLAY ACCEPT wDUMMY with NO-ECHO
+      when 2 DISPLAY ' ITEM 4 - ITEM 2 ' at 018040 END-DISPLAY ACCEPT wDUMMY with NO-ECHO
+      when 3 DISPLAY ' ITEM 4 - ITEM 3 ' at 018040 END-DISPLAY ACCEPT wDUMMY with NO-ECHO
       when 4 call 'GC56DATEPICDEMO'  CANCEL 'GC56DATEPICDEMO'
       when 5
       when 6
@@ -311,7 +313,7 @@ RunChoice.
      EVALUATE wMn-Selected-MenuDrDn
       when 1 continue
       when 2 continue
-      when 3 DISPLAY ' ITEM 5 - ITEM 3 ' at 018040 END-DISPLAY ACCEPT OMITTED
+      when 3 DISPLAY ' ITEM 5 - ITEM 3 ' at 018040 END-DISPLAY ACCEPT wDUMMY with NO-ECHO
       when 4 continue
       when 5 continue
       when 6 continue
@@ -340,7 +342,8 @@ RunChoice.
                at 0601 with foreground-color yellow background-color red highlight
        DISPLAY '                                                     '
                at 0701 with foreground-color yellow background-color red highlight
-       ACCEPT OMITTED
+       *> ACCEPT OMITTED
+       ACCEPT wDUMMY with NO-ECHO
        move 'CLS' & X'00' TO CmdLine
        CALL 'SYSTEM'   using CmdLine
        move 'CMD' & X'00' TO CmdLine
@@ -370,7 +373,8 @@ MoveDropDownMenu.
    *> move x'05' to iAH *> serv.x write in buffer tastiera
    *> call 'mli_int16' using input-regs
    DISPLAY "MOVE MENU" AT 009004 with foreground-color white background-color red
-   ACCEPT OMITTED
+   *> ACCEPT OMITTED
+   ACCEPT wDUMMY with NO-ECHO
    .
 MoveDropDownMenu-Ex. exit.
 
