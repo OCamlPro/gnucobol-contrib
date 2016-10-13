@@ -1,3 +1,4 @@
+       >> SOURCE FORMAT IS FREE
 IDENTIFICATION DIVISION.
 PROGRAM-ID. GC21MENU is initial.
 *> ***********************************************************************************
