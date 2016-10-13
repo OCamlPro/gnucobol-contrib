@@ -550,19 +550,18 @@ InitializeDropDownMenuEx. exit.
 
 *> ****************************************************************************
 Display-Cover.
-move red to Box-bco
-set  Box-fco to Red
+*> move red to Box-bco
+set  Box-fco Box-bco to Red
 move '002001024080' to Box-rc
 move 'N'      to Box-style Box-3D
 call GC01BOX using BOX-AREA.
-display
-  rGnu2(1) at 010001 with background-color Red foreground-color White highlight
-  rGnu2(2) at 011001 with background-color Red foreground-color White highlight
-  rGnu2(3) at 012001 with background-color Red foreground-color White highlight
-  rGnu2(4) at 013001 with background-color Red foreground-color White highlight
-  rGnu2(5) at 014001 with background-color Red foreground-color White highlight
-  rGnu2(6) at 015001 with background-color Red foreground-color White highlight
-end-display.
+
+display rGnu2(1) at 010001 with background-color Red foreground-color White highlight
+display rGnu2(2) at 011001 with background-color Red foreground-color White highlight
+display rGnu2(3) at 012001 with background-color Red foreground-color White highlight
+display rGnu2(4) at 013001 with background-color Red foreground-color White highlight
+display rGnu2(5) at 014001 with background-color Red foreground-color White highlight
+display rGnu2(6) at 015001 with background-color Red foreground-color White highlight
 
  DISPLAY "GnuCOBOL 2.0 TEXT USER INTERFACE TOOLS COLLECTION " AT 017016
          with foreground-color white background-color red.
