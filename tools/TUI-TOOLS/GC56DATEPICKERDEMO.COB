@@ -72,7 +72,6 @@ display   Dtp-Key              at 2350 with background-color  Box-Bco foreground
 *> accept omitted
 call static "getch" returning Key-Pressed end-call
 
-
 move '20190907' to Dtp-DateSel
 MOVE 'N' to Dtp-shadow
 Move 'N' to Dtp-Style
