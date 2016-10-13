@@ -31,7 +31,6 @@ WORKING-STORAGE SECTION.
 
 copy 'GC01BOX.CPY'.
 copy 'GC02BOXMEX.CPY'.
-COPY 'GC98KEYCODE.CPY'.
 
 *> ***********************************************************************************
 *>           P R O C E D U R E   D I V I S I O N
@@ -50,20 +49,16 @@ call static 'curs_set' using by value wInt end-call
 if Bxm-beep = 'Y' CALL X"E5"  end-if *> BELL
 .
 
+*> message1.
+move green            to Box-bco
+move white to Box-fco
+move '001001025079' to Box-rc
+move 'S'            to Box-style
+call GC01BOX using Box-Area.
 
 *> ***********************************************************************************
 *>      MESSAGE N.1
 *> ***********************************************************************************
-message1.
-move red            to Box-bco
-set  Box-fco        to white
-move '002005024075' to Box-rc
-move 'S'            to Box-style
-call GC01BOX using Box-Area.
-
-*> accept omitted
-call static "getch" returning Key-Pressed end-call
-
 initialize Boxmex-Area ALL TO VALUE
 move low-value to Bxm-tabmex
 move '                                ' & x'00' to Bxm-mex(01)
@@ -71,19 +66,17 @@ move '     GnuCOBOL TUI TOOLS DEMO    ' & x'00' to Bxm-mex(02)
 move '      Copyright (c) 2016 by     ' & x'00' to Bxm-mex(03)
 move '        Eugenio Di Lorenzo      ' & x'00' to Bxm-mex(04)
 move '        - Parma - Italia -      ' & x'00' to Bxm-mex(05)
-move '008020021055' to Bxm-rc
+move '008020018055' to Bxm-rc
 move white to Bxm-bco
 move black to Bxm-fco
-move 'Y' to Bxm-Shadow
-move 'E' to Bxm-3D
+move 'N' to Bxm-Shadow
+move 'N' to Bxm-3D
 move 'D' to Bxm-Style
 move 'N' to Bxm-fcoMH
 move 'Y'                     to Bxm-tit
 move ' About ' & x'00'       to Bxm-titDes
 
 call GC02BOXMEX using BOXMEX-AREA.
-*> accept omitted
-call static "getch" returning Key-Pressed end-call.
 
 *> ***********************************************************************************
 *>      MESSAGE N.2
@@ -91,14 +84,14 @@ call static "getch" returning Key-Pressed end-call.
 message2.
 initialize Boxmex-Area ALL TO VALUE
 move low-value to Bxm-tabmex
-move z' This message is to show some feature of the tools utilities on screen  ' to Bxm-mex(01)
-move z' This message is to show some feature of the tools utilities on screen  ' to Bxm-mex(02)
-move z' This message is to show some feature of the tools utilities on screen  ' to Bxm-mex(03)
-move z' This message is to show some feature of the tools utilities on screen  ' to Bxm-mex(04)
-move z' This message is to show some feature of the tools utilities on screen  ' to Bxm-mex(05)
-move z' This message is to show some feature of the tools utilities on screen  ' to Bxm-mex(06)
-move z'                                                                        ' to Bxm-mex(06)
-move '005003015078' to Bxm-rc
+move z' This message is to show some feature of the tools utilities on screen ' to Bxm-mex(01)
+move z' This message is to show some feature of the tools utilities on screen ' to Bxm-mex(02)
+move z' This message is to show some feature of the tools utilities on screen ' to Bxm-mex(03)
+move z' This message is to show some feature of the tools utilities on screen ' to Bxm-mex(04)
+move z' This message is to show some feature of the tools utilities on screen ' to Bxm-mex(05)
+move z' This message is to show some feature of the tools utilities on screen ' to Bxm-mex(06)
+move z'                                                                       ' to Bxm-mex(06)
+move '005003015075' to Bxm-rc
 move white to Bxm-bco
 move black to Bxm-fco
 move black to Bxm-fcoM
@@ -108,7 +101,8 @@ move 'E' to Bxm-3D
 move 'S' to Bxm-Style
 
 call GC02BOXMEX using BOXMEX-AREA.
-accept omitted.
+*> accept omitted
+*> call static "getch" returning Key-Pressed end-call.
 
 *> ***********************************************************************************
 *>      MESSAGE N.3
@@ -132,19 +126,16 @@ move space & x'00' to Bxm-mex(12)
 move space & x'00' to Bxm-mex(13)
 move space & x'00' to Bxm-mex(14)
 
-move '003003019078' to Bxm-rc
+move '003003019077' to Bxm-rc
 move red    to Bxm-bco
 move black  to Bxm-fco
 move red    to Bxm-bcoM
 move yellow to Bxm-fcoM
 move 'Y' to Bxm-fcoMH
-move 'Y' to Bxm-Shadow
-move 'E' to Bxm-3D
-move 'S' to Bxm-Style
-
+move 'N' to Bxm-Shadow
+move 'N' to Bxm-3D
+move 'D' to Bxm-Style
 call GC02BOXMEX using BOXMEX-AREA.
-*> accept omitted
-call static "getch" returning Key-Pressed end-call.
 
 *> ***********************************************************************************
 *>      MESSAGE N.4
@@ -185,8 +176,6 @@ move 'E' to Bxm-3D
 move 'S' to Bxm-Style
 move "R" to Bxm-3D
 call GC02BOXMEX using BOXMEX-AREA.
-*> accept omitted
-call static "getch" returning Key-Pressed end-call.
 
 *> ***********************************************************************************
 *>      MESSAGE N.6
@@ -223,9 +212,6 @@ move 'Y' to Bxm-Shadow
 move 'N' to Bxm-3D
 move 'D' to Bxm-Style
 call GC02BOXMEX using BOXMEX-AREA.
-*> accept omitted
-call static "getch" returning Key-Pressed end-call.
-
 
 goback.
 
