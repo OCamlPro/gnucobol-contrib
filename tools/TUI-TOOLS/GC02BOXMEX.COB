@@ -93,8 +93,8 @@ move low-value to Bu-tab
 
 *> (back of the button has to be the same than the back of the box )
 move Bxm-bco to Bu-bcoShadow
-move '1'   to Bu-Arrow
-move '<>'  to Bu-Arrow-chars
+move '0'   to Bu-Arrow
+*> move '<>'  to Bu-Arrow-chars
 move '14000000   OK   ' & x'00' to Bu-Ele(01)
 compute Bu-r(1)  = Bxm-r2 - 2
 compute Bu-c(1)  = Bxm-c1 + ((Bxm-c2 - Bxm-c1) / 2 ) - 4
