@@ -6,11 +6,12 @@ PROGRAM-ID. GC56DATEPICKER is initial.
 *> Purpose:    DATEPICKER: DISPLAY A CALENDAR & LET THE USER PICK UP A DATE - RETURNS DATE TO CALLER
 *> Tectonics:  cobc -m GC56DATEPICKER.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC56DATEPICKER using DatePicker-Area
-*> Parameters: look at GC56DATEPICKER.cpy  (use with copy Version: 1.0 2016.06.15)
+*> Parameters: look at GC56DATEPICKER.cpy  (use with copy Version: 1.1 2016.10.14)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)  - baseed on jrls (John Ellis) 05-Sept-2008 program
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2016.06.15
+*> Version:    1.1 2016.10.14
 *> Changelog:  1.0 first release.
+*>             1.1 small enhancement (new field in copy Dtp-legend , F8 to toggle legend)
 *> ***********************************************************************************
 DATA DIVISION.
 WORKING-STORAGE SECTION.
@@ -32,17 +33,16 @@ WORKING-STORAGE SECTION.
 01  wInd      pic 9(03).
 01  wlin      pic 9(03).
 01  wcol      pic 9(03).
+01  wcol1     pic 9(03).
 01  wDate.
-    05 wDateAAAA       pic 9(4).
+    05 wDateYYYY       pic 9(4).
     05 wDateMM         pic 99.
-    05 wDateGG         pic 99.
-01 wDateGGx.
+    05 wDateDD         pic 99.
+01 wDateDDx.
    05 filler             pic x(01) value space.
-   05 wDateGG2           pic zz.
+   05 wDateDD2           pic zz.
 
 01  wBar             Pic x(28) value ALL X"C4".
-01  result           usage binary-long.
-01  wresult          pic S9(8).
 01  wVisibilityNew   BINARY-SHORT . *> SIGNED.
 01  wVisibilityOld   BINARY-SHORT . *> SIGNED.
 01  wVisibilityNew9  pic 9(8).
@@ -50,9 +50,9 @@ WORKING-STORAGE SECTION.
 
 01  date-a pic 9(08)  value zero.
 01  date-aR redefines date-a.
-    05 date-aRAAAA    pic 9(4).
+    05 date-aRYYYY    pic 9(4).
     05 date-aRMM      pic 9(2).
-    05 date-aRGG      pic 9(2).
+    05 date-aRDD      pic 9(2).
 
 01  date-s.
     05 date-s-ym    pic 9(06).
@@ -141,9 +141,9 @@ WORKING-STORAGE SECTION.
     05 filler        pic x(15) value "November".
     05 filler        pic x(15) value "December".
 
-01  wDayDes     Pic x(28) value "Sun Mon Tue Wed Thu Fri Sat ".
-01  wDayDes-EN  Pic x(28) value "Sun Mon Tue Wed Thu Fri Sat ".
-01  wDayDes-IT  Pic x(28) value "Dom Lun Mar Mer Gio Ven Sab ".
+01  wDayDes      Pic x(28) value "Sun Mon Tue Wed Thu Fri Sat ".
+01  wDayDes-EN   Pic x(28) value "Sun Mon Tue Wed Thu Fri Sat ".
+01  wDayDes-IT   Pic x(28) value "Dom Lun Mar Mer Gio Ven Sab ".
 01  wDayDesS     Pic x(21) value " Su Mo Tu We Th Fr Sa".
 01  wDayDesS-EN  Pic x(21) value " Su Mo Tu We Th Fr Sa".
 01  wDayDesS-IT  Pic x(21) value " Do Lu Ma Me Gi Ve Sa".
@@ -178,7 +178,7 @@ move cdate to date-a.
     move Dtp-r1c1     to Box-r1c1
     compute Box-r2 = Box-r1 + 11
     evaluate true
-       when Dtp-Dim = 'N' compute Box-c2 = Box-c1 + 29
+       when Dtp-Dim = 'B' compute Box-c2 = Box-c1 + 29
        when Dtp-Dim = 'S' compute Box-c2 = Box-c1 + 22
     end-evaluate
     move Dtp-Bco      to Box-Bco
@@ -201,19 +201,19 @@ move cdate to date-a.
     compute wCol = Box-c1 + 1
     compute wlin = Box-r1 + 2
     evaluate true
-       when Dtp-Dim = 'N' DISPLAY wBar       at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
+       when Dtp-Dim = 'B' DISPLAY wBar       at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
        when Dtp-Dim = 'S' DISPLAY wBar(1:21) at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
     end-evaluate
 
     compute wlin = Box-r1 + 3
     evaluate true
-       when Dtp-Dim = 'N' display wDayDes  at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
+       when Dtp-Dim = 'B' display wDayDes  at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
        when Dtp-Dim = 'S' display wDayDesS at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
     end-evaluate
 
     compute wlin = Box-r1 + 4
     evaluate true
-       when Dtp-Dim = 'N' DISPLAY wBar       at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
+       when Dtp-Dim = 'B' DISPLAY wBar       at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
        when Dtp-Dim = 'S' DISPLAY wBar(1:21) at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
     end-evaluate
 
@@ -236,29 +236,28 @@ move cdate to date-a.
     set i to 1
     search mday  varying i
            at end
-                *> display wresult
-                if wresult = 77  *>  --> cursor right
-                   compute date-aRGG = 1
+                if Key-Pressed = Key-CursRight
+                   compute date-aRDD = 1
                    compute date-aRMM = date-aRMM + 1
                    if date-aRMM > 12
-                      compute date-aRAAAA = date-aRAAAA + 1
+                      compute date-aRYYYY = date-aRYYYY + 1
                       move 1 to date-aRMM
                    end-if
                 end-if
 
-                if wresult = 75  *> <-- curso left
+                if Key-Pressed = Key-CursLeft
                    compute date-aRMM = date-aRMM - 1
                    if date-aRMM < 1
-                      compute date-aRAAAA = date-aRAAAA - 1
+                      compute date-aRYYYY = date-aRYYYY - 1
                       move 12 to date-aRMM
                    end-if
                    evaluate true
                            when date-aRMM = 1 or 3 or 5 or 7 or 8 or 10 or 12
-                                 compute date-aRGG = 31
+                                 compute date-aRDD = 31
                            when date-aRMM = 4 or 6 or 9 or 11
-                                 compute date-aRGG = 30
+                                 compute date-aRDD = 30
                            when date-aRMM = 2
-                                 compute date-aRGG = 28
+                                 compute date-aRDD = 28
                    end-evaluate
                 end-if
 
@@ -274,7 +273,7 @@ end-search1.
 
     *> mday(i) contains the date "active"
     move mday(i)  to wDate
-    move wDateGG  to wDateGG2
+    move wDateDD  to wDateDD2
     divide i by 7
            giving    wLin rounded mode is truncation
            remainder wCol end-divide
@@ -290,10 +289,10 @@ end-search1.
     *> ************************************************************************************************************
     compute wLin = Box-r1 + 4 + wLin + 1
     evaluate true
-       when Dtp-Dim = 'N' compute wCol = Box-c1 + ( (4 * wCol) - 3)
-                          display wDateGGx at line wLin col wCol with background-color Box-Fco foreground-color red highlight end-display
+       when Dtp-Dim = 'B' compute wCol = Box-c1 + ( (4 * wCol) - 3)
+                          display wDateDDx at line wLin col wCol with background-color Box-Fco foreground-color red highlight end-display
        when Dtp-Dim = 'S' compute wCol = Box-c1 + ( (3 * wCol) - 3) + 1
-                          display wDateGGx(1:3) at line wLin col wCol with background-color Box-Fco foreground-color red highlight end-display
+                          display wDateDDx(1:3) at line wLin col wCol with background-color Box-Fco foreground-color red highlight end-display
     end-evaluate
 
 *> ***********************************************************************************
@@ -302,44 +301,36 @@ end-search1.
     call static "getch" returning Key-Pressed end-call
 
     EVALUATE Key-Pressed
-
-    when Key-PgDn *> also Key-space also Key-Tab
+    *> next month
+    when Key-PgDn when Key-space when Key-Tab
          compute date-aRMM = date-aRMM + 1
          if date-aRMM > 12
-            compute date-aRAAAA = date-aRAAAA + 1
+            compute date-aRYYYY = date-aRYYYY + 1
             move 1 to date-aRMM
          end-if
-    when Key-space
-         compute date-aRMM = date-aRMM + 1
-         if date-aRMM > 12
-            compute date-aRAAAA = date-aRAAAA + 1
-            move 1 to date-aRMM
-         end-if
-     when Key-Tab
-         compute date-aRMM = date-aRMM + 1
-         if date-aRMM > 12
-            compute date-aRAAAA = date-aRAAAA + 1
-            move 1 to date-aRMM
-         end-if
+     *> previous month
      when Key-PgUp
          compute date-aRMM = date-aRMM - 1
          if date-aRMM < 1
-            compute date-aRAAAA = date-aRAAAA - 1
+            compute date-aRYYYY = date-aRYYYY - 1
             move 12 to date-aRMM
          end-if
+     *> next day
      when Key-CursRight
           if mday(i) = 0
              set i to 1
              compute date-aRMM = date-aRMM + 1
              if date-aRMM > 12
-                compute date-aRAAAA = date-aRAAAA + 1
+                compute date-aRYYYY = date-aRYYYY + 1
                 move 1 to date-aRMM
              end-if
           else
-             compute date-aRGG = date-aRGG + 1
+             compute date-aRDD = date-aRDD + 1
           end-if
+     *> previous day
      when Key-CursLeft
-         compute date-aRGG = date-aRGG - 1
+         compute date-aRDD = date-aRDD - 1
+     *> next week
      when Key-CursDn
           set i up by 7
           move i to Wind
@@ -347,31 +338,34 @@ end-search1.
              set i to 1
              compute date-aRMM = date-aRMM + 1
              if date-aRMM > 12
-                compute date-aRAAAA = date-aRAAAA + 1
+                compute date-aRYYYY = date-aRYYYY + 1
                 move 1 to date-aRMM
              end-if
-             if date-aRGG = 31 and date-aRMM = 04 or 06 or 09 or 11 move 30 to date-aRGG end-if
-             if (date-aRGG = 31 or 30 or 29) and date-aRMM = 02     move 28 to date-aRGG end-if
+             if date-aRDD = 31 and date-aRMM = 04 or 06 or 09 or 11 move 30 to date-aRDD end-if
+             if (date-aRDD = 31 or 30 or 29) and date-aRMM = 02     move 28 to date-aRDD end-if
           else
-             compute date-aRGG = date-aRGG + 7
+             compute date-aRDD = date-aRDD + 7
           end-if
+      *> previous week
      when Key-CursUp
           set i down by 7
           if i < 0 or mday(i) = 0
              set i to 1
              compute date-aRMM = date-aRMM - 1
              if date-aRMM < 1
-                compute date-aRAAAA = date-aRAAAA - 1
+                compute date-aRYYYY = date-aRYYYY - 1
                 move 12 to date-aRMM
              end-if
            else
-              compute date-aRGG = date-aRGG - 7
+              compute date-aRDD = date-aRDD - 7
            end-if
+    *> next year
     when Key-plus
-            compute date-aRAAAA = date-aRAAAA + 1
+            compute date-aRYYYY = date-aRYYYY + 1
+    *> perious year
     when Key-minus
-            compute date-aRAAAA = date-aRAAAA - 1
-     *> 71= Home - do to pick up current date
+            compute date-aRYYYY = date-aRYYYY - 1
+     *> Home - do to pick up current date
      when Key-Home
           move function current-date to wscurrent
           move cdate to date-a
@@ -419,19 +413,19 @@ end-search1.
             move 1 to wFlipFlop
             move months-IT   to months
             evaluate true
-               when Dtp-Dim = 'N' move wDayDes-IT  to wDayDes
+               when Dtp-Dim = 'B' move wDayDes-IT  to wDayDes
                when Dtp-Dim = 'S' move wDayDesS-IT to wDayDesS
             end-evaluate
          else
             move 0 to wFlipFlop
             move months-EN   to months
             evaluate true
-               when Dtp-Dim = 'N' move wDayDes-EN   to wDayDes
+               when Dtp-Dim = 'B' move wDayDes-EN   to wDayDes
                when Dtp-Dim = 'S' move wDayDesS-EN  to wDayDesS
             end-evaluate
          end-if
          evaluate true
-            when Dtp-Dim = 'N' display wDayDes  at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
+            when Dtp-Dim = 'B' display wDayDes  at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
             when Dtp-Dim = 'S' display wDayDesS at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
          end-evaluate
          go to 0100-start2
@@ -440,10 +434,19 @@ end-search1.
          add 1 to w3  if w3 > 3 move 1 to w3 end-if
          move w3D(w3:1) to Dtp-3D
          go to 0100-start
+     *> F8 toggle legend
+     when Key-F8
+         if Dtp-legend = 'Y'
+            move 'N' to Dtp-legend
+         else
+            move 'Y' to Dtp-legend
+         end-if
+         go to 0100-start
      when Key-Escape
-         move wDate   to Dtp-DateSel
-         move wResult to Dtp-Key
+         move wDate       to Dtp-DateSel
+         move Key-Pressed to Dtp-Key
          go to End-Program
+     *> select the date an return to caller
      when Key-Enter
          move wDate       to Dtp-DateSel
          move Key-Pressed to Dtp-Key
@@ -501,7 +504,7 @@ End-Program.
        end-perform
 
         evaluate true
-           when Dtp-Dim = 'N' display out-week  at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
+           when Dtp-Dim = 'B' display out-week  at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
            when Dtp-Dim = 'S'
                 perform  varying wR from 1 by 1 until wR = 7
                     move owday(wR) to owday2(wR)
@@ -511,15 +514,18 @@ End-Program.
 
     end-perform.
 
-        evaluate true
-           when Dtp-Dim = 'N' compute wCol = Box-C2 - 8
-           when Dtp-Dim = 'S' compute wCol = Box-C2 - 7
-        end-evaluate
-*>     compute wCol = Box-C2 - 8
-    display 'PgUp/Dn' at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
-    *> display 'daysub ' daysub
-    *> display 'cmonth' at 2101
-            *> cmonth   at 2109 with background-color 01 foreground-color 07 end-display
+    if Dtp-legend = 'Y'
+       evaluate true
+          when Dtp-Dim = 'B' *> Big size
+               compute wCol1 = Box-C2 - 19
+               display 'Cursor,PgUP/Dn,+/-' at line wLin col wCol1
+                       with background-color Box-Bco foreground-color Box-Fco highlight
+          when Dtp-Dim = 'S'  *> Small Size
+               compute wCol1 = Box-C2 - 14
+               display 'CurUpDn PgUpDn'     at line wLin col wCol1
+                       with background-color Box-Bco foreground-color Box-Fco highlight
+       end-evaluate
+    end-if
     .
 0120-writeCalendarEx. exit.
 
