@@ -6,9 +6,9 @@
 *> Usage:      call GC56DATEPICKER using DatePicker-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2015 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    2.0 2016.0701
+*> Version:    1.1 2016.10.14
 *> Changelog:  1.0 first release.
-*>             2.0 modified Example below of the calendar
+*>             1.1 modified Example below of the calendar, added Dtp-legend
 *> ***********************************************************************************
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
@@ -27,21 +27,40 @@
 *> beep      Y= bell
 *> tit       Y= display a title
 *> titDes    string to be displayed as title
-*>                                       c1
-*>           Example               r1 ->  +------ Calendar ------+
-*>           style = 1         displays:  | JUNE            2016 |
-*>                                        |----------------------|
-*>                                        | Su Mo Tu We Th Fr Sa |
-*>                                        |----------------------|
-*>                                        |          01 02 03 04 |
-*>                                        | 05 06 07 08 09 10 11 |
-*>                                        | 12 13 14 15 16 17 18 |
-*>                                        | 19 29 21 22 23 24 25 |
-*>                                        | 26 27 28 29 30       |
-*>                                        |                      |
-*>                                        +----------------------+
+*> dim       Select N= Normal Size Calendar(12x30) or S= Small Size Calendar(12x23)
+*> legend    Y = display a small legend
+*>                                        c1
+*>           Example               r1 ->  +------ Calendar -----+
+*>           style = 1         displays:  |JUNE             2016|
+*>           Dim   = S small              |---------------------|
+*>                                        | Su Mo Tu We Th Fr Sa|
+*>                                        |---------------------|
+*>                                        |          01 02 03 04|
+*>                                        | 05 06 07 08 09 10 11|
+*>                                        | 12 13 14 15 16 17 18|
+*>                                        | 19 29 21 22 23 24 25|
+*>                                        | 26 27 28 29 30      |
+*>                   legend -->           |       CurUpDn PgUpDn|
+*>                                        +---------------------+
+
+*>                                        12345678901234567890123
 *>
-*> Dim       Select N= Normal Size Calendar(12x30) or S= Small Size Calendar(12x23)
+*>                                       c1
+*>           Example               r1 ->  +--------- Calendar ---------+
+*>           style = 1         displays:  |JUNE                    2016|
+*>           Dim   = B Big                |----------------------------|
+*>                                        |Sun Mon Tue Wed Thu Fri Sat |
+*>                                        |----------------------------|
+*>                                        |             01  02  03  04 |
+*>                                        | 05  06  07  08  09  10  11 |
+*>                                        | 12  13  14  15  16  17  18 |
+*>                                        | 19  29  21  22  23  24  25 |
+*>                                        | 26  27  28  29  30         |
+*>                --> legend              |         Cursor,PgUP/Dn,+/- |
+*>                                        +----------------------------+
+*>                                        123456789012345678901234567890
+
+
 *>
 *> Datesel   the date selected by the User is returned to caller YYYYMMDD.
 *>           if the caller set this Date, Datrepicker starts from this date
@@ -68,9 +87,10 @@
       05 Dtp-titFco  pic 9(01) value white.         *> fore color of titleBox
       05 Dtp-titFcoH pic X(01) value "Y".           *> hiligth fore color of titleBox ?
       05 Dtp-titDes  pic x(80) value z' Calendar '. *> string from 1 to 80 char, to be used as a box title
-      05 Dtp-Dim     pic x(01) value 'N'.           *> N= normal size, S= Small
-*> *************************************************************
+      05 Dtp-dim     pic x(01) value 'B'.           *> B= big size, S= Small size
+      05 Dtp-legend  pic x(01) value 'Y'.           *> Y= display legend on last calendar row
+*> ***********************************************************************************
 *> RETUNRS TO CALLER
-*> *************************************************************
+*> ***********************************************************************************
    05 Dtp-DateSel pic  x(08) value space.   *> User has selected this Date YYYYMMDD
    05 Dtp-Key     pic  9(08) value zero.    *> which Key to exit (enter or escape)
