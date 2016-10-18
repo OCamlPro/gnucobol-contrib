@@ -12,6 +12,7 @@ PROGRAM-ID. GC56DATEPICKER is initial.
 *> Version:    1.1 2016.10.14
 *> Changelog:  1.0 first release.
 *>             1.1 small enhancement (new field in copy Dtp-legend , F8 to toggle legend)
+*>             1.2 bug correction
 *> ***********************************************************************************
 DATA DIVISION.
 WORKING-STORAGE SECTION.
@@ -236,6 +237,11 @@ move cdate to date-a.
     set i to 1
     search mday  varying i
            at end
+                *> compute i= i - 1
+                *> display ' mday(i) ' mday(i)
+                *> display ' i ' i
+                *> accept omitted
+
                 if Key-Pressed = Key-CursRight
                    compute date-aRDD = 1
                    compute date-aRMM = date-aRMM + 1
@@ -260,6 +266,23 @@ move cdate to date-a.
                                  compute date-aRDD = 28
                    end-evaluate
                 end-if
+                *> 20161018 bug correction *************************************************
+                *> 20161018 when you are on 31 and next month have < 31 days !
+                if Key-Pressed = Key-PgDn or Key-space or Key-Tab
+                   if date-aRMM = 12
+                      compute date-aRYYYY = date-aRYYYY + 1
+                      move 1 to date-aRMM
+                   end-if
+                   evaluate true
+                           when date-aRMM = 1 or 3 or 5 or 7 or 8 or 10 or 12
+                                 compute date-aRDD = 31
+                           when date-aRMM = 4 or 6 or 9 or 11
+                                 compute date-aRDD = 30
+                           when date-aRMM = 2
+                                 compute date-aRDD = 28
+                   end-evaluate
+                end-if
+                *> 20161018 end of bug correction *******************************************
 
                 go to 0100-start2
 
@@ -386,6 +409,8 @@ end-search1.
          go to 0100-start
      *> F4 toggle title
      when Key-F4
+         move Dtp-Bco to Dtp-titBco
+         move Dtp-Fco to Dtp-titFco
          if wFlipFlop = 0
             move 1 to wFlipFlop
             move "N" to Dtp-tit
@@ -522,7 +547,7 @@ End-Program.
                        with background-color Box-Bco foreground-color Box-Fco highlight
           when Dtp-Dim = 'S'  *> Small Size
                compute wCol1 = Box-C2 - 14
-               display 'CurUpDn PgUpDn'     at line wLin col wCol1
+               display 'Cur,PgUpDn,+/-'     at line wLin col wCol1
                        with background-color Box-Bco foreground-color Box-Fco highlight
        end-evaluate
     end-if
