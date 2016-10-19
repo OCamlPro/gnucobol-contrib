@@ -12,7 +12,7 @@ PROGRAM-ID. GC56DATEPICKER is initial.
 *> Version:    1.1 2016.10.14
 *> Changelog:  1.0 first release.
 *>             1.1 small enhancement (new field in copy Dtp-legend , F8 to toggle legend)
-*>             1.2 bug correction
+*>             1.2 e 1.3 bug correction
 *> ***********************************************************************************
 DATA DIVISION.
 WORKING-STORAGE SECTION.
@@ -271,7 +271,7 @@ move cdate to date-a.
                 if Key-Pressed = Key-PgDn or Key-space or Key-Tab
                    if date-aRMM = 12
                       compute date-aRYYYY = date-aRYYYY + 1
-                      move 1 to date-aRMM
+                      move  1 to date-aRMM
                    end-if
                    evaluate true
                            when date-aRMM = 1 or 3 or 5 or 7 or 8 or 10 or 12
@@ -283,6 +283,24 @@ move cdate to date-a.
                    end-evaluate
                 end-if
                 *> 20161018 end of bug correction *******************************************
+
+                *> 20161019 bug correction *************************************************
+                *> 20161019 when you are on 31 and previous month have < 31 days !
+                if Key-Pressed = Key-PgUp
+                   if date-aRMM = 01
+                      compute date-aRYYYY = date-aRYYYY - 1
+                      move 12 to date-aRMM
+                   end-if
+                   evaluate true
+                           when date-aRMM = 1 or 3 or 5 or 7 or 8 or 10 or 12
+                                 compute date-aRDD = 31
+                           when date-aRMM = 4 or 6 or 9 or 11
+                                 compute date-aRDD = 30
+                           when date-aRMM = 2
+                                 compute date-aRDD = 28
+                   end-evaluate
+                end-if
+                *> 20161019 end of bug correction *******************************************
 
                 go to 0100-start2
 
