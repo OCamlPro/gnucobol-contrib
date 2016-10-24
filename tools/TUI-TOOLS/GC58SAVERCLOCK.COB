@@ -5,7 +5,7 @@ PROGRAM-ID. GC58SAVERCLOCK.
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    SCREENSAVER DISPLAYING A MOVING CLOCK and optionally A SCROLLING STRING
 *> Tectonics:  cobc -x GC58SAVERCLOCK.COB  (use GnuCOBOL 2.0 or greater)
-*> Usage:      call GC58SAVERCLOCK using SAVER01-AREA
+*> Usage:      call GC58SAVERCLOCK using SAVER-AREA
 *> Parameters: look at GC58SAVERCLOCK.cpy  (use with copy Version: 1.0 2016.06.15)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
@@ -64,8 +64,8 @@ WORKING-STORAGE SECTION.
 01 magenta constant as 5.
 01 yellow  constant as 6.  *> or Brown
 01 white   constant as 7.
-01  wCRT-STATUS  PIC  9(04) VALUE 9999.
-     *> Values that may be returned in CRT STATUS (or COB-CRT-STATUS)
+01 wCRT-STATUS  PIC  9(04) VALUE 9999.
+*> Values returned in CRT STATUS (or COB-CRT-STATUS)
 78  K-ENTER       VALUE 0000.
 78  K-UP          VALUE 2003.
 78  K-DOWN        VALUE 2004.
@@ -119,50 +119,31 @@ copy 'GC01BOX.CPY'.
 01  wInt        BINARY-SHORT. *>  SIGNED.
 01  wDummy        pic x(01) VALUE ' '.
 
-*> LINKAGE SECTION.
-*> COPY 'GC58SAVERCLOCK.CPY'.
-01  SAVER01-AREA.
-*> **************************************************************
-*> WORK-AREA FOR GC58SAVERCLOCK.COB - SCREEN SAVER WHIT A BOG CLOCK
-*> **************************************************************
-*> This program have to be called when the user does not press any kay
-*> It is the caller that have to decide when activate the Screen Saver
-*> The program ends when the user press a key.
-*> tobe implemented: saver and restore previous screen
-*> Syntax: CALL 'GC58SAVERCLOCK' USING SAVER01-AREA
-*> PARAMETER DESCRIPTION
-*> --------- ----------------------------------------------------
-*> SSrows     25, 43, 50 wRowhe da gestire come screen saver
-*> SSbeep     se = 'Y' allora quando parte lo screen saver fa beep
-*> SSbackcol  background color of the clock
-*> SSforecol  foreground color of the clock
-*> SSMove     seconds before moving the clock on screen
-*> SStitle1   'Y'= display  the scrolling string
-*> SStitle2   text of ScrollingString
-*> SSbackcolt background color of the scrolling string
-*> SSforecolt foreground color of the scrolling string
-   05 SSrows        pic  9(04) value  25.
-   05 SSbeep        pic  x(01) value 'N'.
-   05 SSbackcol     pic s9(04) comp-5 value green.
-   05 SSforecol     pic s9(04) comp-5 value white.
-   05 SSMove      pic s9(02) value +02.
-   05 SStitle1      pic  x(01) value 'Y'.
-   05 SStitle2      pic  x(80) value
-   *>  12345678901234567890123456789012345678901234567890123456789012345678901234567890
-      'อออออออออออออออออ Screen Saver Active (press a key to exit  ... ) ออออออออออออออ'.
-   05 SSbackcolt    pic s9(04) comp-5 value green.
-   05 SSforecolt    pic s9(04) comp-5 value white.
+
+*> SAVE/RESTORE SCREEN VARIABLES
+77    szScreenName        PIC X(256).
+77    iScrOk              BINARY-LONG.
+
+
+LINKAGE SECTION.
+COPY 'GC58SAVERCLOCK.CPY'.
 
 *> **************************************************************
 *>           P R O C E D U R E   D I V I S I O N
 *> **************************************************************
-PROCEDURE DIVISION. *> using SAVER01-AREA.
-*> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
-set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
-set environment 'COB_SCREEN_ESC'        TO 'Y'.
-
+PROCEDURE DIVISION  using SAVER-AREA.
+  *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
+  set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
+  set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
 MAIN.
+  *> SAVE SCREEN
+  MOVE Z"SAVESCREEN.TMP" TO szScreenName.   *> Filename ends with X"00"
+  CALL STATIC "scr_dump" USING BY REFERENCE szScreenName RETURNING iScrOk END-CALL.
+
+  *> erase the screen
+   display ' ' at 0101 with blank screen end-display.
+
    perform InitialSettings         thru InitialSettingsEx
    perform DisplayScrollingString  thru DisplayScrollingStringEx
 
@@ -200,6 +181,9 @@ MAIN.
            end-if
         end-if
    end-perform
+
+   *> RESTORE SCREEN
+   CALL STATIC "scr_restore" USING BY REFERENCE szScreenName RETURNING iScrOk END-CALL
    .
    goback.
 
@@ -218,7 +202,7 @@ DisplayClock.
           *> define random clock position on screen
           if FlipFlop > 2
              subtract Timess1 from wCol1                   *> column
-             add      Timess1 to wlin1                     *> row
+             add      Timess1 to   wlin1                   *> row
              if wCol1  > 40 move  3 to wCol1 end-if
              if wCol1  <  4 move 40 to wCol1 end-if
              if wlin1  > 20 move  4 to wlin1 end-if
@@ -240,13 +224,22 @@ DisplayClock.
           perform DisplayBox    thru DisplayBoxEx
           perform DisplayTme    thru DisplayTmeEx
      else
-        perform DisplayBox    thru DisplayBoxEx
+        perform DisplayBox thru DisplayBoxEx
         perform DisplayTme thru DisplayTmeEx
         add 1 to wCount
         move wCol1 to wCol
      end-if
      .
 DisplayClockEx. exit.
+
+DisplayBox.
+   compute box-r1 = wlin1 - 1
+   compute box-c1 = wCol  - 2
+   compute box-r2 = wlin3 + 1
+   compute box-c2 = wCol  + 36
+   CALL GC01BOX USING BY CONTENT BOX-AREA
+   .
+DisplayBoxEx. exit.
 
 DisplayTme.
 
@@ -269,14 +262,6 @@ DisplayTme.
    .
 DisplayTmeEx. exit.
 
-DisplayBox.
-   compute box-r1 = wlin1 - 1
-   compute box-c1 = wCol  - 2
-   compute box-r2 = wlin3 + 1
-   compute box-c2 = wCol  + 36
-   CALL GC01BOX USING BY CONTENT BOX-AREA
-   .
-DisplayBoxEx. exit.
 
 DisplayScrollingString.
     if SStitle1 = 'Y'
@@ -287,7 +272,8 @@ DisplayScrollingString.
        end-if
        move wScr (1      : 81 - i) to wRow (i : 81 - i)
        move wScr (81 - i : i     ) to wRow (1 :      i)
-       display wRow at 001001 with background-color SSbackcolt foreground-color SSforecolt highlight end-display
+       display wRow at 001001
+               with background-color SSbackcolt foreground-color SSforecolt highlight end-display
     end-if
     .
 DisplayScrollingStringEx. exit.
