@@ -237,10 +237,6 @@ move cdate to date-a.
     set i to 1
     search mday  varying i
            at end
-                *> compute i= i - 1
-                *> display ' mday(i) ' mday(i)
-                *> display ' i ' i
-                *> accept omitted
 
                 if Key-Pressed = Key-CursRight
                    compute date-aRDD = 1
@@ -266,6 +262,7 @@ move cdate to date-a.
                                  compute date-aRDD = 28
                    end-evaluate
                 end-if
+
                 *> 20161018 bug correction *************************************************
                 *> 20161018 when you are on 31 and next month have < 31 days !
                 if Key-Pressed = Key-PgDn or Key-space or Key-Tab
@@ -301,6 +298,35 @@ move cdate to date-a.
                    end-evaluate
                 end-if
                 *> 20161019 end of bug correction *******************************************
+
+                *> 20161026 bug correction *************************************************
+                *> 20161026 when you are on 29 february and next year has 28 days !
+                if Key-Pressed = Key-plus
+                   evaluate true
+                           when date-aRMM = 1 or 3 or 5 or 7 or 8 or 10 or 12
+                                 compute date-aRDD = 31
+                           when date-aRMM = 4 or 6 or 9 or 11
+                                 compute date-aRDD = 30
+                           when date-aRMM = 2
+                                 compute date-aRDD = 28
+                   end-evaluate
+                end-if
+                *> 20161026 end of bug correction *******************************************
+
+                *> 20161026 bug correction *************************************************
+                *> 20161026 when you are on 29 february and previous year has 28 days !
+                if Key-Pressed = Key-minus
+                   evaluate true
+                           when date-aRMM = 1 or 3 or 5 or 7 or 8 or 10 or 12
+                                 compute date-aRDD = 31
+                           when date-aRMM = 4 or 6 or 9 or 11
+                                 compute date-aRDD = 30
+                           when date-aRMM = 2
+                                 compute date-aRDD = 28
+                   end-evaluate
+                end-if
+                *> 20161026 end of bug correction *******************************************
+
 
                 go to 0100-start2
 
