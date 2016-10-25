@@ -111,16 +111,16 @@ message3.
 initialize Boxmex-Area ALL TO VALUE
 move low-value to Bxm-tabmex
 *>    123456789012345678901234567890123456789012345678901234567890123456789012
-move z' GNU COBOL is an open-source COBOL compiler and runtime environment.'       to Bxm-mex(01)
-move z' The GNU COBOL compiler generates C code which is automatically compiled'   to Bxm-mex(02)
-move z' and linked. While originally developed for UNIX operating systems, GNU'    to Bxm-mex(03)
-move z' COBOL has also been successfully built for OSX computers or Windows'       to Bxm-mex(04)
-move z' computers utilizing the UNIX-emulation features of such tools as Cygwin'   to Bxm-mex(05)
-move z' and MinGW1. It has also been built as a truly native Windows application'  to Bxm-mex(06)
+move z' GnuCOBOL is an open-source COBOL compiler and runtime environment.      ' to Bxm-mex(01)
+move z' The GnuCOBOL compiler generates C code which is automatically compiled  ' to Bxm-mex(02)
+move z' and linked. While originally developed for UNIX operating systems,      ' to Bxm-mex(03)
+move z' GnuCOBOL has also been successfully built for OSX computers or Windows  ' to Bxm-mex(04)
+move z' computers utilizing the UNIX-emulation features of such tools as Cygwin ' to Bxm-mex(05)
+move z' and MinGW1. It has also been built as a truly native Windows application' to Bxm-mex(06)
 move z' utilizing Microsoft"s freely-downloadable Visual Studio Express package ' to Bxm-mex(07)
-move z' to provide the C compiler and linker/loader. The principal developers of'  to Bxm-mex(08)
-move z' GNU COBOL are Keisuke Nishida and Roger While. They may be contacted at '  to Bxm-mex(09)
-move z' the GNU COBOL website - www.GNU COBOL.org. '  to Bxm-mex(10)
+move z' to provide the C compiler and linker/loader. The principal developers of' to Bxm-mex(08)
+move z' GnuCOBOL are Keisuke Nishida and Roger While. They may be contacted at  ' to Bxm-mex(09)
+move z' the GnuCOBOL website - www.GNUCOBOL.org. '                                to Bxm-mex(10)
 move space & x'00' to Bxm-mex(11)
 move space & x'00' to Bxm-mex(12)
 move space & x'00' to Bxm-mex(13)
@@ -156,7 +156,7 @@ message5.
 initialize Boxmex-Area ALL TO VALUE
 move low-value to Bxm-tabmex
 move space & x'00' to Bxm-mex(01)
-move '            ___________________________________________        '  & x'00' to Bxm-mex(02)
+move '            __________________________________________         '  & x'00' to Bxm-mex(02)
 move '   ________|                                          |_______ '  & x'00' to Bxm-mex(03)
 move '   \       |               GnuCOBOL 2.0               |      / '  & x'00' to Bxm-mex(04)
 move '    \      |           TUI TOOLS COLLECTION           |     /  '  & x'00' to Bxm-mex(05)
