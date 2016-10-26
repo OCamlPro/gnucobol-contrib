@@ -1,0 +1,16 @@
+SORT FIELDS=(34,5,CH,A)                    
+USE  dd_infile     RECORD F,90 ORG SQ      
+GIVE dd_outfile    RECORD F,90 ORG SQ      
+                      *                                                   pos   len   
+  INREC FIELDS(1,7,   *   05 in-seq-record        pic  9(07).              1      7   
+              32,7,   *   05 in-ch-field          pic  x(5).               8      5   
+              20,8,   *   05 in-bi-field          pic  9(7) comp.         13      3   
+              16,4,   *   05 in-fi-field          pic s9(7) comp.         16      4   
+              28,4,   *   05 in-fl-field          comp-2.                 20      8   
+              13,3,   *   05 in-pd-field          pic s9(7) comp-3.       28      4   
+               8,5,   *   05 in-zd-field          pic s9(7).              32      7   
+              39,4, *   FL COMP-1   
+              43,7, *   CLO         
+              50,8, *   CST         
+              58,8, *   CSL         
+              66,25)*   Filler      

@@ -1,0 +1,20 @@
+
+    * SSUMSQFFI03
+    
+SORT FIELDS(2,1,CH,A) 
+SUM FIELDS=( 1,1,FI,   * MSR-02S   
+             3,1,FI,   * MSR-02    
+             5,2,FI,   * MSR-04S   
+             8,2,FI,   * MSR-04    
+             11,3,FI,  * MSR-06S   
+             15,3,FI,  * MSR-06    
+             19,4,FI,  * MSR-08S   
+             24,4,FI,  * MSR-08    
+             29,6,FI,  * MSR-14S   
+             36,6,FI,  * MSR-14    
+             43,7,FI,  * MSR-16S   
+             51,7,FI,  * MSR-16    
+             59,8,FI,  * MSR-18S   
+             68,8,FI)  * MSR-18    
+USE  ..\files\sqfi03            RECORD F,76 ORG SQ 
+GIVE ..\files\sqfi03_07.srt     RECORD F,76 ORG SQ

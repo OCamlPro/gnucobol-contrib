@@ -1,0 +1,21 @@
+
+    * SSUMSQFPD01	Sort file with	PD	Column	SQ	File	Single file multi columns PD	
+    * All packed file SQPD01
+    
+*  SORT FIELDS(25,5,PD,A,31,5,PD,A) 
+SORT FIELDS(3,1,CH,A) 
+SUM FIELDS=( 1,2,PD,           * MSR-03S
+             4,2,PD,           * MSR-03
+             7,3,PD,           * MSR-05S
+            11,3,PD,           * MSR-05
+            15,4,PD,           * MSR-07S
+            20,4,PD,           * MSR-07
+            25,5,PD,           * MSR-09S
+            31,5,PD,           * MSR-09
+            37,10,PD,          * MSR-18S
+            48,10,PD,          * MSR-18
+            59,16,PD,          * MSR-31
+            76,16,PD)          * MSR-31s
+**            65,16,PD) 
+USE     ..\files\sqpd01             RECORD F,92 ORG SQ 
+GIVE    ..\files\sqpd01_07.srt      RECORD F,92 ORG SQ

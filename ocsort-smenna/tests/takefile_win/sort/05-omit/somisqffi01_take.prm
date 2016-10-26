@@ -1,0 +1,7 @@
+
+    * SINCSQFFI01
+
+SORT FIELDS(11,3,FI,A) 
+USE     ..\files\sqfi01             RECORD F,51 ORG SQ 
+GIVE    ..\files\sqfi01_04.srt      RECORD F,51 ORG SQ 
+OMIT COND=(11,03,FI,GT,0)

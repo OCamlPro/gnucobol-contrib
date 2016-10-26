@@ -1,0 +1,11 @@
+
+
+
+    * SSUMSQFPD01
+    * Sort file with	PD	Column	SQ	File	Single file multi columns PD	
+    * file SQPD01
+
+    SORT FIELDS(25,5,PD,A,31,5,PD,A) 
+    USE     ../files/sqpd01         RECORD F,92 ORG SQ 
+    GIVE    ../files/sqpd01_04.srt  RECORD F,92 ORG SQ
+    INCLUDE COND=(25,5,PD,EQ,-7777777)

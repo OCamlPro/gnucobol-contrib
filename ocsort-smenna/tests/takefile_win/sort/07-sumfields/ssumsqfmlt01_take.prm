@@ -1,0 +1,10 @@
+
+    * SSUMSQFMLT01
+
+
+    USE     ..\files\fil_outfil_069.txt             ORG LS RECORD F,3000  
+    GIVE    ..\files\fil_outfil_001_069.txt.out     ORG SQ RECORD V,10,3000    
+*  SORT FIELDS=(1,3,CH,A,4,1,CH,A)                                                       
+  SORT FIELDS=(1,3,CH,A)                                                       
+  SUM FIELDS=NONE                                                               
+  

@@ -1,0 +1,8 @@
+* sort all field for file SQBI03  
+  * SFTSQFBI03
+
+
+
+SORT FIELDS(3,1,CH,A) 
+USE     ..\files\sqbi03         RECORD F,58 ORG SQ 
+GIVE    ..\files\sqbi03_02.srt  RECORD F,58 ORG SQ

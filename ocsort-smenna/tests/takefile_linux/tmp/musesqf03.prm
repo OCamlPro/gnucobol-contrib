@@ -1,0 +1,6 @@
+MERGE FIELDS=(8,5,CH,A)                                       
+SUM FIELDS=(NONE)                                             
+USE  dd_infile1  RECORD F,90 ORG SQ                           
+USE  dd_infile2  RECORD F,90 ORG SQ                           
+USE  dd_infile3  RECORD F,90 ORG SQ                           
+GIVE dd_outfile  RECORD F,90 ORG SQ                           

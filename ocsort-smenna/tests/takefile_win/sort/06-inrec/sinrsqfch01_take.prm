@@ -1,0 +1,7 @@
+
+
+    USE  ..\files\fil_outfil_100.txt         ORG LS RECORD F,250  
+    GIVE ..\files\fil_outfil_100_024.txt.srt ORG LS RECORD F, 250
+
+    INREC BUILD=(5,2,20:5,10,80:X,3C'ABC',X)
+

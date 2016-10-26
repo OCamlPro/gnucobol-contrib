@@ -1,0 +1,7 @@
+
+    * SFTSQFZD03
+
+* Zoned 
+SORT FIELDS(4,2,ZD,A,7,4,ZD,A) 
+USE     ..\files\sqzd03         RECORD F,396 ORG SQ 
+GIVE    ..\files\sqzd03_02.srt  RECORD F,396 ORG SQ

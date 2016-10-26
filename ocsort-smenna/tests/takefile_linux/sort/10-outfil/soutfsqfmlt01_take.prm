@@ -1,0 +1,11 @@
+USE     ../files/fil_outfil_001.txt     ORG LS RECORD F,3000 
+GIVE    ../files/fil_outfil_001.txt.out ORG LS RECORD F,3000   
+MERGE   FIELDS=COPY                                                             
+OUTFIL INCLUDE=(01,03,CH,EQ,C'001',AND,24,03,CH,LE,C'999'),FILES='../files/head001_01'
+OUTFIL INCLUDE=(01,03,CH,EQ,C'010',AND,24,04,CH,GT,C'0000',AND,24,04,CH,LE,C'9999'),FNAMES='../files/head010_01'
+OUTFIL INCLUDE=(01,03,CH,EQ,C'030',AND,36,04,CH,GT,C'0000',AND,36,04,CH,LE,C'9999'),FNAMES='../files/head030_01'
+OUTFIL SAVE,FNAMES='../files/others_999'
+
+
+
+

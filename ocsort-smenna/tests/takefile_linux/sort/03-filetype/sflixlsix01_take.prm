@@ -1,0 +1,9 @@
+ **** STEP1
+ ** Generate indexed files step 1
+ ***** STEP1
+ ** 
+ SORT FIELDS=(96,5,ZD,A)  
+  USE   ../files/inp002.txt      ORG LS RECORD F,100
+  GIVE  ../files/inp002ix.dat    ORG IX RECORD F,100 KEY(96,5,P)
+
+  *****
