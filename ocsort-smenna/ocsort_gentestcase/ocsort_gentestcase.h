@@ -41,6 +41,8 @@
 	#include <unistd.h>
 #endif
 
+#include <libcob.h>
+
 #define   GEN_TYPE_ALL			0
 #define   GEN_TYPE_CHARUPP		1
 #define   GEN_TYPE_CHARLOW		2
@@ -53,6 +55,8 @@
 #define	  FIELD_TYPE_BINARY		1
 #define	  FIELD_TYPE_FIXED		4
 
+#define ALLOCATE_DATA	0
+#define NOALLOCATE_DATA 1
 
 
 #if	defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
@@ -121,4 +125,16 @@ int Sort_Fields ( struct params_t* params, struct key_t** pKey );
 int compare4qsort (const void *first, const void *second);
 int check_param( struct params_t* params, struct key_t** pKey );
 void write_line(FILE* pFile, char* pBuf);
+
+cob_field* gen_cob_field_make (int type, int digits, int scale, int flags, int nLen, int nData);
+void gen_setAttrib ( cob_field_attr *attrArea, int type, int nLen);
+cob_field* gen_cob_field_create ( void );
+void gen_cob_field_set (cob_field* field_ret, int type, int digits, int scale, int flags, int nLen);
+void gen_cob_field_destroy ( cob_field* field_ret, int nData);
+int gen_set_area (cob_file* file, unsigned char* szBuf, int nLen );
+int genfile_SetInfoForFile( struct params_t* params, struct key_t** pKey, cob_file* stFileDef, int nMode);
+void destroy_file (struct params_t* params, cob_file* stFile);
+int gen_getFieldTypeLIBCOBFlags(const char *type);
+void SetKeyForSort(struct params_t* params,  struct key_t** pKey, char* pBuf);
+
 #endif //_OCSORT_GENTESTCASE_H_

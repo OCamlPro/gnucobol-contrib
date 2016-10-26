@@ -129,7 +129,8 @@ int gen_script_linux (struct params_t* params, struct key_t** pKey )
 	write_line(pFile, (char*)"export RTC=0\n");
 
 	write_line(pFile, (char*)"if [ \"$RTC\" == \"0\" ] ; then 	\n");
-	sprintf((char*) pBuf, "      cobc -x -std=mf -debug -Wall -D_FILE_OFFSET_BITS=\"64\" -o ../bin/%s ../src/%s.cbl\n", params->PgmCheckData, params->PgmCheckData);
+	// sprintf((char*) pBuf, "      cobc -x -std=mf -debug -Wall -D_FILE_OFFSET_BITS=\"64\" -o ../bin/%s ../src/%s.cbl\n", params->PgmCheckData, params->PgmCheckData);
+    sprintf((char*) pBuf, "      cobc -x -fbinary-size=1--8 -fnotrunc -fbinary-byteorder=big-endian -debug -Wall -D_FILE_OFFSET_BITS=\"64\" -o ../bin/%s ../src/%s.cbl\n", params->PgmCheckData, params->PgmCheckData);
 	write_line(pFile, (char*) pBuf);
 
 	write_line(pFile, (char*)"export RTC=$?\n");
@@ -138,7 +139,8 @@ int gen_script_linux (struct params_t* params, struct key_t** pKey )
 	write_line(pFile, (char*)"fi\n");
 
 	write_line(pFile, (char*)"if [ \"$RTC\" == \"0\" ] ; then 	\n");
-	sprintf((char*) pBuf, "     cobc -x -std=mf -debug -Wall -D_FILE_OFFSET_BITS=\"64\" -o ../bin/%s ../src/%s.cbl\n", params->PgmCheckSort, params->PgmCheckSort);
+	// sprintf((char*) pBuf, "     cobc -x -std=mf -debug -Wall -D_FILE_OFFSET_BITS=\"64\" -o ../bin/%s ../src/%s.cbl\n", params->PgmCheckSort, params->PgmCheckSort);
+    sprintf((char*) pBuf, "      cobc -x -fbinary-size=1--8 -fnotrunc -fbinary-byteorder=big-endian -debug -Wall -D_FILE_OFFSET_BITS=\"64\" -o ../bin/%s ../src/%s.cbl\n", params->PgmCheckSort, params->PgmCheckSort);
 	write_line(pFile, (char*) pBuf);
 	write_line(pFile, (char*)"export RTC=$?\n");
 	write_line(pFile, (char*)"else\n");
@@ -147,7 +149,7 @@ int gen_script_linux (struct params_t* params, struct key_t** pKey )
 
 
 	write_line(pFile, (char*)"if [ \"$RTC\" == \"0\" ] ; then 	\n");
-	sprintf((char*) pBuf, "export FGENFILE=%s%s\n", params->PathGen, params->szFileName);
+	sprintf((char*) pBuf, "export fgenfile=%s%s\n", params->PathGen, params->szFileName);
 	write_line(pFile, (char*) pBuf);
 
 	sprintf((char*) pBuf, (char*)"      ../bin/%s\n",params->PgmCheckData);
@@ -177,7 +179,7 @@ int gen_script_linux (struct params_t* params, struct key_t** pKey )
 
 	write_line(pFile, (char*)"##  checkdata sortede by OCSort \n");
 	write_line(pFile, (char*)"if [ \"$RTC\" == \"0\" ] ; then 	\n");
-	sprintf((char*) pBuf, "export FGENFILE=%s%s.srt\n", params->PathGen, params->szFileName);
+	sprintf((char*) pBuf, "export fgenfile=%s%s.srt\n", params->PathGen, params->szFileName);
 	write_line(pFile, (char*) pBuf);
 	sprintf((char*) pBuf, (char*)"     ../bin/%s\n", params->PgmCheckSort);
 	write_line(pFile, (char*) pBuf);
@@ -289,18 +291,20 @@ int gen_script_win(struct params_t* params, struct key_t** pKey )
 	}
 	
 
-	sprintf((char*) pBuf, "cobc -x -std=mf -debug -Wall -D_FILE_OFFSET_BITS=\"64\" -o ..\\bin\\%s ..\\src\\%s.cbl\n", params->PgmCheckData, params->PgmCheckData);
-	write_line(pFile, (char*) pBuf);
+	// sprintf((char*) pBuf, "cobc -x -std=mf -debug -Wall -D_FILE_OFFSET_BITS=\"64\" -o ..\\bin\\%s ..\\src\\%s.cbl\n", params->PgmCheckData, params->PgmCheckData);
+    sprintf((char*) pBuf, "cobc -x -debug -Wall -fbinary-size=1--8 -fnotrunc -fbinary-byteorder=big-endian  -D_FILE_OFFSET_BITS=\"64\" -o ..\\bin\\%s ..\\src\\%s.cbl\n", params->PgmCheckData, params->PgmCheckData);
+    	write_line(pFile, (char*) pBuf);
 
 	write_line(pFile, (char*)"if %errorlevel = 1 goto lberr\n");
 
-	sprintf((char*) pBuf, "cobc -x -std=mf -debug -Wall -D_FILE_OFFSET_BITS=\"64\" -o ..\\bin\\%s ..\\src\\%s.cbl\n", params->PgmCheckSort, params->PgmCheckSort);
+	// sprintf((char*) pBuf, "cobc -x -std=mf -debug -Wall -D_FILE_OFFSET_BITS=\"64\" -o ..\\bin\\%s ..\\src\\%s.cbl\n", params->PgmCheckSort, params->PgmCheckSort);
+    sprintf((char*) pBuf, "cobc -x -debug -Wall -fbinary-size=1--8 -fnotrunc -fbinary-byteorder=big-endian  -D_FILE_OFFSET_BITS=\"64\" -o ..\\bin\\%s ..\\src\\%s.cbl\n", params->PgmCheckSort, params->PgmCheckSort);
 	write_line(pFile, (char*) pBuf);
 
-	write_line(pFile, (char*)"if %errorlevel = 1 goto lberr\n");
+	write_line(pFile, (char*)"if %errorlevel% GEQ 1 goto lberr\n");
 
 
-	sprintf((char*) pBuf, "set FGENFILE=..\\files\\%s\n", params->szFileName);
+	sprintf((char*) pBuf, "set fgenfile=..\\files\\%s\n", params->szFileName);
 	write_line(pFile, (char*) pBuf);
 
 	sprintf((char*) pBuf, (char*)"..\\bin\\%s\n",params->PgmCheckData);
@@ -316,15 +320,15 @@ int gen_script_win(struct params_t* params, struct key_t** pKey )
 	sprintf((char*) pBuf, (char*)"..\\bin\\ocsort TAKE %s%s.prm\n", params->PathTake, params->szFileName);
 	write_line(pFile, (char*) pBuf);
 
-	write_line(pFile, (char*)"if %errorlevel = 1 goto lberr\n");
+	write_line(pFile, (char*)"if %errorlevel% GEQ 1 goto lberr\n");
 
 	write_line(pFile, (char*)":: checkdata sortede by OCSort \n");
-	sprintf((char*) pBuf, "set FGENFILE=..\\files\\%s.srt\n", params->szFileName);
+	sprintf((char*) pBuf, "set fgenfile=..\\files\\%s.srt\n", params->szFileName);
 	write_line(pFile, (char*) pBuf);
 	sprintf((char*) pBuf, (char*)"..\\bin\\%s\n", params->PgmCheckSort);
 	write_line(pFile, (char*) pBuf);
 
-	write_line(pFile, (char*)"if %errorlevel = 1 goto lberr\n");
+	write_line(pFile, (char*)"if %errorlevel% GEQ 1 goto lberr\n");
 
 	write_line(pFile, (char*)"goto lbend\n");
 	write_line(pFile, (char*)":lberr\n");

@@ -43,8 +43,8 @@ $(TARGET): $(OBJS)
 
 ocsort_gentestcase.o: ocsort_gentestcase.h libocsort.h genscript.h  gencob4sort.h  gencob4check.h  gencfg.h 
 genscript.o: genscript.h
-gencob4sort.o: gencob4sort.h
-gencob4check.o: gencob4check.h
+gencob4sort.o: gencob4sort.h genrows.hpp
+gencob4check.o: gencob4check.h  genrows.hpp
 gencfg.o: gencfg.h 
 
 clean:

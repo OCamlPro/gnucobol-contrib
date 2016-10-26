@@ -50,18 +50,25 @@
 // x64 end
 
 
+
 #define OCSORT_ALLOCATE				50
 #define OCSORT_ALLOCATE_MEMSIZE		512000000 
-#define OCSORT_MAX_BUFF_REK			32768+SIZEINT64
+#define OCSORT_MAX_BUFF_REK			32768+SZPOSPNT
 
 // value 1 : generate temp file fixed name : cob17, cob18, cob19, cob1a, cob1b
 #define OCSORT_DEBUG                0  // 0 no debug - 1 debug
 #define OCSORT_TESTCMD 0
 #define OCSORT_VERSION "01.00.00"
+#define OCSORT_TAR_DATE "Ago 26 2016 22:00:00 UTC"
 
 // Return Code
 #define OC_RTC_OK	 0
 #define OC_RTC_ERROR 16
+
+
+// Variables
+char szMexToken[260];
+
 
 void OCSort_Config( void );
 void OCSort_Usage ( void ) ;

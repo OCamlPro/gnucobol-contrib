@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdint.h>
-
+#include <errno.h>
 // linux 
 
 //#ifndef _WIN32
@@ -67,87 +67,94 @@ struct job_t;
 
 #define MAX_RECSIZE			32752 
 #define MAX_HANDLE_TEMPFILE	16
-#define SIZEINT				4
-#define SIZEINT64			8
+#define SIZEINT				sizeof(int)     // 4
+#define SIZEINT64			sizeof(int64_t) // 8
+
+#define SZPOSPNT            SIZEINT64
+#define SZLENREC            SIZEINT
+#define SZPNTDATA           SIZEINT64
+#define SIZESRTBUFF         SIZEINT64+SIZEINT+SIZEINT64
+
+
+
+#define	MAX_SIZE_CACHE_WRITE		65536*62 //65536*62*2   //62
+#define	MAX_SIZE_CACHE_WRITE_FINAL	65536*62 //65536*62*2   //62
+
+#define MAXFILEIN 100
 
 char	cob_tmp_buff[COB_MEDIUM_BUFF];
 char	cob_tmp_temp[FILENAME_MAX];
 
 
 struct job_t {
-
-	int		ndeb; 
-	int		nStatistics;
-	struct file_t *outputFile;
-	struct file_t *inputFile;
-	char   szCmdLineCommand[8192];	// Copy from command line
-	int    bIsTake;
-	char   szTakeFileName[8192];	// Take FileName
-	char   job_typeOP; // 'S' for sort, 'M' for Merge
-	int	   array_FileTmpHandle[MAX_HANDLE_TEMPFILE];
-	char   array_FileTmpName[MAX_HANDLE_TEMPFILE][FILENAME_MAX];
-	int    nIndextmp;
-	int    nIndextmp2;  
-	int	   nNumTmpFile;
-	char   arrayFileInCmdLine[256][FILENAME_MAX];
-	int    nMaxFileIn;
-	char   arrayFileOutCmdLine[256][FILENAME_MAX];
-	int    nMaxFileOut;
-	int    nCountSrt[MAX_HANDLE_TEMPFILE];
-	int    nMaxHandle;
-	int	   nCurrFileInput;
-	int	   nByteOrder;							// 0 = Native - 1 = BigEndian
-	struct sortField_t *sortField;
-	struct condField_t *includeCondField;
-	struct condField_t *omitCondField;
-	struct condField_t *tmpCondField;
-	struct outrec_t *outrec;
-	struct inrec_t	*inrec;
-	int		sumFields;
-	struct SumField_t *SumField;
-	int		bIsFieldCopy;		// SORT-MERGE FIELDS=COPY
-	int64_t		recordNumberTotal;
-	int64_t		recordWriteSortTotal;
-	int64_t		recordWriteOutTotal;
-	int64_t		file_length;
-	int64_t recordNumber;
-	int64_t recordNumberAllocated;
-	unsigned char*  recordData;
-	unsigned char*  buffertSort;
-	struct BufferedReader_t* reader;
-	int	m_SeekOrder;
-	unsigned int inputLength;
-	unsigned int outputLength;
-	int nLastPosKey;
-	int bReUseSrtFile;
-	int64_t	lPositionFile;		// File pointer position 
+//-->>	char arrayFileInCmdLine[256][FILENAME_MAX];
+//-->>		char arrayFileOutCmdLine[256][FILENAME_MAX];
+	char arrayFileInCmdLine[MAXFILEIN][FILENAME_MAX];
+    char arrayFileOutCmdLine[MAXFILEIN][FILENAME_MAX];
+	char array_FileTmpName[MAX_HANDLE_TEMPFILE][FILENAME_MAX];
+	char job_typeOP;				// 'S' for sort, 'M' for Merge
+	char strPathTempFile[FILENAME_MAX]; // path temporary file
+	char szCmdLineCommand[8192];	// Copy from command line
+	char szTakeFileName[8192];	// Take FileName
+	int	 array_FileTmpHandle[MAX_HANDLE_TEMPFILE];
+	int	 bIsFieldCopy;		// SORT-MERGE FIELDS=COPY
+	int	 bIsPresentSegmentation;		// File segmentation
+	int	 m_SeekOrder;
+	int	 nCurrFileInput;
+	int	 nMlt;
+	int	 nNumTmpFile;
+	int	 nStatistics;
+	int	 nTestCmdLine;	// 0 normal, 1 test command line
+	int	 nTypeEmul;		// 0 stardard OC, 1 emulate MFSORT
+// Option
+	int	 nVLSCMP;   // 0 disabled , 1 = enabled -- temporarily replace any missing compare field bytes with binary zeros
+	int	 nVLSHRT;   // 0 disabled , 1 = enabled -- treat any comparison involving a short field as false
+	int	 ndeb; 
+	int	 sumFields;
+	int  bIsTake;
+	int  bReUseSrtFile;
+	int  nCountSrt[MAX_HANDLE_TEMPFILE];
+	int  nIndextmp2;  
+	int  nIndextmp;
+	int  nLastPosKey;
+	int  nLenKeys;
+	int  nMaxFileIn;
+	int  nMaxFileOut;
+	int  nMaxHandle;
+	int64_t	file_length;
 	int64_t	lPosAbsRead;
-	int64_t	ulMemSizeRead;		// Current size mem after read
-	int64_t	ulMemSizeSort;
-	int64_t	ulMemSizeAlloc;		// Max size mem 
-	int64_t	ulMemSizeAllocSort;		// Max size mem 
-	char    strPathTempFile[FILENAME_MAX]; // path temporary file
-	int		bIsPresentSegmentation;		// File segmentation
-	int     desc;
-	int     nLenKeys;
-	unsigned long   LenCurrRek;
-	int		nTypeEmul;		// 0 stardard OC, 1 emulate MFSORT
-	int		nTestCmdLine;	// 0 normal, 1 test command line
-	// int		nSlot;
-	int		nMlt;
 	int64_t	nSkipRec;
 	int64_t	nStopAft;
+	int64_t	recordNumberTotal;
+	int64_t	recordWriteOutTotal;
+	int64_t	recordWriteSortTotal;
+	int64_t	ulMemSizeAlloc;		// Max size mem 
+	int64_t	ulMemSizeAllocSort;		// Max size mem 
+	int64_t	ulMemSizeRead;		// Current size mem after read
+	int64_t	ulMemSizeSort;
+	int64_t recordNumber;
+	int64_t recordNumberAllocated;
+	struct SumField_t*  SumField;
+	struct condField_t* includeCondField;
+	struct condField_t* omitCondField;
+	struct condField_t* tmpCondField;
+	struct file_t*      inputFile;
+	struct file_t*      outputFile;
+	struct inrec_t*     inrec;
 // Outfil
 	struct outfil_t*	outfil;
-	int		nOutfil_Split;		// Flag for split
-	int     nOutfil_Copy;		// Flag for copy
 	struct outfil_t*	pLastOutfil_Split;
 	struct outfil_t*	pSaveOutfil;
 
-// Option
-	int		nVLSCMP;   // 0 disabled , 1 = enabled -- temporarily replace any missing compare field bytes with binary zeros
-	int		nVLSHRT;   // 0 disabled , 1 = enabled -- treat any comparison involving a short field as false
-
+	struct outrec_t*    outrec;
+	struct sortField_t* sortField;
+	unsigned char*  buffertSort;
+	unsigned char*  recordData;
+	unsigned int inputLength;
+	unsigned int ncob_varseq_type;		// 0   means 2 byte record length (big-endian),			1   means 4 byte record length (big-endian)        
+	                                 	// 2   means 4 byte record length (local machine int),  3   means 2 byte record length (local machine short)
+	unsigned int outputLength;
+	unsigned long   LenCurrRek;
 };
 
 struct job_t *globalJob;
@@ -155,10 +162,11 @@ struct job_t *globalJob;
 struct job_t *job_constructor( void );
 void job_destructor(struct job_t *job);
 int job_destroy(struct job_t *job);
+int job_sort(struct job_t* job);
 int job_load(struct job_t *job, int argc, char **argv);
 int job_check(struct job_t *job);
 int job_loadFiles(struct job_t *job);
-int job_sort(struct job_t *job);
+int job_sort_data(struct job_t *job);
 int job_save_out(struct job_t *job);
 int job_save_tempfile(struct job_t *job);
 int job_save_tempfinal(struct job_t *job);
@@ -191,22 +199,84 @@ int job_PutIntoArrayFile(char* pszBufOut, char* pszBufIn, int nLength);
 int job_RedefinesFileName( struct job_t *job); 
 int job_NormalOperations(struct job_t *job);
 int job_CloneFileForOutfil( struct job_t *job);
-
+void job_CloneFileForOutfilSet(struct job_t *job, struct file_t* file);
+int job_set_area (struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen );
 int	job_scanCmdSpecialChar(char* bufnew);
 int	job_RescanCmdSpecialChar(char* bufnew);
-// int GetHeaderInfo(struct job_t* job, unsigned char* szHead);
-// int SetHeaderInfo(struct job_t* job, unsigned char* szHead);
-
+void job_SetRecLen(struct job_t *job, int recordsize, unsigned char* szHR);
 void job_ReviewMemeAlloc ( struct job_t *job  );
-INLINE int64_t utils_GetValueRekBIFI(unsigned char* pRek, int nLenField, int nType);
+
+void job_getTypeFlags (int nTypeField, int* nType, int* nFlags );
 
 INLINE int job_compare_key(const void *first, const void *second);
 INLINE int job_compare_rek(const void *first, const void *second, int bCheckPosPnt);
 INLINE int job_compare_qsort(const void *first, const void *second);
 
 INLINE int job_IdentifyBufMerge(unsigned char** ptrBuf, int nMaxElements);
-INLINE int job_ReadFileMerge(struct BufferedReader_t * reader, struct file_t* file, int* descTmp, int* nLR, unsigned char* szBuffRek, int nFirst);
-INLINE int read_textfile_buff(int nHandle, unsigned char* szBuffRek, int nMaxRek, struct BufferedReader_t * reader, int bIsFirstTime, int nLastPosKey);
-INLINE int job_write_output( unsigned int nLenRecOut, unsigned int nLenRek, struct job_t* job, int desc, int nSplitPosPnt, unsigned char* recordBuffer, unsigned char* bufferwriteglobal, int* position_buf_write);
+INLINE int job_ReadFileMerge(struct file_t* file, int* descTmp, int* nLR, unsigned char* szBuffRek, int nFirst);
+cob_field* job_cob_field_create ( void );
+void job_cob_field_set (cob_field* field_ret, int type, int digits, int scale, int flags, int nLen);
+void job_cob_field_destroy ( cob_field* field_ret);
+void job_print_error_file(cob_file* stFileDef, int nLenRecOut);
+
+static INLINE int write_buffered (int		desc, 
+						   unsigned char*	buffer_pointer, 
+						   int				nLenRek, 
+						   unsigned char**	bufferwriteglobal,
+						   int*				position_buf_write
+						  )
+{
+	int nSplit;
+    int tempPosition = *position_buf_write + nLenRek;  
+    if (tempPosition > MAX_SIZE_CACHE_WRITE) {
+		if (_write(desc, (unsigned char*)(*bufferwriteglobal), (unsigned int) *position_buf_write) < 0) 
+		{
+    		fprintf(stderr,"*OCSort*S090*ERROR: Cannot write output file  %s\n",strerror(errno));
+    		return -1;
+		}
+    	*position_buf_write=0;
+    }
+	nSplit = *position_buf_write;
+	memmove((unsigned char*)(*bufferwriteglobal+nSplit), (unsigned char*)buffer_pointer, nLenRek);
+   *position_buf_write=*position_buf_write+nLenRek;
+    return 0;
+}
+
+static INLINE int write_buffered_save_final (int		desc, 
+									 unsigned char*		buffer_pointer, 
+										     int		nLenRek, 
+								    unsigned char**		bufferwriteglobal,
+											 int*		position_buf_write
+											)
+{
+    if (*position_buf_write + nLenRek > MAX_SIZE_CACHE_WRITE_FINAL) {
+    	if (_write(desc, (unsigned char*)(*bufferwriteglobal), (unsigned int) *position_buf_write) < 0) 
+    	{
+    		fprintf(stderr,"*OCSort*S091*ERROR: Cannot write output file  %s\n",strerror(errno));
+    		return -1;
+    	}
+    	*position_buf_write=0;
+    }
+	memmove((unsigned char*)(*bufferwriteglobal+(*position_buf_write)), (unsigned char*)buffer_pointer, nLenRek);
+   *position_buf_write=*position_buf_write+nLenRek;
+    return 0;
+}
+
+static INLINE int write_buffered_final (int  desc, 
+						unsigned char**  bufferwriteglobal,
+						int*	position_buf_write
+					)
+{
+	if (*position_buf_write == 0)
+		return 0;
+    if (write(desc, (unsigned char*)*bufferwriteglobal , *position_buf_write) < 0) 
+    {
+    	fprintf(stderr,"*OCSort*S092*ERROR: Cannot write output file  %s\n",strerror(errno));
+    	return -1;
+    }
+	*position_buf_write=0;
+    return 0;
+}
+
 
 #endif // JOB_H_INCLUDED

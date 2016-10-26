@@ -24,7 +24,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-
+#include <libcob.h>
 //
 #include "libocsort.h"
 
@@ -44,7 +44,7 @@ struct fieldValue_t* fieldValue_constructor( char *type,  char *value, int nType
 struct fieldValue_t* fieldValue_constr_newF(char *type,  char *value, int nTypeF);
 void fieldValue_destructor(struct fieldValue_t *fieldValue);
 int fieldValue_print(struct fieldValue_t *fieldValue);
-int fieldValue_test(struct fieldValue_t *fieldValue, unsigned char *record, int length);
+int fieldValue_checkvalue(struct fieldValue_t *fieldValue, cob_field* pField, int length);
 int fieldValue_getGeneratedLength(struct fieldValue_t *fieldValue);
 char *fieldValue_getGeneratedValue(struct fieldValue_t *fieldValue);
 #endif // FIELDVALUE_H_INCLUDED

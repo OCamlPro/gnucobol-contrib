@@ -3,8 +3,10 @@ MKDIR=mkdir -p
 INSTALL=cp
 BISON=bison
 FLEX=flex
-CC=gcc  -D_FILE_OFFSET_BITS="64"  -c -o  
-CCFLAGS=-W -I./ -I/opt/open-cobol-2.0/libcob
+CC=gcc -std=gnu99 -D_FILE_OFFSET_BITS="64"  -c -o  
+## CCFLAGS=-W -I./ -I/opt/open-cobol-2.0/libcob
+LIBS=-L${exec_prefix}/lib  -L/usr/include/libcob  -L/usr/include
+
 LD=gcc -o 
 LDFLAGS= -O3
 LIBS=-L${exec_prefix}/lib -L/usr/local/lib/ -L/opt/open-cobol-2.0/libcob/.libs -lcob -lm -lgmp -lncurses -ldl
@@ -24,13 +26,12 @@ endif
 
 TARGET=ocsort
 OBJS=\
-       bufferedreader.o \
-	bufferedwriter.o \
 	condfield.o \
        ocsorthelp.o \
        ocsort.o \
 	fieldvalue.o \
 	file.o \
+	keyidxrel.o \
        inrec.o \
        job.o \
        mmfioc.o \
@@ -68,13 +69,12 @@ scanner.c scanner.h: scanner.l
 
 		# $(FLEX) --header-file=scanner.h -o scanner.c scanner.l
 
-bufferedreader.o:bufferedreader.h 
-bufferedwriter.o:bufferedwriter.h 
 condfield.o:condfield.h ocsort.h file.h job.h utils.h fieldvalue.h sortfield.h sumfield.h
 fieldvalue.o:fieldvalue.h utils.h job.h
 file.o:file.h utils.h job.h
 inrec.o:inrec.h fieldvalue.h utils.h job.h
-job.o:ocsort.h job.h file.h sortfield.h condfield.h outrec.h inrec.h parser.h scanner.h sortfield.h utils.h outfil.h bufferedreader.h sumfield.h utils.h outfil.h bufferedwriter.h
+job.o:ocsort.h job.h file.h sortfield.h condfield.h outrec.h inrec.h parser.h scanner.h sortfield.h utils.h outfil.h sumfield.h utils.h outfil.h 
+keyidxrel.o: keyidxrel.h file.h
 mmfioc.o:mmfioc.h job.h utils.h
 ocsorthelp.o:
 ocsort.o:ocsort.h job.h 

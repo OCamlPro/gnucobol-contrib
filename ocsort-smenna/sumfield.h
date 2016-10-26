@@ -24,7 +24,22 @@
 #include <stdint.h>
 #include "job.h"
 
-struct SumField_t;
+// struct SumField_t;
+
+struct SumField_t {
+	int position;
+	int length;
+	int type;
+
+	cob_field_attr  pCobFAttr;				// Attribute for record area
+	cob_field	    pCobField;				// Field for record area
+
+	cob_field_attr  pCobFAttrTotRes;		// Attribute for totalizer
+	cob_field	    pCobFieldTotRes;		// Field for totalizer
+
+	struct SumField_t *next;
+};
+
 struct SumField_t *SumField_constructor(int position, int length, int type);
 void SumField_destructor(struct SumField_t *SumField);
 int SumField_print(struct SumField_t *SumField);
@@ -39,17 +54,13 @@ int SumField_getPosition(struct SumField_t *SumField);
 int SumField_getLength(struct SumField_t *SumField);
 int SumField_getType(struct SumField_t *SumField);
 void SumField_ResetTotSingle(struct SumField_t *SumField);
-int64_t SumField_SetTot(struct SumField_t *SumField, int64_t nTot64);
-int64_t SumField_GetTot(struct SumField_t *SumField);
-int64_t SumField_AddTot(struct SumField_t *SumField, int64_t nTot64);
-//int SumField_GetDigit(struct SumField_t *SumField );
 int SumField_setFunction( int nVal );
 int SumField_addDefinition(struct SumField_t *SumField);
 int SumField_SumField(const void *pRek);
 int SumField_SumFieldUpdateRek(const void *pRek);
 int SumField_ResetTot(struct job_t* job);
-
+void SumField_setTypeCobField(struct SumField_t *SumField, int type, int length);
 int SumFields_KeyCheck(struct job_t* job, int* bIsWrited, unsigned char* szKeyPrec, unsigned int* nLenPrec, 
-						unsigned char* szKeyCurr,  unsigned int* nLenRek, unsigned char* szKeySave,  unsigned int* nLenSave, 
+                        unsigned char* szKeyCurr,  unsigned int* nLenRek, unsigned char* szKeySave,  unsigned int* nLenSave, 
                         unsigned char* szPrecSumFields, unsigned char* szSaveSumFields, unsigned char* szBuffRek, int nSplit);
 #endif // SUMFIELD_H_INCLUDED

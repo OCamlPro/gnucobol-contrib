@@ -22,6 +22,7 @@
 #ifndef OUTREC_H_INCLUDED
 #define OUTREC_H_INCLUDED
 
+// define 
 #define TYPE_STRUCT_STD		0
 #define TYPE_STRUCT_NEW		1
 
@@ -59,12 +60,12 @@ struct outrec_t {
 };
 
 struct outrec_t *outrec_constructor_range(int position, int length);
-struct outrec_t *outrec_constructor_change_position(int position, struct fieldValue_t *fieldValue);
+//struct outrec_t *outrec_constructor_change_position(int position, struct fieldValue_t *fieldValue);
 struct outrec_t *outrec_constructor_change(struct fieldValue_t *fieldValue);
 struct outrec_t *outrec_constructor_range_position(int posAbsRec, int position, int length);
 struct outrec_t *outrec_constructor_subst(unsigned char *chfieldValue);
 struct outrec_t *outrec_constructor_padding(int nAbsPos, unsigned char *chfieldValue, int nPosAbsRec);
-struct outrec_t *outrec_constructor_substnchar(int ntimes, unsigned char *chfieldValue);
+struct outrec_t *outrec_constructor_substnchar(unsigned char* ntch, unsigned char *chfieldValue);
 void outrec_destructor(struct outrec_t *outrec);
 int outrec_addQueue(struct outrec_t **outrec,struct outrec_t *outrec_add);
 struct outrec_t *outrec_getNext(struct outrec_t *outrec);

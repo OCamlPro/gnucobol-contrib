@@ -93,7 +93,9 @@
   #define INLINE 
 #endif
 
+#include <libcob.h>
 #include "job.h"
+#include "outfil.h"
 
 
 #define FILE_TYPE_FIXED			0
@@ -106,31 +108,27 @@
 #define FILE_ORGANIZATION_LINESEQUENTIAL	4//3
 #define FILE_ORGANIZATION_SEQUENTIALMF		5//4
 
-/**/
-#define FILE_ORGTYPE_TMP		 0
-#define FILE_ORGTYPE_IXFIX		10
-#define FILE_ORGTYPE_IXVAR		11
-#define FILE_ORGTYPE_RLFIX		20
-#define FILE_ORGTYPE_RLVAR		21
-#define FILE_ORGTYPE_SQFIX		30
-#define FILE_ORGTYPE_SQVAR		31
-#define FILE_ORGTYPE_LSFIX		40
-#define FILE_ORGTYPE_LSVAR		41
-#define FILE_ORGTYPE_SQFIXMF	50
-#define FILE_ORGTYPE_SQVARMF	51
-/**/
 
 #define FIELD_TYPE_CHARACTER	0
 #define FIELD_TYPE_BINARY		1
-//s.m.
 #define FIELD_TYPE_PACKED		2
-//s.m.
 #define FIELD_TYPE_ZONED		3
-//s.m.
 #define FIELD_TYPE_FIXED		4
+#define FIELD_TYPE_FLOAT        5
+#define FIELD_TYPE_NUMERIC_CLO  6       // sign leading
+#define FIELD_TYPE_NUMERIC_CSL  7       // sign leading separate
+#define FIELD_TYPE_NUMERIC_CST  8       // sign trailing separate
+
 
 #define SORT_DIRECTION_ASCENDING	0
 #define SORT_DIRECTION_DESCENDING	1
+
+
+#define KEY_IDX_PRIMARY				0
+#define KEY_IDX_ALTERNATIVE			1
+#define KEY_IDX_ALTERNATIVE_DUP		2
+#define KEY_IDX_CONTINUE_DEF		3
+
 
 #define COND_CONDITION_EQUAL			0
 #define COND_CONDITION_GREATERTHAN		1
@@ -154,6 +152,16 @@
 #define MAX_MLTP_BYTE	63
 
 
+#define ALLOCATE_DATA	0
+#define NOALLOCATE_DATA 1
+
+
+#define MEMORYALLOC     1
+
+#define ABEND_SKIP      1
+#define ABEND_EXEC      2
+
+
 #ifdef _WIN32
 	#define charSep '\\'
 	#define strSep  "\\"
@@ -170,6 +178,7 @@ int utils_parseFieldValueType(const char type);
 int utils_parseSortDirection(const char *direction);
 int utils_parseCondCondition(const char *condition);
 int utils_parseCondOperation(const char *operation);
+int utils_parseKeyType(const char *keyType);
 
 const char *utils_getFileFormatName(int format);
 const char *utils_getFileOrganizationName(int organization);
@@ -178,17 +187,19 @@ const char *utils_getFieldValueTypeName(int type);
 const char *utils_getSortDirectionName(int direction);
 const char *utils_getCondConditionName(int condition);
 const char *utils_getCondOperationName(int operation);
-int utils_SetOptionSort(char* optSort);
+const char* utils_getKeyType(int nkeyType);
+int utils_SetOptionSort(char* optSort, struct outfil_t* outfil, int nValue);
 int utils_SetOptionSortNum(char* optSort, int64_t nNum);
-
 int utils_setFieldTypInt(char * strType);
-int utils_GenPadSize(int nLR);
-
 void util_print_time_elap( const  char* szMex );
 void util_covertToUpper(char *strIn, char* strOut);
-
-unsigned short int Endian_Word_Conversion(unsigned short int word) ;
-unsigned long int Endian_DWord_Conversion(unsigned long int dword) ;
+// Function for cob_field & cob_field_attrib
+cob_field* util_cob_field_make (int type, int digits, int scale, int flags, int nLen, int nData);
+void util_cob_field_del (cob_field* field_ret, int nData);
+int utils_getFieldTypeLIBCOBInt(int nInteralType, int nLen);
+int utils_getFieldTypeLIBCOBFlags(int nInteralType);
+void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen);
+void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate);
 
 
 //#ifndef _WIN32

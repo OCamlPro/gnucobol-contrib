@@ -1,3 +1,33 @@
+2016-10-23  Sauro Menna  <smenna@users.sourceforge.net>
+	* Update Version 1.0.0 - by Sauro Menna 
+    * Used fields COB_FIELD for data type and integration with LIBCOB:
+        fields         = cob_field/cob_attribute
+        i/o operations = cob_open, cob_read, cob_write, cob_close, 
+        compare/move   = cob_cmp_llint, cob_cmp, cob_move
+    * Removed bufferedreader and bufferedwriter modules
+    * Change memory mapped files use. Only for temporary files. 
+    * Checked potential errors problems for the allocation memory 
+    * Included new file type INDEXED (keys definition)
+    * Included new file type RELATIVE (key relative)
+    * Errors code review 
+    * Insert details for Parser/Scanner errors 
+    * Review Help (ocosort --help)
+    * outfile.c  Insert option SPLITBY=nn for OUTFIL
+    * Included new data type
+          in addition to these:
+              CH  Char     BI  Unisgned Binary   FI  Signed Binary
+              PD  Packed   ZD  Zoned decimal
+          added:    
+              FL   Ploating Point
+              CLO  Signed Numeric - sign lealing 
+              CST  Signed Numeric - trailing separate sign
+              CSL  Signed Numeric - leading separate sign
+              CSF  Signed Numeric - with optional leading floating sign 
+    * Create test environment with COBOL programs (folder test)
+      Integrated step to generate files, sort (ocsort and Cobol) and check results
+      Windows and Linux environment.      
+    * Command TAKE case insensitive    
+    * Check instruction for KEY definition
 
 2016-03-26  Sauro Menna  <smenna@users.sourceforge.net>
 	* Update Version 1.0.0 - by Sauro Menna 

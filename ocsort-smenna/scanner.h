@@ -2,9 +2,9 @@
 #define yyHEADER_H 1
 #define yyIN_HEADER 1
 
-#line 6 "scanner.h"
+#line 6 "..\\..\\scanner.h"
 
-#line 8 "scanner.h"
+#line 8 "..\\..\\scanner.h"
 
 #define  YY_INT_ALIGNED short int
 
@@ -277,6 +277,11 @@ extern char *yytext;
 
 #ifdef YY_HEADER_EXPORT_START_CONDITIONS
 #define INITIAL 0
+#define KEYV 1
+#define ORDK 2
+#define CHSC 3
+#define TCOND 4
+#define TORG 5
 
 #endif
 
@@ -414,9 +419,9 @@ extern int yylex (void);
 #undef YY_DECL
 #endif
 
-#line 132 "scanner.l"
+#line 209 "..\\..\\scanner.l"
 
 
-#line 421 "scanner.h"
+#line 426 "..\\..\\scanner.h"
 #undef yyIN_HEADER
 #endif /* yyHEADER_H */

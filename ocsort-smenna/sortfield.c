@@ -34,21 +34,26 @@ struct sortField_t {
 	struct sortField_t *next;
 };
 
-struct sortField_t *sortField_constructor(int position, int length, int type, int direction) {
+struct sortField_t *sortField_constructor(int position, int length, int type, int direction) 
+{
 	struct sortField_t *sortField=(struct sortField_t *)malloc(sizeof(struct sortField_t));
-	sortField->position=position;
-	sortField->length=length;
-	sortField->type=type;
-	sortField->direction=direction;
-	sortField->next=NULL;
+    if (sortField != NULL) {
+	    sortField->position=position;
+	    sortField->length=length;
+	    sortField->type=type;
+	    sortField->direction=direction;
+	    sortField->next=NULL;
+    }
 	return sortField;
 }
-void sortField_destructor(struct sortField_t *sortField) {
+void sortField_destructor(struct sortField_t *sortField) 
+{
 	free(sortField);
 }
 
 
-int sortField_print(struct sortField_t *sortField) {
+int sortField_print(struct sortField_t *sortField) 
+{
 	printf("%d,%d,%s,%s",
 		sortField->position,
 		sortField->length,
@@ -57,18 +62,21 @@ int sortField_print(struct sortField_t *sortField) {
 	return 0;
 }
 
-struct sortField_t *sortField_getNext(struct sortField_t *sortField) {
+struct sortField_t *sortField_getNext(struct sortField_t *sortField) 
+{
 	if (sortField==NULL) {
 		return NULL;
 	} else {
 		return sortField->next;
 	}}
-int sortField_addHead(struct sortField_t **sortField, struct sortField_t *sortFieldToAdd) {
+int sortField_addHead(struct sortField_t **sortField, struct sortField_t *sortFieldToAdd) 
+{
 	sortFieldToAdd->next=*sortField;
 	*sortField=sortFieldToAdd;
 	return 0;
 }
-int sortField_addQueue(struct sortField_t **sortField, struct sortField_t *sortFieldToAdd) {
+int sortField_addQueue(struct sortField_t **sortField, struct sortField_t *sortFieldToAdd) 
+{
 	struct sortField_t *f;
 	if (*sortField==NULL) {
 		*sortField=sortFieldToAdd;
@@ -80,47 +88,58 @@ int sortField_addQueue(struct sortField_t **sortField, struct sortField_t *sortF
 }
 
 
-int sortField_setPosition(struct sortField_t *sortField, int position) {
+int sortField_setPosition(struct sortField_t *sortField, int position) 
+{
 	sortField->position=position;
 	return 0;
 }
 
-int sortField_setLength(struct sortField_t *sortField, int length) {
+int sortField_setLength(struct sortField_t *sortField, int length) 
+{
 	sortField->length=length;
 	return 0;
 }
 
-int sortField_setType(struct sortField_t *sortField, int type) {
+int sortField_setType(struct sortField_t *sortField, int type) 
+{
 	sortField->type=type;
 	return 0;
 }
 
-int sortField_setDirection(struct sortField_t *sortField, int direction) {
+int sortField_setDirection(struct sortField_t *sortField, int direction) 
+{
 	sortField->direction=direction;
 	return 0;
 }
-int sortField_setNext(struct sortField_t *sortField, struct sortField_t *sortFieldToAdd) {
+int sortField_setNext(struct sortField_t *sortField, struct sortField_t *sortFieldToAdd) 
+{
 	sortField->next=sortFieldToAdd;
 	return 0;
 }
-int sortField_getPosition(struct sortField_t *sortField) {
+int sortField_getPosition(struct sortField_t *sortField) 
+{
 	return sortField->position;
 }
-int sortField_getLength(struct sortField_t *sortField) {
+int sortField_getLength(struct sortField_t *sortField) 
+{
 	return sortField->length;
 }
-int sortField_getType(struct sortField_t *sortField) {
+int sortField_getType(struct sortField_t *sortField) 
+{
 	return sortField->type;
 }
-int sortField_getDirection(struct sortField_t *sortField) {
+int sortField_getDirection(struct sortField_t *sortField) 
+{
 	return sortField->direction;
 }
 
-int sortField_addDefinition(struct sortField_t *sortField) {
+int sortField_addDefinition(struct sortField_t *sortField) 
+{
 	sortField_addQueue(&(globalJob->sortField), sortField);
 	return 0;
 }
-int sortField_setDefinition(struct sortField_t *sortField) {
+int sortField_setDefinition(struct sortField_t *sortField) 
+{
 	globalJob->sortField=sortField;
 	return 0;
 }

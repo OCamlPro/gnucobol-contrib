@@ -43,7 +43,7 @@ int generate_CobfileCheckFile ( struct params_t* params, struct key_t** pKey ) {
 
 	FILE* pFile;
 	char* pBuf;
-	int i,nPosAbs;
+	int i,nPosAbs,n,m;
 	char szszTakeFile[FILENAME_MAX];
 
 	strcpy(szszTakeFile, params->PathSrc);
@@ -75,21 +75,52 @@ int generate_CobfileCheckFile ( struct params_t* params, struct key_t** pKey ) {
 	write_line(pFile, (char*) "999999 FILE-CONTROL.\n");
 	write_line(pFile, (char*) "999999* ************************* Select \n");
 
-	sprintf((char*) pBuf, "999999      SELECT FGENFILE	ASSIGN TO 'FGENFILE'\n");
+	sprintf((char*) pBuf, "999999      SELECT FFILE	ASSIGN TO EXTERNAL fgenfile\n");
 	write_line(pFile, (char*) pBuf);
 	
-
 	if (strcmp(params->szOrg, "LS") == 0)
 		write_line(pFile, (char*) "999999            ORGANIZATION IS LINE SEQUENTIAL\n");
-	else
+	if (strcmp(params->szOrg, "SQ") == 0)
 		write_line(pFile, (char*) "999999            ORGANIZATION IS SEQUENTIAL\n");
+	if (strcmp(params->szOrg, "RL") == 0) {
+		write_line(pFile, (char*) "999999            ORGANIZATION IS RELATIVE\n");
+        write_line(pFile, (char*) "999999                   RELATIVE KEY IS RRN\n");                
+    }
+	if (strcmp(params->szOrg, "IX") == 0) {
+		write_line(pFile, (char*) "999999            ORGANIZATION IS INDEXED\n");
+        n=1;
+        i=0;
+    	for (m=0; m <= params->nMaxFields; m++) {
+    	    do {
+		        if (pKey[i]->iskey == 1) {
+			        if (pKey[i]->seqkey == n) {
+                        if (n == 1) {
+                    		sprintf((char*) pBuf, (char*) "999999      record key is F-%s-%05d-%05d-%s\n", 
+                                    pKey[i]->type, pKey[i]->pos, pKey[i]->len, pKey[i]->order);
+                    		write_line(pFile, (char*) pBuf);
+                        }
+                        else
+                        {
+                    		sprintf((char*) pBuf, (char*) "999999     alternate record key is  F-%s-%05d-%05d-%s  with duplicates\n", 
+                                    pKey[i]->type, pKey[i]->pos, pKey[i]->len, pKey[i]->order);
+                    		write_line(pFile, (char*) pBuf);
+                        }
+				        n++;
+			        }
+		        }
+		        i++;
+		        if (i > params->nMaxFields)
+			        i=0;
+	        } while (n <= params->nNumKeys);
+        }
+    }
 
 	write_line(pFile, (char*) "999999            ACCESS MODE  IS SEQUENTIAL.\n");
 
 	write_line(pFile, (char*) "999999 DATA DIVISION.\n");
 	write_line(pFile, (char*) "999999 FILE SECTION.\n");
 	write_line(pFile, (char*) "999999* ************************* Fd \n");
-	write_line(pFile, (char*) "999999      FD FGENFILE	\n");
+	write_line(pFile, (char*) "999999      FD FFILE	\n");
 
 	if (strcmp(params->szRec, "F") == 0) {
 		write_line(pFile, (char*) "999999           RECORDING MODE IS F.\n");
@@ -110,6 +141,10 @@ int generate_CobfileCheckFile ( struct params_t* params, struct key_t** pKey ) {
 	write_line(pFile, (char*) "999999* ************************* Working \n");
     write_line(pFile, (char*) "999999 WORKING-STORAGE SECTION.\n");
 	write_line(pFile, (char*) "999999*\n");
+	if (strcmp(params->szOrg, "RL") == 0) {
+	    sprintf((char*) pBuf, "999999 77   RRN     PIC 9(10) COMP.\n");
+	    write_line(pFile, (char*) pBuf);
+    }
 	sprintf((char*) pBuf, "999999 77   recordsize     PIC 9(10) COMP.\n");
 	write_line(pFile, (char*) pBuf);
 	write_line(pFile, (char*) "999999 77   numrecords		   PIC 9(15) VALUE ZERO.\n");
@@ -122,9 +157,9 @@ int generate_CobfileCheckFile ( struct params_t* params, struct key_t** pKey ) {
     sprintf((char*) pBuf,     "999999     display \"Start Program %s \".\n", params->PgmCheckData);
 	write_line(pFile, (char*) pBuf);
     write_line(pFile, (char*) "999999     display \"Check data file created by ocsort_gentestcase\"\n");
-    write_line(pFile, (char*) "999999     open input FGENFILE.\n");
+    write_line(pFile, (char*) "999999     open input FFILE.\n");
     write_line(pFile, (char*) "999999 Read-Again-00.\n");
-    write_line(pFile, (char*) "999999     read FGENFILE at end go to Read-End.\n");
+    write_line(pFile, (char*) "999999     read FFILE at end go to Read-End.\n");
     write_line(pFile, (char*) "999999     add 1  to numrecords.\n");
     write_line(pFile, (char*) "999999     divide numrecords by 100000 giving segment-02\n"); 
     write_line(pFile, (char*) "999999     		remainder segment-01.\n");
@@ -132,7 +167,7 @@ int generate_CobfileCheckFile ( struct params_t* params, struct key_t** pKey ) {
     write_line(pFile, (char*) "999999        display \"Readed \" numrecords.\n");
 	write_line(pFile, (char*) "999999     go Read-Again-00.\n");
 	write_line(pFile, (char*) "999999 Read-End.\n");
-	write_line(pFile, (char*) "999999     close FGENFILE.      \n");
+	write_line(pFile, (char*) "999999     close FFILE.      \n");
 	write_line(pFile, (char*) "999999     display  \" Total records : \" NUMRECORDS.\n");
     sprintf((char*) pBuf, "999999     display \"End Program %s \".\n", params->PgmCheckData);
 	write_line(pFile, (char*) pBuf);

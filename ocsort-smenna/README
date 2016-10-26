@@ -17,70 +17,123 @@ LINUX
     gcc (GCC) 4.8.3 20140911 (Red Hat 4.8.3-9)
     
 Functionality supported :
-___________________________________________________________________________________
- ocsort	Help                                                                       
-___________________________________________________________________________________
- Syntax = case insensitive                                                      
+________________________________________________________________________________________
+ ocsort help
+ ocsort is a  program to sort, merge and copy records in a file into a specified order
+________________________________________________________________________________________
+ Syntax case insensitive                                                         
  Return code : 0 (ok) - 16 (error)                                                 
-___________________________________________________________________________________
-Usage with file parameters   : ocsort TAKE filename                                
-___________________________________________________________________________________
-Usage with command line                                                            
-ocsort                                                                             
-	SORT | MERGE                                                                   
-		FIELDS (START,LENGTH,TYPE,[A|D], ...)           |                          
-		FIELDS ((START,LENGTH,[A|D], ...),FORMAT=TYPE	|                 	       
-		FIELDS=COPY 							                          	       
-	USE  FILENAME ORG [LS|SQ] RECORD [[F,Record Len] | [V,MIN,MAX Record Len]]     
-	GIVE FILENAME ORG [LS|SQ] RECORD [[F,Record Len] | [V,MIN,MAX Record Len]]     
-	INCLUDE|OMIT COND=(CONDITION) [FORMAT=TYPE]                                    
-	   (CONDITION) (pos,len,type,cond,[AND|OR],pos,len,type)					   
-	               (pos,len,type,cond,[X|C|Z]'[value]')							   
-	               (cond,[AND|OR],cond)											   
-	INREC FIELDS=(FIELD-SPEC...)                                                   
-	INREC BUILD=(FIELD-SPEC...)                                                    
-	SUM FIELDS = (pos,len,type, ...)                                               
-	SUM FIELDS = (NONE)  or   SUM FIELDS = NONE									   
-	OUTREC FIELDS=(FIELD-SPEC...)                                                  
-	OUTREC BUILD=(FIELD-SPEC...)                                                   
-	OUTFIL                                                                         
-		FILES/FNAMES= (enviroment variable)                                        
-		STARTREC=nn                                                                
-		ENDREC=nn                                                                  
-		[SAVE|[INCLUDE|OMIT] (CONDITION) [FORMAT=TYPE]]                            
-		SPLIT                                                                      
-	    OUTREC = (FIELD-SPEC...)                                                   
-	OPTION                                                                         
-	       SKIPREC=nn		Skip nn records from input							   
-	       STOPAFT=nn		Stop read after nn records							   
-	       VLSCMP           0 disabled , 1 = enabled -- temporarily replace any    
-	       	                  missing compare field bytes with binary zeros        
-	       VLSHRT           0 disabled , 1 = enabled -- treat any comparison       
-	       	                  involving a short field as false                     
-	       EQUALS           Command skipped                                        
-	       REMOVECC         Command skipped                                        
-	       CONVERT          Command skipped                                        
-	       NODETAIL         Command skipped                                        
-___________________________________________________________________________________
-Format Type                                                                        
-___________________________________________________________________________________
-	CH = Char                                                                      
-	BI = Binary unsigned                                                           
-	FI = Binary signed                                                             
-	PD = Packed                                                                    
-	ZD = Zoned    max 18 digits                                                    
-___________________________________________________________________________________
-File Organization                                                                  
-___________________________________________________________________________________
-    LS  = Line Sequential                                                          
-    SQ  = Sequential Fixed or Variable (first 4 byte  record len )                 
-__________________________________________________________________________________
-Variables Environment                                                              
-___________________________________________________________________________________
-OCSORT_BYTEORDER   0 for NATIVE , 1 for BIGENDIAN. Default 0 (NATIVE)              
+________________________________________________________________________________________
+Usage with file parameters  : ocsort take filename   
+Usage from command line     : ocsort <control statements> 
+________________________________________________________________________________________
+ocsort control statements
+Notations: '{name}' = parameters , '|' = Alternative format of control statement
+________________________________________________________________________________________
+ SORT | MERGE FIELDS Control statement for Sort or Merge file(s)
+ USE                 Declare input file(s)
+ GIVE                Declare output file
+ [ SUM FIELDS ]      Sum fields for same record key, or eliminate duplicate keys)
+ [ INCLUDE    ]      Select input records that respect include condition(s)
+ [ OMIT       ]      Omit input records that respect include condition(s)
+ [ INREC      ]      Reformat input record Before sort, merge or copy operation
+ [ OUTREC     ]      Reformat input record After sort, merge or copy operation
+ [ OUTFIL     ]      Create one or more output files for sort,merge or copy operation 
+ [ OPTION     ]      Specifies option for control statements
+________________________________________________________________________________________
+ocsort
+    SORT | MERGE                                                                   
+         FIELDS({Pos},{Len},{FormatType},{Order}, ...)          |              
+         FIELDS({Pos},{Len},{Order}, ...),FORMAT={FormatType}   |              
+         FIELDS=COPY                                                               
+
+    USE  {Filename} 
+         ORG {Org}
+         RECORD [F,{RecordLen}] | [V,{MinLen},{MaxLen}] 
+                [KEY ({Pos},{Len},{KeyType})]
+
+    GIVE same parameters of USE 
+
+    SUM FIELDS = [({Pos},{Len},{FormatType2}, ...)]         |
+                 [({Pos},{Len}, ...)],FORMAT={FormatType2}  |
+                 [NONE] | [(NONE)]
+
+    INCLUDE | OMIT
+            COND=({Condition})[,FORMAT={FormatType}]                     
+
+    INREC   FIELDS | INREC   BUILD =({FieldSpec})
+    OUTREC  FIELDS | OUTREC  BUILD =({FieldSpec})
+
+    OUTFIL                                                                         
+         INCLUDE | OMIT ({Condition})[,FORMAT={FormatType}]                            
+         OUTREC = ({FieldSpec})                                                   
+         FILES/FNAMES= {Filename}  | (file1, file2, file3,...) 
+         STARTREC={nn}    Start from record nn                                     
+         ENDREC={nn}      Skip record after nn                                      
+         SAVE                            
+         SPLIT            Split 1 record  output for file group (file1, file2, file3,...)  
+         SPLITBY={nn}     Split n records output for file group (file1, file2, file3,...)  
+
+    OPTION                                                                         
+         SKIPREC={nn}     Skip nn records from input                               
+         STOPAFT={nn}     Stop read after nn records                               
+         VLSCMP           0 disabled , 1 = enabled -- temporarily replace any    
+                               missing compare field bytes with binary zeros        
+         VLSHRT           0 disabled , 1 = enabled -- treat any comparison       
+                               involving a short field as false                     
+
+________________________________________________________________________________________
+___{Parameters}____________________________|___{Relational}_____________________________
+  {FileName} = Filename or Env. Variable   |  EQ = Equal                                
+  {Pos}      = Field Position              |  GT = GreaterThan                          
+  {Len}      = Field Length                |  GE = GreaterEqual                         
+  {RecordLen}= Record Length               |  LT = LesserThan                           
+  {MinLen}   = Min size of record          |  LE = LesserEqual                          
+  {MaxLen}   = Max size of record          |  NE = NotEqual                             
+  {Order}    = A(ascending) | D(descending)|                                            
+___________________________________________|____________________________________________
+___{Condition}__________________________________________________________________________
+  Format 1  - (Pos,Len,{FormatType},{Relational},[AND|OR],Pos,Len,{FormatType})         
+  Format 2  - (Pos,Len,{FormatType},{Relational},[X|C'[value]'] | numeric value)]       
+  Format 3  - ( {Condition} ,[AND|OR],{Condition} )                                     
+________________________________________________________________________________________
+___{Org}___File Organization_______________|___{KeyType}____Mandatory for ORG = IX______
+  LS  = Line Sequential                    |  P  = Primary Key                          
+  SQ  = Sequential Fixed or Variable       |  A  = Alternative Key                      
+  IX  = Indexed Fixed or Variable          |  D  = Alternative Key with Duplicates      
+  RL  = Relative Fixed or Variable         |  C  = Contune definition                   
+___________________________________________|____________________________________________
+__{FormatType}____Field Format Type________|___{FormatType2}____Format Type SumField____
+  CH  = Char                               |  BI = Binary unsigned                      
+  BI  = Binary unsigned                    |  FI = Binary signed                        
+  FI  = Binary signed                      |  FL = Floating Point                       
+  FL  = Floating Point                     |  PD = Packed                               
+  PD  = Packed                             |  ZD = Zoned                                
+  ZD  = Zoned                              |  CLO = Numeric sign leading                
+  CLO = Numeric sign leading               |  CSL = Numeric sign leading separate       
+  CSL = Numeric sign leading separate      |  CST = Numeric sign trailing separate      
+  CST = Numeric sign trailing separate     |                                            
+___________________________________________|____________________________________________
+____{FieldSpec}___Field Specification___________________________________________________
+  pos, len           pos = position input record, len = length of field            
+  posOut:pos,len     posOut  = position output, pos = position input , len = length 
+  n:X                Filling with Blank character from last position to n
+                         (absolute position of output record).
+  n:Z                Filling with zero Binary character from last position to n 
+                         (absoluteposition of output record). 
+  C'constant'        constant character value.                
+  nC'constant'       repeat n times constant character value. 
+  nX                 repeat n times Blank character.          
+  nZ                 repeat n times Binary (0x00) character.  
+  X'hh....hh'        hexdecimal characters.                   
+  nX'hh...hh'        repeat n times hexdecimal characters.    
+________________________________________________________________________________________
+Environment Variables                                                                   
+________________________________________________________________________________________
+COB_VARSEQ_FORMAT  Used by GNUCobol
 OCSORT_DEBUG       0 no print info, 1 info DEBUG, 2 for info Parser                
-OCSORT_MEMSIZE     Memory Allocation in byte(Default 512000000 byte)               
-OCSORT_PATHTMP     Pathname for temporary files							   	       
+OCSORT_MEMSIZE     Memory Allocation in byte (Default 512000000 byte)              
+OCSORT_PATHTMP     Pathname for temporary files     (Default TMP / TEMP / TMPDIR)     
 OCSORT_STATISTICS  0 minimal informations, 1 for Summary, 2 for Details            
 OCSORT_TESTCMD     0 for normal operations , 1 for ONLY test command line (NO SORT)
-___________________________________________________________________________________
+________________________________________________________________________________________

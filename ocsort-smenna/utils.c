@@ -29,10 +29,14 @@
 #else
 	#include <limits.h>
 	#include <strings.h>
+	#include <ctype.h>
 #endif
 
+#include <libcob.h>
 #include "libocsort.h"
+#include "ocsort.h"
 #include "utils.h"
+#include "outfil.h"
 
 // s.m.
 // inserita funzione per gestione del test case sensitive
@@ -45,7 +49,8 @@ int strcasecmp ( const char *str1, const char *str2) {
 }
 #endif
 */
-int utils_parseFileFormat(const char *format) {
+int utils_parseFileFormat(const char *format) 
+{
 if (!strcasecmp(format,"F")) {
 		return FILE_TYPE_FIXED;
 } else if (!strcasecmp(format,"V")) {
@@ -54,7 +59,8 @@ if (!strcasecmp(format,"F")) {
 		return -1;
 	}
 }
-int utils_parseFileOrganization(const char *organization) {
+int utils_parseFileOrganization(const char *organization) 
+{
 	if (!strcasecmp(organization,"IX")) {
 		return FILE_ORGANIZATION_INDEXED;
 	} else if (!strcasecmp(organization,"RL")) {
@@ -71,23 +77,113 @@ int utils_parseFileOrganization(const char *organization) {
 	}
 }
 
-int utils_parseFieldType(const char *type) {
+// ==================================================== //
+/*  Format Type Field   */
+/*
+                CH  Char            
+                BI  Unisgned Binary
+                FI  Signed Binary
+                FL  Ploating Point
+                PD  Packed
+TI / OT / CTO / ZD  Zoned decimal  - sign trailing
+      LI / OL / CLO Signed Numeric - sign lealing 
+                CST Signed Numeric - trailing separate sign
+           LS / CSL Signed Numeric - leading separate sign
+             ???  FS / CSF Signed Numeric - with optional leading floating sign  (PIC +++9, PIC ----,...)
+*/
+// ==================================================== //
+int utils_parseFieldType(const char *type) 
+{
 	if (!strcasecmp(type,"CH")) {
 		return FIELD_TYPE_CHARACTER;
 	} else if (!strcasecmp(type,"BI")) {
 		return FIELD_TYPE_BINARY;
-// s.m.
-	} else if (!strcasecmp(type,"PD")) {
-		return FIELD_TYPE_PACKED;
-	} else if (!strcasecmp(type,"ZD")) {
-		return FIELD_TYPE_ZONED;
 	} else if (!strcasecmp(type,"FI")) {
 		return FIELD_TYPE_FIXED;
+	} else if (!strcasecmp(type,"FL")) {
+		return FIELD_TYPE_FLOAT;
+	} else if (!strcasecmp(type,"PD")) {
+		return FIELD_TYPE_PACKED;
+// TI / OT / CTO / ZD  Zoned decimal  - sign trailing
+	} else if (!strcasecmp(type,"ZD")) {
+		return FIELD_TYPE_ZONED;
+	} else if (!strcasecmp(type,"TI")) {
+		return FIELD_TYPE_ZONED;
+	} else if (!strcasecmp(type,"OT")) {
+		return FIELD_TYPE_ZONED;
+	} else if (!strcasecmp(type,"CTO")) {
+		return FIELD_TYPE_ZONED;
+// LI / OL / CLO Signed Numeric - sign lealing 
+	} else if (!strcasecmp(type,"CLO")) {
+		return FIELD_TYPE_NUMERIC_CLO;
+	} else if (!strcasecmp(type,"LI")) {
+		return FIELD_TYPE_NUMERIC_CLO;
+	} else if (!strcasecmp(type,"OL")) {
+		return FIELD_TYPE_NUMERIC_CLO;
+//
+// CST Signed Numeric - trailing separate sign
+	} else if (!strcasecmp(type,"CST")) {
+		return FIELD_TYPE_NUMERIC_CST;
+	} else if (!strcasecmp(type,"TS")) {
+		return FIELD_TYPE_NUMERIC_CST;
+// 
+//  LS / CSL Signed Numeric - leading separate sign
+	} else if (!strcasecmp(type,"LS")) {
+		return FIELD_TYPE_NUMERIC_CSL;
+	} else if (!strcasecmp(type,"CSL")) {
+		return FIELD_TYPE_NUMERIC_CSL;
+//
 	} else {
 		return -1;
 	}
 }
-int utils_parseFieldValueType(const char type) {
+
+int utils_getFieldTypeInt(char* strType) 
+{
+	if (!strcasecmp(strType,"CH")) {
+		return FIELD_TYPE_CHARACTER;
+	} else if (!strcasecmp(strType,"BI")) {
+		return FIELD_TYPE_BINARY;
+	} else if (!strcasecmp(strType,"FI")) {
+		return FIELD_TYPE_FIXED;
+	} else if (!strcasecmp(strType,"FL")) {
+		return FIELD_TYPE_FLOAT;
+	} else if (!strcasecmp(strType,"PD")) {
+		return FIELD_TYPE_PACKED;
+// TI / OT / CTO / ZD  Zoned decimal  - sign trailing
+	} else if (!strcasecmp(strType,"ZD")) {
+		return FIELD_TYPE_ZONED;
+	} else if (!strcasecmp(strType,"TI")) {
+		return FIELD_TYPE_ZONED;
+	} else if (!strcasecmp(strType,"OT")) {
+		return FIELD_TYPE_ZONED;
+	} else if (!strcasecmp(strType,"CTO")) {
+		return FIELD_TYPE_ZONED;
+// LI / OL / CLO Signed Numeric - sign lealing 
+	} else if (!strcasecmp(strType,"CLO")) {
+		return FIELD_TYPE_NUMERIC_CLO;
+	} else if (!strcasecmp(strType,"LI")) {
+		return FIELD_TYPE_NUMERIC_CLO;
+	} else if (!strcasecmp(strType,"OL")) {
+		return FIELD_TYPE_NUMERIC_CLO;
+//
+// CST Signed Numeric - trailing separate sign
+	} else if (!strcasecmp(strType,"CST")) {
+		return FIELD_TYPE_NUMERIC_CST;
+// 
+//  LS / CSL Signed Numeric - leading separate sign
+	} else if (!strcasecmp(strType,"LS")) {
+		return FIELD_TYPE_NUMERIC_CSL;
+	} else if (!strcasecmp(strType,"CSL")) {
+		return FIELD_TYPE_NUMERIC_CSL;
+	}
+	return -1;
+}
+
+
+
+int utils_parseFieldValueType(const char type) 
+{
 	switch (type) {
 		case 'Z':
 			return FIELD_VALUE_TYPE_Z;
@@ -101,7 +197,8 @@ int utils_parseFieldValueType(const char type) {
 			return -1;
 	}
 }
-int utils_parseSortDirection(const char *direction) {
+int utils_parseSortDirection(const char *direction) 
+{
 	if (!strcasecmp(direction,"A")) {
 		return SORT_DIRECTION_ASCENDING;
 	} else if (!strcasecmp(direction,"D")) {
@@ -111,8 +208,37 @@ int utils_parseSortDirection(const char *direction) {
 	}
 }
 
+int utils_parseKeyType(const char *keyType) 
+{
+	if (!strcasecmp(keyType,"P")) {
+		return KEY_IDX_PRIMARY;
+	} else if (!strcasecmp(keyType,"A")) {
+		return KEY_IDX_ALTERNATIVE;
+	} else if (!strcasecmp(keyType,"AD")) {
+		return KEY_IDX_ALTERNATIVE_DUP;
+	} else if (!strcasecmp(keyType,"C")) {
+		return KEY_IDX_CONTINUE_DEF;
+	} else {
+		return -1;
+	}
+}
+
+const char* utils_getKeyType(int nkeyType) 
+{
+
+	if (nkeyType == KEY_IDX_PRIMARY)
+		return "P";
+	if (nkeyType == KEY_IDX_ALTERNATIVE)
+		return "A";
+	if (nkeyType == KEY_IDX_ALTERNATIVE_DUP)
+		return "AD";
+	if (nkeyType == KEY_IDX_CONTINUE_DEF)
+		return "C";
+	return "";
+}
  
-int utils_parseCondCondition(const char *condition) {
+int utils_parseCondCondition(const char *condition) 
+{
 	if (!strcasecmp(condition,"EQ")) {
 		return COND_CONDITION_EQUAL;
 	} else if (!strcasecmp(condition,"GT")) {
@@ -130,7 +256,8 @@ int utils_parseCondCondition(const char *condition) {
 	}
 }
 
-int utils_parseCondOperation(const char *operation) {
+int utils_parseCondOperation(const char *operation) 
+{
 	if (!strcasecmp(operation,"AND")) {
 		return COND_OPERATION_AND;
 	} else if (!strcasecmp(operation,"OR")) {
@@ -141,7 +268,8 @@ int utils_parseCondOperation(const char *operation) {
 }
 
 
-const char *utils_getFileFormatName(int format) {
+const char *utils_getFileFormatName(int format) 
+{
 	switch (format) {
 		case FILE_TYPE_FIXED:
 			return "FIXED";
@@ -151,7 +279,8 @@ const char *utils_getFileFormatName(int format) {
 			return "UNKNOWN";
 	}
 }
-const char *utils_getFileOrganizationName(int organization) {
+const char *utils_getFileOrganizationName(int organization) 
+{
 	switch (organization) {
 		case FILE_ORGANIZATION_INDEXED:
 			return "IX";
@@ -167,22 +296,72 @@ const char *utils_getFileOrganizationName(int organization) {
 			return "";
 	}
 }
-int utils_getFieldTypeInt(char* strType) {
-	if (!strcasecmp(strType,"CH")) {
-		return FIELD_TYPE_CHARACTER;
-	} else if (!strcasecmp(strType,"BI")) {
-		return FIELD_TYPE_BINARY;
-	} else if (!strcasecmp(strType,"PD")) {
-		return FIELD_TYPE_PACKED;
-	} else if (!strcasecmp(strType,"ZD")) {
-		return FIELD_TYPE_ZONED;
-	} else if (!strcasecmp(strType,"FI")) {
-		return FIELD_TYPE_FIXED;
+
+
+int utils_getFieldTypeLIBCOBInt(int nInteralType, int nLen) 
+{
+	switch (nInteralType) {
+	case FIELD_TYPE_CHARACTER:
+		return COB_TYPE_ALPHANUMERIC;
+	case FIELD_TYPE_BINARY:
+		return COB_TYPE_NUMERIC_BINARY;
+	case FIELD_TYPE_FIXED:
+		return COB_TYPE_NUMERIC_BINARY;
+	case FIELD_TYPE_FLOAT:
+		if (nLen > 4) 
+			return COB_TYPE_NUMERIC_DOUBLE;
+		else
+			return COB_TYPE_NUMERIC_FLOAT;
+	case FIELD_TYPE_PACKED:
+		return COB_TYPE_NUMERIC_PACKED;
+	case FIELD_TYPE_ZONED:
+    case FIELD_TYPE_NUMERIC_CLO:       // sign leading
+    case FIELD_TYPE_NUMERIC_CSL:       // sign leading separate
+    case FIELD_TYPE_NUMERIC_CST:       // sign trailing separate
+		return COB_TYPE_NUMERIC_DISPLAY;
 	}
 	return -1;
 }
 
-const char *utils_getFieldTypeName(int type) {
+// From internal type get flags for create/setting cob_field
+int utils_getFieldTypeLIBCOBFlags(int nInteralType) 
+{
+	switch (nInteralType) {
+	case FIELD_TYPE_CHARACTER:
+		return 0;
+	case FIELD_TYPE_BINARY:
+        return COB_FLAG_BINARY_SWAP;
+		// 20160914 return 0;
+	case FIELD_TYPE_FIXED:
+        return COB_FLAG_HAVE_SIGN | COB_FLAG_BINARY_SWAP;
+		// 20160914 return COB_FLAG_HAVE_SIGN ;
+	case FIELD_TYPE_FLOAT:
+		return COB_FLAG_HAVE_SIGN;
+        // s.m. 20160925
+        // return COB_FLAG_HAVE_SIGN | COB_FLAG_IS_FP;
+
+	case FIELD_TYPE_PACKED:
+        return COB_FLAG_HAVE_SIGN;    
+	case FIELD_TYPE_ZONED:
+		//-->> s.m. 20160914 return COB_FLAG_HAVE_SIGN;
+        // Zoned for number 00001, +00001,-000001
+        //-->>return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_SEPARATE | COB_FLAG_SIGN_LEADING;      // s.m. 20160914 insert COB_FLAG_SIGN_LEADING
+        return COB_FLAG_HAVE_SIGN ;      // s.m. 20160914 insert COB_FLAG_SIGN_LEADING problem with +/n zoned
+//
+    case  FIELD_TYPE_NUMERIC_CLO:         // sign leading
+        return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_LEADING;      
+    case  FIELD_TYPE_NUMERIC_CSL:         // sign leading separate
+        return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_LEADING | COB_FLAG_SIGN_SEPARATE;      
+    case  FIELD_TYPE_NUMERIC_CST:         // sign trailing separate
+        return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_SEPARATE;      
+//
+	}
+	return -1;
+}
+
+
+const char *utils_getFieldTypeName(int type) 
+{
 	switch(type) {
 		case FIELD_TYPE_CHARACTER:
 			return "CH";
@@ -213,12 +392,22 @@ PIC S9(n) COMP-3|PACKED-DECIMAL
 */			
 		case FIELD_TYPE_FIXED:
 			return "FI";
+		case FIELD_TYPE_FLOAT:
+			return "FL";
+		case FIELD_TYPE_NUMERIC_CLO:
+			return "CLO";
+        case FIELD_TYPE_NUMERIC_CSL:
+			return "CSL";
+        case FIELD_TYPE_NUMERIC_CST:
+			return "CST";
+
 		default:
 			return "";
 
 	}
 }
-const char *utils_getSortDirectionName(int direction) {
+const char *utils_getSortDirectionName(int direction)
+{
 	switch (direction) {
 		case SORT_DIRECTION_ASCENDING:
 			return "A";
@@ -228,7 +417,8 @@ const char *utils_getSortDirectionName(int direction) {
 			return "";
 	}
 }
-const char *utils_getCondConditionName(int condition) {
+const char *utils_getCondConditionName(int condition)
+{
 	switch (condition) {
 		case COND_CONDITION_EQUAL:
 			return "EQ";
@@ -246,7 +436,8 @@ const char *utils_getCondConditionName(int condition) {
 			return "";
 	}
 }
-const char *utils_getCondOperationName(int operation) {
+const char *utils_getCondOperationName(int operation)
+{
 		switch (operation) {
 			case COND_OPERATION_AND:
 				return "AND";
@@ -269,6 +460,7 @@ const char *utils_getFieldValueTypeName(int type) {
 	};
 }
 
+/*
 int utils_GenPadSize(int nLR)
 {
 	double n1, n2, nj;
@@ -285,13 +477,17 @@ int utils_GenPadSize(int nLR)
 		ny = SIZEINT - ny;
 	return ny;
 }
-unsigned short int Endian_Word_Conversion(unsigned short int word) {
+*/
+/*
+unsigned short int Endian_Word_Conversion(unsigned short int word) 
+{
    return ((word>>8)&0x00FF) | ((word<<8)&0xFF00)  ;
 }
-unsigned long int Endian_DWord_Conversion(unsigned long int dword) {
+unsigned long int Endian_DWord_Conversion(unsigned long int dword)
+{
    return ((dword>>24)&0x000000FF) | ((dword>>8)&0x0000FF00) | ((dword<<8)&0x00FF0000) | ((dword<<24)&0xFF000000);
 }
-
+*/
 void util_print_time_elap( const char* szMex )
 {
    time_t st;
@@ -299,11 +495,6 @@ void util_print_time_elap( const char* szMex )
    time( &st );
    info = localtime( &st );
    fprintf(stdout,"%s - %s", szMex, asctime(info));
-
-   //-->> printf("Current local time and date: %s", asctime(info));
-	//-->>printf("%s - %04d-%02d-%02d %02d:%02d:%02d\n" , szMex,
-	//-->>	info->tm_year,info->tm_mon,info->tm_mday, info->tm_hour,info->tm_min,info->tm_sec); //,st.wMilliseconds);
-
    return;
 }
 // #ifndef _WIN32
@@ -321,7 +512,8 @@ unsigned long GetTickCount(void) {
 #endif
 
 
-int utils_SetOptionSortNum(char* optSort, int64_t nNum) {
+int utils_SetOptionSortNum(char* optSort, int64_t nNum)
+{
 	if (strcasecmp(optSort,"SKIPREC")==0)
 			globalJob->nSkipRec=nNum;
 	if (strcasecmp(optSort,"STOPAFT")==0)
@@ -329,7 +521,17 @@ int utils_SetOptionSortNum(char* optSort, int64_t nNum) {
 	return 0;
 };
 
-int utils_SetOptionSort(char* optSort) {
+int utils_SetOptionSort(char* optSort, struct outfil_t* outfil, int nValue) 
+{
+
+    if (!strcasecmp(optSort,"SPLIT")) {
+            outfil->nSplit=1;
+            outfil->nRecSplit=1;
+    }
+    if (!strcasecmp(optSort,"SPLITBY")) {
+            outfil->nSplit=1;
+            outfil->nRecSplit=nValue;
+    }
 
 	if (!strcasecmp(optSort,"COPY")) {
 			job_SetTypeOP('M');
@@ -347,7 +549,8 @@ int utils_SetOptionSort(char* optSort) {
 	return -1;
 }
 
-void util_covertToUpper(char *strIn, char* strOut){
+void util_covertToUpper(char *strIn, char* strOut)
+{
     char* pIn;
 	char* pOut;
     pIn =strIn;
@@ -358,4 +561,110 @@ void util_covertToUpper(char *strIn, char* strOut){
 		pOut++;
 	}
     return ;
+}
+
+
+void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
+{
+// fix value for single type of field
+	switch (type) {
+        case COB_TYPE_ALPHANUMERIC_ALL:
+        case COB_TYPE_ALPHANUMERIC:
+            attrArea->digits = 0;
+            attrArea->scale = 0;
+            break;
+	    case COB_TYPE_NUMERIC_BINARY:
+            if (nLen <= 2)
+                attrArea->digits = 4;   //        
+            if ((nLen > 2) && (nLen <= 4))
+                attrArea->digits = 9;   //        
+            if (nLen > 4) 
+                attrArea->digits = 18;   //       
+            attrArea->scale = 0;
+            break;
+	    case COB_TYPE_NUMERIC_DOUBLE:
+            attrArea->digits = 34;
+            attrArea->scale = 17;
+            attrArea->flags  = attrArea->flags | COB_FLAG_IS_FP | COB_FLAG_HAVE_SIGN;
+            break;
+	    case COB_TYPE_NUMERIC_FLOAT:
+            attrArea->digits = 15;
+            attrArea->scale = 8;
+           attrArea->flags  = attrArea->flags | COB_FLAG_IS_FP | COB_FLAG_HAVE_SIGN;
+            break;
+        case COB_TYPE_NUMERIC_PACKED:
+             if (nLen <= 1) 
+                attrArea->digits = nLen*2;
+             else
+             {
+                if (nLen % 2 == 0)
+    		    	attrArea->digits = (nLen*2)-1; //(nLen-1)*2;
+			    else
+	    	    	attrArea->digits = (nLen*2)-1;
+             }
+            attrArea->scale = 0;
+    	    attrArea->flags  = attrArea->flags | COB_FLAG_HAVE_SIGN;
+            break;
+        case COB_TYPE_NUMERIC_DISPLAY:
+            attrArea->digits = 0;
+            attrArea->scale = 0;
+            break;
+	}
+
+    return;//
+}
+
+ cob_field* util_cob_field_make (int type, int digits, int scale, int flags, int nLen, int nData)
+{
+	cob_field       *field_ret;
+	cob_field_attr	*attrArea;
+	attrArea = (cob_field_attr*) malloc(sizeof(cob_field_attr));
+    if (attrArea == NULL)
+        utl_abend_terminate(MEMORYALLOC, 11, ABEND_EXEC);
+	attrArea->type   = type;
+	attrArea->digits = digits;
+	attrArea->scale  = scale;
+	attrArea->flags  = flags;
+	attrArea->pic    = NULL;
+	field_ret = (cob_field*)malloc(sizeof(cob_field));
+    if (field_ret == NULL)
+        utl_abend_terminate(MEMORYALLOC, 12, ABEND_EXEC);
+	field_ret->attr = attrArea;
+	field_ret->data = NULL;
+	if (nData == 0) {
+		field_ret->data = (unsigned char*) malloc((sizeof(unsigned char)*nLen)+1);
+        if (field_ret->data == NULL)
+            utl_abend_terminate(MEMORYALLOC, 13, ABEND_EXEC);
+		memset(field_ret->data, 0x00, nLen);
+	}
+	field_ret->size = nLen;
+    util_setAttrib(attrArea, type, nLen);
+	return field_ret;
+}
+void util_cob_field_del ( cob_field* field_ret, int nData)
+{
+	if (field_ret!=NULL) {
+		if (field_ret->attr!=NULL)
+				free((void*)field_ret->attr); 
+		if (nData == 0) {
+			if (field_ret->data!=NULL)
+				free(field_ret->data); 
+		}
+		free(field_ret);  
+	}
+}
+
+void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate)
+{
+	switch (nAbendType) {
+    case MEMORYALLOC:
+        fprintf(stderr,"*OCSort* ERROR: Aborting execution for problems with memory allocation. Code : %d\n", nCodeErr);
+        break;
+    default:
+        fprintf(stderr,"*OCSort* ERROR: Aborting execution.  Code : %d\n", nCodeErr);
+        break;
+    }
+    if (nTerminate == ABEND_EXEC)
+        exit(OC_RTC_ERROR);       
+    return;
 }

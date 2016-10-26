@@ -63,13 +63,13 @@ struct inrec_t *inrec_constructor_change(struct fieldValue_t *fieldValue);
 struct inrec_t *inrec_constructor_range_position(int posAbsRec, int position, int length);
 struct inrec_t *inrec_constructor_subst(unsigned char *chfieldValue);
 struct inrec_t *inrec_constructor_padding(int nAbsPos, unsigned char *chfieldValue, int nPosAbsRec);
-struct inrec_t *inrec_constructor_substnchar(int ntimes, unsigned char *chfieldValue);
+struct inrec_t *inrec_constructor_substnchar(unsigned char *ntch, unsigned char *chfieldValue);
+
 void inrec_destructor(struct inrec_t *inrec);
 int inrec_addQueue(struct inrec_t **inrec,struct inrec_t *inrec_add);
 struct inrec_t *inrec_getNext(struct inrec_t *inrec);
 int inrec_print(struct inrec_t *inrec);
 int inrec_getLength(struct inrec_t *inrec);
-//int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF);
 int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos);
 
 int inrec_addDefinition(struct inrec_t *Inrec);

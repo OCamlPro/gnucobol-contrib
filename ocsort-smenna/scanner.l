@@ -31,102 +31,180 @@
 	  #define fileno _fileno
 	  #define xstrtoll    _strtoi64
   #endif
+  #include "ocsort.h"
   #include "parser.h"
   char * pEnd;
+  int    nPhase = 0;
   void yyerror(const char *error) {
 	printf("Error : %s\n",error);
-	if(yytext != NULL)
+	if(yytext != NULL) {
 		printf("Error near element : %s\n", yytext);
+		printf("Token  : %s\n", szMexToken);
+	}
 } 
 #define YY_NO_INPUT
 %}
 
+
 %option noyywrap nounput batch
 %option case-insensitive
 
-DIGIT		[0-9]{1,5}
-DIGITBIG	[0-9]{6,32}
-SIGN		[+]|[-]
-ORDER       [A]|[D]
-STRING		[a-zA-Z0-9_.]*
-SPECHR      [,;:#\[\]!£$%&()\/]
-BLANK		[ \t]*  
-LITERAL		["][']{STRING}|{BLANK}[']["]
-XFIELDTYPE	CH|BI|PD|ZD|FI
-CHARTYPE    C|X|Z
+			/* for position and length */
+DIGIT		    [0-9]{1,5}
+			/* for value, example condition */
+DIGITBIG	    [0-9]{6,32}                        
+			/* sign for numeric values */
+SIGN		    [+]|[-]                            
+			/* string */
+STRING		    [a-zA-Z0-9_.]*                     
 
+BLANK		    [ \t]*  
+
+            /* File type */
+FILETYPE	    LS|SQ|IX|RL
+
+            /*  Format Type Field   */
+         /* CH|BI|FI|FL|PD|ZD|TI|OT|CTO|LI|OL|CLO|CST|LS|CSL */
+            /*  CH  Char            
+                BI  Unisgned Binary
+                FI  Signed Binary
+                Fl  Floating Point
+                PD  Packed
+TI / OT / CTO / ZD  Zoned decimal  - sign trailing
+      LI / OL / CLO Signed Numeric - sign lealing 
+                CST Signed Numeric - trailing separate sign
+           LS / CSL Signed Numeric - leading separate sign
+           FS / CSF Signed Numeric - with optional leading floating sign  (PIC +++9, PIC ----,...)
+            */
+    /* FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL */
+	/* extended FORMATTYPE	 CH|BI|FI|FL|PD|ZD|TI|OT|CTO|LI|OL|CLO|CST|LS|CSL */
+
+FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL
+
+            /*  Char Type  for condition CharType = C(char) | X(hexdical) <String>    */
+CHARTCOND       C|X
+            /*  Char Type  CharType = C(char) | X(hexdical) |Z(zero binary) <String>    */
+CHARTYPE        C|X|Z				
+            /*  Order A = Ascending, D = Descending */
+ORDER           A|D				
+            /*  Key Tye for indexed file P=Primary, A= ALternative, AD = Alternative with duuplicates, C = Continue */
+KEYTYPE         P|A|AD|C	
+            /* Fixed record */
+RECTYPEFIX	    F
+            /* Variable record */
+RECTYPEVAR      V
+            /* comment for occursfill */ 
+            /* ntimes X,Z,C */
+OCCURFILL   [0-9]{1,5}[C|X|Z]{1} 
+            /* Operator condition */
+OPCOND          EQ|GT|GE|LT|LE|NE
+
+    /* OCCURFILL   [0-9]{1,5}[C|X|Z]{1} */
+	/* <CHSC>{CHARTYPE} */
+	/* <ORDK>{ORDER} */
+	/* <KEYV>{KEYTYPE} */
+
+%s KEYV
+%s ORDK
+%s CHSC
+%s TCOND
+%s TORG
 
 %%
 
-"USE"		return USE;
-"GIVE"		return GIVE;
-"SORT"		return SORT;
-"MERGE"		return MERGE;
-"FIELDS"	return FIELDS;
-"BUILD"		return BUILD;
-"RECORD"	return RECORD;
-"OUTREC"	return OUTREC;
-"INREC"		return INREC;
-"SUM"		return SUM;
-"INCLUDE"	return INCLUDE;
-"OMIT"		return OMIT;
-"COND"		return COND;
-"ORG"		return ORG;
-"NONE"		return NONE;
-"COPY"		return COPY; 
-"FORMAT"    return FORMAT;
-"OUTFIL"	return OUTFIL;
-"FNAMES"	return FNAMES;
-"FILES"		return FILES;
-"STARTREC"	return STARTREC;
-"ENDREC"	return ENDREC;
-"SAVE"		return SAVE;
-"OPTION"	return OPTION;
-"SKIPREC"	return SKIPREC;
-"STOPAFT"	return STOPAFT;
+"BUILD"[=]*{BLANK}                              return BUILD;
+"COND"                          BEGIN(TCOND);   return COND; 
+[(]{BLANK}"COPY"{BLANK}[)]                      return COPY; 
+"COPY"                                          return COPY; 
+"END"		                                    return TOKSKIP;
+[,]*{BLANK}"ENDREC"	                            return ENDREC;
+"FIELDS"{BLANK}[=]{BLANK}   if (nPhase == 1) { 
+                                BEGIN(ORDK);  
+                                nPhase = 0; 
+                            }else {	
+                                BEGIN(CHSC); 
+                            } return FIELDS; 
+"FIELDS"                    if (nPhase == 1) { 
+                                BEGIN(ORDK);  
+                                nPhase = 0; 
+                            }else {	
+                                BEGIN(CHSC); 
+                           } return FIELDS; 
+[,]*{BLANK}"FILES"{BLANK}[,]*                   return FNAMES; //return FILES;
+[,]*{BLANK}"FNAMES"{BLANK}[,]*	                return FNAMES;
+[,]*{BLANK}"FORMAT"{BLANK}[,]*                  return FORMAT;
+"GIVE"		                    BEGIN(INITIAL); return GIVE;
+[,]*{BLANK}"INCLUDE"            BEGIN(TCOND);   return INCLUDE; 
+"INREC"		                    BEGIN(CHSC);    return INREC;		
+"KEY"	                        BEGIN(KEYV);    return KEY;
+"MERGE"		       nPhase = 1;  BEGIN(INITIAL); return MERGE;
+[(]*{BLANK}"NONE"{BLANK}[)]*	                return NONE;
+[,]*{BLANK}"OMIT"		        BEGIN(TCOND);   return OMIT; 
+"OPTION"	                                    return OPTION;
+    /*"ORG"		                                    return ORG;*/
+"ORG"		                    BEGIN(TORG);                return ORG;
+"OUTFIL"	                                    return OUTFIL;
+"OUTFILE"                                       return OUTFIL;
+[,]*{BLANK}"OUTREC"	            BEGIN(CHSC);    return OUTREC;		
+    /* "RECORD"	                         return RECORD; */
+"RECORD"	                    BEGIN(INITIAL); return RECORD;
+[,]*{BLANK}"SAVE"{BLANK}[,]*	                return SAVE;
+[,]*{BLANK}"SKIPREC"	                        return SKIPREC;
+"SORT"		       nPhase = 1;  BEGIN(INITIAL); return SORT;
+[,]*{BLANK}"STARTREC"	                        return STARTREC;
+[,]*{BLANK}"STOPAFT"	                        return STOPAFT;
+[,]*{BLANK}"SPLIT"                              return SPLIT;
+[,]*{BLANK}"SPLITBY"{BLANK}[=]{BLANK}           return SPLITBY;
+"SUM"		                                    return SUM;
+"USE"		                    BEGIN(INITIAL); return USE;
+[,]*{BLANK}"VLSCMP"                             return VLSCMP;
+[,]*{BLANK}"VLSHRT"	                            return VLSHRT;
 
-"END"		return TOKSKIP;
-"REMOVECC"	printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
-",REMOVECC"	printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
-"CONVERT"	printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
-",CONVERT"	printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
-"EQUALS"	printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
-",EQUALS"	printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
-"NODETAIL"  printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
+"REMOVECC"	 printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
+",REMOVECC"	 printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
+"CONVERT"	 printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
+",CONVERT"	 printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
+"EQUALS"	 printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
+",EQUALS"	 printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
+"NODETAIL"   printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
 ",NODETAIL"  printf("OCSort - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
 
 
-","{BLANK}"AND"{BLANK}","		return AND;
-","{BLANK}"OR"{BLANK}","		return OR;
-
- 
-{ORDER}				yylval.string = _strdup(yytext) ;				return ORDER; 
-{DIGIT}				yylval.number = strtol(yytext, &pEnd, 10) ;		return DIGIT;  
-{SIGN}{DIGIT}		yylval.number = strtol(yytext, &pEnd, 10) ;		return DIGIT; 
-{DIGITBIG}			yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;		return SIGNDIGITBIG;  
-{SIGN}{DIGITBIG}	yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;		return SIGNDIGITBIG;  
+","{BLANK}"AND"{BLANK}","	return AND;
+","{BLANK}"&"{BLANK}","		return AND;
+","{BLANK}"OR"{BLANK}","	return OR;
+","{BLANK}"|"{BLANK}","		return OR;
 
 
-   /* String C'      NFXA=''KK_NEW_'   */
-   /*  {  "'"*"''"*"'" */
-"'"{STRING}*{SPECHR}*{STRING}*"''"{STRING}*{SPECHR}*{STRING}*"'"
-			{ 
-			 yylval.string=malloc(strlen(yytext)-1);
-			 memcpy(yylval.string,yytext+1,strlen(yytext)-2);
-			 yylval.string[strlen(yytext)-2]=0;
-			 return STRING;
-			 }
+{OPCOND}                    yylval.string = _strdup(yytext) ;					return OPCOND; 	
+<ORDK>{ORDER}		        yylval.string = _strdup(yytext) ;					return ORDER; 
+{DIGIT}				        yylval.number = strtol(yytext, &pEnd, 10) ;			return DIGIT;  
+{SIGN}{DIGIT}		        yylval.number = strtol(yytext, &pEnd, 10) ;			return DIGIT; 
+{DIGITBIG}			        yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;		return SIGNDIGITBIG;  
+{SIGN}{DIGITBIG}	        yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;		return SIGNDIGITBIG;  
+    /* {FORMATTYPE}		        yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  */
+{RECTYPEFIX}   	            yylval.string = _strdup(yytext) ;                   return RECTYPEFIX;
+{RECTYPEVAR}                yylval.string = _strdup(yytext) ;                   return RECTYPEVAR;
+        /* {FILETYPE}   	            yylval.string = _strdup(yytext) ;                   return FILETYPE;  */ 
+<TORG>{FILETYPE}            yylval.string = _strdup(yytext) ;                   return FILETYPE; 
+{OCCURFILL} 		        yylval.string = _strdup(yytext) ;                   return OCCURFILL;
+<TCOND>{CHARTCOND}	        yylval.string = _strdup(yytext) ;                   return CHARTCOND;    
+<CHSC>{CHARTYPE}	        yylval.string = _strdup(yytext) ;                   return CHARTYPE; 
+
+
+{FORMATTYPE}		        yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  
+
+  
    /* String C''';'   */
 "'"[^']*"'"	{yylval.string=malloc(strlen(yytext)-1);
 					 memcpy(yylval.string,yytext+1,strlen(yytext)-2);
 					 yylval.string[strlen(yytext)-2]=0;
 					 return STRING;}
 
+<KEYV>{KEYTYPE}		yylval.string = _strdup(yytext) ; return KEYTYPE; 
+{STRING}			yylval.string = _strdup(yytext) ; return STRING;
+{BLANK}
+.			        return yytext[0];
 
-{XFIELDTYPE}	yylval.string = _strdup(yytext) ; return XFIELDTYPE;
-{CHARTYPE}		yylval.string = _strdup(yytext) ; return CHARTYPE; 
-{LITERAL}		yylval.string = _strdup(yytext) ; return LITERAL;
-{STRING}		yylval.string = _strdup(yytext) ; return STRING;
-{BLANK}		
-.			return yytext[0];
+
 %%

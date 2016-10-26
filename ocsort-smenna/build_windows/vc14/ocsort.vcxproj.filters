@@ -1,117 +1,120 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="source">
-      <UniqueIdentifier>{23597e74-a3f5-46eb-a8a5-b2aba3b0d6dd}</UniqueIdentifier>
+    <Filter Include="File di origine">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="header">
-      <UniqueIdentifier>{73a772cc-8b10-49d0-911c-c575ba1de8db}</UniqueIdentifier>
+    <Filter Include="File di intestazione">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="File di risorse">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\bufferedreader.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\bufferedwriter.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\condfield.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\fieldvalue.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\file.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\inrec.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\job.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mmfioc.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ocsort.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ocsorthelp.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\outfil.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\outrec.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\parser.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\scanner.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sortfield.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sumfield.c">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\utils.c">
-      <Filter>source</Filter>
-    </ClCompile>
+    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\bufferedreader.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\condfield.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\bufferedwriter.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\fieldvalue.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\condfield.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\file.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\fieldvalue.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\inrec.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\file.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\job.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\inrec.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\keyidxrel.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\job.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\libocsort.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\libocsort.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\mmfioc.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\mmfioc.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\ocsort.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\ocsort.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\outfil.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\outfil.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\outrec.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\outrec.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\parser.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\parser.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\scanner.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\scanner.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\sortfield.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\sortfield.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\sumfield.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\sumfield.h">
-      <Filter>header</Filter>
+    <ClInclude Include="..\..\utils.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="..\utils.h">
-      <Filter>header</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\condfield.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\fieldvalue.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\file.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\inrec.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\job.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\keyidxrel.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mmfioc.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ocsort.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ocsorthelp.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\outfil.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\outrec.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\parser.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\scanner.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sortfield.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sumfield.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utils.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

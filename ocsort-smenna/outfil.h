@@ -22,6 +22,8 @@
 #define OUTFIL_H_INCLUDED
 
 
+struct job_t;
+
 struct outfil_t{
 
 	struct file_t 		*outfil_File;
@@ -31,16 +33,15 @@ struct outfil_t{
 
 	int64_t	outfil_nStartRec;		// StartRek for outfil
 	int64_t	outfil_nEndRec;			// EndRek for outfil
-	int	nSave;
-
-	int   nSplit;			// (SPLIT SPLITBY -SPLIT1R=n-)	
-    int   nMaxFileSplit;
-    int   nLastFileSplit;	
+	int	  nSave;
+	int   nSplit;			        // (SPLIT SPLITBY -SPLIT1R=n-)	
+    int   nRecSplit;                // Num record split by = nn
+    int   nRecTmp;                  // Num record split by = nn
 	// new
 	int		bIsCopy;		// SORT-MERGE FIELDS=COPY
 	int		recordWriteOutTotal;
 	int		recordNumber;
-	// char	*recordData;
+    struct  file_t* pLastFileSplit;        // for SPLIT
 	struct outfil_t *next;
 };
 
@@ -61,5 +62,8 @@ int outfil_setOutfilFiles(struct outfil_t *outfil, struct file_t * file);
 int outfil_open_files( struct job_t *job  );
 int outfil_close_files(  struct job_t *job  );
 int outfil_write_buffer( struct job_t *job, unsigned char* buffer_pointer, unsigned int  nLenRek, unsigned char* szBuffRek, int nSplitPosPnt);
+int outfil_write_buffer_split( struct job_t *job, struct outfil_t* outfil, unsigned char* buffer_pointer, unsigned int  nLenRek, unsigned char* szBuffRek, int nSplitPosPnt);
+int outfile_clone_output(struct job_t* job, struct file_t* file);
+int outfil_set_area (struct file_t* file, unsigned char* szBuf, int nLen );
 
 #endif

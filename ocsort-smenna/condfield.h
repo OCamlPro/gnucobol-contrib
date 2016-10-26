@@ -29,6 +29,7 @@
 #define COND_TYPE_PARENTHESIS	2
 #define COND_TYPE_COND_FIELDS	3	// 156,15,CH,LT,141,15,CH
 
+#include <libcob.h>
 
 struct condField_t;
 struct fieldValue_t;
@@ -40,23 +41,26 @@ struct condField_t {
 			int operation;
 			struct condField_t *first;
 			struct condField_t *second;
-		} operation;
+		} operation;                                    //COND_TYPE_OPERATION
 		struct {
 			int position;
 			int length;
 			int type;
 			int condition;
+			cob_field* cb_fd;
 			struct fieldValue_t *fieldValue;
-		} condition;
+		} condition;                                    //COND_TYPE_CONDITION	
 		struct {
 			int position1;
 			int length1;
 			int type1;
+			cob_field* cb_fd1;
 			int condition;
 			int position2;
 			int length2;
 			int type2;
-		} condition_field;
+			cob_field* cb_fd2;
+		} condition_field;                              //COND_TYPE_COND_FIELDS
 	};
 	struct condField_t *next;
 };
@@ -78,6 +82,7 @@ int condField_addInclude(struct condField_t *condField);
 int condField_addOmit(struct condField_t *condField);
 int condField_setCondFieldsTypeAll(int nTypeCond, int nVal);
 int condField_setFormatFieldsTypeAll(int nTypeFormat, int nVal);
+int condField_setFormat(struct condField_t *condField, int nVal);
 
 
 #endif // CONDFIELD_H_INCLUDED

@@ -22,102 +22,131 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "ocsort.h"
 #include "fieldvalue.h"
 #include "utils.h"
 #include "job.h"
 #include "outrec.h"
 
 
-struct outrec_t *outrec_constructor_range(int position, int length) {
+struct outrec_t *outrec_constructor_range(int position, int length) 
+{
 	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
-	outrec->type=OUTREC_TYPE_RANGE;
-	outrec->range.position=position-1;
-	outrec->range.length=length;
-	outrec->next=NULL;
+    if (outrec != NULL) {
+	    outrec->type=OUTREC_TYPE_RANGE;
+	    outrec->range.position=position-1;
+	    outrec->range.length=length;
+	    outrec->next=NULL;
+    }
 	return outrec;
 }
-struct outrec_t *outrec_constructor_change_position(int position, struct fieldValue_t *fieldValue) {
+/*
+struct outrec_t *outrec_constructor_change_position(int position, struct fieldValue_t *fieldValue) 
+{
 	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
-	outrec->type=OUTREC_TYPE_CHANGE_POSITION;
-	outrec->change_position.position=position-1;
-	outrec->change_position.fieldValue=fieldValue;
-	outrec->next=NULL;
+    if (outrec != NULL) {
+	    outrec->type=OUTREC_TYPE_CHANGE_POSITION;
+	    outrec->change_position.position=position-1;
+	    outrec->change_position.fieldValue=fieldValue;
+	    outrec->next=NULL;
+    }
 	return outrec;
 }
-struct outrec_t *outrec_constructor_change(struct fieldValue_t *fieldValue) {
+*/
+struct outrec_t *outrec_constructor_change(struct fieldValue_t *fieldValue) 
+{
 	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
-	outrec->type=OUTREC_TYPE_CHANGE;
-	outrec->change.fieldValue=fieldValue;
-	outrec->change.posAbsRec = -1;
-	outrec->change.type = 0x00;
-	outrec->next=NULL;
+    if (outrec != NULL) {
+	    outrec->type=OUTREC_TYPE_CHANGE;
+	    outrec->change.fieldValue=fieldValue;
+	    outrec->change.posAbsRec = -1;
+	    outrec->change.type = 0x00;
+	    outrec->next=NULL;
+    }
 	return outrec;
 }
-struct outrec_t *outrec_constructor_range_position(int posAbsRec, int position, int length) {
+struct outrec_t *outrec_constructor_range_position(int posAbsRec, int position, int length) 
+{
 	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
-	outrec->type=OUTREC_TYPE_RANGE_POSITION;
-	outrec->range_position.posAbsRec=posAbsRec-1;		// position rec out (start from posAbsRec
-	outrec->range_position.position=position-1;
-	outrec->range_position.length=length;
-	outrec->next=NULL;
+    if (outrec != NULL) {
+	    outrec->type=OUTREC_TYPE_RANGE_POSITION;
+	    outrec->range_position.posAbsRec=posAbsRec-1;		// position rec out (start from posAbsRec
+	    outrec->range_position.position=position-1;
+	    outrec->range_position.length=length;
+	    outrec->next=NULL;
+    }
 	return outrec;
 }
-struct outrec_t *outrec_constructor_padding(int nAbsPos, unsigned char *chfieldValue, int nPosAbsRec) {
-	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
+struct outrec_t *outrec_constructor_padding(int nAbsPos, unsigned char *chfieldValue, int nPosAbsRec) 
+{
 	int nDif=0;
 	int nsp=0;
 	char szVal[12];
-	outrec->type=OUTREC_TYPE_CHANGE;
-	memset(szVal, 0x00, 12);
-	if (nPosAbsRec == 0)
-		sprintf((char*) szVal,"%05d", (nAbsPos));
-	else
-		if ((nAbsPos-1) > nPosAbsRec)
-			sprintf((char*) szVal,"%05d", (nAbsPos-1 - nPosAbsRec + 1 ));
-		else
-			sprintf((char*) szVal,"%05d", (nPosAbsRec - nAbsPos-1 + 1));
-	outrec->change.fieldValue = fieldValue_constr_newF((char*) chfieldValue, szVal, TYPE_STRUCT_STD);
-	outrec->change.posAbsRec = nAbsPos;
-	outrec->change.type = *chfieldValue;
-	outrec->next=NULL;
+	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
+    if (outrec != NULL) {
+	    outrec->type=OUTREC_TYPE_CHANGE;
+	    memset(szVal, 0x00, 12);
+	    if (nPosAbsRec <= 0)
+		    sprintf((char*) szVal,"%05d", (nAbsPos));
+	    else
+		    if (nAbsPos > nPosAbsRec)
+                sprintf((char*) szVal,"%05d", (nAbsPos - nPosAbsRec));
+            else
+    /* this is error because abs position is < of current position of field */
+            {
+                fprintf(stderr,"*OCSort*S500*ERROR: absolute position %d is minor of current position of field %d\n",
+                nAbsPos, nPosAbsRec+1);
+                exit(OC_RTC_ERROR);
+            }
+	    outrec->change.fieldValue = fieldValue_constr_newF((char*) chfieldValue, szVal, TYPE_STRUCT_STD);
+	    outrec->change.posAbsRec = nAbsPos;
+	    outrec->change.type = *chfieldValue;
+	    outrec->next=NULL;
+    }
 	return outrec;
 }
  
-struct outrec_t *outrec_constructor_subst(unsigned char *chfieldValue) {
-	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
+struct outrec_t *outrec_constructor_subst(unsigned char *chfieldValue) 
+{
 	int nj=0;
 	int nsp=0;
-	char szSubstType[10];
-	char szSubstValue[10];
-	outrec->type=OUTREC_TYPE_CHANGE;
-	nsp = strlen((char*)chfieldValue)-1;
-	memset(szSubstValue, 0x00, nsp+1);
-	memset(szSubstType, 0x00,  2);
-	memcpy(szSubstValue, chfieldValue, nsp);
-	
-	memcpy((char*)szSubstValue, chfieldValue, nsp);
-	memcpy(szSubstType, (char*)chfieldValue+nsp, 1);	// TYpe
-	outrec->change.fieldValue = fieldValue_constr_newF((char*)szSubstType, (char*)szSubstValue, TYPE_STRUCT_STD);
-	outrec->change.posAbsRec = -2;	// For print
-	outrec->change.type = 0x00;
-
-	outrec->next=NULL;
-	//free(pVal);
-	return outrec;
-}
-
-struct outrec_t *outrec_constructor_substnchar(int ntimes, unsigned char *chfieldValue) {
+	char szSubstType[128];
+	char szSubstValue[128];
 	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
-	outrec->type=OUTREC_TYPE_CHANGE;
-	//-->>memset(outrec->change.fieldValue, (int) chfieldValue, ntimes);
-	memset(outrec->change.fieldValue, (int) (*chfieldValue), ntimes);
-	outrec->change.posAbsRec = -1;
-	outrec->change.type = 0x00;
-	outrec->next=NULL;
+    if (outrec != NULL) {
+	    outrec->type=OUTREC_TYPE_CHANGE;
+	    nsp = strlen((char*)chfieldValue)-1;
+	    memset(szSubstValue, 0x00, nsp+1);
+	    memset(szSubstType, 0x00,  2);
+	    memcpy(szSubstValue, chfieldValue, nsp);
+	
+	    memcpy((char*)szSubstValue, chfieldValue, nsp);
+	    memcpy(szSubstType, (char*)chfieldValue+nsp, 1);	// TYpe
+	    outrec->change.fieldValue = fieldValue_constr_newF((char*)szSubstType, (char*)szSubstValue, TYPE_STRUCT_STD);
+	    outrec->change.posAbsRec = -2;	// For print
+	    outrec->change.type = 0x00;
+
+	    outrec->next=NULL;
+    }
 	return outrec;
 }
 
-void outrec_destructor(struct outrec_t *outrec) {
+struct outrec_t *outrec_constructor_substnchar(unsigned char* ntch, unsigned char *chfieldValue) 
+{
+	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
+    if (outrec != NULL) {
+	    outrec->type=OUTREC_TYPE_CHANGE;
+	    outrec->change.fieldValue = fieldValue_constructor((char*)ntch, (char*)chfieldValue, TYPE_STRUCT_STD);
+	    outrec->change.posAbsRec = -2; 
+	    outrec->change.type = 0x00;
+	    outrec->next=NULL;
+    }
+	return outrec;
+
+}
+
+void outrec_destructor(struct outrec_t *outrec) 
+{
 	switch (outrec->type) {
 		case OUTREC_TYPE_RANGE:
 			break;
@@ -138,7 +167,8 @@ void outrec_destructor(struct outrec_t *outrec) {
 }
 
 
-int outrec_addQueue(struct outrec_t **outrec,struct outrec_t *outrec_add) {
+int outrec_addQueue(struct outrec_t **outrec,struct outrec_t *outrec_add) 
+{
 	struct outrec_t *o;
 	if (*outrec==NULL) {
 		*outrec=outrec_add;
@@ -165,7 +195,10 @@ int outrec_print(struct outrec_t *outrec) {
 				fieldValue_print(outrec->change.fieldValue);
 			else
 				if (outrec->change.posAbsRec == -2) 
-					printf("%d%s",outrec->change.fieldValue->occursion,utils_getFieldValueTypeName(outrec->change.type));
+                   if (atoi(outrec->change.fieldValue->value) < 2)
+                       printf("%s", utils_getFieldValueTypeName(outrec->change.fieldValue->type));
+                   else
+                        printf("%d%s",outrec->change.fieldValue->occursion,utils_getFieldValueTypeName(outrec->change.fieldValue->type));
 				else
 					printf("%d:%c",outrec->change.posAbsRec,outrec->change.type);
 			break;
@@ -201,7 +234,8 @@ int outrec_getLength(struct outrec_t *outrec) {
 	}
 	return length;
 }
-int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos) {
+int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos) 
+{
 	int position=0;
 	int nSplit = 0;
 	struct outrec_t *o;
@@ -215,9 +249,8 @@ int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *i
 	for (o=outrec;o!=NULL;o=o->next) {
 		switch (o->type) {
 			case OUTREC_TYPE_RANGE:
-// 20160408 record input len 
 				nORangeLen = o->range.length;
-				if (nORangeLen == -1)		// outrec pos, -1  (for variable)
+				if (nORangeLen == -1)		
 					nORangeLen = inputLength - o->range.position - nSplit;
 				if ((o->range.position+nSplit+ nORangeLen) <= inputLength)
 					memcpy(output+position+nSplitPos+nSplit, input+o->range.position+nSplitPos+nSplit, nORangeLen);
@@ -235,29 +268,26 @@ int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *i
 				position+=fieldValue_getGeneratedLength(o->change.fieldValue);
 				break;
 			case OUTREC_TYPE_RANGE_POSITION:
-// 20160408 record input len 
-				//-->>nORangeLen = o->range.length;
 				nORangeLen = o->range_position.length;
 				if (nORangeLen == -1)		// outrec pos, -1  (for variable)
 					nORangeLen = inputLength - o->range_position.position - nSplit;
 				
 				if ((o->range_position.position+nSplitPos+nSplit+nORangeLen) <= inputLength)
-					memcpy(output+o->range_position.posAbsRec+position+nSplitPos+nSplit, input+o->range_position.position+nSplitPos+nSplit, nORangeLen);
+                    memcpy(output+o->range_position.posAbsRec+nSplitPos+nSplit, input+o->range_position.position+nSplitPos+nSplit, nORangeLen);
 				else
 					// copy only char present in input for max len input
-					memcpy(output+o->range_position.posAbsRec+position+nSplitPos+nSplit, input+o->range_position.position+nSplitPos+nSplit, abs(inputLength - (o->range_position.position+nSplit)));
-				//position+= (o->range_position.posAbsRec+nORangeLen);
+                    memcpy(output+o->range_position.posAbsRec+nSplitPos+nSplit, input+o->range_position.position+nSplitPos+nSplit, abs(inputLength - (o->range_position.position+nSplit)));
 				position = (o->range_position.posAbsRec+nORangeLen);
 				break;
 			default:
 				break;
 		}
 	}
-//	return position;
 	return position;  // position contains a first position of buffer
 }
 
-int outrec_addDefinition(struct outrec_t *outrec) {
+int outrec_addDefinition(struct outrec_t *outrec) 
+{
 	outrec_addQueue(&(globalJob->outrec), outrec);
 	return 0;
 }

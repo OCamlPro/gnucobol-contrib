@@ -46,42 +46,52 @@ extern int yydebug;
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     USE = 258,
-     GIVE = 259,
-     SORT = 260,
-     MERGE = 261,
-     FIELDS = 262,
-     BUILD = 263,
-     RECORD = 264,
-     ORG = 265,
-     OUTREC = 266,
-     INREC = 267,
-     SUM = 268,
-     INCLUDE = 269,
-     OMIT = 270,
-     COND = 271,
-     NONE = 272,
-     AND = 273,
-     OR = 274,
-     FORMAT = 275,
-     OUTFIL = 276,
-     FNAMES = 277,
-     FILES = 278,
-     STARTREC = 279,
-     ENDREC = 280,
-     SAVE = 281,
-     OPTION = 282,
-     SKIPREC = 283,
-     STOPAFT = 284,
-     TOKSKIP = 285,
-     STRING = 286,
-     XFIELDTYPE = 287,
-     CHARTYPE = 288,
+     AND = 258,
+     COND = 259,
+     ENDREC = 260,
+     FNAMES = 261,
+     FORMAT = 262,
+     INCLUDE = 263,
+     INREC = 264,
+     NONE = 265,
+     OMIT = 266,
+     OPTION = 267,
+     OR = 268,
+     OUTFIL = 269,
+     OUTREC = 270,
+     SAVE = 271,
+     SKIPREC = 272,
+     STARTREC = 273,
+     STOPAFT = 274,
+     SUM = 275,
+     SPLIT = 276,
+     SPLITBY = 277,
+     VLSCMP = 278,
+     VLSHRT = 279,
+     BUILD = 280,
+     FIELDS = 281,
+     GIVE = 282,
+     MERGE = 283,
+     ORG = 284,
+     RECORD = 285,
+     SORT = 286,
+     USE = 287,
+     COPY = 288,
      DIGIT = 289,
-     ORDER = 290,
-     COPY = 291,
-     LITERAL = 292,
-     SIGNDIGITBIG = 293
+     CHARTCOND = 290,
+     CHARTYPE = 291,
+     FILETYPE = 292,
+     FORMATTYPE = 293,
+     KEY = 294,
+     KEYTYPE = 295,
+     OCCURFILL = 296,
+     OPCOND = 297,
+     ORDER = 298,
+     RECTYPEFIX = 299,
+     RECTYPEVAR = 300,
+     STRING = 301,
+     TOKSKIP = 302,
+     SIGNDIGITBIG = 303
    };
 #endif
 
@@ -90,20 +100,20 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 23 "parser.y"
+#line 23 "..\\..\\parser.y"
  
-	int number;
-	long lnumber;
-	long long llnumber;
-	char *string;
-	char character;
+	int         number;
+	long        lnumber;
+	long long   llnumber;
+	char        *string;
+	char        character;
 	struct condField_t  *condField;
 	struct fieldValue_t *fieldValue;
 	struct SumField_t   *SumField;
 
 
 /* Line 2058 of yacc.c  */
-#line 107 "parser.h"
+#line 117 "..\\..\\parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
