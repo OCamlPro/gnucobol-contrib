@@ -530,7 +530,7 @@ condfield:
 		if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 113, ABEND_SKIP);
 			YYABORT;
-		}
+		} 
 }
     /* #################################################################################################### */
     // pos, len, type field, operator, value numeric 

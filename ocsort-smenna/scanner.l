@@ -66,7 +66,7 @@ FILETYPE	    LS|SQ|IX|RL
             /*  Format Type Field   */
          /* CH|BI|FI|FL|PD|ZD|TI|OT|CTO|LI|OL|CLO|CST|LS|CSL */
             /*  CH  Char            
-                BI  Unisgned Binary
+                BI  Unsigned Binary
                 FI  Signed Binary
                 Fl  Floating Point
                 PD  Packed
@@ -96,8 +96,8 @@ RECTYPEVAR      V
             /* comment for occursfill */ 
             /* ntimes X,Z,C */
 OCCURFILL   [0-9]{1,5}[C|X|Z]{1} 
-            /* Operator condition */
-OPCOND          EQ|GT|GE|LT|LE|NE
+            /* Operator condition */ 
+OPCOND          EQ|GT|GE|LT|LE|NE|SS
 
     /* OCCURFILL   [0-9]{1,5}[C|X|Z]{1} */
 	/* <CHSC>{CHARTYPE} */

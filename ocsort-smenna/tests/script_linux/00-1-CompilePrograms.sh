@@ -36,8 +36,6 @@
 ./compile.sh sfrmsqf17b
 ./compile.sh sfrmsqf18b
 
-./compile.sh sincsqf04b
-
 ./compile.sh somisqf09b
 ./compile.sh somisqf11b
 ./compile.sh somisqf12b
@@ -46,10 +44,13 @@
 ./compile.sh sinrsqf14b
 ./compile.sh sinrsqf15b
 
+./compile.sh sincsqf04b
 ./compile.sh sincsqf05b
 ./compile.sh sincsqf07b
 ./compile.sh sincsqf06b
 ./compile.sh sincsqf08b
+./compile.sh sincsqf19b
+
 
 ./compile.sh soutsqf10b
 

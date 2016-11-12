@@ -47,4 +47,7 @@ int fieldValue_print(struct fieldValue_t *fieldValue);
 int fieldValue_checkvalue(struct fieldValue_t *fieldValue, cob_field* pField, int length);
 int fieldValue_getGeneratedLength(struct fieldValue_t *fieldValue);
 char *fieldValue_getGeneratedValue(struct fieldValue_t *fieldValue);
+int fieldValue_checksubstring(struct fieldValue_t *fieldValue, cob_field* pField, int length);
+int fieldValue_ss_array(struct fieldValue_t *fieldValue, cob_field* pField, int length);
+int fieldValue_ss_value(struct fieldValue_t *fieldValue, cob_field* pField, int length);
 #endif // FIELDVALUE_H_INCLUDED

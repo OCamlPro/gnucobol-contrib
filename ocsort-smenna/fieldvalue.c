@@ -249,6 +249,66 @@ int fieldValue_checkvalue(struct fieldValue_t *fieldValue, cob_field* pField, in
 	return result;
 }
 
+//
+// case A
+// verify if value of buffer is one of array
+// Array is [value1,value2,value3,...]
+// len of single element is equal length parameter
+//
+int fieldValue_ss_array(struct fieldValue_t *fieldValue, cob_field* pField, int length) {
+    int n, nLenValue, nElements;
+    int res, bFound;
+    nLenValue = strlen((char*)fieldValue->generated_value); // len of array
+    nElements = (nLenValue / (length+1))+1; // num of elements
+    bFound=0;
+    for(n=0; n < nElements; n++) {
+        res = memcmp((char*)pField->data, (char*)fieldValue->generated_value+(n*(length+1)), length);
+        if (res == 0) {
+            bFound=1;
+            break;
+        }
+    }
+    return res;
+}
+//
+// case B
+// search generated value into record
+//
+int fieldValue_ss_value(struct fieldValue_t *fieldValue, cob_field* pField, int length) {
+    int bFound, nLenBufA, nLenBufB;
+    int n, res;
+    res=1;
+    nLenBufA = (int)pField->size;
+    nLenBufB = strlen((char*)fieldValue->generated_value);
+    bFound=0;
+    for(n=0; n<nLenBufA;n++){
+        if (pField->data[n] != fieldValue->generated_value[0])      // verify single char
+            continue;
+        if (n+nLenBufB > nLenBufA)
+            break;
+        res=memcmp(pField->data+n, fieldValue->generated_value, fieldValue->generated_length);
+        if (res == 0) {
+            bFound = 0;
+            break;
+        }
+    }
+    return res;
+}
+
+int fieldValue_checksubstring(struct fieldValue_t *fieldValue, cob_field* pField, int length) {
+	int result;
+	int64_t						mValue64 = 0;
+    int                         mValueint=0;
+	int lenFieldSize	= 0;
+	int lenFieldDigit	= 0;
+
+    if (fieldValue->generated_length > length)      
+        result = fieldValue_ss_array(fieldValue, pField, length);                                        // search value
+    else
+        result = fieldValue_ss_value(fieldValue, pField, length);                                        // search array
+    return result;
+}
+
 int fieldValue_getGeneratedLength(struct fieldValue_t *fieldValue) {
 	return fieldValue->generated_length;
 }

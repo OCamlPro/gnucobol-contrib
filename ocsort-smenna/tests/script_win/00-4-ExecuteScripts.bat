@@ -102,6 +102,11 @@ echo * ======================== *
 call sort\04-include\sincsqf08  >>%logfile%                         
 call checkerr 
 echo * ======================== *
+echo   04-include\sincsqf19                                 
+echo * ======================== *
+call sort\04-include\sincsqf19  >>%logfile%                         
+call checkerr 
+echo * ======================== *
 echo   05-omit\somisqf09                                  
 echo * ======================== *
 call sort\05-omit\somisqf09  >>%logfile%                         

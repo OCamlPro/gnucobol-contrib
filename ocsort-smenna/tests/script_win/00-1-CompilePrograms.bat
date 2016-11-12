@@ -34,8 +34,6 @@ call compile susesqf16b
 call compile sfrmsqf17b
 call compile sfrmsqf18b
 
-call compile sincsqf04b
-
 call compile somisqf09b
 call compile somisqf11b
 call compile somisqf12b
@@ -44,10 +42,13 @@ call compile somisqf13b
 call compile sinrsqf14b
 call compile sinrsqf15b
 
+call compile sincsqf04b
 call compile sincsqf05b
 call compile sincsqf07b
 call compile sincsqf06b
 call compile sincsqf08b
+call compile sincsqf19b
+
 
 call compile soutsqf10b
 

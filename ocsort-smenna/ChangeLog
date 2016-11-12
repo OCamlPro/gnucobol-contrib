@@ -1,3 +1,13 @@
+2016-11-12  Sauro Menna  <smenna@users.sourceforge.net>
+	* Update Version 1.0.0 - by Sauro Menna 
+    * New Conditional field  SS = SubString for INCLUDE/OMIT statement
+       INCLUDE COND=(1,55,SS,EQ,C'SearchString') 
+            - Search 'SearchString' in record area from pos 1 for len 55.
+       INCLUDE COND=(25,5,SS,EQ,C'Str1 ,Str2 ,Str3 , Str4, Str5') 
+            - Check if field in position 25 for len 5 is equal one of following value
+                    'Str10,Str20,Str30,Str40,Str50'
+    * Insert Cobol module and scripts in tests folder
+    
 2016-10-23  Sauro Menna  <smenna@users.sourceforge.net>
 	* Update Version 1.0.0 - by Sauro Menna 
     * Used fields COB_FIELD for data type and integration with LIBCOB:
@@ -18,7 +28,7 @@
               CH  Char     BI  Unisgned Binary   FI  Signed Binary
               PD  Packed   ZD  Zoned decimal
           added:    
-              FL   Ploating Point
+              FL   Floating Point
               CLO  Signed Numeric - sign lealing 
               CST  Signed Numeric - trailing separate sign
               CSL  Signed Numeric - leading separate sign

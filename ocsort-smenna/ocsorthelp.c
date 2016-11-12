@@ -180,10 +180,6 @@ void OCSort_Usage ( void )
     printf("                               missing compare field bytes with binary zeros        \n");
     printf("         VLSHRT           0 disabled , 1 = enabled -- treat any comparison       \n");
     printf("                               involving a short field as false                     \n");
-//    printf("         EQUALS           Command skipped                                        \n");
-//    printf("         REMOVECC         Command skipped                                        \n");
-//    printf("         CONVERT          Command skipped                                        \n");
-//    printf("         NODETAIL         Command skipped                                        \n");
     printf("\n");
     printf("________________________________________________________________________________________\n");
     printf("___{Parameters}____________________________|___{Relational}_____________________________\n");
@@ -193,7 +189,7 @@ void OCSort_Usage ( void )
     printf("  {RecordLen}= Record Length               |  LT = LesserThan                           \n");
     printf("  {MinLen}   = Min size of record          |  LE = LesserEqual                          \n");
     printf("  {MaxLen}   = Max size of record          |  NE = NotEqual                             \n");
-    printf("  {Order}    = A(ascending) | D(descending)|                                            \n");
+    printf("  {Order}    = A(ascending) | D(descending)|  SS = SubString (only for Field Type 'CH') \n");
     printf("___________________________________________|____________________________________________\n");
     printf("___{Condition}__________________________________________________________________________\n");
     printf("  Format 1  - (Pos,Len,{FormatType},{Relational},[AND|OR],Pos,Len,{FormatType})         \n");
@@ -204,7 +200,7 @@ void OCSort_Usage ( void )
     printf("  LS  = Line Sequential                    |  P  = Primary Key                          \n");
     printf("  SQ  = Sequential Fixed or Variable       |  A  = Alternative Key                      \n");
     printf("  IX  = Indexed Fixed or Variable          |  D  = Alternative Key with Duplicates      \n");
-    printf("  RL  = Relative Fixed or Variable         |  C  = Contune definition                   \n");
+    printf("  RL  = Relative Fixed or Variable         |  C  = Continue definition                  \n");
     printf("___________________________________________|____________________________________________\n");
     printf("__{FormatType}____Field Format Type________|___{FormatType2}____Format Type SumField____\n");
     printf("  CH  = Char                               |  BI = Binary unsigned                      \n");
@@ -217,27 +213,6 @@ void OCSort_Usage ( void )
     printf("  CSL = Numeric sign leading separate      |  CST = Numeric sign trailing separate      \n");
     printf("  CST = Numeric sign trailing separate     |                                            \n");
     printf("___________________________________________|____________________________________________\n");
-    /*
-    printf("Format Type                                                                        \n");
-    printf("___________________________________________________________________________________\n");
-    printf("____FORMAT TYPE____________________________________________________________________\n");
-    printf("    CH = Char            BI = Binary unsigned         FI = Binary signed           \n");
-    printf("    FL = Floating Point  PD = Packed                  ZD = Zoned (max 18 digits)   \n");
-    printf("    CLO = Numeric sign leading CSL = Numeric sign leading separate CST = Numeric sign trailing separate  \n");
-    printf("___________________________________________________________________________________\n");
-    printf("____FORMAT TYPE 2__________________________________________________________________\n");
-    printf("    BI = Binary unsigned FI = Binary signed           \n");
-    printf("    FL = Floating Point  PD = Packed                  ZD = Zoned (max 18 digits)   \n");
-    printf("___________________________________________________________________________________\n");
-    printf("____TYPEKEY_____(Mandatory only for Indexed File ORG = IX)_________________________\n");
-    printf("    P  = Primary Key                      A  = Alternative Key                       \n");
-    printf("    D  = Alternative Key with Duplicates  C  = Contune definition \n");
-    printf("___________________________________________________________________________________\n");
-    printf("File Organization                                                                  \n");
-    printf("____ORG____________________________________________________________________________\n");
-    printf("    LS  = Line Sequential              SQ  = Sequential Fixed or Variable          \n");
-    printf("    IX  = Indexed Fixed or Variable    RL  = Relative   Fixed or Variable          \n");
-    */
     printf("____{FieldSpec}___Field Specification___________________________________________________\n");
     printf("  pos, len           pos = position input record, len = length of field            \n");
     printf("  posOut:pos,len     posOut  = position output, pos = position input , len = length \n");
@@ -254,8 +229,6 @@ void OCSort_Usage ( void )
     printf("________________________________________________________________________________________\n");
     printf("Environment Variables                                                                   \n");
     printf("________________________________________________________________________________________\n");
-//future use    printf("OCSORT_EMULATE     Value 0 for OCSORT, 1 for MF Emulator                        \n");
-//    printf("OCSORT_BYTEORDER   0 for NATIVE , 1 for BIGENDIAN. Default 0 (NATIVE)              \n");
     printf("COB_VARSEQ_FORMAT  Used by GNUCobol\n");
     printf("OCSORT_DEBUG       0 no print info, 1 info DEBUG, 2 for info Parser                \n");
     printf("OCSORT_MEMSIZE     Memory Allocation in byte (Default 512000000 byte)              \n");

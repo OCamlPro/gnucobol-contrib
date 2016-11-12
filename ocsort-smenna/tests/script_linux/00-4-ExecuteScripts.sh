@@ -107,6 +107,11 @@ echo "* ======================== *"
 ./sort/04-include/sincsqf08.sh  >>$logfile                         
 ./checkerr.sh 
 echo "* ======================== *"
+echo "  04-include/sincsqf19      "                            
+echo "* ======================== *"
+./sort/04-include/sincsqf19.sh  >>$logfile                         
+./checkerr.sh 
+echo "* ======================== *"
 echo "  05-omit/somisqf09         "                         
 echo "* ======================== *"
 ./sort/05-omit/somisqf09.sh  >>$logfile                         

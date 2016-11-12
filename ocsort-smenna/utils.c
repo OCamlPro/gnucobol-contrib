@@ -251,6 +251,8 @@ int utils_parseCondCondition(const char *condition)
 		return COND_CONDITION_LESSEREQUAL;
 	} else if (!strcasecmp(condition,"NE")) {
 		return COND_CONDITION_NOTEQUAL;
+	} else if (!strcasecmp(condition,"SS")) {
+		return COND_CONDITION_SUBSTRING;
 	} else {
 		return -1;
 	}
@@ -432,6 +434,8 @@ const char *utils_getCondConditionName(int condition)
 			return "LE";
 		case COND_CONDITION_NOTEQUAL:
 			return "NE";
+		case COND_CONDITION_SUBSTRING:
+			return "SS";
 		default:
 			return "";
 	}

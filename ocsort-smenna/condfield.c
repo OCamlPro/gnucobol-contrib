@@ -211,6 +211,21 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
 				}
 			}
 
+            // substring
+            if (condField->condition.condition == COND_CONDITION_SUBSTRING) {
+                if (nTcmp == 0) {
+                    condField->condition.cb_fd->data = (unsigned char*) (record+condField->condition.position);
+				    result=fieldValue_checksubstring((struct fieldValue_t *)condField->condition.fieldValue, condField->condition.cb_fd, condField->condition.length);
+                    return (result==0);
+                }
+                else
+                {
+                    condField->condition.cb_fd->data = (unsigned char*) (szBufVLSCMP+condField->condition.position);
+				    result=fieldValue_checksubstring((struct fieldValue_t *)condField->condition.fieldValue, condField->condition.cb_fd, condField->condition.length);
+                    return (result==0);
+                }
+            }
+            //
 			if (nTcmp == 0) {
                 condField->condition.cb_fd->data = (unsigned char*) (record+condField->condition.position);
 				result=fieldValue_checkvalue((struct fieldValue_t *)condField->condition.fieldValue, condField->condition.cb_fd, condField->condition.length);
