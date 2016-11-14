@@ -55,6 +55,9 @@
 *> Date       Change description 
 *> ========== ==================================================================
 *> 2014.10.05 First version.
+*> 2016.11.14 Error corrections: 
+*>            - TO phrase without DEPENDING phrase in table definition.
+*>            - INSPECT TALLYING with two BEFORE. 
 *>
 *>******************************************************************************
 
@@ -136,6 +139,8 @@
 
 *> counter for COBOL inspect 
  01 WS-INSPECT-COUNT                   PIC S9(09) COMP.
+ 01 WS-INSPECT-COUNT-1                 PIC S9(09) COMP.
+ 01 WS-INSPECT-COUNT-2                 PIC S9(09) COMP.
 
 *> internal table for HTML form fields, field values, file attributes 
  01 WS-TAB-IND                         PIC 9(9) COMP.
@@ -144,7 +149,7 @@
  78 C-TAB-MAX-LINE                     VALUE 50.
  78 C-TAB-MAX-VALUE                    VALUE 10000.
  01 WS-TAB.                           
-   03 WS-TAB-LINE                      OCCURS 1 TO C-TAB-MAX-LINE TIMES.
+   03 WS-TAB-LINE                      OCCURS C-TAB-MAX-LINE TIMES.
      04 WS-TAB-FIELD                   PIC X(40).
      04 WS-TAB-FIELD-LEN               PIC 9(9) COMP.
      04 WS-TAB-VALUE                   PIC X(C-TAB-MAX-VALUE).
@@ -669,12 +674,20 @@
        ELSE
 *>        this is a file name with full file path, get file name from it
           MOVE ZEROES TO WS-INSPECT-COUNT    
+          MOVE ZEROES TO WS-INSPECT-COUNT-1    
+          MOVE ZEROES TO WS-INSPECT-COUNT-2    
           
           INSPECT FUNCTION REVERSE(WS-TMP-FILE-NAME)
-             TALLYING WS-INSPECT-COUNT
+             TALLYING WS-INSPECT-COUNT-1
              FOR CHARACTERS BEFORE INITIAL "\"
-                            BEFORE INITIAL "/"
-       
+
+          INSPECT FUNCTION REVERSE(WS-TMP-FILE-NAME)
+             TALLYING WS-INSPECT-COUNT-2
+             FOR CHARACTERS BEFORE INITIAL "/"
+
+          MOVE FUNCTION MIN(WS-INSPECT-COUNT-1, WS-INSPECT-COUNT-2)               
+            TO WS-INSPECT-COUNT
+                            
           COMPUTE WS-TMP-FILE-PATH-LEN 
                 = FUNCTION LENGTH(WS-TMP-FILE-NAME)
                 - WS-INSPECT-COUNT + 1

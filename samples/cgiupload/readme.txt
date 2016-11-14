@@ -13,8 +13,6 @@ The program usage is described in the program header.
 Files:
 
 cgiupload.cob          - CGI COBOL program
-cygwin_apache_start.sh - start apache under cygwin
-cygwin_apache_stop.sh  - stop apache under cygwin
 cygwin_compile.sh      - compile the CGI COBOL program under cygwin
 readme.txt             - this file
 upload1.html           - demo HTML form (empty form)

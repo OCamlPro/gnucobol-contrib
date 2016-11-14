@@ -1,6 +1,6 @@
 :: set directories to match your installation
-set cgibin=C:\Apache2\cgi-bin
-set htdocs=C:\Apache2\htdocs
+set cgibin=C:\Apache24\cgi-bin
+set htdocs=C:\Apache24\htdocs
 set progdir=C:\oc_projekt
 
 :: test if directories exist
@@ -29,7 +29,7 @@ del "%htdocs%\upload7.html" 2>NUL
 del "cgiupload.exe"         2>NUL
 
 :: set env. variables
-call "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"
+call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
 
 cd "%progdir%\cgiupload"
 

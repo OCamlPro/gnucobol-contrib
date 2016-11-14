@@ -24,7 +24,8 @@ rm -f "$htdocs/upload7.html" 2>/dev/null
 rm -f "cgiupload.exe"        2>/dev/null
 
 # compile
-cobc -x -free cgiupload.cob
+# cobc -x -free cgiupload.cob
+cobc -x -free -fno-gen-c-decl-static-call cgiupload.cob
 
 # copy new files in apache directory
 cp cgiupload.exe $cgibin/cgiupload
