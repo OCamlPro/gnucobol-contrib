@@ -537,7 +537,7 @@ Find-TheDay.
 *> This function converts date (a numeric integer data item or literal)
 *> – presumed to be a Gregorian calendar form
 *> standard date (YYYYMMDD) - to integer date form – that is,
-*> the number of days that have transpired since 1600/12/31.
+*> the number of days that have transpired since 1600/12/31.xx
 
      DIVIDE FUNCTION INTEGER-OF-DATE(wkDateR) BY 7
             GIVING wkDIV REMAINDER wkREM
