@@ -107,7 +107,8 @@ Working-Storage Section.
 01 wVisibilityOld  BINARY-SHORT . *> SIGNED.
 01 wVisibilityNew9  pic 9(8).
 01 wVisibilityOld9  pic 9(8).
-
+01 wResult     BINARY-SHORT.
+01 wResult9     pic -9(4).
 01  iKK pic s9(02) comp-5 value  0.
 01  i   pic s9(02) comp-5 value  0.
 01  j   pic s9(02) comp-5 value  0.
@@ -122,6 +123,11 @@ Working-Storage Section.
    05 wkDD         pic 9(02).
    05 wkMM         pic 9(02).
    05 wkYY         pic 9(02).
+
+
+01 wkDIV   pic 9(9) value zero.
+01 wkREM   pic 9(9) value zero.
+
 01  value "144025036146".
    03 wkV          pic 9(01) occurs 12.
 01  value "312831303130313130313031".
@@ -152,6 +158,7 @@ Working-Storage Section.
       07 wkDateYY pic 9(02).
    05 wkDateMM    pic 9(02).
    05 wkDateDD    pic 9(02).
+01  wkDateR redefines wkDate PIC 9(8).
 
 01 wCaleDate.
    05 wCaleYY           pic  9(04) value 0.
@@ -194,11 +201,14 @@ INIZIO.
 *> This program displays 50 rows and 77 cols on screen so the screen size must be
 *> changed from standard size of 25rows x 80 cols to a size of 50 rows x 80 cols.
 *> ***********************************************************************************
-       move "MODE CON: LINES=60 COLS=90 " & X"00" TO wCmdLine
-       *> DISPLAY "wCmdLine=     " AT 0101 wCmdLine AT 0115
-       *> ACCEPT OMITTED
-       CALL "SYSTEM"   using wCmdLine
+       *> move "MODE CON: LINES=60 COLS=90 " & X"00" TO wCmdLine
+       *> *> DISPLAY "wCmdLine=     " AT 0101 wCmdLine AT 0115
+       *> *> ACCEPT OMITTED
+       *> CALL "SYSTEM"   using wCmdLine
 
+       CALL "SYSTEM" USING "mode con: lines=50 cols=80"
+
+    *> call static 'resize_term' using by value 50 80 returning wResult end-call
 
    *> ACCEPT wLINES   from LINES
    *> ACCEPT wCOLUMNS from COLUMNS
@@ -207,7 +217,7 @@ INIZIO.
    *> ACCEPT OMITTED.
 
 
-   *> move "IT" To CaleLan
+   move "EN" To CaleLan
    IF CaleLan = "EN"
       move WGIORNIEN  TO WGIORNI
       move WGIORNI1EN TO WGIORNI1
@@ -489,39 +499,58 @@ SetCursorPositionEx. exit.
 *> called every 1 of the month (12 times x year)
 *> ******************************************************************************
 Find-TheDay.
-   move wkDateYY        to wkYY
-   move wkDateMM        to wkMM
-   move wkDateDD        to wkDD
+   *> move wkDateYY        to wkYY
+   *> move wkDateMM        to wkMM
+   *> move wkDateDD        to wkDD
 
-   perform
-      divide wkYY by 4 giving wkcom   *> picture with decimals
-      divide wkYY by 4 giving wkP1    *> picture without decimals
-      if wkP1 = wkCom
-         move 29 to wkGmax(2) *> leap year - anno bisestile
-      else
-         move 28 to wkGmax(2) *> non leap year - anno non bisestile
-      end-if
+   *> perform
+      *> divide wkYY by 4 giving wkcom   *> picture with decimals
+      *> divide wkYY by 4 giving wkP1    *> picture without decimals
+      *> if wkP1 = wkCom
+         *> move 29 to wkGmax(2) *> leap year - anno bisestile
+      *> else
+         *> move 28 to wkGmax(2) *> non leap year - anno non bisestile
+      *> end-if
 
-      add wkV(wkMM) wkDD wkYY  to wkP1
-      if wkGmax(2) = 29 and (wkMM = 1 or wkMM = 2)
-         subtract 1 from wkP1
-      end-If
-      divide wkP1 by 7 giving wkP2
-      compute wkDay = wkP1 - (wkP2 * 7) + 1 *> 1=lun,2=mar...7=Dom
+      *> add wkV(wkMM) wkDD wkYY  to wkP1
+      *> if wkGmax(2) = 29 and (wkMM = 1 or wkMM = 2)
+         *> subtract 1 from wkP1
+      *> end-If
+      *> divide wkP1 by 7 giving wkP2
+      *> compute wkDay = wkP1 - (wkP2 * 7) + 1 *> 1=lun,2=mar...7=Dom
 
-      *> warning ZELLER FORMULA gives tuesday=2 for 1.1.2000 instead of saturday(6)! how come ?
-      if wkDateYYYY > 1999
-         evaluate wkDay
-           when 1 move 5 to wkDay
-           when 2 move 6 to wkDay
-           when 3 move 7 to wkDay
-           when 4 move 1 to wkDay
-           when 5 move 2 to wkDay
-           when 6 move 3 to wkDay
-           when 7 move 4 to wkDay
-         end-evaluate
-      end-if
-   end-perform
+      *> *> warning ZELLER FORMULA gives tuesday=2 for 1.1.2000 instead of saturday(6)! how come ?
+      *> if wkDateYYYY > 1999
+         *> evaluate wkDay
+           *> when 1 move 5 to wkDay
+           *> when 2 move 6 to wkDay
+           *> when 3 move 7 to wkDay
+           *> when 4 move 1 to wkDay
+           *> when 5 move 2 to wkDay
+           *> when 6 move 3 to wkDay
+           *> when 7 move 4 to wkDay
+         *> end-evaluate
+      *> end-if
+   *> end-perform
+
+
+*> This function converts date (a numeric integer data item or literal)
+*> – presumed to be a Gregorian calendar form
+*> standard date (YYYYMMDD) - to integer date form – that is,
+*> the number of days that have transpired since 1600/12/31.
+
+     DIVIDE FUNCTION INTEGER-OF-DATE(wkDateR) BY 7
+            GIVING wkDIV REMAINDER wkREM
+     EVALUATE wkREM
+               WHEN 0 ADD 7 to wkREM *> 'SUN'
+               WHEN 1          *> DISPLAY 'MON'
+               WHEN 2          *> DISPLAY 'TUE'
+               WHEN 3          *> DISPLAY 'WED'
+               WHEN 4          *> DISPLAY 'THU'
+               WHEN 5          *> DISPLAY 'FRI'
+               WHEN 6 CONTINUE *> DISPLAY 'SAT'
+       END-EVALUATE
+       move wkREM to wkDay
    .
 Find-TheDayEx. exit.
 
