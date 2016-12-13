@@ -1,0 +1,7 @@
+*****
+** Read indexed and generate SQ
+** STEP2
+    SORT FIELDS=(96,5,ZD,A)
+    USE  ../files/inp002rl.dat ORG RL RECORD F,100
+    GIVE ../files/inp002sq.sq  ORG SQ RECORD F,100
+*****     

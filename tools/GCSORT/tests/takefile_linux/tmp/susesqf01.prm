@@ -1,0 +1,3 @@
+SORT FIELDS=(8,5,CH,A,13,3,BI,D,16,4,FI,A,20,8,FL,D,28,4,PD,A,32,7,ZD,D)
+USE  dd_infile   RECORD F,90 ORG SQ                                    
+GIVE dd_outfile  RECORD F,90 ORG SQ                                    

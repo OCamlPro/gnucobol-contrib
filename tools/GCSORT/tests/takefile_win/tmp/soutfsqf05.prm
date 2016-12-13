@@ -1,0 +1,6 @@
+   SORT FIELDS=(8,5,CH,A)                                                                           
+   USE  dd_infile   RECORD F,90 ORG SQ                                                             
+   GIVE dd_outfile  RECORD F,90 ORG SQ                      
+   OUTFIL FNAMES=dd_outfil_01,ENDREC=20                     
+   OUTFIL FNAMES=dd_outfil_02,STARTREC=21,ENDREC=40         
+   OUTFIL FNAMES=dd_outfil_03,STARTREC=41                   

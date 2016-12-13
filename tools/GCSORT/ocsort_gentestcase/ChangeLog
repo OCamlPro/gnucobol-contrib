@@ -1,0 +1,13 @@
+
+2016-12-13  Simon 'sf-mensch/human' Sobisch <simonsobisch@gnu.org>
+
+	* general: changed package name to gcsort_gentestcase and renamed
+	  all files from ocsort -> gcsort in behalf of Sauro Menna
+
+2016-02-26  Sauro Menna  <smenna@users.sourceforge.net>
+
+	* Fixed problems for print totalizer.
+
+2016-02-12  Sauro Menna  <smenna@users.sourceforge.net>
+
+	* First version of ocsort_gentestcase released.

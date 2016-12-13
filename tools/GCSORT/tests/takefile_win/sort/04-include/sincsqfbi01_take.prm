@@ -1,0 +1,8 @@
+
+    * SINCSQFBI01
+
+  SORT FIELDS(13,3,BI,A) 
+  use        ..\files\sqbi01            record f,111 org sq 
+  give       ..\files\sqbi01_04.srt     record f,111 org sq  
+  INCLUDE COND=(13,03,BI,LT,500)
+  

@@ -1,0 +1,31 @@
+
+    * SSUMSQFZD03
+
+* Zoned 
+SORT FIELDS(3,1,CH,A)  
+SUM  FIELDS=(1,2,ZD,         *  05 msr-02     pic 9(2) .
+             4,2,ZD,         *  05 msr-02s    pic s9(2) .
+             7,4,ZD,         *  05 msr-04     pic 9(4) .
+             12,4,ZD,        *  05 msr-04s    pic s9(4) .
+             17,6,ZD,        *  05 msr-06     pic 9(6) .
+             24,6,ZD,        *  05 msr-06s    pic s9(6) .
+             31,8,ZD,        *  05 msr-08     pic 9(8) .
+             40,8,ZD,        *  05 msr-08s    pic s9(8) .
+             49,10,ZD,       *  05 msr-10     pic 9(10) .
+             60,10,ZD,       *  05 msr-10s    pic s9(10) .
+             71,14,ZD,       *  05 msr-14     pic 9(14) .
+             86,14,ZD,       *  05 msr-14s    pic s9(14) .
+             101,18,ZD,      *  05 msr-18     pic 9(18) .
+             120,18,ZD,      *  05 msr-18s    pic s9(18) .
+             139,20,ZD,      *  05 msr-20     pic 9(20) .
+             160,20,ZD,      *  05 msr-20s    pic s9(20) .
+             181,22,ZD,      *  05 msr-22     pic 9(22) .
+             204,22,ZD,      *  05 msr-22s    pic s9(22) .
+             227,24,ZD,      *  05 msr-24     pic 9(24) .
+             252,24,ZD,      *  05 msr-24s    pic s9(24) .
+             277,28,ZD,      *  05 msr-28     pic 9(28) .
+             306,28,ZD,      *  05 msr-28s    pic s9(28) .
+             335,30,ZD,      *  05 msr-30     pic 9(30) .
+             366,30,ZD)      *  05 msr-30s    pic s9(30) .
+use   ..\files\sqzd03 record f,396 org sq 
+give  ..\files\sqzd03_07.srt  record f,396 org sq

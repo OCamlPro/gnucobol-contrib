@@ -1,0 +1,89 @@
+
+2016-12-13  Simon 'sf-mensch/human' Sobisch <simonsobisch@gnu.org>
+
+	* general: changed package name to GCSORT and renamed
+	  all files from ocsort -> gcsort in behalf of Sauro Menna
+
+2016-11-12  Sauro Menna  <smenna@users.sourceforge.net>
+
+	* Update Version 1.0.0 - by Sauro Menna 
+    * New Conditional field  SS = SubString for INCLUDE/OMIT statement
+       INCLUDE COND=(1,55,SS,EQ,C'SearchString') 
+            - Search 'SearchString' in record area from pos 1 for len 55.
+       INCLUDE COND=(25,5,SS,EQ,C'Str1 ,Str2 ,Str3 , Str4, Str5') 
+            - Check if field in position 25 for len 5 is equal one of following value
+                    'Str10,Str20,Str30,Str40,Str50'
+    * Insert Cobol module and scripts in tests folder
+    
+2016-10-23  Sauro Menna  <smenna@users.sourceforge.net>
+
+	* Update Version 1.0.0 - by Sauro Menna 
+    * Used fields COB_FIELD for data type and integration with LIBCOB:
+        fields         = cob_field/cob_attribute
+        i/o operations = cob_open, cob_read, cob_write, cob_close, 
+        compare/move   = cob_cmp_llint, cob_cmp, cob_move
+    * Removed bufferedreader and bufferedwriter modules
+    * Change memory mapped files use. Only for temporary files. 
+    * Checked potential errors problems for the allocation memory 
+    * Included new file type INDEXED (keys definition)
+    * Included new file type RELATIVE (key relative)
+    * Errors code review 
+    * Insert details for Parser/Scanner errors 
+    * Review Help (ocosort --help)
+    * outfile.c  Insert option SPLITBY=nn for OUTFIL
+    * Included new data type
+          in addition to these:
+              CH  Char     BI  Unisgned Binary   FI  Signed Binary
+              PD  Packed   ZD  Zoned decimal
+          added:    
+              FL   Floating Point
+              CLO  Signed Numeric - sign lealing 
+              CST  Signed Numeric - trailing separate sign
+              CSL  Signed Numeric - leading separate sign
+              CSF  Signed Numeric - with optional leading floating sign 
+    * Create test environment with COBOL programs (folder test)
+      Integrated step to generate files, sort (gcsort and Cobol) and check results
+      Windows and Linux environment.      
+    * Command TAKE case insensitive    
+    * Check instruction for KEY definition
+
+2016-03-26  Sauro Menna  <smenna@users.sourceforge.net>
+
+	* Update Version 1.0.0 - by Sauro Menna 
+    * FIX : printf rows file TAKE (last characters)
+
+2016-02-28  Sauro Menna  <smenna@users.sourceforge.net>
+
+	* Update Version 1.0.0 - by Sauro Menna 
+    * Enabled case insensitive for all commands and statements
+    * Insert build_windows for vc10 and vc 14
+    * FIX : warnings for vc14
+
+2016-02-11  Sauro Menna  <smenna@users.sourceforge.net>
+
+	* Released OCSORT User's Guide  (in doc folder)
+	* Update Version 1.0.0 - by Sauro Menna 
+    * Enabled project in Linux Environment 
+    * Disable MF file handler
+    * FIX : INLINE macro [Problem in Ubuntu environment]
+            SumField - Fix Update Record - ZD (Zoned)
+            Sort Field - Fix Sort Key - BI (Binary)
+
+2015-12-01  Sauro Menna  <smenna@users.sourceforge.net>
+
+	* Version 1.0.0 released.
+    New features:
+    1) Dynamic Memory Allocation for operations
+    2) Temporary files for sorting Big File > 2GByte
+    3) Merge files (max 16 files)
+    4) Read and write Line Sequential (LS) and Sequential Variable
+    5) Statistics and error message
+    6) Data type. New FI (Binary unsigned), PD (Packed) and ZD (Zoned - max 18 digits)
+    7) Reader and writer buffered
+    8) Memory Mapped Files for fast read files
+    9) Environment Variable -
+        - Folder for Temporary files,
+        - Check the command line (NO Operations)
+        - Memory Allocation for Variable FNAME / FILES in OUTFIL
+        - Statistics Details
+    10) File conversion Fix from/to Variable or LS from/to SQ

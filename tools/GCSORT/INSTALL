@@ -1,0 +1,60 @@
+GCSORT 1.0.0 (beta).
+
+
+INSTALL
+
+ *Requirements
+	GNU C compiler  (version ???, work with 4.3.2)
+	GNU Make        (version ???, work with 3.81)
+	GNU Bison       (version ???, work with 2.4.1)
+	GNU Flex        (version ???, work with 2.5.35)
+
+    GNU Cobol (Version 1.1.0)  library and include file for : libcob - mpir
+    OR
+    GNU Cobol (Version 2.0.0)  library and include file for : libcob - mpir
+    
+    
+ *Install
+    Linux / Windows environment:    
+    After checkout in folder build_linux modify 
+    1) compile.sh # change the paths according to your needs
+    2) Makefile   # change the paths according to your needs / local setup
+    3) chmod 777 compile.sh  #enable for execution only for linux
+    
+    For linux   :     ./compile.sh 
+	For windows :     make
+
+ *Usage
+    GCSORT --help   for help from command line.
+    Folder testcase for example of commands.
+    
+    Check for the functionnality implemented (listed in README) to see in this fit your needs.
+    
+    Setting environment variable for best performance and view details of statistics.
+    
+ *Tests case
+    Folder tests: 
+        1) gcsort/tests/script_linux    for Linux   environment
+        2) gcsort\tests\script_windows  for Windows environment
+        Requirements:  GnuCOBOL installed
+        
+        Sequence to activate tests.
+        1) 00-1-CompilePrograms  ---> compile Cobol prgrams.
+        2) 00-2-CreateFiles      ---> create file input
+        3) 00-3-CopyFiles        ---> copy files from folder filesin to files
+        4) 00-4-ExecuteScripts   ---> execute tests
+        
+        There are two groups of tests:
+        a) GROUP1 - Take file param, only for check control statements
+        b) GROUP2 - Cobol program and GCSORT module
+        
+        If test is ok script print 
+                "* ======================== *"
+                " Group 1   TEST PASSED      "
+                " Group 2   TEST PASSED      "
+                "* ======================== *"
+
+        In log folder are presents log execution.                
+        
+        
+        

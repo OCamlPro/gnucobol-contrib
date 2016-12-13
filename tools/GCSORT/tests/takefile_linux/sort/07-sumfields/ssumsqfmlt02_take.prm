@@ -1,0 +1,8 @@
+
+        * SSUMSQFMLT02
+
+    
+USE     ../files/fil_outfil_100.txt         ORG LS RECORD F,3000  
+GIVE    ../files/fil_outfil_100_020.txt.srt ORG LS RECORD F,3000    
+SORT FIELDS=(5,6,A),FORMAT=CH,EQUALS                                       
+      SUM FIELDS=(NONE)

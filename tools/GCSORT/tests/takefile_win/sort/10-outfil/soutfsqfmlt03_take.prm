@@ -1,0 +1,6 @@
+USE     ..\files\fil_outfil_001.txt     ORG LS RECORD F,3000  
+GIVE    ..\files\fil_outfil_001_012.txt ORG LS RECORD V,10,3000    
+  SORT FIELDS=(1,16,CH,A)                                                       
+  OUTFIL OUTREC=(01,16,2X,28,2,C'  ',41X)                                       
+  SUM FIELDS=NONE                                                               
+  END                                                                           

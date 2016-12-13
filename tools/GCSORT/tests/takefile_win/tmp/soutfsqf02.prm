@@ -1,0 +1,10 @@
+SORT FIELDS=(8,5,CH,A)                                                                             
+USE  dd_infile   RECORD F,90 ORG SQ                                                               
+GIVE dd_outfile  RECORD F,90 ORG SQ                        
+OUTFIL OMIT =(8,2,CH,EQ,C'AA',AND,32,7,ZD,LT,20),       
+        FILES=dd_outfil_01                                                                        
+OUTFIL OMIT =(8,2,CH,EQ,C'GG',AND,32,7,ZD,LT,35),       
+        FILES=dd_outfil_02                                                                        
+OUTFIL OMIT =(8,2,CH,EQ,C'EE',AND,32,7,ZD,GT,-10),      
+        FILES=dd_outfil_03                                                                        
+OUTFIL FNAMES=dd_outfil_save,SAVE                                                                 
