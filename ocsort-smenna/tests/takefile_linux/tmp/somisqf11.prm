@@ -1,4 +1,0 @@
- SORT FIELDS=(8,5,CH,A)                                                 
- OMIT COND=(8,2,CH,LE,C'MM',AND,13,3,BI,GT,-10,OR,16,4,FI,GT,10,AND,20,8,FL,LE,40,OR,28,4,PD,LE,10,AND,32,7,ZD,GE,15)
- USE  dd_infile     RECORD F,90 ORG SQ                                  
- GIVE dd_outfile    RECORD F,90 ORG SQ                                  

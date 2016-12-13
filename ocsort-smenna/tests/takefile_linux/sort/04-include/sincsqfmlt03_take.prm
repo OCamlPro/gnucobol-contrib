@@ -1,8 +1,0 @@
-
-    * SINCSQFMLT03
-
-USE     ../files/fil_outfil_100.txt             ORG LS RECORD F,3000  
-GIVE    ../files/fil_outfil_100_009.txt.srt     ORG LS RECORD F,3000  
-SORT FIELDS=COPY                                                                
-INCLUDE COND=(46,9,EQ,C'000550400',OR,46,9,EQ,C'000552400',OR,46,9,EQ,C'000553200'),FORMAT=CH                                  
- OUTFIL OUTREC=(5,496),CONVERT

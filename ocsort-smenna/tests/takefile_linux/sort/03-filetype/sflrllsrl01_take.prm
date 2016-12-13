@@ -1,7 +1,0 @@
-**** STEP1
-** Generate relative files step 1
-***** STEP1
- SORT FIELDS=(96,5,ZD,A)
- USE   ../files/inp002.txt      ORG LS RECORD F,100
- GIVE  ../files/inp002rl.dat    ORG RL RECORD F,100 
-*****

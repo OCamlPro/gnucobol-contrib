@@ -1,7 +1,0 @@
-
-    * SINCSQFZD01
-
-SORT FIELDS(47,9,ZD,A)
-USE    ..\files\sqzd01          RECORD F,158 ORG SQ 
-GIVE   ..\files\sqzd01_04.srt   RECORD F,158 ORG SQ
-INCLUDE COND=(25,5,PD,EQ,999999999)

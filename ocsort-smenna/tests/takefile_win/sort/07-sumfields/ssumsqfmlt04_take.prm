@@ -1,7 +1,0 @@
-
-    * SSUMSQFMLT04
-    
-SORT FIELDS(1,10,CH,A,11,2,BI,A,13,3,PD,A,16,5,ZD,A,21,1,FI,A)  
-SUM  FIELDS=(11,2,BI,13,3,PD,16,5,ZD,21,1,FI) 
-USE  ..\files\sqvar1        RECORD F,21 ORG SQ   
-GIVE ..\files\sqvar1.srt    RECORD F,21 ORG SQ 

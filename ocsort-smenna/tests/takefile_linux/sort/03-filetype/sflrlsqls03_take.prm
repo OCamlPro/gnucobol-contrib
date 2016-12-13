@@ -1,5 +1,0 @@
-** STEP3
-  SORT FIELDS=(96,5,ZD,A)
-  USE  ../files/inp002sq.sq ORG SQ RECORD F,100
-  GIVE ../files/inp002ls.ls ORG LS RECORD F,100
- ** 

@@ -1,5 +1,0 @@
-
-    USE  ..\files\fil_outfil_100.txt            ORG LS RECORD F,250  
-    GIVE ..\files\fil_outfil_100_024.txt.srt    ORG LS RECORD F,250
-
-    INREC BUILD=(C'TARG,''',9,8,C'''',80:X)

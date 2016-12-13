@@ -1,7 +1,0 @@
-
-    * SINCSQFCH01
-SORT FIELDS=COPY                                                                
- USE   ../files/fil_outfil_100.txt      ORG LS RECORD F,250  
- GIVE  ../files/fil_outfil_100.txt.srt  ORG LS RECORD F,250
- 
- INCLUDE COND=(36,3,EQ,C'>7<',OR,36,3,EQ,C'>0<',OR,36,3,EQ,C'>5<'),FORMAT=CH                                  

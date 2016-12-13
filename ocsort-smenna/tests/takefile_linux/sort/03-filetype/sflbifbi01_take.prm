@@ -1,6 +1,0 @@
-** Input SQ Fix, Output SQ Var
-SORT FIELDS (3,1,CH,A) 
-SUM FIELDS=(43,7,51,7),FORMAT=BI 
-use     ../files/sqbi03 record f,101 org sq 
-give    ../files/sqbi03_03.srt  record v,1,101 org sq
-END

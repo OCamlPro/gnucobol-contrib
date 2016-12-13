@@ -1,7 +1,0 @@
-USE     ../files/fil_outfil_001.txt         ORG LS RECORD F,3000  
-GIVE    ../files/fil_outfil_001_015.txt     ORG LS RECORD V,20,3000    
-  SORT FIELDS=COPY                                                              
-  OUTFIL OUTREC=(01,16,2X,18,2,C'/',20,2,C'/',22,2,2X,                          
-                 24,2,C':',26,2,2X,28,2,C'  ',41X)                              
-  OMIT COND=(29,1,CH,EQ,C'C')                                                   
-  END                                                                           

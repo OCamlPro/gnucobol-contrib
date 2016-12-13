@@ -1,8 +1,0 @@
-
-
-    * SOMISQFFL01_Take.PRM
-
-SORT FIELDS(6,4,FL,A) 
-USE   ..\files\sqfl01           RECORD F,28 ORG SQ 
-GIVE  ..\files\sqfl01_04.srt    RECORD F,28 ORG SQ 
-OMIT COND=(6,4,FL,LT,-999999999)

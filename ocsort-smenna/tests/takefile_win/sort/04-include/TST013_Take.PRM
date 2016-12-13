@@ -1,4 +1,0 @@
-USE     ..\files\fil_outfil_100.txt             ORG LS RECORD F,3000  
-GIVE    ..\files\fil_outfil_100_013.txt.srt     ORG LS RECORD F,3000  
-    OPTION   COPY                                                                    
-INCLUDE  COND=(21,5,CH,EQ,C'11400',OR,21,5,CH,EQ,C'03500')  

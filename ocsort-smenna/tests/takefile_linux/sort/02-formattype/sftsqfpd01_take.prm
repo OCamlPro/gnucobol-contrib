@@ -1,7 +1,0 @@
-
-    * SFTSQFPD01	Sort file with	PD	Column	SQ	File	Single file multi columns PD	
-    * file SQPD03
-
-SORT FIELDS(25,5,PD,A,31,5,PD,A) 
-USE   ../files/sqpd03           RECORD F,212 ORG SQ 
-GIVE  ../files/sqpd03_02.srt    RECORD F,212 ORG SQ

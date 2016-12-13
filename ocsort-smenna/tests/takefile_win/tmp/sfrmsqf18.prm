@@ -1,8 +1,0 @@
-SORT FIELDS=(8,5,CH,A)                                                                                              
-    OMIT COND=(8,2,CH,LE,C'FF',AND,         
-                 39,4,FL,GT,-10,OR,            
-                 43,7,CLO,GT,10,AND,           
-                 50,8,CST,LE,-30,OR,            
-                 58,8,CSL,LE,10)               
-USE  dd_infile		RECORD F,90 ORG SQ                                                    
-GIVE dd_outfile 	RECORD F,90 ORG SQ                                                    

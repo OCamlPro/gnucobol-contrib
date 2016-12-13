@@ -1,8 +1,0 @@
-
-        * SSUMSQFZD01
-  
-                * 
-SORT FIELDS(4,1,CH,A)
-SUM  FIELDS=(1,3,ZD,5,3,ZD,9,5,ZD,15,5,ZD,21,7,ZD,29,7,ZD,37,9,ZD,47,9,ZD,57,18,ZD,76,18,ZD,95,31,ZD,127,31,ZD)
-USE   ..\files\sqzd01           RECORD F,158 ORG SQ 
-GIVE  ..\files\sqzd01_07.srt    RECORD F,158 ORG SQ

@@ -1,4 +1,0 @@
-SORT FIELDS=(8,5,CH,A)                                         
-SUM FIELDS=(NONE)                                              
-USE  dd_infile   RECORD F,90 ORG SQ                            
-GIVE dd_outfile  RECORD F,90 ORG SQ                            

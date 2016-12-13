@@ -1,8 +1,0 @@
-
-    * SFTSQFFL01
-
-
-SORT FIELDS(1,4,FL,A) 
-SUM FIELDS=(1,4,FL,6,4,FL,11,8,FL,20,8,FL) 
-USE   ..\files\sqfl01           RECORD F,28 ORG SQ 
-GIVE  ..\files\sqfl01_02.srt    RECORD F,28 ORG SQ 

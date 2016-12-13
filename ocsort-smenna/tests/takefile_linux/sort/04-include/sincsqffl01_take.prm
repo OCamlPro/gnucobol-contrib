@@ -1,8 +1,0 @@
-
-
-    * SINCSQFFL01
-
-SORT FIELDS(6,4,FL,A) 
-USE   ../files/sqfl01       RECORD F,28 ORG SQ 
-GIVE  ../files/sqfl01_04.srt   RECORD F,28 ORG SQ 
-INCLUDE COND=(6,4,FL,GE,-999999999)
