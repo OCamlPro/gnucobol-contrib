@@ -49,7 +49,7 @@ class GuiHandler:
         self.srcCombo = self.ui.findChild(QComboBox, 'srcCombo')
         self.srcCombo.addItem('Quelle wählen')
         for dirpath, dirs, files in walk(self.env.getSrcFolder()):
-            filteredList = [elem for elem in files if elem.endswith('.dll')]
+            filteredList = [elem for elem in files if elem.endswith('.dll') or elem.endswith('.so')]
             self.srcCombo.addItems(filteredList)
         
         # Connect Slots with handle methods
@@ -62,8 +62,6 @@ class GuiHandler:
         
         self.ui.show()
     
-
-    @pyqtSlot()    
     def loadSrcFile(self):
         filename = join(self.env.getSrcFolder(), self.srcCombo.currentText())
 
@@ -102,7 +100,6 @@ class GuiHandler:
                 self.breakpoints.pd_line = rowNr
                 break
 
-    @pyqtSlot(int, int)
     def setBP(self, row, col):
         if row > self.breakpoints.pd_line and not self.table.item(row, 1).text().startswith('*'):
             if self.table.item(row, 0).background().color() == QColor(255, 0, 0):
@@ -110,16 +107,14 @@ class GuiHandler:
             else:
                 self.table.item(row, 0).setBackground(QColor(255, 0, 0))
         
-    @pyqtSlot()
     def saveBP(self):
         setBPs = []
         for rowNr in range(self.table.rowCount()):
             if self.table.item(rowNr, 0).background().color() == QColor(255, 0, 0):
                 setBPs.append(str(rowNr + 1))
+        if self.breakpoints:
+            self.breakpoints.saveBreakpoints((self.srcCombo.currentText(), setBPs))
         
-        self.breakpoints.saveBreakpoints((self.srcCombo.currentText(), setBPs))
-        
-    @pyqtSlot()
     def onSearchTextChanged(self):
         searchText = self.searchField.text().lower()
         startRow = 0
@@ -132,12 +127,11 @@ class GuiHandler:
             if(searchText in self.table.item(rowNr, 1).text().lower()):
                 self.table.setCurrentCell(rowNr, 1)
                 break
-            
-    @pyqtSlot()
+
     def onSearchButtonClicked(self):
         searchText = self.searchField.text().lower()
         startRow = self.table.currentRow() + 1
-        
+        rowNr = 0
         for rowNr in range(startRow, self.table.rowCount()):
             if(searchText in self.table.item(rowNr, 1).text().lower()):
                 self.table.setCurrentCell(rowNr, 1)
@@ -165,4 +159,3 @@ class GuiHandler:
             linenumber_tuple = QInputDialog.getInt(self.ui, 'Gehe zu ...', 'Zeilennummer:', startline, startline, maxlines)
             if linenumber_tuple[1]:
                 self.table.setCurrentCell(linenumber_tuple[0] - 1, 1)
-                

@@ -7,7 +7,23 @@ Created on 04.03.2015
 '''
 
 import os
-from _ctypes import LoadLibrary, FreeLibrary
+try:
+    from _ctypes import LoadLibrary as win32LoadLibrary
+    from _ctypes import FreeLibrary as win32FreeLibrary
+
+    def LoadLibrary(moduleName, libPath):
+        return win32LoadLibrary(os.path.join(libPath, moduleName))
+
+    def FreeLibrary(lib):
+        win32FreeLibrary(lib._handle)
+
+except ImportError:
+    def LoadLibrary(moduleName, libPath):
+        return CDLL(os.path.join(libPath, moduleName))
+
+    def FreeLibrary(lib):
+        del lib
+
 from ctypes import c_char_p, c_ulong, CDLL, pointer
 from Utils.LoadEnv import EnvLoader
 from Utils.StringUtils import find_last_occur
@@ -21,17 +37,18 @@ class DebugModuleLoader():
     def __init__(self, moduleName):
         self.moduleName = moduleName[:find_last_occur(moduleName, '.')]
         self.libPath = EnvLoader().getSrcFolder()
-        self.lib = CDLL(self.moduleName)
+        self.lib = LoadLibrary(moduleName, self.libPath)
         
     def getModuleLineCount(self):
+        print(dir(self.lib))
         func = getattr(self.lib, 'get_linecount_{}'.format(self.moduleName))
         return func()
     
     def loadModule(self, moduleName):
         # first unload the current module
         if self.lib:
-            FreeLibrary(self.lib._handle)
-        self.lib = LoadLibrary(os.path.join(self.libPath, moduleName))
+            FreeLibrary(self.lib)
+        self.lib = LoadLibrary(moduleName, self.libPath)
         
     def unloadModule(self):
         if self.lib:
@@ -49,6 +66,5 @@ class DebugModuleLoader():
             res = responseBuffer.value.decode('latin-1')
         except:
             res = '      * Dekodierungsfehler'    
-        
+
         return res
-    

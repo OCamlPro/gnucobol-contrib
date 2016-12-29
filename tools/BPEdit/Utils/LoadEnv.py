@@ -1,5 +1,4 @@
-#-*- coding: -*- coding: utf-8 -*-
-
+#-*- coding: utf-8 -*-
 '''
 Created on 03.03.2015
 
@@ -39,5 +38,3 @@ class EnvLoader():
     def initializePath(self):
         path = os.environ.get('PATH', '-1')
         os.environ['PATH'] = '{};{};{}'.format(path, self.getSrcFolder(), self.env_dict['libcob_path'])
-    
-    

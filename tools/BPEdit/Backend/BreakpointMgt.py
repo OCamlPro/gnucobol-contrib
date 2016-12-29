@@ -30,12 +30,9 @@ class BPMgr():
                 if not splittedLine[0] in self.bp_dict.keys():
                     self.bp_dict[splittedLine[0]] = []
                 self.bp_dict[splittedLine[0]].append(splittedLine[1].strip())    
-                
-
-            f.close()            
-        except:
-            raise IOError('Could not initialize Breakpoints ...')
-        
+            f.close()
+        except OSError:
+            print('Could not initialize Breakpoints ...')
     
     def loadBreakpoints(self, filepath):
         filename = os.path.basename(filepath)
@@ -50,12 +47,11 @@ class BPMgr():
         self.__writeBreakpoints()
         
     def __writeBreakpoints(self):
-#         try:
-        f = open(self.env.getBPFile(), 'w')
-        for bp_file, bp_list in self.bp_dict.items():
-            for row in bp_list:
-                f.write('{0};{1:05d}\n'.format(bp_file, int(row)))
-        f.close()
-#         except:
-#             raise IOError('Could not write Breakpoints ...')
-
+        try:
+            f = open(self.env.getBPFile(), 'w')
+            for bp_file, bp_list in self.bp_dict.items():
+                for row in bp_list:
+                    f.write('{0};{1:05d}\n'.format(bp_file, int(row)))
+            f.close()
+        except OSError:
+            print('Could not write Breakpoints ...')
