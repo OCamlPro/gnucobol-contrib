@@ -10,12 +10,15 @@ from pyqode.core.api import ColorScheme
 
 from bpedit.backend.cwrapper import DebugModuleLoader
 from bpedit.backend.breakpoints_mgr import BreakpointsManager
+from bpedit.backend.settings import Settings
 from bpedit.gui.breakpoints_panel import BreakpointsPanel
 
 
 class GuiHandler:
     def __init__(self, env_loader):
+        self.breakpoints = None
         self.env = env_loader
+        self.settings = Settings()
         self.__init_ui()
 
     def __init_ui(self):
@@ -51,8 +54,7 @@ class GuiHandler:
             self.srcCombo.addItems(filteredList)
 
     def __setup_code_editor(self):
-        if qApp.palette().base().color().lightness() < 128:
-            self.codeEdit.syntax_highlighter.color_scheme = ColorScheme('darcula')
+        self.codeEdit.syntax_highlighter.color_scheme = ColorScheme(self.settings.color_scheme)
         self.codeEdit.setReadOnly(True)
         self.codeEdit.read_only_panel.hide()
         self.codeEdit.global_checker_panel.hide()
