@@ -6,3 +6,7 @@
 * allow a path list for modules (current limit: 1)
 * read module path from COB_LIBRARY_PATH
 * documentation
+* libcob_path does not work on GNU/Linux
+* non-clean exit when
+    - paths.ini not found
+    - libcob not found on GNU/Linux (need to set LD_LIBRARY_PATH)
