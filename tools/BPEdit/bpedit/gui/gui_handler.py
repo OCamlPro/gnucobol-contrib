@@ -2,7 +2,7 @@ from os import walk
 from os.path import join
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QComboBox, QDockWidget, QPushButton, qApp
+from PyQt5.QtWidgets import QComboBox, QDockWidget, QPushButton, QMenu, qApp
 from pyqode.cobol.widgets import CobolCodeEdit
 from pyqode.cobol.widgets import OutlineTreeWidget
 from pyqode.cobol.widgets import PicOffsetsTable
@@ -14,14 +14,6 @@ from bpedit.gui.breakpoints_panel import BreakpointsPanel
 
 
 class GuiHandler:
-    ui = None
-    srcCombo = None
-    table = None
-    breakpoints = None
-    saveButton = None
-    searchField = None
-    searchButton = None
-
     def __init__(self, env_loader):
         self.env = env_loader
         self.__init_ui()
@@ -32,7 +24,11 @@ class GuiHandler:
         # Find controls and save references
         self.saveButton = self.ui.findChild(QPushButton, name='saveButton')
         self.codeEdit = self.ui.findChild(CobolCodeEdit, name='codeEdit')
-        self.srcCombo = self.ui.findChild(QComboBox, 'srcCombo')
+        self.srcCombo = self.ui.findChild(QComboBox, name='srcCombo')
+        self.searchMenu = self.ui.findChild(QMenu, name='searchMenu')
+        self.searchMenu.addAction(self.codeEdit.search_panel.actionSearch)
+        self.searchMenu.addAction(self.codeEdit.action_goto_line)
+
         outlineDock = self.ui.findChild(QDockWidget, name='outlineDock')
         outlineDock.setWindowTitle("Outline")
         offsetDock = self.ui.findChild(QDockWidget, name='offsetDock')
