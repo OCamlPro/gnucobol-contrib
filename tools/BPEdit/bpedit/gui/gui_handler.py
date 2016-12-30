@@ -33,6 +33,10 @@ class GuiHandler:
         self.saveButton = self.ui.findChild(QPushButton, name='saveButton')
         self.codeEdit = self.ui.findChild(CobolCodeEdit, name='codeEdit')
         self.srcCombo = self.ui.findChild(QComboBox, 'srcCombo')
+        outlineDock = self.ui.findChild(QDockWidget, name='outlineDock')
+        outlineDock.setWindowTitle("Outline")
+        offsetDock = self.ui.findChild(QDockWidget, name='offsetDock')
+        offsetDock.setWindowTitle("Offset")
 
         self.__setup_code_editor()
         self.__load_src_files()
