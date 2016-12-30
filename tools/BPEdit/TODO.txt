@@ -1,10 +1,8 @@
 
  ~~~ BPE - Breakpoint Editor ~~~ ToDo ~~~
 
-* test with GNU/Linux and MacOS
+* test with MacOS
 * set options within BPE
 * allow a path list for modules (current limit: 1)
 * read module path from COB_LIBRARY_PATH
-* use pyQode for syntax highlighting and navigation pane,
-  see https://github.com/pyQode/pyQode/issues/57
 * documentation
