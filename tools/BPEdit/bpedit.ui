@@ -195,8 +195,49 @@
      <string>Search</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuOptions">
+    <property name="title">
+     <string>Optio&amp;ns</string>
+    </property>
+    <widget class="QMenu" name="colorSchemesMenu">
+     <property name="title">
+      <string>Color scheme</string>
+     </property>
+    </widget>
+    <addaction name="highlightWhitespacesAction"/>
+    <addaction name="setTabWidthAction"/>
+    <addaction name="chooseEditorFontAction"/>
+    <addaction name="colorSchemesMenu"/>
+   </widget>
    <addaction name="searchMenu"/>
+   <addaction name="menuOptions"/>
   </widget>
+  <action name="highlightWhitespacesAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Highlight whitespaces</string>
+   </property>
+  </action>
+  <action name="setTabWidthAction">
+   <property name="text">
+    <string>Set tab width</string>
+   </property>
+  </action>
+  <action name="chooseEditorFontAction">
+   <property name="text">
+    <string>Choose editor font</string>
+   </property>
+  </action>
+  <action name="actionDarcula">
+   <property name="text">
+    <string>Darcula</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

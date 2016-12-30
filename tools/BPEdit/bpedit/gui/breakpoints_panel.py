@@ -17,14 +17,15 @@ class BreakpointsPanel(MarkerPanel):
     def __init__(self):
         MarkerPanel.__init__(self)
         self._breakpoints = []
-        if qApp.palette().base().color().lightness() < 128:
-            self.background = QColor("#3A2323")
         self.add_marker_requested.connect(self.__add_breakpoint)
         self.remove_marker_requested.connect(self.__remove_breakpoint)
         self.maxLine = sys.maxsize
 
-    def __update_markers(self):
-        for bp in self._breakpoints:
+    def update_markers(self):
+        breakpoints = self._breakpoints.copy()
+        self._breakpoints.clear()
+        self.clear_markers()
+        for bp in breakpoints:
             self.__add_breakpoint(int(bp) - 1)
 
     def __add_breakpoint(self, line):
@@ -33,6 +34,7 @@ class BreakpointsPanel(MarkerPanel):
             icon = qApp.style().standardIcon(QStyle.SP_BrowserStop)
             marker = Marker(line, icon, "Breakpoint")
             self.add_marker(marker)
+            marker.decoration.draw_order = 2
 
     def __remove_breakpoint(self, line):
         for m in self.marker_for_line(line):

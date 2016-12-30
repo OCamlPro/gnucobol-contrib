@@ -2,11 +2,13 @@ from os import walk
 from os.path import join
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QComboBox, QDockWidget, QPushButton, QMenu, qApp
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QActionGroup
+from PyQt5.QtWidgets import QComboBox, QDockWidget, QPushButton, QMenu, QAction, QMainWindow, QInputDialog, QFontDialog
 from pyqode.cobol.widgets import CobolCodeEdit
 from pyqode.cobol.widgets import OutlineTreeWidget
 from pyqode.cobol.widgets import PicOffsetsTable
-from pyqode.core.api import ColorScheme
+from pyqode.core.api import ColorScheme, PYGMENTS_STYLES
 
 from bpedit.backend.cwrapper import DebugModuleLoader
 from bpedit.backend.breakpoints_mgr import BreakpointsManager
@@ -25,12 +27,27 @@ class GuiHandler:
         self.ui = uic.loadUi(self.env.get_ui_file())
 
         # Find controls and save references
+        self.main_window = self.ui.findChild(QMainWindow, name='MainWindow')
         self.saveButton = self.ui.findChild(QPushButton, name='saveButton')
         self.codeEdit = self.ui.findChild(CobolCodeEdit, name='codeEdit')
         self.srcCombo = self.ui.findChild(QComboBox, name='srcCombo')
         self.searchMenu = self.ui.findChild(QMenu, name='searchMenu')
         self.searchMenu.addAction(self.codeEdit.search_panel.actionSearch)
         self.searchMenu.addAction(self.codeEdit.action_goto_line)
+
+        # Options
+        self.highlightWhitespacesAction = self.ui.findChild(QAction, name='highlightWhitespacesAction')
+        self.highlightWhitespacesAction.setChecked(self.settings.highlight_whitespaces)
+        self.setTabWidthAction = self.ui.findChild(QAction, name='setTabWidthAction')
+        self.chooseEditorFontAction = self.ui.findChild(QAction, name='chooseEditorFontAction')
+        self.colorSchemesMenu = self.ui.findChild(QMenu, name='colorSchemesMenu')
+        self.colorSchemesActionGroup = QActionGroup(self.colorSchemesMenu)
+        self.colorSchemesActionGroup.triggered.connect(self.__on_color_scheme_action_triggered)
+        for style in PYGMENTS_STYLES:
+            action = self.colorSchemesMenu.addAction(style)
+            action.setCheckable(True)
+            action.setChecked(action == self.settings.color_scheme)
+            self.colorSchemesActionGroup.addAction(action)
 
         outlineDock = self.ui.findChild(QDockWidget, name='outlineDock')
         outlineDock.setWindowTitle("Outline")
@@ -46,6 +63,9 @@ class GuiHandler:
     def __connect_slots(self):
         self.srcCombo.currentIndexChanged.connect(self.__load_src_file)
         self.saveButton.clicked.connect(self.__save_breakpoints)
+        self.highlightWhitespacesAction.toggled.connect(self.__toggle_highlight_whitespaces)
+        self.setTabWidthAction.triggered.connect(self.__set_tab_width)
+        self.chooseEditorFontAction.triggered.connect(self.__choose_editor_font)
 
     def __load_src_files(self):
         self.srcCombo.addItem('Select source')
@@ -58,6 +78,7 @@ class GuiHandler:
         self.codeEdit.setReadOnly(True)
         self.codeEdit.read_only_panel.hide()
         self.codeEdit.global_checker_panel.hide()
+        self.codeEdit.show_whitespaces = self.settings.highlight_whitespaces
         outlineTree = self.ui.findChild(OutlineTreeWidget, name='outlineTree')
         outlineTree.set_editor(self.codeEdit)
         offsetTable = self.ui.findChild(PicOffsetsTable, name='offsetTable')
@@ -66,6 +87,7 @@ class GuiHandler:
         offsetTable.show_requested.connect(offsetDock.show)
         offsetDock.hide()
         self.breakpointsPanel = self.codeEdit.panels.append(BreakpointsPanel())
+        self.__update_breakpoints_background_color()
 
     def __load_src_file(self):
         if self.srcCombo.currentIndex() <= 0:
@@ -93,3 +115,35 @@ class GuiHandler:
         if not self.breakpoints:
             self.breakpoints = BreakpointsManager(self.env)
         self.breakpoints.save_breakpoints((self.srcCombo.currentText(), self.breakpointsPanel.breakpoints))
+
+    def __toggle_highlight_whitespaces(self, enable):
+        self.settings.highlight_whitespaces = enable
+        self.codeEdit.show_whitespaces = self.settings.highlight_whitespaces
+
+    def __set_tab_width(self):
+        tab_width, accepted = QInputDialog.getInt(
+            self.main_window, 'Select tab width', "Tab width", self.settings.tab_width, 2)
+        if accepted:
+            self.settings.tab_width = tab_width
+            self.codeEdit.tab_length = tab_width
+
+    def __choose_editor_font(self):
+        font, accepted = QFontDialog.getFont(self.codeEdit.font())
+        if accepted:
+            font_name = font.family()
+            self.settings.font = font_name
+            self.codeEdit.font_name = font_name
+
+    def __on_color_scheme_action_triggered(self, action):
+        color_scheme = action.text().replace('&', '')
+        self.settings.color_scheme = color_scheme
+        self.codeEdit.syntax_highlighter.color_scheme = color_scheme
+        self.__update_breakpoints_background_color()
+
+    def __update_breakpoints_background_color(self):
+        editor_background = ColorScheme(self.settings.color_scheme).background
+        if editor_background.lightness() < 128:
+            self.breakpointsPanel.background = QColor('#3A2323')
+        else:
+            self.breakpointsPanel.background = QColor('#FFC8C8')
+        self.breakpointsPanel.update_markers()
