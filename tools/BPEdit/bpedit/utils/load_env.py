@@ -8,15 +8,14 @@ class EnvLoader:
         self.__load_config()
 
     def __load_config(self):
-        f = open('paths.ini', 'r')
-        if f:
+        with open('paths.ini') as f:
             for line in f.readlines():
                 if line[0] == '#' or line[0] == ';':
                     continue
                 splitted_line = line.split('=')
-                if self.env_dict.__contains__(splitted_line[0].strip()):
-                    self.env_dict[splitted_line[0].strip()] = splitted_line[1].strip()
-        f.close()
+                key = splitted_line[0].strip()
+                if key in self.env_dict:
+                    self.env_dict[key] = splitted_line[1].strip()
 
     def get_breakpoints_file(self):
         return self.env_dict['bp_file']
