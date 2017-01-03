@@ -1,11 +1,11 @@
 
  ~~~ BPE - Breakpoint Editor ~~~ ToDo ~~~
 
+* documentation
 * test with MacOS
 * set options within BPE
 * allow a path list for modules (current limit: 1)
 * read module path from COB_LIBRARY_PATH
-* documentation
 * libcob_path does not work on GNU/Linux
 * non-clean exit when
     - paths.ini not found
