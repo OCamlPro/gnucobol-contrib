@@ -41,7 +41,7 @@ WORKING-STORAGE SECTION.
                              X'C8CDCDBB20'  &
                              X'C8CDCDBC20'.
    03 kNum-6 pic x(15) value X'C9CDCDBB20'  &
-                             X'C9CDCDB920'  &
+                             X'CCCDCDBB20'  &
                              X'C8CDCDBC20'.
    03 kNum-7 pic x(15) value X'C9CDCDBB20'  &
                              X'2020CDB920'  &
