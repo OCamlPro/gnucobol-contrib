@@ -34,7 +34,7 @@ class BreakpointsManager:
         pos = find_last_occur(os.path.basename(filename), '.')
         
         if not filename[:pos] in self.bp_dict.keys():
-            return None
+            return []
         return self.bp_dict[filename[:pos]]
     
     def save_breakpoints(self, bp_tuple):

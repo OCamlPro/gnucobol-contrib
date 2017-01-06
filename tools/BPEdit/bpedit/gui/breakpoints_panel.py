@@ -11,8 +11,11 @@ class BreakpointsPanel(MarkerPanel):
 
     @breakpoints.setter
     def breakpoints(self, breakpoints):
-        for bp in breakpoints:
-            self.__add_breakpoint(int(bp) - 1)
+        if(breakpoints != []):
+            for bp in breakpoints:
+                self.__add_breakpoint(int(bp) - 1)
+        else:
+            self._breakpoints = breakpoints
 
     def __init__(self):
         MarkerPanel.__init__(self)
