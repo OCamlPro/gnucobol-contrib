@@ -109,20 +109,21 @@
 *> ***********************************************************************************
 *> ASCII CHARACTERS
 *> ***********************************************************************************
-     *> lowercase (a-z) from 97 to 122
-     05  Key-a            pic 9(3) value 097.
-     05  Key-b            pic 9(3) value 098.
-     05  Key-c            pic 9(3) value 099.
-     05  Key-d            pic 9(3) value 100.
+     *>  lowercase (a-z) from 97 to 122
+     05  Key-lc-a         pic 9(3) value 097.
+     05  Key-lc-b         pic 9(3) value 098.
+     05  Key-lc-c         pic 9(3) value 099.
+     05  Key-lc-d         pic 9(3) value 100.
      *> ......................................
-     05  Key-z            pic 9(3) value 122.
-     *> uppercase (A-Z)  from 65 to 90
-     05  Key-A            pic 9(3) value 065.
-     05  Key-B            pic 9(3) value 066.
-     05  Key-C            pic 9(3) value 067.
-     05  Key-D            pic 9(3) value 068.
+     05  Key-lc-z         pic 9(3) value 122.
+
+     *>  uppercase (A-Z) from 65 to 90
+     05  Key-uc-A         pic 9(3) value 065.
+     05  Key-uc-B         pic 9(3) value 066.
+     05  Key-uc-C         pic 9(3) value 067.
+     05  Key-uc-D         pic 9(3) value 068.
      *> ......................................
-     05  Key-Z            pic 9(3) value 090.
+     05  Key-uc-Z         pic 9(3) value 090.
 
      05  Key-0            pic 9(3) value 048.
      05  Key-1            pic 9(3) value 049.
