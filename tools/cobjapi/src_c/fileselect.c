@@ -26,7 +26,7 @@
 *>
 *> Date-Written: 2003.02.26
 *>
-*> Tectonics:    gcc -c -O2 -Wall -D_GCC fileselect.c
+*> Tectonics:    gcc -c -O2 -Wall fileselect.c
 *>
 *> Usage:        The function __fileselect will be used in japilib.c.
 *>
@@ -367,11 +367,7 @@ char* __fileselect(int jframe, char *title, char *filename, char *filter)
 		filename[0]='\0';
 	else
 	{
-#ifdef WIN32
-		sprintf(filename,"%s\\%s",localpath,localname);
-#else
-		sprintf(filename,"%s/%s",localpath,localname);
-#endif
+		sprintf(filename,"%s%c%s",localpath,PATHSEP,localname);
 	}
 	return(filename);
 }

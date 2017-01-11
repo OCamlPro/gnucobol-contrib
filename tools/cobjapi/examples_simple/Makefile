@@ -1,5 +1,7 @@
+# ToDo: makefile for unix system
+
 COBC = cobc
-COBCFLAGS = -x -free -I"../src_cobol"
+COBCFLAGS = -x -free -I"../src_cobol" -lws2_32
 # static link
 COBJAPI = ../src_cobol/cobjapi.o
 CJAPI = ../src_c/japilib.o \
@@ -8,15 +10,16 @@ CJAPI = ../src_c/japilib.o \
 
 all : alert.exe borderlayout.exe borderpanel.exe button.exe canvas.exe \
       checkbox.exe choice.exe colors.exe colors1.exe componentlistener.exe \
-	  cursor.exe daemon.exe dialog.exe dialogmodal.exe filedialog.exe \
+	  cursor.exe daemon.exe filedialog.exe \
 	  flowlayout.exe flowsimple.exe focuslistener.exe font.exe frame.exe \
 	  graphic.exe graphicbutton.exe graphiclabel.exe gridlayout.exe \
-	  image.exe insets.exe keylistener.exe label.exe lines.exe list.exe \
+	  image.exe keylistener.exe label.exe lines.exe list.exe \
 	  listmultiple.exe menu.exe mousebuttons.exe mouselistener.exe \
 	  panel.exe popupmenu.exe print.exe radiobutton.exe rubberband.exe \
 	  scaledimage.exe scrollbar.exe scrollpane.exe simple.exe \
-      simplemenu.exe textfield.exe vumeter.exe window.exe \
-      windowlistener.exe	  
+	  simplemenu.exe textfield.exe vumeter.exe window.exe \
+	  windowlistener.exe \
+	  dialog.exe dialogmodal.exe insets.exe
 
 # compile
 alert.exe : alert.cob
@@ -90,10 +93,10 @@ graphiclabel.exe : graphiclabel.cob
 
 gridlayout.exe : gridlayout.cob
 	$(COBC) $(COBCFLAGS) gridlayout.cob        $(COBJAPI) $(CJAPI)
-	
+
 image.exe : image.cob
 	$(COBC) $(COBCFLAGS) image.cob             $(COBJAPI) $(CJAPI)
-	
+
 insets.exe : insets.cob
 	$(COBC) $(COBCFLAGS) insets.cob            $(COBJAPI) $(CJAPI)
 
@@ -108,7 +111,7 @@ lines.exe : lines.cob
 
 list.exe : list.cob
 	$(COBC) $(COBCFLAGS) list.cob              $(COBJAPI) $(CJAPI)
-	
+
 listmultiple.exe : listmultiple.cob
 	$(COBC) $(COBCFLAGS) listmultiple.cob      $(COBJAPI) $(CJAPI)
 	

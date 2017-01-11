@@ -26,7 +26,7 @@
 *>
 *> Date-Written: 2003.02.26
 *>
-*> Tectonics:    gcc -c -O2 -Wall -D_GCC japilib.c
+*> Tectonics:    gcc -c -O2 -Wall japilib.c
 *>
 *> Usage:        Call these functions through the GnuCOBOL wrapper: cobjapi.cob
 *>
@@ -68,7 +68,7 @@ extern int __write_image(FILE*,char*,char*,char*,int,int,int);
    #define _UNIX
 #endif
 
-#ifdef gcc
+#if defined (gcc) || defined (__GNUC__)
 	#define _GCC
 #endif
 
@@ -76,8 +76,10 @@ extern int __write_image(FILE*,char*,char*,char*,int,int,int);
 	#define _MSC_VER
 #endif
 
-#ifdef bcc32
-	#define _MSC_VER
+#if defined (bcc32) || defined (__BORLANDC__)
+	#ifndef bcc32
+		#define bcc32
+	#endif
 	#ifndef _WIN32
 		#define _WIN32
 	#endif
@@ -85,20 +87,22 @@ extern int __write_image(FILE*,char*,char*,char*,int,int,int);
 
 
 #ifdef _GCC
+	#include <sys/time.h>
+    #include <sys/types.h>
+#ifndef _WIN32
 	#include <unistd.h>
 	#include <netinet/in.h>
 	#include <netdb.h>
-	#include <sys/time.h>
 	#include <sys/socket.h>
-    #include <sys/types.h>
     #include <sys/wait.h>
+#endif
 #endif
 
 #ifndef _WIN32
 	#include <netinet/tcp.h>
 #endif
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 	#include <process.h>
 	#include <direct.h>
 	#include <winsock2.h>
@@ -179,7 +183,10 @@ static char* swap_4byte();
 static void send_int();
 static void send_string();
 
-#ifdef _MSC_VER
+#ifdef _WIN32
+#define PATHSEP ';'
+#define DIRSEP  "\\"
+
 	static int init_WsockDll(void)
 	{
 	    int err;
@@ -205,24 +212,13 @@ static int init_sock()
 		return(init_WsockDll());
 	}
 
-#ifdef bcc32
-
-	static void msleep(int msecs)
-	{
-		_sleep(msecs/1000);
-	}
-
-#else
-
 static void msleep(int msecs)
 	{
-		_sleep(msecs);
+		Sleep(msecs);
 	}
 
-#endif
-#endif
 
-#ifdef _GCC
+#else /* _WIN32 */
 
 	static int init_sock()
 	{
@@ -233,9 +229,6 @@ static void msleep(int msecs)
 		usleep(1000*msecs);
 	}
 
-#endif
-
-#ifndef _MSC_VER
 #define _P_WAIT   0
 #define _P_NOWAIT 1
 #define PATHSEP ':'
@@ -1808,7 +1801,7 @@ void japi_beep()
 
 int japi_random()
 {
-#ifdef _GCC
+#if !defined(_WIN32)
 	return(random());
 #else
 //#ifdef __MINGW32__

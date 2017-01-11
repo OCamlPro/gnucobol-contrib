@@ -1,25 +1,48 @@
-:: set directories to match your installation
-set src_cobol_dir="C:\oc_projekt\cobjapi\src_cobol"
+@echo off
+setlocal
 
-:: test if directories exist
-if not exist "%src_cobol_dir%\" (
-   echo Please set src_cobol_dir correct, currently set to %src_cobol_dir%
-   goto :eof
+:: set directories to match your installation (only necessary for systems older than WinXP...)
+set %src_cobol_dir%~dp0
+
+
+:: check if started directly
+echo %cmdcmdline% | find /i "%~0" >nul
+if errorlevel 1 (
+   set interactive=1
+) else (
+   set interactive=0
 )
 
+:: check for cobc executable
+where /q cobc.exe
+if errorlevel 1 (
+   echo ERROR: cobc.exe is missing in PATH
+   goto :end
+)
+
+:: test if directories exist
+if not exist %src_cobol_dir%\" (
+   echo ERROR: Please set %src_cobol_dircorrect, currently set to %src_cobol_dir%
+   goto :end
+)
+
+:: change directory
+pushd %src_cobol_dir%"
+
 :: delete old files (ignoring errors)
-del "%src_cobol_dir%\*.obj"    2>NUL
+del "*.obj"    2>NUL
 
 :: set env. variables
 call "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"
 
-:: change directory
-cd %src_cobol_dir%
-
 :: compile the cobjapi interface
-cobc -c -free -v %src_cobol_dir%\cobjapi.cob
+cobc -c -free -v cobjapi.cob
 
 
-:eof
+:end
+if _%interactive%_==_0_ (
+   echo.
+   pause
+)
 
-pause
+endlocal

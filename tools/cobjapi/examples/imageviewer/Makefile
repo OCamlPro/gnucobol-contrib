@@ -1,5 +1,7 @@
+# ToDo: makefile for unix system
+
 COBC = cobc
-COBCFLAGS = -x -free -I"../../src_cobol"
+COBCFLAGS = -x -free -I"../../src_cobol" -lws2_32
 # static link
 COBJAPI = ../../src_cobol/cobjapi.o
 CJAPI = ../../src_c/japilib.o \

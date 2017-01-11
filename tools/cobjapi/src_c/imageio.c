@@ -26,7 +26,7 @@
 *>
 *> Date-Written: 2003.02.26
 *>
-*> Tectonics:    gcc -c -O2 -Wall -D_GCC imageio.c
+*> Tectonics:    gcc -c -O2 -Wall imageio.c
 *>
 *> Usage:        The functions __read_image, __write_image will be used in japilib.c.
 *>

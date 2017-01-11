@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -c -O2 -Wall -D_GCC
+CFLAGS = -c -O2 -Wall
 AR = ar
 AFLAGS = -sr
 

@@ -1,18 +1,43 @@
-:: set directories to match your installation
-set src_java_dir="C:\oc_projekt\cobjapi\src_java"
+@echo off
+setlocal
+
+:: set directories to match your installation (only necessary for systems older than WinXP...)
+set src_java_dir=%~dp0
+
+
+:: check if started directly
+echo %cmdcmdline% | find /i "%~0" >nul
+if errorlevel 1 (
+   set interactive=1
+) else (
+   set interactive=0
+)
+
+:: check for javac and jar executable
+where /q javac.exe
+if errorlevel 1 (
+   echo ERROR: javac.exe is missing in PATH
+   goto :end
+)
+where /q jar.exe
+if errorlevel 1 (
+   echo ERROR: jar.exe is missing in PATH
+   goto :end
+)
 
 :: test if directories exist
 if not exist "%src_java_dir%\" (
-   echo Please set src_java_dir correct, currently set to %src_java_dir%
-   goto :eof
+   echo ERROR: Please set src_java_dircorrect, currently set to %src_java_dir%
+   goto :end
 )
 
-:: delete old files (ignoring errors)
-del "%src_java_dir%\*.class"    2>NUL
-del "%src_java_dir%\*.jar"      2>NUL
-
 :: change directory
-cd %src_java_dir%
+pushd "%src_java_dir%"
+
+:: delete old files (ignoring errors)
+del *.class    2>NUL
+del *.jar      2>NUL
+
 
 :: create class files
 :: Generate all debugging information, including local variables. 
@@ -29,6 +54,10 @@ javac *.java
 jar cvfm JAPI.jar JAPI.mf *.class *.gif
 
 
-:eof
+:end
+if _%interactive%_==_0_ (
+   echo.
+   pause
+)
 
-pause
+endlocal
