@@ -82,13 +82,18 @@
           05 wrkmsr-09     pic 9(9) comp-3.
           05 wrkmsr-18s    pic s9(18) comp-3.
           05 wrkmsr-18     pic 9(18) comp-3.
-
+      *    
+           copy wkenvfield.
+      *    
        procedure division.
        begin.
 	      move zero to recordsize
           move recordsize  to wrkmsr-03s
 		  move wrkmsr-18s  to recordsize
-		
+      *  check if defined environment variables
+           move 'sqpd03'  to env-pgm
+           perform check-env-var
+      *                
           open output masterseqfile.
 	   prdi-00.
 	      move all "|"                          to masterseqrecord. 
@@ -147,3 +152,6 @@
           close masterseqfile.
        end-proc.
           stop run.
+      *       
+           copy prenvfield2.
+      *

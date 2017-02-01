@@ -1,0 +1,5 @@
+USE   ../files/fil_outfil_100.txt         ORG LS RECORD F,3000  
+GIVE  ../files/fil_outfil_100_10d.txt.srt ORG LS RECORD F,3000    
+OPTION COPY                                                                 
+     OUTFIL INCLUDE=(45,17,ZD,LE,00999999999999999,AND,45,17,ZD,GE,-0999999999999999),FNAMES='../files/OUTF100_10d_09'
+	 OUTFIL SAVE,FNAMES='../files/discard_10d_09'

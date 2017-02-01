@@ -74,7 +74,9 @@
            05 ct-minutes    pic 99.
            05 ct-seconds    pic 99.
            05 ct-hundredths pic 99.       
-       
+      *    
+           copy wkenvfield.
+      *    
       * ============================= *
        procedure division.
       * ============================= *
@@ -87,7 +89,9 @@
            display "          ascending  key    srt-pd-field "              
            display "          descending key    srt-zd-field "              
            display "*===============================================* "
-           
+      *       
+           copy prenvfield3.
+      *
            merge file-merge
                on  ascending  key    srt-ch-field                         ## on descending key    <modify key>    
                    descending key    srt-bi-field                         ## on descending key    <modify key>    
@@ -175,3 +179,6 @@
                            " zd="   out-zd-field 
                            " fl="   out-fl-field      
            end-if.
+      *       
+           copy prenvfield2.
+      *

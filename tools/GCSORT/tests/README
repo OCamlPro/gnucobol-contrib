@@ -1,28 +1,77 @@
- *Tests case
+  ====================
+  Tests case
+  ====================
+  --------------------
     Folder tests: 
-        1) gcsort/tests/script_linux    for Linux   environment
-        2) gcsort\tests\script_windows  for Windows environment
+  --------------------
+        1) bin     - for executables
+        2) cfg     - contains files for configuration environment
+                        gctestsetup.cfg   - file with parameters used by gctestrun module
+                                            Copy files
+                                            Compile all programs
+                                            Execute programs to generate files for tests
+                        gctestsetup.def   - file definition of parameters for compilation via gnucobol
+        3) copy    - copy cobol used by programs
+        4) files   - files used by programs
+        5) filesin - formatted files  
+        6) listing - file listing produced by cobol compiler
+        7) log     - used to redirect execution output
+        8) script  - script linux/windows
+                     compile         - used to compile setup module 
+                     compile_single  - Use only when modify source cobol programs
+        9) source  - source Cobol program
+       10) takefile- gcsort file parameters
+                        folder :
+                            merge - files .prm with parameters for merge
+                            sort  - files .prm with parameters for sort
+                            tmp   - used by programs gctestrun (dinamically generations of parameters)
+  --------------------
+   Files in tests root
+  --------------------
+        pgm_naming_convention.txt - Naming convention used. List of cobol programs and features. 
+        README                    - This file
+
+  --------------------
+   Step to run tests
+  --------------------
         
-        Requirements:  GnuCOBOL installed, GCSORT binary present
+        Requirements:  GnuCOBOL installed 
+                       GCSORT   binary present in gcsort/tests/bin folder
+                                or
+                                add current path($PATH) gcsort folder
+                                (Example : export PATH=$PATH:/home/<user>/gcsort)                                
+
+     a. from gcsort/tests/script  
         
         Before execute tests run from tests folder: 
-        sudo chmod  -R 775 *
+     b. sudo chmod  -R 775 *
+     
+     c. add current path($PATH) gcsort/tests/bin folder 
+        (Example : export PATH=$PATH:/home/<user>/gcsort/tests/bin)                                
                 
-        Sequence to activate tests.
-        1) exec script 00-1-CompilePrograms  ---> compile Cobol prgrams.
-        2) exec script 00-2-CreateFiles      ---> create file input
-        3) exec script 00-3-CopyFiles        ---> copy files from folder filesin to files
-        4) exec script 00-4-ExecuteScripts   ---> execute tests
+     d. Sequence to activate tests.
+        1) execute     : compile      ---> compile gctestsetup Cobol program.
+        2) change dir  : bin
+        3) execute     : gctesettup   ---> execute setup (copy files, compile test program, run programs) 
+        4) execute     : gctestrun    ---> execute all cases
         
-        There are two groups of tests:
-        a) GROUP1 - Take file param, only for check control statements
-        b) GROUP2 - Cobol program and GCSORT module
+        If test is ok, program prints :
+            ---------------------------------------
+            |   Test id      | retcode |  status  |
+            ---------------------------------------
+            |   gctestrun1   |    00   |  Test OK |
+            |   gctestrun2   |    00   |  Test OK |
+            |   gctestrun3   |    00   |  Test OK |
+            |   gctestrun4   |    00   |  Test OK |
+            |   gctestrun5   |    00   |  Test OK |
+            ---------------------------------------
+            =======================================
+            =====   T E S T    P A S S E D    =====
+            =======================================
         
-        If test is ok script print 
-                "* ======================== *"
-                " Group 1   TEST PASSED      "
-                " Group 2   TEST PASSED      "
-                "* ======================== *"
-
-        In log folder are presents log execution.                
+        You can execute : gctestrun 1>../log/logout.txt  2>..\log\logerr.txt
+        to redirect message output into files.
+        After the run, checks ../log/logout.txt file 
+        
+        
         

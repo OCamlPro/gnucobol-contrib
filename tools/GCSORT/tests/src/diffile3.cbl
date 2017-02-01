@@ -30,7 +30,7 @@
                 access is sequential
                 file status is fs-infile1.
       *sort input file2
-           select sortocs assign to external dd_ingcsort
+           select sortgcs assign to external dd_ingcsort
                 organization is sequential
                 access is sequential
                 file status is fs-infile2.
@@ -58,8 +58,8 @@
            05 in1-fill              pic x(11).                          80, 11      space
        
        
-       fd sortocs.
-       01 infile-record-ocs.
+       fd sortgcs.
+       01 infile-record-gcs.
       *15  filler 80, 11      space                                     Pos Len 
            05 in2-01                pic x(10).                          01, 10      C'FIELD SPEC' 
            05 in2-02                pic x(07).                          11, 07      11:1,7   sequence 9(07)
@@ -86,7 +86,7 @@
       *
        01 bError                         pic 9    value zero.
        77 record-counter-incbl           pic 9(7) value zero.
-       77 record-counter-inocs           pic 9(7) value zero.
+       77 record-counter-ingcs           pic 9(7) value zero.
        77 bIsFirstTime                   pic 9    value zero.       
        77 bIsPending                     pic 9    value zero.       
        01 current-time.
@@ -94,7 +94,9 @@
            05 ct-minutes    pic 99.
            05 ct-seconds    pic 99.
            05 ct-hundredths pic 99.       
-       
+      *
+       77 env-pgm                       pic x(50).
+       77 env-var-value                 pic x(1024).        
       * ============================= *
        procedure division.
       * ============================= *
@@ -103,15 +105,21 @@
            display " diff3 "
            display " Check file produced by Cobol Program and GCSORT "
            display "*===============================================* "
+      *  check if defined : dd_incobol,   dd_ingcsort
+           move 'dd_incobol'  to env-pgm
+           perform check-env-var
+           move 'dd_ingcsort' to env-pgm
+           perform check-env-var
+      *                
            open input sortcbl.
            if fs-infile1 not = "00"
                 display "sortcbl file status error : " fs-infile1
                 stop run
            end-if
 
-           open input sortocs.
+           open input sortgcs.
            if fs-infile2 not = "00"
-                display "sortocs file status error : " fs-infile2
+                display "sortgcs file status error : " fs-infile2
                 close sortcbl
                 stop run
            end-if
@@ -120,10 +128,10 @@
                                       fs-infile2 not equal "00" ) or 
                                       bError     equal 1
            close sortcbl
-           close sortocs
+           close sortgcs
            display "*===============================================* "
            if (bError = zero) or 
-              (record-counter-incbl = record-counter-inocs)
+              (record-counter-incbl = record-counter-ingcs)
                 display " Check OK  "
                 move zero to return-code
            else
@@ -132,10 +140,27 @@
            end-if
            display "*===============================================* "
            display " Record input  cbl  : "  record-counter-incbl
-           display " Record output ocs  : "  record-counter-inocs
+           display " Record output gcs  : "  record-counter-ingcs
            display "*===============================================* "
            goback
            .
+      *
+      * ============================= *
+        check-env-var.
+      * ============================= *
+      *  
+           accept env-var-value  from ENVIRONMENT env-pgm
+      ** 
+           if (env-var-value = SPACE)
+             display "*===============================================*"
+             display " Error diff - Environment variable " env-pgm
+             display "              not found."
+             display "*===============================================*"
+             move 25 to RETURN-CODE
+             goback
+           end-if
+           .
+      *
       *
       * ============================= *
        check-data.
@@ -148,11 +173,11 @@
                 add 1 to record-counter-incbl
            end-if
            if fs-infile2 = "00"
-                read sortocs at end display " End file sortocs "
+                read sortgcs at end display " End file sortgcs "
                 end-read
            end-if
            if fs-infile2 = "00"
-                add 1 to record-counter-inocs
+                add 1 to record-counter-ingcs
            end-if
            if (fs-infile1 = "00" and fs-infile1 = "00")
                 perform check-key
@@ -164,11 +189,11 @@
       * ============================= *
       
       *    if (infile-record-cbl not = 
-      *        infile-record-ocs)
+      *        infile-record-gcs)
       *        move 1 to bError
       *        display "============== # Error # ============== "
       *        display "  Record COBOL  num " record-counter-incbl
-      *        display "  Record GCSORT num " record-counter-inocs
+      *        display "  Record GCSORT num " record-counter-ingcs
       *    end-if
            if (in1-01       not = in2-01    or
                in1-02       not = in2-02    or
@@ -188,7 +213,7 @@
                move 1 to bError
                display "============== # Error # ============== "
                display "  Record COBOL  num " record-counter-incbl
-               display "  Record GCSORT num " record-counter-inocs
+               display "  Record GCSORT num " record-counter-ingcs
                display " Cobol                    GCSORT"
                display "in1-01   / in2-01  = " in1-01     " / " in2-01   
                display "in1-02   / in2-02  = " in1-02     " / " in2-02   

@@ -75,7 +75,9 @@
           05 WRKMSR-09     PIC 9(9) COMP.
           05 WRKMSR-18S    PIC S9(18) COMP.
           05 WRKMSR-18     PIC 9(18) COMP.
-
+      *    
+           copy wkenvfield.
+      *    
        PROCEDURE DIVISION.
        Begin.
 	      MOVE ZERO TO RecordSize
@@ -84,6 +86,9 @@
 						WRKMSR-18S, WRKMSR-18
           MOVE RecordSize  TO WRKMSR-03S
 		  MOVE WRKMSR-18S  TO RecordSize
+      *  check if defined environment variables
+           move 'sqbi03'  to env-pgm
+           perform check-env-var
 		
           OPEN OUTPUT MasterSeqFile.
 	   prdi-00.
@@ -122,3 +127,6 @@
           CLOSE MasterSeqFile.
        end-proc.
           STOP RUN.
+      *       
+           copy prenvfield2.
+      *

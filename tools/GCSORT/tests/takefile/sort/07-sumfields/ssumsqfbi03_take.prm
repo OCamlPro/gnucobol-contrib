@@ -1,0 +1,25 @@
+* sort all field for file SQBI03  
+  * SSUMSQFBI03
+SORT FIELDS(3,1,CH,A) 
+SUM FIELDS=(  1,1,BI,        *  MSR-02S 
+              3,1,BI,        *  MSR-02
+              5,2,BI,        *  MSR-04S 
+              8,2,BI,        *  MSR-04  
+             11,3,BI,        *  MSR-06S 
+             15,3,BI,        *  MSR-06  
+             19,4,BI,        *  MSR-08S 
+             24,4,BI,        *  MSR-08  
+             29,5,BI,        *  MSR-10S 
+             35,5,BI,        *  MSR-10  
+             41,6,BI,        *  MSR-12S
+             48,5,BI,        *  MSR-12 
+             54,6,BI,        *  MSR-14S
+             61,6,BI,        *  MSR-14 
+             68,7,BI,        *  MSR-16S
+             76,7,BI,        *  MSR-16 
+             84,8,BI,        *  MSR-18S
+             93,8,BI)        *  MSR-18 
+USE     ../files/sqbi03         RECORD F,101 ORG SQ 
+GIVE    ../files/sqbi03_07.srt  RECORD F,101 ORG SQ
+
+

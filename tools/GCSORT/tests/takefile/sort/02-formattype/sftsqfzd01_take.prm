@@ -1,0 +1,7 @@
+
+        * SFTSQFZD01
+  
+                * All fileds Zoned 
+SORT FIELDS(15,5,ZD,A,21,7,ZD,A) 
+USE     ../files/sqzd01         RECORD F,158 ORG SQ 
+GIVE    ../files/sqzd01_02.srt  RECORD F,158 ORG SQ

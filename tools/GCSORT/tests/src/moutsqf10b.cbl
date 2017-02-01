@@ -150,7 +150,9 @@
            05 ct-minutes    pic 99.
            05 ct-seconds    pic 99.
            05 ct-hundredths pic 99.       
-       
+      *    
+           copy wkenvfield.
+      *    
       * ============================= *
        procedure division.
       * ============================= *
@@ -158,7 +160,9 @@
            display "*===============================================* "
            display " Merge on ascending  key    mrg-05 "
            display "*===============================================* "
-           
+      *       
+           copy prenvfield3.
+      *
            merge file-merge
                on ascending  key     mrg-05            
                using mergein1 mergein2 mergein3   
@@ -170,4 +174,6 @@
            goback
            .
       *
-
+      *       
+           copy prenvfield2.
+      *

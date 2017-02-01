@@ -81,7 +81,9 @@
            05 ct-minutes                 pic 99.
            05 ct-seconds                 pic 99.
            05 ct-hundredths              pic 99.       
-       
+      *    
+           copy wkenvfield.
+      *    
       * ============================= *
        procedure division.
       * ============================= *
@@ -95,13 +97,18 @@
                    with duplicates in  order                               ## DUPLICATES
                     input procedure  is input-proc
                     output procedure is output-proc.
-                    
+      *
+           copy prenvfield1.
+      *        
            display "*===============================================* "
            display " Record input  : "  record-counter-in
            display " Record output : "  record-counter-out
            display "*===============================================* "
            goback
            .
+      *       
+           copy prenvfield2.
+      *
       *
       * ============================= *
        input-proc.

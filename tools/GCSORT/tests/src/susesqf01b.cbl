@@ -57,7 +57,10 @@
            05 ct-minutes    pic 99.
            05 ct-seconds    pic 99.
            05 ct-hundredths pic 99.       
-       
+      *
+       77 env-pgm                       pic x(50).
+       77 env-var-value                 pic x(1024).        
+      *
       * ============================= *
        procedure division.
       * ============================= *
@@ -70,6 +73,18 @@
            display "      on ascending  key    srt-pd-field "           
            display "      on descending key    srt-zd-field "           
            display "*===============================================* "
+      *  check if defined environment variables
+           move 'dd_infile'  to env-pgm
+           perform check-env-var
+      *  check if defined environment variables
+           move 'dd_outfile'  to env-pgm
+           perform check-env-var
+      *  check if defined environment variables
+           move 'dd_sortwork'  to env-pgm
+           perform check-env-var
+           
+           
+           
            
            sort file-sort
                 on ascending  key    srt-ch-field                      
@@ -88,6 +103,23 @@
            display "*===============================================* "
            goback
            .
+      *
+      * ============================= *
+        check-env-var.
+      * ============================= *
+      *  
+           accept env-var-value  from ENVIRONMENT env-pgm
+      ** 
+           if (env-var-value = SPACE)
+             display "*===============================================*"
+             display " Error - Environment variable " env-pgm
+             display "         not found."
+             display "*===============================================*"
+             move 25 to RETURN-CODE
+             goback
+           end-if
+           .           
+      *
       *
       * ============================= *
        input-proc.

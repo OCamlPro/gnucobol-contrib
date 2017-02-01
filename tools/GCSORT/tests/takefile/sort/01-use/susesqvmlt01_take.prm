@@ -1,0 +1,7 @@
+    * --------------------------------------------------------------------------------------------- *
+    * SUSESQVMLT01	Sort file with	MLT	Column	SQ	File	Multi file in use	Simple example
+    * --------------------------------------------------------------------------------------------- *
+    
+   SORT FIELDS=(37,1,CH,D,18,17,CH,A)                                           
+	use     ../files/fil_outfil_100.txt 	    	record v,1,3000 org ls 
+	give     ../files/fil_outfil_100_01a.txt.srt 	record v,1,3000 org ls

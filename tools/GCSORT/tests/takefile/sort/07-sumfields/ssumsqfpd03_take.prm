@@ -1,0 +1,29 @@
+
+    * SFTSQFPD03	Sort file with	PD	Column	SQ	File	Single file multi columns PD		
+    * all fields packed SQPD03 
+SORT FIELDS(3,1,CH,A)
+SUM FIELDS=(1,2,PD,          *  MSR-02 
+            4,2,PD,          *  MSR-02S
+            7,3,PD,          *  MSR-04 
+            11,3,PD,         *  MSR-04S
+            15,4,PD,         *  MSR-06 
+            20,4,PD,         *  MSR-06S
+            25,5,PD,         *  MSR-08 
+            31,5,PD,         *  MSR-08S
+            37,7,PD,         *  MSR-12 
+            45,7,PD,         *  MSR-12S
+            53,8,PD,         *  MSR-14 
+            62,8,PD,         *  MSR-14S
+            71,9,PD,         *  MSR-16 
+            81,9,PD,         *  MSR-16S
+            91,12,PD,        *  MSR-22 
+            104,12,PD,       *  MSR-22S
+            117,14,PD,       *  MSR-26 
+            132,14,PD,       *  MSR-26S
+            147,15,PD,       *  MSR-28 
+            163,15,PD,       *  MSR-28S
+            179,16,PD,       *  MSR-31 
+            196,16,PD)       *  MSR-31S
+USE     ../files/sqpd03         RECORD F,212 ORG SQ 
+GIVE    ../files/sqpd03_07.srt  RECORD F,212 ORG SQ
+

@@ -20,26 +20,10 @@
        environment division.
        input-output section.
        file-control.
-      * soutsqf01.cpy
            copy sgensqf01.
-      *      select outfile assign to EXTERNAL dd_outfile
-      *          organization is sequential
-      *          access is sequential
-      *          file status is fs-outfile.
        data division.
        file section.
-      * foutsqf01.cpy
            copy fgensqf01.
-      *fd outfile.
-      *01 outfile-record.
-      *    05 seq-record        pic  9(07).
-      *    05 ch-field          pic  x(5).
-      *    05 bi-field          pic  9(7) COMP.
-      *    05 fi-field          pic s9(7) COMP.
-      *    05 fl-field          COMP-2.
-      *    05 pd-field          pic s9(7) COMP-3.
-      *    05 zd-field          pic s9(7).   
-      *    05 ch-filler         pic  x(52).                                 
       * 
        working-storage section.
        77       record-counter-out    pic 9(7) value zero.
@@ -56,10 +40,17 @@
            02   tab-ch-ele redefines 
                     tab-ele-value occurs 26 times pic xx.
        01    cmd-line           pic x(132).
+      *
+       77 env-pgm                       pic x(50).
+       77 env-var-value                 pic x(1024).        
        procedure division.
        master-00.
       *
            display program-name " START"
+      *  check if defined environment variables
+           move 'dd_outfile'  to env-pgm
+           perform check-env-var
+      *                
            open output outfile.
            if fs-outfile not = "00"
                 display "outfile file status error : " fs-outfile
@@ -84,6 +75,22 @@
            goback
            .
       *
+      *
+      * ============================= *
+        check-env-var.
+      * ============================= *
+      *  
+           accept env-var-value  from ENVIRONMENT env-pgm
+      ** 
+           if (env-var-value = SPACE)
+             display "*===============================================*"
+             display " Error - Environment variable " env-pgm
+             display "         not found."
+             display "*===============================================*"
+             move 25 to RETURN-CODE
+             goback
+           end-if
+           .           
       *
        generate-file-asc.
            perform set-valuerecord-asc

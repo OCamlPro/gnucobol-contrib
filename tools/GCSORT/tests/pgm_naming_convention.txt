@@ -1,0 +1,62 @@
+   ------------------------------------------------------------------------------------------           
+		Naming convention Cobol programs																							
+   ------------------------------------------------------------------------------------------
+        Scope	Prefix	Instruction	        File	Rek	Prg	
+        s	    use	    use	                sq	    f	nn	
+        s	    frm	    format type	        sq	    f	nn	
+        s	    fil	    file type	        sq	    f	nn	
+        s	    inc	    include	            sq	    f	nn		
+        s	    omi	    omit	            sq	    f	nn	
+        s	    inr	    inrec	            sq	    f	nn	
+        s	    sum	    sum fields	        sq	    f	nn	
+        s	    sum	    sum fields = none	sq	    f	nn	
+        s	    out	    outrec	            sq	    f	nn	
+        s	    opt	    option	            sq	    f	nn	
+        s	    outf	outfil	            sq	    f	nn	
+   ------------------------------------------------------------------------------------------           
+    Program name           = <Scope> + <Prefix> + <File> + <Rek> + Prg (00-99)
+    Example(susesqf01)         s         use       sq        f     01
+   ------------------------------------------------------------------------------------------           
+     SORT
+   |--------------|--------------|------------------|--------------------|-----------------|-                
+   |              |  principal   | other            | other              |  other          |
+   |              |  control     | control          | control            |  control        |
+   | program name |  statement   | statement        | statement          |  statement      |
+   |--------------|--------------|------------------|--------------------|-----------------|-
+ 1)| susesqf01	  |  use         |                  |                    |                 |
+ 2)| susesqf02	  |  use         |  sum fields      |                    |                 |
+ 3)| susesqf03	  |  use         |  sum fields=none |                    |                 |
+ 4)| sincsqf04	  |  include     |                  |                    |                 |
+ 5)| sincsqf05	  |  include     |  outrec          |                    |                 |
+ 6)| sincsqf06	  |  include     |  inrec           |  outrec            |                 |
+ 7)| sincsqf07	  |  include     |  sum fields      |                    |                 |
+ 8)| sincsqf08	  |  include     |  options         |                    |                 |
+ 9)| somisqf09	  |  omit        |                  |                    |                 |
+10)| soutsqf10	  |  outrec      |                  |                    |                 |
+11)| somisqf11	  |  omit        |  inrec           |  outrec            |                 |
+12)| somisqf12	  |  omit        |  inrec           |  outrec            |                 |
+13)| somisqf13	  |  omit        |  sum fields      |                    |                 |
+14)| sinrsqf14	  |  inrec       |                  |                    |                 |
+15)| sinrsqf15	  |  inrec       |  outrec          |                    |                 |
+16)| susesqf16	  |  use         |  inrec           |  sum fields=none   |  options        |
+17)| sfrmsqf17	  |  format type |  include         |                    |                 |
+18)| sfrmsqf18	  |  format type |  omit            |                    |                 |
+19)| sincsqf19	  |  include     |                  |                    |                 |
+20)|--------------|--------------|------------------|--------------------|-----------------|-
+21)| soutfsqf01   |  outfil      | file             |  include           |  save           |
+22)| soutfsqf02   |  outfil      | file             |  omit              |  save           |
+23)| soutfsqf03   |  outfil      | file             |  split             |                 |
+24)| soutfsqf04   |  outfil      | file             |  outrec            |                 |
+25)| soutfsqf05   |  outfil      | file             |  startrec          |  endrec         |
+   |--------------|--------------|------------------|--------------------|-----------------|-
+     MERGE
+   |--------------|--------------|------------------|--------------------|-----------------|-                
+   |              |  principal   | other            | other              |  other          |
+   |              |  control     | control          | control            |  control        |
+   |program name  |  statement   | statement        | statement          |  statement      |
+   |--------------|--------------|------------------|--------------------|-----------------|-
+ 1)| musesqf01    |  use         |                  |                    |                 |	
+ 2)| musesqf02 	  |  use         |  sum fields      |                    |                 |	
+ 3)| musesqf03 	  |  use         |  sum fields=none |                    |                 |
+ 4)| moutsqf10    |  outrec      |                  |                    |                 |	
+   |--------------|--------------|------------------|--------------------|-----------------|-

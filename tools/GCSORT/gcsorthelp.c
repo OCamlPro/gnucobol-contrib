@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016 Sauro Menna
+    Copyright (C) 2016-2017 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -113,7 +113,7 @@ void GCSORT_Version ( void )
 	printf("Copyright (C) 2009-2016 Cedric ISSALY / Sauro Menna\n");
 	printf("Packaged  %s\n", GCSORT_TAR_DATE);
 	return;
-}
+} 
 void GCSORT_Usage ( void ) 
 {
     printf("________________________________________________________________________________________\n");

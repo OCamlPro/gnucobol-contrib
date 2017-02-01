@@ -1,0 +1,42 @@
+The following was written for using the Microsoft Visual C++ compiler in the
+rare circumstances where a GCC build (for example via MinGW) cannot be used.
+
+Most of this applies to other C compilers for Microsoft Windows, too - please
+report any issues and working solutions with other compilers.
+
+GCSORT needs support for either `long long` (for WIN32 `__int64` is used),
+very old compilers may lack support for this (like Visual C++ 2003 and older).
+
+How to build in native Windows environments:
+
+* get/build Win flex-bison executable
+* add to environment variable PATH folder where are presents win_flex.exe and win_bison.exe 
+* necessary headers, link libraries and runtime dlls are present in build_windows\win32\gnucobol
+  you can upgrade this. Get/build place them in build_windows\Win32\gnucobol and build_windows\x64\gnucobol
+* compile with your environment, for example via IDE by opening the solution
+  and click "build" or by starting the VS/WinSDK command prompt and calling
+  msbuild "gcsort.sln" /p:Platform=win32;Configuration=Release
+
+How to create the dist package:
+
+* set up the above
+* compile the release version you want (Win32 and/or x64)
+* sign the binaries if needed
+* if you want a 7z and have a non-standard installation: change "makedist.bat"
+* call "makedist.bat" (uses the last build from Win32\release and x64\release)
+
+How to use the dist package:
+
+* unzip wherever you want
+* use gcsort
+
+How to test the native builds:
+
+* if you want to run the tests 
+  do the following commands:
+  cd $yourfolder
+  cd tests
+  call compile.bat
+  cd ..\bin
+  gctestsetup
+  gctestrun

@@ -1,0 +1,10 @@
+    * ---------------------------------------------------------------------------------------------- *
+    ** SUSESQVMLT03	Sort file with	MLT	Column	SQ	File	Multi file in use	Verify file empty
+    * ---------------------------------------------------------------------------------------------- *
+    * Input file with 0 byte len
+
+SORT FIELDS(1,56,CH,A) 
+USE     ../files/inpempty01.txt         RECORD V,1,27990 ORG LS
+USE     ../files/inpempty02.txt         RECORD V,1,27990 ORG LS
+USE     ../files/inpempty03.txt         RECORD V,1,27990 ORG LS
+GIVE    ../files/inpemptyout.txt.srt    RECORD V,1,27990 ORG LS

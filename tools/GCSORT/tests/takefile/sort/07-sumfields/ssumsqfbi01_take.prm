@@ -1,0 +1,25 @@
+
+* SSUMSQFBI01
+* Sort per campi binary - ALL fields for file SQBI01
+
+SORT FIELDS(3,1,CH,A) 
+SUM FIELDS=(  1,2,BI,     *  MSR-03S 
+              4,2,BI,     *  MSR-03
+              7,3,BI,     *  MSR-05S 
+             11,3,BI,     *  MSR-05  
+             15,4,BI,     *  MSR-07S 
+             20,3,BI,     *  MSR-07  
+             24,4,BI,     *  MSR-09S 
+             29,4,BI,     *  MSR-09  
+             34,5,BI,     *  MSR-11S 
+             40,5,BI,     *  MSR-11  
+             46,6,BI,     *  MSR-13S
+             53,6,BI,     *  MSR-13 
+             60,7,BI,     *  MSR-15S
+             68,7,BI,     *  MSR-15 
+             76,8,BI,     *  MSR-17S
+             85,8,BI,     *  MSR-17 
+             94,8,BI,     *  MSR-18S
+            103,8,BI)     *  MSR-18 
+USE   ../files/sqbi01           RECORD F,111 ORG SQ 
+GIVE  ../files/sqbi01_07.srt    RECORD F,111 ORG SQ

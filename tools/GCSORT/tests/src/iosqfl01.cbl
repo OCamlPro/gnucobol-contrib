@@ -42,8 +42,15 @@
 
        working-storage section.
        01    wk-llint   binary-double signed.
+      *    
+           copy wkenvfield.
+      *    
        procedure division.
        begin.
+      *  check if defined environment variables
+           move 'sqfl01'  to env-pgm
+           perform check-env-var
+      *                
           open output masterseqfile.
 	   prdi-00.
 	      move all "|"             to masterseqrecord. 
@@ -62,3 +69,6 @@
           close masterseqfile.
        end-proc.
           stop run.
+      *       
+           copy prenvfield2.
+      *

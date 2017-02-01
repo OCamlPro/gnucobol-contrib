@@ -50,10 +50,16 @@
        working-storage section.
 000000**       01 recordsize			pic 9999.
        77 recordsize			pic s9(5) comp-3.
-       
        77 prog   			    pic 9999 value zero.
+      *    
+           copy wkenvfield.
+      *    
        procedure division.
        begin-00.
+      *  check if defined environment variables
+           move 'ixpa'  to env-pgm
+           perform check-env-var
+      *                
           open output masterseqfile.
           perform cycle-00 5 times.
           go cycle-50.
@@ -88,3 +94,6 @@
           close masterseqfile.
        end-proc.
           stop run.
+      *       
+           copy prenvfield2.
+      *

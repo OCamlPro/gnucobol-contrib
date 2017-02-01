@@ -53,7 +53,7 @@
       * ============================= *
        01 bError                         pic 9    value zero.
        77 record-counter-incbl           pic 9(7) value zero.
-       77 record-counter-inocs           pic 9(7) value zero.
+       77 record-counter-ingcs           pic 9(7) value zero.
        77 bIsFirstTime                   pic 9    value zero.       
        77 bIsPending                     pic 9    value zero.       
        01 current-time.
@@ -61,7 +61,9 @@
            05 ct-minutes    pic 99.
            05 ct-seconds    pic 99.
            05 ct-hundredths pic 99.       
-       
+      *
+       77 env-pgm                       pic x(50).
+       77 env-var-value                 pic x(1024).        
       * ============================= *
        procedure division.
       * ============================= *
@@ -69,6 +71,10 @@
            display " ********************************************** "
            display " view file produced "
            display " ********************************************** "
+      *  check if defined environment variables
+           move 'dd_incobol'  to env-pgm
+           perform check-env-var
+      *                
            
            open input sortcbl.
            if fs-infile1 not = "00"
@@ -81,6 +87,23 @@
            display "  Records  : "  record-counter-incbl
            display " ******************************************* "
            goback.
+      *
+      * ============================= *
+        check-env-var.
+      * ============================= *
+      *  
+           accept env-var-value  from ENVIRONMENT env-pgm
+      ** 
+           if (env-var-value = SPACE)
+             display "*===============================================*"
+             display " Error - Environment variable " env-pgm
+             display "         not found."
+             display "*===============================================*"
+             move 25 to RETURN-CODE
+             goback
+           end-if
+           .           
+      *
       *
       * ============================= *
        view-data.

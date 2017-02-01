@@ -1,0 +1,6 @@
+    USE     ../files/fil_outfil_050.txt     ORG LS RECORD F,3000  
+    GIVE    ../files/fil_outfil_050.txt.out ORG LS RECORD V,16,3000   
+  SORT FIELDS=COPY                                                              
+  OUTFIL OMIT=(156,15,CH,LT,141,15,CH,AND,005,10,CH,EQ,C'XYZXYZXYZY'),FNAMES='../files/rec_xyz'
+  OUTFIL SAVE,FNAMES='../files/discard_06'
+  END                                                                           

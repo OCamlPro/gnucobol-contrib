@@ -47,6 +47,9 @@
       *
            copy wktotsum01.
       *
+      *    
+           copy wkenvfield.
+      *    
       * ============================= *
        01  save-record-sort              pic x(38).
       * ============================= *
@@ -72,7 +75,9 @@
            display "          ascending  key    srt-pd-field "      
            display "          descending key    srt-zd-field "      
            display "*===============================================* "
-           
+      *
+           copy prenvfield1.
+      *        
            sort file-sort
                on  ascending  key    srt-ch-field                        
                    descending key    srt-bi-field                        
@@ -183,3 +188,6 @@
                            " zd="   out-zd-field 
                            " fl="   out-fl-field      
            end-if.
+      *       
+           copy prenvfield2.
+      *

@@ -58,7 +58,9 @@
            05 ct-minutes                 pic 99.
            05 ct-seconds                 pic 99.
            05 ct-hundredths              pic 99.       
-       
+      *    
+           copy wkenvfield.
+      *    
       * ============================= *
        procedure division.
       * ============================= *
@@ -66,7 +68,9 @@
            display "*===============================================* "
            display " Sort on ascending  key    srt-ch-field "                 ## on descending key    <modify key>               
            display "*===============================================* "
-           
+      *
+           copy prenvfield1.
+      *        
            sort file-sort
                 on ascending  key    srt-ch-field                          ## on descending key    <modify key>    
                    with duplicates in  order                               ## DUPLICATES
@@ -79,6 +83,9 @@
            display "*===============================================* "
            goback
            .
+      *       
+           copy prenvfield2.
+      *
       *
       * ============================= *
        input-proc.

@@ -7,7 +7,7 @@
       * License
       *    Copyright 2016 Sauro Menna
       *    GNU Lesser General Public License, LGPL, 3.0 (or greater)
-      * Purpose:   Check output from COBOL program and OCsort data file
+      * Purpose:   Check output from COBOL program and gcsort data file
       *            For Sumfield
       *            Sort/Merge COBOL Program and GCSORT data file
       * **********************************************************
@@ -61,7 +61,9 @@
           05 wrkmsr-09     pic  9(9) comp.
           05 wrkmsr-18s    pic s9(18) comp.
           05 wrkmsr-18     pic  9(18) comp.
-
+      *    
+           copy wkenvfield.
+      *    
        procedure division.
        begin.
 	      move zero to recordsize
@@ -80,6 +82,11 @@
           move recordsize  to wrkmsr-03s
 		  move wrkmsr-18s  to recordsize
 		  move zero        to error-flag.
+      *  check if defined environment variables
+           move 'sqfi01c'  to env-pgm
+           perform check-env-var
+      *                
+          
           open input masterseqfile.
 	   prdi-00.
           read masterseqfile at end go end-close.    
@@ -152,3 +159,6 @@
 		  display "*====================*".
        end-proc.
           stop run.
+      *       
+           copy prenvfield2.
+      *

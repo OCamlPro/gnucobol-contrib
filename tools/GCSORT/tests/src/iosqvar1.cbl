@@ -35,8 +35,15 @@
           05 msr-05     pic s9(2) binary.
 
        working-storage section.
+      *    
+           copy wkenvfield.
+      *    
        procedure division.
        begin.
+      *  check if defined environment variables
+           move 'sqvar1'  to env-pgm
+           perform check-env-var
+      *                
           open output masterseqfile.
 	   prdi-100.
           move "aaaaaaaaaa"                  to msr-01
@@ -66,3 +73,6 @@
 	   prdi-199.			
           close masterseqfile.
           stop run.
+      *       
+           copy prenvfield2.
+      *

@@ -72,7 +72,9 @@
            05 ct-minutes    pic 99.
            05 ct-seconds    pic 99.
            05 ct-hundredths pic 99.       
-       
+      *    
+           copy wkenvfield.
+      *    
       * ============================= *
        procedure division.
       * ============================= *
@@ -80,7 +82,9 @@
            display "*===============================================* "
            display " Merge on ascending  key    srt-ch-field "                 ## on descending key    <modify key>               
            display "*===============================================* "
-           
+      *       
+           copy prenvfield3.
+      *
            merge file-merge
                on ascending  key     srt-ch-field                          ## on ascending key    <modify key>    
                using mergein1 mergein2 mergein3   
@@ -182,3 +186,6 @@
       *  copy   przerotot.cpy
            copy   przerotot.
            .
+      *       
+           copy prenvfield2.
+      *

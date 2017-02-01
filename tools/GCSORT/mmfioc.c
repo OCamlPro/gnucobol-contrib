@@ -1,6 +1,6 @@
 /*
- *  Copyright (C) 2014 Geoff McLane
- *  Copyright (C) 2016 Sauro Menna
+    Copyright (C) 2016-2017 Sauro Menna
+    Copyright (C) 2014 Geoff McLane
  *
  *	This file is part of GCSORT.
  *

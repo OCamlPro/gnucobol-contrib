@@ -1,6 +1,6 @@
 /*
- *  Copyright (C) 2009 Cedric ISSALY
- *  Copyright (C) 2016 Sauro Menna
+    Copyright (C) 2016-2017 Sauro Menna
+    Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
  *
@@ -16,7 +16,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with GCSORT.  If not, see <http://www.gnu.org/licenses/>.
-
+  
 */
 
 #ifndef FILE_H_INCLUDED
