@@ -1,0 +1,43 @@
+gctest is used to invoke the GnuCOBOL compiler, then execute the program
+It will capture output from the compiler and program execution to create
+an autotest file suitable for inclusion in the GnuCOBOL testsuite.
+
+You have to manually merge in the created program.at file your self.
+
+To compile this run:
+  make
+
+To install it run:
+  make install
+
+gctest 'usage' display:
+
+GnuCOBOL compile a COBOL program, execute & capture output
+to create an autotest.at file named from -p programname
+ 
+  gctest [options]
+Where [options] are:
+  -p program      The COBOL program to compile and test
+  -C mod.c        A C module used by 'program' to compile
+  -i inputfile    Define input file for test program
+  -o outputfile   Define Output report file
+  -O LSoutfile    Define LINE SEQUENIAL output file
+  -b              Make test code start with blank line
+  -e              test compile only; Expecting errors
+  -E              compile only; both std=mf & std=2002; Expecting errors
+  -m              use -std=mf instead of -std=cobol2002
+  -I              use -std=ibm instead of -std=cobol2002
+  -w              Compile with no warnings
+  -c "compile command"  
+  -k "Test keywords"  
+  -s "Test setup name"  
+ 
+Example command:
+ gctest -m -b -k report -s "Sample REPORT" -i STUDENT=./student0.inp \
+           -o REPORT1=./REPORT0.txt -p rwtst0.bat
+
+
+Example of usage:
+    gctest -m -b -k report -s "Sample REPORT" -i STUDENT=./student0.inp \
+           -o REPORT1=./REPORT0.txt -p rwtst0.bat
+
