@@ -40,7 +40,7 @@ extern int optind;
 
 static int incrErr = 0;
 static char progexe[100] = " ? $ ";
-static char diffProg[32] = "diffgc";
+static char diffProg[32] = "gcdiff";
 /*
  * Display program usage information
 */
@@ -54,6 +54,7 @@ usage(char *binname)
 	fprintf(stdout,"Where [options] are:\n");
 	fprintf(stdout,"  -p program      The COBOL program to compile and test\n");
 	fprintf(stdout,"  -C mod.c        A C module used by 'program' to compile\n");
+	fprintf(stdout,"  -B copybook     Include 'copybook' to autotest file for compile\n");
 	fprintf(stdout,"  -i inputfile    Define input file for test program\n");
 	fprintf(stdout,"  -o outputfile   Define Output report file\n");
 	fprintf(stdout,"  -O LSoutfile    Define LINE SEQUENIAL output file\n");
@@ -89,6 +90,7 @@ getFileName(
 		dd[p-given] = 0;
 		strcpy(file,p+1);
 	} else {
+		dd[0] = 0;
 		strcpy(file,given);
 	}
 	return;
@@ -303,13 +305,13 @@ snifFile(FILE *fi, int *fixedFormat,
 	fclose(fi);
 }
 
-#define dMaxFile 8
+#define dMaxFile 12
 /*
  * M A I N L I N E   Starts here
  */
 int
 main(
-	int	argc,
+	int		argc,
 	char	*argv[])
 {
 	int		opt,i,j,k,compsts,runsts;
@@ -323,15 +325,17 @@ main(
 	int		bStdIBM = 0;
 	int		bStd2002 = 1;
 	int		preln;
-	char	inpdd[48],outdd[48],*p;
+	char	inpdd[48],outdd[48],*p,setdd[48],settestfile[200];
 	char	tmp[300],wrk[200],prog[100],progout[200],cmod[80];
 	char	setup[200],keywords[200],callfh[48];
 	char	inptestfile[200],outtestfile[200],compilecmd[256];
 	char	outlst[80],errlst[80],compprefx[64];
 	char	libs[256],flags[128];
 	char	outFiles[dMaxFile][80];
+	char	ddFiles[dMaxFile][80];
+	char	bookFiles[dMaxFile][80];
 	FILE	*at,*fi;
-	int		addBlank = 0, numFiles = 0;
+	int		addBlank = 0, numFiles = 0, numBooks = 0;
 
 	strcpy(setup,"SAMPLE PROGRAM");
 	strcpy(keywords,"report");
@@ -348,7 +352,7 @@ main(
 	memset(libs,0,sizeof(libs));
 	memset(flags,0,sizeof(flags));
 	putenv("SHELL=/bin/sh");
-	while ((opt=getopt(argc, argv, "i:o:O:c:d:hp:C:s:k:x:eEbImwL:l:f:")) != EOF) {
+	while ((opt=getopt(argc, argv, "i:o:O:c:d:hp:C:B:s:k:x:eEbImwL:l:f:")) != EOF) {
 		switch(opt) {
 		case 'm':
 			bStdMf = 1;
@@ -381,9 +385,19 @@ main(
 			getFileName(outdd,outtestfile,optarg);
 			break;
 		case 'O':
-			if(numFiles < dMaxFile)
-				strcpy(outFiles[numFiles++],optarg);
-			unlink(optarg);
+			if(numFiles < dMaxFile) {
+				getFileName(setdd,settestfile,optarg);
+				strcpy(outFiles[numFiles],settestfile);
+				strcpy(ddFiles[numFiles],setdd);
+				if(setdd[0] > ' ') {
+					sprintf(wrk,"%s=%s",setdd,settestfile);
+					putenv(strdup(wrk));
+					unlink(settestfile);
+				} else {
+					unlink(optarg);
+				}
+				numFiles++;
+			}
 			break;
 		case 'c':
 			strcpy(compilecmd,optarg);
@@ -410,6 +424,10 @@ main(
 			break;
 		case 'C':
 			strcpy(cmod,optarg);
+			break;
+		case 'B':
+			if(numBooks < dMaxFile)
+				strcpy(bookFiles[numBooks++],optarg);
 			break;
 		case 'b':
 			addBlank = incrErr = 1;
@@ -504,6 +522,19 @@ main(
 		fi = NULL;
 		fprintf(at,"])\n\n");
 	}
+
+	for(i=0; i < numBooks; i++) {
+		fprintf(at,"\n");
+		fprintf(at,"AT_DATA([./%s], [",bookFiles[i]);
+		fi = fopen(bookFiles[i],"r");
+		if(fi) {
+			copyFile(fi,at,0,0,0,NULL,NULL,0,0);
+			fclose(fi);
+			fi = NULL;
+		}
+		fprintf(at,"])\n\n");
+	}
+
 	fi = fopen(prog,"r");
 	if(fi == NULL) {
 		perror(prog);
@@ -597,7 +628,12 @@ ReDoCompile:
 		if(outtestfile[0] > ' ') {
 			fprintf(at,"export DD_%s=%s\n",outdd,"./report.txt");
 		}
-		fprintf(at,"./prog], [0], ");
+		for(i=0; i < numFiles; i++) {
+			if (ddFiles[i][0] > ' ') {
+				fprintf(at,"export %s=%s\n",ddFiles[i],outFiles[i]);
+			}
+		}
+		fprintf(at,"./prog], [%d], ",WEXITSTATUS(runsts));
 		fi = fopen(outlst,"r");
 		if(fi) {
 			fprintf(at,"[");
