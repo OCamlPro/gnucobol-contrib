@@ -4,10 +4,9 @@
 
    This file is part of GnuCOBOL.
 
-   The GnuCOBOL runtime library is free software: you can redistribute it
-   and/or modify it under the terms of the GNU Lesser General Public License
-   as published by the Free Software Foundation, either version 3 of the
-   License, or (at your option) any later version.
+   The GnuCOBOL gctest program is free software: you can redistribute it
+   and/or modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation.
 
    GnuCOBOL is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -40,6 +39,7 @@ extern int optind;
 
 static int incrErr = 0;
 static char progexe[100] = " ? $ ";
+static char progname[100] = " ";
 static char diffProg[32] = "gcdiff";
 /*
  * Display program usage information
@@ -47,30 +47,30 @@ static char diffProg[32] = "gcdiff";
 static void
 usage(char *binname)
 {
-	fprintf(stdout,"GnuCOBOL compile a COBOL program, execute & capture output\n");
-	fprintf(stdout,"to create an autotest.at file named from -p programname\n");
-	fprintf(stdout," \n");
-	fprintf(stdout,"  %s [options]\n",binname);
-	fprintf(stdout,"Where [options] are:\n");
-	fprintf(stdout,"  -p program      The COBOL program to compile and test\n");
-	fprintf(stdout,"  -C mod.c        A C module used by 'program' to compile\n");
-	fprintf(stdout,"  -B copybook     Include 'copybook' to autotest file for compile\n");
-	fprintf(stdout,"  -i inputfile    Define input file for test program\n");
-	fprintf(stdout,"  -o outputfile   Define Output report file\n");
-	fprintf(stdout,"  -O LSoutfile    Define LINE SEQUENIAL output file\n");
-	fprintf(stdout,"  -b              Make test code start with blank line\n");
-	fprintf(stdout,"  -e              test compile only; Expecting errors\n");
-	fprintf(stdout,"  -E              compile only; both std=mf & std=2002; Expecting errors\n");
-	fprintf(stdout,"  -m              use -std=mf instead of -std=cobol2002\n");
-	fprintf(stdout,"  -I              use -std=ibm instead of -std=cobol2002\n");
-	fprintf(stdout,"  -w              Compile with no warnings\n");
-	fprintf(stdout,"  -c \"compile command\"  \n");
-	fprintf(stdout,"  -k \"Test keywords\"  \n");
-	fprintf(stdout,"  -s \"Test setup name\"  \n");
-	fprintf(stdout," \n");
-	fprintf(stdout,"Example command:\n");
-	fprintf(stdout," gctest -m -b -k report -s \"Sample REPORT\" -i STUDENT=./student0.inp \\\n");
-	fprintf(stdout,"           -o REPORT1=./REPORT0.txt -p rwtst0.bat\n");
+	printf("GnuCOBOL compile a COBOL program, execute & capture output\n");
+	printf("to create an autotest.at file named from -p programname\n");
+	printf(" \n");
+	printf("  %s [options]\n",binname);
+	printf("Where [options] are:\n");
+	printf("  -p program      The COBOL program to compile and test\n");
+	printf("  -C mod.c        A C module used by 'program' to compile\n");
+	printf("  -B copybook     Include 'copybook' to autotest file for compile\n");
+	printf("  -i inputfile    Define input file for test program\n");
+	printf("  -o outputfile   Define Output report file\n");
+	printf("  -O LSoutfile    Define LINE SEQUENIAL output file\n");
+	printf("  -b              Make test code start with blank line\n");
+	printf("  -e              test compile only; Expecting errors\n");
+	printf("  -E              compile only; both std=mf & std=2002; Expecting errors\n");
+	printf("  -m              use -std=mf instead of -std=cobol2002\n");
+	printf("  -I              use -std=ibm instead of -std=cobol2002\n");
+	printf("  -w              Compile with no warnings\n");
+	printf("  -c \"compile command\"  \n");
+	printf("  -k \"Test keywords\"  \n");
+	printf("  -s \"Test setup name\"  \n");
+	printf(" \n");
+	printf("Example command:\n");
+	printf(" gctest -m -b -k report -s \"Sample REPORT\" -i STUDENT=./student0.inp \\\n");
+	printf("           -o REPORT1=./REPORT0.txt -p rwtst0.bat\n");
 	fflush(stdout);
 }
 
@@ -102,12 +102,12 @@ getFileName(
 static void
 copyFile(FILE *fi, FILE *fo, int addBlank, int rmvseq, int showit, char *oldnm, char *newnm, int incrnum, int tabs)
 {
-	char	buf[4096], wrk[256], *p;
-	int	i,j,k,olen = 0, nlen = 0;
-	int	didName = 0;
-	int	atBegin = 1;
-	int	didProgId = 0;
-	int	didEndProg = 0;
+	char	buf[4096], wrk[4096], *p;
+	int		i,j,k,olen = 0, nlen = 0;
+	int		didName = 0;
+	int		atBegin = 1;
+	int		didProgId = 0;
+	int		didEndProg = 0;
 	if(fi == NULL)
 		return;
 	if(ferror(fi))
@@ -153,6 +153,28 @@ copyFile(FILE *fi, FILE *fo, int addBlank, int rmvseq, int showit, char *oldnm, 
 		&& (p=strstr(buf,progexe)) != NULL) {
 			memcpy(p,"./prog",6);
 		}
+		k = 1;
+		while(k) {
+			k = 0;
+			if((p=strstr(buf,progname))!=NULL) {
+				i = (int) (p - &buf[0]);
+				j = strlen(progname);
+				k = 8;
+				memcpy(wrk,buf,i);
+				strcpy(&wrk[i],"prog.cob");
+				strcpy(&wrk[i+k],&buf[i+j]);
+				strcpy(buf,wrk);
+			}
+			if((p=strstr(buf,progexe))!=NULL) {
+				i = (int) (p - &buf[0]);
+				j = strlen(progexe);
+				k = 4;
+				memcpy(wrk,buf,i);
+				strcpy(&wrk[i],"prog");
+				strcpy(&wrk[i+k],&buf[i+j]);
+				strcpy(buf,wrk);
+			}
+		}
 		if(rmvseq) {
 			for(k=0; k < 7; k++) {
 				if(isdigit(buf[k]))
@@ -160,7 +182,7 @@ copyFile(FILE *fi, FILE *fo, int addBlank, int rmvseq, int showit, char *oldnm, 
 			}
 		}
 		if(showit)
-			fprintf(stdout,"%s\n",buf);
+			printf("%s\n",buf);
 
 		didName = 0;
 		if(olen > 0
@@ -326,7 +348,7 @@ main(
 	int		bStd2002 = 1;
 	int		preln;
 	char	inpdd[48],outdd[48],*p,setdd[48],settestfile[200];
-	char	tmp[300],wrk[200],prog[100],progout[200],cmod[80];
+	char	tmp[300],wrk[200],progout[200],cmod[80];
 	char	setup[200],keywords[200],callfh[48];
 	char	inptestfile[200],outtestfile[200],compilecmd[256];
 	char	outlst[80],errlst[80],compprefx[64];
@@ -345,14 +367,14 @@ main(
 	strcpy(outdd,"OUTPUT");
 	memset(inptestfile,0,sizeof(inptestfile));
 	memset(outtestfile,0,sizeof(outtestfile));
-	memset(prog,0,sizeof(prog));
+	memset(progname,0,sizeof(progname));
 	memset(progexe,0,sizeof(progexe));
 	memset(cmod,0,sizeof(cmod));
 	memset(callfh,0,sizeof(callfh));
 	memset(libs,0,sizeof(libs));
 	memset(flags,0,sizeof(flags));
 	putenv("SHELL=/bin/sh");
-	while ((opt=getopt(argc, argv, "i:o:O:c:d:hp:C:B:s:k:x:eEbImwL:l:f:")) != EOF) {
+	while ((opt=getopt(argc, argv, "i:o:O:c:d:hp:C:B:s:k:x:eEbImwVL:l:f:")) != EOF) {
 		switch(opt) {
 		case 'm':
 			bStdMf = 1;
@@ -417,7 +439,7 @@ main(
 			getKeyword = 0;
 			break;
 		case 'p':
-			strcpy(prog,optarg);
+			strcpy(progname,optarg);
 			strcpy(progexe,optarg);
 			if((p=strchr(progexe,'.')) != NULL) 
 				*p = 0;
@@ -447,6 +469,11 @@ main(
 			usage(argv[0]);
 			exit(0);
 			break;
+		case 'V':
+			printf("GnuCOBOL compile a COBOL program, execute & capture output\n");
+			printf("%s compiled on %s %s\n",__FILE__,__DATE__,__TIME__);
+			exit(0);
+			break;
 		}
 	}
 	if(bStdIBM)
@@ -455,31 +482,32 @@ main(
 		sprintf(compprefx,"cobc -x -std=mf");
 	else
 		sprintf(compprefx,"cobc -x -std=cobol2002");
+	strcat(compprefx," -debug");
 	if(bWall)
-		strcat(compprefx," -debug -Wall");
+		strcat(compprefx," -Wall");
 	else
 		strcat(compprefx," -w");
 	if(callfh[0] > ' ')
 		sprintf(&compprefx[strlen(compprefx)]," -use-extfh=%s",callfh);
 	preln = strlen(compprefx);
 	sprintf(compilecmd,"%s%s%s -o @f @F @c",compprefx,libs,flags);	/* Collect warnings */
-	if(prog[0] <= ' '
+	if(progname[0] <= ' '
 	&& optind < argc) {
-		strcpy(prog,argv[optind]);
+		strcpy(progname,argv[optind]);
 	}
-	if(prog[0] <= ' ') {
+	if(progname[0] <= ' ') {
 		printf("Missing program name to test;\n");
 		usage(argv[0]);
 		exit(0);
 	}
-	strcpy(progout,prog);
+	strcpy(progout,progname);
 	if((p=strrchr(progout,'.') ) != NULL)
 		*p = 0;
 	sprintf(tmp,"./%s",progout);
 	unlink(tmp);
-	fi = fopen(prog,"r");
+	fi = fopen(progname,"r");
 	if(fi == NULL) {
-		perror(prog);
+		perror(progname);
 		exit(-1);
 	}
 	snifFile(fi,&fixedFormat,getSummary,setup,getKeyword,keywords);
@@ -503,12 +531,12 @@ main(
 		sprintf(tmp,"DD_%s=%s",outdd,outtestfile);
 		putenv(strdup(tmp));
 	}
-	makeCommand(tmp,compilecmd,progout,prog,cmod);
+	makeCommand(tmp,compilecmd,progout,progname,cmod);
 	unlink(outlst); unlink(errlst);
 	sprintf(&tmp[strlen(tmp)]," 1>%s 2>%s",outlst,errlst);
 	compsts = system(tmp);
 	if(compsts != 0)
-		printf("Compile of %s failed!\n",prog);
+		printf("Compile of %s failed!\n",progname);
 	if(inptestfile[0] > ' '
 	&& compsts == 0) {
 		fi = fopen(inptestfile,"r");
@@ -535,9 +563,9 @@ main(
 		fprintf(at,"])\n\n");
 	}
 
-	fi = fopen(prog,"r");
+	fi = fopen(progname,"r");
 	if(fi == NULL) {
-		perror(prog);
+		perror(progname);
 		exit(-1);
 	}
 	fprintf(at,"AT_DATA([prog.cob], [");
@@ -585,7 +613,7 @@ ReDoCompile:
 		fprintf(at," [");
 	fi = fopen(errlst,"r");
 	if(fi) {
-		copyFile(fi,at,0,0,1,prog,"prog.cob",incrErr,0);
+		copyFile(fi,at,0,0,1,progname,"prog.cob",incrErr,0);
 		fclose(fi);
 		fi = NULL;
 	}
@@ -601,12 +629,12 @@ ReDoCompile:
 			strcat(compprefx," -w");
 		preln = strlen(compprefx);
 		sprintf(compilecmd,"%s -o @f @F @c",compprefx);	/* Collect warnings */
-		makeCommand(tmp,compilecmd,progout,prog,cmod);
+		makeCommand(tmp,compilecmd,progout,progname,cmod);
 		unlink(outlst); unlink(errlst);
 		sprintf(&tmp[strlen(tmp)]," 1>%s 2>%s",outlst,errlst);
 		compsts = system(tmp);
 		if(compsts != 0)
-			printf("Second Compile of %s failed!\n",prog);
+			printf("Second Compile of %s failed!\n",progname);
 		goto ReDoCompile;
 	}
 	if(compsts == 0 && !bCompileOnly) {
@@ -614,10 +642,10 @@ ReDoCompile:
 		runsts = system(tmp);
 		if(runsts != 0) {
 #if defined(WCOREDUMP)
-			printf("Execution of %s failed! Status: %d; exit %d; Core %d\n",prog,runsts,
+			printf("Execution of %s failed! Status: 0x%04X; exit %d; Core %d\n",progname,runsts,
 						WIFEXITED(runsts),WEXITSTATUS(runsts),WCOREDUMP(runsts));
 #else
-			printf("Execution of %s failed! Status: %d; exit %d\n",prog,runsts,
+			printf("Execution of %s failed! Status: 0x%04X; exit %d\n",progname,runsts,
 						WIFEXITED(runsts),WEXITSTATUS(runsts));
 #endif
 		}
@@ -645,12 +673,22 @@ ReDoCompile:
 		fi = fopen(errlst,"r");
 		if(fi) {
 			fprintf(at,", [");
-			copyFile(fi,at,0,0,1,prog,"prog.cob",incrErr,0);
+			copyFile(fi,at,0,0,1,progname,"prog.cob",incrErr,0);
 			fclose(fi);
 			fi = NULL;
 			fprintf(at,"]");
 		}
 		fprintf(at,")\n\n");
+
+		fi = fopen("gcdiff.conf","r");
+		if(fi) {
+			fprintf(at,"AT_DATA([gcdiff.conf], [");
+			copyFile(fi,at,0,0,0,NULL,NULL,0,0);
+			fclose(fi);
+			fi = NULL;
+			fprintf(at,"])\n\n");
+		}
+
 		if(outtestfile[0] > ' ') {
 			fprintf(at,"\n");
 			fprintf(at,"AT_CAPTURE_FILE(%s)\n\n","./report.txt");
