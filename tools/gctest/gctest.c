@@ -64,6 +64,7 @@ usage(char *binname)
 	printf("  -m              use -std=mf instead of -std=cobol2002\n");
 	printf("  -I              use -std=ibm instead of -std=cobol2002\n");
 	printf("  -w              Compile with no warnings\n");
+	printf("  -S name=value   Environment variable to be set for test\n");
 	printf("  -c \"compile command\"  \n");
 	printf("  -k \"Test keywords\"  \n");
 	printf("  -s \"Test setup name\"  \n");
@@ -161,8 +162,15 @@ copyFile(FILE *fi, FILE *fo, int addBlank, int rmvseq, int showit, char *oldnm, 
 				j = strlen(progname);
 				k = 8;
 				memcpy(wrk,buf,i);
-				strcpy(&wrk[i],"prog.cob");
-				strcpy(&wrk[i+k],&buf[i+j]);
+				if (j > k
+				&& buf[i+j] != '\'') {
+					memset(&wrk[i],' ',j);
+					memcpy(&wrk[i],"prog.cob",k);
+					strcpy(&wrk[i+j],&buf[i+j]);
+				} else {
+					strcpy(&wrk[i],"prog.cob");
+					strcpy(&wrk[i+k],&buf[i+j]);
+				}
 				strcpy(buf,wrk);
 			}
 			if((p=strstr(buf,progexe))!=NULL) {
@@ -170,8 +178,14 @@ copyFile(FILE *fi, FILE *fo, int addBlank, int rmvseq, int showit, char *oldnm, 
 				j = strlen(progexe);
 				k = 4;
 				memcpy(wrk,buf,i);
-				strcpy(&wrk[i],"prog");
-				strcpy(&wrk[i+k],&buf[i+j]);
+				if (j > k) {
+					memset(&wrk[i],' ',j);
+					memcpy(&wrk[i],"prog",k);
+					strcpy(&wrk[i+j],&buf[i+j]);
+				} else {
+					strcpy(&wrk[i],"prog");
+					strcpy(&wrk[i+k],&buf[i+j]);
+				}
 				strcpy(buf,wrk);
 			}
 		}
@@ -356,8 +370,9 @@ main(
 	char	outFiles[dMaxFile][80];
 	char	ddFiles[dMaxFile][80];
 	char	bookFiles[dMaxFile][80];
+	char	setEnv[dMaxFile][80];
 	FILE	*at,*fi;
-	int		addBlank = 0, numFiles = 0, numBooks = 0;
+	int		addBlank = 0, numFiles = 0, numBooks = 0, numEnv = 0;
 
 	strcpy(setup,"SAMPLE PROGRAM");
 	strcpy(keywords,"report");
@@ -374,7 +389,7 @@ main(
 	memset(libs,0,sizeof(libs));
 	memset(flags,0,sizeof(flags));
 	putenv("SHELL=/bin/sh");
-	while ((opt=getopt(argc, argv, "i:o:O:c:d:hp:C:B:s:k:x:eEbImwVL:l:f:")) != EOF) {
+	while ((opt=getopt(argc, argv, "i:o:O:c:d:hp:C:B:s:S:k:x:eEbImwVL:l:f:")) != EOF) {
 		switch(opt) {
 		case 'm':
 			bStdMf = 1;
@@ -430,6 +445,14 @@ main(
 		case 's':
 			strcpy(setup,optarg);
 			getSummary = 0;
+			break;
+		case 'S':
+			if(numEnv < dMaxFile) {
+				strcpy(setEnv[numEnv],optarg);
+				putenv(strdup(optarg));
+				printf("DBG Push: %s :\n",optarg);
+				numEnv++;
+			}
 			break;
 		case 'x':
 			strcpy(callfh,optarg);
@@ -659,6 +682,11 @@ ReDoCompile:
 		for(i=0; i < numFiles; i++) {
 			if (ddFiles[i][0] > ' ') {
 				fprintf(at,"export %s=%s\n",ddFiles[i],outFiles[i]);
+			}
+		}
+		for(i=0; i < numEnv; i++) {
+			if (setEnv[i][0] > ' ') {
+				fprintf(at,"export %s\n",setEnv[i]);
 			}
 		}
 		fprintf(at,"./prog], [%d], ",WEXITSTATUS(runsts));
