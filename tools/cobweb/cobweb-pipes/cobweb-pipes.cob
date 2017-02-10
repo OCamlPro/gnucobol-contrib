@@ -13,6 +13,8 @@ GCobol >>SOURCE FORMAT IS FREE
       *>   20160908 Simon Sobisch
       *>            Added missing implementation for characters-read,
       *>            reset pipe-pointer on pclose, initialize fields
+      *>   20170201 Brian Tiffin
+      *>            Fix bugs with static call and by content
       *> LICENSE
       *>   GNU Lesser General Public License, LGPL, 3.0 (or greater)
       *> PURPOSE
@@ -63,8 +65,10 @@ GCobol >>SOURCE FORMAT IS FREE
        working-storage section.
 >>IF WIN_NO_POSIX NOT DEFINED
        78 popen                value "popen".
+       REPLACE ==:STATIC:== BY ====.
 >>ELSE
        78 popen                value "_popen".
+       REPLACE ==:STATIC:== BY ==static==.
 >>END-IF
        linkage section.
        01 pipe-command         pic x any length.
@@ -79,9 +83,9 @@ GCobol >>SOURCE FORMAT IS FREE
            pipe-mode
          returning pipe-record.
 
-       call static popen using
-           by content concatenate(trim(pipe-command), x"00")
-           by content concatenate(trim(pipe-mode), x"00")
+       call :STATIC: popen using
+           by reference concatenate(trim(pipe-command), x"00")
+           by reference concatenate(trim(pipe-mode), x"00")
          returning pipe-pointer
          on exception
              display "link error: popen" upon syserr end-display
@@ -144,7 +148,7 @@ GCobol >>SOURCE FORMAT IS FREE
        move spaces              to line-buffer
        move 0                   to characters-read
        move length(line-buffer) to line-buffer-length
-       call static "fgets" using
+       call :STATIC: "fgets" using
            by reference line-buffer
            by value line-buffer-length
            by value pipe-pointer
@@ -200,8 +204,8 @@ GCobol >>SOURCE FORMAT IS FREE
            line-buffer
          returning pipe-record-out.
 
-       call static "fputs" using
-           by content concatenate(trim(line-buffer), x"00")
+       call :STATIC: "fputs" using
+           by reference concatenate(trim(line-buffer), x"00")
            by value pipe-pointer
          returning pipe-write-status
          on exception
@@ -250,7 +254,7 @@ GCobol >>SOURCE FORMAT IS FREE
       *> ***************************************************************
        procedure division using pipe-record returning pclose-status.
 
-       call static pclose using
+       call :STATIC: pclose using
            by value pipe-pointer
          returning pclose-status
          on exception

@@ -6,6 +6,7 @@ GCobol >>SOURCE FORMAT IS FREE
       *>     Brian Tiffin
       *> DATE
       *>     20150217
+      *>     20170210 messages and fixes for when commands not available
       *> LICENSE
       *>     GNU General Public License, GPL, 3.0 (or greater)
       *> PURPOSE
@@ -103,6 +104,7 @@ GCobol >>SOURCE FORMAT IS FREE
                    display "return-code: " return-code
                end-if
            end-if
+           display "Click graphic window to close, or 'q' when focused"
            goback
        end-if
 
@@ -113,22 +115,20 @@ GCobol >>SOURCE FORMAT IS FREE
            move pipe-open(pipe-command, "r") to pipe-record
            if pipe-return not equal 255 then 
                move pipe-read(pipe-record, pipe-line) to pipe-record-out
-    
-               unstring pipe-line delimited by x"0a" into pipe-line
-                   count in read-length
-               end-unstring
-               move pipe-line(1 : read-length) to display-speed
-               display
-                   "units reports, " pipe-line(1 : read-length)
-                   ", as s9(8)v9(8), 1 mile per hour is "
-                   display-speed " furlongs/fortnight" 
-               end-display
-        
                move pipe-close(pipe-record) to pipe-status
-               if pipe-status not equal zero then
+               if pipe-status equal zero then
+                   unstring pipe-line delimited by x"0a" into pipe-line
+                       count in read-length
+                   end-unstring
+                   move pipe-line(1 : read-length) to display-speed
                    display
-                       "Yeah, that result is very likey invalid: "
-                       pipe-status upon syserr
+                       "units reports, " pipe-line(1 : read-length)
+                       ", as s9(8)v9(8), 1 mile per hour is "
+                       display-speed " furlongs/fortnight" 
+                   end-display
+               else
+                   display
+                       "units command failure: " pipe-status
                    end-display
                end-if
            end-if
