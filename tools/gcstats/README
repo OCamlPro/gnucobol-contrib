@@ -1,0 +1,29 @@
+Author:  Ron Norman     (rjn@inglenet.com)
+Written: February 2017
+
+gcstats.bat is a batch COBOL program:
+
+***********************************************************
+ This program is for reading the File I/O statistics file
+ created by GnuCOBOL and summarizing the data into a report
+ The report is created using the REPORT DIVISION features.
+***********************************************************
+
+To compile this run:
+  make
+
+To install it run:
+  make install
+
+gcstats 'usage':
+
+ The program takes two command line options:
+    -i, -input    input-stats-file
+    -o, -output   output-summary-report
+    -s, -show     source-name-to-report
+    -x, -exclude  source-name-to-exclude
+ 
+Example command:
+ gcstats  -i /usr/local/gnucobol/mystats.txt -o /home/me/statsreport.txt
+
+
