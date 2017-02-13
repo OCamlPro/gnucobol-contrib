@@ -6,13 +6,14 @@ PROGRAM-ID. GC56DATEPICKER is initial.
 *> Purpose:    DATEPICKER: DISPLAY A CALENDAR & LET THE USER PICK UP A DATE - RETURNS DATE TO CALLER
 *> Tectonics:  cobc -m GC56DATEPICKER.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC56DATEPICKER using DatePicker-Area
-*> Parameters: look at GC56DATEPICKER.cpy  (use with copy Version: 1.1 2016.10.14)
+*> Parameters: look at GC56DATEPICKER.cpy  (use with copy Version: 1.4)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)  - baseed on jrls (John Ellis) 05-Sept-2008 program
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.1 2016.10.14
+*> Version:    1.4 2017.02.14
 *> Changelog:  1.0 first release.
 *>             1.1 small enhancement (new field in copy Dtp-legend , F8 to toggle legend)
-*>             1.2 e 1.3 bug correction
+*>             1.2 and 1.3 bug correction
+*>             1.4 added Dtp-Lan to manage 6 languages EN IT FR ES DE NL
 *> ***********************************************************************************
 DATA DIVISION.
 WORKING-STORAGE SECTION.
@@ -142,12 +143,79 @@ WORKING-STORAGE SECTION.
     05 filler        pic x(15) value "November".
     05 filler        pic x(15) value "December".
 
-01  wDayDes      Pic x(28) value "Sun Mon Tue Wed Thu Fri Sat ".
-01  wDayDes-EN   Pic x(28) value "Sun Mon Tue Wed Thu Fri Sat ".
-01  wDayDes-IT   Pic x(28) value "Dom Lun Mar Mer Gio Ven Sab ".
+01  months-FR.
+    05 filler        pic x(15) value "Janvier".
+    05 filler        pic x(15) value "Fevrier".
+    05 filler        pic x(15) value "Mars".
+    05 filler        pic x(15) value "Avril".
+    05 filler        pic x(15) value "Mai".
+    05 filler        pic x(15) value "Juin".
+    05 filler        pic x(15) value "Juillet".
+    05 filler        pic x(15) value "Aout".
+    05 filler        pic x(15) value "Septembre".
+    05 filler        pic x(15) value "Octobre".
+    05 filler        pic x(15) value "Novembre".
+    05 filler        pic x(15) value "Decembre".
+
+01  months-ES.
+    05 filler        pic x(15) value "Enero".
+    05 filler        pic x(15) value "Febrero".
+    05 filler        pic x(15) value "Marzo".
+    05 filler        pic x(15) value "Abril".
+    05 filler        pic x(15) value "Mayo".
+    05 filler        pic x(15) value "Junio".
+    05 filler        pic x(15) value "Julio".
+    05 filler        pic x(15) value "Agosto".
+    05 filler        pic x(15) value "Septiembre".
+    05 filler        pic x(15) value "Octubre".
+    05 filler        pic x(15) value "Noviembre".
+    05 filler        pic x(15) value "Diciembre".
+
+01  months-DE.
+    05 filler        pic x(15) value "Januar".
+    05 filler        pic x(15) value "Februar".
+    05 filler        pic x(15) value "Marz".
+    05 filler        pic x(15) value "April".
+    05 filler        pic x(15) value "Mai".
+    05 filler        pic x(15) value "Juni".
+    05 filler        pic x(15) value "Juli".
+    05 filler        pic x(15) value "August".
+    05 filler        pic x(15) value "September".
+    05 filler        pic x(15) value "Oktober".
+    05 filler        pic x(15) value "November".
+    05 filler        pic x(15) value "Dezember".
+
+01  months-NL.
+    05 filler        pic x(15) value "Januari".
+    05 filler        pic x(15) value "Februari".
+    05 filler        pic x(15) value "Maart".
+    05 filler        pic x(15) value "April".
+    05 filler        pic x(15) value "Mei".
+    05 filler        pic x(15) value "Juni".
+    05 filler        pic x(15) value "Juli".
+    05 filler        pic x(15) value "Augustus".
+    05 filler        pic x(15) value "September".
+    05 filler        pic x(15) value "Oktober".
+    05 filler        pic x(15) value "November".
+    05 filler        pic x(15) value "December".
+
+*> Day description
+01  wDayDes     Pic x(28) value "Sun Mon Tue Wed Thu Fri Sat ".
+01  wDayDes-EN  Pic x(28) value "Sun Mon Tue Wed Thu Fri Sat ".
+01  wDayDes-IT  Pic x(28) value "Dom Lun Mar Mer Gio Ven Sab ".
+01  wDayDes-FR  Pic x(28) value "Dim Lun Mar Mer Jeu Ven Sam ".
+01  wDayDes-ES  Pic x(28) value "Dom Lun Mar Mie Jue Vie Sab ".
+01  wDayDes-DE  Pic x(28) value "Son Mon Die Mit Don Fre Sam ".
+01  wDayDes-NL  Pic x(28) value "Zon Maa Din Woe Don Vri Zat ".
+
+*> Day short description
 01  wDayDesS     Pic x(21) value " Su Mo Tu We Th Fr Sa".
 01  wDayDesS-EN  Pic x(21) value " Su Mo Tu We Th Fr Sa".
 01  wDayDesS-IT  Pic x(21) value " Do Lu Ma Me Gi Ve Sa".
+01  wDayDesS-FR  Pic x(21) value " Di Lu Ma Me Je Ve Sa".
+01  wDayDesS-ES  Pic x(21) value " Do Lu Ma Mi Ju Vi Sa".
+01  wDayDesS-DE  Pic x(21) value " So Mo Di Mi Do Fr Sa".
+01  wDayDesS-NL  Pic x(21) value " Zo Ma Di Wo Do Vr Za".
 
 COPY 'GC01BOX.CPY'.
 COPY 'GC98KEYCODE.CPY'.
@@ -206,6 +274,7 @@ move cdate to date-a.
        when Dtp-Dim = 'S' DISPLAY wBar(1:21) at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
     end-evaluate
 
+    perform Set-Language thru Set-LanguageEx
     compute wlin = Box-r1 + 3
     evaluate true
        when Dtp-Dim = 'B' display wDayDes  at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
@@ -474,30 +543,23 @@ end-search1.
             move "Y" to Dtp-shadow
          end-if
          go to 0100-start
-     *> F6 toggle Language EN / IT
+
+     *> 89= F6 toggle Language EN IT FR ES DE NL
      when Key-F6
+         add 1 to Dtp-Lan
+         if Dtp-Lan > 6
+            move 1 to Dtp-Lan
+         end-if
+
          compute wlin = Box-r1 + 3
          compute wCol = Box-c1 + 1
-         if wFlipFlop = 0
-            move 1 to wFlipFlop
-            move months-IT   to months
-            evaluate true
-               when Dtp-Dim = 'B' move wDayDes-IT  to wDayDes
-               when Dtp-Dim = 'S' move wDayDesS-IT to wDayDesS
-            end-evaluate
-         else
-            move 0 to wFlipFlop
-            move months-EN   to months
-            evaluate true
-               when Dtp-Dim = 'B' move wDayDes-EN   to wDayDes
-               when Dtp-Dim = 'S' move wDayDesS-EN  to wDayDesS
-            end-evaluate
-         end-if
+         perform Set-Language thru Set-LanguageEx
          evaluate true
             when Dtp-Dim = 'B' display wDayDes  at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
             when Dtp-Dim = 'S' display wDayDesS at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
          end-evaluate
          go to 0100-start2
+
      *> F7 toggle 3D box border
      when Key-F7
          add 1 to w3  if w3 > 3 move 1 to w3 end-if
@@ -566,19 +628,21 @@ End-Program.
         end-perform
         compute wlin = Box-r1 +  wksub  + 4
         compute wcol = Box-c1 + (daysub * 2) - 15
-        *> display out-week  at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
 
        perform  varying wR from 1 by 1 until wR >  7
             move owday(wR) to owday2(wR)
        end-perform
 
         evaluate true
-           when Dtp-Dim = 'B' display out-week  at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
+           when Dtp-Dim = 'B'
+                display out-week  at line wLin col wCol
+                   with background-color Box-Bco foreground-color Box-Fco highlight end-display
            when Dtp-Dim = 'S'
                 perform  varying wR from 1 by 1 until wR = 7
                     move owday(wR) to owday2(wR)
                 end-perform
-                display out-week2 at line wLin col wCol with background-color Box-Bco foreground-color Box-Fco highlight end-display
+                display out-week2 at line wLin col wCol
+                   with background-color Box-Bco foreground-color Box-Fco highlight end-display
         end-evaluate
 
     end-perform.
@@ -597,5 +661,55 @@ End-Program.
     end-if
     .
 0120-writeCalendarEx. exit.
+
+
+Set-Language.
+     Evaluate Dtp-Lan
+     when = 1
+        move months-EN   to months
+        *> Big Size or Small Size calendar
+        evaluate true
+           when Dtp-Dim = 'B' move wDayDes-EN   to wDayDes
+           when Dtp-Dim = 'S' move wDayDesS-EN  to wDayDesS
+        end-evaluate
+     when = 2
+        move months-IT   to months
+        evaluate true
+           when Dtp-Dim = 'B' move wDayDes-IT  to wDayDes
+           when Dtp-Dim = 'S' move wDayDesS-IT to wDayDesS
+        end-evaluate
+    when = 3
+        move months-FR   to months
+        evaluate true
+           when Dtp-Dim = 'B' move wDayDes-FR   to wDayDes
+           when Dtp-Dim = 'S' move wDayDesS-FR  to wDayDesS
+        end-evaluate
+    when = 4
+        move months-ES   to months
+        evaluate true
+           when Dtp-Dim = 'B' move wDayDes-ES   to wDayDes
+           when Dtp-Dim = 'S' move wDayDesS-ES  to wDayDesS
+        end-evaluate
+    when = 5
+        move months-DE   to months
+        evaluate true
+           when Dtp-Dim = 'B' move wDayDes-DE   to wDayDes
+           when Dtp-Dim = 'S' move wDayDesS-DE  to wDayDesS
+        end-evaluate
+    when = 6
+        move months-NL   to months
+        evaluate true
+           when Dtp-Dim = 'B' move wDayDes-NL   to wDayDes
+           when Dtp-Dim = 'S' move wDayDesS-NL  to wDayDesS
+        end-evaluate
+     when other
+        move months-EN   to months
+        evaluate true
+           when Dtp-Dim = 'B' move wDayDes-EN   to wDayDes
+           when Dtp-Dim = 'S' move wDayDesS-EN  to wDayDesS
+        end-evaluate
+     end-evaluate
+     .
+Set-LanguageEx. Exit.
 
 End Program GC56DATEPICKER.
