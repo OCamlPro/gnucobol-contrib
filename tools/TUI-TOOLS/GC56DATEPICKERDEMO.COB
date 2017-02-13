@@ -12,6 +12,7 @@ PROGRAM-ID. GC56DATEPICKERDEMO.
 *> Version:    1.1 2016.10.14
 *> Changelog:  1.0 first release.
 *>             1.1 small enhancement (legend , toggle legend)
+*>             1.4 F6 change language, set language on 2nd call
 *> ***********************************************************************************
 DATA DIVISION.
 WORKING-STORAGE SECTION.
@@ -56,7 +57,7 @@ display 'Use cursor right/left to next/prev day, down/up to next/prev week ' at 
 display 'PgDown, Tab, Space bar = next month; PgUp= previous month         ' at 1709 with background-color  Box-Bco foreground-color blue highlight
 display '+ = next year; - = previuos year; Home= jump to current date      ' at 1809 with background-color  Box-Bco foreground-color blue highlight
 display 'F1/F2= change fore/backcolor: F3= change borders; F4= toggle title' at 1909 with background-color  Box-Bco foreground-color blue highlight
-display 'F5= toggle shadow; F6= toggle language EN/IT F7= change 3D borders' at 2009 with background-color  Box-Bco foreground-color blue highlight
+display 'F5= toggle shadow; F6= lang.EN/IT/FR/ES/DE/NL F7=change 3D borders' at 2009 with background-color  Box-Bco foreground-color blue highlight
 display 'F8= toggle legend, Enter= select date,return to caller; Esc= exit ' at 2109 with background-color  Box-Bco foreground-color blue highlight
 
 *> first calendar. small size, start from currente date
@@ -78,6 +79,7 @@ move '20190907' to Dtp-DateSel
 MOVE 'N' to Dtp-shadow
 Move 'N' to Dtp-style
 MOVE 'B' to Dtp-dim      *> Big Size Calendar
+move 4 to Dtp-Lan        *> display in spanish
 move red    to Dtp-bco
 move yellow to Dtp-fco
 Move 'N' to Dtp-tit
