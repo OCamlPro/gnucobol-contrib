@@ -3,32 +3,36 @@ IDENTIFICATION DIVISION.
 program-id. GC51CALYEAR.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS)
-*> Purpose:   DISPLAY A YEAR CALENDAR AND LET THE USER PICK UP A DATE
-*>  - display an entire year calendar on screen
+*> Purpose:   DISPLAY CALENDAR AND LET THE USER PICK UP A DATE
+*>  - display an entire year calendar on screen (12 months)
 *>  - position a cursor on date received from caller or date of the day
-*>  - return date selected to caller
+*>  - return to caller the date selected by the user
 *> set the "cursor" on the date specified in the fields of this copy.
 *> if in these fields there is zero then it positions on current day.
 *> Allows the selection of a date by moving the cursor.
 *> Key up / down scroll 1 day, Key left / Right scroll 1 month,
 *> Page up / down scroll 1 year.
 *> <enter>, <space>, <esc> return to the caller the the selected date.
+*>
 *> Tectonics:  cobc -m GC51CALYEAR.COB
 *> Usage:      call "GC51CALYEAR" using CALENDAR-AREA
 *> Parameters: look at GC51CALYEAR.cpy
 *> Author:     Eugenio Di Lorenzo - Italia
-*> Date:       20160210 Modified: 2016-09-25/07:33-0400
-*> License:    Copyright 2015 E.Di Lorenzo - GNU General Public License, 3.0 (or greater)
+*> License:    Copyright 2016 E.Di Lorenzo - GNU General Public License, 3.0 (or greater)
+*> Version:    1.1 19.02.2017
+*> Changelog:  1.1 extended to manage 6 languages EN IT FR ES DE NL
 *> ***********************************************************************************
 *> WARNING.
 *> This program displays 50 rows and 77 cols on screen so the screen size must be
 *> changed from standard size of 25rows x 80 cols to a size of 50 rows x 80 cols.
 *> In a windows OS use following command "MODE CON: COLS=80 LINES=50"
 *> ***********************************************************************************
+
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
     SPECIAL-NAMES.
     CRT STATUS IS W-KEY.
+
 DATA DIVISION.
 Working-Storage Section.
 
@@ -42,7 +46,7 @@ Working-Storage Section.
 01 white   constant as 7.
 
 *> Values that may be returned in CRT STATUS filed (or in COB-CRT-STATUS)
-01  K-ENTER    constant as 0.
+01  K-ENTER    constant as 0000.
 01  K-UP       constant as 2003.
 01  K-DOWN     constant as 2004.
 01  K-LEFT     constant as 2009.
@@ -84,6 +88,7 @@ Working-Storage Section.
 01  wCOLUMNS3    pic  9(03).
 01  ll           pic  9(03).
 01  cc           pic  9(03).
+
 01  bco0    pic 9(01) value white. *> bgr.col numbers calend
 01  fco0    pic 9(01) value black. *> for.col numbers calend
 01  bco1    pic 9(01) value white. *> bgr.col frame e dd
@@ -95,9 +100,11 @@ Working-Storage Section.
 01  bco5    pic 9(01) value green. *> bgr.col cursor position
 01  fco5    pic 9(01) value white. *> for.col cursor position
 
-01  tb.                                          *> a table with all one year calendar
+*> a table with all one year calendar
+01  tb.
    03 tb-mesi  occurs 12 indexed by iMM.
       05 tb-DD occurs 42 indexed by iDD pic 99. *> 42 litle boxes x the days
+
 01 DDdx.
   03              pic  x value space.
   03 DDd          pic z9 blank when zero.
@@ -107,48 +114,85 @@ Working-Storage Section.
 01 wVisibilityOld  BINARY-SHORT . *> SIGNED.
 01 wVisibilityNew9  pic 9(8).
 01 wVisibilityOld9  pic 9(8).
+
 01 wResult     BINARY-SHORT.
 01 wResult9     pic -9(4).
-01  iKK pic s9(02) comp-5 value  0.
-01  i   pic s9(02) comp-5 value  0.
-01  j   pic s9(02) comp-5 value  0.
+
+01  iKK            pic s9(02) comp-5 value  0.
+01  i              pic s9(02) comp-5 value  0.
+01  j              pic s9(02) comp-5 value  0.
 01  wInt           pic 9(02) value 0.
 01  wInd           pic 9(02) value 0.
 01  wkCom          pic 9(07)v9(03).
 01  wkDay          pic 9(01).
 01  wkP1           pic 9(02).
 01  wkP2           pic 9(02).
+
 01  wDesDate       pic x(32).
 01  wkDate.
    05 wkDD         pic 9(02).
    05 wkMM         pic 9(02).
    05 wkYY         pic 9(02).
 
-
 01 wkDIV   pic 9(9) value zero.
 01 wkREM   pic 9(9) value zero.
 
-01  value "144025036146".
-   03 wkV          pic 9(01) occurs 12.
 01  value "312831303130313130313031".
    03 wkGmax       pic 9(02) occurs 12.
-01  WGIORNI1             value "Lunedi   Martedi  MercolediGiovedi  Venerdi  Sabato   Domenica ".
-   03 wkNomeG      pic x(09) occurs 07.
-01  WGIORNI1EN PIC X(63) value "Monday   Tuesday  WednesdayThursday Friday   Saturday Sunday   ".
-01  WGIORNI value "LunMarMerGioVenSabDom".
-   03 wkNomeGA                  pic x(03) occurs 07.
-01  WGIORNIEN PIC X(21) value "MonTueThuWedFriSatSun".
 
-01  WMESIL               value "Gennaio  Febbraio Marzo    Aprile   " &
-                              "Maggio   Giugno   Luglio   Agosto   " &
-                              "SettembreOttobre  Novembre Dicembre ".
-   03 wkNomeM                   pic x(09) occurs 12.
-01  WMESILEN  PIC X(108) value "January  February March    April    " &
-                              "May      June     July     August   " &
-                              "SeptemberOctober  November December ".
+01  WGIORNI1      . *> value "Lunedi    Martedi   Mercoledi Giovedi   Venerdi   Sabato    Domenica  ".
+    03 wkNomeG    pic x(10) occurs 07.
+01  WGIORNI       . *> value "LunMarMerGioVenSabDom".
+    03 wkNomeGA   pic x(03) occurs 07.
+01  WMESIL        . *> value "Gennaio   Febbraio  Marzo     Aprile    " &
+                    *>    "Maggio    Giugno    Luglio    Agosto    " &
+                    *>     "Settembre Ottobre   Novembre  Dicembre  " .
+    03 wkNomeM    pic x(10) occurs 12.
 
-01  WMESIC  value "GENFEBMARAPRMAGGIULUGAGOSETOTTNOVDIC".
-   03 wkNomeMA                  pic x(03) occurs 12.
+01  WGIORNIEN  PIC X(021) value "MonTueThuWedFriSatSun".
+01  WGIORNI1EN PIC X(070) value "Monday    Tuesday   Wednesday "           &
+                                "Thursday  Friday    Saturday  Sunday   ".
+01  WMESILEN   PIC X(120) value "January   February  March     April     " &
+                                "May       June      July      August    " &
+                                "September October   November  December  ".
+
+01  WGIORNIIT  PIC X(021) value "LunMarMerGioVenSabDom".
+01  WGIORNI1IT PIC X(070) value "Lunedi    Martedi   Mercoledi "          &
+                                "Giovedi   Venerdi   Sabato    Domenica  ".
+01  WMESILIT   PIC X(120) value "Gennaio   Febbraio  Marzo     Aprile   " &
+                                "Maggio    Giugno    Luglio    Agosto   " &
+                                "Settembre Ottobre   Novembre  Dicembre ".
+
+01  WGIORNIFR  PIC X(021) value "LunMarMerJeuVenSamDim".
+01  WGIORNI1FR PIC X(070) value "Lundi     Mardi     Mercredi  "           &
+                                "Jeudi     Vendredi  Samedi    Dimanche  ".
+01  WMESILFR   PIC X(120) value "Janvier   Fevrier   Mars      Avril     " &
+                                "Mai       Juin      Juillet   Aout      " &
+                                "Septembre Octobre   Novembre  Decembre  ".
+
+01  WGIORNIES  PIC X(021) value "LunMarMieJueVieSabDom".
+01  WGIORNI1ES PIC X(070) value "Lunes     Martes    Miercoles "           &
+                                "Jueves    Viernes   Sabado    Domingo   ".
+01  WMESILES   PIC X(120) value "Enero     Febrero   Marzo     Abril     " &
+                                "Mayo      Junio     Julio     Agosto    " &
+                                "SeptiembreOctubre   Noviembre Diciembre ".
+
+01  WGIORNIDE  PIC X(021) value "MonDieMitDonFreSamSon".
+01  WGIORNI1DE PIC X(070) value "Montag    Dienstag  Mittwoch  "           &
+                                "DonnerstagFreitag   Samstag   Sonntag   ".
+01  WMESILDE   PIC X(120) value "Januar    Februar   Marz      April     " &
+                                "Mai       Juni      Juli      August    " &
+                                "September Oktober   November  Dezember  ".
+
+01  WGIORNINL  PIC X(021) value "MaaDinWoeDonVriZatZon".
+01  WGIORNI1NL PIC X(070) value "Maandag   Dinsdag   Woensdag  "           &
+                                "Donderdag Vrijdag   Zaterdag  Zondag    ".
+01  WMESILNL   PIC X(120) value "Januari   Februari  Maart     April     " &
+                                "Mei       Juni      Juli      Augustus  " &
+                                "September Oktober   November  December  ".
+
+*> 01  WMESIC  value "GENFEBMARAPRMAGGIULUGAGOSETOTTNOVDIC".
+   *> 03 wkNomeMA                  pic x(03) occurs 12.
 
 *> **************************************************************
 01  wkDate.
@@ -177,6 +221,11 @@ Working-Storage Section.
 01  Row07 pic x(74) value "ÀÄÄÄÄÄÁÄÄÄÄÄÁÄÄÄÄÁÄÄÄÄÁÄÄÄÄÁÄÄÄÄÁÄÄÄÄÁÄÄÄÄÁÄÄÄÄÁÄÄÄÄÁÄÄÄÄÁÄÄÄÄÁÄÄÄÄÁÄÄÄÄÄÙ".
 
 01  Row04EN pic x(74) value "³ day ³ JAN ³FEB ³MAR ³APR ³MAY ³JUN ³JUL ³AUG ³SEP ³OCT ³NOV ³DEC ³ day ³".
+01  Row04IT pic x(74) value "³ gio ³ GEN ³FEB ³MAR ³APR ³MAG ³GIU ³LUG ³AGO ³SET ³OTT ³NOV ³DIC ³ gio ³".
+01  Row04FR pic x(74) value "³ jour³ JAN ³FEV ³MAR ³AVR ³MAI ³JUI ³JUI ³AOU ³SEP ³OCT ³NOV ³DEC ³ jour³".
+01  Row04ES pic x(74) value "³ dia ³ ENE ³FEB ³MAR ³ABR ³MAY ³JUN ³JUL ³AGO ³SEP ³OCT ³NOV ³DIC ³ dia ³".
+01  Row04DE pic x(74) value "³ tag ³ JAN ³FEB ³MAR ³APR ³MAI ³JUN ³JUL ³AUG ³SEP ³OKT ³NOV ³DEZ ³ tag ³".
+01  Row04NL pic x(74) value "³ dag ³ JAN ³FEB ³MAA ³APR ³MEI ³JUN ³JUL ³AUG ³SEP ³OKT ³NOV ³DEC ³ dag ³".
 
 
 LINKAGE SECTION.
@@ -190,52 +239,29 @@ PROCEDURE DIVISION using CALENDAR-AREA.
 set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
 set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
-INIZIO.
-   *> ACCEPT wLINES   from LINES
-   *> ACCEPT wCOLUMNS from COLUMNS
-   *> STRING "1.INITIAL SCREEN SIZE - LINES=" wLINES " COLS=" wCOLUMNS into wSTRING.
-   *> DISPLAY wSTRING AT 0101.
-   *> ACCEPT OMITTED.
-
+INIT.
 *> ***********************************************************************************
 *> This program displays 50 rows and 77 cols on screen so the screen size must be
 *> changed from standard size of 25rows x 80 cols to a size of 50 rows x 80 cols.
 *> ***********************************************************************************
-       *> move "MODE CON: LINES=60 COLS=90 " & X"00" TO wCmdLine
-       *> *> DISPLAY "wCmdLine=     " AT 0101 wCmdLine AT 0115
-       *> *> ACCEPT OMITTED
-       *> CALL "SYSTEM"   using wCmdLine
-
-       CALL "SYSTEM" USING "mode con: lines=50 cols=80"
-
-    *> call static 'resize_term' using by value 50 80 returning wResult end-call
-
-   *> ACCEPT wLINES   from LINES
-   *> ACCEPT wCOLUMNS from COLUMNS
-   *> STRING "2.SETTLED SCREEN SIZE - LINES=" wLINES " COLS=" wCOLUMNS into wSTRING.
-   *> DISPLAY wSTRING AT 0501.
-   *> ACCEPT OMITTED.
-
-
-   move "EN" To CaleLan
-   IF CaleLan = "EN"
-      move WGIORNIEN  TO WGIORNI
-      move WGIORNI1EN TO WGIORNI1
-      move WMESILEN   TO WMESIL
-      move Row04EN   to Row04
-    END-IF
+  CALL "SYSTEM" USING "mode con: lines=50 cols=80"
+  *> call static 'resize_term' using by value 50 80 returning wResult end-call
 
    perform DisplayConstants thru DisplayConstantsEx
 
    *> set "cursor" on that DATE
    if CaleDate = zero or CaleDate not numeric
-    accept wCaleDate from DATE YYYYMMDD end-accept
-    move wCaleYY to CaleYY move wCaleMM to CaleMM move wCaleDD to CaleDD
+      accept wCaleDate from DATE YYYYMMDD end-accept
+      move wCaleYY to CaleYY
+      move wCaleMM to CaleMM
+      move wCaleDD to CaleDD
    end-if
+
    move CaleDD   to dos-DD
    move CaleMM   to dos-MM
    move CaleYY   to dos-YY
-   move dos-date to dataCur           *> save the date
+   *> save the date
+   move dos-date to dataCur
    .
 LOOP-MAIN.
    *> DISPLAY THE YEAR TITLE
@@ -294,7 +320,6 @@ loop-ACCEPT.
    *> ********************************************************
    accept dummy at 0101 with no-echo auto size 0 end-accept
 
-   *> Warning ! before 1.1.1970 it doesn"t works (?!?)
    *> restores back and foreground of previous cursor position
    perform DisplayCursor thru DisplayCursorEx
 
@@ -345,10 +370,12 @@ loop-ACCEPT.
         perform SetCursorPosition thru SetCursorPositionEx
         go loop-ACCEPT
 
-   WHEN W-KEY = K-PAGEDOWN OR K-TAB                                *> Pg Down = next year
+   *> Pg Down = next year
+   WHEN W-KEY = K-PAGEDOWN OR K-TAB
         compute dos-YY = dos-YY + 1  go loop-main
 
-   WHEN W-KEY = K-PAGEUP OR K-BACKTAB                              *> Pg Up   = previous year
+   *> Pg Up   = previous year
+   WHEN W-KEY = K-PAGEUP OR K-BACKTAB
         compute dos-YY = dos-YY - 1  go loop-main
 
    WHEN W-KEY = K-ENTER OR K-ESC go END-PROGRAM
@@ -359,26 +386,10 @@ loop-ACCEPT.
    .
 END-PROGRAM.
 
-   *> STRING "3.SCREEN SIZE ON EXIT - LINES=" wLINES " COLS=" wCOLUMNS into wSTRING.
-   *> DISPLAY wSTRING AT 0301 WITH BLANK SCREEN
-   *> ACCEPT OMITTED.
-
 
    *> RESTORE PREVIOUS SCREEN SIZE
-   STRING "MODE CON: COLS=" wCOLUMNS " LINES=" wLINES into wCOMMAND.
-        *> DISPLAY "wCOMMAND=     " AT 0101 wCOMMAND AT 0115
-        *> ACCEPT OMITTED.
-   call "SYSTEM" USING wCOMMAND.
-
-   *> ACCEPT wLINES3   from LINES
-   *> ACCEPT wCOLUMNS3 from COLUMNS
-   *> STRING "4.RESTORED SCREEN SIZE- LINES=" wLINES3 " COLS=" wCOLUMNS3 into wSTRING.
-   *> DISPLAY wSTRING AT 0401.
-   *> ACCEPT OMITTED.
-
-   *> display
-              *> "Calendar Area: " at line 15 col 02 with bell
-              *> Calendar-Area     at line 16 col 02
+   *> STRING "MODE CON: COLS=" wCOLUMNS " LINES=" wLINES into wCOMMAND.
+   *> call "SYSTEM" USING wCOMMAND.
 
    perform ShowCursor thru ShowCursorEx
    goback.
@@ -388,6 +399,40 @@ END-PROGRAM.
 *> **************************************************************
 *> DISPLAY SCREEN
 DisplayConstants.
+
+  EVALUATE CaleLan
+      when 001
+      move WGIORNIEN  TO WGIORNI
+      move WGIORNI1EN TO WGIORNI1
+      move WMESILEN   TO WMESIL
+      move Row04EN    to Row04
+      when 002
+      move WGIORNIIT  TO WGIORNI
+      move WGIORNI1IT TO WGIORNI1
+      move WMESILIT   TO WMESIL
+      move Row04IT    to Row04
+      when 003
+      move WGIORNIFR  TO WGIORNI
+      move WGIORNI1FR TO WGIORNI1
+      move WMESILFR   TO WMESIL
+      move Row04FR    to Row04
+      when 004
+      move WGIORNIES  TO WGIORNI
+      move WGIORNI1ES TO WGIORNI1
+      move WMESILES   TO WMESIL
+      move Row04ES    to Row04
+      when 005
+      move WGIORNIDE  TO WGIORNI
+      move WGIORNI1DE TO WGIORNI1
+      move WMESILDE   TO WMESIL
+      move Row04DE    to Row04
+      when 006
+      move WGIORNINL  TO WGIORNI
+      move WGIORNI1NL TO WGIORNI1
+      move WMESILNL   TO WMESIL
+      move Row04NL    to Row04
+  END-EVALUATE
+
    display Row01 at line 01 col 02 with foreground-color fco1 background-color bco1
    display Row02 at line 02 col 02 with foreground-color fco1 background-color bco1
    display Row03 at line 03 col 02 with foreground-color fco1 background-color bco1
@@ -495,44 +540,9 @@ SetCursorPosition.
 SetCursorPositionEx. exit.
 
 *> ******************************************************************************
-*> Find which day of the week with the "ZELLER FORMULA"
-*> called every 1 of the month (12 times x year)
+*> Find which day of the week
 *> ******************************************************************************
 Find-TheDay.
-   *> move wkDateYY        to wkYY
-   *> move wkDateMM        to wkMM
-   *> move wkDateDD        to wkDD
-
-   *> perform
-      *> divide wkYY by 4 giving wkcom   *> picture with decimals
-      *> divide wkYY by 4 giving wkP1    *> picture without decimals
-      *> if wkP1 = wkCom
-         *> move 29 to wkGmax(2) *> leap year - anno bisestile
-      *> else
-         *> move 28 to wkGmax(2) *> non leap year - anno non bisestile
-      *> end-if
-
-      *> add wkV(wkMM) wkDD wkYY  to wkP1
-      *> if wkGmax(2) = 29 and (wkMM = 1 or wkMM = 2)
-         *> subtract 1 from wkP1
-      *> end-If
-      *> divide wkP1 by 7 giving wkP2
-      *> compute wkDay = wkP1 - (wkP2 * 7) + 1 *> 1=lun,2=mar...7=Dom
-
-      *> *> warning ZELLER FORMULA gives tuesday=2 for 1.1.2000 instead of saturday(6)! how come ?
-      *> if wkDateYYYY > 1999
-         *> evaluate wkDay
-           *> when 1 move 5 to wkDay
-           *> when 2 move 6 to wkDay
-           *> when 3 move 7 to wkDay
-           *> when 4 move 1 to wkDay
-           *> when 5 move 2 to wkDay
-           *> when 6 move 3 to wkDay
-           *> when 7 move 4 to wkDay
-         *> end-evaluate
-      *> end-if
-   *> end-perform
-
 
 *> This function converts date (a numeric integer data item or literal)
 *> – presumed to be a Gregorian calendar form
@@ -542,13 +552,13 @@ Find-TheDay.
      DIVIDE FUNCTION INTEGER-OF-DATE(wkDateR) BY 7
             GIVING wkDIV REMAINDER wkREM
      EVALUATE wkREM
-               WHEN 0 ADD 7 to wkREM *> 'SUN'
-               WHEN 1          *> DISPLAY 'MON'
-               WHEN 2          *> DISPLAY 'TUE'
-               WHEN 3          *> DISPLAY 'WED'
-               WHEN 4          *> DISPLAY 'THU'
-               WHEN 5          *> DISPLAY 'FRI'
-               WHEN 6 CONTINUE *> DISPLAY 'SAT'
+               WHEN 0 ADD 7 to wkREM    *> 'SUN'
+               WHEN 1                   *> DISPLAY 'MON'
+               WHEN 2                   *> DISPLAY 'TUE'
+               WHEN 3                   *> DISPLAY 'WED'
+               WHEN 4                   *> DISPLAY 'THU'
+               WHEN 5                   *> DISPLAY 'FRI'
+               WHEN 6 CONTINUE          *> DISPLAY 'SAT'
        END-EVALUATE
        move wkREM to wkDay
    .
@@ -564,10 +574,9 @@ HideCursor.
 HideCursorEx. EXIT.
 
 ShowCursor.
-   *> show the cursor
+   *> reshow the cursor
     move 2 to wVisibilityNew
-    call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
-   .
+    call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call.
 ShowCursorEx. EXIT.
 
 DisplayCursor.
@@ -577,8 +586,7 @@ DisplayCursor.
    display DDdx line ll column cc
     with foreground-color fco2 background-color bco2 highlight   *> red
   else
-   display DDdx line ll column cc                         *> other days
+   display DDdx line ll column cc                                *> other days
     with foreground-color fco0 background-color bco0
-  end-if
-  .
+  end-if.
 DisplayCursorEx. EXIT.
