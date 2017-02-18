@@ -9,12 +9,22 @@ program-id. GC51CALYEARDEMO.
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2016.06.15
-*> Changelog:  1.0 first release.
+*> Version:    1.1 2017.02.19
+*> Changelog:  1.1 set the language (new feature of GC51CALYEAR)
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 DATA DIVISION.
 Working-Storage Section.
+
+01 black   constant as 0.
+01 blue    constant as 1.
+01 green   constant as 2.
+01 cyan    constant as 3.
+01 red     constant as 4.
+01 magenta constant as 5.
+01 yellow  constant as 6.  *> or Brown
+01 white   constant as 7.
+
 
 COPY "GC51CALYEAR.CPY".
 
@@ -27,12 +37,27 @@ set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
 set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
 MAIN1.
+
+   Display  " " AT 0101
+            with background-color green foreground-color red highlight blink ERASE EOS
+   Display  "GnuCOBOL TUI TOOL DEMO           " AT 0505
+            with background-color green foreground-color red highlight blink
+   Display  "                                 " AT 0605
+            with background-color green foreground-color red highlight blink
+   Display  "Enter to display the Calendar ..." AT 0705
+            with background-color green foreground-color red highlight blink
+   ACCEPT OMITTED.
+
+
+   move 5 to CaleLan
    call GC51CALYEAR using Calendar-Area.
 
-   Display  "DATE SELECTED:" AT 0101 WITH ERASE EOS.
-   Display  CaleDate         AT 0201 .
-   Display  CaleDay          AT 0301 .
-   Display  CaleMonth        AT 0401 .
+
+   Display  "DATE SELECTED:" AT 0704 WITH BLANK SCREEN.
+   Display  CaleDate         AT 0804 .
+   Display  CaleDay          AT 0904 .
+   Display  CaleMonth        AT 1004 .
+   Display  CaleLan          AT 1104 .
    ACCEPT OMITTED.
 
    Goback.
