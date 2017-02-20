@@ -39,7 +39,7 @@ set environment 'COB_SCREEN_ESC'        TO 'Y'.
 MAIN1.
 
    Display  " " AT 0101
-            with background-color green foreground-color red highlight blink ERASE EOS
+            with background-color green foreground-color red highlight blink blank screen
    Display  "GnuCOBOL TUI TOOL DEMO           " AT 0505
             with background-color green foreground-color red highlight blink
    Display  "                                 " AT 0605
@@ -49,6 +49,7 @@ MAIN1.
    ACCEPT OMITTED.
 
 
+   *> 5 = German
    move 5 to CaleLan
    call GC51CALYEAR using Calendar-Area.
 
