@@ -19,8 +19,9 @@ program-id. GC51CALYEAR.
 *> Parameters: look at GC51CALYEAR.cpy
 *> Author:     Eugenio Di Lorenzo - Italia
 *> License:    Copyright 2016 E.Di Lorenzo - GNU General Public License, 3.0 (or greater)
-*> Version:    1.1 19.02.2017
+*> Version:    1.2 20.02.2017
 *> Changelog:  1.1 extended to manage 6 languages EN IT FR ES DE NL
+*>             1.2 colors moved to copy, addeda F1 F2 F6
 *> ***********************************************************************************
 *> WARNING.
 *> This program displays 50 rows and 77 cols on screen so the screen size must be
@@ -57,6 +58,9 @@ Working-Storage Section.
 01  K-BACKTAB  constant as 2008.
 01  K-PAGEUP   constant as 2001.
 01  K-PAGEDOWN constant as 2002.
+01  K-F1       constant as 1001.
+01  K-F2       constant as 1002.
+01  K-F6       constant as 1006.
 
 01  W-KEY PIC 9(4) VALUE 9999.
 
@@ -66,6 +70,11 @@ Working-Storage Section.
    03               pic x(4) value "  > ".
    03 comodo-YYYY   pic 9(4).
    03               pic x(4) value " <  ".
+01  WS-LANG.
+   03               pic x(1) value "(".
+   03 comodo-LANG   pic X(2).
+   03               pic x(1) value ")".
+
 01  dos-date.
    03 dos-YY    pic S9(4) comp-5.
    03 dos-MM    pic S9(4) comp-5.
@@ -88,17 +97,6 @@ Working-Storage Section.
 01  wCOLUMNS3    pic  9(03).
 01  ll           pic  9(03).
 01  cc           pic  9(03).
-
-01  bco0    pic 9(01) value white. *> bgr.col numbers calend
-01  fco0    pic 9(01) value black. *> for.col numbers calend
-01  bco1    pic 9(01) value white. *> bgr.col frame e dd
-01  fco1    pic 9(01) value blue.  *> for.col frame e dd
-01  bco2    pic 9(14) value white. *> bgr.col sunday & saturday
-01  fco2    pic 9(01) value red.   *> bgr.col sunday & saturday
-01  bco4    pic 9(01) value white. *> bgr.col titolo anno e legenda tasti
-01  fco4    pic 9(01) value red.   *> for.col titolo anno e legenda tasti
-01  bco5    pic 9(01) value green. *> bgr.col cursor position
-01  fco5    pic 9(01) value white. *> for.col cursor position
 
 *> a table with all one year calendar
 01  tb.
@@ -247,7 +245,7 @@ INIT.
   CALL "SYSTEM" USING "mode con: lines=50 cols=80"
   *> call static 'resize_term' using by value 50 80 returning wResult end-call
 
-   perform DisplayConstants thru DisplayConstantsEx
+   *> perform DisplayConstants thru DisplayConstantsEx
 
    *> set "cursor" on that DATE
    if CaleDate = zero or CaleDate not numeric
@@ -263,13 +261,25 @@ INIT.
    *> save the date
    move dos-date to dataCur
    .
+LOOP-MAIN1.
+   perform DisplayConstants thru DisplayConstantsEx
+   .
 LOOP-MAIN.
    *> DISPLAY THE YEAR TITLE
    move dos-YY to Comodo-YYYY
-   display WS-YEAR line 2 column 33 with foreground-color fco4 background-color bco4
+   display WS-YEAR line 2 column 33 with foreground-color Calefco4 background-color Calebco4
    move 1     to dos-MM
    move space to tb
-
+   *> DISPLAY LANGUAGE
+   evaluate CaleLan
+      when 1 move "EN" to comodo-LANG
+      when 2 move "IT" to comodo-LANG
+      when 3 move "FR" to comodo-LANG
+      when 4 move "ES" to comodo-LANG
+      when 5 move "DE" to comodo-LANG
+      when 6 move "NL" to comodo-LANG
+   end-evaluate
+   display WS-LANG line 2 column 70 with foreground-color Calefco4 background-color Calebco4
    *> ********************************************************
    *> 12 MOTNTHS LOOP TO DISPLAY A ONE YEAR CALENDAR
    *> ********************************************************
@@ -304,11 +314,11 @@ LOOP-MAIN.
 
    *> DISPLAY A BOX WITH CONTROLS INSTRUCTIONS
     display "ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿" line 46 column 17
-            with foreground-color fco4 background-color bco4 highlight
+            with foreground-color Calefco4 background-color Calebco4 highlight
     display "³  Cursor up/dn/left/right PageUp/Dn Enter  ³" line 47 column 17
-            with foreground-color fco4 background-color bco4 highlight
+            with foreground-color Calefco4 background-color Calebco4 highlight
     display "ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ" line 48 column 17
-            with foreground-color fco4 background-color bco4 highlight
+            with foreground-color Calefco4 background-color Calebco4 highlight
 
    *> postioning cursor on the day of the date - posiziona il "cursore" sulla data del giorno
    perform SetCursorPosition thru SetCursorPositionEx
@@ -319,7 +329,7 @@ loop-ACCEPT.
    *> WAIT FOR A KEY AND PROCESSES ACTIONS
    *> ********************************************************
    accept dummy at 0101 with no-echo auto size 0 end-accept
-
+   *> accept omitted with auto end-accept
    *> restores back and foreground of previous cursor position
    perform DisplayCursor thru DisplayCursorEx
 
@@ -378,6 +388,24 @@ loop-ACCEPT.
    WHEN W-KEY = K-PAGEUP OR K-BACKTAB
         compute dos-YY = dos-YY - 1  go loop-main
 
+   *> F1 change background color
+   WHEN W-KEY = K-F1
+         add 1 to Calebco0 Calebco1 Calebco2 Calebco4
+         if Calebco0 > 7 move 0 to Calebco0 Calebco1 Calebco2 Calebco4 end-if
+         go loop-main1
+   *> F2 change foreground color
+   WHEN W-KEY = K-F2
+         add 1 to Calefco1
+         if Calefco1 > 7 move 0 to Calefco1 end-if
+         go loop-main1
+   *> F6 change language
+   WHEN W-KEY = K-F6
+         add 1 to Calelan
+         if Calelan > 6 move 1 to Calelan end-if
+         go loop-main1
+
+
+
    WHEN W-KEY = K-ENTER OR K-ESC go END-PROGRAM
 
    WHEN OTHER   go loop-main
@@ -433,31 +461,31 @@ DisplayConstants.
       move Row04NL    to Row04
   END-EVALUATE
 
-   display Row01 at line 01 col 02 with foreground-color fco1 background-color bco1
-   display Row02 at line 02 col 02 with foreground-color fco1 background-color bco1
-   display Row03 at line 03 col 02 with foreground-color fco1 background-color bco1
-   display Row04 at line 04 col 02 with foreground-color fco1 background-color bco1
-   display Row05 at line 05 col 02 with foreground-color fco1 background-color bco1
-   display Row06 at line 06 col 02 with foreground-color fco1 background-color bco1
+   display Row01 at line 01 col 02 with foreground-color Calefco1 background-color Calebco1
+   display Row02 at line 02 col 02 with foreground-color Calefco1 background-color Calebco1
+   display Row03 at line 03 col 02 with foreground-color Calefco1 background-color Calebco1
+   display Row04 at line 04 col 02 with foreground-color Calefco1 background-color Calebco1
+   display Row05 at line 05 col 02 with foreground-color Calefco1 background-color Calebco1
+   display Row06 at line 06 col 02 with foreground-color Calefco1 background-color Calebco1
 
    perform varying i from 7 by 7 until i > 42 after j from 1 by 1 until j > 07
     move wkNomeGA(j) to Row06(3:3) Row06(70:3)
     compute ll = (i - 1) + j
     if j = 7 or j = 6      *> vertical lines saturday or sunday
-       display Row06       line ll col 02 with foreground-color fco1 background-color bco1
-       display wkNomeGA(j) line ll col 04 with foreground-color fco2 background-color bco2 highlight
-       display wkNomeGA(j) line ll col 71 with foreground-color fco2 background-color bco2 highlight
+       display Row06       line ll col 02 with foreground-color Calefco1 background-color Calebco1
+       display wkNomeGA(j) line ll col 04 with foreground-color Calefco2 background-color Calebco2 highlight
+       display wkNomeGA(j) line ll col 71 with foreground-color Calefco2 background-color Calebco2 highlight
     else                   *> vertical line non sunday . monday, tuesday, ....
-       display Row06      line ll col 02 with foreground-color fco1 background-color bco1
+       display Row06      line ll col 02 with foreground-color Calefco1 background-color Calebco1
     end-if
    end-perform
    *> penultimate line of the screen
    add 1 to ll
    initialize Row06 alphanumeric to value
-   display Row06 at line ll col 02 with foreground-color fco1 background-color bco1
+   display Row06 at line ll col 02 with foreground-color Calefco1 background-color Calebco1
    *> last line of the screen
    add 1 to ll
-   display Row07 line ll column 02 with foreground-color fco1 background-color bco1
+   display Row07 line ll column 02 with foreground-color Calefco1 background-color Calebco1
    .
 DisplayConstantsEx. exit.
 
@@ -523,7 +551,7 @@ SetCursorPosition.
           compute ll = iKK + 6
           compute cc = 6 + (5 * mmCur) - 1
           display DDdx line ll column cc
-                  with foreground-color fco5 background-color bco5 highlight
+                  with foreground-color Calefco5 background-color Calebco5 highlight
           move ddCur            to CaleDD
           move mmCur            to CaleMM
           move dos-YY           to CaleYY
@@ -535,7 +563,7 @@ SetCursorPosition.
           move space to wDesDate
           string "(" CaleDD "." CaleMM "." CaleYY " " CaleDay " " CaleMonth ")" delimited by "  " into wDesDate end-string
           display wDesDate line 45 column 25
-                  with foreground-color fco4 background-color bco4
+                  with foreground-color Calefco4 background-color Calebco4
      end-search.
 SetCursorPositionEx. exit.
 
@@ -584,9 +612,9 @@ DisplayCursor.
   if i = 7 or 14 or 21 or 28 or 35 or 42                  *> sundays
       or 6 or 13 or 20 or 27 or 34 or 41                  *> saturdays
    display DDdx line ll column cc
-    with foreground-color fco2 background-color bco2 highlight   *> red
+    with foreground-color Calefco2 background-color Calebco2 highlight   *> red
   else
    display DDdx line ll column cc                                *> other days
-    with foreground-color fco0 background-color bco0
+    with foreground-color Calefco0 background-color Calebco0
   end-if.
 DisplayCursorEx. EXIT.
