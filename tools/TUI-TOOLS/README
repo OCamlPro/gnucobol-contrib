@@ -1,4 +1,6 @@
-*** GCTTC: GnuCOBOL TUI (TEXT USER INTERFACE) TOOLS COLLECTON ***
+*** GCTTC: GnuCOBOL TUI (TEXT USER INTERFACE) TOOLS AND UTILITIES COLLECTON ***
+
+Here you can find COBOL TUI TOOLS (GC01xxxxxx to GC98xxxxxx) and COBOL Utilities (GC99xxxxxx) 
 
 Although the textual interfaces are now replaced by graphical interfaces, a good compiler 
 must allow to develop complete applications in an easy way even with textual user interfaces.
@@ -79,4 +81,20 @@ the big clock will move randomly on screen.
 you can specify back/fore colors, size, position, single/double/custom borders, 
 3D effect and so on.
 
+GC99COPYGEN.COB
+See at 
+https://sourceforge.net/p/open-cobol/discussion/contrib/thread/e21eb9ba/#90fd
 
+How to use it:
+1. create a text file with the layout of the report. Set all constants and variables. 
+Use the $ symbol when you want a PIC X field,use the # symbol when you want a PIC 9. 
+For a better graphical representation of the report you can also insert 
+blank lines or also rows repeated and identical to previous lines.
+2. run the program GC99COPYGEN that reads the TXT file with the report layout 
+and creates the corresponding Copy COBOL in a .CPY text file. 
+The program will skip blank lines and will skip rows equals to each other, 
+eg. with the same fields, produces a single line in the copy.
+3. the Copy COBOL obtained should be used directly in the COBOL program 
+that will produce the report, or you can change it before, 
+to enhance the Copy COBOL example for a better the editing Picture 
+of individual fields directly in the copy.
