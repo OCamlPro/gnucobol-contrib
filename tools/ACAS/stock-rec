@@ -1,0 +1,79 @@
+       01  MYSQL-XYZ-BUFFER.
+           05  XYZ-STOCK-KEY                   PIC X(00013).
+           05  XYZ-STOCK-ABREV-KEY             PIC X(00007).
+           05  XYZ-STOCK-SUPPLIER-P1           PIC X(00007).
+           05  XYZ-STOCK-SUPPLIER-P2           PIC X(00007).
+           05  XYZ-STOCK-SUPPLIER-P3           PIC X(00007).
+           05  XYZ-STOCK-DESC                  PIC X(00032).
+           05  XYZ-STOCK-CONSTRUCT-ITEM        PIC X(00013).
+           05  XYZ-STOCK-LOCATION              PIC X(00010).
+           05  XYZ-STOCK-PA-CODE               PIC X(00003).
+           05  XYZ-STOCK-SA-CODE               PIC X(00003).
+           05  XYZ-STOCK-SERVICES-FLAG         PIC X(00001).
+           05  XYZ-STOCK-LAST-ACTUAL-COST      PIC  9(07)V9(02) COMP.
+           05  XYZ-STOCK-CONSTRUCT-BUNDLE      PIC S9(10) COMP.
+           05  XYZ-STOCK-UNDER-CONSTRUCTION    PIC S9(10) COMP.
+           05  XYZ-STOCK-WORK-IN-PROGRESS      PIC S9(10) COMP.
+           05  XYZ-STOCK-REORDER-PNT           PIC S9(10) COMP.
+           05  XYZ-STOCK-STD-REORDER           PIC S9(10) COMP.
+           05  XYZ-STOCK-BACK-ORDERED          PIC S9(10) COMP.
+           05  XYZ-STOCK-ON-ORDER              PIC S9(10) COMP.
+           05  XYZ-STOCK-HELD                  PIC S9(10) COMP.
+           05  XYZ-STOCK-PRE-SALES             PIC S9(10) COMP.
+           05  XYZ-STOCK-RETAIL                PIC  9(07)V9(02) COMP.
+           05  XYZ-STOCK-COST                  PIC  9(07)V9(04) COMP.
+           05  XYZ-STOCK-VALUE                 PIC  9(09)V9(02) COMP.
+           05  XYZ-STOCK-ORDER-DUE             PIC  9(10) COMP.
+           05  XYZ-STOCK-ORDER-DAT             PIC  9(10) COMP.
+           05  XYZ-STOCK-ADDS                  PIC  9(10) COMP.
+           05  XYZ-STOCK-DEDUCTS               PIC  9(10) COMP.
+           05  XYZ-STOCK-WIP-ADDS              PIC  9(10) COMP.
+           05  XYZ-STOCK-WIP-DEDS              PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-ADDS-01            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-ADDS-02            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-ADDS-03            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-ADDS-04            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-ADDS-05            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-ADDS-06            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-ADDS-07            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-ADDS-08            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-ADDS-09            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-ADDS-10            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-ADDS-11            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-ADDS-12            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-DEDS-01            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-DEDS-02            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-DEDS-03            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-DEDS-04            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-DEDS-05            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-DEDS-06            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-DEDS-07            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-DEDS-08            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-DEDS-09            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-DEDS-10            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-DEDS-11            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-DEDS-12            PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-ADDS-01        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-ADDS-02        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-ADDS-03        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-ADDS-04        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-ADDS-05        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-ADDS-06        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-ADDS-07        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-ADDS-08        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-ADDS-09        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-ADDS-10        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-ADDS-11        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-ADDS-12        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-DEDS-01        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-DEDS-02        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-DEDS-03        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-DEDS-04        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-DEDS-05        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-DEDS-06        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-DEDS-07        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-DEDS-08        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-DEDS-09        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-DEDS-10        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-DEDS-11        PIC  9(10) COMP.
+           05  XYZ-STOCK-TD-WIP-DEDS-12        PIC  9(10) COMP.
