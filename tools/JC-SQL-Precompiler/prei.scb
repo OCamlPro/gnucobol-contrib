@@ -1,0 +1,175 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. prei.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  WS-NO-PARAGRAPH         PIC S9(4).
+       01  WS-MYSQL-I              PIC S9(4) COMP.
+       01  WS-MYSQL-EDIT           PIC -Z(18)9.9(9).
+       01  WS-CONDITION            PIC X(1024).
+       01  WS-READ-AREA            PIC X(64).
+       01  WS-TABLE-NAME           PIC X(64).
+       01  WS-DEMONSTRATE-DEFINE.
+       /MYSQL DEFINE\
+           TABLE=table_two,GHI
+       /MYSQL-END\
+       /MYSQL VAR\
+           BASE=presql
+           TABLE=table_one,ABC
+           TABLE=table_two,DEF
+       /MYSQL-END\
+      ****************************************************************
+      *                PROCEDURE DIVISION                            *
+      ****************************************************************
+       PROCEDURE DIVISION.
+       0000-MAIN SECTION.
+           GO TO 1000-COMMAND-LOOP.
+      *
+       0100-ERROR.
+           DISPLAY "T) ERROR--CONTACT SUPERVISOR".
+           DISPLAY "I) AT PARAGRAPH ", WS-NO-PARAGRAPH.
+           DISPLAY "I) SQL ERROR NUMBER=", WS-MYSQL-ERROR-NUMBER.
+           DISPLAY "I) SQL ERROR MESAGE=", WS-MYSQL-ERROR-MESSAGE.
+           STOP RUN. 
+      *
+       1000-COMMAND-LOOP.
+           MOVE SPACES TO WS-READ-AREA.
+           DISPLAY "A) ENTER THE COMMAND YOU DESIRE ".
+           ACCEPT WS-READ-AREA.
+           EVALUATE WS-READ-AREA
+             WHEN "INIT" GO TO 2000-INIT
+             WHEN "INSERT" GO TO 2100-INSERT 
+             WHEN "SELECT" GO TO 2200-SELECT
+             WHEN "FETCH" GO TO 2300-FETCH
+             WHEN "FREE" GO TO 2400-FREE
+             WHEN "DELETE" GO TO 2700-DELETE
+             WHEN "CLOSE" GO TO 2800-CLOSE
+             WHEN "UPDATE" GO TO 2900-UPDATE
+             WHEN "END" GO TO 9900-EOJ
+             WHEN "OTHER" 
+               DISPLAY "W) INVALID COMMAND"
+               GO TO 1000-COMMAND-LOOP
+           END-EVALUATE.
+      *
+       2000-INIT.
+           MOVE 2000 TO WS-NO-PARAGRAPH.
+       /MYSQL INIT\
+           BASE=presql
+           PASSWORD=mysqlpass
+       /MYSQL-END\
+           GO TO 1000-COMMAND-LOOP.
+      *
+       2100-INSERT.
+           MOVE 2100 TO WS-NO-PARAGRAPH.
+           MOVE SPACES TO WS-READ-AREA.
+           DISPLAY "A) ENTER THE VALUE FOR fbigint ".
+           ACCEPT WS-READ-AREA.
+       /MYSQL LOCK\
+           TABLE=table_one
+       /MYSQL-END\
+           MOVE WS-READ-AREA TO ABC-FBIGINT.
+           MOVE "A" TO ABC-FCHAR.
+           MOVE "2010-01-01" TO ABC-FDATE.
+           MOVE "2010-01-01 01:02:03" TO ABC-FDATETIME.
+           MOVE 7.2 TO ABC-FDEC.
+           MOVE 7.2 TO ABC-FDECIMAL.
+           MOVE 1 TO ABC-FINT.
+           MOVE 2 TO ABC-FINTEGER.
+           MOVE 3 TO ABC-FMEDIUMINT.
+           MOVE 8.2 TO ABC-FNUMERIC.
+           MOVE 4 TO ABC-FSMALLINT.
+           MOVE "01:02:03" TO ABC-FTIME.
+           MOVE "2010-01-01 01:02:03" TO ABC-FTIMESTAMP.
+           MOVE "B" TO ABC-FTINYBLOB.
+           MOVE 5 TO ABC-FTINYINT.
+           MOVE "C" TO ABC-FTINYTEXT.
+           MOVE "D" TO ABC-FVARCHAR.
+       /MYSQL INSERT\
+           TABLE=table_one
+       /MYSQL-END\
+           IF WS-MYSQL-COUNT-ROWS IS LESS THAN 1
+             GO TO 0100-ERROR.
+       /MYSQL UNLOCK\
+       /MYSQL-END\
+           GO TO 1000-COMMAND-LOOP.
+      *
+       2200-SELECT.
+           MOVE SPACES TO WS-READ-AREA.
+           DISPLAY "A) ENTER THE WHERE FOR THE SELECT"
+           ACCEPT WS-READ-AREA.
+           MOVE WS-READ-AREA TO WS-CONDITION.
+      /MYSQL SELECT\
+           TABLE=table_one
+           WHERE=WS-CONDITION
+      /MYSQL-END\
+           DISPLAY "I) ROWS SELECTED=", WS-MYSQL-COUNT-ROWS.
+           GO TO 1000-COMMAND-LOOP.
+      *
+       2300-FETCH.
+       /MYSQL FETCH\
+           TABLE=table_one 
+       /MYSQL-END\
+           DISPLAY "I) fbigint=", ABC-FBIGINT.
+           GO TO 1000-COMMAND-LOOP.
+      *
+       2400-FREE.
+       /MYSQL FREE\
+           TABLE=table_one
+       /MYSQL-END\
+           GO TO 1000-COMMAND-LOOP.
+      *
+       2700-DELETE.
+           MOVE SPACES TO WS-READ-AREA.
+           DISPLAY "A) ENTER THE WHERE STATEMENT ".
+           ACCEPT WS-READ-AREA.
+           MOVE WS-READ-AREA TO WS-CONDITION.
+       /MYSQL LOCK\
+           TABLE=table_one
+       /MYSQL-END\
+       /MYSQL DELETE\
+           TABLE=table_one
+           WHERE=WS-CONDITION
+       /MYSQL-END\
+           IF WS-MYSQL-COUNT-ROWS IS LESS THAN 1
+             GO TO 0100-ERROR.
+       /MYSQL UNLOCK\
+       /MYSQL-END\
+           GO TO 1000-COMMAND-LOOP.
+      *
+       2800-CLOSE.
+       /MYSQL CLOSE\
+       /MYSQL-END\
+           GO TO 1000-COMMAND-LOOP.
+      *
+       2900-UPDATE.
+           DISPLAY "A) ENTER THE VALUE OF FBIGINT ".
+           MOVE SPACES TO WS-READ-AREA.
+           ACCEPT WS-READ-AREA.
+           MOVE WS-READ-AREA TO ABC-FBIGINT.
+           DISPLAY "A) ENTER THE WHERE STATEMENT ".
+           MOVE SPACES TO WS-READ-AREA.
+           ACCEPT WS-READ-AREA.
+           MOVE WS-READ-AREA TO WS-CONDITION.
+           DISPLAY "A) ENTER THE NEW VALUE FOR fchar ".
+           MOVE SPACES TO WS-READ-AREA.
+           ACCEPT WS-READ-AREA.
+           MOVE WS-READ-AREA TO ABC-FCHAR.
+       /MYSQL LOCK\
+           TABLE=table_one
+       /MYSQL-END\
+       /MYSQL UPDATE\
+           TABLE=table_one
+           WHERE=WS-CONDITION
+       /MYSQL-END\
+           CALL "MySQL_errno" USING WS-MYSQL-ERROR-NUMBER.
+           IF WS-MYSQL-COUNT-ROWS IS LESS THAN 1
+             AND WS-MYSQL-ERROR-NUMBER IS NOT EQUAL TO "0   "
+               GO TO 0100-ERROR.
+       /MYSQL UNLOCK\
+       /MYSQL-END\
+           GO TO 1000-COMMAND-LOOP.
+      *       
+       9900-EOJ.
+           DISPLAY "I) PROGRAM TERMINATING".
+           STOP RUN.
+       /MYSQL PRO\
+       /MYSQL-END\

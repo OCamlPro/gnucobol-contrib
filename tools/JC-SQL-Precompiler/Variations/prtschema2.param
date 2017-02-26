@@ -1,0 +1,6 @@
+DBHOST=localhost
+DBUSER=dev-prog-001
+DBPASSWD=mysqlpass
+DBNAME=information_schema
+DBPORT=3306
+DBSOCKET=/home/mysql/mysql.sock
