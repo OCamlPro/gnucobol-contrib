@@ -2,15 +2,17 @@
 IDENTIFICATION DIVISION.
 PROGRAM-ID. GC09BUTTONS is initial.
 *> ***********************************************************************************
-*> GnuCOBOL TT (TUI TOOLS) COLLECTION
+*> GnuCOBOL TT (TUI TOOLS) AND UTILITIES COLLECTION
 *> Purpose:    DISPLAYS BUTTONS ON SCREEN
 *> Tectonics:  cobc -m GC09BUTTONS.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC09BUTTONS using BUTTONS-AREA
-*> Parameters: look at GC09BUTTONS.cpy (use with copy Version: 1.0 2016.06.15)
+*> Parameters: look at GC09BUTTONS.cpy (use with copy Version: 1.1)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2016.06.15
+*> Version:    1.2 2017.02.28
 *> Changelog:  1.0 first release.
+*>             1.1 changed from ACCEPT a DUMMY field to "call getch"
+*>             1.2 added the "click effect" and beep on request
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -20,6 +22,7 @@ DATA DIVISION.
 Working-Storage Section.
 
 01  .
+    03  wLoop        pic  9(04) value  0.
     03  wCol         pic s9(02) value +0.
     03  wR           pic s9(02) value +0.
     03  wC           pic s9(02) value +0.
@@ -46,6 +49,9 @@ Working-Storage Section.
 01 yellow  constant as 6.  *> or Brown
 01 white   constant as 7.
 
+01  wVisibilityNew   BINARY-SHORT .
+01  wVisibilityOld   BINARY-SHORT .
+
 *> Values that may be returned in CRT STATUS (or COB-CRT-STATUS)
 78  K-ENTER       VALUE 0000.
 78  K-UP          VALUE 2003.
@@ -60,11 +66,16 @@ Working-Storage Section.
 78  K-ESCAPE      VALUE 2005.
 
 copy 'GC01BOX.CPY'.
+COPY 'GC98KEYCODE.CPY'.
 
 LINKAGE SECTION.
 copy 'GC09BUTTONS.CPY'.
+
+
 *> ***********************************************************************************
-*>           P R O C E D U R E   D I V I S I O N
+*>
+*>                       P R O C E D U R E   D I V I S I O N
+*>
 *> ***********************************************************************************
 PROCEDURE DIVISION using Buttons-Area.
 *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
@@ -74,7 +85,7 @@ set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
    move 1 to i, j, w, Btn-Number.
 *> ***********************************************************************************
-*> display BUTTONS
+*> display BUTTONS and wait for user input
 *> ***********************************************************************************
 Main.
    *> to count how many buttons
@@ -82,44 +93,58 @@ Main.
       compute Btn-Number = i - 1
       go to Main-Ex end-if
 
-   if Bu-Act(i) = '1'          *> set color of selected button
+   *> set color of selected button
+   if Bu-Act(i) = '1'
       move i       to Bu-Selected
       Move Bu-bcoS to bco
       move Bu-fcoS to fco
-   else                        *> set color of normal button
+  *> set color of non selected buttons
+   else
       Move Bu-bcoN to bco
       move Bu-fcoN to fco
    end-if
 
-   perform Display-Button thru Display-Button-ex
+   perform Display-Button thru Display-ButtonEx
    add  1 to i
-   go to Main. *> go to display next Button
+
+   *> go to display next Button
+   go to Main.
+
 Main-Ex. exit.
 
 *> ***********************************************************************************
-*> WAIT FOR USER INPUT
+*> after displayed buttons WAIT FOR USER INPUT
 *> ***********************************************************************************
 loop-user-input.
-   *> hide the cursor
-   move 0 to wInt
-   call static "curs_set" using by value wInt end-call
 
-   accept wDummy at 2580
-          with auto background-color red foreground-color white end-accept
+*> hide the cursor and save its previous state
+*> (use always a display or an accept at .... before to have a call to "initscr"
+move 0 to wVisibilityNew
+call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
+
+call static "getch" returning Key-Pressed end-call
+*> accept wDummy at 2580 with auto background-color red foreground-color white end-accept
 
    EVALUATE TRUE
 
-   when wCRT-STATUS = K-RIGHT
-     or wCRT-STATUS = K-DOWN
-     or wCRT-STATUS = K-TAB
-     or wCRT-STATUS = K-PAGEDOWN
+   *> when wCRT-STATUS = K-RIGHT
+     *> or wCRT-STATUS = K-DOWN
+     *> or wCRT-STATUS = K-TAB
+     *> or wCRT-STATUS = K-PAGEDOWN
+
+   when Key-Pressed = Key-CursRight
+     or Key-Pressed = Key-CursDn
+     or Key-Pressed = Key-Tab
+     or Key-Pressed = Key-PgDn
+     or Key-Pressed = Key-space
+
       move Bu-Selected to i
       move space    to Bu-Act(Bu-Selected)
       *> display as normal Button
       Move Bu-bcoN to bco
       Move Bu-fcoN to fco
       Move Bu-fcoNH to fcoH
-      perform Display-Button thru Display-Button-ex
+      perform Display-Button thru Display-ButtonEx
       if   Bu-Selected = Btn-Number
            move 1 to Bu-Selected i
       else
@@ -130,12 +155,18 @@ loop-user-input.
       Move Bu-bcoS to bco
       Move Bu-fcoS to fco
       Move Bu-fcoSH to fcoH
-      perform Display-Button thru Display-Button-ex
+      perform Display-Button thru Display-ButtonEx
 
-   when wCRT-STATUS = K-LEFT
-     or wCRT-STATUS = K-UP
-     or wCRT-STATUS = K-BACKTAB
-     or wCRT-STATUS = K-PAGEUP
+   *> when wCRT-STATUS = K-LEFT
+     *> or wCRT-STATUS = K-UP
+     *> or wCRT-STATUS = K-BACKTAB
+     *> or wCRT-STATUS = K-PAGEUP
+
+   when Key-Pressed = Key-CursLeft
+     or Key-Pressed = Key-CursUp
+     *> or Key-Pressed = Key-Tab
+     or Key-Pressed = Key-PgUp
+
       move Bu-Selected to i
       move space            to Bu-Act(Bu-Selected)
       *> display as normal Button
@@ -143,7 +174,7 @@ loop-user-input.
       Move Bu-fcoN to fco
       Move Bu-fcoNH to fcoH
 
-      perform Display-Button thru Display-Button-ex
+      perform Display-Button thru Display-ButtonEx
       if   Bu-Selected = 1
            move Btn-Number to Bu-Selected i
       else
@@ -154,19 +185,34 @@ loop-user-input.
       Move Bu-bcoS to bco
       Move Bu-fcoS to fco
       Move Bu-fcoSH to fcoH
-      perform Display-Button thru Display-Button-ex
+      perform Display-Button thru Display-ButtonEx
 
    END-EVALUATE
 
-   IF wCRT-STATUS = K-ENTER
-      move K-Enter  to Bu-Key
-      if Bu-click = 'Y' perform Click thru Click-Ex end-if
-      go END-PROGRAM end-if
-   IF wCRT-STATUS = K-ESCAPE move K-ESCAPE to Bu-Key go END-PROGRAM end-if
+   *> *************************************************************************
+   *> ENTER = SELECTED A BUTTON
+   *> *************************************************************************
+   IF Key-Pressed = Key-Enter
+      move Key-Enter  to Bu-Key
+      if Bu-beep  = 'Y'  CALL X'E5'                   end-if
+      if Bu-click = 'Y'  perform Click thru Click-Ex  end-if
+      go to END-PROGRAM
+   end-if
+
+   *> IF wCRT-STATUS = K-ESCAPE move K-ESCAPE to Bu-Key go END-PROGRAM end-if
+   IF Key-Pressed = Key-Escape
+      move Key-Escape to Bu-Key
+      go to END-PROGRAM
+   end-if
 
    go to loop-user-input
    .
 END-PROGRAM.
+
+  *> reset (show) the cursor to its previous state
+  move wVisibilityOld to wVisibilityNew
+  call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
+
    Goback.
 
 *> ***********************************************************************************
@@ -177,23 +223,24 @@ Display-Button.
    If Bu-Arrow = '1' or '2'
      perform varying j from 1 by 1 until Bu-Item(i) (j:1) = x'00' end-perform
    End-if
+
    Evaluate True
      when Bu-Arrow = '1'
-      if Bu-Act(i) = '1'
-         move Bu-Arrow-Char1 to Bu-Item(i) (1:1)
-         move Bu-Arrow-Char2 to Bu-Item(i) (j - 1:1)
-      else
-         move space  to Bu-Item(i) (1:1)
-         move space  to Bu-Item(i) (j - 1:1)
-      end-if
+          if Bu-Act(i) = '1'
+             move Bu-Arrow-Char1 to Bu-Item(i) (1:1)
+             move Bu-Arrow-Char2 to Bu-Item(i) (j - 1:1)
+          else
+             move space  to Bu-Item(i) (1:1)
+             move space  to Bu-Item(i) (j - 1:1)
+          end-if
      when Bu-Arrow = '2'
-      if Bu-Act(i) = '1'
-         move Bu-Arrow-Char1 to Bu-Item(i) (2:1)
-         move Bu-Arrow-Char2 to Bu-Item(i) (j - 2:1)
-      else
-         move space  to Bu-Item(i) (2:1)
-         move space  to Bu-Item(i) (j - 2:1)
-      end-if
+          if Bu-Act(i) = '1'
+             move Bu-Arrow-Char1 to Bu-Item(i) (2:1)
+             move Bu-Arrow-Char2 to Bu-Item(i) (j - 2:1)
+          else
+             move space  to Bu-Item(i) (2:1)
+             move space  to Bu-Item(i) (j - 2:1)
+          end-if
    end-evaluate
 
    move 0 to j.
@@ -202,7 +249,7 @@ loop1.
    add 1 to j
    if Bu-Item(i) (j:1) = low-value go loop1-ex end-if
 
-   *> save max length of Button items. useful for drawing a box around the menu
+   *> save max length of Button items
    compute wlen = (Bu-c(i) + j - 1) - (Bu-c(1) + 1)
    if wlen > len-voce move wlen to len-voce end-if
 
@@ -225,11 +272,11 @@ loop1-ex.
    if bu-Shadow = 'Y'
     perform Shadow-Button thru Shadow-Button-ex end-if
    .
-Display-Button-EX. exit.
+Display-ButtonEx. exit.
 
 
 Shadow-Button.
-*> Shadow is made of Ascci chars DF & DC
+*> the shadow is made of Ascii chars x'DF' & x'DC'
 *> with same background color of existing background
    move j to salva-j  *> j = last button column
    move 0 to j.
@@ -254,31 +301,41 @@ loop2.
    go to loop2.
 Shadow-Button-EX. exit.
 
+*> *******************************************************************************
+*> CLICK EFFECT
+*> redisplay the button 1 column right, without shedow and in black/white
+*> *******************************************************************************
 Click.
-   *> not yet implemented
-   *> erase the button
-   *> redisplay the button 1 column left, without shedow and in black/white
-   go to Click-Ex
+    Move Bu-Selected to i
 
-   *> Move Bu-Selected to i
+    add 1 to Bu-c(i)
+    move black to bco
+    move white to fco
+    Move "N"   to Bu-shadow
+    perform Display-Button thru Display-ButtonEx
 
-    *> move 'N' to Box-style
-    *> move white    to Box-bco
-    *> set Box-fco to white
-    *> move Bu-r(i) to Box-r1
-    *> move Bu-c(i) to Box-c1
-    *> compute Box-r2  =  Bu-r(i) + 1
-    *> compute Box-c2  =  Bu-c(i) + len-voce
-    *> call 'GC01BOX' using BOX-AREA
+   *> delete the char at left of the button
+   compute wR = Bu-r(i)
+   compute wC = Bu-c(i) - 1
+   display ' ' at line wR col wC
+        with background-color Bu-bcoShadow foreground-color black end-display
 
-   *> add 1 to Bu-c(i)
-   *> Move "N" to Bu-Shadow
-   *> move white to Bu-FcoS Bu-FcoN
-   *> move black to Bu-BcoS Bu-BcoN
-   *> perform Display-Button thru Display-Button-Ex.
-   *> accept wDummy at 025080 with AUTO TIMEOUT 1 end-accept
+   *> count number of chars of the button
+   move 1 to j
+   perform until (Bu-Item(i) (j:1) = x'00') add 1 to j end-perform
+   compute len-voce = j + 1
+   *> delete shadow under the button
+   compute wR = Bu-r(i) + 1
+   compute wC = Bu-c(i) - 1
+   move 1 to wLoop.
+Click1.
+    display ' ' at line wR col wC
+        with background-color Bu-bcoShadow foreground-color black end-display
+    add 1 to wLoop  wC
+    if wLoop < len-voce go to click1 end-if
+    *> small delay to show the click effect
+    CALL "C$SLEEP" USING 1
    .
 Click-Ex. exit.
 
 End Program GC09BUTTONS.
-
