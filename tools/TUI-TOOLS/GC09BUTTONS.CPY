@@ -1,13 +1,14 @@
 01 GC09BUTTONS pic x(11) value 'GC09BUTTONS'.
 01 Buttons-Area.
 *> ***********************************************************************************
-*> GnuCOBOL TT (TUI TOOLS) COLLECTION
+*> GnuCOBOL TT (TUI TOOLS) AND UTILITIES COLLECTION
 *> Purpose:    WORK-AREA FOR GC09BUTTONS.COB - DISPLAY BUTTONS
 *> Usage:      call GC09BUTTONS using Buttons-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2016.06.15
+*> Version:    1.1 2017.02.28
 *> Changelog:  1.0 first release.
+*>             1.1 added beep parameter
 *> ***********************************************************************************
 *> on screen You can manage max 24 buttons of 1 row .
 *> Each button has tobe inserted in a table with 25 elements
@@ -53,7 +54,8 @@
 *>           0 = (or other character) = no arrows;
 *> Bu-Arrow-Char1/2 Single chars to make active button more visible
 *> Bu-click  Y= when hit enter on a button you will have a "click effect"
-*>           move button 1 char to right, black/white color , no shadow (non yet available)
+*>           move button 1 char to right, black/white color , no shadow
+*> Bu-beep   Y= when hit enter on button sound a beep
 *> Bu bco-shadow set it to the same back color of the underlying background
 *>
 *> Bu-selected Returns to caller the number of sel.button by the user 01, 02, 03, ..
@@ -75,6 +77,7 @@
            07 Bu-Arrow-Char1     pic x(01) value '>'.
            07 Bu-Arrow-Char2     pic x(01) value '<'.
         05 Bu-Click              pic x(01) value 'Y'.
+        05 Bu-Beep               pic x(01) value 'N'.
         *> colors for Normal button (non active)
         05 Bu-bcoN           pic 9(01) value green.  *> default backcolor for "normal" button
         05 Bu-fcoN           pic 9(01) value black.  *> default forecolor for "normal" button
