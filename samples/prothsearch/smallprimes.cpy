@@ -32,8 +32,8 @@
 *> ========== ==================================================================
 *> 2015.05.14 Laszlo Erdos: 
 *>            - First version created.
-*>------------------------------------------------------------------------------
-*> yyyy.mm.dd
+*> 2017.03.25 Laszlo Erdos / Error corrections: 
+*>            - TO phrase without DEPENDING phrase in table definition.
 *>
 *>******************************************************************************
 
@@ -20041,5 +20041,5 @@
    02 FILLER                           BINARY-LONG UNSIGNED VALUE 224729.
    02 FILLER                           BINARY-LONG UNSIGNED VALUE 224737.
  01 WS-SMALL-PRIMES-TAB-R REDEFINES WS-SMALL-PRIMES-TAB.                           
-   02 WS-SMALL-PRIMES-TAB-LINE         OCCURS 1 TO C-TAB-SMALL-PRIMES-MAX-LINE TIMES.
+   02 WS-SMALL-PRIMES-TAB-LINE         OCCURS C-TAB-SMALL-PRIMES-MAX-LINE TIMES.
      03 WS-SMALL-PRIMES                BINARY-LONG UNSIGNED.

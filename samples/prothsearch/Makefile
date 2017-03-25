@@ -8,7 +8,7 @@ prothsearch.exe : prothsearch.cob prothtest.o
 	$(COBCEXE) prothsearch.cob -o prothsearch.exe prothtest.o
 
 prothtest.o : prothtest.cob
-	$(COBCOBJ) prothtest.cob -o prothtest.o
+	$(COBCOBJ) prothtest.cob -o prothtest.o -fno-gen-c-decl-static-call
 	
 # clean
 clean :

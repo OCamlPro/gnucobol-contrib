@@ -37,8 +37,8 @@
 *> ========== ==================================================================
 *> 2015.05.14 Laszlo Erdos: 
 *>            - First version created.
-*>------------------------------------------------------------------------------
-*> yyyy.mm.dd
+*> 2017.03.25 Laszlo Erdos / Error corrections: 
+*>            - TO phrase without DEPENDING phrase in table definition.
 *>
 *>******************************************************************************
 
@@ -124,7 +124,7 @@
    02 FILLER                           BINARY-LONG UNSIGNED VALUE 89.
    02 FILLER                           BINARY-LONG UNSIGNED VALUE 97.
  01 WS-A-TAB-R REDEFINES WS-A-TAB.                           
-   02 WS-A-TAB-LINE                    OCCURS 1 TO C-A-TAB-MAX-LINE TIMES.
+   02 WS-A-TAB-LINE                    OCCURS C-A-TAB-MAX-LINE TIMES.
      03 WS-A                           BINARY-LONG UNSIGNED.
 
 *> small primes for the division precheck   
