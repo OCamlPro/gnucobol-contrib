@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Sergey Kashyrin <ska@kiska.net>
+ * Copyright (C) 2006-2015 Sergey Kashyrin <ska@kiska.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,11 +23,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-
-#ifdef __370__
 #include <ctype.h>
 
-static inline char * strupr (char * p) {
+#ifndef HAVE_STRUPR
+
+static inline char * strupr(char * p) {
 	char * s = p;
 	while(*s != 0) {
 		if(islower(*s & 0xFF)) *s = toupper(*s & 0xFF);
@@ -37,6 +37,23 @@ static inline char * strupr (char * p) {
 }
 
 #endif
+
+#if defined(_MSC_VER)
+	#define strncasecmp _strnicmp
+	#define strcasecmp _stricmp
+#elif defined(__OS400__)
+	#define strncasecmp strnicmp
+	#define strcasecmp stricmp
+#endif
+
+////////////////////////////////////////////////////////////////////
+// Dumb Red Hat screwed strcpy(x, x+1)
+inline char * strmove(char * dst, const char * src) {
+	char * d = dst;
+	while((*d++ = *src++) != 0);
+	return dst;
+}
+
 
 class string;
 
@@ -357,7 +374,7 @@ public:
 	void trim() {
 		if(v == NULL) return;
 		while(Length > 0 && v[0] <= ' ') {
-			strcpy(v, v+1);
+			strmove(v, v+1);
 			--Length;
 		}
 		rtrim();
@@ -373,18 +390,40 @@ public:
 		if(0 == strncmp(v, s, strlen(s))) return true;
 		return false;
 	}
+
 	void deblank() {
 		if(Length == 0) return;
 		bool bQ = false;
+		//printf("OLD %s\n", v);
 		for(int i = 0; i < Length - 1; ++i) {
 			if(v[i] == '\'') bQ = !bQ;
 			if(bQ) continue;
-			if(v[i] == ' ' && v[i + 1] == ' ') {
-				strcpy(v+i, v+i+1);
-				--i;
-				--Length;
+			if(v[i] == ' ') {
+				if(v[i + 1] == ' ' ||
+					v[i + 1] == ',' ||
+					v[i + 1] == ')' ||
+					(i > 0 && (v[i - 1] == ',' || v[i - 1] == '('))
+				) {
+					strmove(v+i, v+i+1);
+					--i;
+					--Length;
+					continue;
+				}
+				if(v[i + 1] == ':') {	// scan back to check for indicator
+					for(int j = i - 1; j >= 0; --j) {
+						if(isalnum(v[j])) continue;
+						if(v[j] == '-') continue;
+						if(v[j] == ':') {
+							strmove(v+i, v+i+1);
+							--i;
+							--Length;
+						}
+						break;
+					}
+				}
 			}
 		}
+		//printf("NEW %s\n", v);
 	}
 };
 

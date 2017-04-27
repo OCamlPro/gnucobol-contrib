@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2013 Sergey Kashyrin <ska@kiska.net>
+ * Copyright (C) 2006-2016 Sergey Kashyrin <ska@kiska.net>
  *               2012 enhanced by Doug Vogel <dv11674@gmail.com>
  *               2013 fixes and enhancements by Atilla Akarsular <030ati@gmail.com>
  *
@@ -31,15 +31,21 @@
 	#pragma warning(disable: 4996)
 #endif
 
+#include "config.h"
+
+#ifdef HAVE_UNISTD_H
+	#include <unistd.h>
+#endif
+
 #include "vcache.h"
 
 /**  Version is present in SQLCA. Current is 02 */
 
 static bool bAPOST = true;		// use apostroph instead of quote
 static char Q = '\'';
-static char * sQ = "'";
+static const char * sQ = "'";
 static bool bStatic = false;	// static call
-static char * sSQ = "";
+static const char * sSQ = "";
 static bool bFree = true;		// free format - not implemented yet !
 
 static char outfilepath[1024] = "";
@@ -317,7 +323,7 @@ private:
 			if(sql == "SQLSTATE") {
 				return;	// We are not including custom SQLSTATE - we have it in SQLCA
 			}
-			
+
 			for(int i = 0; i < copydir.size(); ++i) {
 				string dn(copydir[i]);
 				dn += "/";
@@ -772,6 +778,7 @@ private:
 			// check for unpaired quote
 			int spos = 7;
 			bool bQ = bQQ;
+			bQQ = false;
 			while((spos = line.indexof(Q, spos)) >= 0) {
 				if(spos >= 72) {
 					break;
@@ -946,19 +953,21 @@ private:
 			vvar = NULL;
 			return;
 		}
+		int fpsz = 8;
 		iv = vvar->indexof("COMP-2");
 		if(iv < 0) {
-			iv = vvar->indexof("COMP-1");
+			iv = vvar->indexof("COMPUTATIONAL-2");
 		}
 		if(iv < 0) {
-			iv = vvar->indexof("COMPUTATIONAL-2");
+			fpsz = 4;
+			iv = vvar->indexof("COMP-1");
 		}
 		if(iv < 0) {
 			iv = vvar->indexof("COMPUTATIONAL-1");
 		}
 		if(iv >= 0) {
 			v->type = 'F';
-			v->size = 8;
+			v->size = fpsz;
 			sym.put(v);
 			if(isGroup == 0) {
 				v = new varholder(groupName + "." + svar);
@@ -1054,7 +1063,7 @@ private:
 		}
 		if(iv >= 0) {
 			bool unhandled = false;
-#if !defined(BIG_ENDIAN) || defined(LITTLE_ENDIAN)
+#if !defined(WORDS_BIGENDIAN) || defined(LITTLE_ENDIAN)
 			if(vvar->indexof("COMP-5") < 0) {
 				unhandled = true;
 			}
@@ -1350,11 +1359,15 @@ private:
 				// will need to be put on two lines
 				iv = v->name.indexof('.');
 				if(iv > 0) {
-					sprintf(buf, "           MOVE %s OF %s", (const char *)v->name.substr(iv + 1), (const char *) v->name.substr(0,iv));
+					sprintf(buf, "           MOVE %s", (const char *)v->name.substr(iv + 1));
+					moves.add(buf);
+					sprintf(buf, "             OF %s", (const char *) v->name.substr(0,iv));
 					moves.add(buf);
 					sprintf(buf, "             TO %s    ", (const char *)h->name);
 				} else {
-					sprintf(buf, "           MOVE %s TO %s", (const char *)v->name, (const char *)h->name);
+					sprintf(buf, "           MOVE %s", (const char *)v->name);
+					moves.add(buf);
+					sprintf(buf, "             TO %s", (const char *)h->name);
 				}
 				moves.add(buf);
 				v = h;
@@ -1365,12 +1378,16 @@ private:
 			if(iv > 0) {
 				sprintf(buf, "%s MOVE ADDRESS OF ", shift);
 				addln(lineno++, buf);
-				sprintf(buf, "%s  %s OF %s ", shift, (const char *)v->name.substr(iv + 1), (const char *)v->name.substr(0,iv));
+				sprintf(buf, "%s  %s", shift, (const char *)v->name.substr(iv + 1));
+				addln(lineno++, buf);
+				sprintf(buf, "%s   OF %s", shift, (const char *)v->name.substr(0,iv));
 				addln(lineno++, buf);
 				sprintf(buf, "%s  TO SQL-ADDR(%d)", shift, parmnum);
 			} else {
-				sprintf(buf, "%s MOVE ADDRESS OF %s TO SQL-ADDR(%d)", shift, (const char *)v->name, parmnum);
-			}	
+				sprintf(buf, "%s MOVE ADDRESS OF %s", shift, (const char *)v->name);
+				addln(lineno++, buf);
+				sprintf(buf, "%s   TO SQL-ADDR(%d)", shift, parmnum);
+			}
 			addln(lineno++, buf);
 			sprintf(buf, "%s MOVE %c%c%c TO SQL-TYPE(%d)", shift, Q, v->type, Q, parmnum);
 			addln(lineno++, buf);
@@ -1395,12 +1412,16 @@ private:
 				if(iv > 0) {
 					sprintf(buf, "%s MOVE ADDRESS OF ", shift);
 					addln(lineno++, buf);
-					sprintf(buf, "%s  %s OF %s ", shift, (const char *)vi->name.substr(iv + 1), (const char *)vi->name.substr(0,iv));
+					sprintf(buf, "%s  %s", shift, (const char *)vi->name.substr(iv + 1));
+					addln(lineno++, buf);
+					sprintf(buf, "%s   OF %s ", shift, (const char *)vi->name.substr(0,iv));
 					addln(lineno++, buf);
 					sprintf(buf, "%s  TO SQL-ADDR(%d)", shift, parmnum);
 				} else {
-					sprintf(buf, "%s MOVE ADDRESS OF %s TO SQL-ADDR(%d)", shift, (const char *)vi->name, parmnum);
-				}	
+					sprintf(buf, "%s MOVE ADDRESS OF %s", shift, (const char *)vi->name);
+					addln(lineno++, buf);
+					sprintf(buf, "%s   TO SQL-ADDR(%d)", shift, parmnum);
+				}
 				addln(lineno++, buf);
 				sprintf(buf, "%s MOVE %ci%c TO SQL-TYPE(%d)", shift, Q, Q, parmnum);
 				addln(lineno++, buf);
@@ -1528,11 +1549,15 @@ private:
 			if(iv > 0) {
 				sprintf(buf, "%s MOVE ADDRESS OF ", shift);
 				addln(lineno++, buf);
-				sprintf(buf, "%s  %s OF %s ", shift, (const char *)v->name.substr(iv + 1), (const char *)v->name.substr(0,iv));
+				sprintf(buf, "%s  %s", shift, (const char *)v->name.substr(iv + 1));
+				addln(lineno++, buf);
+				sprintf(buf, "%s   OF %s ", shift, (const char *)v->name.substr(0,iv));
 				addln(lineno++, buf);
 				sprintf(buf, "%s  TO SQL-ADDR(%d)", shift, parmnum);
 			} else {
-				sprintf(buf, "%s MOVE ADDRESS OF %s TO SQL-ADDR(%d)", shift, (const char *)v->name, parmnum);
+				sprintf(buf, "%s MOVE ADDRESS OF %s", shift, (const char *)v->name);
+				addln(lineno++, buf);
+				sprintf(buf, "%s   TO SQL-ADDR(%d)", shift, parmnum);
 			}
 			addln(lineno++, buf);
 			sprintf(buf, "%s MOVE %c%c%c TO SQL-TYPE(%d)", shift, Q, v->type, Q, parmnum);
@@ -1557,12 +1582,16 @@ private:
 				if(iv > 0) {
 					sprintf(buf, "%s MOVE ADDRESS OF ", shift);
 					addln(lineno++, buf);
-					sprintf(buf, "%s  %s OF %s ", shift, (const char *)vi->name.substr(iv + 1), (const char *)vi->name.substr(0,iv));
+					sprintf(buf, "%s  %s", shift, (const char *)vi->name.substr(iv + 1));
+					addln(lineno++, buf);
+					sprintf(buf, "%s   OF %s ", shift, (const char *)vi->name.substr(0,iv));
 					addln(lineno++, buf);
 					sprintf(buf, "%s  TO SQL-ADDR(%d)", shift, parmnum);
 				} else {
-					sprintf(buf, "%s MOVE ADDRESS OF %s TO SQL-ADDR(%d)", shift, (const char *)vi->name, parmnum);
-				}	
+					sprintf(buf, "%s MOVE ADDRESS OF %s", shift, (const char *)vi->name);
+					addln(lineno++, buf);
+					sprintf(buf, "%s   TO SQL-ADDR(%d)", shift, parmnum);
+				}
 				addln(lineno++, buf);
 				sprintf(buf, "%s MOVE %ci%c TO SQL-TYPE(%d)", shift, Q, Q, parmnum);
 				addln(lineno++, buf);
@@ -1741,11 +1770,15 @@ private:
 			if(iv > 0) {
 				sprintf(buf, "%s MOVE ADDRESS OF ", shift);
 				addln(lineno++, buf);
-				sprintf(buf, "%s  %s OF %s ", shift, (const char *)v->name.substr(iv + 1), (const char *)v->name.substr(0,iv));
+				sprintf(buf, "%s  %s", shift, (const char *)v->name.substr(iv + 1));
+				addln(lineno++, buf);
+				sprintf(buf, "%s   OF %s ", shift, (const char *)v->name.substr(0,iv));
 				addln(lineno++, buf);
 				sprintf(buf, "%s  TO SQL-ADDR(%d)", shift, parmnum);
 			} else {
-				sprintf(buf, "%s MOVE ADDRESS OF %s TO SQL-ADDR(%d)", shift, (const char *)v->name, parmnum);
+				sprintf(buf, "%s MOVE ADDRESS OF %s", shift, (const char *)v->name);
+				addln(lineno++, buf);
+				sprintf(buf, "%s   TO SQL-ADDR(%d)", shift, parmnum);
 			}
 			addln(lineno++, buf);
 			sprintf(buf, "%s MOVE %c%c%c TO SQL-TYPE(%d)", shift, Q, v->type, Q, parmnum);
@@ -1770,11 +1803,15 @@ private:
 				if(iv > 0) {
 					sprintf(buf, "%s MOVE ADDRESS OF ", shift);
 					addln(lineno++, buf);
-					sprintf(buf, "$s  %s OF %s ", shift, (const char *)vi->name.substr(iv + 1), (const char *)vi->name.substr(0,iv));
+					sprintf(buf, "%s  %s", shift, (const char *)vi->name.substr(iv + 1));
+					addln(lineno++, buf);
+					sprintf(buf, "%s   OF %s ", shift, (const char *)vi->name.substr(0,iv));
 					addln(lineno++, buf);
 					sprintf(buf, "%s  TO SQL-ADDR(%d)", shift, parmnum);
 				} else {
-					sprintf(buf, "%s MOVE ADDRESS OF %s TO SQL-ADDR(%d)", shift, (const char *)vi->name, parmnum);
+					sprintf(buf, "%s MOVE ADDRESS OF %s", shift, (const char *)vi->name);
+					addln(lineno++, buf);
+					sprintf(buf, "%s   TO SQL-ADDR(%d)", shift, parmnum);
 				}
 				addln(lineno++, buf);
 				sprintf(buf, "%s MOVE %ci%c TO SQL-TYPE(%d)", shift, Q, Q, parmnum);
@@ -1876,11 +1913,15 @@ private:
 			if(iv > 0) {
 				sprintf(buf, "           MOVE ADDRESS OF ");
 				addln(lineno++, buf);
-				sprintf(buf, "           %s OF %s ", (const char *)v->name.substr(iv + 1), (const char *)v->name.substr(0,iv));
+				sprintf(buf, "           %s", (const char *)v->name.substr(iv + 1));
 				addln(lineno++, buf);
-				sprintf(buf, "           TO SQL-ADDR(%d)", parmnum);
+				sprintf(buf, "            OF %s", (const char *)v->name.substr(0,iv));
+				addln(lineno++, buf);
+				sprintf(buf, "            TO SQL-ADDR(%d)", parmnum);
 			} else {
-				sprintf(buf, "           MOVE ADDRESS OF %s TO SQL-ADDR(%d)", (const char *)v->name, parmnum);
+				sprintf(buf, "           MOVE ADDRESS OF %s", (const char *)v->name);
+				addln(lineno++, buf);
+				sprintf(buf, "             TO SQL-ADDR(%d)", parmnum);
 			}
 			addln(lineno++, buf);
 			sprintf(buf, "           MOVE %c%c%c TO SQL-TYPE(%d)", Q, v->type, Q, parmnum);
@@ -1905,11 +1946,15 @@ private:
 				if(iv > 0) {
 					sprintf(buf, "           MOVE ADDRESS OF ");
 					addln(lineno++, buf);
-					sprintf(buf, "           %s OF %s ", (const char *)vi->name.substr(iv + 1), (const char *)vi->name.substr(0,iv));
+					sprintf(buf, "           %s", (const char *)vi->name.substr(iv + 1));
 					addln(lineno++, buf);
-					sprintf(buf, "           TO SQL-ADDR(%d)", parmnum);
+					sprintf(buf, "            OF %s", (const char *)vi->name.substr(0,iv));
+					addln(lineno++, buf);
+					sprintf(buf, "            TO SQL-ADDR(%d)", parmnum);
 				} else {
-					sprintf(buf, "           MOVE ADDRESS OF %s TO SQL-ADDR(%d)", (const char *)vi->name, parmnum);
+					sprintf(buf, "           MOVE ADDRESS OF %s", (const char *)vi->name);
+					addln(lineno++, buf);
+					sprintf(buf, "             TO SQL-ADDR(%d)", parmnum);
 				}
 				addln(lineno++, buf);
 				sprintf(buf, "           MOVE %ci%c TO SQL-TYPE(%d)", Q, Q, parmnum);

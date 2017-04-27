@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 Sergey Kashyrin <ska@kiska.net>
+ * Copyright (C) 2006-2016 Sergey Kashyrin <ska@kiska.net>
  *               2012 enhanced by Doug Vogel <dv11674@gmail.com>
  *               2013 fixes and enhancements by Atilla Akarsular <030ati@gmail.com>
  *
@@ -26,6 +26,8 @@
  *	is not MSVC we are assuming DB2 on Mainframe or something compatible.
  */
 
+#include "config.h"
+
 #ifdef _MSC_VER
 
 #include <windows.h>
@@ -35,22 +37,49 @@
 #endif
 #include <stdio.h>
 #pragma warning(disable: 4996)
+#define OCEXPORT __declspec(dllexport)
+#define strncasecmp _strnicmp
 
-#else	// not _MSC_VER - probably __370__
+#else
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <ctype.h>
 #include <string.h>
 #include <strings.h>
 #include <stdarg.h>
 #include <time.h>
+#ifdef ESQL_DB2
 #include <sqlcli1.h>
+#else
+#include <sqlext.h>
+#ifdef MSSQL
+#include <msodbcsql.h>
+#endif
+#endif
+#ifdef __370__
+#define OCEXPORT __declspec(dllexport)
 #ifndef _LP64
 typedef SQLINTEGER SQLLEN;
 #endif
+#else
+#define OCEXPORT
+#endif
 
 #endif	// _MSC_VER
+
+#ifndef HAVE_STRUPR
+#include <ctype.h>
+
+static inline char * strupr(char * p) {
+	char * s = p;
+	while(*s != 0) {
+		if(islower(*s & 0xFF)) *s = toupper(*s & 0xFF);
+		++s;
+	}
+	return p;
+}
+
+#endif
 
 /////////////////////////////////////////////////////////////////////////
 // This is how runtime will behave in the case of switching the databases
@@ -64,7 +93,6 @@ typedef SQLINTEGER SQLLEN;
 // That can be used as a shortcut if we know for sure that we will not switch
 //  to another database or if we know exactly what we are doing when using "USE".
 // For z/OS DB2 we manipulate SCHEMAs so instead of USE, we are checking "SET CURRENT SCHEMA".
-//#define USE_NOT_USED
 /////////////////////////////////////////////////////////////////////////
 #define OC_DBNAME_LENGTH 64
 
@@ -74,7 +102,7 @@ typedef SQLINTEGER SQLLEN;
 void log(const char *format_str, ...);
 void logd(int level, const char *format_str, ...);
 #else // not an EXTERNAL_LOG
-#ifdef _DEBUG
+#ifndef NO_LOG
 void log(const char *format_str, ...)
 {
 	va_list ap;
@@ -92,10 +120,21 @@ void log(const char *format_str, ...)
 #ifndef LOGLEVEL
 #define LOGLEVEL 999
 #endif
+static int log_level = -1;
+
 void logd(int level, const char *format_str, ...)
 {
 	va_list ap;
-	if(level > LOGLEVEL) return;
+	if(log_level < 0) {
+		const char * s = getenv("OCSQL_LOGLEVEL");
+		if(s != NULL) {
+			log_level = atoi(s);
+			if(log_level < 0) log_level = 0;
+		} else {
+			log_level = LOGLEVEL;
+		}
+	}
+	if(level > log_level) return;
 #ifdef _MSC_VER
 	fprintf(stderr, "%d ", GetTickCount());
 #else
@@ -107,10 +146,10 @@ void logd(int level, const char *format_str, ...)
 	fflush(stderr);
 	va_end(ap);
 }
-#else	// not a _DEBUG
+#else	// Logging disabled
 #define log(...)
 #define logd(...)
-#endif	// _DEBUG
+#endif	// NO_LOG
 #endif	// EXTERNAL_LOG
 
 static bool closed = true;
@@ -120,8 +159,8 @@ static SQLHANDLE	hEnv;		// Env Handle from SQLAllocEnv
 static SQLHANDLE	hDBC;		// Connection handle
 static SQLHANDLE	hStmt;		// just a statement to use
 
-extern "C" __declspec(dllexport) SQLHANDLE getOCDBCHandle() { return hDBC;}		// Hook to my system to use the same connection
-extern "C" __declspec(dllexport) const char * getOCCurDBName() { return dbname;}	// Another hook to my system
+extern "C" OCEXPORT SQLHANDLE getOCDBCHandle() { return hDBC;}		// Hook to my system to use the same connection
+extern "C" OCEXPORT const char * getOCCurDBName() { return dbname;}	// Another hook to my system
 
 struct OC_SQLCA {
 	char  OC_SQLSTATE[6];
@@ -147,7 +186,7 @@ struct OC_SQLV {
  *
  * SQL-TYPE  explanation
  * ---------------------
- * 'F' - DOUBLE FLOAT.  Cobol COMP-2 == C/C++ double
+ * 'F' - DOUBLE/FLOAT.  Cobol COMP-2/COMP-1 == C/C++ double/float
  * 'I' - INTEGER.
  *       SQL-LEN == 2  Cobol S9(4)  COMP-5 == C/C++ short int (16-bit)
  *       SQL-LEN == 4  Cobol S9(8)  COMP-5 == C/C++ int (32-bit)
@@ -242,7 +281,7 @@ public:
 
 static DBS DBN(MAX_DB_COUNT);
 
-extern "C" int __declspec(dllexport) OCSQLMAX(int ct) {
+extern "C" int OCEXPORT OCSQLMAX(int ct) {
 	DBN.setMaxDBCount(ct);
 	return 0;
 }
@@ -407,11 +446,14 @@ static void notconn(OC_SQLCA & E)
 }
 
 #ifdef MSSQL
-static const int nDrivers = 3;
+static const int nDrivers = 4;
 static const char * Drivers [] = {
 	"SQL Server Native Client 11.0",
 	"Server=%s;UID=%s;PWD=%s;AnsiNPW=yes;APP=OpenCobol;AutoTranslate=no;Driver={SQL Server Native Client 11.0};QuotedId=yes;MARS_Connection=yes;",
 	"Server=%s;Trusted_Connection=yes;AnsiNPW=yes;APP=OpenCobol;AutoTranslate=no;Driver={SQL Server Native Client 11.0};QuotedId=yes;MARS_Connection=yes;",
+	"Microsoft ODBC Driver 11 for SQL Server",
+	"Server=%s;UID=%s;PWD=%s;AnsiNPW=yes;APP=OpenCobol;AutoTranslate=no;Driver={ODBC Driver 11 for SQL Server};QuotedId=yes;MARS_Connection=yes;",
+	"Server=%s;Trusted_Connection=yes;AnsiNPW=yes;APP=OpenCobol;AutoTranslate=no;Driver={ODBC Driver 11 for SQL Server};QuotedId=yes;MARS_Connection=yes;",
 	"SQL Server Native Client 10.0",
 	"Server=%s;UID=%s;PWD=%s;AnsiNPW=yes;APP=OpenCobol;AutoTranslate=no;Driver={SQL Server Native Client 10.0};QuotedId=yes;MARS_Connection=yes;",
 	"Server=%s;Trusted_Connection=yes;AnsiNPW=yes;APP=OpenCobol;AutoTranslate=no;Driver={SQL Server Native Client 10.0};QuotedId=yes;MARS_Connection=yes;",
@@ -421,7 +463,7 @@ static const char * Drivers [] = {
 };
 #endif
 
-extern "C" __declspec(dllexport) int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
+extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 {
 	if(!closed) {
 		log("OCSQL: DB Already Connected");
@@ -463,7 +505,7 @@ extern "C" __declspec(dllexport) int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E
 		return E.OC_SQLCODE;
 	}
 
-#ifdef _MSC_VER
+#if !defined(ESQL_DB2)
 	// disable connection timeout but ignore the error
 	rc = SQLSetConnectAttr(hDBC, SQL_ATTR_CONNECTION_TIMEOUT, 0, 0);
 	if(rc != SQL_SUCCESS) {
@@ -478,22 +520,32 @@ extern "C" __declspec(dllexport) int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E
 	}
 
 	// enable ANSI NULLs
+#ifndef SQL_COPT_SS_ANSI_NPW
+#define SQL_COPT_SS_ANSI_NPW                            (SQL_COPT_SS_BASE+18) // Enable/Disable ANSI NULL, Padding and Warnings
+#define SQL_AD_ON 1L
+#endif
 	rc = SQLSetConnectAttr(hDBC, SQL_COPT_SS_ANSI_NPW, (SQLPOINTER)SQL_AD_ON, SQL_IS_INTEGER); 
 	if(rc != SQL_SUCCESS) {
+		log("OCSQL: SQL_COPT_SS_ANSI_NPW");
 		prnerr(SQL_HANDLE_DBC, hDBC);
 	}
 
 	// disable cursor close on commit
+#ifndef SQL_COPT_SS_PRESERVE_CURSORS
+#define SQL_COPT_SS_PRESERVE_CURSORS                    (SQL_COPT_SS_BASE+4) // Preserve server cursors after SQLTransact
+#define SQL_PC_ON 1L
+#endif
 	rc = SQLSetConnectAttr(hDBC, SQL_COPT_SS_PRESERVE_CURSORS, (SQLPOINTER)SQL_PC_ON, SQL_IS_INTEGER); 
 	if(rc != SQL_SUCCESS) {
+		log("OCSQL: SQL_COPT_SS_PRESERVE_CURSORS");
 		prnerr(SQL_HANDLE_DBC, hDBC);
 	}
-#endif
+#endif	// MSSQL
 	// it looks we can't set isolation level as a connection attribute
 	//rc = SQLSetConnectAttr(hDBC, SQL_ATTR_TXN_ISOLATION, (SQLPOINTER)ISOLATIONLEVEL_SNAPSHOT, 0);
-#else
+#else	// ESQL_DB2
 	// z/OS DB2 ODBC does not have control over timeout
-#endif
+#endif	// ESQL_DB2
 
 	char * conn = new char[slen+1];
 	memcpy(conn, S, slen);
@@ -501,18 +553,8 @@ extern "C" __declspec(dllexport) int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E
 	strim(conn);
 
 	char * connUPR = new char[slen+1];
-#if defined(_MSC_VER)
-	// add another "defined" for systems with strupr
 	strcpy(connUPR, conn);
 	strupr(connUPR);
-#else
-	// Damn Mainframe does not have strupr
-	char * p = connUPR;
-	char * q = conn;
-	do {
-		*p = toupper((*q++) & 0xFF);
-	} while(0 != *p++);
-#endif
 	bool bDriverSet = (strstr(connUPR, "DRIVER=") != NULL);
 	delete connUPR;
 
@@ -571,17 +613,19 @@ extern "C" __declspec(dllexport) int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E
 			}
 		}
 	} else { // long connection string contains "Driver="
+		logd(9, "OCSQL: DB connecting using SQLDriverConnect");
 		SQLSMALLINT sz = 0;
 		rc = SQLDriverConnect(hDBC, NULL, (SQLCHAR *)conn, SQL_NTS, NULL, 0, &sz, SQL_DRIVER_NOPROMPT);
-		if(rc != SQL_SUCCESS) {
+		if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
 			prnerr(SQL_HANDLE_DBC, hDBC, &E);
 			if(E.OC_SQLCODE == 0) E.OC_SQLCODE = -9999;
 			SQLFreeConnect(hDBC);
 			SQLFreeEnv(hEnv);
 			delete conn;
 			return E.OC_SQLCODE;
-		} else {
-			logd(9, "OCSQL: DB connect using SQLDriverConnect");
+		}
+		if(rc == SQL_SUCCESS_WITH_INFO) {
+			prnerr(SQL_HANDLE_DBC, hDBC);	// print the error
 		}
 	}
 	delete conn;
@@ -605,6 +649,16 @@ extern "C" __declspec(dllexport) int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E
 	SQLFreeStmt(hStmt, SQL_CLOSE);
 #endif
 
+#if defined(MSSQL) && !defined(_MSC_VER)
+	// force CURSOR WITH HOLD
+	rc = SQLExecDirect(hStmt, (SQLCHAR *) "SET CURSOR_CLOSE_ON_COMMIT OFF", SQL_NTS);
+	if(rc != SQL_SUCCESS) {
+		log("OCSQL: SET CURSOR_CLOSE_ON_COMMIT OFF");
+		prnerr(SQL_HANDLE_STMT, hStmt);
+	}
+	SQLFreeStmt(hStmt, SQL_CLOSE);
+#endif
+
 	// try to set AUTOCOMMIT OFF
 	rc = SQLSetConnectAttr(hDBC, SQL_ATTR_AUTOCOMMIT, SQL_AUTOCOMMIT_OFF, 0);
 	if(rc != SQL_SUCCESS) {
@@ -616,7 +670,7 @@ extern "C" __declspec(dllexport) int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E
 		SQLDisconnect(hDBC);
 		SQLFreeConnect(hDBC);
 		SQLFreeEnv(hEnv);
-#ifdef _MSC_VER
+#if defined(MSSQL) || defined(MYSQL) || defined(MARIADB)
 		log("OCSQL: DB Can't get current Database name");
 #else
 		log("OCSQL: DB Can't get current Schema");
@@ -624,7 +678,7 @@ extern "C" __declspec(dllexport) int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E
 		return E.OC_SQLCODE;
 	}
 	DBN.setCurrentDB(dbname);
-#ifdef _MSC_VER
+#if defined(MSSQL) || defined(MYSQL) || defined(MARIADB)
 	logd(1, "OCSQL: DB Connected, Database is '%s'", dbname);
 #else
 	logd(1, "OCSQL: DB Connected, Schema is '%s'", dbname);
@@ -633,7 +687,7 @@ extern "C" __declspec(dllexport) int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E
 	return 0;
 }
 
-extern "C" __declspec(dllexport) int OCSQLDIS(OC_SQLCA & E)
+extern "C" OCEXPORT int OCSQLDIS(OC_SQLCA & E)
 {
 	if(closed) {
 		notconn(E);
@@ -655,7 +709,7 @@ extern "C" __declspec(dllexport) int OCSQLDIS(OC_SQLCA & E)
 	return E.OC_SQLCODE;
 }
 
-extern "C" __declspec(dllexport) int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
+extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 {
 	if(closed) {
 		notconn(E);
@@ -717,10 +771,10 @@ extern "C" __declspec(dllexport) int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & 
 	}
 	// Options
 	if(S.SQL_OPT == 'H') {
-#ifdef _MSC_VER
-		rc = SQLSetStmtAttr(stmt, SQL_ATTR_CONCURRENCY, (SQLPOINTER)SQL_CONCUR_VALUES, SQL_IS_INTEGER);
-#else
+#ifdef ESQL_DB2
 		rc = SQLSetStmtAttr(stmt, SQL_ATTR_CURSOR_HOLD, (SQLPOINTER)SQL_CURSOR_HOLD_ON, SQL_IS_INTEGER);
+#else
+		rc = SQLSetStmtAttr(stmt, SQL_ATTR_CONCURRENCY, (SQLPOINTER)SQL_CONCUR_VALUES, SQL_IS_INTEGER);
 #endif
 		if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
 			prnerr(SQL_HANDLE_STMT, stmt, &E);
@@ -781,9 +835,14 @@ extern "C" __declspec(dllexport) int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & 
 		}
 		switch(PARMTYPE[i]) {
 		case 'F':
+			ColumnSize = 53;
+			if(PARMLEN[i] == 4) {
+				ValueType = SQL_C_FLOAT;
+				ParmType = SQL_REAL;
+				break;
+			}
 			ValueType = SQL_C_DOUBLE;
 			ParmType = SQL_DOUBLE;
-			ColumnSize = 53;
 			break;
 		case '3':
 			ValueType = SQL_C_CHAR;
@@ -919,6 +978,10 @@ extern "C" __declspec(dllexport) int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & 
 		}
 		switch(PARMTYPE[i]) {
 		case 'F':
+			if(PARMLEN[i] == 4) {
+				ValueType = SQL_C_FLOAT;
+				break;
+			}
 			ValueType = SQL_C_DOUBLE;
 			break;
 		case '3':
@@ -978,7 +1041,7 @@ extern "C" __declspec(dllexport) int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & 
 	return 0;
 }
 
-extern "C" __declspec(dllexport) int OCSQLEXE(STMT & S, OC_SQLCA & E)
+extern "C" OCEXPORT int OCSQLEXE(STMT & S, OC_SQLCA & E)
 {
 	if(closed) {
 		notconn(E);
@@ -1082,10 +1145,14 @@ extern "C" __declspec(dllexport) int OCSQLEXE(STMT & S, OC_SQLCA & E)
 		SQLFreeStmt(stmt, SQL_CLOSE);
 		return E.OC_SQLCODE;
 	}
-	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
-		prnerr(SQL_HANDLE_STMT, stmt, &E);
-		SQLFreeStmt(stmt, SQL_CLOSE);
-		return E.OC_SQLCODE;
+	if(rc != SQL_SUCCESS) {
+		if(rc != SQL_SUCCESS_WITH_INFO) {
+			prnerr(SQL_HANDLE_STMT, stmt, &E);
+			SQLFreeStmt(stmt, SQL_CLOSE);
+			return E.OC_SQLCODE;
+		} else {
+			prnerr(SQL_HANDLE_STMT, stmt, NULL);
+		}
 	}
 	SQLLEN rct = 0;
 	SQLRowCount(stmt, &rct);
@@ -1103,10 +1170,14 @@ extern "C" __declspec(dllexport) int OCSQLEXE(STMT & S, OC_SQLCA & E)
 		SQLFreeStmt(stmt, SQL_CLOSE);
 		return E.OC_SQLCODE;
 	}
-	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
-		prnerr(SQL_HANDLE_STMT, stmt, &E);
-		SQLFreeStmt(stmt, SQL_CLOSE);
-		return E.OC_SQLCODE;
+	if(rc != SQL_SUCCESS) {
+		if(rc != SQL_SUCCESS_WITH_INFO) {
+			prnerr(SQL_HANDLE_STMT, stmt, &E);
+			SQLFreeStmt(stmt, SQL_CLOSE);
+			return E.OC_SQLCODE;
+		} else {
+			prnerr(SQL_HANDLE_STMT, stmt, NULL);
+		}
 	}
 	// Padding Cobol fields with a spaces, setting indicators
 	for(int i = 0; i < msql->columnct; ++i) {
@@ -1153,7 +1224,7 @@ extern "C" __declspec(dllexport) int OCSQLEXE(STMT & S, OC_SQLCA & E)
 	return E.OC_SQLCODE;
 }
 
-extern "C" __declspec(dllexport) int OCSQLRBK(OC_SQLCA & E)
+extern "C" OCEXPORT int OCSQLRBK(OC_SQLCA & E)
 {
 	if(closed) {
 		notconn(E);
@@ -1169,7 +1240,7 @@ extern "C" __declspec(dllexport) int OCSQLRBK(OC_SQLCA & E)
 	return E.OC_SQLCODE;
 }
 
-extern "C" __declspec(dllexport) int OCSQLCMT(OC_SQLCA & E)
+extern "C" OCEXPORT int OCSQLCMT(OC_SQLCA & E)
 {
 	if(closed) {
 		notconn(E);
@@ -1185,7 +1256,7 @@ extern "C" __declspec(dllexport) int OCSQLCMT(OC_SQLCA & E)
 	return E.OC_SQLCODE;
 }
 
-extern "C" __declspec(dllexport) int OCSQLIMM(SQLCHAR * S, int & slen, OC_SQLCA & E)
+extern "C" OCEXPORT int OCSQLIMM(SQLCHAR * S, int & slen, OC_SQLCA & E)
 {
 	if(closed) {
 		notconn(E);
@@ -1201,7 +1272,7 @@ extern "C" __declspec(dllexport) int OCSQLIMM(SQLCHAR * S, int & slen, OC_SQLCA 
 	strcpy(E.OC_SQLSTATE, "00000");
 	E.OC_SQLCODE = 0;
 	E.OC_SQLERRD[2] = 0;
-	rc = ::SQLExecDirect(stmt, S, slen);
+	rc = SQLExecDirect(stmt, S, slen);
 	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
 		prnerr(SQL_HANDLE_STMT, stmt, &E);
 		SQLFreeStmt(stmt, SQL_CLOSE);
@@ -1213,8 +1284,10 @@ extern "C" __declspec(dllexport) int OCSQLIMM(SQLCHAR * S, int & slen, OC_SQLCA 
 	E.OC_SQLERRD[2] = (int) rct;
 	SQLFreeStmt(stmt, SQL_CLOSE);
 	SQLFreeHandle(SQL_HANDLE_STMT, stmt);
-#ifdef _MSC_VER
-	if(0 == _strnicmp((char *)S, "USE ", 4)) {
+#ifndef USE_NOT_USED
+	// This need to be tweaked for each type of the database
+#if defined(MSSQL) || defined(MYSQL) || defined(MARIADB)
+	if(0 == strncasecmp((char *)S, "USE ", 4)) {
 		if(!getcurrdb(dbname, E)) {
 			log("OCSQL: DB Can't get current Database name");
 			return E.OC_SQLCODE;
@@ -1235,13 +1308,22 @@ extern "C" __declspec(dllexport) int OCSQLIMM(SQLCHAR * S, int & slen, OC_SQLCA 
 				}
 				DBN.setCurrentDB(dbname);
 			}
+		} else {
+			if(0 == strncasecmp(p, "SCHEMA", 6)) {
+				if(!getcurrdb(dbname, E)) {
+					log("OCSQL: DB Can't get current Schema");
+					return E.OC_SQLCODE;
+				}
+				DBN.setCurrentDB(dbname);
+			}
 		}
 	}
+#endif
 #endif
 	return E.OC_SQLCODE;
 }
 
-extern "C" __declspec(dllexport) int OCSQLOCU(STMT & S, OC_SQLCA & E)
+extern "C" OCEXPORT int OCSQLOCU(STMT & S, OC_SQLCA & E)
 {
 	if(closed) {
 		notconn(E);
@@ -1351,7 +1433,7 @@ extern "C" __declspec(dllexport) int OCSQLOCU(STMT & S, OC_SQLCA & E)
 	return E.OC_SQLCODE;
 }
 
-extern "C" __declspec(dllexport) int OCSQLFTC(OC_SQLV & V, STMT & S, OC_SQLCA & E)
+extern "C" OCEXPORT int OCSQLFTC(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 {
 	if(closed) {
 		notconn(E);
@@ -1457,6 +1539,10 @@ extern "C" __declspec(dllexport) int OCSQLFTC(OC_SQLV & V, STMT & S, OC_SQLCA & 
 		}
 		switch(PARMTYPE[i]) {
 		case 'F':
+			if(PARMLEN[i] == 4) {
+				ValueType = SQL_C_FLOAT;
+				break;
+			}
 			ValueType = SQL_C_DOUBLE;
 			break;
 		case '3':
@@ -1570,7 +1656,7 @@ extern "C" __declspec(dllexport) int OCSQLFTC(OC_SQLV & V, STMT & S, OC_SQLCA & 
 	return E.OC_SQLCODE;
 }
 
-extern "C" __declspec(dllexport) int OCSQLCCU(STMT & S, OC_SQLCA & E)
+extern "C" OCEXPORT int OCSQLCCU(STMT & S, OC_SQLCA & E)
 {
 	if(closed) {
 		notconn(E);
@@ -1607,9 +1693,14 @@ static int strim(char * buf) {
 		buf[--len] = 0;
 	}
 	if(len == 0) return 0;
-	while(buf[0] == ' ') {
-		strcpy(buf, buf+1);
-		--len;
+	if(*buf == ' ' || *buf == '\t') {
+		char * p = buf;
+		char * q = buf + 1;
+		while(*q == ' ' || *q == '\t') {
+			++q;
+			--len;
+		}
+		while((*p++ = *q++) != 0);
 	}
 	return len;
 }
@@ -1617,7 +1708,7 @@ static int strim(char * buf) {
 static void prnerr(SQLSMALLINT ht, SQLHANDLE h, OC_SQLCA * E)
 {
 	bool codewasset = false;
-	for(SQLSMALLINT i = 1; ; ++i) {
+	for(SQLSMALLINT i = 1; i < 20; ++i) {
 		SQLSMALLINT	elen;
 		SQLINTEGER err;
 		SQLCHAR errs[486];
@@ -1629,7 +1720,11 @@ static void prnerr(SQLSMALLINT ht, SQLHANDLE h, OC_SQLCA * E)
 			if(state[0] != '0' || (state[1] != '0' && state[1] != '1')) {
 				if(i == 1 || E->OC_SQLCODE == 0 || !codewasset) {
 					if(err == 0) {
-						E->OC_SQLCODE = - atoi((char *)state);
+						if(state[0] == 'H') {
+							E->OC_SQLCODE = 999;	// Fatal error typically on commit
+						} else {
+							E->OC_SQLCODE = - atoi((char *)state);
+						}
 					} else {
 						E->OC_SQLCODE = - err;
 						codewasset = true;
@@ -1640,7 +1735,7 @@ static void prnerr(SQLSMALLINT ht, SQLHANDLE h, OC_SQLCA * E)
 					memcpy(E->OC_SQLSTATE, state, 6);
 				}
 				if(err != 2627) {
-					log("OCSQL: SQL code %d : %s : %s", err, state, errs);
+					logd(9, "OCSQL: SQL code %d : %s : %s", err, state, errs);
 				} else {
 					logd(190, "OCSQL: SQL code %d : %s : %s", err, state, errs);
 				}
@@ -1648,14 +1743,14 @@ static void prnerr(SQLSMALLINT ht, SQLHANDLE h, OC_SQLCA * E)
 				logd(190, "OCSQL: SQL code %d : %s : %s", err, state, errs);
 			}
 		} else {
-			log("OCSQL: SQL code %d : %s : %s", err, state, errs);
+			logd(9, "OCSQL: SQL code %d : %s : %s", err, state, errs);
 		}
 	}
 }
 
 static bool getcurrdb(char * db, OC_SQLCA & E)
 {
-#ifdef _MSC_VER
+#if !defined(ESQL_DB2)
 	SQLSMALLINT buflength = OC_DBNAME_LENGTH;
 	// SQLGetInfo() (ODBC 1.0) we could also use SQLGetConnectAttr() with SQL_ATTR_CURRENT_CATALOG (ODBC 3.0)
 	SQLRETURN rc = SQLGetInfo(hDBC, SQL_DATABASE_NAME, db, buflength, &buflength);
@@ -1666,10 +1761,10 @@ static bool getcurrdb(char * db, OC_SQLCA & E)
 	rc = SQLPrepare (hStmt, (SQLCHAR *) "SELECT DB_NAME()", SQL_NTS);
 #else
 	rc = SQLPrepare (hStmt, (SQLCHAR *) "SELECT DATABASE()", SQL_NTS);
-#endif
-#else	// _MSC_VER
+#endif	// MSSQL
+#else	// ESQL_DB2
 	SQLRETURN rc = SQLPrepare (hStmt, (SQLCHAR *) "SELECT CURRENT SCHEMA FROM SYSIBM.SYSDUMMY1", SQL_NTS);
-#endif
+#endif	// ESQL_DB2
 	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
 		prnerr(SQL_HANDLE_STMT, hStmt, &E);
 		SQLFreeStmt(hStmt, SQL_CLOSE);

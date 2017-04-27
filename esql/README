@@ -1,0 +1,23 @@
+		                ESQL for GNU Cobol
+
+					http://www.kiska.net/opencobol/esql/
+
+ESQL for GNU Cobol / Cobol C++ is a free and open-source SQL precompiler and runtime.
+
+Author of this project is Sergey Kashyrin <ska@kiska.net>
+
+Development thanks also go to
+
+	Doug Vogel <dv11674@gmail.com>
+	Atilla Akarsular <030ati@gmail.com>
+
+This package contains the following subdirectories:
+
+    esqlOC      ESQL precompiler
+    ocsql       run-time library
+
+esqlOC is distributed under the GNU General Public License.
+See COPYING for details.
+
+ocsql is distributed under the GNU Lesser General Public License.
+See COPYING.LESSER for details.
