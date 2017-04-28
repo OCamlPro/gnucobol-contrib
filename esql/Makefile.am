@@ -2,6 +2,7 @@
 # Makefile gnu-cobol-sql
 #
 # Copyright (C) 2006-2013 Sergey Kashyrin <ska@kiska.net>
+#                    2017 Simon Sobisch <simonsobisch@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +21,14 @@
 #
 
 include_HEADERS =
-SUBDIRS = esqlOC ocsql
+if ! DISABLE_ESQL
+  ESQLDIR = esqlOC
+endif
+if ! DISABLE_OCSQL
+  OCSQLDIR = ocsql
+endif
+SUBDIRS = $(ESQLDIR) $(OCSQLDIR)
+#DIST_SUBDIRS = esqlOC ocsql
 ACLOCAL_AMFLAGS = -I m4 --install
 
 BUILT_SOURCES =

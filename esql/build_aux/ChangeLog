@@ -1,0 +1,8 @@
+
+2017-04-27  Simon 'sf-mensch/human' Sobisch <simonsobisch@gnu.org>
+
+	* general: moved additional build-scripts from rootdir to build_aux,
+	  added config.guess and compile
+	* general: updated to versions from automake 1.15
+	* config.sub, config.guess: updated to recent versions from
+	  git.savannah.gnu.org/gitweb/?p=config.git

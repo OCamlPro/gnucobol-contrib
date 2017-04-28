@@ -1,3 +1,10 @@
+
+2017-04-27  Simon Sobisch <simonosobisch@gnu.org>
+
+	* configure.ac, Makefile.am: added --disable-esql and --disable-ocsql
+	  to allow partial builds
+	* general: moved additional build-scripts from rootdir to build_aux
+
 2015-01-07  Sergey Kashyrin <ska@kiska.net>
 
 	* Initial autoconf-ed version

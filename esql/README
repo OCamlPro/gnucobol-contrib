@@ -1,8 +1,9 @@
-		                ESQL for GNU Cobol
+		                ESQL for GnuCOBOL
 
 					http://www.kiska.net/opencobol/esql/
 
-ESQL for GNU Cobol / Cobol C++ is a free and open-source SQL precompiler and runtime.
+ESQL for GnuCOBOL / GnuCOBOL C++ is a free and open-source SQL precompiler
+for COBOL and the corresponding runtime.
 
 Author of this project is Sergey Kashyrin <ska@kiska.net>
 
