@@ -72,48 +72,7 @@
 ** GENERIC HELP TOPICS  (Display it via ALT-F1 o F1 2 volte)
 ***********************************************************************
 &P050-I00 TOPIC 001
- Commenti generici sulla funzione di gestione agenti ........
- che non costituiscono un help specifico di campo ma che possono essere
- visualizzati tramite il tasto F1-Index dalla finestra di help.
- .....................
- La finestra di help potrebbe essere agganciata anche quando non
- si sa che messaggio assegnare per quel singolo specifico campo
- esempio invece di ??? help non disponibil ?).
- o lasciare help non disponibile e poi l'utente digita F1-Index
 
-&P050-I01 ANAGRAFICA AGENTI
-&P050-I02 MOVIMENTAZIONE DELLA POSIZIONE AGENTI
-
- La posizione di ciascun agente si movimenta effettuando delle registra-
- zioni sulla "scheda agente" tramite la apposita funzione.
-
- Da queste registrazioni scaturiscono:
- - le fatture pro-forma da trasmettere all'agente
- - i dati enasarco per effettuare i versamenti trimestrali
- - i dati di imponibile per calcolare:
-   - Fondo Indennita' Risolizione Rapporto (FIRR)
-   - Indennita' Suplettiva di Clientela
-   - Indennita' di mancato preavviso
-
-&P050-I03 CAUSALI DI MOVIMENTAZIONE
-&P050-I04 FASI OPERATIVE DEL SISTEMA DI GESTIONE AGENTI
-
-  1. Caricamento tabelle di base del sistema
-  2. Inserimento anagrafiche agenti
-  3. Registrazioni sulla scheda agente
-  4. stampa fatture pro-forma
-  5. chiusura trimestre
-  6. trasmissione dati a gest.agenti centrale
-  7. confronto dati delle varie divisioni
-  8. stampa distinta enasarco e distinta agenti nuovi
-  9. stampa calcolo FIRR
- 10. stampa calcolo Ind.Cleintela
-
-&P050-I05 STAMPA (O RISTAMPA) FATTURE PRO-FORMA
-&P050-I06 GESTIONE DELLO STAR DEL CREDERE
-&P050-I07 INDENNITA' SUPLETTIVA DI CLIENTELA
-
-&P050-I98 HELP SUI TASTI ATTIVI NEL SISTEMA GESTIONE AGENTI
 
 ***********************************************************************
 ** HELP TOPICS OF SINGLE FIELDS
