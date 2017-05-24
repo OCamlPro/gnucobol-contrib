@@ -1,0 +1,503 @@
+* *****************************************************************************
+* GnuCOBOL - SOURCE TEXT FOR HELP FILE SYSTEM
+* *****************************************************************************
+* This is a source file useful to generate an indexed HELP FILE
+* to be used in a user application developed with GnuCOBOL
+* When the program ACCEPT a filed on screen the user can press F1 key.
+* to display a Help message from following text.
+* ---------------------------------------------------------------------
+* Edit a source file like this with a text editor (ex.OpenCobolIDE, Notepad..),
+* From a COBOL point of view this is a sequential file of 72 char records.
+* The program GC43HELPLOAD will have this source file as its input
+* GC43HELPLOAD will create the indexed HELP file as its output
+* with lrec= 84 (a 12 char key + the 72 chars source file).
+* They key is  8 + 4 chars.
+* First 8 chars are the key to read the help from programs.
+* following 4 digits are a numbering from 1 to 9999 (text help rows)
+* ---------------------------------------------------------------------
+*
+* How to prepare this sourcefile:
+*
+* 1. rows with '*' at first char are just comment in this source file.
+*    They will wll be skipped and not loaded in the help file
+*
+* 2. rows with '&' at first char  '&', are HELP TOPICS example :
+*    &P050-001 NAME OF AGENT              will be used to make :
+*     <------>
+*     <--> <-> <------------------------->
+*    a) the key of the HELP file (first 8 chars)
+*       example: a program ENAP050.CBL will have help keys as P050-nnn
+*                where '050' an identifier of the cobol program
+*                      'nnn' are number of the field accepted from that program
+*                The help key code should be any 8 chars sequence
+*    b) the Title of the help topic on screen
+*
+* 3. Other rows are text messages of that hekp key
+*    the help text on screen is 72 chars
+* ---------------------------------------------------------------------
+*       the help box on screen will be as following:
+*
+*       |<---------------- 74 chacarcters ------------->|
+*
+*       +----------------| NAME OF AGENT |--------------+
+*       |yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy|  ^
+*       |yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy|  |
+*       |yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy|  |
+*       |yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy|  |
+*       |yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy| 12 rows
+*       |yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy| you can scroll
+*       |yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy|  |
+*       |yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy|  |
+*       |yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy|  v
+*       +---- CurUpDn ----------------------|xx:xx:xx|--+
+*
+*
+* How to generate the indexed Hep file:
+*   Type GC43HEPLOAD <enter>
+*   --> the program will ask for an input file and for an output file
+*   type  = GC43ENAH001 (helpload progamm will add  .TXT extension as default)
+*   type  = GC43ENAH001 (helpload progamm will add  .DAT extension as default)
+*
+* ...to be done: F1 to have a scrolling list with an index of Help Topics)
+* GC74HELPLOAD shoul create a key with a name like 'INDEX01' in the same file
+* where load a records for each HELP TPIC (rows with & in input file)
+* (le voci dovrebbero essere in ordine alfabetico ?)
+*
+***********************************************************************
+*
+*
+*
+*
+***********************************************************************
+** GENERIC HELP TOPICS  (Display it via ALT-F1 o F1 2 volte)
+***********************************************************************
+&P050-I00 TOPIC 001
+ Commenti generici sulla funzione di gestione agenti ........
+ che non costituiscono un help specifico di campo ma che possono essere
+ visualizzati tramite il tasto F1-Index dalla finestra di help.
+ .....................
+ La finestra di help potrebbe essere agganciata anche quando non
+ si sa che messaggio assegnare per quel singolo specifico campo
+ esempio invece di ??? help non disponibil ?).
+ o lasciare help non disponibile e poi l'utente digita F1-Index
+
+&P050-I01 ANAGRAFICA AGENTI
+&P050-I02 MOVIMENTAZIONE DELLA POSIZIONE AGENTI
+
+ La posizione di ciascun agente si movimenta effettuando delle registra-
+ zioni sulla "scheda agente" tramite la apposita funzione.
+
+ Da queste registrazioni scaturiscono:
+ - le fatture pro-forma da trasmettere all'agente
+ - i dati enasarco per effettuare i versamenti trimestrali
+ - i dati di imponibile per calcolare:
+   - Fondo Indennita' Risolizione Rapporto (FIRR)
+   - Indennita' Suplettiva di Clientela
+   - Indennita' di mancato preavviso
+
+&P050-I03 CAUSALI DI MOVIMENTAZIONE
+&P050-I04 FASI OPERATIVE DEL SISTEMA DI GESTIONE AGENTI
+
+  1. Caricamento tabelle di base del sistema
+  2. Inserimento anagrafiche agenti
+  3. Registrazioni sulla scheda agente
+  4. stampa fatture pro-forma
+  5. chiusura trimestre
+  6. trasmissione dati a gest.agenti centrale
+  7. confronto dati delle varie divisioni
+  8. stampa distinta enasarco e distinta agenti nuovi
+  9. stampa calcolo FIRR
+ 10. stampa calcolo Ind.Cleintela
+
+&P050-I05 STAMPA (O RISTAMPA) FATTURE PRO-FORMA
+&P050-I06 GESTIONE DELLO STAR DEL CREDERE
+&P050-I07 INDENNITA' SUPLETTIVA DI CLIENTELA
+
+&P050-I98 HELP SUI TASTI ATTIVI NEL SISTEMA GESTIONE AGENTI
+
+***********************************************************************
+** HELP TOPICS OF SINGLE FIELDS
+***********************************************************************
+&P010-001 NAME OF AGENT
+
+ 1. For individual Agents type SURNAME and First Name .
+
+ Thi is a mandatory Filed.
+ Youa can use this filed in search windows, to sort  some listings
+
+ If you type lowercase chars the system will convert to upprecase
+
+ text help row to test
+ text help row  text help row
+  text help row
+   text help row
+    text help row
+     text help row
+      text help row
+       text help row
+        text help row
+         text help row
+          text help row
+           text help row  text help row
+            text help row
+             text help row
+              text help row
+               text help row
+                text help row
+                 text help row
+                  text help row  text help row
+
+&P010-003 FISCAL CODE
+
+ .....................................................................
+ .....................................................................
+ .....................................................................
+ .....................................................................
+ .....................................................................
+ .....................................................................
+  text help row
+   text help row
+    text help row
+     text help row
+      text help row
+       text help row
+        text help row
+
+&P010-004 MATRICOLA ENASARCO
+
+
+ .....................................................................
+ .....................................................................
+ .....................................................................
+ .....................................................................
+ .....................................................................
+ .....................................................................
+  text help row
+   text help row
+    text help row
+     text help row
+      text help row
+       text help row
+        text help row
+
+
+&P010-060 IMPONIBILE DEL TRIMESTRE
+
+ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+
+&P010-061 IMPORTO DEL TRIMESTRE
+
+ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ x
+ x
+ x
+ x
+ x
+ x
+ x
+ x
+ x
+ x
+ x
+ x
+ x
+
+
+&P050-001 NAME OF AGENT
+
+ Nel caso di agenti individuali specificare cognome e nome dell'agente.
+
+ Per le societa' di capitali (SpA o SRL) specificare la ragione
+ sociale della societa'.
+
+ Per agenti costituiti in societa' di persone (SAS o SNC) specificare
+ la ragione sociale della societa'. I singoli soci vanno specificati
+ in una tabella a parte con le relative quote di partecipazione.
+
+
+ 1. For individual Agents type SURNAME and First Name .
+
+ Thi is a mandatory Filed.
+ Youa can use this filed in search windows, to sort  some listings
+
+ If you type lowercase chars the system will convert to upprecase
+
+ text help row to test
+ text help row  text help row
+  text help row
+   text help row
+    text help row
+     text help row
+      text help row
+       text help row
+        text help row
+         text help row
+          text help row
+           text help row  text help row
+            text help row
+             text help row
+              text help row
+               text help row
+                text help row
+                 text help row
+                  text help row  text help row
+
+&P050-002 CODICE AGENTE
+
+
+
+                        Il dato e' obbligatorio.
+
+ aaaaaaaaaaaaaaaaaaa nnnnnnnnnnnn aaaaaaaaaaaaaaaaaa wwwwwwwwwwwwwwwww
+ 3333333333333333333 3333333333333333333 3333333333333333333 333333333
+ 111111111111 11111111111111111111111111111111111111111 11111111111111
+ wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+
+ wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+ kkkkkkkkkkkkkkkkkkkkkkkkkkkkk kkkkkkkkkkkkkkkkkkk  kkkkkkkkkkkkkkkkkk
+ <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ ----------------------------------------------------------------
+
+  
+
+ il mese serve ad indicare al sistema il trimestre di competenza della
+ registrazione che si sta effettuando.
+
+ il giorno serve solo a scopo documentativo.
+
+ Non e' ammesso indicare date:
+
+ - di trimestri gia' chiusi
+ - di mesi per i quali e' stata stampata una fattura pro-forma positiva
+
+
+
+&P050-003 FISCAL CODE
+
+ xxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxx xxxx xxxxxxxxx
+ xxx xxxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxx xxxxxxxxx xxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxxx
+ xxxxxxxx xxxxxxxxxxxxxxxxx xxx xx xxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxx
+ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxx
+ x x x x x x x x x x xxxxxxxxxxxxxxx x x x x x xxxxxxxxxxxxxx xxxxx xx
+ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxxx xx xx x xxxxx
+ xxxxxxxx xxxxx x x x x x xxxxxxxxxxxxxxxxxxxxxxxxxx x x xxxxxxxxxxxxx
+ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ .................................................... xxx ,,,,xxxxxxxx
+ aaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaa
+
+ aaaaaaaaaaaaaaaaaaa nnnnnnnnnnnn aaaaaaaaaaaaaaaaaa wwwwwwwwwwwwwwwww
+ 3333333333333333333 3333333333333333333 3333333333333333333 333333333
+ 111111111111 11111111111111111111111111111111111111111 11111111111111
+ wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+
+ wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+ kkkkkkkkkkkkkkkkkkkkkkkkkkkkk kkkkkkkkkkkkkkkkkkk  kkkkkkkkkkkkkkkkkk
+ <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ ----------------------------------------------------------------
+                          ------------------------------------------
+ &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+ HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+       KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
+
+     +------------------------------------------------------------+
+     |                                                            |
+     +------------------------------------------------------------+
+
+ END OF MESSAGE 
+
+&P050-004 MATRICOLA  
+
+ aaaaaaaaaaaaaaaaaaa nnnnnnnnnnnn aaaaaaaaaaaaaaaaaa wwwwwwwwwwwwwwwww
+ 3333333333333333333 3333333333333333333 3333333333333333333 333333333
+ 111111111111 11111111111111111111111111111111111111111 11111111111111
+ wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+
+ wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+ kkkkkkkkkkkkkkkkkkkkkkkkkkkkk kkkkkkkkkkkkkkkkkkk  kkkkkkkkkkkkkkkkkk
+ <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ ----------------------------------------------------------------
+                          ------------------------------------------
+ &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+ HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+       KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
+
+     +------------------------------------------------------------+
+     |                                                            |
+     |                                                            |
+     |                                                            |
+     |                                                            |
+     +------------------------------------------------------------+
+&P050-010 TIPO CONTRATTO
+
+      ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+      บ                                                           บ
+      บ  Il contratto di agenzia puo' essere da monomandatario    บ
+      บ                 o da plurimandatario.                     บ
+      บ                                                           บ
+      บ     I codici che corrispondono sono i seguenti:           บ
+      บ                                                           บ
+      บ                  M = MONOMANDATARIO                       บ
+      บ                  P = PLURIMANDATARIO                      บ
+      บ                                                           บ
+      ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+&P050-011 TIPO SOGGETTO
+
+
+           ีอออออออออออออออออออออออออออออออออออออออออออออออออธ
+           ณ Specificare uno dei seguenti codici             ณ
+           ฦออออออออัออออออออออออออออออออออออออออออออออออออออต
+           ณ A ===> ณ Agente individuale o persona fisica    ณ
+           ณ C ===> ณ Societa' di capitali (SRL o SPA)       ณ
+           ณ P ===> ณ Societa' di persone  (SNC o SAS)       ณ
+           ิออออออออฯออออออออออออออออออออออออออออออออออออออออพ
+
+
+
+&P050-012 VAT CODE
+
+ Partita IVA agente da digitare per le sole societa' di persone (SAS o
+ SNC) e per le societa' di capitali (SpA e SRL).
+
+&P050-020 CODICE FORNITORE IN CONTAB.FORNITORI
+
+ Il codice che e' stato assegnato all'agente nel sistema di contabilita
+ fornitori. Viene poi stampato sulle fatture pro-forma in modo da age-
+ volarne la successiva contabilizzazione.
+
+&P050-021 NUMERAZIONE AUTOMATICA FATTURE PRO-FORMA
+
+  llllllllllllllllllllllllllllllllllllllllllllll
+
+&P050-022 VAT %
+
+ E' la percentuale IVA che il sistema applica in fase di calcolo ed
+ emissione delle fatture pro-forma.
+
+&P050-027 COST CENTER
+
+ Serve per poter emettere le statistiche sulle provvigioni
+
+
+&P050-102 SUBAGENTI O COLLABORATORI
+
+     Con 'S' si indica che l'agente ha subagenti o collaboratori e
+        quindi si indica la percentuale di ritenuta d'acconto da
+            applicare secondo quanto indicato in tabella 006
+
+
+&P050-103 TRATTAMENTO PROVVIGIONALE
+
+  ษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+  บ                                                                บ
+  บ    Indicare le percentuali di trattamento provvigionale in     บ
+  บ  forma descrittiva, per es. le percentuali in relazione alla   บ
+  บ         categoria del cliente oppure le percentuali            บ
+  บ           in relazione alla tipologia di prodotto.             บ
+  บ                                                                บ
+  ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+&P050-104 TIPO CESSAZIONE
+
+
+
+&P050-105 TIPO LIQUIDAZIONE
+
+
+
+&P050-106 TRATTENUTA SINDACALE
+
+
+&P050-107 CONCORSO SPESE FISSO
+
+
+
+&P050-108 ASSICURAZIONE
+
+
+
+
+
+&P050-112 SEX
+
+ Indicare il sesso M MALE oppure F FEMALE
+
+
+
+
+
+************************************************************************
+** 
+************************************************************************
+*
+&P051-001 COGNOME E NOME AGENTE SOCIO
+
+
+
+&P051-003 CODICE FISCALE AGENTE SOCIO
+
+
+
+************************************************************************
+** 
+************************************************************************
+&P060-001 DATA REGISTRAZIONE
+
+ Nella forma mese e giorno (mmgg):
+
+ il mese serve ad indicare al sistema il trimestre di competenza della
+ registrazione che si sta effettuando.
+
+ il giorno serve solo a scopo documentativo.
+
+ Non e' ammesso indicare date:
+
+ - di trimestri gia' chiusi
+ - di mesi per i quali e' stata stampata una fattura pro-forma positiva
+
+&P060-002 TIPO REGISTRAZIONE (CAUSALE)
+
+ Causale di registrazione sulla posizione dell'agente.
+
+ Specificare uno dei codici di tabella 001 o selezionarne uno dalla
+ lista visualizzabile col tasto F2 <Lookup>. Lo specifico utilizzo di
+ ciascuna causale e' specificato piu' avanti in questo testo.
+
+ Una volta selezionato il TIPO REGISTRAZIONE allora sono determinati
+ anche se AVERE o DARE di Agente e se si tratta o meno di registrazione
+ in ENASARCO, in IVA e in RAC (RIT.D'ACCONTO).
+
+ Se la registrazione e' in ENASARCO (e non e' stato raggiunto il massi-
+ male) allora il sistema determina anche la quota enasarco della singo-
+ la registrazione.
+
+ Sapere se la registrazione e' in IVA e RAC serve invece solo in fase
+ di emissione delle fatture pro-forma per poter applicare l'IVA e cal-
+ colare la Rit.d'Acconto da dedurre dalla liquidazione.
+
+
+
+&P999-??? - ? -
+
+   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+   xxx                                                            xxx
+   xxx                                                            xxx
+   xxx                      HELP NOT AVAILABLE                    xxx
+   xxx                                                            xxx
+   xxx                                                            xxx
+   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+*
