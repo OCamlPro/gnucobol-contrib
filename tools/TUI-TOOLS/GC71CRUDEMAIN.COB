@@ -27,7 +27,7 @@ PROGRAM-ID. GC71CRUDEMAIN.
 *> different files should be used to represent differents Company, Divisions, ...
 *> if Read(Browse) is selected , user will have a list of FILE records to browse on
 *> Read(Browse) program allows selection of one record to update/modify or delete.
-*> it allows also to call same program but to Create(insert) a new record.
+*> it allows also to call same program but to Create(insert) a new record. xx
 *>
 *> ********************************************************************************************
 ENVIRONMENT DIVISION.

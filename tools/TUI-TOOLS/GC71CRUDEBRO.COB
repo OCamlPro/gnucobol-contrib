@@ -95,7 +95,7 @@ Working-Storage Section.
 01 GC71CRUDEBRO PIC X(12) VALUE 'GC71CRUDEBRO'. *> Read / Browse
 
 01  AnageFS           pic x(02).
-01  AnageFSPEC        pic x(30) value 'ANAGE---.DAT'.
+01  AnageFSPEC        pic x(30) value 'GC71F---.DAT'.
 
 01  wAnageRec.
     03 wAnageKey      pic 9(009). *> chiave del file

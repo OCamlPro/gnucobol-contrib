@@ -47,7 +47,7 @@ Working-Storage Section.
 
 01  LnkKey          pic 9(006) value zero.
 01  LnkKeyActive    pic x(001) value '3'.
-01  LnkFileName     pic x(012) value 'ANAGE---.DAT'.
+01  LnkFileName     pic x(012) value 'GC71F---.DAT'.
 
  01  wMenu1 pic  x(80) value
          ' Enter=Select CursorKeys PgUp/Dn Tab/Backtab Spacebar ESC=Exit                  '.
