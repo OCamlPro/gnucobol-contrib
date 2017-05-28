@@ -141,7 +141,7 @@ DisplayCoverScreen.
      if ws-KEY not = 8001 exit perform end-if
      accept wTime from time
      string ' Time ' wTime(1:2) ':' wTime(3:2) ':' wTime(5:2) delimited by size into TimeX
-     display TimeX at 002066 with foreground-color white background-color red end-display
+     display TimeX at 024066 with foreground-color white background-color red end-display
    END-PERFORM
 
    *> which key was pressed on cover Screen ?
@@ -614,6 +614,8 @@ DisplayCover.
     ACCEPT wUserName FROM USER NAME end-accept
     STRING " User: " wUserName into wSTRING
     DISPLAY wSTRING AT 002001 with foreground-color white background-color red
+
+   display GC71CRUDEMAIN at 002067 with background-color red foreground-color white highlight
 
     display wCOVER-R1(1) at 005001 with background-color Red foreground-color White highlight
     display wCOVER-R1(2) at 006001 with background-color Red foreground-color White highlight

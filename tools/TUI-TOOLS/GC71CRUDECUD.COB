@@ -1420,7 +1420,7 @@ DisplayDataOnScreen.
 
    string  ' C.R.U.DE. APPLICATION      (File: ' LnkFileName ')' delimited by size into wHeader
    display wHeader at 0101 with  Background-Color green Foreground-Color white highlight
-   display GC71CRUDECUD at 0168 with background-color green foreground-color white highlight.
+   display GC71CRUDECUD at 0168 with background-color green foreground-color white highlight
    display ' F1-<Help> ESC-<Exit>                                                           '
                    at 2501 with  Background-Color 02 Foreground-Color 15
    display ' Operation .............:'   at 0301 with  Background-Color dbc Foreground-Color yellow highlight
