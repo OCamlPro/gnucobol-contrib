@@ -6,8 +6,9 @@
 *>             will contain the corresponding Code of the key pressed by the user
 *> Author:     Eugenio Di Lorenzo (DILO) - Italia
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2016.06.15
+*> Version:    1.1 2017.05.28
 *> Changelog:  1.0 first release.
+*>             1.1 keys CTRL-F1/3 added
 *> ***********************************************************************************
 01 Key-Pressed            pic 9(3) value zero.
 01 Key-Code.
@@ -51,6 +52,10 @@
      05  Key-F10         pic 9(3) value 068.
      05  Key-F11         pic 9(3) value 133.
      05  Key-F12         pic 9(3) value 134.
+
+     05  Key-Ctrl-F1     pic 9(3) value 094.
+     05  Key-Ctrl-F2     pic 9(3) value 095.
+     05  Key-Ctrl-F3     pic 9(3) value 096.
 
      05  Key-Alt-a       pic 9(3) value 030.
      05  Key-Alt-b       pic 9(3) value 048.
