@@ -9,8 +9,9 @@ Program-Id. GC71CRUDESEL is INITIAL program.
 *> Parameters: LnkFunction
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo -GNU LGPL , 3.0 (or greater)
-*> Version:    1.0 2017.03.01
+*> Version:    1.1 2017.05.28
 *> Changelog:  1.0 first release.
+*>             1.1 little enhancements
 *> ***********************************************************************************
 DATA DIVISION.
 Working-Storage Section.
@@ -39,6 +40,7 @@ Working-Storage Section.
 
 01 GC71CRUDEBRO PIC X(12) VALUE 'GC71CRUDEBRO'. *> List of data records
 01 GC71CRUDECUD PIC X(12) VALUE 'GC71CRUDECUD'. *> Create, Update, delete of data records
+01 GC71CRUDESEL PIC X(12) VALUE 'GC71CRUDESEL'. *>
 
 1 DescOperazione  pic x(015).
 1 DescKeyAttiva   pic x(015).
@@ -88,14 +90,15 @@ FileSelection.
    display wMenu1 at 2501 with background-color green foreground-color white highlight
 
 
-   display ' Operation: '        at 0132 with  Background-Color green Foreground-Color white
-           DescOperazione        at 0144 with  Background-Color green Foreground-Color white
+   display ' Operation: '        at 0124 with  Background-Color green Foreground-Color white
+           DescOperazione        at 0136 with  Background-Color green Foreground-Color white
 
    if LnkFunction not = 'C'
-      display ' Order by: '       at 0160 with  Background-Color green Foreground-Color white
-              DescKeyAttiva(1:8)  at 0171 with  Background-Color green Foreground-Color white
+      display ' Order by: '       at 0150 with  Background-Color green Foreground-Color white
+              DescKeyAttiva(1:8)  at 0161 with  Background-Color green Foreground-Color white
    end-if
 
+   display GC71CRUDESEL at 0168 with background-color green foreground-color white highlight
 
    *> ********************************************************
    *> SELECTION OF A FILE
@@ -119,6 +122,7 @@ FileSelection.
 
    If bu-Key = Key-Escape go Esci end-if
 
+   move 'N' to Bu-Click
    evaluate Bu-selected
     when 1 move 'ALI' to LnkFileName(6:3)
     when 2 move 'BER' to LnkFileName(6:3)

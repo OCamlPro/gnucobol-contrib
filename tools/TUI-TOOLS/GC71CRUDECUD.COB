@@ -9,8 +9,9 @@ program-id. GC71CRUDECUD is INITIAL program.
 *> Parameters: LnkFileName LnkFunction LnkKey LnkKeyActive
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - LGPL, 3.0 (or greater)
-*> Version:    1.0 2017.03.01
+*> Version:    1.1 2017.05.28
 *> Changelog:  1.0 first release.
+*>             1.1 little enhancements
 *> ***********************************************************************************
 *> THIS PROGRAM IS A 'STANDARD SCHEMA' FOR SCREEN FIELDS DATA-ENTRY TO CREATE/UPDATE/DELETE
 *> - fields are shown and accepted on screen
@@ -96,10 +97,11 @@ WORKING-STORAGE SECTION.
 
 01  Anage999Rec.
    03 Anage999Key pic 9(009). *> chiave del file
-   03 Anage999Ctr pic 9(009). *> contatore progressivo delle chiavi
+   03 Anage999Ctr pic 9(009). *> key counter
    03             pic x(382).
 
 01 wRetCode     PIC 9999.
+01 wFunc-NumVal PIC 9999.
 
 01 AnageAnticiX pic X(11).
 01 AnageAnticiZ pic -(7)9,99.
@@ -121,6 +123,8 @@ WORKING-STORAGE SECTION.
 77 wHeader     pic x(80) value space.
 77 ExecuteOper pic x(26) value ' F12= Execute '.
 
+01 GC71CRUDECUD PIC X(12) VALUE 'GC71CRUDECUD'. *> Create, Update, delete of data records
+01 GC71CRUDEBRO PIC X(12) VALUE 'GC71CRUDEBRO'. *> Read / Browse
 01  wString   pic x(31).
 01  FirstTimeAltS  pic x value 'Y'.
 
@@ -240,125 +244,105 @@ ACC02.
 ACC03.
    *> FISCAL CODE
    move 'P050-003' to HeKey
-   accept AnageCodFis                    line 06 column 27
-    with  Background-Color abc Foreground-Color afc
+   accept AnageCodFis at 0627 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC04.
    *> VAT CODE
    move 'P050-012' to HeKey
-   accept AnageParIVA                    line 06 column 46
-    with  Background-Color abc Foreground-Color afc
+   accept AnageParIVA at 0646 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC05.
    *> matricola
    move 'P050-004' to HeKey
-   accept AnageMatEna                    line 06 column 72
-    with  Background-Color abc Foreground-Color afc
+   accept AnageMatEna at 0672 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC06.
    *> ADDRESS
-   accept AnageIndLeg                    line 07 column 27
-    with  Background-Color abc Foreground-Color afc
+   accept AnageIndLeg at 0727 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC07.
-   *> Localita'
-   accept AnageLocLeg                    line 08 column 27
-    with  Background-Color abc Foreground-Color afc
+   *> city
+   accept AnageLocLeg at 0827 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC08.
    *> ZIP
-   accept AnageCapLeg                     line 08 column 66
-    with  Background-Color abc Foreground-Color afc
+   accept AnageCapLeg at 0866 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC09.
-   *> provincia
-   accept AnageProLeg                     line 08 column 78
-    with  Background-Color abc Foreground-Color afc
+   *> province
+   accept AnageProLeg at 0878 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC10.
-   *> localita' di nascita
-   accept AnageLocaNa                    line 09 column 27
-    with  Background-Color abc Foreground-Color afc
+   *> city of birth
+   accept AnageLocaNa at 0927 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC11.
    *> date of birth - on date fields  F4 Datepicker is available
    display "F4-<Date Picker>"  at 2523 with  Background-Color green Foreground-Color white
-   accept AnageDataNa                     line 09 column 63
-    with  Background-Color abc Foreground-Color afc
+   accept AnageDataNa          at 0963 with  Background-Color abc   Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC12.
-   *> provincia di nascita
-   accept AnageProvNa                     line 09 column 78
-    with  Background-Color abc Foreground-Color afc
+   *> province of birth
+   accept AnageProvNa at 0978 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC13.
-   *> home telefono
-   accept AnageTelCas                     line 10 column 27
-    with  Background-Color abc Foreground-Color afc
+   *> home telephone
+   accept AnageTelCas at 1027 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC14.
-   *> telefono mobile
-   accept AnageTelCel                     line 10 column 43
-    with  Background-Color abc Foreground-Color afc
+   *> mobile phone
+   accept AnageTelCel at 1043 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC15.
    *> fax
-   accept AnageTelFax                     line 10 column 63
-    with  Background-Color abc Foreground-Color afc
+   accept AnageTelFax at 1063 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC16.
-   *> Tipo contratto (mono/plurimandatario)
+   *> Contract Type (mono/plurimandate)
    move 'P050-010' to HeKey
-   accept AnageTipCon                    line 11 column 27
-    with  Background-Color abc Foreground-Color afc
+   accept AnageTipCon  at 1127 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC17.
-   *> Tipo soggetto (age.individuale, soc.persone/capitali)
+   *> Tipo soggetto
    move 'P050-011' to HeKey
-   accept AnageTipSog                    line 12 column 27
-    with  Background-Color abc Foreground-Color afc
+   accept AnageTipSog at 1227 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC18.
-   *> data inizio rapporto di agenzia
+   *> date of starting
    display "F4-<Date Picker>"  at 2523 with  Background-Color green Foreground-Color white
-   accept AnageDataIn                    line 14 column 27
-    with  Background-Color abc Foreground-Color afc
+   accept AnageDataIn          at 1427 with  Background-Color abc   Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC19.
-   *> data cessazione rapporto di agenzia
+   *> date of end
    display "F4-<Date Picker>"  at 2523 with  Background-Color green Foreground-Color white
-   accept AnageDataCe                    line 14 column 66
-    with  Background-Color abc Foreground-Color afc
+   accept AnageDataCe          at 1466 with  Background-Color abc   Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC20.
-   *> tipo cessazione rapporto di agenzia
+   *> ending type
    move 'P050-104' to HeKey
-   accept AnageTipoCe                    line 14 column 78
-    with  Background-Color abc Foreground-Color afc
+   accept AnageTipoCe at 1478 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC21.
-   *> anticipo fisso mensile
-   *> accept AnageAntici                    line 15 column 27
-   accept AnageAnticiX                   line 15 column 27
-    with  Background-Color abc Foreground-Color afc
+   *> anticipo amount
+   accept AnageAnticiX at 1527 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
      *> space-fill
    inspect AnageAntici converting space to zero
@@ -366,136 +350,114 @@ ACC21.
 ACC22.
    *> concorso spese fisso
    move 'P050-107' to HeKey
-   accept AnageConSpeX                   line 15 column 66
-    with  Background-Color abc Foreground-Color afc
+   accept AnageConSpeX at 1566 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    inspect AnageConSpe converting space to zero
    go EVALUATE-KEY.
 ACC23.
    *> trattenuta sindacale
    move 'P050-106' to HeKey
-   accept AnageTraSinX                   line 16 column 27
-    with  Background-Color abc Foreground-Color afc
+   accept AnageTraSinX at 1627 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    inspect AnageTrasin converting space to zero
    go EVALUATE-KEY.
 ACC24.
-   *> tipo liquidazione (acconti+conguaglio o su eff.mese)
+   *> tipo liquidazione
    move 'P050-105' to HeKey
-   accept AnageTipLiq                    line 16 column 66
-    with  Background-Color abc Foreground-Color afc
+   accept AnageTipLiq at 1666 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC25.
-   *> se ha subagenti (x percentuale ritenuta d'acconto)
+   *> se ha subagenti
    move 'P050-102' to HeKey
-   accept AnageSubage                    line 17 column 27
-    with  Background-Color abc Foreground-Color afc
+   accept AnageSubage at 1727 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC26.
-   *> percentuale Iva in fattura agente
+   *> VAT %
    move 'P050-022' to HeKey
-   accept AnagePerIva                    line 17 column 38
-    with  Background-Color abc Foreground-Color afc
+   accept AnagePerIva at 1738 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    inspect AnagePerIva converting space to zero
    go EVALUATE-KEY.
 ACC27.
    *> numerazione automatica fatture ?
    move 'P050-021' to HeKey
-   accept AnageNumAut                    line 17 column 66
-    with  Background-Color abc Foreground-Color afc
+   accept AnageNumAut at 1766 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC28.
    *> sex
    move 'P050-112' to HeKey
-   accept AnageSesso                     line 17 column 78
-    with  Background-Color abc Foreground-Color afc
+   accept AnageSesso at 1778 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC29.
    *> numero camera di commercio
-   accept AnageCamCom                    line 18 column 27
-    with  Background-Color abc Foreground-Color afc
+   accept AnageCamCom  at 1827 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC30.
    *> iscriz.reg.ditte
-   accept AnageNumRuo                    line 18 column 66
-    with  Background-Color abc Foreground-Color afc
+   accept AnageNumRuo at 1866 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 
 ACC31.
    *> iscriz.registro delle imprese
-   accept AnageIscTri                    line 19 column 27
-    with  Background-Color abc Foreground-Color afc
+   accept AnageIscTri at 1927 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC32.
    *> capitale sociale
-   accept AnageCapSocX                   line 19 column 66
-    with  Background-Color abc Foreground-Color afc
+   accept AnageCapSocX at 1966 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
-     *> space-fill
    inspect AnageCapSoc converting space to zero
    go EVALUATE-KEY.
 ACC33.
    *> codice fornitore in contab.fornitori
    move 'P050-020' to HeKey
-   accept AnageCodFor                    line 20 column 27
-    with  Background-Color abc Foreground-Color afc
+   accept AnageCodFor at 2027 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC34.
-   *> codice centro di costo
+   *> cost center
    move 'P050-027' to HeKey
-   accept AnageCodcdc                    line 20 column 66
-    with  Background-Color abc Foreground-Color afc
+   accept AnageCodcdc at 2066 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC35.
    *> rete di vendita
-   accept AnageReteVe                    line 21 column 27
-    with  Background-Color abc Foreground-Color afc
+   accept AnageReteVe at 2127 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC36.
    *> zona di vendita
-   accept AnageZonaVe                    line 21 column 34
-    with  Background-Color abc Foreground-Color afc
+   accept AnageZonaVe at 2134 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC37.
    *> casella postale
-   accept AnageCasPos                    line 21 column 66
-    with  Background-Color abc Foreground-Color afc
+   accept AnageCasPos at 2166 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC38.
    *> descrizione % provvigioni
    move 'P050-103' to HeKey
-   accept AnageProvvi                    line 22 column 27
-    with  Background-Color abc Foreground-Color afc
+   accept AnageProvvi at 2227 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
    go EVALUATE-KEY.
 ACC39.
-   *> Settore contabile stampato su lett.allegata a fatture
+   *> Settore contabile
    move 'P050-109' to HeKey
-   accept AnageSetCon                    line 22 column 52
-    with  Background-Color abc Foreground-Color afc
+   accept AnageSetCon at 2252 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
-     *> space-fill
    go EVALUATE-KEY.
 ACC40.
    *> assicur.da trattenere da firr
    move 'P050-108' to HeKey
-   accept AnageAssicuX                   line 22 column 66
-    with  Background-Color abc Foreground-Color afc
+   accept AnageAssicuX at 2266 with  Background-Color abc Foreground-Color afc
      update prompt character is pro auto-skip reverse-video
-     *> space-fill
    inspect AnageAssicu converting space to zero
    go EVALUATE-KEY.
 
@@ -715,7 +677,7 @@ EVALUATE-KEY.
  CTR08.
         continue go CtrFieldsEx.
  CTR09.
- *> just convert lower to upper case
+     *> just convert lower to upper case
      Inspect AnageProLeg converting 'abcdefghijklmnopqrstuvwxyz' to 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
      display AnageProLeg at 0878 with  Background-Color abc Foreground-Color afc reverse-video
      go CtrFieldsEx.
@@ -736,9 +698,12 @@ EVALUATE-KEY.
      Inspect AnageProvNa converting 'abcdefghijklmnopqrstuvwxyz' to 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
      display AnageProvNa at 0978 with  Background-Color abc Foreground-Color afc reverse-video
      go CtrFieldsEx.
- CTR13. continue go CtrFieldsEx.
- CTR14. continue go CtrFieldsEx.
- CTR15. continue go CtrFieldsEx.
+ CTR13.
+     continue go CtrFieldsEx.
+ CTR14.
+     continue go CtrFieldsEx.
+ CTR15.
+     continue go CtrFieldsEx.
  CTR16.
      Inspect AnageTipCon converting 'mp' to 'MP'
      display AnageTipCon at 1127 with  Background-Color abc Foreground-Color afc reverse-video
@@ -877,12 +842,14 @@ EVALUATE-KEY.
      if function test-numval(AnageAnticiX) not = ZERO
         set Errors to true
         move '                             '  & x'00' to bxm-mex(1)
-        move ' wrong numeric format        '  & x'00' to bxm-mex(2)
+        move ' numeric format              '  & x'00' to bxm-mex(2)
         move ' must be: nnnnnnn,nn         '  & x'00' to bxm-mex(3)
         move '                             '  & x'00' to bxm-mex(4)
-        move '                             '  & x'00' to bxm-mex(5)
-        move '                             '  & x'00' to bxm-mex(6)
+        move ' first wrong character at    '  & x'00' to bxm-mex(5)
+        move ' position                    '  & x'00' to bxm-mex(6)
         move '                             '  & x'00' to bxm-mex(7)
+        move function test-numval(AnageAnticiX) to wFunc-NumVal
+        move wFunc-NumVal to  bxm-mex(6) (12:4)
         perform DisplayErrorMessage thru DisplayErrorMessageEx
      else
         move function numval(AnageAnticiX) to AnageAntici AnageAnticiZ
@@ -902,12 +869,14 @@ EVALUATE-KEY.
      if function test-numval(AnageConSpeX) not = ZERO
         set Errors to true
         move '                             '  & x'00' to bxm-mex(1)
-        move ' wrong numeric format        '  & x'00' to bxm-mex(2)
+        move ' numeric format              '  & x'00' to bxm-mex(2)
         move ' must be: nnnnnnn,nn         '  & x'00' to bxm-mex(3)
         move '                             '  & x'00' to bxm-mex(4)
-        move '                             '  & x'00' to bxm-mex(5)
-        move '                             '  & x'00' to bxm-mex(6)
+        move ' first wrong character at    '  & x'00' to bxm-mex(5)
+        move ' position                    '  & x'00' to bxm-mex(6)
         move '                             '  & x'00' to bxm-mex(7)
+        move function test-numval(AnageAnticiX) to wFunc-NumVal
+        move wFunc-NumVal to  bxm-mex(6) (12:4)
         perform DisplayErrorMessage thru DisplayErrorMessageEx
      else
         move function numval(AnageConSpeX) to AnageConSpe AnageConSpeZ
@@ -927,12 +896,14 @@ EVALUATE-KEY.
      if function test-numval(AnageTraSinX) not = ZERO
         set Errors to true
         move '                             '  & x'00' to bxm-mex(1)
-        move ' wrong numeric format        '  & x'00' to bxm-mex(2)
+        move ' numeric format              '  & x'00' to bxm-mex(2)
         move ' must be: nnnnnnn,nn         '  & x'00' to bxm-mex(3)
         move '                             '  & x'00' to bxm-mex(4)
-        move '                             '  & x'00' to bxm-mex(5)
-        move '                             '  & x'00' to bxm-mex(6)
+        move ' first wrong character at    '  & x'00' to bxm-mex(5)
+        move ' position                    '  & x'00' to bxm-mex(6)
         move '                             '  & x'00' to bxm-mex(7)
+        move function test-numval(AnageAnticiX) to wFunc-NumVal
+        move wFunc-NumVal to  bxm-mex(6) (12:4)
         perform DisplayErrorMessage thru DisplayErrorMessageEx
      else
         move function numval(AnageTraSinX) to AnageTraSin AnageTraSinZ
@@ -1039,14 +1010,16 @@ EVALUATE-KEY.
      if function test-numval(AnageCapSocX) not = ZERO
         set Errors to true
         move '                             '  & x'00' to bxm-mex(1)
-        move ' wrong numeric format        '  & x'00' to bxm-mex(2)
+        move ' numeric format              '  & x'00' to bxm-mex(2)
         move ' must be: nnnnnnnnnnnn       '  & x'00' to bxm-mex(3)
         move '                             '  & x'00' to bxm-mex(4)
-        move '                             '  & x'00' to bxm-mex(5)
-        move '                             '  & x'00' to bxm-mex(6)
+        move ' first wrong character at    '  & x'00' to bxm-mex(5)
+        move ' position                    '  & x'00' to bxm-mex(6)
         move '                             '  & x'00' to bxm-mex(7)
+        move function test-numval(AnageAnticiX) to wFunc-NumVal
+        move wFunc-NumVal to  bxm-mex(6) (12:4)
         perform DisplayErrorMessage thru DisplayErrorMessageEx
-     else
+       else
         move function numval(AnageCapSocX) to AnageCapSoc AnageCapSocZ
         move AnageCapSocZ to AnageCapSocX
         display AnageCapSocX at 1966 with Background-Color abc Foreground-Color afc reverse-video
@@ -1070,12 +1043,14 @@ EVALUATE-KEY.
      if function test-numval(AnageAssicuX) not = ZERO
         set Errors to true
         move '                             '  & x'00' to bxm-mex(1)
-        move ' wrong numeric format        '  & x'00' to bxm-mex(2)
+        move ' numeric format              '  & x'00' to bxm-mex(2)
         move ' must be: nnnnn,nn           '  & x'00' to bxm-mex(3)
         move '                             '  & x'00' to bxm-mex(4)
-        move '                             '  & x'00' to bxm-mex(5)
-        move '                             '  & x'00' to bxm-mex(6)
+        move ' first wrong character at    '  & x'00' to bxm-mex(5)
+        move ' position                    '  & x'00' to bxm-mex(6)
         move '                             '  & x'00' to bxm-mex(7)
+        move function test-numval(AnageAnticiX) to wFunc-NumVal
+        move wFunc-NumVal to  bxm-mex(6) (12:4)
         perform DisplayErrorMessage thru DisplayErrorMessageEx
      else
         move function numval(AnageAssicuX) to AnageAssicu AnageAssicuZ
@@ -1445,14 +1420,15 @@ DisplayDataOnScreen.
 
    string  ' C.R.U.DE. APPLICATION      (File: ' LnkFileName ')' delimited by size into wHeader
    display wHeader at 0101 with  Background-Color green Foreground-Color white highlight
+   display GC71CRUDECUD at 0168 with background-color green foreground-color white highlight.
    display ' F1-<Help> ESC-<Exit>                                                           '
                    at 2501 with  Background-Color 02 Foreground-Color 15
    display ' Operation .............:'   at 0301 with  Background-Color dbc Foreground-Color yellow highlight
    display DescOperation                 at 0327 with  Background-Color dbc Foreground-Color yellow highlight
 
    if LnkFunction not = 'C'
-      display ' Order by: '  at 0340 with  Background-Color dbc Foreground-Color yellow highlight
-      display DescKeyActive  at 0351 with  Background-Color dbc Foreground-Color yellow highlight
+      display ' Order by: '  at 0337 with  Background-Color dbc Foreground-Color yellow highlight
+      display DescKeyActive  at 0348 with  Background-Color dbc Foreground-Color yellow highlight
       display 'REC.ID: '     at 0362 with  Background-Color dbc Foreground-Color yellow highlight
       display AnageKey       at 0370 with  Background-Color dbc Foreground-Color yellow highlight
    end-if

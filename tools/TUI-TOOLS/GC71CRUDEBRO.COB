@@ -9,8 +9,9 @@ program-id. GC71CRUDEBRO is INITIAL program.
 *> Parameters: LnkFilename
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2017.03.01
+*> Version:    1.1 2017.05.28
 *> Changelog:  1.0 first release.
+*>             1.1 little enhancements
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 Configuration Section.
@@ -91,6 +92,7 @@ Working-Storage Section.
 01  lin3              pic s9(04) comp-5 value   0.
 
 01 GC71CRUDECUD PIC X(12) VALUE 'GC71CRUDECUD'. *> Create, Update, delete of data records
+01 GC71CRUDEBRO PIC X(12) VALUE 'GC71CRUDEBRO'. *> Read / Browse
 
 01  AnageFS           pic x(02).
 01  AnageFSPEC        pic x(30) value 'ANAGE---.DAT'.
@@ -799,14 +801,15 @@ PROCEDURE DIVISION using LnkFileName.
  DisplayTableEx. EXIT.
 
 DisplayHeader.
-    string  ' C.R.U.DE. APPLICATION      (File: ' LnkFileName '  sorted by:  '
+    string  ' C.R.U.DE. APPLICATION (File: ' LnkFileName ' sorted by: '
             delimited by size into wHeader
     display wHeader at 0101 with  Background-Color t-back Foreground-Color white highlight
     evaluate KeyActive
-        when 1 display DescrKey1 at 0160 with background-color t-back foreground-color white highlight
-        when 2 display DescrKey2 at 0160 with background-color t-back foreground-color white highlight
-        when 3 display DescrKey3 at 0160 with background-color t-back foreground-color white highlight
+        when 1 display DescrKey1 at 0154 with background-color t-back foreground-color white highlight
+        when 2 display DescrKey2 at 0154 with background-color t-back foreground-color white highlight
+        when 3 display DescrKey3 at 0154 with background-color t-back foreground-color white highlight
      end-evaluate
+     display GC71CRUDEBRO at 0168 with background-color t-back foreground-color white highlight
    *> header of rows
     display wRowT(li-start:80) at 0201 with background-color red foreground-color white highlight.
 DisplayHeaderEx. exit.
@@ -900,7 +903,6 @@ RowSetting.
      when 'P' move 'PEOPLE COMPANY ' to rAnaDesTso
      when 'C' move 'CAPITAL COMPANY' to rAnaDesTso
     end-evaluate
-
 
     move AnageSesso  to rAnaSesso
     move AnageDataIn to rAnaDataIn
