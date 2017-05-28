@@ -5,8 +5,8 @@ PROGRAM-ID.  GC53CALENDAR.
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DISPLAY A CALENDAR ON SCREEN
 *> Tectonics:  cobc -x GC53CALENDAR.COB  (use GnuCOBOL 2.0 or greater)
-*> Usage:
-*> Parameters:
+*> Usage:      GC53CALENDAR
+*> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) and source from Rosetta Code
 *> License:    Copyright 2017 E.Di Lorenzo
 *>             GNU Lesser General Public License, LGPL, 3.0 (or greater)
@@ -18,7 +18,6 @@ INPUT-OUTPUT SECTION.
 
 DATA DIVISION.
 WORKING-STORAGE SECTION.
-
 *> Values that may be returned in CRT STATUS (or COB-CRT-STATUS)
 78  K-ENTER       VALUE 0000.
 78  K-UP          VALUE 2003.
@@ -83,7 +82,6 @@ WORKING-STORAGE SECTION.
     05  FILLER             PIC X(01).
     05  INPD-DAY           PIC 9(02).
 
-
 01  WINPDATE-RECORD.
     05  WINPD-YEAR          PIC 9(04).
     05  WINPD-MONTH         PIC 9(02).
@@ -118,7 +116,15 @@ WORKING-STORAGE SECTION.
 
 01 W-KEY PIC 9999.
 
-PROCEDURE DIVISION.
+
+LINKAGE SECTION.
+copy 'GC53CALENDAR.CPY'.
+
+
+*> ***********************************************************************************
+*>           P R O C E D U R E   D I V I S I O N
+*> ***********************************************************************************
+PROCEDURE DIVISION. *> using Calendar-Area
 
      ACCEPT WINPDATE-RECORD FROM DATE YYYYMMDD
      MOVE WINPD-YEAR  TO INPD-YEAR
@@ -141,12 +147,8 @@ INIZIO.
              MOVE WS-MM TO INPD-MONTH
              CALL 'GC53DATE2DOW' USING INPDATE-RECORD, WMS-DOW END-CALL
 
-             *> DISPLAY INPDATE-RECORD AT 0120
-             *> DISPLAY WMS-DOW AT 0140
-             *> ACCEPT OMITTED
-
              COMPUTE WS-MTH-DD = 1 - WMS-DOW
-             COMPUTE WS-DAYS = WS-MTH-INFO-DAYS (INPD-MONTH)
+             COMPUTE WS-DAYS   = WS-MTH-INFO-DAYS (INPD-MONTH)
              *> 6 WEEK EACH MONTH
              PERFORM VARYING WS-WK FROM 1 BY +1 UNTIL WS-WK > 6
                      PERFORM VARYING WS-DD FROM 1 BY +1 UNTIL WS-DD > 7
@@ -164,7 +166,7 @@ INIZIO.
      MOVE SPACE TO WS-TABLE-TEXT-LINE(I)
 
      *> *********************************************************************************
-     *> DISPLAY 4 QUARTERS OF TRHREE MONTHS
+     *> LOOP FOR 4 QUARTERS (EACH OF TRHREE MONTHS)
      *> *********************************************************************************
      COMPUTE WS-MM = 0
      PERFORM VARYING WS-QQ FROM 1 BY +1 UNTIL WS-QQ > 4
@@ -172,7 +174,7 @@ INIZIO.
              COMPUTE WS-PP = 1
 
              *> *************************************************************************
-             *> DISPLAY A ROW WITH THREE MONTHS DESCRIPTION
+             *> SET A ROW WITH DESCRIPTION OF THREE MONTHS
              *> *************************************************************************
              PERFORM VARYING WS-COL FROM 1 BY +1 UNTIL WS-COL > 3
                      COMPUTE WS-MM = 3 * (WS-QQ - 1) + WS-COL
@@ -192,7 +194,7 @@ INIZIO.
              STRING 'M' WS-PRT (1:WS-LS) INTO WS-TABLE-TEXT-LINE(I)
 
              *> *************************************************************************
-             *> DISPLAY ROW WITH 7 DAYS DESCRIPTION  - THREE MONTHS/YEAR ON ONE ROW
+             *> SET A ROW WITH 7 DAYS DESCRIPTION  - (THREE MONTHS ON ONE ROW)
              *> *************************************************************************
              INITIALIZE WS-PRT
              COMPUTE WS-PP = 1
@@ -216,7 +218,7 @@ INIZIO.
              STRING 'W' WS-PRT (1:WS-LS) INTO WS-TABLE-TEXT-LINE(I)
 
              *> *************************************************************************
-             *> DISPLAY DAYS NUMBERS ROWS - DISPLAY 6 ROWS OF DAYS NUMBERS
+             *> LOOP OF 6 ROWS TO SET DAY NUMBERS
              *> *************************************************************************
              PERFORM VARYING WS-WK FROM 1 BY +1 UNTIL WS-WK > 6
                      INITIALIZE WS-PRT
@@ -247,7 +249,6 @@ INIZIO.
      END-PERFORM
 
      CALL 'GC53CALEVIEW' USING WS-TABLE-TEXT W-KEY END-CALL
-
 
      IF W-KEY = K-PAGEDOWN
         COMPUTE INPD-YEAR = INPD-YEAR + 1
@@ -296,13 +297,6 @@ WORKING-STORAGE SECTION.
 78  K-NO-DATA     VALUE 8000.
 78  K-TIMEOUT     VALUE 8001.
 
-*>  The following exception keys are currently *only* returned on ACCEPT OMITTED
- 78  COB-SCR-INSERT      VALUE 2011.
- 78  COB-SCR-DELETE      VALUE 2012.
- 78  COB-SCR-BACKSPACE   VALUE 2013.
- 78  COB-SCR-KEY-HOME    VALUE 2014.
- 78  COB-SCR-KEY-END     VALUE 2015.
-
 01  wKeyPressed  PIC  9(04) VALUE 9999.
 
 01 black   constant as 0.
@@ -317,8 +311,6 @@ WORKING-STORAGE SECTION.
 01 wDummy PIC X.
 
 01  J            pic 999 VALUE ZERO.
-01  FILESPEC     pic  x(80) value ' '.
-01  HelpFs       pic  x(02) value space.
 01  i-ini        pic 999.
 01  i            pic 999.
 01  li           pic s9(02) comp-5 value   0.
@@ -338,18 +330,17 @@ WORKING-STORAGE SECTION.
      03 wOracc         pic  9(2).
 01  wOrax              pic  x(8).
 
+ 01  NumRows      pic 9(03)  value 20.
+ 01  lin-top      pic 9(04)  value  3.  *> first line of window
+ 01  col0         pic 9(04)  value  3.  *> first col of window
+ 01  col1         pic 9(04).
+ 01  lin-table    pic 9(04).
+ 01  lin-bot      pic 9(04).
 
- 01  NumRows      pic  9(03)        value 020.
- 01  lin-top      pic 9(04)  value  03.  *> first line of window
- 01  col0         pic 9(04)  value   3.  *> first col of window
- 01  col1         pic 9(04) .
- 01  lin-table    pic 9(04) .
- 01  lin-bot      pic 9(04) .
-
- 01  wrk1         pic s9(04) comp-5 value   0.
+ 01  wrk1         pic 9(04) value   0.
 
  01  .
-     03 t1-max pic s9(04) comp-5.
+     03 t1-max pic 9(04).
      03 t1-tab.
         05 occurs 50.
            07 t1-line  pic x(0256).
@@ -364,16 +355,13 @@ WORKING-STORAGE SECTION.
 
 COPY      'GC01BOX.CPY'.
 
-01 He.
-    05  HeBack          pic s9(04) comp-5 value +02.
-    05  HeFore          pic s9(04) comp-5 value +00.
-    05  HeBoxShadow     pic  x(01) value 'Y'.
-    *> colori del titolo del box
-    05  HeTitBack       pic s9(04) comp-5 value +02.
-    05  HeTitFore       pic s9(04) comp-5 value +07.
+01 Cn.
+    05  Cn-Back          pic s9(04) comp-5 value +02.
+    05  Cn-Fore          pic s9(04) comp-5 value +00.
+    05  Cn-BoxShadow     pic  x(01) value 'Y'.
     *> colori del box ripetuti in due formati diversi
-    05  HeBoxBack       pic s9(04) comp-5 value +02.
-    05  HeBoxFore       pic s9(04) comp-5 value +07.
+    05  Cn-BoxBack       pic s9(04) comp-5 value +02.
+    05  Cn-BoxFore       pic s9(04) comp-5 value +07.
 
 LINKAGE SECTION.
 01 WS-TABLE-TEXT.
@@ -388,12 +376,7 @@ PROCEDURE DIVISION USING WS-TABLE-TEXT W-KEY.
 set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
 set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
-*> save the screen before display message
-*> move Z'BOXMEX.SCR' to szScreenName
-*> call static 'scr_dump' using by reference szScreenName returning iScrOk end-call
-
 compute t1-max = NumRows - 1
-
 move 0 to i-ini
 perform InitialSettings  thru InitialSettingsEx
 perform DisplayTable     thru DisplayTableEx
@@ -403,13 +386,13 @@ move 0 to wVisibilityNew
 call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
     .
 *> *************************************************************
-*> WAIT FOR USER INPUT AND EXECUTE COMMANDS
+*> WAIT FOR USER INPUT WHILE DISPLAYING TIME, AND EXECUTE COMMANDS
 *> *************************************************************
 LoopMain.
     accept  wOra from time
     string  wOra(1:2) ':' wOra(3:2) ':' wOra(5:2) delimited by size into wOrax
     display wOrax at line lin-bot column 67
-            with background-color HeBoxBack foreground-color HeBoxFore highlight
+            with background-color Cn-BoxBack foreground-color Cn-BoxFore highlight
     *> loop to diaplay time until a key is pressed
     perform forever
          accept omitted with auto timeout 1 end-accept
@@ -418,37 +401,37 @@ LoopMain.
                accept wOra from time
                string wOra(1:2) ':' wOra(3:2) ':' wOra(5:2) delimited by size into wOrax
                display wOrax at line lin-bot column 67
-                       with background-color HeBoxBack foreground-color HeBoxFore highlight
+                       with background-color Cn-BoxBack foreground-color Cn-BoxFore highlight
          else
                exit perform
          end-if
     end-perform
 
    EVALUATE TRUE
-    *> *************************************************************
-    *> CURSOR DOWN (= SCROLL ROWS UP)
-    *> *************************************************************
-     WHEN wKeyPressed = K-DOWN
-          if i-ini <= 17
-            compute i-ini = i-ini + 1
-            perform DisplayTable   thru DisplayTableEx
-          end-if
-    *> *************************************************************
-    *> CURSOR UP  (= SCROLL ROWS DOWN)
-    *> *************************************************************
-     WHEN wKeyPressed = K-UP
-          if i-ini > 0
-            compute i-ini = i-ini - 1
-            perform DisplayTable   thru DisplayTableEx
-          end-if
+      *> *************************************************************
+      *> CURSOR DOWN (= SCROLL ROWS UP)
+      *> *************************************************************
+       WHEN wKeyPressed = K-DOWN
+            if i-ini <= 17
+              compute i-ini = i-ini + 1
+              perform DisplayTable   thru DisplayTableEx
+            end-if
+      *> *************************************************************
+      *> CURSOR UP  (= SCROLL ROWS DOWN)
+      *> *************************************************************
+       WHEN wKeyPressed = K-UP
+            if i-ini > 0
+              compute i-ini = i-ini - 1
+              perform DisplayTable   thru DisplayTableEx
+            end-if
 
-    *> *************************************************************
-    *>
-    *> *************************************************************
-     WHEN wKeyPressed = K-ENTER OR K-ESCAPE OR K-PAGEDOWN OR K-PAGEUP
-          go end-of-program
+      *> *************************************************************
+      *>
+      *> *************************************************************
+       WHEN wKeyPressed = K-ENTER OR K-ESCAPE OR K-PAGEDOWN OR K-PAGEUP
+            go end-of-program
 
-     WHEN other CONTINUE
+       WHEN other CONTINUE
 
    END-EVALUATE
 
@@ -458,16 +441,11 @@ end-of-program.
 
   *> reset (reshow) the cursor
   move wVisibilityOld to wVisibilityNew
-  *> move 2 to wVisibilityNew
   call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call.
 
-   *> restore the screen as it was before we display the help message
-   *> call static 'scr_restore' using by reference szScreenName returning iScrOk end-call
-   *> accept omitted
+  MOVE wKeyPressed to W-KEY
 
-   MOVE wKeyPressed to W-KEY
-
-   GOBACK.
+  GOBACK.
 
 
 *> *************************************************************
@@ -481,16 +459,16 @@ DisplayTable.
 
            WHEN "M"
            display WS-TABLE-TEXT-LINE(i + i-ini) (06:72) at line lin-table column col1
-                   with background-color HeBack foreground-color YELLOW highlight
+                   with background-color Cn-Back foreground-color YELLOW highlight
            WHEN "W"
            display WS-TABLE-TEXT-LINE(i + i-ini) (06:72) at line lin-table column col1
-                   with background-color HeBack foreground-color BLUE highlight
+                   with background-color Cn-Back foreground-color BLUE highlight
            WHEN "D"
            display WS-TABLE-TEXT-LINE(i + i-ini) (06:72) at line lin-table column col1
-                   with background-color HeBack foreground-color WHITE highlight
+                   with background-color Cn-Back foreground-color WHITE highlight
            WHEN OTHER
            display WS-TABLE-TEXT-LINE(i + i-ini) (06:72) at line lin-table column col1
-                   with background-color HeBack foreground-color HeFore
+                   with background-color Cn-Back foreground-color Cn-Fore
 
            END-EVALUATE
    end-perform .
@@ -499,29 +477,28 @@ DisplayTableEx. EXIT.
 InitialSettings.
    compute box-r1 = lin-top - 1       compute box-c1 = col0
    compute box-r2 = lin-top + t1-max  compute box-c2 = col0 + 72 + 1
-   move HeBoxBack    to Box-bco
-   move HeBoxFore    to Box-fco
-   move HeBoxShadow  to Box-shadow
+   move Cn-BoxBack    to Box-bco
+   move Cn-BoxFore    to Box-fco
+   move Cn-BoxShadow  to Box-shadow
    CALL 'GC01BOX' USING BY CONTENT BOX-AREA
 
    compute col1 = col0 + 2 - 1
    compute lin-bot = lin-top + t1-max + 1 - 1
    display ' CurUp/Dn PgUp/Dn Esc/Enter=Exit ' at line lin-bot column 06
-            with background-color HeBoxBack foreground-color HeBoxFore highlight
+            with background-color Cn-BoxBack foreground-color Cn-BoxFore highlight
    display ' '   at line lin-bot column 66
-            with background-color HeBoxBack foreground-color HeBoxFore
+            with background-color Cn-BoxBack foreground-color Cn-BoxFore
    display ' '   at line lin-bot column 75
-            with background-color HeBoxBack foreground-color HeBoxFore
+            with background-color Cn-BoxBack foreground-color Cn-BoxFore
    .
 InitialSettingsEx. EXIT.
-
 
 END PROGRAM GC53CALEVIEW.
 
 
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
-*> Purpose: FIND WICH DAY OF WEEK
+*> Purpose: CONVERT DATE TO DAY OF WEEK
 *> ***********************************************************************************
 IDENTIFICATION DIVISION.
 PROGRAM-ID. GC53DATE2DOW.
@@ -544,22 +521,23 @@ LINKAGE SECTION.
 
 PROCEDURE DIVISION USING INPDATE-RECORD, WMS-DOW.
 
-*> 1010-CONVERT-DATE-TO-DOW.
-     IF INPD-MONTH < 3
-        COMPUTE WMS-MONTH = INPD-MONTH + 12
-        COMPUTE WMS-YEAR  = INPD-YEAR - 1
-     ELSE
-        COMPUTE WMS-MONTH = INPD-MONTH
-        COMPUTE WMS-YEAR  = INPD-YEAR
-     END-IF
-     COMPUTE WMS-SUM  =
-             ( INPD-DAY + 2 * WMS-MONTH + WMS-YEAR
-             + FUNCTION INTEGER (6 * (WMS-MONTH + 1) / 10)
-             + FUNCTION INTEGER ( WMS-YEAR / 4   )
-             - FUNCTION INTEGER ( WMS-YEAR / 100 )
-             + FUNCTION INTEGER ( WMS-YEAR / 400 )
-             + WMS-CSYS )
-     COMPUTE WMS-DOW = FUNCTION MOD (WMS-SUM, 7) + 1
-     GOBACK.
+IF INPD-MONTH < 3
+   COMPUTE WMS-MONTH = INPD-MONTH + 12
+   COMPUTE WMS-YEAR  = INPD-YEAR - 1
+ELSE
+   COMPUTE WMS-MONTH = INPD-MONTH
+   COMPUTE WMS-YEAR  = INPD-YEAR
+END-IF
 
+COMPUTE WMS-SUM  =
+       ( INPD-DAY + 2 * WMS-MONTH + WMS-YEAR
+       + FUNCTION INTEGER (6 * (WMS-MONTH + 1) / 10)
+       + FUNCTION INTEGER ( WMS-YEAR / 4   )
+       - FUNCTION INTEGER ( WMS-YEAR / 100 )
+       + FUNCTION INTEGER ( WMS-YEAR / 400 )
+       + WMS-CSYS )
+
+COMPUTE WMS-DOW = FUNCTION MOD (WMS-SUM, 7) + 1
+
+GOBACK.
 END PROGRAM GC53DATE2DOW.

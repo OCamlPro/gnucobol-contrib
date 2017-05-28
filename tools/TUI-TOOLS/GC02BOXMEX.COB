@@ -28,6 +28,9 @@ WORKING-STORAGE SECTION.
 01  wR   pic 999 value zero.
 01  wC   pic 999 value zero.
 
+01  wVisibilityNew   BINARY-SHORT .
+01  wVisibilityOld   BINARY-SHORT .
+
 copy 'GC01BOX.CPY'.
 copy 'GC09BUTTONS.CPY'.
 
@@ -43,7 +46,7 @@ set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
 set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
 
-*> Display yhe BOX
+*> Display the BOX
 initialize Box-area ALL TO VALUE
 move Bxm-rc     to Box-rc.
 move Bxm-bco    to Box-bco
@@ -51,7 +54,8 @@ move Bxm-fco    to Box-fco
 move Bxm-fcoH   to Box-fcoH
 move Bxm-style  to Box-Style
 move Bxm-custom to Box-custom
-move Bxm-fill   to Box-fill
+*> move Bxm-fill   to Box-fill
+move 'Y'        to Box-fill
 move Bxm-shadow to Box-Shadow
 move Bxm-3D     to Box-3D
 move Bxm-add1c  to Box-add1c
@@ -86,7 +90,7 @@ end-perform.
 DisplayMessageEx.
 
 *> ***********************************************************************************
-*> DISPLAY A BUTTON AT -2 ROWS from LOWER  BOX FRAME
+*> DISPLAY A BUTTON AT -2 ROWS from LOWER BOX border
 *> ***********************************************************************************
 initialize Buttons-area ALL TO VALUE
 move low-value to Bu-tab
@@ -98,11 +102,17 @@ move '0'   to Bu-Arrow
 move '14000000   OK   ' & x'00' to Bu-Ele(01)
 compute Bu-r(1)  = Bxm-r2 - 2
 compute Bu-c(1)  = Bxm-c1 + ((Bxm-c2 - Bxm-c1) / 2 ) - 4
+*> call BUTTONS (it hide cursor, waits for a user input, reset cursor to its previous state)
 call GC09BUTTONS using Buttons-Area
 
-*> hide the cursor (use always a display or an accept at .... before to have a call to "initscr"
-move 0 to wInt
-call static 'curs_set' using by value wInt end-call
+*> *> hide the cursor and save its previous state
+*> *> (use always a display or an accept at .... before to have a call to 'initscr'
+*> move 0 to wVisibilityNew
+*> call static 'curs_set' using by value wVisibilityNew returning wVisibilityOld end-call
+*> accept omitted
+*> *> reset (show) the cursor to its previous state
+*> move wVisibilityOld to wVisibilityNew
+*> call static 'curs_set' using by value wVisibilityNew returning wVisibilityOld end-call
 
 goback.
 

@@ -213,6 +213,26 @@ move 'N' to Bxm-3D
 move 'D' to Bxm-Style
 call GC02BOXMEX using BOXMEX-AREA.
 
+
+*> DISPLAY A FLAG OF ITALY
+     move '009036014049' to Box-rc
+     move black to Box-bco
+     move 'S' to Box-style
+     call  GC01BOX using BOX-AREA
+     display '    ' at 010037 with foreground-color white background-color Green end-display
+     display '    ' at 011037 with foreground-color white background-color Green end-display
+     display '    ' at 012037 with foreground-color white background-color Green end-display
+     display '    ' at 013037 with foreground-color white background-color Green end-display
+     display '    ' at 010041 with blink foreground-color white background-color white end-display
+     display '    ' at 011041 with blink foreground-color white background-color white end-display
+     display '    ' at 012041 with blink foreground-color white background-color white end-display
+     display '    ' at 013041 with blink foreground-color white background-color white end-display
+     display '    ' at 010045 with blink foreground-color white background-color red   end-display
+     display '    ' at 011045 with blink foreground-color white background-color red   end-display
+     display '    ' at 012045 with blink foreground-color white background-color red   end-display
+     display '    ' at 013045 with blink foreground-color white background-color red   end-display
+   ACCEPT OMITTED.
+
 goback.
 
 End Program GC02BOXMEXDEMO.

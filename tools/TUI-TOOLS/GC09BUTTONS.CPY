@@ -76,7 +76,7 @@
         05 Bu-Arrow-Chars.
            07 Bu-Arrow-Char1     pic x(01) value '>'.
            07 Bu-Arrow-Char2     pic x(01) value '<'.
-        05 Bu-Click              pic x(01) value 'Y'.
+        05 Bu-Click              pic x(01) value 'N'.
         05 Bu-Beep               pic x(01) value 'N'.
         *> colors for Normal button (non active)
         05 Bu-bcoN           pic 9(01) value green.  *> default backcolor for "normal" button
