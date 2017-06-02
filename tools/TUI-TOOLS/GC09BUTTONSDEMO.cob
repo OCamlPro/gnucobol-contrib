@@ -43,36 +43,35 @@ COPY 'GC98KEYCODE.CPY'.
 *>           P R O C E D U R E   D I V I S I O N
 *> **************************************************************
 PROCEDURE DIVISION.
-*> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
-set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
-set environment 'COB_SCREEN_ESC'        TO 'Y'.
+    *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
+    set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
+    set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
-display wDummy at 0101 with blank screen end-display
+    display wDummy at 0101 with blank screen end-display
 
 
-*> display a background
-move blue     to Box-bco   set Box-fco to white
-move '002002' to Box-r1c1  move '024079' to Box-r2c2
-move 'D'      to Box-style move 'N'      to Box-3D
-call GC01BOX using BOX-AREA
-move 2 to Wr
-*> perform varying i from 1 by 1 until i = 22
-  *> add 1 to Wr
-*> DISPLAY 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-        *> AT line wr col 03 with foreground-color white background-color blue
-*> end-perform
+    *> display a big box as background
+    move blue     to Box-bco   set Box-fco to white
+    move '001001' to Box-r1c1  move '025080' to Box-r2c2
+    move 'D'      to Box-style move 'N'      to Box-3D
+    call GC01BOX using BOX-AREA
+    move 2 to Wr
+    display ' GnuCOBOL TUI TOOL to display buttons on screen. '
+          at 2203 with foreground-color white background-color blue
+    display ' See the GC09BUTTONS at work.                      '
+          at 2303 with foreground-color white background-color blue
 
 *> *********************************************************************************
 *> DISPLAY BUTTONS NUMBER 1
 *> *********************************************************************************
+    display ' 4 Vertical buttons '
+          at 2403 with foreground-color white background-color blue
 *> DISPLAY A BOX AS BACKGROUND OF BUTTONS
-set  Box-bco  to white
-set  Box-fco  to white
-move '006008' to Box-r1c1
-move '015026' to Box-r2c2
-move 'S'      to Box-style
-move 'N'      to Box-3D
-move "E" to Box-3D Move "N" to Box-shadow
+set  Box-bco   Box-fco to white
+move '006008015026' to Box-rc
+move 'S'            to Box-style
+move 'N'            to Box-3D Box-shadow
+move "E"            to Box-3D
 call GC01BOX using BOX-AREA
 *> DISPLAY BUTTONS
 initialize Buttons-area ALL TO VALUE
@@ -86,16 +85,17 @@ Move ' 6013011    Exit     ' & x'00' to Bu-Ele(04)
 call GC09BUTTONS using BUTTONS-AREA
 
 
-STRING " Bu-Selected: " Bu-Selected into wSTRING.
-DISPLAY wSTRING AT 021004 with foreground-color white background-color green.
-STRING " Bu-Key:      " Bu-Key   into wSTRING.
-DISPLAY wSTRING AT 022004 with foreground-color white background-color green.
-*> accept omitted
+STRING " Bu-Selected ......: " Bu-Selected into wSTRING.
+DISPLAY wSTRING AT 002004 with foreground-color white background-color blue.
+STRING " Bu-Key code ......: " Bu-Key      into wSTRING.
+DISPLAY wSTRING AT 003004 with foreground-color white background-color blue.
 call static "getch" returning Key-Pressed end-call.
 
 *> *********************************************************************************
 *> DISPLAY BUTTONS NUMBER 2
 *> *********************************************************************************
+    display ' 6 Vertical buttons other colors and active ''button marker'' '
+          at 2403 with foreground-color white background-color blue
 set  Box-bco  to white
 set  Box-fco  to white
 move '004031' to Box-r1c1
@@ -123,21 +123,22 @@ Move ' 6016036      ?      ' & x'00' to Bu-Ele(06)
 call GC09BUTTONS using BUTTONS-AREA
 
 move space to wString
-STRING " Bu-Selected: " Bu-Selected into wSTRING.
-DISPLAY wSTRING AT 021004 with foreground-color white background-color green highlight.
-STRING " Bu-Key:      " Bu-Key   into wSTRING.
-DISPLAY wSTRING AT 022004 with foreground-color white background-color green highlight.
+STRING " Bu-Selected ......: " Bu-Selected into wSTRING.
+DISPLAY wSTRING AT 002004 with foreground-color white background-color blue.
+STRING " Bu-Key code ......: " Bu-Key      into wSTRING.
+DISPLAY wSTRING AT 003004 with foreground-color white background-color blue.
+call static "getch" returning Key-Pressed end-call.
 
 *> *********************************************************************************
 *> DISPLAY BUTTONS NUMBER 3
 *> *********************************************************************************
+    display ' 3 vetical buttons other colors and ''='' as ''button marker'' '
+          at 2403 with foreground-color white background-color blue
 initialize Box-area ALL TO VALUE
-set  Box-bco  to white
-set  Box-fco  to white
-move '007058' to Box-r1c1
-move '016076' to Box-r2c2
-move 'S'      to Box-style
-move "R" to Box-3D
+set  Box-bco  Box-fco to white
+move '007058016076' to Box-rc
+move 'S'            to Box-style
+move "R"            to Box-3D
 call GC01BOX using BOX-AREA
 
 initialize Buttons-area ALL TO VALUE
@@ -155,10 +156,11 @@ Move ' 6013061    Enter    ' & x'00' to Bu-Ele(03)
 call GC09BUTTONS using BUTTONS-AREA
 
 move space to wString
-STRING " Bu-Selected: " Bu-Selected into wSTRING.
-DISPLAY wSTRING AT 022004 with foreground-color white background-color green highlight.
-STRING " Bu-Key:      " Bu-Key   into wSTRING.
-DISPLAY wSTRING AT 023004 with foreground-color white background-color green highlight.
+STRING " Bu-Selected ......: " Bu-Selected into wSTRING.
+DISPLAY wSTRING AT 002004 with foreground-color white background-color blue.
+STRING " Bu-Key code ......: " Bu-Key      into wSTRING.
+DISPLAY wSTRING AT 003004 with foreground-color white background-color blue.
+call static "getch" returning Key-Pressed end-call.
 
 
 *> ******************************************************************************+
@@ -169,14 +171,14 @@ display wDummy at 0101 with blank screen end-display
 *> *********************************************************************************
 *> DISPLAY BUTTONS NUMBER 4
 *> *********************************************************************************
+    display ' 3 horizontal buttons other colors and ''(   )'' as ''button marker'' '
+          at 2403 with foreground-color white background-color blue
 *> DISPLAY A BOX
-set  Box-bco  to white
-set  Box-fco  to white
+set  Box-bco  Box-fco to white
 move '013017017065' to Box-rc
 move 'S'      to Box-style
-move 'N'      to Box-3D
+move 'N'      to Box-3D Box-shadow
 move "E" to Box-3D
-Move "N" to Box-shadow
 Move 'Y' to Box-tit
 Move ' Buttons ' & x'00' to Box-titDes
 call GC01BOX using BOX-AREA
@@ -198,11 +200,10 @@ Move ' 6015050  Inspect    ' & x'00' to Bu-Ele(03)
 call GC09BUTTONS using BUTTONS-AREA
 
 move space to wString
-STRING " Bu-Selected: " Bu-Selected into wSTRING.
-DISPLAY wSTRING AT 020004 with foreground-color white background-color green.
-STRING " Bu-Key:      " Bu-Key   into wSTRING.
-DISPLAY wSTRING AT 021004 with foreground-color white background-color green.
-*> accept omitted
+STRING " Bu-Selected ......: " Bu-Selected into wSTRING.
+DISPLAY wSTRING AT 002004 with foreground-color white background-color blue.
+STRING " Bu-Key code ......: " Bu-Key      into wSTRING.
+DISPLAY wSTRING AT 003004 with foreground-color white background-color blue.
 call static "getch" returning Key-Pressed end-call.
 
 *> *********************************************************************************
@@ -251,16 +252,10 @@ move blue     to Box-bco   set Box-fco to white
 move '002002' to Box-r1c1  move '024079' to Box-r2c2
 move 'D'      to Box-style move 'N'      to Box-3D
 call GC01BOX using BOX-AREA
-*> move 2 to Wr
-*> perform varying i from 1 by 1 until i = 22
-  *> add 1 to Wr
-*> DISPLAY 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-        *> AT line wr col 03 with foreground-color white background-color blue
-*> end-perform
 
 DISPLAY '   Buttons with ''click effect''     '
         AT line 04 col 06 with foreground-color white background-color blue
-
+*> save the background
 move Z'SAVESCREEN.SCR' to szScreenName
 call static 'scr_dump' using by reference szScreenName returning iScrOk end-call
 
@@ -289,11 +284,18 @@ Move ' 4013036   Ignore    ' & x'00' to Bu-Ele(03)
 Move ' 6015036    Exit     ' & x'00' to Bu-Ele(04)
 call GC09BUTTONS using BUTTONS-AREA
 
+move space to wString
+STRING " Bu-Selected: " Bu-Selected into wSTRING.
+DISPLAY wSTRING AT 020004 with foreground-color white background-color green.
+STRING " Bu-Key:      " Bu-Key   into wSTRING.
+DISPLAY wSTRING AT 021004 with foreground-color white background-color green.
+call static "getch" returning Key-Pressed end-call.
 
+*> restore the background
 call static 'scr_restore' using by reference szScreenName returning iScrOk end-call
 
 *> *********************************************************************************
-*> DISPLAY BUTTONS NUMBER 2
+*> DISPLAY BUTTONS NUMBER 7
 *> *********************************************************************************
 set  Box-bco  to white
 set  Box-fco  to white
@@ -329,7 +331,7 @@ CALL 'CBL_DELETE_FILE' USING szScreenName
 *> accept omitted.
 
 *> *********************************************************************************
-*> DISPLAY BUTTONS NUMBER 4
+*> DISPLAY BUTTONS NUMBER 8
 *> *********************************************************************************
 *> DISPLAY A BOX
 set  Box-bco  to white
