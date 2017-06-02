@@ -123,14 +123,9 @@ move 0 to wVisibilityNew
 call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
 
 call static "getch" returning Key-Pressed end-call
-*> accept wDummy at 2580 with auto background-color red foreground-color white end-accept
+
 
    EVALUATE TRUE
-
-   *> when wCRT-STATUS = K-RIGHT
-     *> or wCRT-STATUS = K-DOWN
-     *> or wCRT-STATUS = K-TAB
-     *> or wCRT-STATUS = K-PAGEDOWN
 
    when Key-Pressed = Key-CursRight
      or Key-Pressed = Key-CursDn
@@ -157,14 +152,9 @@ call static "getch" returning Key-Pressed end-call
       Move Bu-fcoSH to fcoH
       perform Display-Button thru Display-ButtonEx
 
-   *> when wCRT-STATUS = K-LEFT
-     *> or wCRT-STATUS = K-UP
-     *> or wCRT-STATUS = K-BACKTAB
-     *> or wCRT-STATUS = K-PAGEUP
-
    when Key-Pressed = Key-CursLeft
      or Key-Pressed = Key-CursUp
-     *> or Key-Pressed = Key-Tab
+     *> or Key-Pressed = Key-BackTab
      or Key-Pressed = Key-PgUp
 
       move Bu-Selected to i
@@ -199,7 +189,6 @@ call static "getch" returning Key-Pressed end-call
       go to END-PROGRAM
    end-if
 
-   *> IF wCRT-STATUS = K-ESCAPE move K-ESCAPE to Bu-Key go END-PROGRAM end-if
    IF Key-Pressed = Key-Escape
       move Key-Escape to Bu-Key
       go to END-PROGRAM
