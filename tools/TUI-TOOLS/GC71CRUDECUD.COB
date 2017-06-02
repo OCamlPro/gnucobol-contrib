@@ -1671,14 +1671,15 @@ DisplayDateMessage.
 DisplayDateMessageEx. exit.
 
 DisplayErrorMessage.
-   perform ScreenSave thru ScreenSaveEx
+   *> perform ScreenSave thru ScreenSaveEx
+   move 'Y' to Bxm-click
    move '010020019051' to Bxm-rc
    move red to Bxm-bco Bxm-bcoM move white to Bxm-fco Bxm-fcoM
    move 'Y' to Bxm-fcoH
    move 'S' to Bxm-style
    call GC02BOXMEX using BOXMEX-AREA
-   initialize Bxm-tabmex all to value
-   perform ScreenRestore thru ScreenRestoreEx .
+   initialize Bxm-tabmex all to value.
+   *> perform ScreenRestore thru ScreenRestoreEx .
 DisplayErrorMessageEx. exit.
 
 Help.
@@ -1687,7 +1688,7 @@ Help.
 HelpEx. exit.
 
 ScreenSave.
-   move Z'BOXMEX.SCR' to wScreenName
+   move Z'SCRDUMP.SCR' to wScreenName
    call static 'scr_dump' using by reference wScreenName returning wiScrOk end-call.
 ScreenSaveEx. Exit.
 
