@@ -8,16 +8,22 @@
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
 *> Version:    1.0 2016.06.15
 *> Changelog:  1.0 first release.
+*>             1.1 added OkButton
 *> ***********************************************************************************
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
 *> wait      Y= display the message and wait for a user keypress
-*>           N= diisplay the message and returns to caller
-*> savescr   Y= program saves the screen before displaying the message
-*>              and restore it after displayed the message
-*>           N= program dispalys the message and return to caller
-*>              screen remains modified from message in the box
+*>           N= diisplay the message and returns to caller without wait for a keypress by the user
+*> savescr   Y= program saves the screen before displaying the message and restore it
+*>              when user type enter to return to the application
+*>              If savescr = Y and wait = Y, the user can move the boxmessage
+*>              on screen using cursor keys
+*>           N= program does not save  / restore the screen . Is the caller that have
+*>              to save the screen before calling G09BOXMEX and restoe the screen when return
 *>           Note: setting wait=N & savescr=N you will have a permanent message on screen
+*> OkButton  Y= display a single OK button at row = r2 -2 . N = not display the single button.
+*> click     Y= when hit enter on the single button you will have a "click effect"
+*>           move button 1 char to right, black/white color , no shadow
 *> tabmex    table of 1 to 20 strings to be displayed in the box
 *>           firts element will be displayed 1 row under the box frame
 *>           and 1 column right of the box frame. see following sample:
@@ -63,6 +69,8 @@
       05 Bxm-fcoMH      pic X(01) value 'Y'.      *> Hilight Foreground  (message text)
       05 Bxm-wait       pic x(01) value 'Y'.
       05 Bxm-savescr    pic x(01) value 'Y'.
+      05 Bxm-OkButton   pic x(01) value 'Y'.
+      05 Bxm-Click      pic x(01) value 'N'.
       05 Bxm-tit     pic x(01) value 'N'.         *> Y = display a title at top of the box
       05 Bxm-titBco  pic 9(01) value white.       *> back color of titlebox
       05 Bxm-titFco  pic 9(01) value white.       *> fore color of titlebox
