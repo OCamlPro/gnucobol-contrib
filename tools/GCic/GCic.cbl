@@ -30,34 +30,15 @@
       *>          ridden at execution time using the GCXREF_LINES_PORT
       *>          environment variable.
       *>
-GC0712 >>DEFINE CONSTANT LINEDRAW   AS 2
-GC0712 >>DEFINE CONSTANT OS         AS 'UNIX'
-GC0712 >>DEFINE CONSTANT SELCHAR    AS '>'
-GC1213 >>DEFINE CONSTANT LPP        AS 50   *> LANDSCAPE (GCXREF_LINES)
-GC1213 >>DEFINE CONSTANT LPPP       AS 60   *> PORTRAIT  (GCXREF_LINES_PORT)
-      *> --------------------------------------------------------------
-      *> Now set these switches to establish initial (default) settings
-      *> for the various on-screen options.  Set them to a value of
-      *> 0 if they are to be 'OFF' and 1 if they are to be 'ON'
-GC1213*> (for F5, 1=ON (Landscape), 2=ON (Portrait))
+      *>*******************************************************************
+      *>**  Change the settings in the copy book const-set-1.cpy to reflect
+      *>    your system set up. This notes are also present there.
+      *>    This is to reduce the need to amend these every time a update
+      *>    for GCic occurs.
+      *>*******************************************************************
       *>
-GC0712 >>DEFINE CONSTANT F1  AS 0 *> Assume WITH DEBUGGING MODE
-GC0712 >>DEFINE CONSTANT F2  AS 0 *> Procedure+Statement Trace
-GC0712 >>DEFINE CONSTANT F3  AS 0 *> Make A Library (DLL)
-GC0712 >>DEFINE CONSTANT F4  AS 0 *> Execute If Compilation OK
-GC1213 >>DEFINE CONSTANT F5  AS 0 *> Listings
-GC0712 >>DEFINE CONSTANT F6  AS 1 *> "FUNCTION" Is Optional
-GC0712 >>DEFINE CONSTANT F7  AS 1 *> Enable All Warnings
-GC0712 >>DEFINE CONSTANT F8  AS 1 *> Source Is Free-Format
-GC0712 >>DEFINE CONSTANT F9  AS 1 *> No COMP/BINARY Truncation
-GC0712 >>DEFINE CONSTANT F12 AS 4 *> Default config file (1-7):
-      *>                             1 = BS2000
-      *>                             2 = COBOL85
-      *>                             3 = COBOL2002
-      *>                             4 = DEFAULT
-      *>                             5 = IBM
-      *>                             6 = MF (i.e. Microfocus)
-      *>                             7 = MVS
+       copy "const-set-1.cpy".
+      *>
       *> --------------------------------------------------------------
       *> END CONFIGURATION SETTINGS
       /
@@ -102,28 +83,28 @@ GC0712 >>DEFINE CONSTANT F12 AS 4 *> Default config file (1-7):
       *>  DATE  CHANGE DESCRIPTION                                   **
       *> ====== ==================================================== **
       *> GC0609 Don't display compiler messages file if compilation  **
-      *>        Is successful.  Also don't display messages if the   **
+      *>  GCL   Is successful.  Also don't display messages if the   **
       *>        output file is busy (just put a message on the       **
       *>        screen, leave the OC screen up & let the user fix    **
       *>        the problem & resubmit.                              **
       *> GC0709 When 'EXECUTE' is selected, a 'FILE BUSY' error will **
-      *>        still cause the (old) executable to be launched.     **
+      *>  CLC   still cause the (old) executable to be launched.     **
       *>        Also, the 'EXTRA SWITCHES' field is being ignored.   **
       *>        Changed the title bar to lowlighted reverse video &  **
       *>        the message area to highlighted reverse-video.       **
       *> GC0809 Add a SPACE in front of command-line args when       **
-      *>        executing users program.  Add a SPACE after the      **
+      *>  GCL   executing users program.  Add a SPACE after the      **
       *>        -ftraceall switch when building cobc command.        **
       *> GC0909 Convert to work on Cygwin/Linux as well as MinGW     **
       *> GC0310 Virtualized the key codes for S-F1 thru S-F7 as they **
-      *>        differ depending upon whether PDCurses or NCurses is **
+      *>  GCL   differ depending upon whether PDCurses or NCurses is **
       *>        being used.                                          **
       *> GC0410 Introduced the cross-reference and source listing    **
-      *>        features.  Also fixed a bug in EXTRA switch proces-  **
+      *>  GCL   features.  Also fixed a bug in EXTRA switch proces-  **
       *>        sing where garbage will result if more than the      **
       *>        EXTRA switch is specified.                           **
       *> GC1010 Corrected several problems reported by Vince Coen:   **
-      *>        1) Listing/Xref wouldn't work if '-I' additional     **
+      *>  GCL   1) Listing/Xref wouldn't work if '-I' additional     **
       *>           cobc switch specified.                            **
       *>        2) Programs coded with lowercase reserved words did  **
       *>           not get parsed properly when generating listing   **
@@ -141,7 +122,7 @@ GC0712 >>DEFINE CONSTANT F12 AS 4 *> Default config file (1-7):
       *>        if specified.                                        **
       *> GC0711 Tailored for 29APR2011 version of GNU COBOL 2.0      **
       *> GC0712 Replaced all switches with configuration settings;   **
-      *>        Tailored for 11FEB2012 version of GNU COBOL 2.0;     **
+      *>  GCL   Tailored for 11FEB2012 version of GNU COBOL 2.0;     **
       *>        Reformatted screen layout to fit a 24x80 screen      **
       *>        rather than a 25x81 screen and to accommodate shell  **
       *>        environments having only F1-F12 (like 'terminal' in  **
@@ -152,16 +133,21 @@ GC0712 >>DEFINE CONSTANT F12 AS 4 *> Default config file (1-7):
       *>        directives EJECT,SKIP1,SKIP2,SKIP3 (any of these in  **
       *>        copybooks will be ignored)                           **
       *> GC0313 Expand the source code record from 80 chars to 256   **
-      *>        to facilitate looking for "LINKAGE SECTION" in a     **
+      *>  GCL   to facilitate looking for "LINKAGE SECTION" in a     **
       *>        free-format file.                                    **
       *> GC1113 Edited to support the change of "OpenCOBOL" to "GNU  **
-      *>        COBOL"                                               **
+      *>  GLC   COBOL"                                               **
       *> GC1213 Updated for 23NOV2013 version of GNU COBOL 2.1       **
       *> GC0114 Introduce a "Press ENTER to Close" action after run- **
-      *>        ning the compiled program in the compiler window (F4)**
+      *>  GCL   ning the compiled program in the compiler window (F4)**
       *> GC0617 Remove the Blinking in meny screen as uncomfortable  **
-      *>        Update version printed to 2.2 30JUN2017.             **
+      *>  VBC   Update version printed to 2.2 30JUN2017.             **
+      *>        Move the system constant settings to a copy file     **
+      *>        const-set-1.cpy  in case GCic is updated.            **
+      *>        Added  SET ENVIRONMENT "COB_EXIT_WAIT" TO "0" to     **
+      *>        100-Initialization section.                          **
       *>***************************************************************
+      *>
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
        REPOSITORY.
@@ -711,6 +697,7 @@ GC0609     END-PERFORM
       *>***************************************************************
            SET ENVIRONMENT 'COB_SCREEN_EXCEPTIONS' TO 'Y'
            SET ENVIRONMENT 'COB_SCREEN_ESC'        TO 'Y'
+GC0617     SET ENVIRONMENT "COB_EXIT_WAIT"         TO "0".
       *>***************************************************************
       *> Get GCic Compilation Date/Time                              **
       *>***************************************************************
