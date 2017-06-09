@@ -1,4 +1,4 @@
-      >>SOURCE FORMAT IS FIXED 
+      >>SOURCE FORMAT IS FIXED
       *> CONFIGURATION SETTINGS: Set these switches before compiling:
       *>
       *> LINEDRAW Set to:
@@ -30,11 +30,11 @@
       *>          ridden at execution time using the GCXREF_LINES_PORT
       *>          environment variable.
       *>
-GC0712 >>DEFINE CONSTANT LINEDRAW   AS 1
-GC0712 >>DEFINE CONSTANT OS         AS 'MINGW'
+GC0712 >>DEFINE CONSTANT LINEDRAW   AS 2
+GC0712 >>DEFINE CONSTANT OS         AS 'UNIX'
 GC0712 >>DEFINE CONSTANT SELCHAR    AS '>'
-GC1213 >>DEFINE CONSTANT LPP        AS 60   *> LANDSCAPE (GCXREF_LINES)
-GC1213 >>DEFINE CONSTANT LPPP       AS 54   *> PORTRAIT  (GCXREF_LINES_PORT)
+GC1213 >>DEFINE CONSTANT LPP        AS 50   *> LANDSCAPE (GCXREF_LINES)
+GC1213 >>DEFINE CONSTANT LPPP       AS 60   *> PORTRAIT  (GCXREF_LINES_PORT)
       *> --------------------------------------------------------------
       *> Now set these switches to establish initial (default) settings
       *> for the various on-screen options.  Set them to a value of
@@ -48,7 +48,7 @@ GC0712 >>DEFINE CONSTANT F4  AS 0 *> Execute If Compilation OK
 GC1213 >>DEFINE CONSTANT F5  AS 0 *> Listings
 GC0712 >>DEFINE CONSTANT F6  AS 1 *> "FUNCTION" Is Optional
 GC0712 >>DEFINE CONSTANT F7  AS 1 *> Enable All Warnings
-GC0712 >>DEFINE CONSTANT F8  AS 0 *> Source Is Free-Format
+GC0712 >>DEFINE CONSTANT F8  AS 1 *> Source Is Free-Format
 GC0712 >>DEFINE CONSTANT F9  AS 1 *> No COMP/BINARY Truncation
 GC0712 >>DEFINE CONSTANT F12 AS 4 *> Default config file (1-7):
       *>                             1 = BS2000
@@ -94,7 +94,7 @@ GC0712 >>DEFINE CONSTANT F12 AS 4 *> Default config file (1-7):
       *>***************************************************************
       *>                                                             **
       *> AUTHOR:       GARY L. CUTLER                                **
-      *>               Copyright (C) 2009-2014, Gary L. Cutler, GPL  **
+      *>               Copyright (C) 2009-2017, Gary L. Cutler, GPL  **
       *>                                                             **
       *> DATE-WRITTEN: June 14, 2009                                 **
       *>                                                             **
@@ -159,6 +159,8 @@ GC0712 >>DEFINE CONSTANT F12 AS 4 *> Default config file (1-7):
       *> GC1213 Updated for 23NOV2013 version of GNU COBOL 2.1       **
       *> GC0114 Introduce a "Press ENTER to Close" action after run- **
       *>        ning the compiled program in the compiler window (F4)**
+      *> GC0617 Remove the Blinking in meny screen as uncomfortable  **
+      *>        Update version printed to 2.2 30JUN2017.             **
       *>***************************************************************
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
@@ -394,7 +396,7 @@ GC0712        88 WS-RS-Source-Rec-Ignored-BOOL   VALUE ' '.
    21 *>| ____________________________________________________________________________ |
    22 *>| ____________________________________________________________________________ |
    23 *>+------------------------------------------------------------------------------+
-   24 *> GCic Copyright (C) 2009-2014, Gary L. Cutler, GPL
+   24 *> GCic Copyright (C) 2009-2017, Gary L. Cutler, GPL
       *>================================================================================
       *>12345678901234567890123456789012345678901234567890123456789012345678901234567890
       *>         1         2         3         4         5         6         7         8
@@ -442,7 +444,7 @@ GC0712        88 WS-RS-Source-Rec-Ignored-BOOL   VALUE ' '.
        >>END-IF
 
        01 S-Blank-SCR LINE 1 COLUMN 1 BLANK SCREEN.
-       
+
        01 S-Switches-SCR BACKGROUND-COLOR COB-COLOR-BLACK
                          FOREGROUND-COLOR COB-COLOR-WHITE AUTO.
       *>
@@ -530,9 +532,9 @@ GC0712    03 BACKGROUND-COLOR COB-COLOR-BLUE
              FOREGROUND-COLOR COB-COLOR-WHITE HIGHLIGHT.
 GC0410       05 LINE 01 COL 01 VALUE ' GCic ('.
 GC0410       05         COL 08 PIC X(16) FROM WS-OC-Compile-DT.
-GC1213       05         COL 24 VALUE ') GNU COBOL 2.1 23NOV2013 ' &
+GC1213       05         COL 24 VALUE ') GNU COBOL 2.2 30JUN2017 ' &
 GC0410                               'Interactive Compilation        '.
-GC0712    03 BACKGROUND-COLOR COB-COLOR-RED BLINK
+GC0617    03 BACKGROUND-COLOR COB-COLOR-RED
 GC0712       FOREGROUND-COLOR COB-COLOR-WHITE HIGHLIGHT.
 GC0712       05 LINE 24 COL 01 PIC X(80) FROM WS-Output-Msg-TXT.
       *>
@@ -807,10 +809,10 @@ GC0712     END-IF
 GC0909     MOVE ALL LD-Horiz-Line TO WS-Horizontal-Line-TXT.
 GC0410     MOVE CONCATENATE(' GCic for '
 GC0410                      TRIM(WS-OS-Type-TXT(WS-OS-Type-CD),Trailing)
-GC1213                      ' Copyright (C) 2009-2014, Gary L. '
+GC1213                      ' Copyright (C) 2009-2017, Gary L. '
 GC0410                      'Cutler, GPL')
 GC0410       TO WS-Output-Msg-TXT.
-GC0909     .
+GC0909
       /
       *>***************************************************************
       *> Show the user the current switch settings and allow them to **
@@ -2432,10 +2434,10 @@ GC1213     MOVE 'N' TO WS-Suppress-FF-CHR
 GC1213     MOVE SPACES TO WS-Copyright-TXT
 GC1213     STRING 'GCic for '                  DELIMITED SIZE
 GC1213            WS-OS-Type-TXT(L-OS-Type-CD) DELIMITED SPACE
-GC1213            ' Copyright (C) 2009-2014, Gary L. Cutler, GPL'
+GC1213            ' Copyright (C) 2009-2017, Gary L. Cutler, GPL'
 GC1213                                         DELIMITED SIZE
 GC1213            INTO WS-Copyright-TXT
-GC1213     MOVE 'GNU COBOL 2.1 23NOV2013' TO WS-Version-TXT
+GC1213     MOVE 'GNU COBOL 2.2 30JUN2017' TO WS-Version-TXT
            MOVE TRIM(L-Src-Fn-TXT,Leading) TO L-Src-Fn-TXT
 GC1010     PERFORM VARYING WS-I-SUB FROM LENGTH(L-Src-Fn-TXT) BY -1 *> Locate last directory delimiter character so that the filename can be extracted
 GC1010               UNTIL L-Src-Fn-TXT(WS-I-SUB:1) = '/' OR '\'
