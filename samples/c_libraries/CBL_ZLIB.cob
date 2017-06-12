@@ -181,10 +181,10 @@
     >>D        perform output-error
     >>D    end-call
 
-           call 'uncompress'  using ZLIB-COMPRESSED-DATA,
-                                    COMPRESSED-DATA-SIZE,
-                                    ZLIB-DECOMPRESSED-DATA,
-                                    DECOMPRESSED-DATA-SIZE
+           call 'uncompress'  using ZLIB-DECOMPRESSED-DATA,
+                                    DECOMPRESSED-DATA-SIZE,
+                                    ZLIB-COMPRESSED-DATA,
+                                    by value DECOMPRESSED-DATA-SIZE
              returning ZLIB-RETURN
              on exception
                move 'zlib function "uncompress" not found' to msg
@@ -214,10 +214,10 @@
     >>D        perform output-error
     >>D    end-call
 
-           call 'compress'  using ZLIB-DECOMPRESSED-DATA,
-                                  DECOMPRESSED-DATA-SIZE,
-                                  ZLIB-COMPRESSED-DATA,
-                                  COMPRESSED-DATA-SIZE
+           call 'compress'  using ZLIB-COMPRESSED-DATA,
+                                  COMPRESSED-DATA-SIZE,
+                                  ZLIB-DECOMPRESSED-DATA,
+                                  by value DECOMPRESSED-DATA-SIZE
              returning ZLIB-RETURN
              on exception
                move 'zlib function "compress" not found' to msg
