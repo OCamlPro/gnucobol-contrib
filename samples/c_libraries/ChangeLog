@@ -1,0 +1,8 @@
+
+2017-05-12  Simon 'sf-mensch/human' Sobisch <simonsobisch@gnu.org>
+
+	* CBL_ZLIB.cob: new - wrapper for zlib (currently not working)
+	* sample_ZLIB.cob: new - sample caller for CBL_ZLIB doing:
+	  get and output version number of zlib, reading textstream.bin and
+	  pass it to zlib for uncompress, output to textstream.out
+	* textstream.bin: new - random stream data found in gnucobol.pdf

@@ -1,0 +1,10 @@
+Samples for calling different "native" C libraries.
+
+**zlib** general purpose compression library
+
+* CBL_ZLIB.cob: wrapper for zlib (others than ZLIB-GET-VERSION seem to not work)
+* sample_ZLIB.cob: sample caller for CBL_ZLIB doing
+	* get and output version number of zlib
+	* reading textstream.bin pass it to zlib for uncompress
+	* output result to textstream.out
+* textstream.bin: random stream data found in gnucobol.pdf
