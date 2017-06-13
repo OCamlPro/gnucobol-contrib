@@ -27,7 +27,7 @@
        working-storage section.
 
        77  COMPRESSED-DATA-SIZE    usage BINARY-C-LONG.
-       77  DECOMPRESSED-DATA-SIZE  usage BINARY-C-LONG.
+       77  UNCOMPRESSED-DATA-SIZE  usage BINARY-C-LONG.
 
        77  COMPRESSION-MODE        usage BINARY-LONG.
 
@@ -43,14 +43,14 @@
 
        01  ZLIB-COMPRESSED-DATA    pic x any length.
 
-       01  ZLIB-DECOMPRESSED-DATA  pic x any length.
+       01  ZLIB-UNCOMPRESSED-DATA  pic x any length.
 
        01  DATA-PTR-DATA           pic x(80).
 
       *> ***************************************************************
        procedure division          using ZLIB-PARAMS,
                                          ZLIB-COMPRESSED-DATA,
-                                         ZLIB-DECOMPRESSED-DATA.
+                                         ZLIB-UNCOMPRESSED-DATA.
        main section.
 
            perform COMPRESSED-DATA-validation
@@ -108,10 +108,7 @@
 
            if number-of-call-parameters < 3
              move 'not enough parameters passed' to msg
-             perform output-error
-             perform output-usage
-             set  ZLIB-INTERFACE-INVALID-DATA to true
-             exit program
+             perform output-invalid-data-and-exit
            end-if
 
        *>  Get the length of the parameters
@@ -119,8 +116,30 @@
                 giving COMPRESSED-DATA-SIZE
            end-call
            call 'C$PARAMSIZE' using 3
-                giving DECOMPRESSED-DATA-SIZE
+                giving UNCOMPRESSED-DATA-SIZE
            end-call
+      *>
+           evaluate true
+              when (ZLIB-COMPRESS or ZLIB-COMPRESS-TO-LEVEL)
+               and UNCOMPRESSED-DATA-SIZE = 0
+                move 'no compress of zero length data' to msg
+                perform output-invalid-data-and-exit
+              when ZLIB-UNCOMPRESS
+               and COMPRESSED-DATA-SIZE = 0
+                move 'no uncompress of zero length data' to msg
+                perform output-invalid-data-and-exit
+           end-evaluate
+      *>
+           continue.
+
+      *> ***************************************************************
+
+       output-invalid-data-and-exit section.
+
+           perform output-error
+           perform output-usage
+           set  ZLIB-INTERFACE-INVALID-DATA to true
+           exit program
       *>
            continue.
 
@@ -148,6 +167,10 @@
 
        get-version section.
 
+    >>D    display 'CBL_ZLIB - Debug - Getting version number.'
+    >>D            upon syserr
+    >>D    end-display
+
            call 'zlibVersion'
               returning DATA-PTR
               on exception
@@ -163,9 +186,24 @@
            set  ADDRESS OF  DATA-PTR-DATA to DATA-PTR
            unstring DATA-PTR-DATA
                     delimited by x'00'
-                    into ZLIB-DECOMPRESSED-DATA
+                    into ZLIB-UNCOMPRESSED-DATA
                     count in ZLIB-PROCESSED-DATA-SIZE
            end-unstring
+      *>
+    >>D    display 'CBL_ZLIB - Debug - status: ' ZLIB-RETURN ', '
+    >>D            'Bytes: ' ZLIB-PROCESSED-DATA-SIZE '.' upon syserr
+    >>D    end-display
+    >>D    if ZLIB-PROCESSED-DATA-SIZE not = 0
+    >>D      display 'CBL_ZLIB - Debug - version data: '
+    >>D              upon syserr
+    >>D      end-display
+    >>D      call 'CBL_OC_DUMP' using ZLIB-UNCOMPRESSED-DATA
+    >>D                          (1:ZLIB-PROCESSED-DATA-SIZE)
+    >>D        on exception
+    >>D          move 'CBL_OC_DUMP not available' to msg
+    >>D          perform output-error
+    >>D      end-call
+    >>D    end-if
       *>
            continue.
 
@@ -181,10 +219,10 @@
     >>D        perform output-error
     >>D    end-call
 
-           call 'uncompress'  using ZLIB-DECOMPRESSED-DATA,
-                                    DECOMPRESSED-DATA-SIZE,
+           call 'uncompress'  using ZLIB-UNCOMPRESSED-DATA,
+                                    UNCOMPRESSED-DATA-SIZE,
                                     ZLIB-COMPRESSED-DATA,
-                                    by value DECOMPRESSED-DATA-SIZE
+                                    by value COMPRESSED-DATA-SIZE
              returning ZLIB-RETURN
              on exception
                move 'zlib function "uncompress" not found' to msg
@@ -196,9 +234,22 @@
                exit section
            end-call
       *>
-           if ZLIB-OK
-             move DECOMPRESSED-DATA-SIZE to ZLIB-PROCESSED-DATA-SIZE
-           end-if
+           move UNCOMPRESSED-DATA-SIZE to ZLIB-PROCESSED-DATA-SIZE
+    >>D    display 'CBL_ZLIB - Debug - status: ' ZLIB-RETURN ', '
+    >>D            'Bytes: ' ZLIB-PROCESSED-DATA-SIZE '.' upon syserr
+    >>D    end-display
+    >>D    if (ZLIB-OK or ZLIB-BUF-ERROR) and
+    >>D        ZLIB-PROCESSED-DATA-SIZE not = 0
+    >>D      display 'CBL_ZLIB - Debug - uncompressed data: '
+    >>D              upon syserr
+    >>D      end-display
+    >>D      call 'CBL_OC_DUMP' using ZLIB-UNCOMPRESSED-DATA
+    >>D                          (1:UNCOMPRESSED-DATA-SIZE)
+    >>D        on exception
+    >>D          move 'CBL_OC_DUMP not available' to msg
+    >>D          perform output-error
+    >>D      end-call
+    >>D    end-if
       *>
            continue.
 
@@ -208,7 +259,7 @@
 
     >>D    display 'CBL_ZLIB - Debug - Data to compress:' upon syserr
     >>D    end-display
-    >>D    call 'CBL_OC_DUMP' using ZLIB-DECOMPRESSED-DATA
+    >>D    call 'CBL_OC_DUMP' using ZLIB-UNCOMPRESSED-DATA
     >>D      on exception
     >>D        move 'CBL_OC_DUMP not available' to msg
     >>D        perform output-error
@@ -216,8 +267,8 @@
 
            call 'compress'  using ZLIB-COMPRESSED-DATA,
                                   COMPRESSED-DATA-SIZE,
-                                  ZLIB-DECOMPRESSED-DATA,
-                                  by value DECOMPRESSED-DATA-SIZE
+                                  ZLIB-UNCOMPRESSED-DATA,
+                                  by value UNCOMPRESSED-DATA-SIZE
              returning ZLIB-RETURN
              on exception
                move 'zlib function "compress" not found' to msg
@@ -229,9 +280,22 @@
                exit section
            end-call
       *>
-           if ZLIB-OK
-             move COMPRESSED-DATA-SIZE   to ZLIB-PROCESSED-DATA-SIZE
-           end-if
+           move COMPRESSED-DATA-SIZE to ZLIB-PROCESSED-DATA-SIZE
+    >>D    display 'CBL_ZLIB - Debug - status: ' ZLIB-RETURN ', '
+    >>D            'Bytes: ' ZLIB-PROCESSED-DATA-SIZE '.' upon syserr
+    >>D    end-display
+    >>D    if (ZLIB-OK or ZLIB-BUF-ERROR) and
+    >>D        ZLIB-PROCESSED-DATA-SIZE not = 0
+    >>D      display 'CBL_ZLIB - Debug - compressed data: '
+    >>D              upon syserr
+    >>D      end-display
+    >>D      call 'CBL_OC_DUMP' using ZLIB-COMPRESSED-DATA
+    >>D                          (1:COMPRESSED-DATA-SIZE)
+    >>D        on exception
+    >>D          move 'CBL_OC_DUMP not available' to msg
+    >>D          perform output-error
+    >>D      end-call
+    >>D    end-if
       *>
            continue.
 
@@ -239,18 +303,18 @@
 
        compress2-data section.
 
-    >>D    call 'CBL_OC_DUMP' using ZLIB-DECOMPRESSED-DATA
+    >>D    call 'CBL_OC_DUMP' using ZLIB-UNCOMPRESSED-DATA
     >>D      on exception
     >>D        move 'CBL_OC_DUMP not available' to msg
     >>D        perform output-error
     >>D    end-call
 
            move ZLIB-COMPRESSION-LEVEL to COMPRESSION-MODE
-           call 'compress2' using ZLIB-DECOMPRESSED-DATA,
-                                  DECOMPRESSED-DATA-SIZE,
-                                  ZLIB-COMPRESSED-DATA,
-                                  COMPRESSED-DATA-SIZE
-                                  COMPRESSION-MODE
+           call 'compress2' using ZLIB-COMPRESSED-DATA,
+                                  COMPRESSED-DATA-SIZE,
+                                  ZLIB-UNCOMPRESSED-DATA,
+                                  by value COMPRESSED-DATA-SIZE
+                                  by value COMPRESSION-MODE
              returning ZLIB-RETURN
              on exception
                move 'zlib function "compress2" not found' to msg
@@ -262,9 +326,22 @@
                exit section
            end-call
       *>
-           if ZLIB-OK
-             move COMPRESSED-DATA-SIZE   to ZLIB-PROCESSED-DATA-SIZE
-           end-if
+           move COMPRESSED-DATA-SIZE to ZLIB-PROCESSED-DATA-SIZE
+    >>D    display 'CBL_ZLIB - Debug - status: ' ZLIB-RETURN ', '
+    >>D            'Bytes: ' ZLIB-PROCESSED-DATA-SIZE '.' upon syserr
+    >>D    end-display
+    >>D    if (ZLIB-OK or ZLIB-BUF-ERROR) and
+    >>D        ZLIB-PROCESSED-DATA-SIZE not = 0
+    >>D      display 'CBL_ZLIB - Debug - compressed data: '
+    >>D              upon syserr
+    >>D      end-display
+    >>D      call 'CBL_OC_DUMP' using ZLIB-COMPRESSED-DATA
+    >>D                          (1:COMPRESSED-DATA-SIZE)
+    >>D        on exception
+    >>D          move 'CBL_OC_DUMP not available' to msg
+    >>D          perform output-error
+    >>D      end-call
+    >>D    end-if
       *>
            continue.
 

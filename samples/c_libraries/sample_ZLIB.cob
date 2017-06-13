@@ -36,7 +36,7 @@
       *
        78  COMPRESSED-DATA-MAX VALUE 5000.
        77  COMPRESSED-DATA    PIC X(COMPRESSED-DATA-MAX).
-       77  UNCOMPRESSED-DATA  PIC X(10000).
+       77  UNCOMPRESSED-DATA  PIC X(20000).
 
        77  bin-name           PIC X(50) value "textstream.bin".
        77  BIN-FILE-STATUS    PIC XX.
@@ -66,18 +66,18 @@
       *
            display ' '
            display 'Reading complete file...'
-           move 1 to BIN-POS
+           move 0 to BIN-POS
            move spaces to compressed-data
            perform COMPRESSED-DATA-MAX times
-              read bin-file into compressed-data(BIN-POS:1)
-                at end exit perform
-              end-read
               add 1 to BIN-POS
+              read bin-file into compressed-data(BIN-POS:1)
+                at end
+                  move 0 to bin-file-status
+                  subtract 1 from bin-pos
+                  exit perform
+              end-read
            end-perform
            move bin-pos to bin-size
-           if bin-file-status = '10'
-              subtract 1 from bin-size
-           end-if
            display 'Bin data was read with ' bin-size ' bytes. '
                    'Status: ' bin-file-status
       *
@@ -102,12 +102,11 @@
            move ZLIB-PROCESSED-DATA-SIZE to bin-size
            display 'Writing ' bin-size ' bytes to file...'
 
-           move 1 to BIN-POS
+           move 0 to BIN-POS
            perform ZLIB-PROCESSED-DATA-SIZE times
-              write bin-byte from compressed-data(BIN-POS:1)
-      *>           on exception exit perform
-              end-write
               add 1 to BIN-POS
+              write bin-byte from uncompressed-data(BIN-POS:1)
+              end-write
            end-perform
            move bin-pos to bin-size
            display 'Bin data was written with ' bin-size ' bytes. '

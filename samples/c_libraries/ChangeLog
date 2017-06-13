@@ -1,9 +1,16 @@
 
-2017-05-12  Brian Tiffin <btiffin@gnu.org>
+2017-06-13  Simon 'sf-mensch/human' Sobisch <simonsobisch@gnu.org>
+
+	* CBL_ZLIB.cob: replaced *de*compress be *un*compress in all places,
+	  fixed arguments for uncompress and compress2,
+	  check input lengths, extended debug output
+	* sample_ZLIB.cob: code cleanup, bigger output buffer
+
+2017-06-12  Brian Tiffin <btiffin@gnu.org>
 
 	* CBL_ZLIB.cob: compress/uncompress argument order correction.
 
-2017-05-12  Simon 'sf-mensch/human' Sobisch <simonsobisch@gnu.org>
+2017-06-12  Simon 'sf-mensch/human' Sobisch <simonsobisch@gnu.org>
 
 	* CBL_ZLIB.cob: new - wrapper for zlib (currently not working)
 	* sample_ZLIB.cob: new - sample caller for CBL_ZLIB doing:
