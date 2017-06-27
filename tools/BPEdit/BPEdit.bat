@@ -9,11 +9,17 @@ if errorlevel 1 (
    set interactive=0
 )
 
-:: check for python executable
-where /q python.exe
-if errorlevel 1 (
-   echo ERROR: python.exe is missing in PATH
-   goto :end
+:: use venv from local dist directory, if available
+if exist "%~dp0\python\Scripts\activate.bat" (
+   call "%~dp0\python\Scripts\activate.bat"
+   echo Using venv from "%~dp0\python"
+) else (
+  :: check for python executable
+  where /q python.exe
+  if errorlevel 1 (
+     echo ERROR: python.exe is missing in PATH
+     goto :end
+  )
 )
 
 :: change to project directory
@@ -29,6 +35,8 @@ if not exist "paths.ini" (
 )
 
 :: actual start
+echo Starting BPEdit
+echo.
 python.exe BPEdit.pyw
 
 :end
