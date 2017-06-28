@@ -44,6 +44,7 @@ echo.
 xcopy . "%TEMP%\BPEdit-dist" /v /s /exclude:%~dp0\exclude.lst
 echo.
 
+ping -n 3 localhost 1>NUL
 move "%TEMP%\BPEdit-dist" .
 
 echo.
@@ -52,7 +53,7 @@ echo finished
 echo.
 echo Please change the second line in %~dp0BPEdit-dist\python\Scripts\activate.bat to:
 echo set "VIRTUAL_ENV=%%~dp0.."
-notepad.exe "%~dp0BPEdit-dist\python\Scripts\activate.bat"
+notepad.exe "%~dp0\BPEdit-dist\python\Scripts\activate.bat"
 
 :end
 if _%interactive%_==_0_ (

@@ -9,34 +9,37 @@ if errorlevel 1 (
    set interactive=0
 )
 
-:: use venv from local dist directory, if available
-if exist "%~dp0\python\Scripts\activate.bat" (
-   call "%~dp0\python\Scripts\activate.bat"
-   set PIP=pip3.exe
-   echo Using venv from "%~dp0\python"
+@echo off
+setlocal
+
+:: check if started directly
+echo %cmdcmdline% | find /i "%~0" >nul
+if errorlevel 1 (
+   set interactive=1
 ) else (
-  :: check for pip executable
-  where /q pip3.exe
-  if errorlevel 1 (
-     where /q pip.exe
-     if errorlevel 0 (
-        set PIP=pip.exe
-     )
-  ) else (
-     set PIP=pip3.exe
-  )
+   set interactive=0
 )
 
-:: check for pip executable
-where /q pip3.exe
-if errorlevel 1 (
-   where /q pip.exe
-   if errorlevel 0 (
-      set PIP=pip.exe
-   )
-) else (
+:: use venv from local dist directory, if available
+set "currpath=%~dp0"
+set "pythonpath=%currpath%python"
+if exist "%pythonpath%\Scripts\activate.bat" (
+   call "%pythonpath%\Scripts\activate.bat"
    set PIP=pip3.exe
+   echo Using venv from "%pythonpath%"
+) else (
+   :: check for pip executable
+   where /q pip3.exe
+   if errorlevel 1 (
+      where /q pip.exe
+      if errorlevel 0 (
+         set PIP=pip.exe
+      )
+   ) else (
+      set PIP=pip3.exe
+   )
 )
+
 if errorlevel 1 (
    echo ERROR: pip3.exe / pip.exe is missing in PATH
    goto :end
@@ -47,9 +50,8 @@ echo Installing Dependencies...
 echo %PIP% install -r requirements.txt
 
 echo.
-rem %PIP% install -r requirements.txt
-
-%PIP% install PyInstaller
+%PIP% install -r requirements.txt
+rem test: %PIP% install PyInstaller
 
 :end
 if _%interactive%_==_0_ (

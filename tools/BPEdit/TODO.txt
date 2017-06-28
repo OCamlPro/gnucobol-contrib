@@ -1,6 +1,12 @@
 
  ~~~ BPE - Breakpoint Editor ~~~ ToDo ~~~
 
+* packaging does not work correctly yet
+* modules (dll/so) should be loaded when chosen from and directly unloaded,
+  BPE currently still holds the file handle to the module, even if a different module is chosen!
+* option to reload module would be nice (it works by switching the module temporary)
+* popup window to show the current breakpoints and directly go there (open module if necessary)
+  on double-click
 * documentation
 * test with MacOS
 * set options within BPE

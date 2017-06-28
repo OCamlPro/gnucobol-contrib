@@ -10,18 +10,20 @@ if errorlevel 1 (
 )
 
 :: use venv from local dist directory, if available
-if exist "%~dp0\python\Scripts\activate.bat" (
-   call "%~dp0\python\Scripts\activate.bat"
-   echo Using venv from "%~dp0\python"
+set "currpath=%~dp0"
+set "pythonpath=%currpath%python"
+if exist "%pythonpath%\Scripts\activate.bat" (
+   call "%pythonpath%\Scripts\activate.bat"
+   echo Using venv from "%pythonpath%"
 ) else (
-  :: check for python executable
-  where /q python.exe
-  if errorlevel 1 (
-     echo ERROR: python.exe is missing in PATH
-     goto :end
-  )
+   :::echo "%pythonpath%\Scripts\activate.bat" doesn't exist
+   :: check for python executable
+   where /q python.exe
+   if errorlevel 1 (
+      echo ERROR: python.exe is missing in PATH
+      goto :end
+   )
 )
-
 :: change to project directory
 pushd %~dp0
 
