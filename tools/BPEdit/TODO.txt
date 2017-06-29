@@ -1,10 +1,6 @@
 
  ~~~ BPE - Breakpoint Editor ~~~ ToDo ~~~
 
-* packaging does not work correctly yet
-* modules (dll/so) should be loaded when chosen from and directly unloaded,
-  BPE currently still holds the file handle to the module, even if a different module is chosen!
-* option to reload module would be nice (it works by switching the module temporary)
 * popup window to show the current breakpoints and directly go there (open module if necessary)
   on double-click
 * documentation
@@ -16,5 +12,4 @@
 * non-clean exit when
     - paths.ini not found
     - libcob not found on GNU/Linux (need to set LD_LIBRARY_PATH)
-    - loading a module not compiled with GnuCOBOL debugging branch (File "bpedit\backend\cwrapper.py", line 19, in get_module_line_count -> AttributeError: function 'get_linecount_HelloWorld' not found)
     - loading a module failed because libcob could not be found or because it is not the right one

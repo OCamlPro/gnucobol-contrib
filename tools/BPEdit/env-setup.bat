@@ -25,7 +25,8 @@ set "currpath=%~dp0"
 set "pythonpath=%currpath%python"
 if exist "%pythonpath%\Scripts\activate.bat" (
    call "%pythonpath%\Scripts\activate.bat"
-   set PIP=pip3.exe
+   rem set PIP=pip3.exe
+   set "PIP=python.exe -m pip"
    echo Using venv from "%pythonpath%"
 ) else (
    :: check for pip executable

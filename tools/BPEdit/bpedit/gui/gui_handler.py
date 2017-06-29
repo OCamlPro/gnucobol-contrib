@@ -4,7 +4,7 @@ from os.path import join
 from PyQt5 import uic
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QActionGroup
-from PyQt5.QtWidgets import QComboBox, QDockWidget, QPushButton, QMenu, QAction, QMainWindow, QInputDialog, QFontDialog
+from PyQt5.QtWidgets import QComboBox, QDockWidget, QPushButton, QMenu, QAction, QMainWindow, QInputDialog, QFontDialog, QMessageBox
 from pyqode.cobol.widgets import CobolCodeEdit
 from pyqode.cobol.widgets import OutlineTreeWidget
 from pyqode.cobol.widgets import PicOffsetsTable
@@ -28,6 +28,7 @@ class GuiHandler:
 
         # Find controls and save references
         self.main_window = self.ui.findChild(QMainWindow, name='MainWindow')
+        self.reloadButton = self.ui.findChild(QPushButton, name='reloadButton')
         self.saveButton = self.ui.findChild(QPushButton, name='saveButton')
         self.codeEdit = self.ui.findChild(CobolCodeEdit, name='codeEdit')
         self.srcCombo = self.ui.findChild(QComboBox, name='srcCombo')
@@ -62,6 +63,7 @@ class GuiHandler:
 
     def __connect_slots(self):
         self.srcCombo.currentIndexChanged.connect(self.__load_src_file)
+        self.reloadButton.clicked.connect(self.__reload_source)
         self.saveButton.clicked.connect(self.__save_breakpoints)
         self.highlightWhitespacesAction.toggled.connect(self.__toggle_highlight_whitespaces)
         self.setTabWidthAction.triggered.connect(self.__set_tab_width)
@@ -95,7 +97,18 @@ class GuiHandler:
         filename = join(self.env.get_src_folder(), self.srcCombo.currentText())
 
         module_loader = DebugModuleLoader(self.srcCombo.currentText())
+        if module_loader.is_loaded() == False:
+            QMessageBox.critical(
+            self.main_window, 'Loading Module', "The module \"" + self.srcCombo.currentText() + "\" could not be loaded.")
+            del module_loader
+            return
         line_count = module_loader.get_module_line_count()
+        if line_count is None:
+            QMessageBox.critical(
+            self.main_window, 'Loading Module', "The module \"" + self.srcCombo.currentText() + "\" doesn't provide debugging symbols.")
+            del module_loader
+            return
+        
         lines = []
         for lineNr in range(line_count):
             line = module_loader.get_src_line(lineNr + 1)
@@ -104,12 +117,16 @@ class GuiHandler:
                 self.breakpointsPanel.maxLine = lineNr
             lines.append(line)
         text = '\n'.join(lines)
+        del module_loader
         # todo need to add a setting for user to set encoding?
         self.codeEdit.setPlainText(text, 'text/x-cobol', 'latin-1')
 
         if not self.breakpoints:
             self.breakpoints = BreakpointsManager(self.env)
         self.breakpointsPanel.breakpoints = self.breakpoints.load_breakpoints(filename)
+
+    def __reload_source(self):
+        self.__load_src_file()
 
     def __save_breakpoints(self):
         if not self.breakpoints:

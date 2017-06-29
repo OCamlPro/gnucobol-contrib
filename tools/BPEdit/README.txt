@@ -17,9 +17,14 @@ Requirements:
 
 Installation:
 
+a) when running from source:
+
 - install Python3, pip and PyQt5 using your package manager or the installer files for your platform.
-- run env-setup (.bat on Windows, .sh on GNU/Linux and Mac OS) to install the dependencies
+- once: run env-setup (.bat on Windows, .sh on GNU/Linux and Mac OS) to install the dependencies
 - run BPEdit.pyw
+
+b) when running from dist-package (windows):
+- run BPEdit.bat (if the dist-package doesn't contain all prerequisites: run env-setup.bat once)
 
 Settings are placed in paths.ini:
 
