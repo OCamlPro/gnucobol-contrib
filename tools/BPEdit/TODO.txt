@@ -5,11 +5,8 @@
   on double-click
 * documentation
 * test with MacOS
-* set options within BPE
+* set options within BPE, likely with QSettings (Note: "eats" comments)
 * allow a path list for modules (current limit: 1)
 * read module path from COB_LIBRARY_PATH
-* libcob_path does not work on GNU/Linux
-* non-clean exit when
-    - paths.ini not found
-    - libcob not found on GNU/Linux (need to set LD_LIBRARY_PATH)
-    - loading a module failed because libcob could not be found or because it is not the right one
+* libcob_path does not work on GNU/Linux (need to set LD_LIBRARY_PATH)
+* better check if libcob exists and has debugging functions in

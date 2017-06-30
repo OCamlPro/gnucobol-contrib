@@ -2,12 +2,18 @@ import os
 
 
 class EnvLoader:
-    env_dict = {'bp_file': None, 'src_folder': None, 'ui_file': None, 'libcob_path': None}
+    env_dict = {'bp_file': '/full/path/to/xanim_breakpoint.lst',  # full path to breakpoint list
+                'src_folder': '/path/to/modules',                 # directory with COBOL modules
+                'ui_file': 'bpedit.ui',                           # path to Qt5 UI file
+                'libcob_path': '/path/to/libcob'                  # path to directory containing libcob
+               }
 
     def __init__(self):
         self.__load_config()
 
     def __load_config(self):
+        if os.path.isfile('paths.ini') == False:
+            return;
         with open('paths.ini') as f:
             for line in f.readlines():
                 if line[0] == '#' or line[0] == ';':

@@ -1,5 +1,7 @@
 from os import walk
 from os.path import join
+from os.path import isfile
+from sys import exit
 
 from PyQt5 import uic
 from PyQt5.QtGui import QColor
@@ -24,7 +26,14 @@ class GuiHandler:
         self.__init_ui()
 
     def __init_ui(self):
-        self.ui = uic.loadUi(self.env.get_ui_file())
+        ui_file = self.env.get_ui_file()
+        if isfile(ui_file) == False:
+            errString = "The UI definition \"" + ui_file + "\" was not found.\x0a" \
+                      + "You may change its path in settings.ini."
+            print(errString)
+            QMessageBox.critical(None, 'Starting BPEdit', errString)
+            exit(1)
+        self.ui = uic.loadUi(ui_file)
 
         # Find controls and save references
         self.main_window = self.ui.findChild(QMainWindow, name='MainWindow')

@@ -24,6 +24,9 @@ class DebugModuleLoader:
             return None
 
         func = getattr(self.lib, 'get_linecount_{}'.format(self.moduleName), None)
+        if func is None:
+            return None
+
         return func()
 
     def is_loaded(self):
