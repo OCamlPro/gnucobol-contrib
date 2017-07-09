@@ -79,6 +79,7 @@ class GuiHandler:
         self.chooseEditorFontAction.triggered.connect(self.__choose_editor_font)
 
     def __load_src_files(self):
+        self.srcCombo.clear()
         self.srcCombo.addItem('Select source')
         for dirpath, dirs, files in walk(self.env.get_src_folder()):
             filteredList = [elem for elem in files if elem.endswith('.dll') or elem.endswith('.so')]
@@ -101,6 +102,7 @@ class GuiHandler:
         self.__update_breakpoints_background_color()
 
     def __load_src_file(self):
+        # ComboBox is cleared
         if self.srcCombo.currentIndex() <= 0:
             return
         filename = join(self.env.get_src_folder(), self.srcCombo.currentText())
@@ -135,6 +137,8 @@ class GuiHandler:
         self.breakpointsPanel.breakpoints = self.breakpoints.load_breakpoints(filename)
 
     def __reload_source(self):
+        if self.srcCombo.currentIndex() == 0:
+            self.__load_src_files()
         self.__load_src_file()
 
     def __save_breakpoints(self):
