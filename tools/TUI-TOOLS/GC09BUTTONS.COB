@@ -9,15 +9,16 @@ PROGRAM-ID. GC09BUTTONS is initial.
 *> Parameters: look at GC09BUTTONS.cpy (use with copy Version: 1.1)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.2 2017.02.28
+*> Version:    1.3 2017.07.10
 *> Changelog:  1.0 first release.
 *>             1.1 changed from ACCEPT a DUMMY field to "call getch"
 *>             1.2 added the "click effect" and beep on request
+*>             1.3 some estethic changes
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
 SPECIAL-NAMES.
-   CRT STATUS IS wCRT-STATUS.
+   *> CRT STATUS IS wCRT-STATUS.
 DATA DIVISION.
 Working-Storage Section.
 
@@ -35,7 +36,7 @@ Working-Storage Section.
     03  fco          PIC 9(02).
     03  fcoH         PIC X(01).
     03  wDummy       PIC X(01) VALUE SPACE.
-    03  wCRT-STATUS       PIC 9(04) VALUE 9999.
+    *> 03  wCRT-STATUS       PIC 9(04) VALUE 9999.
     03  wlen         pic 9(02) value 0.
     03  len-voce     pic 9(02) value 0.
 01 wInt        BINARY-SHORT. *> SIGNED.
@@ -53,19 +54,18 @@ Working-Storage Section.
 01  wVisibilityOld   BINARY-SHORT .
 
 *> Values that may be returned in CRT STATUS (or COB-CRT-STATUS)
-78  K-ENTER       VALUE 0000.
-78  K-UP          VALUE 2003.
-78  K-DOWN        VALUE 2004.
-78  K-LEFT        VALUE 2009.
-78  K-RIGHT       VALUE 2010.
-78  K-ESC         VALUE 2005.
-78  K-TAB         VALUE 2007.
-78  K-BACKTAB     VALUE 2008.
-78  K-PAGEUP      VALUE 2001.
-78  K-PAGEDOWN    VALUE 2002.
-78  K-ESCAPE      VALUE 2005.
+*> 78  K-ENTER       VALUE 0000.
+*> 78  K-UP          VALUE 2003.
+*> 78  K-DOWN        VALUE 2004.
+*> 78  K-LEFT        VALUE 2009.
+*> 78  K-RIGHT       VALUE 2010.
+*> 78  K-ESC         VALUE 2005.
+*> 78  K-TAB         VALUE 2007.
+*> 78  K-BACKTAB     VALUE 2008.
+*> 78  K-PAGEUP      VALUE 2001.
+*> 78  K-PAGEDOWN    VALUE 2002.
+*> 78  K-ESCAPE      VALUE 2005.
 
-copy 'GC01BOX.CPY'.
 COPY 'GC98KEYCODE.CPY'.
 
 LINKAGE SECTION.
@@ -84,8 +84,9 @@ set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
 
    move 1 to i, j, w, Btn-Number.
+
 *> ***********************************************************************************
-*> display BUTTONS and wait for user input
+*> display ALL BUTTONS and wait for user input
 *> ***********************************************************************************
 Main.
    *> to count how many buttons
