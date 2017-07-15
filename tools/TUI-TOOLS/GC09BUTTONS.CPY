@@ -35,12 +35,12 @@
 *> --------- -------------------------------------------------------------------------
 *> Bu-Act    1= this item is displayed as the one Active (tobe Selected)
 *>           only one of items can have '1' . it will be highlighted
-*>           at first display of the menu. when you exit from the menu
-*>           the active item will have '1' other items will have blank.
+*>           at first display of the buttons. when you exit from the buttons function
+*>           the active button (item) will have '1' other items will have blank.
 *> Bu-r      row & col where the button starts on screen
 *> Bu-c      first row & col are 01, 01, last are 25,80 (row 25 col 80)
 *>           buttons can be displayed in every position, also sparse.
-*>           buttons can be also all overlapped (you will have a list-box)
+*>           buttons cannot be overlapped ! (the fuction does not havecontrols !)
 *>
 *> Bu-Item   charatcters string to be displayed on Button (max 80 chars).
 *>           It has to be in ASCIIZ format (must have x'00'(low-value) as last byte
@@ -58,10 +58,10 @@
 *> Bu-beep   Y= when hit enter on button sound a beep
 *> Bu bco-shadow set it to the same back color of the underlying background
 *>
-*> Bu-selected Returns to caller the number of sel.button by the user 01, 02, 03, ..
-*> Bu-Key    key code pressed by user: 0000 = Enter, 2005 = Escape
-*>           Caller pgm will know if user selected a button with enter
-*>           or has pressed Escape key to exit whitout selection
+*> Bu-selected Returns to caller the number of selected button by the user 01, 02, 03, ..
+*> Bu-Key    key code pressed by user: 0013 = Enter, 0027 = Escape
+*>           Caller pgm will know if user selected a button
+*>         with enter or has pressed Escape key to exit
 *> *************************************************************
      03 Bu-Tab  value low-value.
         04 Bu-Ele occurs 25.
