@@ -1,6 +1,6 @@
        >> SOURCE FORMAT IS FREE
-       REPLACE ==:bgcol:== BY ==BACKGROUND-COLOR==
-               ==:fgcol:== BY ==FOREGROUND-COLOR==.
+       REPLACE ==:BCOL:== BY ==BACKGROUND-COLOR==
+               ==:FCOL:== BY ==FOREGROUND-COLOR==.
 IDENTIFICATION DIVISION.
 PROGRAM-ID. GC13CHECKBOX is initial.
 *> ***********************************************************************************
@@ -23,11 +23,11 @@ DATA DIVISION.
 Working-Storage Section.
 
 01  wWork.
-    03  wCol         pic s9(02) value +0.
-    03  w            pic s9(02) value +0.
-    03  i            pic s9(02) value +1.
-    03  j            pic s9(02) value +1.
-    03  Chk-Number     pic s9(02) value +0.
+    03  wCol         pic 9(02) value 0.
+    03  w            pic 9(02) value 0.
+    03  i            pic 9(02) value 1.
+    03  j            pic 9(02) value 1.
+    03  Chk-Number     pic 9(02) value 0.
     03  bco          PIC 9(02).
     03  fco          PIC 9(02).
     03  fcoH         PIC X(01).
@@ -76,12 +76,12 @@ DisplayCheckboxItems.
       move    Ck-Selected to i
       go to DisplayCheckboxItemsEx end-if
 
-   *> set color of Active Checkbox
+   *> set bco and fco to color of Active Checkbox
    if Ck-Act(i) = '1'
       move i       to Ck-Selected
       Move Ck-bcoA to bco
       move Ck-fcoA to fco
-  *> set color of non active CHECKBOX
+  *> set bco and fco to color of non active CHECKBOX
    else
       Move Ck-bcoN to bco
       move Ck-fcoN to fco
@@ -96,7 +96,7 @@ DisplayCheckboxItems.
 DisplayCheckboxItemsEx. exit.
 
 *> ***********************************************************************************
-*> after displayed CHECKBOX ITEMS WAIT FOR USER INPUT
+*> AFTER DISPLAYED CHECKBOX ITEMS WAIT FOR USER INPUT
 *> ***********************************************************************************
 loop-user-input.
 
@@ -111,7 +111,7 @@ loop-user-input.
    EVALUATE TRUE
    *> i = number of checkbox item
 
-           *> TOGGLE THE MARK OF "ACTIVE" CHECKBOX ITEM
+           *> TOGGLE THE MARK / UNMARCK OF "ACTIVE" CHECKBOX ITEM
            when Key-Pressed =  Key-space
                 if Ck-Mark(i) = space
                    move '1' to Ck-Mark(i)
@@ -198,7 +198,9 @@ END-PROGRAM.
    move wVisibilityOld to wVisibilityNew
    call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
 
-   Goback.
+   GOBACK.
+
+
 
 *> ***********************************************************************************
 *> DISPLAY A CHECKBOX
@@ -207,7 +209,7 @@ Display-Checkbox.
    *> j = number/position of single character of checkbox item description
    move 0 to j.
 loop1.
-   *> loop to display single chars of a Checkbox
+   *> loop to display single chars of a Checkbox item
    add 1 to j
    if Ck-Item(i) (j:1) = low-value go loop1-ex end-if
 
@@ -216,15 +218,24 @@ loop1.
    if wlen > len-voce move wlen to len-voce end-if
 
    compute wCol = Ck-c(i) + j - 1 end-compute
+
+      *> display j at 0103
+      *> display Ck-Hot(i)  at 0203
+      *> accept OMITTED
+
    if j = Ck-Hot(i)
-      *> display the hotkey character of checkbox item
-      display Ck-Item(i) (j:1) at line Ck-r(i) col wcol with :bgcol: bco :fgcol: Ck-fcoH highlight end-display
+     *> display the hotkey character of checkbox item with different colors
+     if Ck-fcoHH = 'Y'
+        display Ck-Item(i) (j:1) at line Ck-r(i) col wcol with :BCOL: Ck-bcoH :FCOL: Ck-fcoH highlight end-display
+     else
+        display Ck-Item(i) (j:1) at line Ck-r(i) col wcol with :BCOL: Ck-bcoH :FCOL: Ck-fcoH end-display
+     end-if
    else
-      *> display a normal character of checkbox item
+      *> display a normal character of checkbox item (active or non active)
       if fcoH = 'Y'
-         display Ck-Item(i) (j:1) at line Ck-r(i) col wcol with :bgcol: bco :fgcol: fco highlight end-display
+         display Ck-Item(i) (j:1) at line Ck-r(i) col wcol with :BCOL: bco :FCOL: fco highlight end-display
       else
-         display Ck-Item(i) (j:1) at line Ck-r(i) col wcol with :bgcol: bco :fgcol: fco end-display
+         display Ck-Item(i) (j:1) at line Ck-r(i) col wcol with :BCOL: bco :FCOL: fco end-display
       end-if
    end-if
    go to loop1.
@@ -236,28 +247,28 @@ loop1-ex.
    *> accept omitted
 
    compute wCol = Ck-c(i) - 4 end-compute
-   display '     ' at line Ck-r(i) col wcol with :bgcol: bco :fgcol: fco end-display
+   display '     ' at line Ck-r(i) col wcol with :BCOL: bco :FCOL: fco end-display
    if fcoH = 'Y'
        compute wCol = Ck-c(i) - 3 end-compute
-       display Ck-BracketChar1 at line Ck-r(i) col wcol with :bgcol: bco :fgcol: fco highlight end-display
+       display Ck-BracketChar1 at line Ck-r(i) col wcol with :BCOL: bco :FCOL: fco highlight end-display
        compute wCol = Ck-c(i) - 1 end-compute
-       display Ck-BracketChar2 at line Ck-r(i) col wcol with :bgcol: bco :fgcol: fco highlight end-display
+       display Ck-BracketChar2 at line Ck-r(i) col wcol with :BCOL: bco :FCOL: fco highlight end-display
        compute wCol = Ck-c(i) - 2 end-compute
        if Ck-Mark(i) = '1'
-          display Ck-MarkChar at line Ck-r(i) col wcol with :bgcol: bco :fgcol: fco highlight end-display
+          display Ck-MarkChar at line Ck-r(i) col wcol with :BCOL: bco :FCOL: fco highlight end-display
        else
-          display ' '         at line Ck-r(i) col wcol with :bgcol: bco :fgcol: fco highlight end-display
+          display ' '         at line Ck-r(i) col wcol with :BCOL: bco :FCOL: fco highlight end-display
        end-if
    else
        compute wCol = Ck-c(i) - 3 end-compute
-       display Ck-BracketChar1 at line Ck-r(i) col wcol with :bgcol: bco :fgcol: fco end-display
+       display Ck-BracketChar1 at line Ck-r(i) col wcol with :BCOL: bco :FCOL: fco end-display
        compute wCol = Ck-c(i) - 1 end-compute
-       display Ck-BracketChar2 at line Ck-r(i) col wcol with :bgcol: bco :fgcol: fco end-display
+       display Ck-BracketChar2 at line Ck-r(i) col wcol with :BCOL: bco :FCOL: fco end-display
        compute wCol = Ck-c(i) - 2 end-compute
        if Ck-Mark(i) = '1'
-          display Ck-MarkChar  at line Ck-r(i) col wcol with :bgcol: bco :fgcol: fco end-display
+          display Ck-MarkChar  at line Ck-r(i) col wcol with :BCOL: bco :FCOL: fco end-display
        else
-          display ' '          at line Ck-r(i) col wcol with :bgcol: bco :fgcol: fco end-display
+          display ' '          at line Ck-r(i) col wcol with :BCOL: bco :FCOL: fco end-display
        end-if
    end-if
    continue.
