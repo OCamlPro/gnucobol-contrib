@@ -83,15 +83,15 @@ call GC01BOX using BOX-AREA
 *> DISPLAY CHECKBOX ITEMS N.1
 initialize CHECKBOX-area ALL TO VALUE
 move low-value                                       to Ck-tab
-Move '113004011 Stop after first error     ' & x'00' to Ck-Ele(01)
-Move ' 15005011 Allow LABEL and GOTO       ' & x'00' to Ck-Ele(02)
-Move '  4006011 Enable macros              ' & x'00' to Ck-Ele(03)
-Move ' 16007011 Allow inline               ' & x'00' to Ck-Ele(04)
-Move ' 16008011 Include assertion code     ' & x'00' to Ck-Ele(05)
-Move ' 16009011 Load compatible units      ' & x'00' to Ck-Ele(06)
-Move '  6010011 Allow STATIC in objects    ' & x'00' to Ck-Ele(07)
-Move '  6011011 C like operators           ' & x'00' to Ck-Ele(08)
-Move ' 16012011 Conditional defines        ' & x'00' to Ck-Ele(09)
+Move '112004011 Stop after first error     ' & x'00' to Ck-Ele(01)
+Move ' 12005011 Allow LABEL and GOTO       ' & x'00' to Ck-Ele(02)
+Move '  2006011 Enable macros              ' & x'00' to Ck-Ele(03)
+Move ' 13007011 Allow inline               ' & x'00' to Ck-Ele(04)
+Move ' 12008011 Include assertion code     ' & x'00' to Ck-Ele(05)
+Move ' 12009011 Load compatible units      ' & x'00' to Ck-Ele(06)
+Move '  5010011 Allow STATIC in objects    ' & x'00' to Ck-Ele(07)
+Move '  2011011 C like operators           ' & x'00' to Ck-Ele(08)
+Move ' 13012011 Conditional defines        ' & x'00' to Ck-Ele(09)
 call GC13CHECKBOX using CHECKBOX-AREA
 perform DisplaySwitch thru DisplaySwitchEx.
 
@@ -102,13 +102,13 @@ initialize CHECKBOX-area ALL TO VALUE
 move low-value to Ck-tab
 move 'x'       to Ck-MarkChar
 move '()'      to Ck-BracketChars
-Move ' 13004054 Counts              ' & x'00' to Ck-Ele(01)
-Move '115005054 Percentages         ' & x'00' to Ck-Ele(02)
-Move '  4006054 Valid uppercase     ' & x'00' to Ck-Ele(03)
-Move ' 16007054 Error Messages      ' & x'00' to Ck-Ele(04)
-Move ' 16008054 Reserved words      ' & x'00' to Ck-Ele(05)
-Move ' 16009054 Colums stats        ' & x'00' to Ck-Ele(06)
-Move '  6010054 Total stats         ' & x'00' to Ck-Ele(07)
+Move ' 12004054 Counts              ' & x'00' to Ck-Ele(01)
+Move '112005054 Percentages         ' & x'00' to Ck-Ele(02)
+Move '  2006054 Valid uppercase     ' & x'00' to Ck-Ele(03)
+Move ' 12007054 Error Messages      ' & x'00' to Ck-Ele(04)
+Move ' 12008054 Reserved words      ' & x'00' to Ck-Ele(05)
+Move ' 13009054 Colums stats        ' & x'00' to Ck-Ele(06)
+Move '  2010054 Total stats         ' & x'00' to Ck-Ele(07)
 call GC13CHECKBOX using CHECKBOX-AREA
 perform DisplaySwitch thru DisplaySwitchEx.
 
@@ -118,9 +118,9 @@ initialize CHECKBOX-area ALL TO VALUE
 move low-value                                   to Ck-tab
 move 'o'  to Ck-MarkChar
 move '<>' to Ck-BracketChars
-Move ' 13015011 Counts              ' & x'00' to Ck-Ele(01)
-Move '1 5016011 Percentages         ' & x'00' to Ck-Ele(02)
-Move '  4017011 Valid uppercase     ' & x'00' to Ck-Ele(03)
+Move ' 12015011 Counts              ' & x'00' to Ck-Ele(01)
+Move '1 2016011 Percentages         ' & x'00' to Ck-Ele(02)
+Move '  2017011 Valid uppercase     ' & x'00' to Ck-Ele(03)
 call GC13CHECKBOX using CHECKBOX-AREA
 perform DisplaySwitch thru DisplaySwitchEx.
 
@@ -130,15 +130,15 @@ initialize CHECKBOX-area ALL TO VALUE
 move low-value                                       to Ck-tab
 move 'o'  to Ck-MarkChar
 Move '1 3013048 01-Stop after first error ' & x'00' to Ck-Ele(01)
-Move ' 15014048 02-Allow LABEL and GOTO   ' & x'00' to Ck-Ele(02)
-Move '  4015048 03-Enable macros          ' & x'00' to Ck-Ele(03)
-Move '  4016048 03-Disable warnings       ' & x'00' to Ck-Ele(04)
-Move ' 16017048 04-Overnight              ' & x'00' to Ck-Ele(05)
-Move ' 16017048 05-Include assertion code ' & x'00' to Ck-Ele(06)
-Move ' 16017048 06-Load compatible units  ' & x'00' to Ck-Ele(07)
-Move '  6017048 07-Allow STATIC in objects' & x'00' to Ck-Ele(08)
-Move '  6017048 08-C like operators       ' & x'00' to Ck-Ele(09)
-Move ' 16017048 09-Overlapped items !     ' & x'00' to Ck-Ele(10)
+Move ' 13014048 02-Allow LABEL and GOTO   ' & x'00' to Ck-Ele(02)
+Move '  3015048 03-Enable macros          ' & x'00' to Ck-Ele(03)
+Move '  3016048 03-Disable warnings       ' & x'00' to Ck-Ele(04)
+Move ' 13017048 04-Overnight              ' & x'00' to Ck-Ele(05)
+Move ' 13017048 05-Include assertion code ' & x'00' to Ck-Ele(06)
+Move ' 13017048 06-Load compatible units  ' & x'00' to Ck-Ele(07)
+Move '  3017048 07-Allow STATIC in objects' & x'00' to Ck-Ele(08)
+Move '  3017048 08-C like operators       ' & x'00' to Ck-Ele(09)
+Move ' 13017048 09-Overlapped items !     ' & x'00' to Ck-Ele(10)
 call GC13CHECKBOX using CHECKBOX-AREA
 perform DisplaySwitch thru DisplaySwitchEx.
 
