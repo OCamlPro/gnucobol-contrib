@@ -49,6 +49,9 @@ set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
 display wDummy at 2579 with blank screen end-display.
 
+display " Activate a menu item with cursor keys or with hot keys (letters in red ) "
+        at 021002 :BCOL: 4 :FCOL: 7 highlight end-display
+
 move low-value                              to mn-tab
 move z'12007010 Option number one         ' to mn-ele(1)
 move z' 4008010 Second choice             ' to mn-ele(2)
