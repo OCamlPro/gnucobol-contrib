@@ -81,10 +81,12 @@ DisplayCheckboxItems.
       move i       to Ck-Selected
       Move Ck-bcoA to bco
       move Ck-fcoA to fco
+      Move Ck-fcoAH to fcoH
   *> set bco and fco to color of non active CHECKBOX
    else
       Move Ck-bcoN to bco
       move Ck-fcoN to fco
+      Move Ck-fcoNH to fcoH
    end-if
 
    perform Display-Checkbox thru Display-CheckboxEx
