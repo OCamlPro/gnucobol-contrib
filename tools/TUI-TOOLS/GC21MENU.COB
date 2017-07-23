@@ -86,9 +86,11 @@ Main.
     move i       to Mn-Selected
     Move mn-bcoS to bco         *> active item colors
     move mn-fcoS to fco
+    Move mn-fcoSH to fcoH
  else
     Move mn-bcoN to bco
     move mn-fcoN to fco         *> non active item colors
+    Move mn-fcoNH to fcoH
  end-if
 
  perform DisplayItem thru DisplayItemEx
