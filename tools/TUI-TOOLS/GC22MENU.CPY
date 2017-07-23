@@ -67,7 +67,7 @@
            07 Mn-r        pic 9(03).     *> row of menu item
            07 Mn-c        pic 9(03).     *> col of menu item
            07 Mn-Item     pic x(81).     *> menu item text, last char hast tobe = x'00'
-           07 Mn-Mess     pic x(81).     *> message associated to menu item
+           07 Mn-Mess     pic x(81).     *> message associated to each menu item
 
      03 Mn-Parameters.
         05 Mn-Box            pic x(01) value 'N'.
