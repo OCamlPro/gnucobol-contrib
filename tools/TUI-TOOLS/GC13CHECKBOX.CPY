@@ -2,10 +2,10 @@
 01 CHECKBOX-Area.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) AND UTILITIES COLLECTION
-*> Purpose:    WORK-AREA FOR GC13CHECKBOX.COB - DISPLAY CHECKBOX
+*> Purpose:    WORK-AREA FOR GC13CHECKBOX.COB - DISPLAY CHECKBOX ITEMS
 *> Usage:      call GC13CHECKBOX using CHECKBOX-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
-*> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
+*> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
 *> Version:    1.0 2017.07.10
 *> Changelog:  1.0 first release.
 *> ***********************************************************************************
@@ -58,18 +58,18 @@
         05 Ck-BracketChars.
            07 Ck-BracketChar1 pic x(01) value '['.
            07 Ck-BracketChar2 pic x(01) value ']'.
-        *> colors for Normal checkbox (non active)
-        05 Ck-bcoN           pic 9(01) value green.  *> default backcolor for "normal" checkbox
-        05 Ck-fcoN           pic 9(01) value black.  *> default forecolor for "normal" checkbox
-        05 Ck-fcoNH          pic X(01) Value 'N'.    *> default foreground Normal in Highlight ?
-        *> colors for active (to be selected) checkbox
-        05 Ck-bcoA           pic 9(01) value green.  *> default backcolor for "active" checkbox
-        05 Ck-fcoA           pic 9(01) value white.  *> default forecolor for "active" checkbox
-        05 Ck-fcoAH          pic X(01) Value 'Y'.    *> default forecolor of active in Highlight ?
-        *> colors for hot key char of a checkbox (not yet available)
-        05 Ck-bcoH           pic 9(01) value green.  *> default backcolor for "hot key" char
-        05 Ck-fcoH           pic 9(01) value yellow. *> defalut forecolor for "hot key" char
-        05 Ck-fcoHH          pic X(01) Value 'Y'.    *> default foreground hotkey in Highlight ?
+        *> colors for Normal checkbox item (non active)
+        05 Ck-bcoN           pic 9(01) value green.  *> backcolor for "normal" checkbox item
+        05 Ck-fcoN           pic 9(01) value black.  *> forecolor for "normal" checkbox item
+        05 Ck-fcoNH          pic X(01) Value 'N'.    *> foreground for Normal checkbox item in Highlight ?
+        *> colors for active (to be selected) checkbox item
+        05 Ck-bcoA           pic 9(01) value green.  *> backcolor for "active" checkbox item
+        05 Ck-fcoA           pic 9(01) value white.  *> forecolor for "active" checkbox item
+        05 Ck-fcoAH          pic X(01) Value 'Y'.    *> forecolor of active checkbox item in Highlight ?
+        *> colors for hot key char of a checkbox item (not yet available)
+        05 Ck-bcoH           pic 9(01) value green.  *> backcolor for "hot key" char
+        05 Ck-fcoH           pic 9(01) value yellow. *> forecolor for "hot key" char
+        05 Ck-fcoHH          pic X(01) Value 'Y'.    *> foreground hotkey char in Highlight ?
         *> back color of shadow background (it has tobe settled to the same of box background)
      *> *************************************************************
      *> RETUNRS TO CALLER
