@@ -1,8 +1,14 @@
 01 GC21MENU pic x(20) value 'GC21MENU'.
 01 Menu-Area.
-*> **************************************************************
-*> WORK-AREA FOR FUCTION THAT MANAGE A MENU ON SCREEN
-*> **************************************************************
+  *> ***********************************************************************************
+*> GnuCOBOL TT (TUI TOOLS) COLLECTION
+*> Purpose:    WORK-AREA FOR GC21MENU.COB FUNCTION TO MANAGE A MENU ON SCREEN
+*> Usage:      call GC21MENU using Menu-Area
+*> Author:     Eugenio Di Lorenzo - Italia (DILO)
+*> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
+*> Version:    1.0 2016.06.15
+*> Changelog:  1.0 first release.
+*> ***********************************************************************************
 *> You can manage menus with max 24 items.
 *> Each item has tobe inserted in a table with 25 elements, last char has tobe = low-value
 *> there has to be a last menu item filled with low-values
