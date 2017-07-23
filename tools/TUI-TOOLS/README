@@ -1,52 +1,45 @@
 *** GCTTC: GnuCOBOL TUI (TEXT USER INTERFACE) TOOLS AND UTILITIES COLLECTON ***
 
-Here you can find COBOL TUI TOOLS (GC01xxxxxx to GC98xxxxxx) and COBOL Utilities (GC99xxxxxx) 
+In this folder you can find COBOL TUI TOOLS (GC01xxxxxx to GC98xxxxxx) and COBOL Utilities (GC99xxxxxx) 
 
 Although the textual interfaces are now replaced by graphical interfaces, a good compiler 
 must allow to develop complete applications in an easy way even with textual user interfaces.
 
-For this GnuCOBOL needs to generate applications with those objects that allow a classically 
-user interfaces friendly and in line with all other programming languages on windows and unix platform.
+GnuCOBOL have to generate applications with those objects that allow a classical and friendly
+user interface like other programming languages on windows and unix platform.
 
-GCTTC is a collection of COBOL modules (sources) useful for this purpose.
+GCTTC is a collection of COBOL modules (functions/sources) useful for this purpose.
 GCTTC includes modules to manage classical TUI objects like: dropdown menus, 
 multiple-choice Buttons, buttons of YES NO type, calendar for selecting a date, 
-on-screen messages, boxes, selection with radio buttons, check boxes and so on.
+on-screen messages, boxes, check boxes, radio buttons, and so on.
 
-All modules have been developed exclusively using GnuCOBOL (Pure COBOL no C wrappers).
+All modules have been developed exclusively using GnuCOBOL 
+(Pure COBOL with also call to "C" funtions but no C wrappers).
 
-The collection includes several modules, is expected to introduce more features  in the future. 
-Anyone can add new objects / functions to the collection.
-
-You will find COBOL programs that you can "CALL" from your source to manage dropdown menus, 
+They are COBOL programs you can "CALL" from your source to manage dropdown menus, 
 display box, buttons ... 
 You can choose: position, size, colors, borders, shadows, titles, 3D effect ...
 
-You'll find commented source files. Documentation of parameters are inside the copybooks.
-I also have prepared some demo programs to demonstrate how to "call" the programs 
+All source files are well commented. Documentation of parameters are inside the copybooks.
+Each TOOL have corresponding demo programs to demonstrate how to "call" the TOOL 
 and some of other main effects.
-I called those modules "GnuCOBOL TTC = TUI (TEXT USER INTERFACE) TOOLS COLLECTION"
+Those modules are called "GnuCOBOL TTC = TUI (TEXT USER INTERFACE) TOOLS COLLECTION"
 The sources have been compiled with GnuCOBOL 2.0.
 
-The programs are called GnnXXXXXX. 
+The naming convention of tools is: GnnXXXXXX. 
 Where nn = a code that identifies the function and xxxxx = a brief description of the function.
-For each object there is a COBOL source and a COPY book in which there are 
-all the execution parameters of the function and parameter to be returned to the caller.
+For each tools there is a COBOL source and a COPY book in which there are 
+all parameters of the function and parameter to be returned to the caller.
 
-I used the Arnold Trembley pack for Windows MinGW 
-(download it,unpack it,and the compiler is ready to use!). 
-I used OpendCOBOLIDE, another very very nice product that I reccomend.
-The development of programs has been on a Windows 10 64bit machine.
-
-Please, let me know if you have any suggestion to improve the functions.
+Let me know if you have any suggestion or idea to improve/extend the tools.
 Your suggestions will be very useful and welcome.
 
-The collection is made by folllowing programs (I will upload other modules in the future)
+The collection is made by folllowing programs (other modules will follow in the future)
 
 GC01BOX.COB 
 call it to display boxes on screen, you can specify back/fore colors, size, position, 
 single/double/custom borders, 3D effect and so on. 
-This function is mainly developed to be used by other following modules.
+This function is mainly developed to be used by other following tools.
 
 GC02BOXMEX.COB 
 call it to display messages on screen, you can specify back/fore colors, size, position, 
@@ -57,17 +50,29 @@ call it to display a BOX with a simple message and two big buttons YES & NO on s
 you can specify back/fore colors, size, position, and so on.
 
 GC09BUTTONS.COB 
-call it to display multiple buttons on screen, you can specify number of buttons, 
+call it to display buttons on screen, you can specify number of buttons, 
 back/fore colors, size, position, text of buttons and so on.
+
+GC13CHEKBOX.COB 
+call it to display checkbox items (switches) on screen, you can specify number of items, 
+back/fore colors, size, position, symbol , brackets and so on.
 
 GC21MENU.COB 
 call it to display menus on screen, you can manage bar menu, dropdown menu, 
 specify number of items, text and length of items, back/fore colors, position, 
 messages associated to menu items, and so on.
 
+GC22MENU.COB 
+a new version of GC21MENU implementing hot keys.
+It use "call getch" instead of ACCEPT OMITTED to detect normal letter keypress from user.
+
 GC51CALYEAR.COB
 call it to display a one year calendar on screen.
 User can browse days, months and years to pick-up a date.
+
+GC53CALENDAR.COB
+call it to display a calendar on screen. three months on on erow 
+User can scroll months and years 
 
 GC56DATEPICKER.COB
 call it to display a one month calendar (regular or small size)
@@ -81,10 +86,20 @@ the big clock will move randomly on screen.
 you can specify back/fore colors, size, position, single/double/custom borders, 
 3D effect and so on.
 
-GC99COPYGEN.COB
-See at 
-https://sourceforge.net/p/open-cobol/discussion/contrib/thread/e21eb9ba/#90fd
+GC71CRUDExxxx.COB
+A "CRUDE" application. It shows hot to create, read(browse), update, delete indexed file records.
+This is a real application showing how to accept fields on screen, numeric fileds (with sign and decimals)
+How to pickup a date. How to use indexed files with alternate index.
+How to display context sensitive help information (from GC74HELPxxx TOOL)
+Copying and modifying this programs you can develop a lot of other type of applications. 
 
+GC74HELPxxxx.COB
+A "HELP" system. You can write text help files , load it on indexed files.
+List the indexde file , access to this HELP messages from any CRUDE application.
+
+
+GC99COPYGEN.COB
+Copy generator for cobol programs that write reports,
 How to use it:
 1. create a text file with the layout of the report. Set all constants and variables. 
 Use the $ symbol when you want a PIC X field,use the # symbol when you want a PIC 9. 
@@ -98,3 +113,5 @@ eg. with the same fields, produces a single line in the copy.
 that will produce the report, or you can change it before, 
 to enhance the Copy COBOL example for a better the editing Picture 
 of individual fields directly in the copy.
+See samples at 
+https://sourceforge.net/p/open-cobol/discussion/contrib/thread/e21eb9ba/#90fd
