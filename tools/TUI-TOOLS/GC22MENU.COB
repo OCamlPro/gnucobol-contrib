@@ -5,8 +5,8 @@ IDENTIFICATION DIVISION.
 PROGRAM-ID. GC22MENU is initial.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
-*> Purpose:    DISPLAY MENU ON SCREEN WITH OPTIONS & EFFECTS, LET CHOOSE AN ITEM
-*>             SAME AS GC21MENU.COB PLUS MANAGEMENT OF HOT KEYS (use call getch instead of accept omitted)
+*> Purpose:    DISPLAY MENU ON SCREEN WITH OPTIONS & EFFECTS, LET THE USER CHOOSE AN ITEM
+*>             SAME AS GC21MENU.COB + HOT KEYS MANAGEMENT (use call getch instead of accept omitted)
 *> Tectonics:  cobc -m GC22MENU.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC22MENU using Menu-Area
 *> Parameters: look at GC22MENU.CPY (use with copy Version: 1.0 2017.07.20
@@ -17,35 +17,36 @@ PROGRAM-ID. GC22MENU is initial.
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
-*> SPECIAL-NAMES.
-    *> CRT STATUS IS wCRT-STATUS.
 
 DATA DIVISION.
 WORKING-STORAGE SECTION.
 
-01  .
+01  wFields.
     03  w            pic 9(02) value 0.
     03  i            pic 9(02) value 1.
     03  k            pic 9(02) value 1.
-    03  wSalvaK      pic 9(02) value 1.
     03  j            pic 9(02) value 1.
+
     03  Item-Num     pic 9(02) value 0.  *> count how many menu items
     03  Item-Len     pic 9(02) value 0.
     03  Item-MaxLen  pic 9(02) value 0.
-    03  wDummy       PIC X(01) VALUE SPACE.
-    03  wFound       PIC X(01) VALUE SPACE.
-    03  wCRT-STATUS  PIC 9(04) VALUE 9999.
+
     03  wcol         PIC 9(03).
+    03  wChar        PIC X(01).
+
     03  bco          PIC 9(02).
     03  fco          PIC 9(02).
     03  fcoH         PIC X(01).
-    03  wChar        PIC X(01).
+
+01  wVisibilityNot   BINARY-SHORT  value 0.  *> 0 = hide cursor
+01  wVisibilityYes   BINARY-SHORT  value 2.  *> 2 = cursor visible full
+01  wVisibilityNew   BINARY-SHORT .
+01  wVisibilityOld   BINARY-SHORT .
 
 01 wInt        BINARY-SHORT SIGNED.
 01 wChars.
    03  wChars1 pic x(26) value 'abcdefghijklmnopqrstuvwxyz'.
    03  wChars-Ele redefines wChars1 pic x(01) occurs 26 indexed by wChars-Idx.
-
 
 01 black   constant as 0.
 01 blue    constant as 1.
@@ -71,6 +72,8 @@ PROCEDURE DIVISION using Menu-Area.
   *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
   set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
   set environment 'COB_SCREEN_ESC'        TO 'Y'.
+
+  perform CursorHide thru CursorHideEx
 
   *> i = the number of menu item
   move 1 to i.
@@ -106,30 +109,26 @@ Main.
 Main-ex.
    *> after displayed all items draw a box around menu items if requested
    if mn-box = 'Y'
-     move Mn-Shadow to box-Shadow
-     move mn-Style  to box-Style
-     move 'N'       to box-fill
+
      compute box-r1 = mn-r(1) - 1
      compute box-c1 = mn-c(1) - 1
      compute box-r2 = mn-r(Item-Num) + 1
      compute box-c2 = mn-c(1) + Item-MaxLen + 2
+
+     move Mn-Box-Parameters to Box-Parameters
+
      CALL GC01BOX USING BY CONTENT BOX-AREA
    end-if
 
-   perform hide-cursor thru hide-cursor-ex
-
-   exit.
+   continue.
+   *> exit.
 
 *> ***********************************************************************************
 *> WAIT FOR USER INPUT
 *> ***********************************************************************************
 Accept-a-Key.
- *> accept of a 1 byte dummy field.
- *> With "Auto" will detect if cursor up/down/left/right pressed
- *> accept wDummy at 2580 with auto size 0 :BCOL: red :FCOL: white end-accept
 
   call static "getch" returning Key-Pressed end-call
-
 
   *> <enter> or <escape> return to caller Mn-Selected
   IF Key-Pressed = Key-Enter  move Key-Enter  to Mn-Key go to Exit-Program end-if
@@ -137,9 +136,8 @@ Accept-a-Key.
 
   *> if pressed cursor down or right -> then de-activate current item and activate next menu item
   *> if pressed cursor up   or left  <- then de-activate current item and activate previous menu item
-  *> move space to mn-Act of item
-  *> move '1' to mn-Act of next or previous item
-  *> other keys have no effect
+  *> if pressed a hotkey then de-activate current item and activate menu item with that hotkey
+  *> move space to mn-Act of curr.item, move '1' to mn-Act of next/previous/hotkey item, other keys have no effect
   EVALUATE TRUE
      when Key-Pressed = Key-CursRight and (Mn-Arrow = 'H' or ' ')    *> Key -> or down
        or Key-Pressed = Key-CursDn    and (Mn-Arrow = 'V' or ' ')
@@ -191,12 +189,10 @@ Accept-a-Key.
            )
            move Key-Pressed to Mn-Key go Exit-Program
 
-      *> *****************************************************************************************
-      *> SEARCH IF PRESSED A HOT KEY
-      *> *****************************************************************************************
+    *> *****************************************************************************************
+    *> IF USER HAS TYPED A LETTER - SEARCH IF IT IS A HOT KEY
+    *> *****************************************************************************************
      when Key-Pressed >= Key-lc-a and <= Key-lc-z
-        *> display "1menu: KeyPressed Sc.Code= " at 019002 :BCOL: 4 :FCOL: 7 highlight end-display
-        *> display      Key-Pressed              at 019032 :BCOL: 4 :FCOL: 7 highlight end-display
 
         *> search the index of Key Pressed
         set wChars-Idx Key-lc-Idx to 0
@@ -205,57 +201,45 @@ Accept-a-Key.
                when   Key-lc-Ele (Key-lc-Idx) = Key-Pressed  continue
         end-search
 
-        *> display "2Menu: Key Index char AO = "  at 020002 :BCOL: 4 :FCOL: 7 highlight end-display
-        *> move Key-lc-Idx to Key-lc-Idx9
-        *> display     Key-lc-Idx9                at 020032 :BCOL: 4 :FCOL: 7 highlight end-display
-
         set wChars-Idx to Key-lc-Idx
-        *> display  wChars-Ele(wChars-Idx)        at 020037 :BCOL: 4 :FCOL: 7 highlight end-display
-        *> accept omitted
-
         perform varying k from 1 by 1 until k > Item-Num
-                *> display "3menu: k Item by hot AO = " at 021002 :BCOL: 4 :FCOL: 7 highlight end-display
-                *> display    k                         at 021032 :BCOL: 4 :FCOL: 7 highlight end-display
-                *> display    Mn-Item(k)                at 021040 :BCOL: 4 :FCOL: 7 highlight end-display
-                *> accept omitted
                 move Mn-Item(k) (Mn-Hot(k):1) to wChar
-                inspect wChar
-                        converting 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'abcdefghijklmnopqrstuvwxyz'
+                inspect wChar converting 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'abcdefghijklmnopqrstuvwxyz'
                 if wChar = wChars-Ele(wChars-Idx)
-                   *> hotkey is valid
-                   move 'Y' to wFound
-                   perform Display1 thru Display1Ex
-                   move k to wSalvaK
-                   *> display "4menu: Item found  AO  = " at 022002 :BCOL: 4 :FCOL: 7 highlight end-display
-                   *> display    Mn-Item(wSalvaK)         at 022032 :BCOL: 4 :FCOL: 7 highlight end-display
-                   *> accept omitted
-                   *> go to exitp
+                    *> the letter typed by the user is a valid hotkey !
+                    *> change display of active item to display as normal item
+                    move Mn-Selected to i
+                    move space       to Mn-Act(Mn-Selected)
+                    Move Mn-bcoN  to bco
+                    Move Mn-fcoN  to fco
+                    Move Mn-fcoNH to fcoH
+                    perform DisplayItem thru DisplayItemEx
+                   *> change the item with the hotkey to display from normal item to display as active item
+                    move k to Mn-Selected i
+                    move '1'   to Mn-Act(Mn-Selected)
+                    Move Mn-bcoS  to bco
+                    Move Mn-fcoS  to fco
+                    Move Mn-fcoSH to fcoH
+                    perform DisplayItem    thru DisplayItemEx
+                    perform DisplayMessage thru DisplayMessageEx
                 end-if
         end-perform
 
-        *> display    wFound  at 002002 :BCOL: 4 :FCOL: 7 highlight end-display
-        *> accept omitted
-
   END-EVALUATE
 
-.
-exitp.
-  *> display "5menu: Item on exit AO = " at 022002 :BCOL: 4 :FCOL: 7 highlight end-display
-  *> display    Mn-Item(wSalvaK)         at 022032 :BCOL: 4 :FCOL: 7 highlight end-display
-  *> accept omitted
 
-  perform hide-cursor thru hide-cursor-ex
-
-  *> display ' - ACCEPT - ' at 002002 :BCOL: 2 :FCOL: 6 highlight end-display
 
   go to Accept-a-Key.
 
 Exit-Program.
-    *> re-show the cursor
-    move 2 to wInt
-    call static "curs_set" using by value wInt end-call
 
-EXIT PROGRAM.
+  *> reset the cursor
+  perform CursorReset thru CursorResetEx
+
+  GOBACK.
+  *> EXIT PROGRAM.
+
+
 
 *> ***********************************************************************************
 *> DISPLAY A MENU ITEM  (i = the number of menu item)
@@ -284,8 +268,9 @@ DisplayItemLoop.
    go to DisplayItemLoop.
 DisplayItemEx. exit.
 
+
 *> ***********************************************************************************
-*> DISPLAY THE MESSAGE ASSOCIATED TO MENU ITEM
+*> DISPLAY MESSAGE ASSOCIATED TO MENU ITEM
 *> ***********************************************************************************
 DisplayMessage.
    *> clear row 25 from previous message (next menu item may have "no message" )
@@ -295,8 +280,8 @@ DisplayMessage.
    end-if
 
    move 1 to w .
-*> loop to display single characters of the message
-DisplayMessageLoop.
+
+DisplayMessageLoop.   *> loop to display single characters of the message
    if mn-mess(i) (w:1) = low-value or w > 80
       go to DisplayMessageEx
    end-if
@@ -309,44 +294,20 @@ DisplayMessageLoop.
    go to DisplayMessageLoop.
 DisplayMessageEx. exit.
 
-hide-cursor.
-    *> hide the cursor
-    move 0 to wInt
-    call static "curs_set" using by value wInt end-call.
-hide-cursor-ex. exit.
 
-Display1.
-          *> display ' - FOUNDED ! - XXXXXXX AO i Mn-selected' at 002002 :BCOL: 2 :FCOL: 6 highlight end-display
-          *> accept omitted
-          *> display  i           at 002050 :BCOL: 2 :FCOL: 6 highlight end-display
-          *> display  Mn-Selected at 002056 :BCOL: 2 :FCOL: 6 highlight end-display
-          *> accept omitted
+CursorHide.
+    *> save cursor state and hide the cursor
+    *> (use always a "display ...at ..."  or an "accept ... at ..." before to have a call to "initscr"
+    move wVisibilityNot to wVisibilityNew
+    call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
+    continue.
+CursorHideEx. exit.
 
-          *> change display active item to display as normal item
-          move Mn-Selected to i
-         *>  move i to Mn-Selected
-          move space       to Mn-Act(Mn-Selected)
-
-          *> display ' - FOUNDED 2 - XXXXXXX AO i Mn-selected' at 002002 :BCOL: 2 :FCOL: 6 highlight end-display
-          *> accept omitted
-          *> display  i           at 002050 :BCOL: 2 :FCOL: 6 highlight end-display
-          *> display  Mn-Selected at 002056 :BCOL: 2 :FCOL: 6 highlight end-display
-          *> accept omitted
-
-          Move Mn-bcoN  to bco
-          Move Mn-fcoN  to fco
-          Move Mn-fcoNH to fcoH
-          perform DisplayItem thru DisplayItemEx
-
-         *> change display from normal item to display as active item
-          move k to Mn-Selected i
-          move '1'   to Mn-Act(Mn-Selected)
-          Move Mn-bcoS  to bco
-          Move Mn-fcoS  to fco
-          Move Mn-fcoSH to fcoH
-          perform DisplayItem    thru DisplayItemEx
-          perform DisplayMessage thru DisplayMessageEx
-          .
-Display1Ex.
+CursorReset.
+    *> reset (show) the cursor to its saved previous state
+    move wVisibilityOld to wVisibilityNew
+    call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
+    continue.
+CursorResetEx. exit.
 
 End Program GC22MENU.
