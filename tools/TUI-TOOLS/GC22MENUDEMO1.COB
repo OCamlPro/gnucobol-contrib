@@ -5,7 +5,7 @@ ID DIVISION.
 PROGRAM-ID. GC22MENUDEMO1.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
-*> Purpose:    DEMO OF GC22MENU -  MENU MANAGER
+*> Purpose:    DEMO OF GC22MENU -  MENU MANAGEMENT WITH HOT KEY OF MENU ITEMS DEMO
 *> Tectonics:  cobc -x GC03YESNODEMO1.COB (use GnuCOBOL 2.0 or greater)
 *> Usage:      GC22MENUDEMO1
 *> Parameters: none
@@ -16,8 +16,7 @@ PROGRAM-ID. GC22MENUDEMO1.
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
-SPECIAL-NAMES.
-    CRT STATUS IS ws-KEY.
+
 DATA DIVISION.
 WORKING-STORAGE SECTION.
 
@@ -47,7 +46,7 @@ PROCEDURE DIVISION.
 set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
 set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
-display wDummy at 2579 with blank screen end-display.
+display wDummy at 025080 with blank screen end-display.
 
 display " Activate a menu item with cursor keys or with hot keys (letters in red ) "
         at 021002 :BCOL: 4 :FCOL: 7 highlight end-display
@@ -69,6 +68,11 @@ move  ' 5 5 5 5 5 5 5 5 5 5                                                     
 move  ' 666666666666666 666666666666666 6666666666666666666                       ' to mn-mess(6)
 move  ' 77 77 77 77 77 77 77 77 77 77 77 77 77 77 77 77 77 77 77 77 77 77 77 77   ' to mn-mess(7)
 move  ' 888 888 888 888 888 88888 888888 888888 88888                             ' to mn-mess(8)
+
+move 'Y'   to Mn-Box
+*> move black to Mn-Box-fco
+*> move 'N'   to Mn-Box-fcoH
+move 'S'   to Mn-Box-style
 CALL  'GC22MENU' USING BY REFERENCE MENU-AREA
 
 perform DisplayMess thru DisplayMessEx
@@ -92,18 +96,19 @@ move  ' Choose a date on calendar      ' to mn-mess(4)
 move  ' Some options on fade screens   ' to mn-mess(5)
 move  ' Screen Savers                  ' to mn-mess(6)
 move  ' Exit from GnuCOBOL Demo        ' to mn-mess(7)
+move 'N' to Mn-Box
 call  GC22MENU using MENU-AREA.
 
 perform DisplayMess thru DisplayMessEx
 
 *> *************************************************************************************
-move cyan    to Box-bco.
-move black   to Box-fco.
+move cyan     to Box-bco.
+move black    to Box-fco.
 move '006009' to Box-r1c1.
 move '014024' to Box-r2c2.
-move 'S' to Box-style
-move 'N' to Box-3D
-move 'N' to Box-shadow
+move 'S'      to Box-style
+move 'N'      to Box-3D
+move 'N'      to Box-shadow
 call GC01BOX using BOX-AREA.
 
 move low-value to mn-tab
@@ -129,13 +134,13 @@ call  GC22MENU using MENU-AREA.
 
 perform DisplayMess thru DisplayMessEx
 *> *************************************************************************************
-move white   to Box-bco.
-move black   to Box-fco.
+move white    to Box-bco.
+move black    to Box-fco.
 move '006029' to Box-r1c1.
 move '014044' to Box-r2c2.
-move 'S' to Box-style
-move 'N' to Box-3D
-move 'N' to Box-shadow
+move 'S'      to Box-style
+move 'N'      to Box-3D
+move 'N'      to Box-shadow
 call GC01BOX using BOX-AREA.
 
 move low-value to mn-tab
@@ -161,13 +166,13 @@ call GC22MENU using MENU-AREA.
 
 perform DisplayMess thru DisplayMessEx
 *> *************************************************************************************
-move red     to Box-bco.
-move yellow  to Box-fco.
+move red      to Box-bco.
+move yellow   to Box-fco.
 move '006049' to Box-r1c1.
 move '014064' to Box-r2c2.
-move 'S' to Box-style
-move 'N' to Box-3D
-move 'N' to Box-shadow
+move 'S'      to Box-style
+move 'N'      to Box-3D
+move 'N'      to Box-shadow
 call GC01BOX using BOX-AREA.
 
 move low-value to mn-tab
@@ -199,9 +204,9 @@ move magenta  to Box-bco.
 move white    to Box-fco.
 move '017029' to Box-r1c1.
 move '019044' to Box-r2c2.
-move 'S' to Box-style
-move 'N' to Box-3D
-move 'N' to Box-shadow
+move 'S'      to Box-style
+move 'N'      to Box-3D
+move 'N'      to Box-shadow
 call GC01BOX using BOX-AREA.
 
 move low-value to mn-tab
@@ -232,7 +237,7 @@ goback.
 DisplayMess.
     display " Item selected    = " at 023002 :BCOL: 4 :FCOL: 7 highlight end-display
     display      Mn-Selected       at 023022 :BCOL: 4 :FCOL: 7 highlight end-display
-    display " Return key    AO = " at 023030 :BCOL: 4 :FCOL: 7 highlight end-display
+    display " Return key       = " at 023030 :BCOL: 4 :FCOL: 7 highlight end-display
     display      Mn-Key            at 023050 :BCOL: 4 :FCOL: 7 highlight end-display.
 DisplayMessEx. Exit.
 
