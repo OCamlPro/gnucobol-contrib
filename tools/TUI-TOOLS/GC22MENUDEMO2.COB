@@ -2,7 +2,7 @@ ID DIVISION.
 program-id. GC22MENUDEMO2.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
-*> Purpose:    DEMO OF GNUCOBOL TUI TOOLS
+*> Purpose:    DEMO OF GC22MENU -  BAR & DROPDOWN MENU MANAGEMENT WITH DEMO OF HOT KEY OF MENU ITEMS
 *> Tectonics:  cobc -x GC22MENUDEMO2
 *> Usage:      GC22MENUDEMO2
 *> Parameters: none
@@ -546,10 +546,15 @@ DropDownMenu6ex. exit.
 InitializeDropDownMenu.
    Initialize menu-area ALL TO VALUE
    move low-value to mn-tab
-   move 'Y' to Mn-Box
-   move 'Y' to Mn-Shadow
+
    move 'V' to Mn-Arrow  *> user can use only vertical cursors (Up or Down) movement
    move 'Y' to Mn-Return *> return to caller if used horizontal cursor movements  (Left or Right)
+   move 'Y' to Mn-Box
+   move 'Y' to Mn-Box-Shadow
+   move 'S' to Mn-Box-style
+   move black to Mn-Box-fco
+   move 'N'   to Mn-Box-fcoH
+  *>  move 'N' to Mn-Box-Fill
    .
 InitializeDropDownMenuEx. exit.
 
@@ -617,7 +622,7 @@ move space & x'00' to Bxm-mex(14)
 *> move '004005021073'                to Bxm-rc
 
     Move '37YSabcdefghiYYRNN37YYYYNN77Y' to Bxm-Parameters
-    move '004005021073'                to Bxm-rc
+    move '004005021073'                  to Bxm-rc
 
 
 call GC02BOXMEX using BOXMEX-AREA.
