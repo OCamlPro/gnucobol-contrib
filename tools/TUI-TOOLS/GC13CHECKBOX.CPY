@@ -20,22 +20,23 @@
 *>
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
-*> Bu-Act    1= this item is displayed as Active (tobe Marked / unmarked with spacebar)
-*>           only one of checkbox items can have '1' . it will be highlighted
+*> Ck-Act    1= this item is displayed as Active or "with focus" (tobe Marked / unmarked with spacebar)
+*>           only one of checkbox items can have '1' . it will be highlighted (has the focus)
 *>           at first display of the checkbox items. when you exit from the checkbox function
 *>           the active checkbox item will have '1' other items will have blank.
 *> Ck-Mark   if = 1 at display this item is displayed as Marked ( marked = [X], not marked = [ ] )
 *>           all items can have '1' or blank
 *>           when you exit from checkbox function marked checkbox items will have '1'
 *>           other checkbox items will have blank
-*> Ck-Hot    NOY YET IMPLEMENTED . number of char to be used as hot key (Alt-Key) .
-*>           ex. if item is "Option 1 " and this field is 2, the typing ALT-P is like select the item
+*> Ck-Hot    number of char to be used as hot key (the letter key or corresponding Alt-Key) . ex. if item
+*>           is "Option 1 " and this Ck-Hot = 2, the typing p or P or ALT-P is like acctivate the item
+*>           !!! NOT YET AVAILABLE !!!
 *> Ck-r      row & col where the description of checkbox item starts on screen
 *> Ck-c      first row & col are 01, 01, last are 25,80 (row 25 col 80)
 *>           CHECKBOX items can be displayed in every position, also sparse.
 *>           CHECKBOX items can  be overlapped
-*>           note the brackets and mark char are dislayed at column = Ck-c - 4
-*>           example   "   [x] checkbox item    " . "c" is at Ck-r , Ch-c
+*>           note the brackets and mark char are displayed at column = Ck-c - 4
+*>           example   "   [x] checkbox item    " . "c" is at Ck-r , Ck-c
 *> Ck-Item   charatcters string to be displayed as checkbox text (max 80 chars).
 *>           It has to be in ASCIIZ format (must have x'00'(low-value) as last byte
 *> Ck-Markchar   single char used to "mark" the single chechbox item. example an "X"
