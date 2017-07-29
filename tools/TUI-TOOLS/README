@@ -57,6 +57,10 @@ GC13CHEKBOX.COB
 call it to display checkbox items (switches) on screen, you can specify number of items, 
 back/fore colors, size, position, symbol , brackets and so on.
 
+GC18RADIOBUTTON.COB 
+call it to display rediobutton items (options) on screen, you can specify number of items, 
+back/fore colors, size, position, symbol , brackets and so on.
+
 GC21MENU.COB 
 call it to display menus on screen, you can manage bar menu, dropdown menu, 
 specify number of items, text and length of items, back/fore colors, position, 
