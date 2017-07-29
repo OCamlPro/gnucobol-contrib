@@ -175,8 +175,10 @@ accept omitted.
 *> *********************************************************************************
 *> DISPLAY CHECKBOX - ALL PAGE
 *> *********************************************************************************
+
+
 *> DISPLAY A BOX AS BACKGROUND OF CHECKBOX ITEMS
-set  Box-bco   Box-fco to white
+set  Box-bco Box-fco to white
 move '002003020077' to Box-rc
 move 'S'            to Box-style
 move 'N'            to Box-3D Box-shadow
@@ -194,6 +196,7 @@ move ' Preferences ' & x'00' to Box-titDes
 call GC01BOX using BOX-AREA
 
 *> DISPLAY CHECKBOX ITEMS N.1
+display 'Options'     at 004007 with :BCOL: white :FCOL: black  end-display
 display 'Command set' at 015007 with :BCOL: white :FCOL: black  end-display
 display 'Auto-Save'   at 013042 with :BCOL: white :FCOL: black  end-display
 initialize CHECKBOX-area ALL TO VALUE
@@ -243,7 +246,7 @@ goback.
 DisplaySwitch.
     DISPLAY '                                                                     '
          AT 022003 with foreground-color white background-color blue.
-    STRING ' Switches set to: '
+    STRING ' Switches set to: -'
                       Ck-Mark(01) '-' Ck-Mark(02) '-' Ck-Mark(03) '-' Ck-mark(04) '-' Ck-Mark(05) '-'
                       Ck-Mark(06) '-' Ck-Mark(07) '-' Ck-Mark(08) '-' Ck-mark(09) '-' Ck-Mark(10) '-'
                       Ck-Mark(11) '-' Ck-Mark(12) '-' Ck-Mark(13) '-' Ck-mark(14) '-' Ck-Mark(15) '-'
@@ -252,6 +255,7 @@ DisplaySwitch.
                       Ck-Mark(26) '-' Ck-Mark(27) '-' Ck-Mark(28) '-' Ck-mark(29) '-' Ck-Mark(30) '+'
              into wSTRING.
     DISPLAY wSTRING AT 022003 with foreground-color white background-color blue.
+    DISPLAY Ck-Selected AT 022076 with foreground-color white background-color blue.
     continue.
 DisplaySwitchEx. Exit.
 
