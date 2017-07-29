@@ -198,18 +198,19 @@ end-if
 *> ***********************************************************************************
      if Box-tit = "Y" go to TitleCount else go to TitleDisplayEx end-if.
      move 0 to t.
-*> loop to count characters of title t= number of title chars
+*> loop to count characters of title t= number of title chars to display title centered
 TitleCount.
      add 1 to t
      if Box-titDes(t:1) = low-value go TitleCountEx else go to TitleCount end-if.
 TitleCountEx.
-       compute wTitleCol = Box-c1 + ((Box-c2 - Box-c1) / 2)  - (t / 2)     end-compute.
+     compute wTitleCol = Box-c1 + ((Box-c2 - Box-c1) / 2)  - (t / 2)     end-compute.
      move 0 to t.
+
 TitleDisplayLoop.
      add 1 to wTitleCol
      add 1 to t
      if Box-titDes(t:1) = low-value go to TitleDisplayEx end-if.
-     if Box-tit = 'Y'
+     if Box-titFcoH = 'Y'  *> title description in highlight ?
         display Box-TitDes(t:1) at line Box-r1 col wTitleCol
                  with background-color  Box-titBco foreground-color Box-titFco highlight end-display
      else
