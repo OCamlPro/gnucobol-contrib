@@ -112,8 +112,7 @@ message2.
     move 'S' to Bxm-Style
 
     call GC02BOXMEX using BOXMEX-AREA.
-    *> accept omitted
-    *> call static "getch" returning Key-Pressed end-call.
+
 
 *> ***********************************************************************************
 *>      MESSAGE N.3
@@ -131,9 +130,9 @@ message3.
     move z' and linked. While originally developed for UNIX operating systems,      ' to Bxm-mex(03)
     move z' GnuCOBOL has also been successfully built for OSX computers or Windows  ' to Bxm-mex(04)
     move z' computers utilizing the UNIX-emulation features of such tools as Cygwin ' to Bxm-mex(05)
-    move z' and MinGW1. It has also been built as a truly native Windows application' to Bxm-mex(06)
+    move z' and MinGW. It has also been built as a truly native Windows application ' to Bxm-mex(06)
     move z' utilizing Microsoft"s freely-downloadable Visual Studio Express package ' to Bxm-mex(07)
-    move z' to provide the C compiler and linker/loader. The principal developers of' to Bxm-mex(08)
+    move z' to provide the C compiler and linker/loader.The principal developers of ' to Bxm-mex(08)
     move z' GnuCOBOL are Keisuke Nishida and Roger While.                           ' to Bxm-mex(09)
     move space & x'00' to Bxm-mex(10)
     move space & x'00' to Bxm-mex(11)
@@ -169,6 +168,65 @@ message3.
     Move '16015020  Continue   ' & x'00' to Bu-Ele(01)
     Move ' 5015035   Cancel    ' & x'00' to Bu-Ele(02)
     Move ' 6015050  Inspect    ' & x'00' to Bu-Ele(03)
+    call GC09BUTTONS using BUTTONS-AREA
+    .
+
+
+*> ***********************************************************************************
+*>      MESSAGE N.3.1
+*> ***********************************************************************************
+message3.
+        display ' GC02BOXMEX used with GC09BUTTONS ... message text and vertical buttons.'
+          at 2403 with foreground-color yellow background-color green  highlight
+    initialize Boxmex-Area ALL TO VALUE
+    move low-value to Bxm-tabmex
+    *>    123456789012345678901234567890123456789012345678901234567890123456789012
+    move 'Y' to Bxm-tit Bxm-titFcoH
+    move ' *** GnuCOBOL GnuCOBOL GnuCOBOL *** ' & x'00'       to Bxm-titDes
+    move z'                                                                         ' to Bxm-mex(01)
+    move z' GnuCOBOL is an open-source COBOL compiler  and                          ' to Bxm-mex(02)
+    move z' runtime environment. The GnuCOBOL compiler                              ' to Bxm-mex(03)
+    move z' generates C code which is automatically compiled                        ' to Bxm-mex(04)
+    move z' and linked. While originally developed for UNIX                         ' to Bxm-mex(05)
+    move z' operating systems, GnuCOBOL has also been successfully                  ' to Bxm-mex(06)
+    move z' built for OSX computers or Windows  computers utilizing                 ' to Bxm-mex(07)
+    move z' the UNIX-emulation features of such tools as Cygwin and                 ' to Bxm-mex(08)
+    move z' MinGW. It has also been built as a truly native Windows                 ' to Bxm-mex(09)
+    move z' application utilizing Microsoft"s freely-downloadable                   ' to Bxm-mex(10)
+    move z' Visual Studio Express package to provide the C compiler                 ' to Bxm-mex(11)
+    move z' and linker/loader. The principal developers of GnuCOBOL                 ' to Bxm-mex(12)
+    move z' are Keisuke Nishida and Roger While.                                    ' to Bxm-mex(13)
+    move space & x'00' to Bxm-mex(14)
+    move '003003019077' to Bxm-rc
+    move red    to Bxm-bco Bxm-titBco
+    move black  to Bxm-fco Bxm-titFco
+    move red    to Bxm-bcoM
+    move yellow to Bxm-fcoM
+    move 'Y' to Bxm-fcoMH
+    move 'N' to Bxm-Shadow Bxm-click Bxm-3D Bxm-wait Bxm-OkButton
+    move 'D' to Bxm-Style
+    call GC02BOXMEX using BOXMEX-AREA.
+
+
+    *> DISPLAY BUTTONS
+    initialize Buttons-area ALL TO VALUE
+    move red       to Bu-bcoShadow
+    move low-value to Bu-tab
+    move green     to Bu-bcoN
+    move white     to Bu-fcoN
+    move blue      to Bu-bcoS
+    move yellow    to Bu-fcoS
+    move '1' to Bu-Arrow
+    move "<" to Bu-Arrow-Char1
+    move ">" to Bu-Arrow-Char2
+    move 'Y' to Bu-Click
+
+    Move ' 6005062     OK      ' & x'00' to Bu-Ele(01)
+    Move '16007062  Continue   ' & x'00' to Bu-Ele(02)
+    Move ' 5009062   Cancel    ' & x'00' to Bu-Ele(03)
+    Move ' 6011062    Move     ' & x'00' to Bu-Ele(04)
+    Move ' 6013062      ?      ' & x'00' to Bu-Ele(05)
+    Move ' 6015062    Help     ' & x'00' to Bu-Ele(06)
     call GC09BUTTONS using BUTTONS-AREA
     .
 
