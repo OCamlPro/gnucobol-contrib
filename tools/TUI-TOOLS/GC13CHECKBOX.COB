@@ -113,7 +113,7 @@ loop-user-input.
    EVALUATE TRUE
    *> i = number of checkbox item
 
-           *> TOGGLE THE MARK / UNMARCK OF "ACTIVE" CHECKBOX ITEM
+           *> TOGGLE THE MARK / UN-MARK OF "ACTIVE" CHECKBOX ITEM
            when Key-Pressed =  Key-space
                 if Ck-Mark(i) = space
                    move '1' to Ck-Mark(i)
@@ -125,55 +125,55 @@ loop-user-input.
                 perform Display-Checkbox thru Display-CheckboxEx
 
            *> NEXT CHECKBOX ITEM WILL BECAME "ACTIVE"
-           when Key-Pressed = Key-CursRight
+           when     Key-Pressed = Key-CursRight
                  or Key-Pressed = Key-CursDn
                  or Key-Pressed = Key-Tab
                  or Key-Pressed = Key-PgDn
-                 or Key-Pressed = Key-space
 
+                  *> set and display "current" checkbox item as Normal Checkbox item
                   move Ck-Selected to i
                   move space       to Ck-Act(Ck-Selected)
-                  *> display "current" checkbox item as Normal Checkbox item
-                  Move Ck-bcoN to bco
-                  Move Ck-fcoN to fco
+                  Move Ck-bcoN  to bco
+                  Move Ck-fcoN  to fco
                   Move Ck-fcoNH to fcoH
                   perform Display-Checkbox thru Display-CheckboxEx
 
+                  *> set and display next checkbox item as Active Checkbox item
                   if   Ck-Selected = Chk-Number
                        move 1 to Ck-Selected i
                   else
                        add  1 to Ck-Selected i
                   end-if
                   move '1'   to Ck-Act(Ck-Selected)
-                  *> display next checkbox item as Active Checkbox item
-                  Move Ck-bcoA to bco
-                  Move Ck-fcoA to fco
+                  Move Ck-bcoA  to bco
+                  Move Ck-fcoA  to fco
                   Move Ck-fcoAH to fcoH
                   perform Display-Checkbox thru Display-CheckboxEx
 
            *> PREVIOUS CHECKBOX ITEM WILL BECAME "ACTIVE"
-           when Key-Pressed = Key-CursLeft
+           when     Key-Pressed = Key-CursLeft
                  or Key-Pressed = Key-CursUp
-                 *> or Key-Pressed = Key-BackTab
+                 *> or Key-Pressed = Key-BackTab  (backtab doesn't work ?!?!?)
                  or Key-Pressed = Key-PgUp
 
+                  *> set and display "current" checkbox item as Normal Checkbox item
                   move Ck-Selected to i
                   move space       to Ck-Act(Ck-Selected)
-                  *> display "current" checkbox item as Normal Checkbox item
-                  Move Ck-bcoN to bco
-                  Move Ck-fcoN to fco
+
+                  Move Ck-bcoN  to bco
+                  Move Ck-fcoN  to fco
                   Move Ck-fcoNH to fcoH
                   perform Display-Checkbox thru Display-CheckboxEx
 
+                  *> set and display previous checkbox item as Active Checkbox item
                   if   Ck-Selected = 1
                        move Chk-Number to Ck-Selected i
                   else
                        subtract 1 from Ck-Selected i
                   end-if
-                  move '1'   to Ck-Act(Ck-Selected)
-                  *> display previous checkbox item as Active Checkbox item
-                  Move Ck-bcoA to bco
-                  Move Ck-fcoA to fco
+                  move '1'      to Ck-Act(Ck-Selected)
+                  Move Ck-bcoA  to bco
+                  Move Ck-fcoA  to fco
                   Move Ck-fcoAH to fcoH
                   perform Display-Checkbox thru Display-CheckboxEx
    END-EVALUATE
@@ -244,9 +244,6 @@ loop1.
 
 loop1-ex.
    *> display "brackets" and markchar
-
-   *> display i at line 01 col 02 end-display
-   *> accept omitted
 
    compute wCol = Ck-c(i) - 4 end-compute
    display '     ' at line Ck-r(i) col wcol with :BCOL: bco :FCOL: fco end-display
