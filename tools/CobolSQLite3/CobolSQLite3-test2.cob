@@ -2,21 +2,21 @@
 *>
 *> Test program for CobolSQLite3 [an SQLite3 Interface for GnuCOBOL 2.x].
 *>
-*>  - Passes string variables to DBxxx functions.
-*>  - Creates database test.sdb
+*>  - Passes strings instead of string variables to DBxxx functions.
+*>  - Creates database test2.sdb
 *>
 *> Written by Robert W.Mills, September 2017.
 *>
 *> Tectonics:
 *>
 *>   Install the SQLite3 library (sqlite.org), if required.
-*>   prompt$ cobc -x -fdebugging-line CobolSQLite3-test.cob
+*>   prompt$ cobc -x -fdebugging-line CobolSQLite3-test2.cob
 *>   prompt$ export COB_PRE_LOAD=CobolSQLite3
-*>   prompt$ ./CobolSQLite3-test
+*>   prompt$ ./CobolSQLite3-test2
 
 identification division.
 
-  program-id.                          CobolSQLite3-test.
+  program-id.                          CobolSQLite3-test2.
 
 environment division.
 
@@ -35,18 +35,6 @@ data division.
     01  foo-column-number.
       05  fcn-line-no                  pic s9(04) comp value 1.
       05  fcn-line-text                pic s9(04) comp value 2.
-
-    01  sql-statements.
-      05  create-table-foo             pic x(080) value
-            "create table foo(line_no int, line_text text);".
-      05  insert-into-foo-1            pic x(088) value
-            "insert into foo (line_no, line_text) values (1, 'this is line 1');".
-      05  insert-into-foo-2            pic x(080) value
-            "insert into foo (line_no, line_text) values (2, 'this is line 2');".
-      05  insert-into-foo-3            pic x(080) value
-            "insert into foo (line_no, line_text) values (3, 'this is line 3');".
-      05  select-from-foo              pic x(080) value
-            "select * from foo;".
 
     01  foo-heading-1.
       05                               pic x(001) value spaces.
@@ -71,12 +59,11 @@ data division.
 
 procedure division.
 
-testsqlite3-mainline.
+CobolSQLite3-test2-mainline.
 
 >>D display "- opening database" end-display
 
-  move "test.sdb" to db-name
-  move DBOPEN(db-name) to db-object
+  move DBOPEN("./test2.sdb") to db-object
 
   if DBSTATUS <> ZERO then
     display "DBOPEN: ", DBERRMSG end-display
@@ -85,31 +72,31 @@ testsqlite3-mainline.
 
 >>D display "- creating table foo" end-display
 
-  if DBSQL(db-object, create-table-foo) <> ZERO then
+  if DBSQL(db-object, "create table foo(line_no int, line_text text);") <> ZERO then
     display "DBSQL (create table): ", DBERRMSG end-display
     goback
   end-if
 
 >>D display "- adding record(s) to table foo" end-display
 
-  if DBSQL(db-object, insert-into-foo-1) <> ZERO then
+  if DBSQL(db-object, "insert into foo (line_no, line_text) values (1, 'this is line 1');") <> ZERO then
     display "DBSQL (insert 1): ", DBERRMSG end-display
     goback
   end-if
 
-  if DBSQL(db-object, insert-into-foo-2) <> ZERO then
+  if DBSQL(db-object, "insert into foo (line_no, line_text) values (2, 'this is line 2');") <> ZERO then
     display "DBSQL (insert 2): ", DBERRMSG end-display
     goback
   end-if
 
-  if DBSQL(db-object, insert-into-foo-3) <> ZERO then
+  if DBSQL(db-object, "insert into foo (line_no, line_text) values (3, 'this is line 3');") <> ZERO then
     display "DBSQL (insert 3): ", DBERRMSG end-display
     goback
   end-if
 
 >>D display "- selecting all records from foo" end-display
 
-  move DBCOMPILE(db-object, select-from-foo) to sql-object
+  move DBCOMPILE(db-object, "select * from foo;") to sql-object
 
   if DBSTATUS <> ZERO then
     display "DBCOMPILE (select foo): ", DBERRMSG end-display
@@ -181,4 +168,4 @@ get-print-data.
   move DBEXECUTE(sql-object) to db-status
   .
 
-end program CobolSQLite3-test.
+end program CobolSQLite3-test2.

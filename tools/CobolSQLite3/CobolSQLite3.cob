@@ -49,7 +49,7 @@ identification division.
 *> -----------------------------------------------------------------------------
 
 *> Set the libraries Version.Update.Fix level here.
-REPLACE =="V.UU.FF"== BY =="X.01.00"==.
+REPLACE =="V.UU.FF"== BY =="X.02.00 [BETA]"==.
 
   program-id.                          CobolSQLite3.
 
@@ -332,23 +332,23 @@ identification division.
 *> DBOPEN(db-name)
 *> -----------------------------------------------------------------------------
 *>
-*> Opens the specified Database and creates a Database Object.
+*> Open specified Database and create Database Object.
 *>
 *> Notes:
 *>
-*>   If the database does not exist then a Temporary Database is created.
+*>   If database does not exist then Database automatically created.
 *>
-*>   Use the DBSTATUS Function to obtain the Status Code.
+*>   Use DBSTATUS Function to obtain Status Code.
 *>
 *> Parameters:
 *>
 *>   db-name
-*>     - String containing the name of the Database to be opened.
+*>     - String or String Variable containing name of Database to open.
 *>       (see db-name in CobolSQLite3-WS.cpy)
 *>
 *> Returns:
 *>
-*>   Pointer holding the handle to the Database Object.
+*>   Pointer holding handle to Database Object.
 *>   (see db-object in CobolSQLite3-WS.cpy)
 *>
 *> -----------------------------------------------------------------------------
@@ -368,6 +368,16 @@ data division.
 
     01  CobolSQLite3-Database-Status-Code
                                        pic s9(04) comp external.
+
+    01  pic x(001). *> Is the file an SQLite3 Database?
+      88  is-an-sqlite3-database         value "I".
+      88  not-an-sqlite3-database        value "N".
+
+    *> CBL_*_FILE parameters.
+
+    01  file-handle                    usage pointer.
+    01  offset                         pic x(8) usage comp-x.
+    01  read-buffer                    pic x(015).
 
   linkage section.
 
@@ -389,6 +399,13 @@ procedure division using db-name
       goback
     end-if
 
+    perform check-if-sqlite-database
+
+    if not-an-sqlite3-database then
+      move -14 to CobolSQLite3-Database-Status-Code
+      goback
+    end-if
+
     call static "sqlite3_open" using concatenate(trim(db-name), x"00"),
                                      by reference db-object-ptr
                            returning CobolSQLite3-Database-Status-Code
@@ -401,6 +418,33 @@ procedure division using db-name
     goback
     .
 
+  check-if-sqlite-database.
+
+    set not-an-sqlite3-database to TRUE
+
+    call "CBL_OPEN_FILE" using concatenate(trim(db-name), x"00"), 1, 0, 0, file-handle end-call
+
+    evaluate return-code
+
+      when ZERO *> File exists.
+
+        move "00000000" to offset
+        call "CBL_READ_FILE" using file-handle, offset, 15, 0, read-buffer end-call
+
+        if return-code = ZERO then *> Read sucessful.
+          if trim(read-buffer) = "SQLite format 3" then
+            set is-an-sqlite3-database to TRUE
+          end-if
+        end-if
+
+      when 35 *> File does not exist.
+        set is-an-sqlite3-database to TRUE
+
+    end-evaluate
+
+    call "CBL_CLOSE_FILE" using file-handle end-call
+    .
+
 end function DBOPEN.
 
 *> *****************************************************************************
@@ -411,16 +455,12 @@ identification division.
 *> DBCLOSE(db-object)
 *> -----------------------------------------------------------------------------
 *>
-*> Closes the specified Database and destroys the Database Object.
-*>
-*> Notes:
-*>
-*>   If a Temporary Database was created then it is automatically deleted.
+*> Close specified Database and destroy Database Object.
 *>
 *> Parameters:
 *>
 *>   db-object
-*>     - Pointer holding the handle to the Database Object.
+*>     - Pointer holding handle to Database Object.
 *>       (see db-object in CobolSQLite3-WS.cpy)
 *>
 *> Returns:
@@ -500,25 +540,25 @@ identification division.
 *> DBCOMPILE(db-object, sql-statement)
 *> -----------------------------------------------------------------------------
 *>
-*> Compiles an SQL Statement into byte-code and creates an SQL Object.
+*> Compile SQL Statement into byte-code and create SQL Object.
 *>
 *> Notes:
 *>
-*>   Use the DBSTATUS Function to obtain the Status Code.
+*>   Use DBSTATUS Function to obtain Status Code.
 *>
 *> Parameters:
 *>
 *>   db-object
-*>     - Pointer holding the handle to the Database Object.
+*>     - Pointer holding handle to Database Object.
 *>       (see db-object in CobolSQLite3-WS.cpy)
 *>
 *>   sql-statement
-*>     - String containing the SQL Statement to be compiled into byte-code.
+*>     - String or String Variable containing SQL Statement to compile.
 *>       (see sql-statement in CobolSQLite3-WS.cpy)
 *>
 *> Returns:
 *>
-*>   Pointer holding the handle to the SQL Object.
+*>   Pointer holding handle to SQL Object.
 *>   (see sql-object in CobolSQLite3-WS.cpy)
 *>
 *> -----------------------------------------------------------------------------
@@ -538,6 +578,8 @@ data division.
 
     01  CobolSQLite3-Database-Status-Code
                                        pic s9(04) comp external.
+
+    01  sql-statement-wrk              pic x(1024).
 
     01  sql-num-bytes                  pic s9(04) comp.
 
@@ -564,12 +606,13 @@ procedure division using db-object, sql-statement
       goback
     end-if
 
-    move length(trim(sql-statement)) to sql-num-bytes
+    move trim(sql-statement) to sql-statement-wrk
+    move length(sql-statement-wrk) to sql-num-bytes
 
     add 1 to sql-num-bytes end-add
 
     call static "sqlite3_prepare_v2" using by value db-object-ptr,
-                                           by content concatenate(trim(sql-statement), x"00"),
+                                           by content concatenate(trim(sql-statement-wrk), x"00"),
                                            by value sql-num-bytes,
                                            by reference sql-object-ptr,
                                            NULL
@@ -593,21 +636,21 @@ identification division.
 *> DBEXECUTE(sql-object)
 *> -----------------------------------------------------------------------------
 *>
-*> Executes an SQL Object (compiled SQL Statement).
+*> Execute SQL Object (compiled SQL Statement).
 *>
 *> Notes:
 *>
-*>   The handle to the Database Object is stored within the SQL Object.
+*>   Handle to Database Object stored within SQL Object.
 *>
 *> Parameters:
 *>
 *>   sql-object
-*>     - Pointer holding the handle to the SQL Object.
+*>     - Pointer holding handle to SQL Object.
 *>       (see sql-object in CobolSQLite3-WS.cpy)
 *>
 *> Returns:
 *>
-*>   16-bit Signed Integer holding the functions Status Code.
+*>   16-bit Signed Integer holding functions Status Code.
 *>   (see db-status in CobolSQLite3-WS.cpy)
 *>
 *> -----------------------------------------------------------------------------
@@ -671,22 +714,22 @@ identification division.
 *> DBRELEASE(sql-object)
 *> -----------------------------------------------------------------------------
 *>
-*> Releases (deletes) an SQL Object (compiled SQL Statement).
+*> Release (delete) SQL Object (compiled SQL Statement).
 *>
 *> Notes:
 *>
-*>   This MUST be done for all SQL Objects before the Database is closed.
-*>   Failure to do so will result in "memory leaks".
+*>   This MUST be done for all SQL Objects before Database is closed.
+*>   Failure to do so result's in "memory leaks".
 *>
 *> Parameters:
 *>
 *>   sql-object
-*>     - Pointer holding the handle to the SQL Object.
+*>     - Pointer holding handle to SQL Object.
 *>       (see sql-object in CobolSQLite3-WS.cpy)
 *>
 *> Returns:
 *>
-*>   16-bit Signed Integer holding the functions Status Code.
+*>   16-bit Signed Integer holding functions Status Code.
 *>   (see db-status in CobolSQLite3-WS.cpy)
 *>
 *> -----------------------------------------------------------------------------
@@ -744,17 +787,17 @@ identification division.
 *> DBRESET(sql-object)
 *> -----------------------------------------------------------------------------
 *>
-*> Resets an SQL Object back to its initial state so it can be re-executed.
+*> Reset SQL Object back to initial state to be re-executed.
 *>
 *> Parameters:
 *>
 *>   sql-object
-*>     - Pointer holding the handle to the SQL Object.
+*>     - Pointer holding handle to SQL Object.
 *>       (see sql-object in CobolSQLite3-WS.cpy)
 *>
 *> Returns:
 *>
-*>   16-bit Signed Integer holding the functions Status Code.
+*>   16-bit Signed Integer holding functions Status Code.
 *>   (see db-status in CobolSQLite3-WS.cpy)
 *>
 *> -----------------------------------------------------------------------------
@@ -812,27 +855,27 @@ identification division.
 *> DBSQL(db-object, sql-statement)
 *> -----------------------------------------------------------------------------
 *>
-*> Executes a single SQL Statement against a Database Object.
+*> Execute single SQL Statement against Database Object.
 *>
-*> Combines the functionality of DBCOMPILE, DBEXECUTE and DBRELEASE.
+*> Combines functionality of DBCOMPILE, DBEXECUTE and DBRELEASE.
 *>
 *> Notes:
 *>
-*>   Any output generated by an SQL SELECT Statement will be lost.
+*>   Output generated by SQL SELECT Statements will be lost.
 *>
 *> Parameters:
 *>
 *>   db-object
-*>     - Pointer holding the handle to the Database Object.
+*>     - Pointer holding handle to Database Object.
 *>       (see db-object in CobolSQLite3-WS.cpy)
 *>
 *>   sql-statement
-*>     - String containing the SQL Statement to be executed.
+*>     - String or String Variable containing SQL Statement to execute.
 *>       (see sql-statement in CobolSQLite3-WS.cpy)
 *>
 *> Returns:
 *>
-*>   16-bit Signed Integer holding the functions Status Code.
+*>   16-bit Signed Integer holding functions Status Code.
 *>   (see db-status in CobolSQLite3-WS.cpy)
 *>
 *> -----------------------------------------------------------------------------
@@ -854,6 +897,8 @@ data division.
                                        pic s9(04) comp external.
 
     01  sql-object                     usage pointer.
+
+    01  sql-statement-wrk              pic x(1024).
 
     01  sql-num-bytes                  pic s9(04) comp.
 
@@ -878,13 +923,13 @@ procedure division using db-object, sql-statement
       goback
     end-if
 
-    move trim(sql-statement) to sql-statement
-    move length(sql-statement) to sql-num-bytes
+    move trim(sql-statement) to sql-statement-wrk
+    move length(sql-statement-wrk) to sql-num-bytes
 
     add 1 to sql-num-bytes end-add
 
     call static "sqlite3_prepare_v2" using by value db-object-ptr,
-                                           by content concatenate(sql-statement, x"00"),
+                                           by content concatenate(sql-statement-wrk, x"00"),
                                            by value sql-num-bytes,
                                            by reference sql-object,
                                            NULL
@@ -947,24 +992,24 @@ identification division.
 *> DBGETSTR(sql-object, column-number)
 *> -----------------------------------------------------------------------------
 *>
-*> Returns the string value of the specified column in the current row.
+*> Return string value of specified column in current row.
 *>
 *> Notes:
 *>
-*>   Use the DBSTATUS Function to obtain the Status Code.
+*>   Use DBSTATUS Function to obtain Status Code.
 *>
 *> Parameters:
 *>
 *>   sql-object
-*>     - Pointer holding the handle to the SQL Object.
+*>     - Pointer holding handle to SQL Object.
 *>       (see sql-object in CobolSQLite3-WS.cpy)
 *>
 *>   column-number
-*>     - 16-bit Unsigned Integer indicating which column is to be returned.
+*>     - 16-bit Unsigned Integer indicating column to return.
 *>
 *> Returns:
 *>
-*>   String variable holding the data for the specified column.
+*>   String variable holding data for specified column.
 *>
 *> -----------------------------------------------------------------------------
 
@@ -1064,24 +1109,24 @@ identification division.
 *> DBGETINT(sql-object, column-number)
 *> -----------------------------------------------------------------------------
 *>
-*> Returns the integer value of the specified column in the current row.
+*> Return integer value of specified column in current row.
 *>
 *> Notes:
 *>
-*>   Use the DBSTATUS Function to obtain the Status Code.
+*>   Use DBSTATUS Function to obtain Status Code.
 *>
 *> Parameters:
 *>
 *>   sql-object
-*>     - Pointer holding the handle to the SQL Object.
+*>     - Pointer holding handle to SQL Object.
 *>       (see sql-object in CobolSQLite3-WS.cpy)
 *>
 *>   column-number
-*>     - Unsigned Integer indicating which column is to be returned.
+*>     - Unsigned Integer indicating column to return.
 *>
 *> Returns:
 *>
-*>   64-bit Signed Integer variable holding the data for the specified column.
+*>   64-bit Signed Integer variable holding data for specified column.
 *>
 *> -----------------------------------------------------------------------------
 
@@ -1160,7 +1205,7 @@ identification division.
 *> DBSTATUS
 *> -----------------------------------------------------------------------------
 *>
-*> Returns the Status Code of the last executed CobolSQLite3 DBxxx Function.
+*> Return Status Code of last executed CobolSQLite3 DBxxx Function.
 *>
 *> Parameters:
 *>
@@ -1168,7 +1213,7 @@ identification division.
 *>
 *> Returns:
 *>
-*>   16-bit Signed Integer holding the functions Status Code.
+*>   16-bit Signed Integer holding functions Status Code.
 *>   (see db-status in CobolSQLite3-WS.cpy)
 *>
 *> -----------------------------------------------------------------------------
@@ -1209,26 +1254,26 @@ end function DBSTATUS.
 identification division.
 
 *> -----------------------------------------------------------------------------
-*> DBINFO(dbinfo-mode, db-object, sql-object, colnum, colname)
+*> DBINFO(dbinfo-mode, db-object)
 *> -----------------------------------------------------------------------------
 *>
-*> Provides information about the Database being accessed.
+*> Provide information about Database being accessed.
 *>
 *> Notes:
 *>
-*>   Use the DBSTATUS Function to obtain the Status Code.
+*>   Use DBSTATUS Function to obtain Status Code.
 *>
 *> Parameters:
 *>
 *>   dbinfo-mode
-*>     - 3-digit Numeric indicating information to be returned:
-*>       100 = Number of rows modified, inserted or deleted by the most recently
-*>             completed INSERT, UPDATE or DELETE statement on the specified
+*>     - 3-digit Numeric indicating information to return:
+*>       100 = Number of rows modified, inserted or deleted by most recently
+*>             completed INSERT, UPDATE or DELETE statement on specified
 *>             Database. Changes caused by triggers, foreign key actions or
 *>             REPLACE constraint resolution are not counted.
 *>
 *>   db-object
-*>     - Pointer holding the handle to the Database Object.
+*>     - Pointer holding handle to Database Object.
 *>       (see db-object in CobolSQLite3-WS.cpy)
 *>
 *> Returns:
@@ -1300,7 +1345,7 @@ identification division.
 *> DBERRMSG
 *> -----------------------------------------------------------------------------
 *>
-*> Returns the Database Status Code as a human-readable error message.
+*> Return Database Status Code as human-readable error message.
 *>
 *> Parameters:
 *>
@@ -1308,7 +1353,7 @@ identification division.
 *>
 *> Returns:
 *>
-*>   String variable holding the human-readable error message.
+*>   String variable holding human-readable error message.
 *>   (see error-message in CobolSQLite3-WS.cpy)
 *>
 *> -----------------------------------------------------------------------------
@@ -1342,6 +1387,7 @@ data division.
       88  datatype-unknown-unsupported   value -11.
       88  datatype-undefined             value -12.
       88  invalid-dbinfo-mode            value -13.
+      88  not-an-sqlite-database         value -14.
 
     01 sqlite3-status                  pic Z(5)9(1).
 
@@ -1361,15 +1407,15 @@ procedure division returning error-message.
 
       when database-already-open
 
-        move "DBERR -1: The specified database is already open." to error-message
+        move "DBERR -1: Specified database already open." to error-message
 
       when database-open-failed
 
-        move "DBERR -2: Unable to open the specified database." to error-message
+        move "DBERR -2: Unable to open specified database." to error-message
 
       when database-not-open
 
-        move "DBERR -3: The specified database is not open." to error-message
+        move "DBERR -3: Specified database not open." to error-message
 
       when unreleased-sql-objects-exist
 
@@ -1385,36 +1431,40 @@ procedure division returning error-message.
 
       when sql-object-not-released
 
-        move "DBERR -7: Unable to release (delete) the SQL Object." to error-message
+        move "DBERR -7: Unable to release (delete) SQL Object." to error-message
 
       when sql-object-not-reset
 
-        move "DBERR -8: Unable to reset the SQL Object." to error-message
+        move "DBERR -8: Unable to reset SQL Object." to error-message
 
       when datatype-not-text
 
-        move "DBERR -9: The datatype of the selected column is not TEXT." to error-message
+        move "DBERR -9: Datatype of selected column not TEXT." to error-message
 
       when datatype-not-integer
 
-        move "DBERR -10: The datatype of the selected column is not a SIGNED INTEGER." to error-message
+        move "DBERR -10: Datatype of selected column not SIGNED INTEGER." to error-message
 
       when datatype-unknown-unsupported
 
-        move "DBERR -11: Datatype is unknown or unsupported." to error-message
+        move "DBERR -11: Datatype unknown or unsupported." to error-message
 
       when datatype-undefined
 
-        move "DBERR -12: The datatype of the selected column is undefined." to error-message
+        move "DBERR -12: Datatype of selected column undefined." to error-message
         *> This error is returned if a type conversion occurred.
 
       when invalid-dbinfo-mode
 
-        move "DBERR -13: The specified DBINFO Mode is not recognised." to error-message
+        move "DBERR -13: Specified DBINFO Mode not recognised." to error-message
+
+      when not-an-sqlite-database
+
+        move "DBERR -14: Specified file NOT an SQLite3 Database." to error-message
 
 *>      when ?
 *>
-*>        move "?" to error-message
+*>        move "DBERR -?: ?" to error-message
 
       when other
 
@@ -1422,9 +1472,9 @@ procedure division returning error-message.
 
         move spaces to error-message
         string
-          "A Status Code of ["
+          "Status Code of ["
           trim(sqlite3-status)
-          "] has been returned by the SQLite3 Library."
+          "] returned by SQLite3 Library."
           delimited by size
           into error-message
         end-string

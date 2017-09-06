@@ -1,0 +1,20 @@
+Version X.02.00 [BETA]  September 2017  Robert W.Mills (CobolMac@btinternet.com)
+
+- Added this ChangeLog document.
+
+- Added check in DBOPEN for SQLite3 Database before attempting to open it.
+  A new status code, -14, and error message, DBERR -14, added.
+
+- Allow quoted strings to be used in place of string variables in parameters.
+
+- Cleaned up comments (too many uses of the word 'the').
+
+- Cleaned up error messages (too many uses of the word 'the').
+
+Version X.01.00 [BETA]  September 2017  Robert W.Mills (CobolMac@btinternet.com)
+
+- Initial release to GnuCOBOL Contributions.
+
+Version X.00.00 [ALPHA]  August 2017  Robert W.Mills (CobolMac@btinternet.com)
+
+- Start of development.
