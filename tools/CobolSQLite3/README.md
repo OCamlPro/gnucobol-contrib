@@ -9,7 +9,7 @@
                            Copyright (c) 2017-2017
                    Robert W.Mills <cobolmac@btinternet.com>
 --------------------------------------------------------------------------------
-       Please Note: The current verion, X.01.00, is BETA. Buyer beware!!
+       Please Note: The current verion, X.02.00, is BETA. Buyer beware!!
 --------------------------------------------------------------------------------
 
 CobolSQLite3 implements an interface to the SQLite3 Database Engine.
@@ -33,6 +33,8 @@ Defined Functions, that performs the following actions:
     NOTE: The interface only supports TEXT and INTEGER data types.
           Data types FLOAT and BLOB will be added later (if needed).
 
+For updates refer to the file ChangeLog.
+
 --------------------------------------------------------------------------------
 
 Instructions on how to compile the library, and how the library can be used to
@@ -47,4 +49,4 @@ Note: You must compile the library and generate the copy libraries before you
       compiling the test program.
 
 --------------------------------------------------------------------------------
-Last updated 3rd September, 2017 (c) Robert W.Mills
+Last updated 6th September, 2017 (c) Robert W.Mills
