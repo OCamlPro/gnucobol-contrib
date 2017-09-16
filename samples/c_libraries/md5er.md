@@ -27,7 +27,7 @@ or disk sector read errors, for example) and is still in wide spread use in
 many public facing source code repository systems, such as Git.
 
 MD5 is **not** recommended for secure work or where automated trust in the
-information is tantamount. For source code text files, just looking at the
+information is paramount. For source code text files, just looking at the
 result will usually suffice (forced collision trickery will be visible), but as
 encryption keys or digital signatures, MD5 is deemed broken and unfit for
 purpose.
