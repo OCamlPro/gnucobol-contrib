@@ -8,3 +8,7 @@ Samples for calling different "native" C libraries.
 	* reading textstream.bin pass it to zlib for uncompress
 	* output result to textstream.out
 * textstream.bin: random stream data found in gnucobol.pdf
+
+**MD5** MD5 message digest
+
+* md5er.cob: Can use OpenSSL or mbedtls libraries

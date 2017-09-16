@@ -1,4 +1,8 @@
 
+2017-09-16  Brian Tiffin <btiffin@gnu.org>
+
+	* md5er.cob: added Message Digest cryptographic example
+
 2017-06-13  Simon 'sf-mensch/human' Sobisch <simonsobisch@gnu.org>
 
 	* CBL_ZLIB.cob: replaced *de*compress be *un*compress in all places,
