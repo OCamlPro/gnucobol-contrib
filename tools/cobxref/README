@@ -7,12 +7,18 @@ by GNUCobol's cobc with the -X (or -E or -save-temps) parameter/s supplied and
 produces a file suitable for printing 'as is' that contains all variables,
 procedure paragraphs and section names referenced where they are defined
 as well as where they are used throughout the program or module as well as
-a lists of unreferenced data names and paragraph & section names.
+lists of unreferenced data names and paragraph & section names.
 
-if used as a stand alone program it will preceded the cross reference report
-by a listing of the original source. Note that version 1.2 (hopefully will be
-released late November 2014) will include the code from printcbl which takes
-in the copy books when used by any COPY verbs in the source to a depth of 9.
+Usage using other than -X can/will produce unexspected and unwanted results so
+only use the -X or -Xref option. 
+
+As of r1482 of the GNUCobol compiler sources using -X and -T will produce both
+a source listing and the cross reference listing in the same file.
+ 
+If used as a stand alone program it will precede the cross reference report
+by a listing of the original source. Note that version 1.2 will include the
+code from printcbl which takes in the copy books when used by any COPY verbs
+in the source to a depth of 9. [ This is not available as of 2017/03/24 ].
 
 NOTE that if run via cobc using -X, source listing will NOT precede the cross
 reference listing as the source file from cobc will have all comment line
@@ -21,7 +27,16 @@ spaces replaced by just one space for use with the compilers parser.
 
 As this format looks like a dogs dinner, the default operation is to only
 produce a cross reference listing without the source listed as cobc will call
-cobxref with the paramater -R (No source listing).
+cobxref with the paramater -R (No source listing) see next:
+
+The new compiler (v2.0) options of -T | -t can now allow the XRef listing to
+be appending to an existing listing file (source filename.lst) with the use
+of the -X option in CobXRef (1.01.21). However there are still bugs in cobc as
+at r1482.
+
+WARNING:  The program uses the field Compiler-Line-Cnt to hold the default
+cobc page size of 55 so if you change the one in cobc sources etc change this
+field in cobxref to match.
 
 It will read a source file containing a standalone program or many program &
 modules providing they confirm to the Cobol standard in the same way that
@@ -33,13 +48,17 @@ without errors and optionally without warnings when using cobc param -W.
 [GNUCOBOL is an open-source COBOL compiler, which translates COBOL programs to
 C code and compiles it using GCC on multiple platforms and operating systems]
 
+Do NOT use this version as a standalone tool with a standard source file, it has been changed to work directly with cobc - the GnuCobol compiler.
+
 All code and programs are distributed under the GNU General Public License v3.
 See COPYING for details.
+
 
 Requirements
 ============
 
-GNUCobol package installed and tested fully working.
+GNUCobol v2 package installed and tested fully working.
+
 See documentation supplied with GNUCobol.
 You MUST have run both sanity checks created by the test procedures including
 within the cobol85 suite as well as the make check procedure.
@@ -48,7 +67,7 @@ Installation
 ============
 
 Linux/Unix:
-Compile the source of cobxref.cbl and get-reserved-lists.cbl with the
+Compile the source of cobxref.cbl which includes get-reserved-lists with the
 GNUCobol compiler cobc using the supplied shell script comp-cobxref.sh with
 the command ./comp-cobxref.sh at a command prompt using any terminal program.
 
@@ -59,13 +78,13 @@ Mac OSX:
 Compile the Cobol source as for Linux/Unix.
 
 In the event this does not work, you must have installed and tested GNUCobol.
-Note this will not work 'as is' with Tiny Cobol or ANY other compiler.
+Note this will NOT work 'as is' with Tiny Cobol or ANY other compiler.
 
 Supplied files with the Cobxref tarbel:
 **************************************
 
 Changelog               History of changes made to cobxref sources.
-cobxref.txt		Usage procedure for cobxref.
+cobxref.txt		Usage procedure & parameters for cobxref.
 cobxref.cbl		Cobol source code of cobxref.
 cobxref.lst		XREF listing for cobxref via -X.
 comp-cobxref.sh         Script to compile the Cobol code under bash.
@@ -82,10 +101,27 @@ NOTES:
 *****
 
 You must compile using an up to date version of GNUCobol (c) but not less
-than version 1.1 dated Feb 2009 but will work best using v2.x. Current testing
-is with v2.1.
+than version v2.x. Current testing is with v2.0.
 
 Please also read Cobxref.txt for instructions on using cobxref.
+
+Please also read Cobxref.txt for instructions on using cobxref.
+
+Yes it is there twice so remember to read it!
+
+My website always has the latest version of the sources where SF has not yet
+been updated at :
+
+http://www.applewood.dtdns.net/files/CobXRef-latest
+
+and
+
+http://www.applewood.dtdns.net/files
+
+for the current zip'd file containing the full sources.
+
+Note that the CobXRef directory will contain just updated sources over
+the archived file e.g., cobxref-1.01.15.zip
 
 A master copy of the sources can be found at the sourceforge web site
 for GNUCobol in the contrib folders located at:
@@ -103,13 +139,14 @@ Or you can get the latest archived file:
 https://sourceforge.net/projects/cobxref/files/latest/download?source=files
 
 This project area (cobxref) also has the work in progress for the IBM MVS Ansi Cobol version at:
-https://sourceforge.net/projects/cobxref/IBM-MVS-38J-Ansi-Cobol/ cobxref-IBM-MVS-38J-Ansi-Cobol
+https://sourceforge.net/projects/cobxref/IBM-MVS-38J-Ansi-Cobol/cobxref-IBM-MVS-38J-Ansi-Cobol
 
 Please report all bugs found to the GNUCobol contrib forum at
 https://sourceforge.net/p/open-cobol/discussion/contrib/
 and send a copy to the author at vbcoen@gmail.com if urgent/showstopper.
 
-Bugs for the IBM version direct to author at vbcoen@gmail.com with a subject of MVS bug.
+Bugs for the IBM version direct to author at vbcoen@gmail.com with a subject of
+MVS bug.
 
-last updated 14th November, 2014 (c) Vincent B Coen
+last updated 24th March, 2017 (c) Vincent B Coen
 

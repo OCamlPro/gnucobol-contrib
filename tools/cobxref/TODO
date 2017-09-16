@@ -1,7 +1,5 @@
-2014-11-02  Vince Coen <vbcoen@btconnect.com>
-        v1.01.11:
+2017-03-25  Vince Coen <vbcoen@btconnect.com>
+        v1.01.21:
 
-1. Code for producing 01 record layout sizing but should it be added?
-   See code from COBXREF for IBM ANSI Cobol but currently has many 
-   issues and needs the rewrite around the C# codebase.
+1.   None.
  

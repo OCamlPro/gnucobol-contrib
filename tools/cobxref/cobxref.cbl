@@ -2,11 +2,11 @@
  Identification division.
  program-id.            cobxref.
 *>author.               Vincent Bryan Coen, Applewood Computers,
-*>                      Applewood, Epping Road, Roydon, Essex, UK.
+*>                      17 Stag Green Avenue, Hatfield, Herts, AL9 5EB, UK.
 *>Date-Written.         28 July 1983 with code going back to 1967.
 *>Date-Rewriten.        10 March 2007 with code going back to 1983.
-*>Date-Compiled.        Today & Don't forget to update prog-name for builds
-*>Security.             Copyright (C) 1967-2014, Vincent Bryan Coen.
+*>Date-Compiled.        Today & Dont forget to update prog-name for builds.
+*>Security.             Copyright (C) 1967-2017, Vincent Bryan Coen.
 *>                      Distributed under the GNU General Public License
 *>                      v2.0. Only. See the file COPYING for details but
 *>                      for use within GNUCobol ONLY.
@@ -17,17 +17,17 @@
 *>                      cobc when using the -X parameter and can be used
 *>                      as a stand alone tool see the readme and manual
 *>                      for more parameter details but can be run as
-*>                      cobxref sourcefilename.
+*>                      cobxref sourcefilename.i
 *>                      ===================== WARNING =====================
 *>                      Must only be used after running the source file
 *>                      that is to be cross referenced, through the compiler
-*>                      that results in an error free run.
+*>                      that results in an warning and error free run.
 *>                      ^^^^^^^^^^^^^^^^^^^^^ WARNING ^^^^^^^^^^^^^^^^^^^^^
 *>**
-*> Calls.               get-reserved-lists.
+*> Calls.               get-reserved-lists which is at end of source file.
 *>                      compile with:
-*>                        cobc -x cobxref.cbl get-reserved-lists.cbl
-*>                        ==========================================
+*>                       cobc -x cobxref.cbl
+*>                       ===================
 *>**
 *> Changes.             See Changelog & Prog-Name.
 *>
@@ -35,12 +35,13 @@
 *>*****************
 *>
 *> This file/program is part of Cobxref AND GNU Cobol and is copyright
-*> (c) Vincent B Coen 1967-2014. This version bears no resemblance to the
+*> (c) Vincent B Coen 1967-2017. This version bears no resemblance to the
 *> original versions running on ICL 1501/1901 and IBM 1401 & 360/30 in the
 *> 1960's and 70's.
 *>
 *> A version for running with MVS 3.8J and ANSI Cobol is available for those
 *> users running IBM emulation with Hercules.
+*>  This uses the original code from the 60s and will ONLY run with ANSI Cobol.
 *>
 *> This program is free software; you can redistribute it and/or modify it
 *> under the terms of the GNU General Public License as published by the
@@ -88,11 +89,12 @@
               organization line sequential.
 *>
      select   Source-Listing assign Print-FileName
-              organization line sequential.
+              organization   line sequential
+              file status    FS-Reply.
 *>
-     select   SourceInput assign SourceFileName
+     select   SourceInput  assign SourceFileName
               organization line sequential
-              file status fs-reply.
+              file status  FS-Reply.
 *>
      select   SortFile assign Sort1tmp.
 *>
@@ -145,12 +147,13 @@
      03  SdSortKey         pic x(40).
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v1.01.15".
+ 77  Prog-Name             pic x(13) value "Xref v1.01.21".
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
  77  S-Pointer             Binary-long  value zero.
  77  S-Pointer2            Binary-long  value zero.
  77  Line-Count            Binary-char  value 70.
+ 77  Compiler-Line-Cnt     Binary-char  value 55.
  77  Page-No               Binary-char  value zero.
  77  ws-Return-Code        binary-char  value zero.
  77  Word-Length           Binary-long  value zero.
@@ -191,6 +194,8 @@
   88 We-Are-Testing                        value "Y".
  77  sw-6                  pic 9           value zero.
   88  Reports-In-Lower                     value 1.
+ 77  sw-7                  pic 9           value zero.
+  88  Append-Reports                       value 1.
 *>
 *> Switches used during processing
 *>
@@ -239,6 +244,7 @@
  77  FS-Reply              pic 99          value zeros.
  77  SourceFileName        pic x(1024)     value spaces.
  77  Print-FileName        pic x(1024)     value spaces.
+ 77  Print-FileName-2      pic x(1024)     value spaces.
  77  Prog-BaseName         pic x(1024)     value spaces.
 *>
 *> In theory Linux can go to 4096 and Windoz 32,767 chars
@@ -254,6 +260,19 @@
 *>
  01  HoldID                pic x(32)       value spaces.
  01  HoldID-Module         pic x(32)       value spaces.
+*>
+*>  Used to calculate listing file time
+*>
+ 01  WS-Date2              pic 9(8)        value zero.  *> YYYYMMDD
+ 01  WS-Time2              pic 9(8)        value zero.  *> HHMMSSNN
+ 01  filler redefines WS-Time2.
+     03  filler            pic 9(6).
+     03  WS-MS             pic 99.                      *> to clear to 00
+ 01  WS-Temp-Time          pic 9(8)   comp value zero.
+ 01  WS-FileInfo                           value zero.
+     03  WS-FileSize       pic 9(18)  comp.
+     03  WS-Mod-YYYYMMDD   pic 9(8)   comp.
+     03  WS-Mod-HHMMSS00   pic 9(8)   comp.
 *>
  01  SourceInWS.
      03  Sv1what           pic x(16).
@@ -296,7 +315,7 @@
 *>     03  H1-Min            pic 99.
 *>     03  filler            pic xx    value ") ".
      03  filler            pic x(20) value "Dictionary File for ".
-     03  h1programid       pic x(32) value spaces.
+     03  h1programid       pic x(64) value spaces.
      03  filler            pic x(7)  value "  Page ".
      03  H1-Page           pic zzz9.
 *>
@@ -359,24 +378,28 @@
      03  hd-ss             pic xx.
      03  hd-uu             pic xx.
  01  hddate                          value spaces.
+     03  HD-C              pic xx.
      03  hd-y              pic xx.
      03  hd-m              pic xx.
      03  hd-d              pic xx.
 *>
  01  hd-date-time.
-     03  hd2-d             pic xx.
-     03  filler            pic x     value "/".
-     03  hd2-m             pic xx.
-     03  filler            pic x     value "/".
-     03  hd2-y             pic xx.
-     03  filler            pic xx    value spaces.
-     03  hd2-hh            pic xx.
-     03  filler            pic x     value ":".
-     03  hd2-mm            pic xx.
-     03  filler            pic x     value ":".
-     03  hd2-ss            pic xx.
-     03  filler            pic x     value ":".
-     03  hd2-uu            pic xx.
+     03  HD2-Date.
+         05  hd2-d         pic xx.
+         05  filler        pic x     value "/".
+         05  hd2-m         pic xx.
+         05  filler        pic x     value "/".
+         05  HD2-C         pic xx.
+         05  hd2-y         pic xx.
+     03  HD2-Time.
+         05  filler        pic xx    value spaces.
+         05  hd2-hh        pic xx.
+         05  filler        pic x     value ":".
+         05  hd2-mm        pic xx.
+         05  filler        pic x     value ":".
+         05  hd2-ss        pic xx.
+         05  filler        pic x     value ":".
+         05  hd2-uu        pic xx.
 *>
  01  WS-When-Compiled.
      03  WS-WC-YY          pic 9(4).
@@ -385,6 +408,25 @@
      03  WS-WC-HH          pic 99.
      03  WS-WC-Min         pic 99.
      03  filler            pic x(9).
+*>
+ 01  WS-Locale              pic x(16)     value spaces.     *> Holds o/p from env var. LC_TIME but only uses 1st 5 chars
+ 01  WS-Local-Time-Zone     pic 9         value 3.          *> Defaults to International, See comments below !
+*>
+*> Sets WS-Local-Time-Zone ^~^ to one of these 88 values according to
+*>    your local requirements
+*> NOTE Environment var. LC_TIME is checked for "en_GB" for UK (1)
+*>                                          and "en_US" for USA (2)  OTHERWISE its 3 for *nix format
+*>   at start of program.
+*>   For any other, you can add yours if different but let the Lead Programmer
+*>     know, so it can be added to the master sources otherwise default will
+*>      be Unix format
+*>
+*>    Note that 'implies' does NOT mean the program does anything e.g.,
+*>        changes page sizing in the report.
+*>
+     88  LTZ-UK                           value 1. *> dd/mm/ccyy  [en_GB] Also implies A4 Paper for prints
+     88  LTZ-USA                          value 2. *> mm/dd/ccyy  [en_US] Also implies US Letter Paper for prints
+     88  LTZ-Unix                         value 3. *> ccyy/mm/dd  Also implies A4 Paper for prints
 *>
  01  Error-messages.                      *> Sorry, English msgs Only
      03 Msg1      pic x(31) value "Msg1  Aborting: No input stream".
@@ -422,7 +464,7 @@
      03  filler pic x(24) value "PROCEDURE DIVISION.     ".
  01  filler   redefines Section-Names-Table.
      03  Full-Section-Name          occurs 8.
-*>                  ascending key Section-Name indexed by Full-Section-Name-Idx. *> can't use as its NOT sorted
+*>                  ascending key Section-Name indexed by Full-Section-Name-Idx. *> cant use as its NOT sorted
          05  Section-Name  pic x(16).
          05  filler        pic x(08).
 *>
@@ -443,7 +485,7 @@
 *>   cobc/reserved.c in the G/open-cobol source directory but Totally ingoring the system_table as not needed/used by xref
 *>
 *> Also note that the number 0 or 1 indicates if the function/reserved word is implemented in G/Open Cobol
-*>   but xref treats all as being reserved as they are still so, in someone's compiler
+*>   but xref treats all as being reserved as they are still so, in someones compiler
 *>
  01  Function-Table.                                                 *> updated by Get-Reserved-Lists.cbl
      03  filler pic x(31) value "1ABS                        ".
@@ -1207,7 +1249,7 @@
      if       ws-Return-Code not = zero
               display Msg17.         	*> Possible problem with cobc not in path
 *>
-*> Just in case someone's added names in source code (or in cobc) out of sort order
+*> Just in case someones added names in source code (or in cobc) out of sort order
 *>  We MUST have all tables in sorted order
 *>
      sort     Reserved-Names ascending Resvd-Word.
@@ -1230,7 +1272,32 @@
               goback
      end-if
 *>
-     open     output Source-Listing.
+*> If exists Get listing file create/mod time and current time and compare
+*> if equal set sw-7 on for append mode
+*>
+     accept   WS-Time2 from time.
+     move     zero to WS-MS.
+     subtract 100 from WS-Time2 giving WS-Temp-Time.      *> deduct a minute for slow systems
+     call     "C$FILEINFO" using Print-FileName WS-FileInfo.
+     if       return-code = zero
+              if       WS-MOD-HHMMSS00 = ws-Time2
+                   or                  = WS-Temp-Time
+                       move 1 to sw-7                     *> it is recent so append the xref O/P
+              end-if
+     end-if
+*>
+     if       Append-Reports
+              open extend Source-Listing
+              if   FS-Reply not = 00
+                   close Source-Listing
+                   display "Cannot open listing file in append mode so opened in output mode"
+                   open output Source-Listing
+              else
+                   display "Append mode set"
+              end-if
+     else     open output Source-Listing
+     end-if
+*>
      if       Reports-In-Lower
               move function lower-case (Prog-BaseName (1:CWS)) to HoldID
      else
@@ -1259,7 +1326,9 @@
                    end-if
                    move Git-RefNo (a) to SkaRefNo
                    move 1 to USect (Git-HoldWSorPD (a))
-                   write SortRecord
+                   if  SkaDataName not = spaces
+                       write SortRecord
+                   end-if
               end-perform
      end-if
 *>
@@ -1335,7 +1404,7 @@
               go to aa041-Get-SN.
      perform  aa045-Test-Section thru aa045-Exit.
 *>
-*> if not zero we've got Data Div onwards
+*> if not zero weve got Data Div onwards
 *>
      if       a not = zero
               go to aa060-ReadLoop3a.
@@ -1424,14 +1493,14 @@
 *>
  aa046-Get-Currency.
 *>
-*> got 'Currency', so process as needed for pic tests in zz110
+*> Got 'Currency', so process as needed for pic tests in zz110
 *>
      perform  zz110-Get-A-Word thru zz110-Exit.
      if       wsFoundWord2 (1:5) = "SIGN "
            or wsFoundWord2 (1:3) = "IS "
               go to aa046-Get-Currency.
 *>
-*> Now I've got the literal "x"
+*> Now Ive got the literal "x"
 *>
      move     wsFoundWord2 (2:1) to Currency-Sign.
      if we-are-testing
@@ -1440,7 +1509,7 @@
 *>
  aa047-GetIO.
 *>
-*> now got file control so it's SELECT ..
+*> now got file control so its SELECT ..
 *>
      perform  zz100-Get-A-Source-Record thru zz100-Exit.
      perform  aa045-Test-Section thru aa045-Exit.
@@ -1569,12 +1638,18 @@
               perform  bc620-Do-Global-Conditions thru bc629-Exit
               close Source-Listing.
 *>
-     if       not We-Are-Testing
-          and not End-Prog
+*>**************************************************************************************
+*>  If deleting the Supp files remove all of the '*>' except for the SourceFileName line
+*>    as that could be for a normal input file and not the o/p from the compiler
+*>      which is in the form sourcefile.i
+*>**************************************************************************************
+*>
+ *>    if       not We-Are-Testing
+ *>         and not End-Prog
 *>            call "CBL_DELETE_FILE" using SourceFileName
 *> kill temp input file (anything else?) but not yet Use when in OC
-              call "CBL_DELETE_FILE" using Supp-File-2
-              call "CBL_DELETE_FILE" using Supp-File-1.
+ *>             call "CBL_DELETE_FILE" using Supp-File-2
+ *>             call "CBL_DELETE_FILE" using Supp-File-1.
 *>
      if       End-Prog
               perform  zz190-Init-Program thru zz190-Exit
@@ -1654,7 +1729,9 @@
 *> getting here Should never happen
 *>
       display "ba020:" Msg5 "bld=" Build-Number " word=" wsFoundWord2 (1:CWS) " prog = " HoldID " line = " Gen-RefNo1.
-     close    Source-Listing SourceInput Supplemental-Part1-Out.
+     close    Source-Listing
+              SourceInput
+              Supplemental-Part1-Out.
      move     20 to return-code.
      goback.                            *> if here, its broke
 *>
@@ -1736,7 +1813,7 @@
 *>
 *> not a reserved word AND a 88, looking for 01 - 49 [ or 77]
 *>
-     if       (Build-Number > 0 and < 50) or = 77
+     if       (Build-Number > 0 and < 50) or Build-Number = 77
               move wsFoundWord2 (1:CWS) to Saved-Variable.
 *>
      if       Build-Number = 88
@@ -1764,7 +1841,7 @@
 *>
  ba050-Bypass-Add-2-Con-Table.
 *>
-*> we don't have a reserved word! a = 0 = no
+*> we dont have a reserved word! a = 0 = no
 *>
       if      Global-Current-Level not = 99
               move Gen-RefNo1   to Global-Current-RefNo
@@ -2027,7 +2104,7 @@
 *>
  bb060-Scan4-Quotes.
 *>
-*> we are testing if more than 1 word present inc. a literal but it shouldn't
+*> we are testing if more than 1 word present inc. a literal but it shouldnt
 *>
      add      1 to a.        *>  q now a = field start,  s now b, z = rightmost char
      if       a not > z      *> check for end of data in field
@@ -2114,7 +2191,7 @@
 *> Print order:
 *> Note that although some sections are not yet supported in GC they
 *>       are, in cobxref.
-*>   Xref'd -
+*>   Xrefd -
 *>     At bc090 = In order: File Section, Working-Storage, Local-Storage,
 *>                 Linkage, Communication, Report, Screen
 *>     At bc600 = Globals (in nested modules)
@@ -2168,7 +2245,7 @@
      if       q > zero
               write PrintLine after 1
               add   1 to Line-Count
-              if  Line-Count > 59
+              if  Line-Count > Compiler-Line-Cnt
                   perform  zz150-WriteHdb thru zz150-Exit
                   perform  zz150-WriteHdb8 thru zz150-Exit
               end-if
@@ -2262,7 +2339,7 @@
      if       q > zero
               write PrintLine after 1
               add   1 to Line-Count
-              if  Line-Count > 59
+              if  Line-Count > Compiler-Line-Cnt
                   perform  zz150-WriteHdb thru zz150-Exit
                   perform  zz150-WriteHdb2 thru zz150-Exit
               end-if
@@ -2290,7 +2367,7 @@
 *>
  bc190-Do-Conditions.
 *>
-*> start with sorted variables
+*> Start with sorted variables
 *>
      if       Con-Tab-Count = zero
               go to bc195-Done.
@@ -2311,7 +2388,7 @@
               move  Variables (a) to P-Conditions
               write PrintLine2 after 1
               add   1 to Line-Count
-              if  Line-Count > 59
+              if  Line-Count > Compiler-Line-Cnt
                   perform  zz150-WriteHdb
                   perform  zz150-WriteHdb7 thru zz150-Exit
               end-if
@@ -2319,8 +2396,8 @@
 *>
  bc194-Now-Reverse.
 *>
-*> now sort conditions if more than 1 element in table
-*>   and print else don't
+*> Now sort conditions if more than 1 element in table
+*>   and print else dont
 *>
      if       Con-Tab-Count > 1
               sort  Con-Tab-Blocks ascending Conditions
@@ -2427,7 +2504,7 @@
      if       q > zero
               write PrintLine after 1
               add   1 to Line-Count
-              if  Line-Count > 59
+              if  Line-Count > Compiler-Line-Cnt
                   perform  zz150-WriteHdb
                   move     "Procedure" to hdr8-hd
                   perform  zz150-WriteHdb3 thru zz150-Exit
@@ -2469,7 +2546,7 @@
      if       SkaWSorPD not = 9
               go to bc360-Exit.
 *>
-     if       Line-Count > 59
+     if       Line-Count > Compiler-Line-Cnt
               move "Functions" to hdr8-hd
               move zero to Line-Count
               perform zz150-WriteHdb
@@ -2542,7 +2619,7 @@
      go       to bc410-Read-Sorter5.
  bc430-PrintXRef5.
 *>
-*> ignore redefines - No I won't
+*> ignore redefines - No I wont
 *>
 *>     if       SkaDataName = saveSkaDataName
 *>         and  SkaWSorPD < 8
@@ -2550,7 +2627,7 @@
      if       SkaDataName = saveSkaDataName
               move 2 to q
               go to bc450-Exit.
-*> 1st copy of a name can't be non w-s
+*> 1st copy of a name cant be non w-s
      if       SkaWSorPD > 7
               go to bc450-Exit.
 *> print Only occurance then store new one
@@ -2571,7 +2648,7 @@
               move 1 to S-Pointer
               add   1 to Line-Count
               write PrintLine after 1
-              if  Line-Count > 59
+              if  Line-Count > Compiler-Line-Cnt
                   perform  zz150-WriteHdb
                   perform  zz150-WriteHdb4 thru zz150-Exit
               end-if.
@@ -2616,7 +2693,7 @@
               move 1 to S-Pointer
               add   1 to Line-Count
               write PrintLine after 1
-              if  Line-Count > 59
+              if  Line-Count > Compiler-Line-Cnt
                   perform  zz150-WriteHdb
                   perform  zz150-WriteHdb5 thru zz150-Exit
               end-if.
@@ -2639,7 +2716,7 @@
               move 1 to S-Pointer
               add   1 to Line-Count
               write PrintLine after 1
-              if  Line-Count > 59
+              if  Line-Count > Compiler-Line-Cnt
                   perform  zz150-WriteHdb
                   perform  zz150-WriteHdb5 thru zz150-Exit
               end-if.
@@ -2672,7 +2749,7 @@
               move LSect (b) to XrType
               add   1 to Line-Count
               write PrintLine after 1
-              if  Line-Count > 59
+              if  Line-Count > Compiler-Line-Cnt
                   perform  zz150-WriteHdb thru zz150-Exit
                   perform  zz150-WriteHdb2b thru zz150-Exit
               end-if
@@ -2705,7 +2782,7 @@
                     move 1 to b
                     add   1 to Line-Count
                     write PrintLine after 1
-                    if  Line-Count > 59
+                    if  Line-Count > Compiler-Line-Cnt
                         perform  zz150-WriteHdb
                         perform  zz150-WriteHdb6 thru zz150-Exit
                     end-if
@@ -2732,7 +2809,7 @@
               move  Gen-RefNo1 to sl-Gen-RefNo1
               add   1 to Line-Count
               write Source-List after 1
-              if       Line-Count > 59
+              if       Line-Count > Compiler-Line-Cnt
                        perform zz150-WriteHdb.
 *>
  zz030-Write-Sort.
@@ -2751,7 +2828,9 @@
               move wsFoundNewWord4 to SkaDataName
               move Gen-RefNo1 to SkaRefNo
               move 1 to USect (SkaWSorPD)
-              write SortRecord
+              if  SkaDataName not = spaces
+                  write SortRecord
+              end-if
               if   HoldWSorPD > 7  *> only do for proc div
                    perform zz310-Check-For-Globals thru zz319-Exit
               end-if
@@ -2781,7 +2860,7 @@
 *>
      if       (SourceInWS (1:1) = "#" or = "$")
               go to zz100-Get-A-Source-Record.
-*> next won't happen with fn.i or .t input
+*> next wont happen with fn.i or .t input
      if       (SourceInWS (1:1) = "*" or = "/")
               perform zz000-Inc-CobolRefNo
               perform zz000-Outputsource
@@ -2789,7 +2868,7 @@
 *>
 *> remove unwanted chars and all multi spaces so that unstrings
 *>  can work easier Includes literals " " etc
-*> Doesn't matter if literals get screwed up in this way
+*> Doesnt matter if literals get screwed up in this way
 *>
      inspect  SourceInWS replacing all x"09" by space.
      inspect  SourceInWS replacing all ";" by space.
@@ -3029,7 +3108,7 @@
 *>   find actual lengh of record in d
 *> This code is redundent when using source output from cobc or via filename.i
 *>
-*> run profiler against these routines and tidy 'em up if needed
+*> run profiler against these routines and tidy them up if needed
 *>
      perform  varying d from 1024 by -1 until SourceInWS (d:1) not = space
      end-perform
@@ -3112,34 +3191,34 @@
 *> Have a blank line for users reading the listing file avoiding the ugly header placement.
      move     spaces to PrintLine.
      if       Page-No not = zero
-              write PrintLine after 1.
+              write PrintLine after 1
+     end-if
 *>
      move     spaces to h1programid.
-     accept   hddate from date.
-     if       hddate not = "000000"
-              move hd-y to hd2-y
-              move hd-m to hd2-m
-              move hd-d to hd2-d.
+     accept   hddate from date YYYYMMDD.     *> 1.01.21
+*>
+*>  Here we adjust date format for country but is Windoz playing nice
+*>   i.e., compatible with *nix?  Soon find out from users.
+*>
+     if       hddate not = "00000000"
+              perform  zz400-Convert-Date thru zz400-Exit.
      accept   hdtime from time.
      if       hdtime not = "00000000"
               move hd-hh to hd2-hh
               move hd-mm to hd2-mm
               move hd-ss to hd2-ss
               move hd-uu to hd2-uu.
+*>
      string   HoldID delimited by space
               "    " delimited by size
               hd-date-time delimited by size into h1programid.
-*>     move     function when-compiled to WS-When-Compiled.
-*>     move     WS-WC-DD  to H1-DD.
-*>     move     WS-WC-MM  to H1-MM.
-*>     move     WS-WC-YY  to H1-YY.
-*>     move     WS-WC-HH  to H1-HH.
-*>     move     WS-WC-Min to H1-Min.
      add      1 to Page-No.
      move     Page-No to H1-Page.
      if       Page-No = 1
               write PrintLine from hdr1 after 1
-     else     write PrintLine from hdr1 after page.
+     else
+              write PrintLine from hdr1 after page
+     end-if
      move     spaces to PrintLine.
      write    PrintLine after 1.
      move     2 to Line-count.
@@ -3155,7 +3234,7 @@
               before initial "  ".
      write    PrintLine from hdr5-symbols.
      write    PrintLine from hdr6-symbols.
-     add      2 to Line-Count.
+     add      2 to Line-Count
      go       to zz150-Exit.
  zz150-WriteHdb2.
      move     spaces to PrintLine.
@@ -3167,7 +3246,7 @@
      write    PrintLine from hdr3.
      move     spaces to PrintLine.
      write    PrintLine.
-     add      4 to Line-Count.
+     add      4 to Line-Count
      go       to zz150-Exit.
  zz150-WriteHdb2b.
      move     spaces to PrintLine.
@@ -3177,47 +3256,49 @@
      write    PrintLine from hdr3.
      move     spaces to PrintLine.
      write    PrintLine.
-     add      4 to Line-Count.
+     add      4 to Line-Count
      go       to zz150-Exit.
  zz150-WriteHdb3.
      write    PrintLine from hdr8-ws.
      write    PrintLine from hdr3.
      move     spaces to PrintLine.
      write    PrintLine.
-     add      3 to Line-Count.
+     add      3 to Line-Count
      go       to zz150-Exit.
  zz150-WriteHdb4.
      write    PrintLine from hdr9.
      move     spaces to PrintLine.
      write    PrintLine.
-     add      2 to Line-Count.
+     add      2 to Line-Count
      go       to zz150-Exit.
  zz150-WriteHdb5.
      write    PrintLine from hdr10.
      move     spaces to PrintLine.
      write    PrintLine.
-     add      2 to Line-Count.
+     add      2 to Line-Count
      go       to zz150-Exit.
  zz150-WriteHdb6.
      write    PrintLine from hdr9B.
      move     spaces to PrintLine.
      write    PrintLine.
-     add      2 to Line-Count.
+     add      2 to Line-Count
      go       to zz150-Exit.
  zz150-WriteHdb7.
      write    PrintLine from hdr11.
      write    PrintLine from hdr12-hyphens.
      move     spaces to PrintLine.
      write    PrintLine.
-     add      3 to Line-Count.
+     add      3 to Line-Count
      go       to zz150-Exit.
  zz150-WriteHdb8.
      write    PrintLine from hdr2.
      write    PrintLine from hdr3.
      move     spaces to PrintLine.
      write    PrintLine.
-     add      3 to Line-Count.
+     add      3 to Line-Count
      go       to zz150-Exit.
+
+
  zz150-Exit.
      exit.
 *>
@@ -3291,7 +3372,8 @@
               display "4: -TEST produces testing info (for programmers use only)"
               display "5: -DR   Display All reserved words & stop"
               display "6: -G    produce only group xref: Comp. MF"
-              display "7: -H    Display this help message"
+              display "7: -A    Append printed output to an existing file if present"
+              display "8: -H    Display this help message"
               display "   --H   as -H"
               move zero to return-code
               goback.
@@ -3310,9 +3392,11 @@
 
 *>     unstring Arg-Value (1) delimited by "." into Prog-BaseName
 *>              with pointer String-Pointer.
+*>
      if       Prog-BaseName = SourceFileName
               string  Prog-BaseName  delimited by space
               ".pre"        delimited by size into SourceFileName.
+*>
      string   Prog-BaseName delimited by space
               ".lst"        delimited by size into Print-FileName
               with pointer String-Pointer2.
@@ -3334,7 +3418,7 @@
 *>
 *> Check v2 if we are NOT listing the source
 *>
-      if      "-R" = Arg-Value (2) or Arg-Value (3)
+     if      "-R" = Arg-Value (2) or Arg-Value (3)
            or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
               move "N" to sw-2.
 *>
@@ -3357,6 +3441,13 @@
      if       "-L" = Arg-Value (2) or Arg-Value (3)
            or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
               move 1 to sw-6.
+*>
+*> Check v7 if we are appending listing o/p to an existing file.
+*>
+     if       "-A" = Arg-Value (2) or Arg-Value (3)
+           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
+              move 1 to sw-7.
+*>
 *>***************************************************************
 *>  THIS BLOCK FOR TESING and Comparing listing against MF etc  *
 *>***************************************************************
@@ -3370,10 +3461,21 @@
 *>    END OF SPECIAL TEST BLOCK but with bc030 - bc080 also     *
 *>***************************************************************
      open     input SourceInput.
-     if       fs-reply not = zero
+     if       FS-Reply not = zero
               display Msg9
               move 16 to return-code
               goback.
+*>
+*>  Set WS-Locale-Time-Zone from LC_TIME - Default [3] to Intl (ccyymmdd)
+*>
+     accept   WS-Locale from Environment "LC_TIME" on exception
+              move    3 to WS-Local-Time-Zone.
+     if       WS-Locale (1:5) = "en_GB"
+              move    1 to WS-Local-Time-Zone
+     else
+      if      WS-Locale (1:5) = "en_US"
+              move    2 to WS-Local-Time-Zone.   *> others before the period
+*>
      go       to zz180-Exit.
 *>
  zz180-Get-Program-Args.
@@ -3391,9 +3493,9 @@
                       move "/tmp" to Temp-PathName.
      if       Temp-PathName (1:1) = "/"   *> Its Linux/Unix
               move "/" to OS-Delimiter.
-     if       Temp-PathName (1:1) = "\"   *> Its Windoz
-              inspect Temp-PathName replacing all "/" by "\"   *> in case of /tmp
-              move "\" to OS-Delimiter.
+     if       Temp-PathName (1:1) = "\"   *> Its Windoz *> "
+              inspect Temp-PathName replacing all "/" by "\"   *> in case of /tmp "
+              move "\" to OS-Delimiter.  *> "
      string   Temp-PathName delimited by space
                OS-Delimiter delimited by size
                 "Part1.tmp" delimited by size   into Supp-File-1.
@@ -3466,3 +3568,310 @@
  zz319-Exit.
      exit.
 *>
+ zz400-Convert-Date.
+*>*****************
+*>
+*>  Converts date from Accept DATE YYYYMMDD to UK/USA/Intl date format
+*>****************************************************
+*> Input:   HDDate
+*> output:  HD2-Date  as UK/US/Intl date format or more as required.
+*>
+     if       WS-Local-Time-Zone = zero or > 3
+              move 3 to WS-Local-Time-Zone.   *> Intl - ccyy/mm/dd - force if not set but it should be.
+*>
+     if       LTZ-UK
+              move "dd/mm/ccyy" to HD2-date
+              move HD-C to HD2-C
+              move hd-y to hd2-y
+              move hd-m to hd2-m
+              move hd-d to hd2-d
+     else
+      if      LTZ-USA                *> swap month and days
+              move "mm/dd/ccyy" to HD2-date
+              move hd-m to hd2-Date (1:2)
+              move hd-d to hd2-Date (4:2)
+              move HD-C to HD2-C
+              move hd-y to hd2-y
+      else
+*>
+*> So its International date format
+*>
+       if     LTZ-Unix
+              move "ccyy/mm/dd" to HD2-Date
+              move HD-C  to HD2-Date (1:2)
+              move HD-Y  to HD2-Date (3:2)
+              move HD-M  to HD2-Date (6:2)
+              move HD-D  to HD2-Date (9:2).
+*>
+ zz400-Exit.
+     exit.
+*>
+*> End of cobxref source
+*>
+ Identification division.
+*>**********************
+      program-id.       get-reserved-lists.
+*>**
+*>    Author.           Vincent Bryan Coen, Applewood Computers.
+*>                      Stag Green Avenue, Hatfield, Hertfordshire, UK.
+*>**
+*>    Date-Written.     26 September 2010.
+*>**
+*>    Security.         Copyright (C) 2010- forever, Vincent Bryan Coen.
+*>                      Distributed under the GNU General Public License
+*>                      v2.0. Only. See the file COPYING for details but
+*>                      for use within GNU/Open Cobol ONLY.
+*>**
+*>    Usage.            Get the reserved word lists from GNU/Open Cobols
+*>                      cobc, from v1.1 & v2.n for Intrinsic and reserved words.
+*>                      Note that Mnemonics - devices, features and switch names
+*>                      are NOT obtained so that they can appear in xref listings.
+*>**
+*>    Called by.
+*>                      cobxref
+*>**
+*>    Calls.
+*>                      cobc
+*>                      CBL_DELETE_FILE
+*>                      SYSTEM
+*>
+*>    Changes.          See Changelog & Prog-Name.
+*>
+*>*************************************************************************
+*>
+*> Copyright Notice.
+*>*****************
+*>
+*> This file/program is part of Cobxref AND GNUCobol and is copyright
+*> (c) Vincent B Coen 2010 - forever.
+*>
+*> This program is free software; you can redistribute it and/or modify it
+*> under the terms of the GNU General Public License as published by the
+*> Free Software Foundation; version 2 ONLY within Open Cobol, providing
+*> the package continues to be issued or marketed as 'GNU/Open Cobol' and
+*> is available FREE OF CHARGE AND WITH FULL SOURCE CODE.
+*>
+*> It cannot be included or used with any other Compiler without the
+*> written Authority by the copyright holder, Vincent B Coen.
+*>
+*> Cobxref is distributed in the hope that it will be useful, but WITHOUT
+*> ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+*> FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+*> for more details. If it breaks, you own both pieces but I will endevor
+*> to fix it, providing you tell me about the problem.
+*>
+*> You should have received a copy of the GNU General Public License along
+*> with Cobxref; see the file COPYING.  If not, write to the Free Software
+*> Foundation, 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*>*************************************************************************
+*>
+ environment division.
+*> configuration section.
+*> source-computer.      linux.
+*> object-computer.      linux.
+ input-Output section.
+ file-control.
+*>
+     select   Reserve-Stream   assign  "res.tmp"
+              organization     line sequential
+              status           FS-Reply.
+     select   Intrinsic-Stream assign  "int.tmp"
+              organization     line sequential
+              status           FS-Reply.
+*>
+ data division.
+ file section.
+*>***********
+*>
+*> CAUTION: Both of these files can and probably do contain Tab chars
+*>
+ fd  Reserve-Stream.
+ 01  Res-Record            pic x(128).
+*>
+ fd  Intrinsic-Stream.
+ 01  Int-Record            pic x(128).
+*>
+ working-storage section.
+*>**********************
+ 77  Prog-Name              pic x(27) value "get-reserved-lists v1.00.01".
+ 77  S-Ptr                  Binary-long  value zero.
+ 77  Res-Start              Binary-char  value zero.
+ 77  ws-Function-Table-Size pic s9(5)  comp value zero.
+ 77  ws-Resvd-Table-Size    pic s9(5)   comp value zero.
+ 77  FS-Reply               pic 99.
+*>
+ 01  Placement-Res          pic x(30).
+ 01  Placement-Res-State    pic x.
+*>
+ 01  Error-messages.                      *> Sorry, English msgs Only
+*> Msg1 thru 10 in cobxref
+     03 Msg11     pic x(60) value "Msg11 Cannot run 'cobc --list-intrinsics', cobc not in path?".
+     03 Msg12     pic x(58) value "Msg12 Cannot run 'cobc --list-reserved', cobc not in path?".
+     03 Msg13     pic x(51) value "Msg13 Intrinsic word table was successfully updated".
+     03 Msg14     pic x(49) value "Msg14 Reserve word table was successfully updated".
+*> Msg16 in cobxref
+*>
+ Linkage section.
+*>**************
+ 01  ws-Return-Code          binary-char.
+*>
+*> Here for cb_intrinsic_table in G/OC see cobc/reserved.c in the GNU/Open Cobol source directory but
+*>    Totally ingoring the system_table as not needed/used by xref
+*>
+*> Also note that the number 0 or 1 indicates if the function/reserved word is implemented in
+*> GNU/Open Cobol but xref treats all, as being reserved as they are so (reserved that is)
+*>
+ 01  Function-Table-R.
+     03  All-Functions                 occurs 256 ascending key P-Function indexed by All-Fun-Idx.
+         05  P-oc-implemented  pic x.
+         05  P-Function        pic x(30).
+ 01  Function-Table-Size       pic s9(5)  comp.
+*>
+*> Note that system names are omitted so that they turn up in the cross refs
+*>
+*> Here for all reserved words in G/OC see :
+*>           struct reserved reserved_words in cobc/reserved.c in the GNU/Open Cobol source directory
+*>
+ 01  Additional-Reserved-Words-R.
+     03  Reserved-Names                occurs 1024 ascending key Resvd-Word indexed by Resvd-Idx.
+         05  Resvd-Implemented pic x.
+         05  Resvd-Word        pic x(30).
+ 01  Resvd-Table-Size          pic s9(5)   comp.
+*>
+ procedure division using ws-Return-Code
+                          Function-Table-R
+                          Function-Table-Size
+                          Additional-Reserved-Words-R
+                          Resvd-Table-Size.
+*>===================================================
+ aa000-startup section.
+ aa010-Init.
+     call     "SYSTEM" using "cobc --list-intrinsics > int.tmp".
+     call     "SYSTEM" using "cobc --list-reserved > res.tmp".
+     move     zero to ws-return-code.
+     perform  ba000-Get-Intrinsics-Words.
+     if       ws-return-code not zero
+              exit program.
+     perform  ca000-Get-Reserved-Words.
+     call     "CBL_DELETE_FILE" using "res.tmp". *> delete temp files
+     call     "CBL_DELETE_FILE" using "int.tmp".
+     exit     program.
+*>
+ ba000-Get-Intrinsics-Words section.
+ ba010-init.
+     open     input Intrinsic-Stream.
+     if       FS-Reply = 35
+              display Msg11.
+     if       FS-Reply not = zero
+              move FS-Reply to ws-return-code
+              exit section.
+*>
+     move     Function-Table-Size to ws-Function-Table-Size.  *> keep old
+     move     high-values to Function-Table-R.                *> there is a data stream so we can clear the table
+     move     zero to Function-Table-Size.
+*>
+ ba020-get-thru-base-data.
+     move     high-values to Int-Record.
+     read     Intrinsic-Stream at end
+              move zero to ws-return-code
+              close Intrinsic-Stream
+              if Function-Table-Size > ws-Function-Table-Size
+                 display Msg13                                *> updated
+              end-if
+              exit section.
+*>
+     if       Int-Record (1:3) = spaces                       *> blank line
+       or     Int-Record (1:18) = "Intrinsic Function"        *> header
+              go to ba020-get-thru-base-data.
+*>
+*>  This point we now have data
+*>
+     move     1 to S-Ptr.
+     move     spaces to Placement-Res Placement-Res-State.
+     unstring Int-Record delimited by all x"09" or all spaces into Placement-Res pointer S-Ptr.
+     unstring Int-Record delimited by all x"09" or all spaces into Placement-Res-State pointer S-Ptr.
+     add      1 to Function-Table-Size.
+     move     Placement-Res to P-Function (Function-Table-Size).
+     If       Placement-Res-State = "Y"
+              move "1" to P-oc-implemented (Function-Table-Size)
+     else
+              move "0" to P-oc-implemented (Function-Table-Size).
+*>
+     go to ba020-get-thru-base-data.
+*>
+ ca000-Get-Reserved-Words section.
+*>*******************************
+ ca010-init.
+     open     input Reserve-Stream.
+     if       FS-Reply = 35
+              display Msg12.
+     if       FS-Reply not = zero
+              move FS-Reply to ws-return-code
+              exit section.
+*>
+     move     Resvd-Table-Size to ws-Resvd-Table-Size.
+     move     high-values to Additional-Reserved-Words-R.  *> there is a data stream so we can clear the table
+     move     zero to Resvd-Table-Size.
+     move     zero to Res-Start.
+*>
+ ca020-get-thru-base-data.
+     move     high-values to Res-Record.
+     read     Reserve-Stream at end
+              go to ca030-Clean-Up.
+*>
+     if       Res-Record (1:3) = spaces                       *> blank line
+       or     Res-Record (1:14) = "Reserved Words"            *> header
+              go to ca020-get-thru-base-data
+     end-if
+     if       Res-Record (1:16) = "Extra (obsolete)"
+              perform  forever
+                 read Reserve-Stream at end
+                      go to ca030-Clean-Up
+                 end-read
+                 if Res-Record (1:14) = "Extra internal"
+                    move 1 to Res-Start              *> Now we dont have res-State set to 1 so help to make it so
+                    go to ca020-get-thru-base-data
+                 end-if
+              end-perform
+     end-if
+*>
+*>  This point we now have data
+*>
+     move     1 to S-Ptr.
+     move     spaces to Placement-Res Placement-Res-State.
+     unstring Res-Record delimited by all x"09" or all spaces into Placement-Res pointer S-Ptr.
+     unstring Res-Record delimited by all x"09" or all spaces into Placement-Res-State pointer S-Ptr.
+*>
+*> Ignore bad 'reserved' names such as 'LENGTH OF'
+*>
+     if       Placement-Res = "'LENGTH"
+              go to ca020-get-thru-base-data.
+*>
+     add      1 to Resvd-Table-Size.
+     move     Placement-Res to Resvd-Word (Resvd-Table-Size).
+     If       Placement-Res-State = "Y"
+              move "1" to Resvd-Implemented (Resvd-Table-Size)
+     else
+      if      Placement-Res-State = "N"
+              move "0" to Resvd-Implemented (Resvd-Table-Size)
+      else
+       If     Res-Start = 1                                      *> have a Extra internal with no implemented flag
+              move "1" to Resvd-Implemented (Resvd-Table-Size)
+       else
+              move "0" to Resvd-Implemented (Resvd-Table-Size)
+       end-if
+      end-if
+     end-if
+*>
+     go to ca020-get-thru-base-data.
+*>
+ ca030-Clean-Up.
+     move     zero to ws-return-code.
+     close    Reserve-Stream.
+     if       Resvd-Table-Size > ws-Resvd-Table-Size
+                 display Msg14                                  *> updated
+     end-if
+     exit     section.
+*>
+ end program get-reserved-lists.
+ end program cobxref.

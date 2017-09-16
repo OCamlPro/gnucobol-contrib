@@ -1,17 +1,17 @@
-			      Dectrans 
+			      Dectrans
 		http://sourceforge.net/projects/dectrans/
 
 
-Dectrans is a Cobol Decision Table Translator that reads Decision Tables within 
-a Cobol source file  and will produce Cobol code based on those table that can
-be input to a Cobol compiler such as Open Cobol running under any of the 
-operating systems that Open Cobol will run under. 
+Dectrans is a Cobol Decision Table Translator that reads Decision Tables within
+a Cobol source file  and will produce Cobol code based on those tables that can
+be input to a Cobol compiler such as GnuCobol running under any of the
+operating systems that GnuCobol will run under.
 
-If the tables are inbedded within the Procedure Division of a Cobol source
+If the tables are embedded within the Procedure Division of a Cobol source
 Program they will be converted at the same point in the source code so that the
 output file can be input directly to the compiler.
 
-[OpenCOBOL is an open-source COBOL compiler, which translates COBOL programs to 
+[GNUCobol is an open-source COBOL compiler, which translates COBOL programs to
 C code and compiles it using GCC on multiple platforms and operating systems]
 
 All code and programs are distributed under the GNU General Public License.
@@ -21,24 +21,26 @@ See COPYING for details.
 Requirements
 ============
 
-OpenCobol package installed and tested working. See documentation supplied with 
-OpenCobol. You MUST have run the test procedures including the cobol85 suite.
+GNUCobol package installed and tested working. See documentation supplied with
+GNUCobol. You MUST have run the test procedures including the cobol85 suite.
 
 Installation
 ============
 
 Linux/Unix:
-Just place Dectrans in directory of source code to be translated. Making 
-sure that the execute flag is set (chmod +x dectrans). In the event that the 
-binary does not work you will need to recompile the Cobol source code. 
+Just place Dectrans in directory of source code to be translated. Making
+sure that the execute flag is set (chmod +x dectrans). In the event that the
+binary does not work you will need to recompile the Cobol source code.
+Of course you can also place the dectrans executable into the ~/bin directory
+where it is in your PATH, see below.
 
 Windows/Mac:
 Compile the Cobol source see below.
 
-In the event this does not work you must have installed and tested OpenCobol.
-Note This should work 'as is' with Tiny Cobol or any other compiler.
+In the event this does not work you must have installed and tested GNUCobol.
+Note This should work 'as is' with any other compiler.
 
-To compile with OpenCobol:
+To compile with GNUCobol:
 
 Place dectrans files in own directory having moved to same directory.
 From terminal program run:
@@ -54,7 +56,7 @@ Supplied files with the dectrans tarbel:
 ***************************************
 
 Changelog               History of changes made to cobxref sources
-dectrans		The precompiled binary for linux 32 bit systems
+dectrans		The pre-compiled binary for Linux 32 bit systems
 dectrans.odt		Manual and Usage procedure for dectrans
 dectrans.cbl		Original Cobol source of dectrans
 COPYING                 Software License for copying code.
@@ -68,9 +70,10 @@ Please also read dectrans.txt for instructions on using program.
 
 As any bug fixes will be applied to the Cobol code please note that
 all bug fixes should only be made to the original Cobol source code.
-A master copy of the sources can be found at the add1tocobol web site.
+A master copy of the sources can be found at the Sourceforge web site on the
+contributions area at trunk/tools/dectrans.
 
-Please report all bugs found to the OpenCobol forum at www.opencobol.org
-and send a copy to the author at vbcoen@btconnect.com
+Please report all bugs found to the contributions forum
+and send a copy to the author at vbcoen@gmail.com.
 
 

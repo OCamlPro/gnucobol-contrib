@@ -1,14 +1,15 @@
 Cobxref - Cobol Cross Reference program / module for GNU Cobol
 
-Documentation for release version 1.01.11            Dated 2 Nov 2014
+Documentation for release version 1.01.21            Dated March 2017
 
-Parameters for running program are in the form:
+Parameters for running program when not using the cobc -X option are in the
+form:
 
-cobxref 1 [2 3 4 5 6 7] where params 2 through 7 are all optional
+cobxref 1 [2 3 4 5 6 7 8] where params 2 through 8 are all optional
 
-Note: Param 1 MUST be first param, 2 through 7 can be in any order.
-      param 5 is for testing ONLY.
-      Param 6 for testing against other ref products only
+Note: Param 1 MUST be first param, 2 through 8 can be in any order.
+      param 6 is for testing ONLY.
+      Param 7 for testing against other ref products only
 
 1: SFN [Source File name] (Mandatory)
 
@@ -21,35 +22,40 @@ Note: Param 1 MUST be first param, 2 through 7 can be in any order.
 4: -DR   Displays All reserved words & then stops. Note: Must still specify a
          source file even if a dummy.
 
-5: -TEST Produces testing info (and this can be a lot of output).
+5: -A    Appends the listing to an existing lst file as produced by the compiler
+         using option -T or -t. This is a default with cobc -X.
+
+6: -TEST Produces testing info (and this can be a lot of output).
          Used for Debugging by or on behalf of programmer.
 
-6: -G    Used in testing: Produces group print out in addition to normal so that
+7: -G    Used in testing: Produces group print out in addition to normal so that
          comparing xref's with Microfocus or IBM can be more easily done.
 
-7: -H	 Displays program parameter info (same as when run without any params}
+8: -H	 Displays program parameter info (same as when run without any params}
    --H	 as -H
 
-For normal usage just call as 'cobxref sourcefilename.ext' or you can also call it
+For normal usage just use it via GnuCobol compiler cobc with -X and -T|-t.
+
+As a standalone tool call as 'cobxref sourcefilename.i' (as produced with -E.
+
 using cobc with the -X option. This will not produce a source listing but will
 create the cross reference lists along with the unreferenced working storage
-and procedure names.
+and procedure names and when used with -T | -t will create the xref after the
+source listing.
 
-This will assume that source is in free format. Otherwise if you run it stand alone
-you MUST be using the compiler directive >>source fixed (or free).
+Yes I know I have said it more than once.
 
-When run standalone, you can supply SFN.ext but v1.1 will not process COPY verbs
-for this you must use v1.2 (to be released late November 2014).
 
 You may have a version of cobc (v2) that gives the option of -X which will also
 call cobxref during compilation. To check for this run cobc -V or cobc -i to
-confirm that you have the -Xref option of v2.
+confirm that you have the -Xref option of v2 as well as -T and -t.
 
 See additional notes in the readme file and also for details of any changes over
 prior releases see the Changelog file.
 
 If compiling from cobol source you can use the supplied shell script
-e.g., comp-cobxref.sh
+e.g., comp-cobxref.sh  [this has been updated to reflect that the sources are
+in one file only - cobxref.cbl.
 
 Note that for testing I added to the cobc command line:
 -Wtruncate
@@ -76,18 +82,25 @@ cobxref.cbl: 225: Warning: 'HoldWSorPD' defined here as PIC 9
 
 Please do not make changes without recording the amendment in the source code
 with notation at or near actual code changes. After your tests, please advise of
-changes direct to myself at vbcoen@btconnect.com, through the GNUCobol contrib
+changes direct to myself at vbcoen@btconnect.com,or through the GNUCobol contrib
 forum.
 
 I have been testing this program against a range of my own code including a
 42,000 line program (works on a IBM z/390 etc, as well as some of the test
 programs & modules provided with GNU cobol.  I now think it is ready
 for general usage but please if you can, test it against another cross reference
-tool to see if it is producing the same results and advise of any discrepancies
+tools to see if it is producing the same results and advise of any discrepancies
 that appear to show that cobxref may be at fault.
 
 
 Please provide any and all reports of bugs through the GNU Cobol forum at
-https://sourceforge.net/p/open-cobol/discussion/contrib
+https://sourceforge.net/p/open-cobol/discussion/contrib or
+http://sourceforge.net/projects/cobxref/
 
-Last updated Updated: 2nd November, 2014 (c) Vincent B Coen.
+Last Update: 24th Mar, 2017 (c) Vincent B Coen.
+05/07/2016 vbc -- Added support for -A to amend an existing listing file.
+01/08/2016 vbc -- Added displays to help find problem when using with cobc -t
+                  as o/p vanishes - still do not know why - is cobc not
+                  releasing the printer o/p file ?
+24/03/2017 vbc -- Update usage using -T -X for builds r1482 and later of GC.
+ 

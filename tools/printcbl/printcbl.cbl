@@ -17,16 +17,20 @@
 *>
 *>  WARNING: If you run OC v1.1 or CE then you may need to remove
 *> the 2nd printer line 'organisation line sequential' due to a bug
-*> in fileio.c. So far its working correctly in v2.0 & v2.1 as of
-*> 2013/12/04.
+*> in fileio.c. So far its working correctly in v2.0 as of
+*>  2016/07/16.
 *>
 *>  Please read all of the notes before use!!!
 *>   Notes transferred to a manual in LibreOffice & PDF formats.
 *>     Need more clean up as a bit of a mess!
 *>
-*>  Latest version at http://applewoodbbs/mine.nu/files/Cobol-Dev/prtcbl-latest.zip
-*>   or via (anonymous) ftp  applewoodbbs.mine.nu/pub/Cobol-Dev/printtcbl-latest.zip
-*>   also added to trunk/contrib/tools on GNU Cobol/Open Cobol at sourceforge.
+*>  Make sure that you have tested the GunCobol compiler by running both
+*>   make check  and  make test and that you get no errors what so ever
+*>    otherwise you get compiler induced errors when running.
+*>
+*>  Latest version at http://applewoodbbs.dtdns.net/files/Cobol-Dev/printcbl-latest.zip
+*>   or via (anonymous) ftp  applewoodbbs.dtdns.net/pub/Cobol-Dev/printcbl-latest.zip
+*>   also added to trunk/contrib/tools on GNU Cobol at sourceforge.
 *>
 *> Suggestions for updates to vbcoen at gmail.com
 *> Message subject should be 'printcbl requests' or 'printcbl bugs'
@@ -71,7 +75,7 @@
  working-storage section.
 *>======================
 *>
- 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.15".  *> ver.rel.build
+ 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.16".  *> ver.rel.build
 *>
 *>   **************************************
 *>   *     User changeable values here:   ****************************************************
@@ -80,16 +84,16 @@
 *> Temporary for testing program args etc, (We-Are-Testing) will display prog arguments at start.
 *>  Useful to have anyway!
 *>
- 77  Testing                pic 9 value 1.
+ 77  Testing                pic 9 value 0.
      88 We-Are-Testing            value 1
                                False is 1.
- 77  Testing2               pic 9 value 0.
+ 77  Testing2               pic 9 value 0.   *> 0.
      88 We-Are-Testing2           value 1
                                False is 0.
- 77  Testing3               pic 9 value 0.
+ 77  Testing3               pic 9 value 0.   *> 0.
      88 We-Are-Testing3           value 1
                                False is 0.
- 77  Testing4               pic 9 value 0.
+ 77  Testing4               pic 9 value 0.   *> 0.
      88 We-Are-Testing4           value 1
                                False is 0.
  77  Print-It-Out           pic 9 value zero.    *>  Set this to 1 if you want reports printed unless
@@ -110,9 +114,9 @@
     "lpi=9' -P ".                                                 *> change if lines per inch wrong
      03  PSN                pic x(48) value "Officejet-Pro-8600 ". *> Change to your Print Spool Name
 *>
-*>>>>>>        Change To Your Spool Name for printer
+*>>>>>>        Change To Your Spool Name for printer NOTE THAT THERE IS A TRAILING SPACE
 *> This is the Cups print spool, change it for yours,
-*>  if your printer can not handle Duplex printing remove string
+*>  if your printer can not handle Duplex (double sided) printing remove string
 *>       ' sides=two-sided-long-edge'
 *>  if you do not want to delete file after spooling leave the commented out "-r " &
 *>>>>>>
@@ -121,22 +125,28 @@
 *>
  01  WS-Page-Lines          pic 999       value 48.         *> Change if you do not fill a page or go over to
 *>                                                              a new one without a heading line (see Docs)
+ 01  WS-PDF-Page-Lines      pic 999       value 57.         *> not yet used.
 *>
+ 01  WS-Locale              pic x(16)     value spaces.     *> Holds o/p from env var. LC_TIME but only uses 1st 5 chars
  01  WS-Local-Time-Zone     pic 9         value 3.          *> Defaults to International, See comments below !
 *>
-*> Set WS-Local-Time-Zone ^^ to one of these 88 value's according to your local requirements
-*>    Note that 'implies' does NOT mean the program does anything e.g., changes page size.
+*> Set WS-Local-Time-Zone ^~^ to one of these 88 value's according to your local requirements
+*> NOTE Environment var. LC_TIME is checked for "en_GB" for UK (1) and "en_US" for USA (2)
+*>   at start of program. For any other, you can add yours if different but let the author know,
+*>     so it can be added to the master sources
+*>
+*>    Note that 'implies' does NOT mean the program does anything e.g., changes page sizing in the report.
 *>
      88  LTZ-Unix                         value 3. *> ccyy/mm/dd  Also implies A4 Paper for prints
-     88  LTZ-USA                          value 2. *> mm/dd/ccyy  Also implies US Letter Paper for prints
-     88  LTZ-UK                           value 1. *> dd/mm/ccyy  Also implies A4 Paper for prints
+     88  LTZ-USA                          value 2. *> mm/dd/ccyy  [en_US] Also implies US Letter Paper for prints
+     88  LTZ-UK                           value 1. *> dd/mm/ccyy  [en_GB] Also implies A4 Paper for prints
 *>
 *>   **************************************
 *>   *    End of User Changeable Values   ****************************************************
 *>   **************************************
 *>
- 01  WS-Print-File-Name     pic x(64)      value spaces.
- 01  WS-Input-File-Name     pic x(64)      value spaces.
+ 01  WS-Print-File-Name     pic x(32)      value spaces.
+ 01  WS-Input-File-Name     pic x(32)      value spaces.
  01  WS-Status              PIC 99         value zero.
  01  WS-Copy-File-Name      pic x(768)     value spaces.
  01  WS-Hold-Copy-File-Name pic x(768)     value spaces.
@@ -254,6 +264,7 @@
      03  Msg8               pic x(28)     value "Error: Abnormal end of input".
      03  Msg9               pic x(48)     value "Caution: One or more replacing sources not found".
      03  Msg10              pic x(33)     value "Error: Invalid Format, try again!".
+     03  Msg11              pic x(29)     value "(P): Bad RT on Get-Directory ".  *> 1.02.16
 *>
 *>   ***************************************
 *>   | List of possible source file .exts, |
@@ -265,7 +276,7 @@
      03  File-Ext           pic x(4)  occurs 7.
  01  Ext-Table-Size         pic 9         value 7.
 *>
-*>   **********************************************************    NOTE: that OC only goes 2-5
+*>   **********************************************************    NOTE: that GC only goes 2-5
 *>   *  Now follows the tables needed for the 9 depth levels  *          or does it
 *>   *  that support the copy verb  within a copy verb.       *
 *>   *  First is ALWAYS the source file.                      *
@@ -371,7 +382,7 @@
                  88  CRT-RT-Else                       value 3.
                  88  CRT-RT-Oops                       value 0.
              07  CRT-Found-Src     pic 99              value zero.    *> non zero if a replacing target is found
-             07  CRT-Source-Size   pic 9(4)            value zero.    *> these sizes relate to the relacing-source and target
+             07  CRT-Source-Size   pic 9(4)            value zero.    *> these sizes relate to the replacing-source and target
              07  CRT-Target-Size   pic 9(4)            value zero.    *>   - - - -  ditto - - - -
 *>
 *>  On paper these can be as large as 65,535 BUT coding can only cope if literal or word is on same source line
@@ -480,6 +491,11 @@
 *>***************************
 *>
      perform  zz020-Get-Program-Args.
+     if       return-code not zero
+              display "Errors: Note and Hit return to quit "
+              accept  Hold-Word1 (1:1)
+              move    space to Hold-Word1 (1:1)
+              goback.
 *>
 *> if args > 3 we have in, out filenames & source format, so just need to open and test etc
 *>
@@ -492,6 +508,7 @@
 *>
      display  "2) Enter Print-File (Work File) Name - " at 1401 with erase eol.
      accept   WS-Print-File-Name at 1440 with update.
+     move     WS-Print-File-Name to PR-Name.
 *>
  aa020-Get-Source-Format.
      display  "3) Program format fixed or free - "      at 1601 with erase eos.
@@ -517,12 +534,16 @@
 *>
      display  "4) Enter Print Spool Name - "        at 1801  with erase eos.
      Accept   PSN at 1829 with update.
-     move     WS-Print-File-Name to PR-Name.
-     display  "Warning: Only using Env. vars. for searches"  at 2001 with background-color 3.
+*>
+     display  "WARNING: Only using Env. vars. for searches" at 2001 with background-color 3.
 *>
  aa030-Bypass-Accepts.
 *>
-*>  Changing this to use block reads via copy table as entry 1
+*> Test for noprint at param 4
+*> 2.01.16
+*>
+     if       function upper-case (PSN) = "NOPRINT"
+              set No-Printing to true.
 *>
      set      No-Search to true.
      move     WS-Input-File-Name to WS-Copy-File-Name.
@@ -621,6 +642,8 @@
 *>  Support for source update only (no report) but can only happen on the first line of the source code
 *>   and any Compiler directives MUST be from line 2. This is to make SURE no print lines are produced.
 *>
+*>  Paramter 4 (print filename) can be "NOPRINT"|"noprint" and will do the same as of 2.01.16.
+*>
      if       WS-Line-Number = zero
       and     ((ws-fixed-set and function upper-case (IR-Buffer (7:9)) = "**NOPRINT")
         or     (ws-free-set  and function upper-case (IR-Buffer (1:9)) = "*>NOPRINT"))
@@ -688,7 +711,9 @@
      if       IR-Buffer (WS-P1:2) = "*>"                  *> Floating '*>', applies to both Free & Fixed
               go to ba000-Process.
 *>
-*>   Make sure we dont use COPY word in a 'display' but accept one after a possible level number
+*>   Try to make sure we dont use COPY word in a 'display' but
+*>     accept one after a possible level number. This is NOT bullet proof
+*>       so may need more code!
 *>
      if       NOT Found-Number and Found-Word
         and   (function upper-case (IR-Buffer (WS-P1:6)) = " COPY "
@@ -771,7 +796,13 @@
               move  1 to Found-Quote-in-Copy
      else
               move     WS-CRT-Copy-FileName to WS-Copy-File-Name
+              move zero to Found-Quote-in-Copy
      end-if
+
+    if we-are-testing
+           display "ba030: HCFN2 = " WS-Copy-File-Name
+    end-if
+
      Move     WS-Copy-File-Name To WS-Hold-Copy-File-Name.
 *>
 *> Check for 'in "../../foo". clause (quotes have been removed) and think about replacing clause
@@ -791,6 +822,11 @@
 *> Look for name, if not found add .ext's but if it was in ' or "
 *>       going to get some silly .exts eg, foo.ext.cpy             >>>  NEED to look at this and STOP it.
 *>
+
+    if we-are-testing
+           display "ba040: CFN3 = " WS-Copy-File-Name
+    end-if
+
      perform  zz300-Open-file thru zz300-Exit.
      if       Return-Code = 24
               move spaces to Formatted-Line
@@ -1114,12 +1150,28 @@
      perform  varying WS-P3 from 1 by 1 until WS-P3 > IB-Size
                                            or CInput-Buffer (WS-P3:2) = ". "
               if      CInput-Buffer (WS-P3:5)  = "COPY "
-                      add 5 to WS-P3  *> now process copyfilename
+                      add 5 to WS-P3                                     *> now process copyfilename
                       unstring Input-Buffer delimited by ". " or space   *> Will be getting word or literal
                                into WS-CRT-Copy-FileName
                                    delimiter Word-Delimit2
                                    pointer   WS-P3
+                               on overflow
+                                   if We-Are-Testing4
+                                      move WS-P3 to ws-disp4
+                                      display "In COPY we have fn = "
+                                              WS-CRT-Copy-FileName (1:50) " Delim = " Word-Delimit2
+                                              " pointer = " ws-disp4
+                                              " Buffer = " Input-Buffer (1:400)
+                                   end-if
+                                   if WS-P3 not < IB-Size
+                                      exit perform
+                                   end-if
                       end-unstring
+
+                      if We-Are-Testing
+                           display "Found CopyFileName1 " WS-CRT-Copy-FileName
+                      end-if
+
                       if       WS-CRT-Copy-FileName (1:1) = quote or "'"
                                set WS-CRT-Quote-Found to true
                                if WS-CRT-Copy-FileName (1:1) = quote
@@ -1128,6 +1180,13 @@
                                   move "'" to WS-CRT-Quote-Type
                                end-if
                       end-if
+
+                      if We-Are-Testing
+                           display "Found CopyFileName2 " WS-CRT-Copy-FileName
+                                     " with " WS-CRT-Quote-Type " and " Word-Delimit2
+                      end-if
+
+
                       if       Word-Delimit2 = ". "                     *> End of Copy
                                exit perform
                       end-if
@@ -1502,6 +1561,11 @@
 *>
      accept   Cobcpy        from Environment "COBCPY".
      accept   Cob_Copy_Dir  from Environment "COB_COPY_DIR".
+     accept   WS-Locale     from Environment "LC_TIME".          *> Update headings date format from Unix.
+     if       WS-Locale (1:5) = "en_GB"
+              set LTZ-UK  to true
+     else if  WS-Locale (1:5) = "en_US"
+              set LTZ-USA to true.
 *>
 *>    if both the same only use COBCPY
 *>
@@ -1520,8 +1584,8 @@
               display " Prtcbl P1 P2 P3 P4 P5"
               display "  P1: Input Filename"
               display "  P2: Output-Filename"
-              display "  P3: Source format [-fixed or -free, fixed or free]"
-              display "  P4: PSN (Print Spool Name)"
+              display "  P3: Source format [-fixed | -free, fixed | free]"
+              display "  P4: PSN (Print Spool Name) or NOPRINT | noprint"
               display "  P5: 'Temp-CopyLib-Path'"
               display " "
               display " P1 thru P4 are Mandatory"
@@ -1539,18 +1603,19 @@
      move     zero to z.
      perform  Arg-Number times
               add     1 to z
-              move spaces to Arg-Test
+              move    spaces to Arg-Test
               accept  Arg-Value (z) from Argument-Value
-              if     z = 3
-                     move function upper-case (Arg-Value (z)) to Arg-Test
+              if      z = 3
+                      move function upper-case (Arg-Value (z)) to Arg-Test
               else
-                     move Arg-Value (z) to Arg-Test
+                      move Arg-Value (z) to Arg-Test
               end-if
               if      z = 1
                       move Arg-Test to WS-Input-File-Name
               end-if
               if      z = 2
                       move Arg-Test to WS-Print-File-Name
+                                       PR-Name
               end-if
               if      z = 3 and (Arg-Test (1:6) = "-FIXED" or "FIXED ")
                       set ws-fixed-set to true
@@ -1565,7 +1630,22 @@
                       exit perform
               end-if
      end-perform.
-     perform zz020d-Process-CopyLibs thru zz020f-Get-CobCopyDir.
+*>
+*>               v2.01.16 update: Support for blank P5 : Get current directory and place in as P5
+*>
+     if       z < 5
+              call    "CBL_GET_CURRENT_DIR" using by value 0
+                                                  by value 512
+                                                  by reference Arg-Test
+              end-call
+              if      Return-Code not zero
+                      move    return-code to WS-Disp3
+                      display Msg11 " " WS-Disp3
+              else
+                      move 5 to z
+              end-if
+     end-if
+     perform  zz020d-Process-CopyLibs thru zz020f-Get-CobCopyDir.
      move     zero to x z.
 *>
 *>  \******************************/
@@ -1575,7 +1655,7 @@
 *>  From P! = Input File Name   thats in current directory
 *>  From P2 = Output/Print file going in current directory
 *>  From P3 = -Fixed | Fixed or -Free | Free for type of source code
-*>  From P4 = PSN (Print Spool Name)
+*>  From P4 = PSN (Print Spool Name) or NOPRINT | noprint
 *>  From P5 = The Path of one or more Copy Libraries But not more than 9 eg, foo:bar:nuts
 *>     which should be more than enough for anyone !!
 *>      where No-Of-Copy-Dirs = number of ALL copylib paths
@@ -1585,25 +1665,25 @@
      if       not We-Are-Testing
               move   zero to x y z
               go     to zz020-exit.
-     display " Program Args found:".
-     display "Input  = " WS-Input-File-Name.
-     display "Output = " WS-Print-File-Name.
-     display "Format = " no advancing.
-     if      ws-Fixed-Set
-             display "Fixed"
+     display  " Program Args found:".
+     display  "Input  = " WS-Input-File-Name.
+     display  "Output = " WS-Print-File-Name.
+     display  "Format = " no advancing.
+     if       ws-Fixed-Set
+              display "Fixed"
      else
-      if     ws-free-set
-             display "Free"
+      if      ws-free-set
+              display "Free"
       end-if
      end-if.
-     display "PSN    = " PSN.
-     display "Copy Libraries to search:".
-     move    No-Of-Copy-Dirs to y.
-     perform varying z from 1 by 1 until z > No-Of-Copy-Dirs
-             move Copy-Lib (z) to Arg-Test
-             display z "/" y " " Arg-Test (1:72)   *> restrict total display line to 79 (stops wrapping)
+     display  "PSN    = " PSN.
+     display  "Copy Libraries to search:".
+     move     No-Of-Copy-Dirs to y.
+     perform  varying z from 1 by 1 until z > No-Of-Copy-Dirs
+              move Copy-Lib (z) to Arg-Test
+              display z "/" y " " Arg-Test (1:72)   *> restrict total display line to 79 (stops wrapping)
      end-perform.
-     display " ".
+     display  " ".
      move     zero to x y z.
      go       to zz020-exit.
 *>
