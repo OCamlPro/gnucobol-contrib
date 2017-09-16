@@ -326,7 +326,7 @@
 032500     "CONTROLS NOT IN SEQUENCE, PROCESSING SKIPPED UNTIL NEXT THDR
 032600-    "".
 032700     03  filler              pic x(72)  value
-032800-    "Error: File not present Try Again!".
+032800     "Error: File not present Try Again! ".
 032900     03  filler              pic x(72)  value
 033000     "Error: Cannot create output file/s".
 033100 01  filler redefines error-table.
