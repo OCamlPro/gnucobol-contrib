@@ -62,6 +62,9 @@
 *> Date       Change description 
 *> ========== ==================================================================
 *> 2015.08.21 First version.
+*> 2017.09.18 Error corrections: 
+*>            - TO phrase without DEPENDING phrase in table definition.
+*>            - INSPECT TALLYING with two BEFORE. 
 *>
 *>******************************************************************************
 
@@ -147,7 +150,7 @@
  01 COB2CGI-TABLE-R                    EXTERNAL PIC X(161000).
  01 COB2CGI-TABLE REDEFINES COB2CGI-TABLE-R.
    02 COB2CGI-TAB.
-     03 COB2CGI-TAB-LINE               OCCURS 1 TO COB2CGI-TAB-MAX-LINE TIMES.
+     03 COB2CGI-TAB-LINE               OCCURS COB2CGI-TAB-MAX-LINE TIMES.
        *> there are only the name of fields in the internal table,
        *> all values will be saved in the field COB2CGI-DATA-VALUE
        04 COB2CGI-TAB-FIELD            PIC X(40).
@@ -209,6 +212,8 @@
 
 *> counter for COBOL inspect 
  01 COB2CGI-INSPECT-COUNT              PIC S9(09) COMP.
+ 01 COB2CGI-INSPECT-COUNT-1            PIC S9(09) COMP.
+ 01 COB2CGI-INSPECT-COUNT-2            PIC S9(09) COMP.
 
 *> max. uploaded file size                                             
  78 COB2CGI-UPLOAD-FILE-MAX-SIZE       VALUE 300000.
@@ -1073,12 +1078,20 @@
        ELSE
           *> this is a file name with full file path, get file name from it
           MOVE ZEROES TO COB2CGI-INSPECT-COUNT    
+          MOVE ZEROES TO COB2CGI-INSPECT-COUNT-1    
+          MOVE ZEROES TO COB2CGI-INSPECT-COUNT-2    
           
           INSPECT FUNCTION REVERSE(COB2CGI-TMP-FILE-NAME)
-             TALLYING COB2CGI-INSPECT-COUNT
+             TALLYING COB2CGI-INSPECT-COUNT-1
              FOR CHARACTERS BEFORE INITIAL "\"
-                            BEFORE INITIAL "/"
-       
+
+          INSPECT FUNCTION REVERSE(COB2CGI-TMP-FILE-NAME)
+             TALLYING COB2CGI-INSPECT-COUNT-2
+             FOR CHARACTERS BEFORE INITIAL "/"
+
+          MOVE FUNCTION MIN(COB2CGI-INSPECT-COUNT-1, COB2CGI-INSPECT-COUNT-2)               
+            TO COB2CGI-INSPECT-COUNT
+                            
           COMPUTE COB2CGI-TMP-FILE-PATH-LEN 
                 = FUNCTION LENGTH(COB2CGI-TMP-FILE-NAME)
                 - COB2CGI-INSPECT-COUNT + 1
@@ -1562,7 +1575,7 @@
  01 COB2CGI-TABLE-R           EXTERNAL PIC X(161000).
  01 COB2CGI-TABLE REDEFINES COB2CGI-TABLE-R.
    02 COB2CGI-DATA-TAB.
-     03 COB2CGI-TAB-LINE               OCCURS 1 TO COB2CGI-TAB-MAX-LINE TIMES.
+     03 COB2CGI-TAB-LINE               OCCURS COB2CGI-TAB-MAX-LINE TIMES.
        04 COB2CGI-TAB-FIELD            PIC X(40).
        04 COB2CGI-TAB-FIELD-LEN        PIC 9(9) COMP.
        04 COB2CGI-TAB-VALUE-PTR        PIC 9(9) COMP.
@@ -1586,8 +1599,8 @@
    02 LEN                              PIC 9(9) COMP.
    02 VAL                              PIC X(500000).
 
- PROCEDURE DIVISION USING     BY VALUE LNK-CGI-FIELD-NAME
-                    RETURNING          LNK-CGI-FIELD-VALUE.
+ PROCEDURE DIVISION USING     LNK-CGI-FIELD-NAME
+                    RETURNING LNK-CGI-FIELD-VALUE.
 
  COB2CGI-POST-MAIN SECTION.
 
@@ -1676,8 +1689,8 @@
  01 LNK-ENV-NAME                       PIC X(256).
  01 LNK-ENV-VALUE                      PIC X(256).
 
- PROCEDURE DIVISION USING     BY VALUE LNK-ENV-NAME
-                    RETURNING          LNK-ENV-VALUE.
+ PROCEDURE DIVISION USING     LNK-ENV-NAME
+                    RETURNING LNK-ENV-VALUE.
 
  COB2CGI-ENV-MAIN SECTION.
 
@@ -2006,7 +2019,7 @@
    02 FILLER                           PIC X(4) VALUE "%FF" & X"FF".
 
  01 WS-DECODE-TAB REDEFINES WS-DECODE-TABLE.
-   02 WS-DECODE-TAB-LINE               OCCURS 1 TO 256 TIMES
+   02 WS-DECODE-TAB-LINE               OCCURS 256 TIMES
                                        ASCENDING KEY IS WS-DECODE-TAB-UTF8-STR
                                        INDEXED BY WS-DECODE-TAB-INDEX.
      03 WS-DECODE-TAB-UTF8-STR         PIC X(3).
@@ -2016,8 +2029,8 @@
  01 LNK-UTF8-STR                       PIC X(3).
  01 LNK-UTF8-VAL                       PIC X(1).
 
- PROCEDURE DIVISION USING     BY VALUE LNK-UTF8-STR
-                    RETURNING          LNK-UTF8-VAL.
+ PROCEDURE DIVISION USING     LNK-UTF8-STR
+                    RETURNING LNK-UTF8-VAL.
 
  COB2CGI-DECODE-MAIN SECTION.
 
@@ -2093,8 +2106,8 @@
  01 LNK-NUM-DATA-R REDEFINES LNK-NUM-DATA PIC 9(2) COMP-5.
  01 LNK-HEX-DATA                          PIC X(2).
 
- PROCEDURE DIVISION USING     BY VALUE LNK-NUM-DATA
-                    RETURNING          LNK-HEX-DATA.
+ PROCEDURE DIVISION USING     LNK-NUM-DATA
+                    RETURNING LNK-HEX-DATA.
 
  COB2CGI-NUM2HEX-MAIN SECTION.
 
