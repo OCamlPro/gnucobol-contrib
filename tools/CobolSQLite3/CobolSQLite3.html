@@ -1,0 +1,1162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
+<title>CobolSQLite3 User Guide for Version A.00</title>
+<style type="text/css">
+
+/*
+:Author:    Robert W.Mills
+:Email:     RobertW-Mills@users.sf.net
+:Copyright: This stylesheet has been placed in the public domain.
+:Date:      December 2015
+
+Stylesheet for use with Docutils. It is used to create the CobolMac User Guide.
+*/
+
+@import url(html4css1.css);
+
+h2 {
+  font-size: 100% }
+
+h3 {
+  font-size: 90%;
+  margin: 1em }
+
+/* The following adds colour highlighting to COBOL code (freeformat). */
+
+/* generated with ``pygmentize -S default -f html -a pre.code`` */
+pre.code .hll { background-color: #ffffcc }
+pre.code  { background: #f8f8f8; }
+pre.code .c { color: #408080; font-style: italic } /* Comment */
+pre.code .err { border: 1px solid #FF0000 } /* Error */
+pre.code .k { color: #008000; font-weight: bold } /* Keyword */
+pre.code .o { color: #666666 } /* Operator */
+pre.code .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+pre.code .cp { color: #BC7A00 } /* Comment.Preproc */
+pre.code .c1 { color: #408080; font-style: italic } /* Comment.Single */
+pre.code .cs { color: #408080; font-style: italic } /* Comment.Special */
+pre.code .gd { color: #A00000 } /* Generic.Deleted */
+pre.code .ge { font-style: italic } /* Generic.Emph */
+pre.code .gr { color: #FF0000 } /* Generic.Error */
+pre.code .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+pre.code .gi { color: #00A000 } /* Generic.Inserted */
+pre.code .go { color: #808080 } /* Generic.Output */
+pre.code .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+pre.code .gs { font-weight: bold } /* Generic.Strong */
+pre.code .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+pre.code .gt { color: #0040D0 } /* Generic.Traceback */
+pre.code .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+pre.code .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+pre.code .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+pre.code .kp { color: #008000 } /* Keyword.Pseudo */
+pre.code .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+pre.code .kt { color: #B00040 } /* Keyword.Type */
+pre.code .m { color: #666666 } /* Literal.Number */
+pre.code .s { color: #BA2121 } /* Literal.String */
+pre.code .na { color: #7D9029 } /* Name.Attribute */
+pre.code .nb { color: #008000 } /* Name.Builtin */
+pre.code .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+pre.code .no { color: #880000 } /* Name.Constant */
+pre.code .nd { color: #AA22FF } /* Name.Decorator */
+pre.code .ni { color: #999999; font-weight: bold } /* Name.Entity */
+pre.code .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+pre.code .nf { color: #0000FF } /* Name.Function */
+pre.code .nl { color: #A0A000 } /* Name.Label */
+pre.code .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+pre.code .nt { color: #008000; font-weight: bold } /* Name.Tag */
+pre.code .nv { color: #19177C } /* Name.Variable */
+pre.code .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+pre.code .w { color: #bbbbbb } /* Text.Whitespace */
+pre.code .mf { color: #666666 } /* Literal.Number.Float */
+pre.code .mh { color: #666666 } /* Literal.Number.Hex */
+pre.code .mi { color: #666666 } /* Literal.Number.Integer */
+pre.code .mo { color: #666666 } /* Literal.Number.Oct */
+pre.code .sb { color: #BA2121 } /* Literal.String.Backtick */
+pre.code .sc { color: #BA2121 } /* Literal.String.Char */
+pre.code .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+pre.code .s2 { color: #BA2121 } /* Literal.String.Double */
+pre.code .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+pre.code .sh { color: #BA2121 } /* Literal.String.Heredoc */
+pre.code .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+pre.code .sx { color: #008000 } /* Literal.String.Other */
+pre.code .sr { color: #BB6688 } /* Literal.String.Regex */
+pre.code .s1 { color: #BA2121 } /* Literal.String.Single */
+pre.code .ss { color: #19177C } /* Literal.String.Symbol */
+pre.code .bp { color: #008000 } /* Name.Builtin.Pseudo */
+pre.code .vc { color: #19177C } /* Name.Variable.Class */
+pre.code .vg { color: #19177C } /* Name.Variable.Global */
+pre.code .vi { color: #19177C } /* Name.Variable.Instance */
+pre.code .il { color: #666666 } /* Literal.Number.Integer.Long */
+
+/* End of stylesheet. */
+
+</style>
+</head>
+<body>
+<div class="document" id="cobolsqlite3-user-guide-for-version-a-00">
+<h1 class="title">CobolSQLite3 User Guide for Version A.00</h1>
+
+<div class="sidebar">
+<p class="first sidebar-title">Table of Contents</p>
+<div class="contents local last topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#license" id="id25">1. License</a></li>
+<li><a class="reference internal" href="#description" id="id26">2. Description</a></li>
+<li><a class="reference internal" href="#library-functions" id="id27">3. Library Functions</a><ul>
+<li><a class="reference internal" href="#restrictions" id="id28">3.0. Restrictions</a></li>
+<li><a class="reference internal" href="#dbstatus" id="id29">3.1. DBSTATUS</a><ul>
+<li><a class="reference internal" href="#syntax" id="id30">Syntax</a></li>
+<li><a class="reference internal" href="#parameters" id="id31">Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dbopen" id="id32">3.2. DBOPEN</a><ul>
+<li><a class="reference internal" href="#id1" id="id33">Syntax</a></li>
+<li><a class="reference internal" href="#id2" id="id34">Parameters</a></li>
+<li><a class="reference internal" href="#notes" id="id35">Notes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dbclose" id="id36">3.3. DBCLOSE</a><ul>
+<li><a class="reference internal" href="#id3" id="id37">Syntax</a></li>
+<li><a class="reference internal" href="#id4" id="id38">Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dbcompile" id="id39">3.4. DBCOMPILE</a><ul>
+<li><a class="reference internal" href="#id5" id="id40">Syntax</a></li>
+<li><a class="reference internal" href="#id6" id="id41">Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dbexecute" id="id42">3.5. DBEXECUTE</a><ul>
+<li><a class="reference internal" href="#id7" id="id43">Syntax</a></li>
+<li><a class="reference internal" href="#id8" id="id44">Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dbrelease" id="id45">3.6. DBRELEASE</a><ul>
+<li><a class="reference internal" href="#id9" id="id46">Syntax</a></li>
+<li><a class="reference internal" href="#id10" id="id47">Parameters</a></li>
+<li><a class="reference internal" href="#id11" id="id48">Notes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dbreset" id="id49">3.7. DBRESET</a><ul>
+<li><a class="reference internal" href="#id12" id="id50">Syntax</a></li>
+<li><a class="reference internal" href="#id13" id="id51">Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dbsql" id="id52">3.8. DBSQL</a><ul>
+<li><a class="reference internal" href="#id14" id="id53">Syntax</a></li>
+<li><a class="reference internal" href="#id15" id="id54">Parameters</a></li>
+<li><a class="reference internal" href="#id16" id="id55">Notes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dbget" id="id56">3.9. DBGET</a><ul>
+<li><a class="reference internal" href="#id17" id="id57">Syntax</a></li>
+<li><a class="reference internal" href="#id18" id="id58">Parameters</a></li>
+<li><a class="reference internal" href="#id19" id="id59">Notes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dbinfo" id="id60">3.10. DBINFO</a><ul>
+<li><a class="reference internal" href="#id20" id="id61">Syntax</a></li>
+<li><a class="reference internal" href="#id21" id="id62">Parameters</a></li>
+<li><a class="reference internal" href="#dbinfo-modes" id="id63">DBINFO Modes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dberrmsg" id="id64">3.11. DBERRMSG</a><ul>
+<li><a class="reference internal" href="#id22" id="id65">Syntax</a></li>
+<li><a class="reference internal" href="#id23" id="id66">Parameters</a></li>
+<li><a class="reference internal" href="#id24" id="id67">Notes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#compilation-instructions" id="id68">4. Compilation Instructions</a><ul>
+<li><a class="reference internal" href="#linux-unix" id="id69">4.1. Linux/UNIX</a></li>
+<li><a class="reference internal" href="#apple-mac-os-x" id="id70">4.2. Apple Mac OS X</a></li>
+<li><a class="reference internal" href="#windows" id="id71">4.3. Windows</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installation" id="id72">5. Installation</a><ul>
+<li><a class="reference internal" href="#requirements" id="id73">5.1. Requirements</a></li>
+<li><a class="reference internal" href="#before-first-use" id="id74">5.2. Before first use</a></li>
+<li><a class="reference internal" href="#copybook-listings" id="id75">5.3. Copybook Listings</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#accessing-the-library" id="id76">6. Accessing the Library</a></li>
+<li><a class="reference internal" href="#example-test-programs" id="id77">7. Example/Test Programs</a></li>
+<li><a class="reference internal" href="#modification-history" id="id78">8. Modification History</a></li>
+<li><a class="reference internal" href="#planned-enhancements" id="id79">9. Planned Enhancements</a></li>
+</ul>
+</div>
+</div>
+<pre class="literal-block">
+  ____      _           _  ____   ___  _     _ _        _____
+ / ___|___ | |__   ___ | |/ ___| / _ \| |   (_) |_ ___ |___ /
+| |   / _ \| '_ \ / _ \| |\___ \| | | | |   | | __/ _ \  |_ \
+| |__| (_) | |_) | (_) | | ___) | |_| | |___| | ||  __/ ___) |
+ \____\___/|_.__/ \___/|_||____/ \__\_\_____|_|\__\___||____/
+</pre>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Author:</th><td class="field-body">Robert W.Mills</td>
+</tr>
+<tr class="field"><th class="field-name">Date:</th><td class="field-body">September 2017</td>
+</tr>
+<tr class="field"><th class="field-name">Rights:</th><td class="field-body">Copyright © 2017-2017, Robert W.Mills.</td>
+</tr>
+<tr class="field"><th class="field-name">Email:</th><td class="field-body"><a class="reference external" href="mailto:CobolMac&#64;btinternet.com">CobolMac&#64;btinternet.com</a></td>
+</tr>
+<tr class="field"><th class="field-name">Purpose:</th><td class="field-body">An SQLite3 Interface Library for GnuCOBOL 2.2+</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="license">
+<h1><a class="toc-backref" href="#id25">1. License</a></h1>
+<blockquote>
+<p>This program is free software: you can redistribute it and/or modify it   under the terms of the GNU General Public License as published by the Free   Software Foundation, either version 3 of the License, or (at your option)   any later version.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or   FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for   more details.</p>
+<p>You should have received a copy of the GNU General Public License along with   this program. If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/#GPL">http://www.gnu.org/licenses/#GPL</a>&gt;.</p>
+</blockquote>
+</div>
+<div class="section" id="description">
+<h1><a class="toc-backref" href="#id26">2. Description</a></h1>
+<blockquote>
+<p>The <em>CobolSQLite3</em> Library is an interface to the SQLite3 Database Engine.</p>
+<p>The interface consists of a Dynamic Library (.so file in Linux &amp; .dll in  Windows). It containing User Defined Functions that perform the following  actions:</p>
+<ul class="simple">
+<li>Open/Create an SQLite Database.</li>
+<li>Close an SQLite Database.</li>
+<li>Compile an SQL Statement into byte-code.</li>
+<li>Execute a compiled SQL Statement.</li>
+<li>Release (delete) a compiled SQL Statement.</li>
+<li>Reset (re-initialise) a compiled SQL Statement.</li>
+<li>Compile, execute and release an SQL Statement.</li>
+<li>Retrieve all columns from a SELECTed row.</li>
+<li>Request information about the Database (currently a limited function).</li>
+<li>Translate a Status Code into human-readable text.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="library-functions">
+<h1><a class="toc-backref" href="#id27">3. Library Functions</a></h1>
+<div class="section" id="restrictions">
+<h2><a class="toc-backref" href="#id28">3.0. Restrictions</a></h2>
+<blockquote>
+<p><em>DBCOMPILE</em> and <em>DBSQL</em> will only use the 1st statement passed in the   <em>sql-statement</em> parameter, any additional statements will be dropped.</p>
+<p>This helps prevent <strong>SQL Injection Attacks</strong> against the Database.</p>
+</blockquote>
+</div>
+<div class="section" id="dbstatus">
+<h2><a class="toc-backref" href="#id29">3.1. DBSTATUS</a></h2>
+<blockquote>
+Returns the <em>Status Code</em> of the last executed CobolSQLite3 function.</blockquote>
+<div class="section" id="syntax">
+<h3><a class="toc-backref" href="#id30">Syntax</a></h3>
+<blockquote>
+<em>status-code</em> = DBSTATUS</blockquote>
+</div>
+<div class="section" id="parameters">
+<h3><a class="toc-backref" href="#id31">Parameters</a></h3>
+<blockquote>
+<em>status-code</em> is a signed binary integer, with at least a size of 4.</blockquote>
+</div>
+</div>
+<div class="section" id="dbopen">
+<h2><a class="toc-backref" href="#id32">3.2. DBOPEN</a></h2>
+<blockquote>
+Opens the specified database and creates a Database Object.</blockquote>
+<div class="section" id="id1">
+<h3><a class="toc-backref" href="#id33">Syntax</a></h3>
+<blockquote>
+<em>db-object</em> = DBOPEN(<em>db-name</em>)</blockquote>
+</div>
+<div class="section" id="id2">
+<h3><a class="toc-backref" href="#id34">Parameters</a></h3>
+<blockquote>
+<p><em>db-name</em> is the name of the Database to be opened, and can be either an alphanumeric variable or quoted string. If the Database is not in the current working directory then you must pre-pend the path to the name.</p>
+<p><em>db-object</em> is a variable that is used to hold the internal handle to the Database Object, it must be alphanumeric with at least a size of 8.</p>
+</blockquote>
+</div>
+<div class="section" id="notes">
+<h3><a class="toc-backref" href="#id35">Notes</a></h3>
+<blockquote>
+<p>If the database does not exist then it will be automatically created.</p>
+<p>If <em>db-name</em> specifies a file that is not an SQLite3 Database then <em>DBOPEN</em>   will return an error (use DBSTATUS to return the Status Code).</p>
+</blockquote>
+</div>
+</div>
+<div class="section" id="dbclose">
+<h2><a class="toc-backref" href="#id36">3.3. DBCLOSE</a></h2>
+<blockquote>
+Closes the specified database and destroys its Database Object.</blockquote>
+<div class="section" id="id3">
+<h3><a class="toc-backref" href="#id37">Syntax</a></h3>
+<blockquote>
+<em>status-code</em> = DBCLOSE(<em>db-object</em>)</blockquote>
+</div>
+<div class="section" id="id4">
+<h3><a class="toc-backref" href="#id38">Parameters</a></h3>
+<blockquote>
+<p><em>db-object</em> is a variable that is used to hold the internal handle to the Database Object, it must be alphanumeric with at least a size of 8.</p>
+<p><em>status-code</em> is a signed binary integer, with at least a size of 4. It will hold the same value that would be returned by the DBSTATUS function.</p>
+</blockquote>
+</div>
+</div>
+<div class="section" id="dbcompile">
+<h2><a class="toc-backref" href="#id39">3.4. DBCOMPILE</a></h2>
+<blockquote>
+Compiles an SQL Statement, into byte-code, and creates an SQL Object for it.</blockquote>
+<div class="section" id="id5">
+<h3><a class="toc-backref" href="#id40">Syntax</a></h3>
+<blockquote>
+<em>sql-object</em> = DBCOMPILE(<em>db-object</em>, <em>sql-statement</em>)</blockquote>
+</div>
+<div class="section" id="id6">
+<h3><a class="toc-backref" href="#id41">Parameters</a></h3>
+<blockquote>
+<p><em>db-object</em> is a variable that is used to hold the internal handle to the Database Object, it must be alphanumeric with at least a size of 8.</p>
+<p><em>sql-statement</em> is the SQL Statement to be compiled, and can be either an alphanumeric variable or quoted string.</p>
+<p><em>sql-object</em> is a variable that is used to hold the internal handle to the SQL Object created for a compiled SQL Statement, it must be alphanumeric with at least a size of 8.</p>
+</blockquote>
+</div>
+</div>
+<div class="section" id="dbexecute">
+<h2><a class="toc-backref" href="#id42">3.5. DBEXECUTE</a></h2>
+<blockquote>
+Executes an SQL Object (a compiled SQL Statement).</blockquote>
+<div class="section" id="id7">
+<h3><a class="toc-backref" href="#id43">Syntax</a></h3>
+<blockquote>
+<em>status-code</em> = DBEXECUTE(<em>sql-object</em>)</blockquote>
+</div>
+<div class="section" id="id8">
+<h3><a class="toc-backref" href="#id44">Parameters</a></h3>
+<blockquote>
+<p><em>sql-object</em> is a variable that is used to hold the internal handle to the SQL Object created for a compiled SQL Statement, it must be alphanumeric with at least a size of 8.</p>
+<p><em>status-code</em> is a signed binary integer, with at least a size of 4. It will hold the same value that would be returned by the DBSTATUS function.</p>
+</blockquote>
+</div>
+</div>
+<div class="section" id="dbrelease">
+<h2><a class="toc-backref" href="#id45">3.6. DBRELEASE</a></h2>
+<blockquote>
+Releases (deletes) an SQL Object (a compiled SQL Statement).</blockquote>
+<div class="section" id="id9">
+<h3><a class="toc-backref" href="#id46">Syntax</a></h3>
+<blockquote>
+<em>status-code</em> = DBRELEASE(<em>sql-object</em>)</blockquote>
+</div>
+<div class="section" id="id10">
+<h3><a class="toc-backref" href="#id47">Parameters</a></h3>
+<blockquote>
+<p><em>sql-object</em> is a variable that is used to hold the internal handle to the SQL Object created for a compiled SQL Statement, it must be alphanumeric with at least a size of 8.</p>
+<p><em>status-code</em> is a signed binary integer, with at least a size of 4. It will hold the same value that would be returned by the DBSTATUS function.</p>
+</blockquote>
+</div>
+<div class="section" id="id11">
+<h3><a class="toc-backref" href="#id48">Notes</a></h3>
+<blockquote>
+This function MUST be executed against all SQL Objects before the database   is closed as failure to do so result's in <em>memory leaks</em>.</blockquote>
+</div>
+</div>
+<div class="section" id="dbreset">
+<h2><a class="toc-backref" href="#id49">3.7. DBRESET</a></h2>
+<blockquote>
+Resets the SQL Object back to initial state so it can be re-executed.</blockquote>
+<div class="section" id="id12">
+<h3><a class="toc-backref" href="#id50">Syntax</a></h3>
+<blockquote>
+<em>status-code</em> = DBRESET(<em>sql-object</em>)</blockquote>
+</div>
+<div class="section" id="id13">
+<h3><a class="toc-backref" href="#id51">Parameters</a></h3>
+<blockquote>
+<p><em>sql-object</em> is a variable that is used to hold the internal handle to the SQL Object created for a compiled SQL Statement, it must be alphanumeric with at least a size of 8.</p>
+<p><em>status-code</em> is a signed binary integer, with at least a size of 4. It will hold the same value that would be returned by the DBSTATUS function.</p>
+</blockquote>
+</div>
+</div>
+<div class="section" id="dbsql">
+<h2><a class="toc-backref" href="#id52">3.8. DBSQL</a></h2>
+<blockquote>
+Executes an SQL Statement against the Database Object.</blockquote>
+<div class="section" id="id14">
+<h3><a class="toc-backref" href="#id53">Syntax</a></h3>
+<blockquote>
+<em>status-code</em> = DBSQL(<em>db-object</em>, <em>sql-statement</em>)</blockquote>
+</div>
+<div class="section" id="id15">
+<h3><a class="toc-backref" href="#id54">Parameters</a></h3>
+<blockquote>
+<p><em>db-object</em> is a variable that is used to hold the internal handle to the Database Object, it must be alphanumeric with at least a size of 8.</p>
+<p><em>sql-statement</em> is the SQL Statement to be executed. It can be either an alphanumeric variable or a quoted string.</p>
+<p><em>status-code</em> is a signed binary integer, with at least a size of 4. It will hold the same value that would be returned by the DBSTATUS function.</p>
+</blockquote>
+</div>
+<div class="section" id="id16">
+<h3><a class="toc-backref" href="#id55">Notes</a></h3>
+<blockquote>
+This function combines the DBCOMPILE, DBEXECUTE and DBRELEASE functionality.</blockquote>
+</div>
+</div>
+<div class="section" id="dbget">
+<h2><a class="toc-backref" href="#id56">3.9. DBGET</a></h2>
+<blockquote>
+Returns the current result row of an SQL Query (Select).</blockquote>
+<div class="section" id="id17">
+<h3><a class="toc-backref" href="#id57">Syntax</a></h3>
+<blockquote>
+<em>status-code</em> = DBGET(<em>sql-object</em>, <em>row-delims</em>, <em>row-buffer</em>)</blockquote>
+</div>
+<div class="section" id="id18">
+<h3><a class="toc-backref" href="#id58">Parameters</a></h3>
+<blockquote>
+<p><em>sql-object</em> is a variable that is used to hold the internal handle to the SQL Object created for a compiled SQL Statement, it must be alphanumeric with at least a size of 8.</p>
+<p><em>row-delims</em> is an alphanumeric variable containing the delimiters to use when loading the <em>row-buffer</em>.</p>
+<ul class="simple">
+<li>The 1st character is placed between each column (see Notes below).</li>
+<li>The 2nd character is placed after the last column to indicate the end of data in <em>row-buffer</em> (see Notes below)</li>
+</ul>
+<p><em>row-buffer</em> is an alphanumeric variable that contains the complete row in delimited format. All numeric column data is converted to display format.</p>
+<p><em>status-code</em> is a signed binary integer, with at least a size of 4. It will hold the same value that would be returned by the DBSTATUS function.</p>
+</blockquote>
+</div>
+<div class="section" id="id19">
+<h3><a class="toc-backref" href="#id59">Notes</a></h3>
+<blockquote>
+<p>The <em>row-delims</em> entry in the Working-Storage Copybook sets default values of   HEX 1D (Group Separator) and HEX 1E (Record Separator) for the 1st and 2nd   delimiter. These values are the developers choice and you can keep them as-is,   modify the <em>row-delims</em> entry in the Copybook, or override the values within   your program by using one-or-more MOVE commands.</p>
+<p>A modified version of the following <strong>unstring</strong> statement should be used to   extract the data for each column from <strong>row-buffer</strong>. You, as the developer   using this Library, are in complete control of the picture format/size of the   Working-storage field that will be the recipient of the column data. It is   suggested that you use the SQLite Command-Line Shell (see Section 5.1) to look   at the current data formats/sizes used and code accordingly.</p>
+<pre class="code cobolfree literal-block">
+<span class="kr">unstring</span> <span class="nv">row-buffer</span>
+  <span class="kp">delimited</span> <span class="kp">by</span> <span class="nv">field-delimiter</span> <span class="ow">or</span> <span class="nv">row-delimiter</span>
+  <span class="kp">into
+   </span> <span class="nv">ws-column-1</span>
+    <span class="nv">ws-column-2</span>
+    <span class="nv">ws-column-n</span>
+<span class="kr">end-unstring</span>
+</pre>
+</blockquote>
+</div>
+</div>
+<div class="section" id="dbinfo">
+<h2><a class="toc-backref" href="#id60">3.10. DBINFO</a></h2>
+<blockquote>
+Returns information about the Database being accessed.</blockquote>
+<div class="section" id="id20">
+<h3><a class="toc-backref" href="#id61">Syntax</a></h3>
+<blockquote>
+<em>dbinfo-buffer</em> = DBINFO(<em>dbinfo-mode</em>, <em>db-object</em>)</blockquote>
+</div>
+<div class="section" id="id21">
+<h3><a class="toc-backref" href="#id62">Parameters</a></h3>
+<blockquote>
+<p><em>dbinfo-mode</em> is a three digit numeric indicating the information to return (see DBINFO Modes table below).</p>
+<p><em>db-object</em> is a variable that is used to hold the internal handle to the Database Object, it must be alphanumeric with at least a size of 8.</p>
+<p><em>dbinfo-buffer</em> is an alphanumeric variable for returning the requested information. Refer to the mapping for <em>dbinfo-buffer</em> in the Working-Storage Copybook (CobolSQLite3-WS.cpy) for further details.</p>
+</blockquote>
+</div>
+<div class="section" id="dbinfo-modes">
+<h3><a class="toc-backref" href="#id63">DBINFO Modes</a></h3>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="95%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Mode</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>100</td>
+<td><p class="first">The number of rows modified, inserted or deleted by the most recently
+completed INSERT, UPDATE or DELETE statement against the database.</p>
+<p class="last">Changes caused by triggers, foreign key actions or REPLACE constraint
+resolution are not counted.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+</div>
+<div class="section" id="dberrmsg">
+<h2><a class="toc-backref" href="#id64">3.11. DBERRMSG</a></h2>
+<blockquote>
+Returns the error message associated with the last <em>Status Code</em> setting.</blockquote>
+<div class="section" id="id22">
+<h3><a class="toc-backref" href="#id65">Syntax</a></h3>
+<blockquote>
+<em>error-message</em> = DBERRMSG</blockquote>
+</div>
+<div class="section" id="id23">
+<h3><a class="toc-backref" href="#id66">Parameters</a></h3>
+<blockquote>
+<em>error-message</em> is an alphanumeric variable, with at least a size of 128.</blockquote>
+</div>
+<div class="section" id="id24">
+<h3><a class="toc-backref" href="#id67">Notes</a></h3>
+<blockquote>
+<p>The returned <em>error-message</em> will have one of following prefixes:</p>
+<blockquote>
+<p><strong>DBINF</strong> is not an actual error but for information. <em>DBINFO 0: Successful completion.</em> is the only entry with this prefix.</p>
+<p><strong>DBERR</strong> errors are generated by the <em>CobolSQLite3</em> Library.</p>
+<p><strong>SQLite3ERR</strong> errors are generated by the SQLite3 Library.</p>
+</blockquote>
+</blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="compilation-instructions">
+<h1><a class="toc-backref" href="#id68">4. Compilation Instructions</a></h1>
+<div class="section" id="linux-unix">
+<h2><a class="toc-backref" href="#id69">4.1. Linux/UNIX</a></h2>
+<blockquote>
+<p>Compile the <em>CobolSQLite3</em> source (CobolSQLite3.cob) by entering the following command within any terminal program.</p>
+<blockquote>
+cobc -o CobolSQLite3.so -debug CobolSQLite3.cob -lsqlite3</blockquote>
+</blockquote>
+</div>
+<div class="section" id="apple-mac-os-x">
+<h2><a class="toc-backref" href="#id70">4.2. Apple Mac OS X</a></h2>
+<blockquote>
+Compile the source file as for Linux/Unix.</blockquote>
+</div>
+<div class="section" id="windows">
+<h2><a class="toc-backref" href="#id71">4.3. Windows</a></h2>
+<blockquote>
+<p>I do not have access to Windows, Windows/Cygwin or Windows/MinGW but I understand that the following commands should work [YMMV].</p>
+<p>Windows/MinGW and Windows/Cygwin (inside the terminal program):</p>
+<pre class="literal-block">
+Compile the source file as for Linux/Unix.
+</pre>
+<p>Windows/MinGW and Windows/Cygwin (outside the terminal program):</p>
+<pre class="literal-block">
+cobc -debug -lsqlite3 [drive:][path/to/]CobolSQLite3.cob
+</pre>
+<p>Native Windows:</p>
+<pre class="literal-block">
+cobc -debug -lsqlite3 [drive:][path\\to\\]CobolSQLite3.cob
+</pre>
+</blockquote>
+</div>
+</div>
+<div class="section" id="installation">
+<h1><a class="toc-backref" href="#id72">5. Installation</a></h1>
+<div class="section" id="requirements">
+<h2><a class="toc-backref" href="#id73">5.1. Requirements</a></h2>
+<blockquote>
+<p><strong>GnuCOBOL:</strong> Version 2.2 (or greater) installed and tested fully working.</p>
+<blockquote>
+See the documentation supplied with <em>GnuCOBOL</em>. You <strong>must</strong> have run both    the sanity checks created by the test procedures included within the    Cobol85 suite as well as the <em>make check</em> procedure.</blockquote>
+<p><strong>SQLite 3:</strong> Version 3.11.0 (or greater).</p>
+<blockquote>
+<p>As a minimum you need to install the Shared Library (<em>Libsqlite3-0</em>) and    Development Files (<em>Libsqlite3-dev</em>). Available from most Linux Distros.</p>
+<p>Although you do not need it you will find it an advantage to also install    the following:</p>
+<ul class="simple">
+<li>Command-Line Shell (<em>sqlite3</em>) is a utility that allows the manual       entry and execution of SQL statements against an SQLite database.       Documentation is at &lt;<a class="reference external" href="https://www.sqlite.org/cli.html">https://www.sqlite.org/cli.html</a>&gt;.</li>
+<li>SQLite Database Analyzer (<em>sqlite3_analyzer</em>) reads an SQLite database       and outputs a file showing the space used by each table and index and       other statistics.       Documentation is at &lt;<a class="reference external" href="https://www.sqlite.org/sqlanalyze.html">https://www.sqlite.org/sqlanalyze.html</a>&gt;.</li>
+<li>SQLite Database Diff (<em>sqldiff</em>) compares two SQLite database files and       outputs the SQL needed to convert one into the other.       Documentation is at &lt;<a class="reference external" href="https://www.sqlite.org/sqldiff.html">https://www.sqlite.org/sqldiff.html</a>&gt;.</li>
+</ul>
+<p>The <strong>SQLite</strong> Download page (sqlite.org/download.html) contains Source    Code files and precompiled binaries for multiple platforms. As of writing,    September 2017, version 3.20.1 is available from here.</p>
+<p>See &lt;<a class="reference external" href="https://www.sqlite.org/about.html">https://www.sqlite.org/about.html</a>&gt; for information on SQLite.</p>
+</blockquote>
+</blockquote>
+</div>
+<div class="section" id="before-first-use">
+<h2><a class="toc-backref" href="#id74">5.2. Before first use</a></h2>
+<blockquote>
+<p>Before you use the <em>CobolSQLite3</em> Library for the first time (also after a  <strong>new</strong> release) you <strong>must</strong> generate the Copybook modules required by programs   using the Library.</p>
+<p>Enter the following <strong>cobcrun</strong> command and respond <strong>Y</strong> (or <strong>y</strong>) to the   two questions you will be asked:</p>
+<pre class="literal-block">
+cobcrun ./CobolSQLite3
+
+CobolSQLite3/A.00.00
+SQLite3 Interface Functions for GnuCOBOL 2.2+
+Copyright (c) Robert W.Mills &lt;cobolmac&#64;btinternet.com&gt;, 2017
+SQLite3 Library Version 3.11.0
+
+This is free software; see the source for copying conditions. There is NO
+WARRANTY; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+Generate Repository CopyLibrary [N/y]? y
+-- CopyLibrary written to CobolSQLite3-CSR.cpy
+
+  Example usage:
+
+    repository.
+      copy &quot;CobolSQLite3-CSR.cpy&quot;.
+      function all intrinsic.
+
+Generate Working-storage CopyLibrary [N/y]? y
+-- CopyLibrary written to CobolSQLite3-WS.cpy
+
+  Example usage:
+
+    working-storage section.
+      copy &quot;CobolSQLite3-WS.cpy&quot;.
+      *&gt; additional definitions
+</pre>
+</blockquote>
+</div>
+<div class="section" id="copybook-listings">
+<h2><a class="toc-backref" href="#id75">5.3. Copybook Listings</a></h2>
+<blockquote>
+<p>Below are examples of the two Copybook's that are generated by <em>CobolSQLite3</em>.</p>
+<p><em>CobolSQLite3-CSR.cpy</em> contains the Library function definitions. It needs to   be COPYed into the Repository paragraph within the Configuration Section.</p>
+<pre class="code cobolfree literal-block">
+      <span class="kp">Function</span> <span class="nv">DBSTATUS</span>
+      <span class="kp">Function</span> <span class="nv">DBOPEN</span>
+      <span class="kp">Function</span> <span class="nv">DBCLOSE</span>
+      <span class="kp">Function</span> <span class="nv">DBCOMPILE</span>
+      <span class="kp">Function</span> <span class="nv">DBEXECUTE</span>
+      <span class="kp">Function</span> <span class="nv">DBRELEASE</span>
+      <span class="kp">Function</span> <span class="nv">DBRESET</span>
+      <span class="kp">Function</span> <span class="nv">DBSQL</span>
+      <span class="kp">Function</span> <span class="nv">DBGET</span>
+      <span class="kp">Function</span> <span class="nv">DBINFO</span>
+      <span class="kp">Function</span> <span class="nv">DBERRMSG</span>
+</pre>
+<p><em>CobolSQLite3-WS.cpy</em> contains the Library data definitions. It needs to   be COPYed into the Working-Storage Section. It is recommended that copy   statement is placed at the start of the section.</p>
+<pre class="code cobolfree literal-block">
+    <span class="mi">01  </span><span class="nv">db-object</span>                      <span class="kt">pic x(008)</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">database-is-closed</span>             <span class="kp">value</span> <span class="kp">NULL</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">db-status</span>                      <span class="kt">pic s9(04)</span> <span class="kt">comp</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">call-successful</span>                <span class="kp">value</span> <span class="no">ZERO</span><span class="p">.</span>
+      <span class="c">*&gt; -- CobolSQLite3 Function codes --------------
+</span>      <span class="mi">88  </span><span class="nv">database-already-open</span>          <span class="kp">value</span> <span class="o">-</span><span class="mi">1</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">database-open-failed</span>           <span class="kp">value</span> <span class="o">-</span><span class="mi">2</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">database-not-open</span>              <span class="kp">value</span> <span class="o">-</span><span class="mi">3</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">unreleased-sql-objects-exist</span>   <span class="kp">value</span> <span class="o">-</span><span class="mi">4</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">sql-compile-failed</span>             <span class="kp">value</span> <span class="o">-</span><span class="mi">5</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">database-lock-failed</span>           <span class="kp">value</span> <span class="o">-</span><span class="mi">6</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">sql-object-not-released</span>        <span class="kp">value</span> <span class="o">-</span><span class="mi">7</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">sql-object-not-reset</span>           <span class="kp">value</span> <span class="o">-</span><span class="mi">8</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">datatype-unknown-unsupported</span>   <span class="kp">value</span> <span class="o">-</span><span class="mi">11</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">datatype-undefined</span>             <span class="kp">value</span> <span class="o">-</span><span class="mi">12</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">invalid-dbinfo-mode</span>            <span class="kp">value</span> <span class="o">-</span><span class="mi">13</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">not-an-sqlite-database</span>         <span class="kp">value</span> <span class="o">-</span><span class="mi">14</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">no-data-returned</span>               <span class="kp">value</span> <span class="o">-</span><span class="mi">15</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">row-buffer-overflow</span>            <span class="kp">value</span> <span class="o">-</span><span class="mi">16</span><span class="p">.</span>
+      <span class="c">*&gt; -- SQLite3 Library codes --------------------
+</span>      <span class="mi">88  </span><span class="nv">database-row-available</span>         <span class="kp">value</span> <span class="mi">100</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">sql-statement-finished</span>         <span class="kp">value</span> <span class="mi">101</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">sql-object</span>                     <span class="kt">pic x(008)</span><span class="p">.</span>
+      <span class="mi">88  </span><span class="nv">object-released</span>                <span class="kp">value</span> <span class="kp">NULL</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">row-delims</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">field-delimiter</span>              <span class="kt">pic x(001)</span> <span class="kp">value</span> <span class="nv">x</span><span class="s1">'1D'</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">row-delimiter</span>                <span class="kt">pic x(001)</span> <span class="kp">value</span> <span class="nv">x</span><span class="s1">'1E'</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">dbinfo-buffer</span>                  <span class="kt">pic x(080)</span><span class="p">.</span>
+    <span class="mi">01  </span><span class="kp">redefines</span> <span class="nv">dbinfo-buffer</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">dbinfo-rows-changed</span>          <span class="kt">pic s9(09)</span> <span class="kt">comp</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">error-message</span>                  <span class="kt">pic x(128)</span><span class="p">.</span>
+</pre>
+</blockquote>
+</div>
+</div>
+<div class="section" id="accessing-the-library">
+<h1><a class="toc-backref" href="#id76">6. Accessing the Library</a></h1>
+<blockquote>
+<p>Prior to executing a program that uses the <em>CobolSQLite3</em> Library you need  to set the <strong>COB_PRE_LOAD</strong> environment variable. This tells the <em>GnuCOBOL</em>  runtime link resolver what dynamic link modules are included in a run.</p>
+<pre class="literal-block">
+export COB_PRE_LOAD=CobolSQLite3
+</pre>
+<p>If the Library is not in the current working directory along with the  executable, the <strong>COB_LIBRARY_PATH</strong> environment variable can be set  to find them.</p>
+<pre class="literal-block">
+export COB_LIBRARY_PATH=/path/to/library
+</pre>
+</blockquote>
+</div>
+<div class="section" id="example-test-programs">
+<h1><a class="toc-backref" href="#id77">7. Example/Test Programs</a></h1>
+<blockquote>
+<p><strong>Test-1.cob</strong> Open a new SQLite3 Database; create a Table with an <em>Integer</em>,   <em>Real (IEEE Floating Point)</em> and <em>Text</em> column; load 4 entries into the Table;   display all entries from the Table; and close the Database.</p>
+<pre class="code cobolfree literal-block">
+<span class="c">*&gt; ** &gt;&gt;SOURCE FORMAT IS FREE
+*&gt;
+*&gt; Author    : Robert W.Mills &lt;CobolMac&#64;btinternet.com&gt;
+*&gt; Dedicated to the public domain.
+*&gt;
+*&gt; Purpose   : CobolSQLite3 example and test program.
+*&gt;
+*&gt; Tests     : See Test-1 entry in the 'Example/Test Programs' section of the
+*&gt;             CobolSQLite3 User Guide.
+*&gt;
+*&gt; Written   : September 2017
+*&gt; Modified  : Not yet.
+*&gt;
+*&gt; Tectonics : Install the SQLite3 library (sqlite.org), if required.
+*&gt;             prompt$ cobc -x -fdebugging-line Test-1.cob
+*&gt;          or prompt$ cobc -x Test-1.cob
+*&gt;             prompt$ export COB_PRE_LOAD=CobolSQLite3
+*&gt;             prompt$ ./Test-1
+</span>
+<span class="kr">identification</span> <span class="kr">division</span><span class="p">.</span>
+
+  <span class="kr">program-id</span><span class="p">.</span>                          <span class="nv">Test-1</span><span class="p">.</span>
+
+<span class="kr">environment</span> <span class="kr">division</span><span class="p">.</span>
+
+  <span class="kr">configuration</span> <span class="kr">section</span><span class="p">.</span>
+
+    <span class="kp">repository</span><span class="p">.</span>
+      <span class="kp">copy </span><span class="s2">&quot;CobolSQLite3-CSR.cpy&quot;</span><span class="p">.</span>
+      <span class="kp">function</span> <span class="kp">all</span> <span class="kp">intrinsic</span><span class="p">.</span>
+
+<span class="kr">data</span> <span class="kr">division</span><span class="p">.</span>
+
+  <span class="kr">working-storage</span> <span class="kr">section</span><span class="p">.</span>
+
+    <span class="kp">copy </span><span class="s2">&quot;CobolSQLite3-WS.cpy&quot;</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">database-name</span>                  <span class="kt">pic x(080)</span> <span class="kp">value </span><span class="s2">&quot;./test.sdb&quot;</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">sql-statements</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">create-table-foo</span>             <span class="kt">pic x(128)</span> <span class="kp">value
+            </span><span class="s2">&quot;create table foo (foo_integer int, foo_real real, foo_text text);&quot;</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">insert-into-foo-1</span>            <span class="kt">pic x(128)</span> <span class="kp">value
+            </span><span class="s2">&quot;insert into foo (foo_integer, foo_real, foo_text) &quot;</span> <span class="p">&amp;</span>
+            <span class="s2">&quot;values (-12345, -12.345, '1st line, numbers should be -12345 and -12.345');&quot;</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">insert-into-foo-2</span>            <span class="kt">pic x(128)</span> <span class="kp">value
+            </span><span class="s2">&quot;insert into foo (foo_integer, foo_real, foo_text) &quot;</span> <span class="p">&amp;</span>
+            <span class="s2">&quot;values (2, 2.99, '2nd line, numbers should be 2 and 2.99');&quot;</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">insert-into-foo-3</span>            <span class="kt">pic x(128)</span> <span class="kp">value
+            </span><span class="s2">&quot;insert into foo (foo_integer, foo_real, foo_text) &quot;</span> <span class="p">&amp;</span>
+            <span class="s2">&quot;values (-3, -3.99, '3rd line, numbers should be -3 and -3.99');&quot;</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">insert-into-foo-4</span>            <span class="kt">pic x(128)</span> <span class="kp">value
+            </span><span class="s2">&quot;insert into foo (foo_integer, foo_real, foo_text) &quot;</span> <span class="p">&amp;</span>
+            <span class="s2">&quot;values (4, 4.99, '4th line, numbers should be 4 and 4.99');&quot;</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">select-from-foo</span>              <span class="kt">pic x(128)</span> <span class="kp">value
+            </span><span class="s2">&quot;select * from foo;&quot;</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">row-buffer</span>                     <span class="kt">pic x(128)</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">foo-heading-1</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(001)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(007)</span> <span class="kp">value </span><span class="s2">&quot;integer&quot;</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(003)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(007)</span> <span class="kp">value </span><span class="s2">&quot;real&quot;</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(003)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(059)</span> <span class="kp">value </span><span class="s2">&quot;Text&quot;</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">foo-heading-2</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(001)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(007)</span> <span class="kp">value</span> <span class="kp">all </span><span class="s2">&quot;-&quot;</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(003)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(007)</span> <span class="kp">value</span> <span class="kp">all </span><span class="s2">&quot;-&quot;</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(003)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(059)</span> <span class="kp">value</span> <span class="kp">all </span><span class="s2">&quot;-&quot;</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">foo-detail</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(002)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">fd-integer</span>                   <span class="kt">pic -(5)9(1)</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(003)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">fd-real</span>                      <span class="kt">pic -(3).9(3)</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(003)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">fd-text</span>                      <span class="kt">pic x(059)</span><span class="p">.</span>
+
+<span class="kr">procedure</span> <span class="kr">division</span><span class="p">.</span>
+
+<span class="nv">Test-1-mainline</span><span class="p">.</span>
+
+<span class="o">&gt;&gt;</span><span class="nv">D</span> <span class="kr">display </span><span class="s2">&quot;- opening database &quot;</span><span class="p">,</span> <span class="nf">trim</span><span class="p">(</span><span class="nv">database-name</span><span class="p">)</span> <span class="kr">end-display
+
+ </span> <span class="kr">call </span><span class="s2">&quot;C$DELETE&quot;</span> <span class="kp">using</span> <span class="nf">trim</span><span class="p">(</span><span class="nv">database-name</span><span class="p">),</span>
+                        <span class="mi">0 </span><span class="c">*&gt; required but unused
+</span>  <span class="kr">end-call
+
+ </span> <span class="kr">move</span> <span class="nv">DBOPEN</span><span class="p">(</span><span class="nv">database-name</span><span class="p">)</span> <span class="kp">to</span> <span class="nv">db-object</span>
+
+  <span class="kr">if</span> <span class="nv">DBSTATUS</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBOPEN: &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+   </span> <span class="kr">goback
+ </span> <span class="kr">end-if
+
+</span><span class="o">&gt;&gt;</span><span class="nv">D</span> <span class="kr">display </span><span class="s2">&quot;- creating table foo&quot;</span> <span class="kr">end-display
+
+ </span> <span class="kr">if</span> <span class="nv">DBSQL</span><span class="p">(</span><span class="nv">db-object</span><span class="p">,</span> <span class="nv">create-table-foo</span><span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBSQL (create table foo): &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+   </span> <span class="kr">goback
+ </span> <span class="kr">end-if
+
+</span><span class="o">&gt;&gt;</span><span class="nv">D</span> <span class="kr">display </span><span class="s2">&quot;- adding record(s) to table foo&quot;</span> <span class="kr">end-display
+
+ </span> <span class="kr">if</span> <span class="nv">DBSQL</span><span class="p">(</span><span class="nv">db-object</span><span class="p">,</span> <span class="nv">insert-into-foo-1</span><span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBSQL (insert foo 1): &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+   </span> <span class="kr">goback
+ </span> <span class="kr">end-if
+
+ </span> <span class="kr">if</span> <span class="nv">DBSQL</span><span class="p">(</span><span class="nv">db-object</span><span class="p">,</span> <span class="nv">insert-into-foo-2</span><span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBSQL (insert foo 2): &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+   </span> <span class="kr">goback
+ </span> <span class="kr">end-if
+
+ </span> <span class="kr">if</span> <span class="nv">DBSQL</span><span class="p">(</span><span class="nv">db-object</span><span class="p">,</span> <span class="nv">insert-into-foo-3</span><span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBSQL (insert foo 3): &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+   </span> <span class="kr">goback
+ </span> <span class="kr">end-if
+
+ </span> <span class="kr">if</span> <span class="nv">DBSQL</span><span class="p">(</span><span class="nv">db-object</span><span class="p">,</span> <span class="nv">insert-into-foo-4</span><span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBSQL (insert foo 4): &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+   </span> <span class="kr">goback
+ </span> <span class="kr">end-if
+
+</span><span class="o">&gt;&gt;</span><span class="nv">D</span> <span class="kr">display </span><span class="s2">&quot;- selecting all records from foo&quot;</span> <span class="kr">end-display
+
+ </span> <span class="kr">move</span> <span class="nv">DBCOMPILE</span><span class="p">(</span><span class="nv">db-object</span><span class="p">,</span> <span class="nv">select-from-foo</span><span class="p">)</span> <span class="kp">to</span> <span class="nv">sql-object</span>
+
+  <span class="kr">if</span> <span class="nv">DBSTATUS</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBCOMPILE (select foo): &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+   </span> <span class="kr">goback
+ </span> <span class="kr">end-if
+
+ </span> <span class="kr">move</span> <span class="nv">DBEXECUTE</span><span class="p">(</span><span class="nv">sql-object</span><span class="p">)</span> <span class="kp">to</span> <span class="nv">db-status</span>
+
+  <span class="kr">evaluate</span> <span class="nb">true
+
+   </span> <span class="kp">when</span> <span class="nv">database-row-available</span>
+
+      <span class="kr">perform</span> <span class="nv">print-column-headings</span>
+
+      <span class="kr">perform</span> <span class="nv">get-print-data</span>
+        <span class="kp">until</span> <span class="nv">sql-statement-finished</span>
+
+      <span class="kr">display</span> <span class="no">space</span> <span class="kr">end-display
+     </span> <span class="kr">display </span><span class="s2">&quot;-- End of Report --&quot;</span> <span class="kr">end-display
+
+   </span> <span class="kp">when</span> <span class="nv">sql-statement-finished</span>
+      <span class="kr">continue
+
+   </span> <span class="kp">when</span> <span class="nv">database-lock-failed</span>
+      <span class="kr">display </span><span class="s2">&quot;DBEXECUTE: &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+     </span> <span class="kr">goback
+
+   </span> <span class="kp">when</span> <span class="kp">other
+     </span> <span class="kr">display </span><span class="s2">&quot;DBEXECUTE: &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+     </span> <span class="kr">goback
+
+ </span> <span class="kr">end-evaluate
+
+ </span> <span class="kr">if</span> <span class="nv">DBRELEASE</span><span class="p">(</span><span class="nv">sql-object</span><span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBRELEASE: &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+ </span> <span class="kr">end-if
+
+</span><span class="o">&gt;&gt;</span><span class="nv">D</span> <span class="kr">display </span><span class="s2">&quot;- closing database &quot;</span><span class="p">,</span> <span class="nf">trim</span><span class="p">(</span><span class="nv">database-name</span><span class="p">)</span> <span class="kr">end-display
+
+ </span> <span class="kr">if</span> <span class="nv">DBCLOSE</span><span class="p">(</span><span class="nv">db-object</span><span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBCLOSE: &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+ </span> <span class="kr">end-if
+
+ </span> <span class="kr">move</span> <span class="no">zero</span> <span class="kp">to</span> <span class="nv">return-code</span>
+  <span class="kr">goback
+  </span><span class="p">.</span>
+
+<span class="nv">print-column-headings</span><span class="p">.</span>
+
+  <span class="c">*&gt; Print the column heading lines.
+</span>
+  <span class="kr">display</span> <span class="nv">foo-heading-1</span> <span class="kr">end-display
+ </span> <span class="kr">display</span> <span class="nv">foo-heading-2</span> <span class="kr">end-display
+  </span><span class="p">.</span>
+
+<span class="nv">get-print-data</span><span class="p">.</span>
+
+  <span class="c">*&gt; Get the current result row and extract the values.
+</span>
+  <span class="kr">if</span> <span class="nv">DBGET</span><span class="p">(</span><span class="nv">sql-object</span><span class="p">,</span> <span class="nv">row-delims</span><span class="p">,</span> <span class="nv">row-buffer</span><span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBGET (foo): &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+ </span> <span class="kr">end-if
+
+ </span> <span class="kr">unstring</span> <span class="nv">row-buffer</span>
+    <span class="kp">delimited</span> <span class="kp">by</span> <span class="nv">field-delimiter</span> <span class="ow">or</span> <span class="nv">row-delimiter</span>
+    <span class="kp">into
+     </span> <span class="nv">fd-integer</span>
+      <span class="nv">fd-real</span>
+      <span class="nv">fd-text</span>
+  <span class="kr">end-unstring
+
+  </span><span class="c">*&gt; Print the detail line.
+</span>
+  <span class="kr">display</span> <span class="nv">foo-detail</span> <span class="kr">end-display
+
+  </span><span class="c">*&gt; Get the next row.
+</span>
+  <span class="kr">move</span> <span class="nv">DBEXECUTE</span><span class="p">(</span><span class="nv">sql-object</span><span class="p">)</span> <span class="kp">to</span> <span class="nv">db-status</span>
+  <span class="p">.</span>
+
+<span class="kr">end</span> <span class="kp">program</span> <span class="nv">Test-1</span><span class="p">.</span>
+</pre>
+<dl class="docutils">
+<dt><strong>Test-2.cob</strong> is a copy of <strong>Test-1.cob</strong> that passes alphanumeric variables</dt>
+<dd>to the functions instead of quoted strings.</dd>
+</dl>
+<pre class="code cobolfree literal-block">
+<span class="c">*&gt; ** &gt;&gt;SOURCE FORMAT IS FREE
+*&gt;
+*&gt; Author    : Robert W.Mills &lt;CobolMac&#64;btinternet.com&gt;
+*&gt; Dedicated to the public domain.
+*&gt;
+*&gt; Purpose   : CobolSQLite3 example and test program.
+*&gt;
+*&gt; Tests     : See Test-3 entry in the 'Example/Test Programs' section of the
+*&gt;             CobolSQLite3 User Guide.
+*&gt;
+*&gt; Written   : September 2017
+*&gt; Modified  : Not yet.
+*&gt;
+*&gt; Tectonics : Install the SQLite3 library (sqlite.org), if required.
+*&gt;             prompt$ cobc -x -fdebugging-line Test-2.cob
+*&gt;          or prompt$ cobc -x Test-2.cob
+*&gt;             prompt$ export COB_PRE_LOAD=CobolSQLite3
+*&gt;             prompt$ ./Test-2
+</span>
+<span class="kr">identification</span> <span class="kr">division</span><span class="p">.</span>
+
+  <span class="kr">program-id</span><span class="p">.</span>                          <span class="nv">Test-2</span><span class="p">.</span>
+
+<span class="kr">environment</span> <span class="kr">division</span><span class="p">.</span>
+
+  <span class="kr">configuration</span> <span class="kr">section</span><span class="p">.</span>
+
+    <span class="kp">repository</span><span class="p">.</span>
+      <span class="kp">copy </span><span class="s2">&quot;CobolSQLite3-CSR.cpy&quot;</span><span class="p">.</span>
+      <span class="kp">function</span> <span class="kp">all</span> <span class="kp">intrinsic</span><span class="p">.</span>
+
+<span class="kr">data</span> <span class="kr">division</span><span class="p">.</span>
+
+  <span class="kr">working-storage</span> <span class="kr">section</span><span class="p">.</span>
+
+    <span class="kp">copy </span><span class="s2">&quot;CobolSQLite3-WS.cpy&quot;</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">row-buffer</span>                     <span class="kt">pic x(128)</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">foo-heading-1</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(001)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(007)</span> <span class="kp">value </span><span class="s2">&quot;integer&quot;</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(003)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(007)</span> <span class="kp">value </span><span class="s2">&quot;real&quot;</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(003)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(059)</span> <span class="kp">value </span><span class="s2">&quot;Text&quot;</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">foo-heading-2</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(001)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(007)</span> <span class="kp">value</span> <span class="kp">all </span><span class="s2">&quot;-&quot;</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(003)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(007)</span> <span class="kp">value</span> <span class="kp">all </span><span class="s2">&quot;-&quot;</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(003)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(059)</span> <span class="kp">value</span> <span class="kp">all </span><span class="s2">&quot;-&quot;</span><span class="p">.</span>
+
+    <span class="mi">01  </span><span class="nv">foo-detail</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(002)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">fd-integer</span>                   <span class="kt">pic -(5)9(1)</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(003)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">fd-real</span>                      <span class="kt">pic -(3).9(3)</span><span class="p">.</span>
+      <span class="mi">05                               </span><span class="kt">pic x(003)</span> <span class="kp">value</span> <span class="no">spaces</span><span class="p">.</span>
+      <span class="mi">05  </span><span class="nv">fd-text</span>                      <span class="kt">pic x(059)</span><span class="p">.</span>
+
+<span class="kr">procedure</span> <span class="kr">division</span><span class="p">.</span>
+
+<span class="nv">Test-2-mainline</span><span class="p">.</span>
+
+<span class="o">&gt;&gt;</span><span class="nv">D</span> <span class="kr">display </span><span class="s2">&quot;- opening database ./test.sdb&quot;</span> <span class="kr">end-display
+
+ </span> <span class="kr">call </span><span class="s2">&quot;C$DELETE&quot;</span> <span class="kp">using </span><span class="s2">&quot;./test.sdb&quot;</span><span class="p">,</span>
+                        <span class="mi">0 </span><span class="c">*&gt; required but unused
+</span>  <span class="kr">end-call
+
+ </span> <span class="kr">move</span> <span class="nv">DBOPEN</span><span class="p">(</span><span class="s2">&quot;./test.sdb&quot;</span><span class="p">)</span> <span class="kp">to</span> <span class="nv">db-object</span>
+
+  <span class="kr">if</span> <span class="nv">DBSTATUS</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBOPEN: &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+   </span> <span class="kr">goback
+ </span> <span class="kr">end-if
+
+</span><span class="o">&gt;&gt;</span><span class="nv">D</span> <span class="kr">display </span><span class="s2">&quot;- creating table foo&quot;</span> <span class="kr">end-display
+
+ </span> <span class="kr">if</span> <span class="nv">DBSQL</span><span class="p">(</span><span class="nv">db-object</span><span class="p">,</span>
+           <span class="s2">&quot;create table foo (foo_integer int, foo_real real, foo_text text);&quot;</span>
+          <span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBSQL (create table foo): &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+   </span> <span class="kr">goback
+ </span> <span class="kr">end-if
+
+</span><span class="o">&gt;&gt;</span><span class="nv">D</span> <span class="kr">display </span><span class="s2">&quot;- adding record(s) to table foo&quot;</span> <span class="kr">end-display
+
+ </span> <span class="kr">if</span> <span class="nv">DBSQL</span><span class="p">(</span><span class="nv">db-object</span><span class="p">,</span>
+           <span class="s2">&quot;insert into foo (foo_integer, foo_real, foo_text) &quot;</span> <span class="p">&amp;</span>
+           <span class="s2">&quot;values (-12345, -12.345, '1st line, numbers should be -12345 and -12.345');&quot;</span>
+          <span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBSQL (insert foo 1): &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+   </span> <span class="kr">goback
+ </span> <span class="kr">end-if
+
+ </span> <span class="kr">if</span> <span class="nv">DBSQL</span><span class="p">(</span><span class="nv">db-object</span><span class="p">,</span>
+           <span class="s2">&quot;insert into foo (foo_integer, foo_real, foo_text) &quot;</span> <span class="p">&amp;</span>
+           <span class="s2">&quot;values (2, 2.99, '2nd line, numbers should be 2 and 2.99');&quot;</span>
+          <span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBSQL (insert foo 2): &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+   </span> <span class="kr">goback
+ </span> <span class="kr">end-if
+
+ </span> <span class="kr">if</span> <span class="nv">DBSQL</span><span class="p">(</span><span class="nv">db-object</span><span class="p">,</span>
+           <span class="s2">&quot;insert into foo (foo_integer, foo_real, foo_text) &quot;</span> <span class="p">&amp;</span>
+           <span class="s2">&quot;values (-3, -3.99, '3rd line, numbers should be -3 and -3.99');&quot;</span>
+          <span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBSQL (insert foo 3): &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+   </span> <span class="kr">goback
+ </span> <span class="kr">end-if
+
+ </span> <span class="kr">if</span> <span class="nv">DBSQL</span><span class="p">(</span><span class="nv">db-object</span><span class="p">,</span>
+           <span class="s2">&quot;insert into foo (foo_integer, foo_real, foo_text) &quot;</span> <span class="p">&amp;</span>
+           <span class="s2">&quot;values (4, 4.99, '4th line, numbers should be 4 and 4.99');&quot;</span>
+          <span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBSQL (insert foo 4): &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+   </span> <span class="kr">goback
+ </span> <span class="kr">end-if
+
+</span><span class="o">&gt;&gt;</span><span class="nv">D</span> <span class="kr">display </span><span class="s2">&quot;- selecting all records from foo&quot;</span> <span class="kr">end-display
+
+ </span> <span class="kr">move</span> <span class="nv">DBCOMPILE</span><span class="p">(</span><span class="nv">db-object</span><span class="p">,</span> <span class="s2">&quot;select * from foo;&quot;</span><span class="p">)</span> <span class="kp">to</span> <span class="nv">sql-object</span>
+
+  <span class="kr">if</span> <span class="nv">DBSTATUS</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBCOMPILE (select foo): &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+   </span> <span class="kr">goback
+ </span> <span class="kr">end-if
+
+ </span> <span class="kr">move</span> <span class="nv">DBEXECUTE</span><span class="p">(</span><span class="nv">sql-object</span><span class="p">)</span> <span class="kp">to</span> <span class="nv">db-status</span>
+
+  <span class="kr">evaluate</span> <span class="nb">true
+
+   </span> <span class="kp">when</span> <span class="nv">database-row-available</span>
+
+      <span class="kr">perform</span> <span class="nv">print-column-headings</span>
+
+      <span class="kr">perform</span> <span class="nv">get-print-data</span>
+        <span class="kp">until</span> <span class="nv">sql-statement-finished</span>
+
+      <span class="kr">display</span> <span class="no">space</span> <span class="kr">end-display
+     </span> <span class="kr">display </span><span class="s2">&quot;-- End of Report --&quot;</span> <span class="kr">end-display
+
+   </span> <span class="kp">when</span> <span class="nv">sql-statement-finished</span>
+      <span class="kr">continue
+
+   </span> <span class="kp">when</span> <span class="nv">database-lock-failed</span>
+      <span class="kr">display </span><span class="s2">&quot;DBEXECUTE: &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+     </span> <span class="kr">goback
+
+   </span> <span class="kp">when</span> <span class="kp">other
+     </span> <span class="kr">display </span><span class="s2">&quot;DBEXECUTE: &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+     </span> <span class="kr">goback
+
+ </span> <span class="kr">end-evaluate
+
+ </span> <span class="kr">if</span> <span class="nv">DBRELEASE</span><span class="p">(</span><span class="nv">sql-object</span><span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBRELEASE: &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+ </span> <span class="kr">end-if
+
+</span><span class="o">&gt;&gt;</span><span class="nv">D</span> <span class="kr">display </span><span class="s2">&quot;- closing database ./test.sdb&quot;</span> <span class="kr">end-display
+
+ </span> <span class="kr">if</span> <span class="nv">DBCLOSE</span><span class="p">(</span><span class="nv">db-object</span><span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBCLOSE: &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+ </span> <span class="kr">end-if
+
+ </span> <span class="kr">move</span> <span class="no">zero</span> <span class="kp">to</span> <span class="nv">return-code</span>
+  <span class="kr">goback
+  </span><span class="p">.</span>
+
+<span class="nv">print-column-headings</span><span class="p">.</span>
+
+  <span class="c">*&gt; Print the column heading lines.
+</span>
+  <span class="kr">display</span> <span class="nv">foo-heading-1</span> <span class="kr">end-display
+ </span> <span class="kr">display</span> <span class="nv">foo-heading-2</span> <span class="kr">end-display
+  </span><span class="p">.</span>
+
+<span class="nv">get-print-data</span><span class="p">.</span>
+
+  <span class="c">*&gt; Get the current result row and extract the values.
+</span>
+  <span class="kr">if</span> <span class="nv">DBGET</span><span class="p">(</span><span class="nv">sql-object</span><span class="p">,</span> <span class="nv">row-delims</span><span class="p">,</span> <span class="nv">row-buffer</span><span class="p">)</span> <span class="o">&lt;&gt;</span> <span class="no">ZERO</span> <span class="kr">then
+   </span> <span class="kr">display </span><span class="s2">&quot;DBGET (foo): &quot;</span><span class="p">,</span> <span class="nv">DBERRMSG</span> <span class="kr">end-display
+ </span> <span class="kr">end-if
+
+ </span> <span class="kr">unstring</span> <span class="nv">row-buffer</span>
+    <span class="kp">delimited</span> <span class="kp">by</span> <span class="nv">field-delimiter</span> <span class="ow">or</span> <span class="nv">row-delimiter</span>
+    <span class="kp">into
+     </span> <span class="nv">fd-integer</span>
+      <span class="nv">fd-real</span>
+      <span class="nv">fd-text</span>
+  <span class="kr">end-unstring
+
+  </span><span class="c">*&gt; Print the detail line.
+</span>
+  <span class="kr">display</span> <span class="nv">foo-detail</span> <span class="kr">end-display
+
+  </span><span class="c">*&gt; Get the next row.
+</span>
+  <span class="kr">move</span> <span class="nv">DBEXECUTE</span><span class="p">(</span><span class="nv">sql-object</span><span class="p">)</span> <span class="kp">to</span> <span class="nv">db-status</span>
+  <span class="p">.</span>
+
+<span class="kr">end</span> <span class="kp">program</span> <span class="nv">Test-2</span><span class="p">.</span>
+</pre>
+</blockquote>
+</div>
+<div class="section" id="modification-history">
+<h1><a class="toc-backref" href="#id78">8. Modification History</a></h1>
+<blockquote>
+<p>Version A.00.00  September 2017 Robert W.Mills (<a class="reference external" href="mailto:CobolMac&#64;btinternet.com">CobolMac&#64;btinternet.com</a>)</p>
+<ul class="simple">
+<li>Final release to GnuCOBOL Contributions.</li>
+</ul>
+<p>Version X.03.00 [BETA] September 2017 Robert W.Mills (<a class="reference external" href="mailto:CobolMac&#64;btinternet.com">CobolMac&#64;btinternet.com</a>)</p>
+<ul class="simple">
+<li>Created a User Guide that is in HTML format. The source text is held within the <em>CobolSQLite3</em> source file in ReStructuredText format. It is extracted by <em>ocdoc</em> and then passed to <em>Doccutils</em> which generates the HTML file. The <em>Modification History</em> and <em>Planned Enhancements</em> are held in external files (ChangeLog and ToDo) which are merged into the User Guide when <em>Docutils</em> generates it.</li>
+<li>Added the DBGET function (replaces the DBGETSTR and DBGETINT functions).</li>
+</ul>
+<p>Version X.02.00 [BETA] September 2017 Robert W.Mills (<a class="reference external" href="mailto:CobolMac&#64;btinternet.com">CobolMac&#64;btinternet.com</a>)</p>
+<ul class="simple">
+<li>Added this ChangeLog document.</li>
+<li>Added check in DBOPEN for SQLite3 Database before attempting to open it.
+A new status code, -14, and error message was added.</li>
+<li>Allow quoted strings to be used in place of string variables in parameters.</li>
+<li>Cleaned up comments (too many uses of the word 'the').</li>
+<li>Cleaned up error messages (too many uses of the word 'the').</li>
+</ul>
+<p>Version X.01.00 [BETA] September 2017 Robert W.Mills (<a class="reference external" href="mailto:CobolMac&#64;btinternet.com">CobolMac&#64;btinternet.com</a>)</p>
+<ul class="simple">
+<li>Initial release to GnuCOBOL Contributions.</li>
+</ul>
+<p>Version X.00.00 [ALPHA] August 2017 Robert W.Mills (<a class="reference external" href="mailto:CobolMac&#64;btinternet.com">CobolMac&#64;btinternet.com</a>)</p>
+<ul class="simple">
+<li>Start of development.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="planned-enhancements">
+<h1><a class="toc-backref" href="#id79">9. Planned Enhancements</a></h1>
+<blockquote>
+<ul>
+<li><p class="first">Add optional parameter to DBERRMSG to return error message for any Status Code.</p>
+<p>Scheduled for A.01.00</p>
+</li>
+<li><p class="first">Implement 'binding values to prepared statements' (aka Parameter Substitution).</p>
+<p>Scheduled for A.01.00</p>
+</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+End of CobolSQLite3 User Guide
+</div>
+</body>
+</html>

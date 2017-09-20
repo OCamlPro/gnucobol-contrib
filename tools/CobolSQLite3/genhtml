@@ -1,0 +1,3 @@
+#!/bin/ksh
+ocdoc CobolSQLite3.cob CobolSQLite3.rst CobolSQLite3.html cobolmac.css
+rm CobolSQLite3.rst

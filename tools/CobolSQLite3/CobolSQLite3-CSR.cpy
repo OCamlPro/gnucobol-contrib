@@ -1,3 +1,4 @@
+      Function DBSTATUS
       Function DBOPEN
       Function DBCLOSE
       Function DBCOMPILE
@@ -5,8 +6,6 @@
       Function DBRELEASE
       Function DBRESET
       Function DBSQL
-      Function DBGETSTR
-      Function DBGETINT
-      Function DBSTATUS
+      Function DBGET
       Function DBINFO
       Function DBERRMSG

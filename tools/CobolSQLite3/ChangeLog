@@ -1,9 +1,19 @@
-Version X.02.00 [BETA]  September 2017  Robert W.Mills (CobolMac@btinternet.com)
+Version A.00.00  September 2017 Robert W.Mills (CobolMac@btinternet.com)
+
+- Final release to GnuCOBOL Contributions.
+
+Version X.03.00 [BETA] September 2017 Robert W.Mills (CobolMac@btinternet.com)
+
+- Created a User Guide that is in HTML format. The source text is held within the *CobolSQLite3* source file in ReStructuredText format. It is extracted by *ocdoc* and then passed to *Doccutils* which generates the HTML file. The *Modification History* and *Planned Enhancements* are held in external files (ChangeLog and ToDo) which are merged into the User Guide when *Docutils* generates it.
+
+- Added the DBGET function (replaces the DBGETSTR and DBGETINT functions).
+
+Version X.02.00 [BETA] September 2017 Robert W.Mills (CobolMac@btinternet.com)
 
 - Added this ChangeLog document.
 
 - Added check in DBOPEN for SQLite3 Database before attempting to open it.
-  A new status code, -14, and error message, DBERR -14, added.
+  A new status code, -14, and error message was added.
 
 - Allow quoted strings to be used in place of string variables in parameters.
 
@@ -11,10 +21,10 @@ Version X.02.00 [BETA]  September 2017  Robert W.Mills (CobolMac@btinternet.com)
 
 - Cleaned up error messages (too many uses of the word 'the').
 
-Version X.01.00 [BETA]  September 2017  Robert W.Mills (CobolMac@btinternet.com)
+Version X.01.00 [BETA] September 2017 Robert W.Mills (CobolMac@btinternet.com)
 
 - Initial release to GnuCOBOL Contributions.
 
-Version X.00.00 [ALPHA]  August 2017  Robert W.Mills (CobolMac@btinternet.com)
+Version X.00.00 [ALPHA] August 2017 Robert W.Mills (CobolMac@btinternet.com)
 
 - Start of development.

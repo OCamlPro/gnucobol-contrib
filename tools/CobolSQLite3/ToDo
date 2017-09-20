@@ -1,0 +1,8 @@
+- Add optional parameter to DBERRMSG to return error message for any Status Code.
+
+  Scheduled for A.01.00
+
+- Implement 'binding values to prepared statements' (aka Parameter Substitution).
+
+  Scheduled for A.01.00
+
