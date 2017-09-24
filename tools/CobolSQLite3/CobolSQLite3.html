@@ -103,89 +103,96 @@ pre.code .il { color: #666666 } /* Literal.Number.Integer.Long */
 <p class="first sidebar-title">Table of Contents</p>
 <div class="contents local last topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#license" id="id25">1. License</a></li>
-<li><a class="reference internal" href="#description" id="id26">2. Description</a></li>
-<li><a class="reference internal" href="#library-functions" id="id27">3. Library Functions</a><ul>
-<li><a class="reference internal" href="#restrictions" id="id28">3.0. Restrictions</a></li>
-<li><a class="reference internal" href="#dbstatus" id="id29">3.1. DBSTATUS</a><ul>
-<li><a class="reference internal" href="#syntax" id="id30">Syntax</a></li>
-<li><a class="reference internal" href="#parameters" id="id31">Parameters</a></li>
+<li><a class="reference internal" href="#license" id="id25">1. License</a><ul>
+<li><a class="reference internal" href="#cobolsqlite3-library" id="id26">1.1. CobolSQLite3 Library</a></li>
+<li><a class="reference internal" href="#cobolsqlite3-user-guide" id="id27">1.2. CobolSQLite3 User Guide</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#dbopen" id="id32">3.2. DBOPEN</a><ul>
-<li><a class="reference internal" href="#id1" id="id33">Syntax</a></li>
-<li><a class="reference internal" href="#id2" id="id34">Parameters</a></li>
-<li><a class="reference internal" href="#notes" id="id35">Notes</a></li>
+<li><a class="reference internal" href="#description" id="id28">2. Description</a><ul>
+<li><a class="reference internal" href="#quote-from-sqlite-author" id="id29">2.1. Quote from SQLite author</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#dbclose" id="id36">3.3. DBCLOSE</a><ul>
-<li><a class="reference internal" href="#id3" id="id37">Syntax</a></li>
-<li><a class="reference internal" href="#id4" id="id38">Parameters</a></li>
+<li><a class="reference internal" href="#library-functions" id="id30">3. Library Functions</a><ul>
+<li><a class="reference internal" href="#restrictions" id="id31">3.0. Restrictions</a></li>
+<li><a class="reference internal" href="#dbstatus" id="id32">3.1. DBSTATUS</a><ul>
+<li><a class="reference internal" href="#syntax" id="id33">Syntax</a></li>
+<li><a class="reference internal" href="#parameters" id="id34">Parameters</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#dbcompile" id="id39">3.4. DBCOMPILE</a><ul>
-<li><a class="reference internal" href="#id5" id="id40">Syntax</a></li>
-<li><a class="reference internal" href="#id6" id="id41">Parameters</a></li>
+<li><a class="reference internal" href="#dbopen" id="id35">3.2. DBOPEN</a><ul>
+<li><a class="reference internal" href="#id1" id="id36">Syntax</a></li>
+<li><a class="reference internal" href="#id2" id="id37">Parameters</a></li>
+<li><a class="reference internal" href="#notes" id="id38">Notes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#dbexecute" id="id42">3.5. DBEXECUTE</a><ul>
-<li><a class="reference internal" href="#id7" id="id43">Syntax</a></li>
-<li><a class="reference internal" href="#id8" id="id44">Parameters</a></li>
+<li><a class="reference internal" href="#dbclose" id="id39">3.3. DBCLOSE</a><ul>
+<li><a class="reference internal" href="#id3" id="id40">Syntax</a></li>
+<li><a class="reference internal" href="#id4" id="id41">Parameters</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#dbrelease" id="id45">3.6. DBRELEASE</a><ul>
-<li><a class="reference internal" href="#id9" id="id46">Syntax</a></li>
-<li><a class="reference internal" href="#id10" id="id47">Parameters</a></li>
-<li><a class="reference internal" href="#id11" id="id48">Notes</a></li>
+<li><a class="reference internal" href="#dbcompile" id="id42">3.4. DBCOMPILE</a><ul>
+<li><a class="reference internal" href="#id5" id="id43">Syntax</a></li>
+<li><a class="reference internal" href="#id6" id="id44">Parameters</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#dbreset" id="id49">3.7. DBRESET</a><ul>
-<li><a class="reference internal" href="#id12" id="id50">Syntax</a></li>
-<li><a class="reference internal" href="#id13" id="id51">Parameters</a></li>
+<li><a class="reference internal" href="#dbexecute" id="id45">3.5. DBEXECUTE</a><ul>
+<li><a class="reference internal" href="#id7" id="id46">Syntax</a></li>
+<li><a class="reference internal" href="#id8" id="id47">Parameters</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#dbsql" id="id52">3.8. DBSQL</a><ul>
-<li><a class="reference internal" href="#id14" id="id53">Syntax</a></li>
-<li><a class="reference internal" href="#id15" id="id54">Parameters</a></li>
-<li><a class="reference internal" href="#id16" id="id55">Notes</a></li>
+<li><a class="reference internal" href="#dbrelease" id="id48">3.6. DBRELEASE</a><ul>
+<li><a class="reference internal" href="#id9" id="id49">Syntax</a></li>
+<li><a class="reference internal" href="#id10" id="id50">Parameters</a></li>
+<li><a class="reference internal" href="#id11" id="id51">Notes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#dbget" id="id56">3.9. DBGET</a><ul>
-<li><a class="reference internal" href="#id17" id="id57">Syntax</a></li>
-<li><a class="reference internal" href="#id18" id="id58">Parameters</a></li>
-<li><a class="reference internal" href="#id19" id="id59">Notes</a></li>
+<li><a class="reference internal" href="#dbreset" id="id52">3.7. DBRESET</a><ul>
+<li><a class="reference internal" href="#id12" id="id53">Syntax</a></li>
+<li><a class="reference internal" href="#id13" id="id54">Parameters</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#dbinfo" id="id60">3.10. DBINFO</a><ul>
-<li><a class="reference internal" href="#id20" id="id61">Syntax</a></li>
-<li><a class="reference internal" href="#id21" id="id62">Parameters</a></li>
-<li><a class="reference internal" href="#dbinfo-modes" id="id63">DBINFO Modes</a></li>
+<li><a class="reference internal" href="#dbsql" id="id55">3.8. DBSQL</a><ul>
+<li><a class="reference internal" href="#id14" id="id56">Syntax</a></li>
+<li><a class="reference internal" href="#id15" id="id57">Parameters</a></li>
+<li><a class="reference internal" href="#id16" id="id58">Notes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#dberrmsg" id="id64">3.11. DBERRMSG</a><ul>
-<li><a class="reference internal" href="#id22" id="id65">Syntax</a></li>
-<li><a class="reference internal" href="#id23" id="id66">Parameters</a></li>
-<li><a class="reference internal" href="#id24" id="id67">Notes</a></li>
+<li><a class="reference internal" href="#dbget" id="id59">3.9. DBGET</a><ul>
+<li><a class="reference internal" href="#id17" id="id60">Syntax</a></li>
+<li><a class="reference internal" href="#id18" id="id61">Parameters</a></li>
+<li><a class="reference internal" href="#id19" id="id62">Notes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dbinfo" id="id63">3.10. DBINFO</a><ul>
+<li><a class="reference internal" href="#id20" id="id64">Syntax</a></li>
+<li><a class="reference internal" href="#id21" id="id65">Parameters</a></li>
+<li><a class="reference internal" href="#dbinfo-modes" id="id66">DBINFO Modes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dberrmsg" id="id67">3.11. DBERRMSG</a><ul>
+<li><a class="reference internal" href="#id22" id="id68">Syntax</a></li>
+<li><a class="reference internal" href="#id23" id="id69">Parameters</a></li>
+<li><a class="reference internal" href="#id24" id="id70">Notes</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#compilation-instructions" id="id68">4. Compilation Instructions</a><ul>
-<li><a class="reference internal" href="#linux-unix" id="id69">4.1. Linux/UNIX</a></li>
-<li><a class="reference internal" href="#apple-mac-os-x" id="id70">4.2. Apple Mac OS X</a></li>
-<li><a class="reference internal" href="#windows" id="id71">4.3. Windows</a></li>
+<li><a class="reference internal" href="#compilation-instructions" id="id71">4. Compilation Instructions</a><ul>
+<li><a class="reference internal" href="#linux-unix" id="id72">4.1. Linux/UNIX</a></li>
+<li><a class="reference internal" href="#apple-mac-os-x" id="id73">4.2. Apple Mac OS X</a></li>
+<li><a class="reference internal" href="#windows" id="id74">4.3. Windows</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#installation" id="id72">5. Installation</a><ul>
-<li><a class="reference internal" href="#requirements" id="id73">5.1. Requirements</a></li>
-<li><a class="reference internal" href="#before-first-use" id="id74">5.2. Before first use</a></li>
-<li><a class="reference internal" href="#copybook-listings" id="id75">5.3. Copybook Listings</a></li>
+<li><a class="reference internal" href="#installation" id="id75">5. Installation</a><ul>
+<li><a class="reference internal" href="#requirements" id="id76">5.1. Requirements</a></li>
+<li><a class="reference internal" href="#before-first-use" id="id77">5.2. Before first use</a></li>
+<li><a class="reference internal" href="#copybook-listings" id="id78">5.3. Copybook Listings</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#accessing-the-library" id="id76">6. Accessing the Library</a></li>
-<li><a class="reference internal" href="#example-test-programs" id="id77">7. Example/Test Programs</a></li>
-<li><a class="reference internal" href="#modification-history" id="id78">8. Modification History</a></li>
-<li><a class="reference internal" href="#planned-enhancements" id="id79">9. Planned Enhancements</a></li>
+<li><a class="reference internal" href="#accessing-the-library" id="id79">6. Accessing the Library</a></li>
+<li><a class="reference internal" href="#example-test-programs" id="id80">7. Example/Test Programs</a></li>
+<li><a class="reference internal" href="#modification-history" id="id81">8. Modification History</a></li>
+<li><a class="reference internal" href="#planned-enhancements" id="id82">9. Planned Enhancements</a></li>
 </ul>
 </div>
 </div>
@@ -214,14 +221,24 @@ pre.code .il { color: #666666 } /* Literal.Number.Integer.Long */
 </table>
 <div class="section" id="license">
 <h1><a class="toc-backref" href="#id25">1. License</a></h1>
+<div class="section" id="cobolsqlite3-library">
+<h2><a class="toc-backref" href="#id26">1.1. CobolSQLite3 Library</a></h2>
 <blockquote>
 <p>This program is free software: you can redistribute it and/or modify it   under the terms of the GNU General Public License as published by the Free   Software Foundation, either version 3 of the License, or (at your option)   any later version.</p>
 <p>This program is distributed in the hope that it will be useful, but WITHOUT   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or   FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for   more details.</p>
-<p>You should have received a copy of the GNU General Public License along with   this program. If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/#GPL">http://www.gnu.org/licenses/#GPL</a>&gt;.</p>
+<p>You should have received a copy of the GNU General Public License, in the   file COPYING, along with this program. If not, see   &lt;<a class="reference external" href="http://www.gnu.org/licenses/gpl.txt">http://www.gnu.org/licenses/gpl.txt</a>&gt;.</p>
 </blockquote>
 </div>
+<div class="section" id="cobolsqlite3-user-guide">
+<h2><a class="toc-backref" href="#id27">1.2. CobolSQLite3 User Guide</a></h2>
+<blockquote>
+<p>Permission is granted to copy, distribute and/or modify this document   under the terms of the GNU Free Documentation License, Version 1.3   or any later version published by the Free Software Foundation;   with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.</p>
+<p>A copy of this license, in the file COPYING, should be included with this   software. If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/fdl.txt">http://www.gnu.org/licenses/fdl.txt</a>&gt;.</p>
+</blockquote>
+</div>
+</div>
 <div class="section" id="description">
-<h1><a class="toc-backref" href="#id26">2. Description</a></h1>
+<h1><a class="toc-backref" href="#id28">2. Description</a></h1>
 <blockquote>
 <p>The <em>CobolSQLite3</em> Library is an interface to the SQLite3 Database Engine.</p>
 <p>The interface consists of a Dynamic Library (.so file in Linux &amp; .dll in  Windows). It containing User Defined Functions that perform the following  actions:</p>
@@ -238,49 +255,57 @@ pre.code .il { color: #666666 } /* Literal.Number.Integer.Long */
 <li>Translate a Status Code into human-readable text.</li>
 </ul>
 </blockquote>
+<div class="section" id="quote-from-sqlite-author">
+<h2><a class="toc-backref" href="#id29">2.1. Quote from SQLite author</a></h2>
+<blockquote>
+<p>D Richard Hipp, architect and primary author of <em>SQLite</em> as well as the   Fossil SCM, said:</p>
+<p>&quot;<em>SQLite</em> is a C library that implements an embeddable SQL database engine.   Programs that link with the <em>SQLite library</em> can have SQL database access   without running a separate RDBMS process. The distribution comes with a   standalone command-line access program (<em>SQLite</em>) that can be used to   administer a <em>SQLite database</em> and which serves as an example of how to use   the <em>SQLite library</em>.</p>
+<p><em>SQLite</em> is not a client library used to connect to a big database server.   <em>SQLite</em> is the server. The <em>SQLite library</em> reads and writes directly to and   from the database files on disk.&quot;</p>
+</blockquote>
+</div>
 </div>
 <div class="section" id="library-functions">
-<h1><a class="toc-backref" href="#id27">3. Library Functions</a></h1>
+<h1><a class="toc-backref" href="#id30">3. Library Functions</a></h1>
 <div class="section" id="restrictions">
-<h2><a class="toc-backref" href="#id28">3.0. Restrictions</a></h2>
+<h2><a class="toc-backref" href="#id31">3.0. Restrictions</a></h2>
 <blockquote>
 <p><em>DBCOMPILE</em> and <em>DBSQL</em> will only use the 1st statement passed in the   <em>sql-statement</em> parameter, any additional statements will be dropped.</p>
 <p>This helps prevent <strong>SQL Injection Attacks</strong> against the Database.</p>
 </blockquote>
 </div>
 <div class="section" id="dbstatus">
-<h2><a class="toc-backref" href="#id29">3.1. DBSTATUS</a></h2>
+<h2><a class="toc-backref" href="#id32">3.1. DBSTATUS</a></h2>
 <blockquote>
 Returns the <em>Status Code</em> of the last executed CobolSQLite3 function.</blockquote>
 <div class="section" id="syntax">
-<h3><a class="toc-backref" href="#id30">Syntax</a></h3>
+<h3><a class="toc-backref" href="#id33">Syntax</a></h3>
 <blockquote>
 <em>status-code</em> = DBSTATUS</blockquote>
 </div>
 <div class="section" id="parameters">
-<h3><a class="toc-backref" href="#id31">Parameters</a></h3>
+<h3><a class="toc-backref" href="#id34">Parameters</a></h3>
 <blockquote>
 <em>status-code</em> is a signed binary integer, with at least a size of 4.</blockquote>
 </div>
 </div>
 <div class="section" id="dbopen">
-<h2><a class="toc-backref" href="#id32">3.2. DBOPEN</a></h2>
+<h2><a class="toc-backref" href="#id35">3.2. DBOPEN</a></h2>
 <blockquote>
 Opens the specified database and creates a Database Object.</blockquote>
 <div class="section" id="id1">
-<h3><a class="toc-backref" href="#id33">Syntax</a></h3>
+<h3><a class="toc-backref" href="#id36">Syntax</a></h3>
 <blockquote>
 <em>db-object</em> = DBOPEN(<em>db-name</em>)</blockquote>
 </div>
 <div class="section" id="id2">
-<h3><a class="toc-backref" href="#id34">Parameters</a></h3>
+<h3><a class="toc-backref" href="#id37">Parameters</a></h3>
 <blockquote>
 <p><em>db-name</em> is the name of the Database to be opened, and can be either an alphanumeric variable or quoted string. If the Database is not in the current working directory then you must pre-pend the path to the name.</p>
 <p><em>db-object</em> is a variable that is used to hold the internal handle to the Database Object, it must be alphanumeric with at least a size of 8.</p>
 </blockquote>
 </div>
 <div class="section" id="notes">
-<h3><a class="toc-backref" href="#id35">Notes</a></h3>
+<h3><a class="toc-backref" href="#id38">Notes</a></h3>
 <blockquote>
 <p>If the database does not exist then it will be automatically created.</p>
 <p>If <em>db-name</em> specifies a file that is not an SQLite3 Database then <em>DBOPEN</em>   will return an error (use DBSTATUS to return the Status Code).</p>
@@ -288,16 +313,16 @@ Opens the specified database and creates a Database Object.</blockquote>
 </div>
 </div>
 <div class="section" id="dbclose">
-<h2><a class="toc-backref" href="#id36">3.3. DBCLOSE</a></h2>
+<h2><a class="toc-backref" href="#id39">3.3. DBCLOSE</a></h2>
 <blockquote>
 Closes the specified database and destroys its Database Object.</blockquote>
 <div class="section" id="id3">
-<h3><a class="toc-backref" href="#id37">Syntax</a></h3>
+<h3><a class="toc-backref" href="#id40">Syntax</a></h3>
 <blockquote>
 <em>status-code</em> = DBCLOSE(<em>db-object</em>)</blockquote>
 </div>
 <div class="section" id="id4">
-<h3><a class="toc-backref" href="#id38">Parameters</a></h3>
+<h3><a class="toc-backref" href="#id41">Parameters</a></h3>
 <blockquote>
 <p><em>db-object</em> is a variable that is used to hold the internal handle to the Database Object, it must be alphanumeric with at least a size of 8.</p>
 <p><em>status-code</em> is a signed binary integer, with at least a size of 4. It will hold the same value that would be returned by the DBSTATUS function.</p>
@@ -305,16 +330,16 @@ Closes the specified database and destroys its Database Object.</blockquote>
 </div>
 </div>
 <div class="section" id="dbcompile">
-<h2><a class="toc-backref" href="#id39">3.4. DBCOMPILE</a></h2>
+<h2><a class="toc-backref" href="#id42">3.4. DBCOMPILE</a></h2>
 <blockquote>
 Compiles an SQL Statement, into byte-code, and creates an SQL Object for it.</blockquote>
 <div class="section" id="id5">
-<h3><a class="toc-backref" href="#id40">Syntax</a></h3>
+<h3><a class="toc-backref" href="#id43">Syntax</a></h3>
 <blockquote>
 <em>sql-object</em> = DBCOMPILE(<em>db-object</em>, <em>sql-statement</em>)</blockquote>
 </div>
 <div class="section" id="id6">
-<h3><a class="toc-backref" href="#id41">Parameters</a></h3>
+<h3><a class="toc-backref" href="#id44">Parameters</a></h3>
 <blockquote>
 <p><em>db-object</em> is a variable that is used to hold the internal handle to the Database Object, it must be alphanumeric with at least a size of 8.</p>
 <p><em>sql-statement</em> is the SQL Statement to be compiled, and can be either an alphanumeric variable or quoted string.</p>
@@ -323,16 +348,16 @@ Compiles an SQL Statement, into byte-code, and creates an SQL Object for it.</bl
 </div>
 </div>
 <div class="section" id="dbexecute">
-<h2><a class="toc-backref" href="#id42">3.5. DBEXECUTE</a></h2>
+<h2><a class="toc-backref" href="#id45">3.5. DBEXECUTE</a></h2>
 <blockquote>
 Executes an SQL Object (a compiled SQL Statement).</blockquote>
 <div class="section" id="id7">
-<h3><a class="toc-backref" href="#id43">Syntax</a></h3>
+<h3><a class="toc-backref" href="#id46">Syntax</a></h3>
 <blockquote>
 <em>status-code</em> = DBEXECUTE(<em>sql-object</em>)</blockquote>
 </div>
 <div class="section" id="id8">
-<h3><a class="toc-backref" href="#id44">Parameters</a></h3>
+<h3><a class="toc-backref" href="#id47">Parameters</a></h3>
 <blockquote>
 <p><em>sql-object</em> is a variable that is used to hold the internal handle to the SQL Object created for a compiled SQL Statement, it must be alphanumeric with at least a size of 8.</p>
 <p><em>status-code</em> is a signed binary integer, with at least a size of 4. It will hold the same value that would be returned by the DBSTATUS function.</p>
@@ -340,38 +365,38 @@ Executes an SQL Object (a compiled SQL Statement).</blockquote>
 </div>
 </div>
 <div class="section" id="dbrelease">
-<h2><a class="toc-backref" href="#id45">3.6. DBRELEASE</a></h2>
+<h2><a class="toc-backref" href="#id48">3.6. DBRELEASE</a></h2>
 <blockquote>
 Releases (deletes) an SQL Object (a compiled SQL Statement).</blockquote>
 <div class="section" id="id9">
-<h3><a class="toc-backref" href="#id46">Syntax</a></h3>
+<h3><a class="toc-backref" href="#id49">Syntax</a></h3>
 <blockquote>
 <em>status-code</em> = DBRELEASE(<em>sql-object</em>)</blockquote>
 </div>
 <div class="section" id="id10">
-<h3><a class="toc-backref" href="#id47">Parameters</a></h3>
+<h3><a class="toc-backref" href="#id50">Parameters</a></h3>
 <blockquote>
 <p><em>sql-object</em> is a variable that is used to hold the internal handle to the SQL Object created for a compiled SQL Statement, it must be alphanumeric with at least a size of 8.</p>
 <p><em>status-code</em> is a signed binary integer, with at least a size of 4. It will hold the same value that would be returned by the DBSTATUS function.</p>
 </blockquote>
 </div>
 <div class="section" id="id11">
-<h3><a class="toc-backref" href="#id48">Notes</a></h3>
+<h3><a class="toc-backref" href="#id51">Notes</a></h3>
 <blockquote>
 This function MUST be executed against all SQL Objects before the database   is closed as failure to do so result's in <em>memory leaks</em>.</blockquote>
 </div>
 </div>
 <div class="section" id="dbreset">
-<h2><a class="toc-backref" href="#id49">3.7. DBRESET</a></h2>
+<h2><a class="toc-backref" href="#id52">3.7. DBRESET</a></h2>
 <blockquote>
 Resets the SQL Object back to initial state so it can be re-executed.</blockquote>
 <div class="section" id="id12">
-<h3><a class="toc-backref" href="#id50">Syntax</a></h3>
+<h3><a class="toc-backref" href="#id53">Syntax</a></h3>
 <blockquote>
 <em>status-code</em> = DBRESET(<em>sql-object</em>)</blockquote>
 </div>
 <div class="section" id="id13">
-<h3><a class="toc-backref" href="#id51">Parameters</a></h3>
+<h3><a class="toc-backref" href="#id54">Parameters</a></h3>
 <blockquote>
 <p><em>sql-object</em> is a variable that is used to hold the internal handle to the SQL Object created for a compiled SQL Statement, it must be alphanumeric with at least a size of 8.</p>
 <p><em>status-code</em> is a signed binary integer, with at least a size of 4. It will hold the same value that would be returned by the DBSTATUS function.</p>
@@ -379,16 +404,16 @@ Resets the SQL Object back to initial state so it can be re-executed.</blockquot
 </div>
 </div>
 <div class="section" id="dbsql">
-<h2><a class="toc-backref" href="#id52">3.8. DBSQL</a></h2>
+<h2><a class="toc-backref" href="#id55">3.8. DBSQL</a></h2>
 <blockquote>
 Executes an SQL Statement against the Database Object.</blockquote>
 <div class="section" id="id14">
-<h3><a class="toc-backref" href="#id53">Syntax</a></h3>
+<h3><a class="toc-backref" href="#id56">Syntax</a></h3>
 <blockquote>
 <em>status-code</em> = DBSQL(<em>db-object</em>, <em>sql-statement</em>)</blockquote>
 </div>
 <div class="section" id="id15">
-<h3><a class="toc-backref" href="#id54">Parameters</a></h3>
+<h3><a class="toc-backref" href="#id57">Parameters</a></h3>
 <blockquote>
 <p><em>db-object</em> is a variable that is used to hold the internal handle to the Database Object, it must be alphanumeric with at least a size of 8.</p>
 <p><em>sql-statement</em> is the SQL Statement to be executed. It can be either an alphanumeric variable or a quoted string.</p>
@@ -396,22 +421,22 @@ Executes an SQL Statement against the Database Object.</blockquote>
 </blockquote>
 </div>
 <div class="section" id="id16">
-<h3><a class="toc-backref" href="#id55">Notes</a></h3>
+<h3><a class="toc-backref" href="#id58">Notes</a></h3>
 <blockquote>
-This function combines the DBCOMPILE, DBEXECUTE and DBRELEASE functionality.</blockquote>
+This function combines the <em>DBCOMPILE</em>, <em>DBEXECUTE</em> and <em>DBRELEASE</em>   functionality.</blockquote>
 </div>
 </div>
 <div class="section" id="dbget">
-<h2><a class="toc-backref" href="#id56">3.9. DBGET</a></h2>
+<h2><a class="toc-backref" href="#id59">3.9. DBGET</a></h2>
 <blockquote>
 Returns the current result row of an SQL Query (Select).</blockquote>
 <div class="section" id="id17">
-<h3><a class="toc-backref" href="#id57">Syntax</a></h3>
+<h3><a class="toc-backref" href="#id60">Syntax</a></h3>
 <blockquote>
 <em>status-code</em> = DBGET(<em>sql-object</em>, <em>row-delims</em>, <em>row-buffer</em>)</blockquote>
 </div>
 <div class="section" id="id18">
-<h3><a class="toc-backref" href="#id58">Parameters</a></h3>
+<h3><a class="toc-backref" href="#id61">Parameters</a></h3>
 <blockquote>
 <p><em>sql-object</em> is a variable that is used to hold the internal handle to the SQL Object created for a compiled SQL Statement, it must be alphanumeric with at least a size of 8.</p>
 <p><em>row-delims</em> is an alphanumeric variable containing the delimiters to use when loading the <em>row-buffer</em>.</p>
@@ -424,7 +449,7 @@ Returns the current result row of an SQL Query (Select).</blockquote>
 </blockquote>
 </div>
 <div class="section" id="id19">
-<h3><a class="toc-backref" href="#id59">Notes</a></h3>
+<h3><a class="toc-backref" href="#id62">Notes</a></h3>
 <blockquote>
 <p>The <em>row-delims</em> entry in the Working-Storage Copybook sets default values of   HEX 1D (Group Separator) and HEX 1E (Record Separator) for the 1st and 2nd   delimiter. These values are the developers choice and you can keep them as-is,   modify the <em>row-delims</em> entry in the Copybook, or override the values within   your program by using one-or-more MOVE commands.</p>
 <p>A modified version of the following <strong>unstring</strong> statement should be used to   extract the data for each column from <strong>row-buffer</strong>. You, as the developer   using this Library, are in complete control of the picture format/size of the   Working-storage field that will be the recipient of the column data. It is   suggested that you use the SQLite Command-Line Shell (see Section 5.1) to look   at the current data formats/sizes used and code accordingly.</p>
@@ -441,16 +466,16 @@ Returns the current result row of an SQL Query (Select).</blockquote>
 </div>
 </div>
 <div class="section" id="dbinfo">
-<h2><a class="toc-backref" href="#id60">3.10. DBINFO</a></h2>
+<h2><a class="toc-backref" href="#id63">3.10. DBINFO</a></h2>
 <blockquote>
 Returns information about the Database being accessed.</blockquote>
 <div class="section" id="id20">
-<h3><a class="toc-backref" href="#id61">Syntax</a></h3>
+<h3><a class="toc-backref" href="#id64">Syntax</a></h3>
 <blockquote>
 <em>dbinfo-buffer</em> = DBINFO(<em>dbinfo-mode</em>, <em>db-object</em>)</blockquote>
 </div>
 <div class="section" id="id21">
-<h3><a class="toc-backref" href="#id62">Parameters</a></h3>
+<h3><a class="toc-backref" href="#id65">Parameters</a></h3>
 <blockquote>
 <p><em>dbinfo-mode</em> is a three digit numeric indicating the information to return (see DBINFO Modes table below).</p>
 <p><em>db-object</em> is a variable that is used to hold the internal handle to the Database Object, it must be alphanumeric with at least a size of 8.</p>
@@ -458,7 +483,7 @@ Returns information about the Database being accessed.</blockquote>
 </blockquote>
 </div>
 <div class="section" id="dbinfo-modes">
-<h3><a class="toc-backref" href="#id63">DBINFO Modes</a></h3>
+<h3><a class="toc-backref" href="#id66">DBINFO Modes</a></h3>
 <blockquote>
 <table border="1" class="docutils">
 <colgroup>
@@ -484,21 +509,21 @@ resolution are not counted.</p>
 </div>
 </div>
 <div class="section" id="dberrmsg">
-<h2><a class="toc-backref" href="#id64">3.11. DBERRMSG</a></h2>
+<h2><a class="toc-backref" href="#id67">3.11. DBERRMSG</a></h2>
 <blockquote>
 Returns the error message associated with the last <em>Status Code</em> setting.</blockquote>
 <div class="section" id="id22">
-<h3><a class="toc-backref" href="#id65">Syntax</a></h3>
+<h3><a class="toc-backref" href="#id68">Syntax</a></h3>
 <blockquote>
 <em>error-message</em> = DBERRMSG</blockquote>
 </div>
 <div class="section" id="id23">
-<h3><a class="toc-backref" href="#id66">Parameters</a></h3>
+<h3><a class="toc-backref" href="#id69">Parameters</a></h3>
 <blockquote>
 <em>error-message</em> is an alphanumeric variable, with at least a size of 128.</blockquote>
 </div>
 <div class="section" id="id24">
-<h3><a class="toc-backref" href="#id67">Notes</a></h3>
+<h3><a class="toc-backref" href="#id70">Notes</a></h3>
 <blockquote>
 <p>The returned <em>error-message</em> will have one of following prefixes:</p>
 <blockquote>
@@ -511,9 +536,9 @@ Returns the error message associated with the last <em>Status Code</em> setting.
 </div>
 </div>
 <div class="section" id="compilation-instructions">
-<h1><a class="toc-backref" href="#id68">4. Compilation Instructions</a></h1>
+<h1><a class="toc-backref" href="#id71">4. Compilation Instructions</a></h1>
 <div class="section" id="linux-unix">
-<h2><a class="toc-backref" href="#id69">4.1. Linux/UNIX</a></h2>
+<h2><a class="toc-backref" href="#id72">4.1. Linux/UNIX</a></h2>
 <blockquote>
 <p>Compile the <em>CobolSQLite3</em> source (CobolSQLite3.cob) by entering the following command within any terminal program.</p>
 <blockquote>
@@ -521,12 +546,12 @@ cobc -o CobolSQLite3.so -debug CobolSQLite3.cob -lsqlite3</blockquote>
 </blockquote>
 </div>
 <div class="section" id="apple-mac-os-x">
-<h2><a class="toc-backref" href="#id70">4.2. Apple Mac OS X</a></h2>
+<h2><a class="toc-backref" href="#id73">4.2. Apple Mac OS X</a></h2>
 <blockquote>
 Compile the source file as for Linux/Unix.</blockquote>
 </div>
 <div class="section" id="windows">
-<h2><a class="toc-backref" href="#id71">4.3. Windows</a></h2>
+<h2><a class="toc-backref" href="#id74">4.3. Windows</a></h2>
 <blockquote>
 <p>I do not have access to Windows, Windows/Cygwin or Windows/MinGW but I understand that the following commands should work [YMMV].</p>
 <p>Windows/MinGW and Windows/Cygwin (inside the terminal program):</p>
@@ -545,14 +570,14 @@ cobc -debug -lsqlite3 [drive:][path\\to\\]CobolSQLite3.cob
 </div>
 </div>
 <div class="section" id="installation">
-<h1><a class="toc-backref" href="#id72">5. Installation</a></h1>
+<h1><a class="toc-backref" href="#id75">5. Installation</a></h1>
 <div class="section" id="requirements">
-<h2><a class="toc-backref" href="#id73">5.1. Requirements</a></h2>
+<h2><a class="toc-backref" href="#id76">5.1. Requirements</a></h2>
 <blockquote>
 <p><strong>GnuCOBOL:</strong> Version 2.2 (or greater) installed and tested fully working.</p>
 <blockquote>
 See the documentation supplied with <em>GnuCOBOL</em>. You <strong>must</strong> have run both    the sanity checks created by the test procedures included within the    Cobol85 suite as well as the <em>make check</em> procedure.</blockquote>
-<p><strong>SQLite 3:</strong> Version 3.11.0 (or greater).</p>
+<p><strong>SQLite3:</strong> Version 3.11.0 (or greater).</p>
 <blockquote>
 <p>As a minimum you need to install the Shared Library (<em>Libsqlite3-0</em>) and    Development Files (<em>Libsqlite3-dev</em>). Available from most Linux Distros.</p>
 <p>Although you do not need it you will find it an advantage to also install    the following:</p>
@@ -567,7 +592,7 @@ See the documentation supplied with <em>GnuCOBOL</em>. You <strong>must</strong>
 </blockquote>
 </div>
 <div class="section" id="before-first-use">
-<h2><a class="toc-backref" href="#id74">5.2. Before first use</a></h2>
+<h2><a class="toc-backref" href="#id77">5.2. Before first use</a></h2>
 <blockquote>
 <p>Before you use the <em>CobolSQLite3</em> Library for the first time (also after a  <strong>new</strong> release) you <strong>must</strong> generate the Copybook modules required by programs   using the Library.</p>
 <p>Enter the following <strong>cobcrun</strong> command and respond <strong>Y</strong> (or <strong>y</strong>) to the   two questions you will be asked:</p>
@@ -603,7 +628,7 @@ Generate Working-storage CopyLibrary [N/y]? y
 </blockquote>
 </div>
 <div class="section" id="copybook-listings">
-<h2><a class="toc-backref" href="#id75">5.3. Copybook Listings</a></h2>
+<h2><a class="toc-backref" href="#id78">5.3. Copybook Listings</a></h2>
 <blockquote>
 <p>Below are examples of the two Copybook's that are generated by <em>CobolSQLite3</em>.</p>
 <p><em>CobolSQLite3-CSR.cpy</em> contains the Library function definitions. It needs to   be COPYed into the Repository paragraph within the Configuration Section.</p>
@@ -663,7 +688,7 @@ Generate Working-storage CopyLibrary [N/y]? y
 </div>
 </div>
 <div class="section" id="accessing-the-library">
-<h1><a class="toc-backref" href="#id76">6. Accessing the Library</a></h1>
+<h1><a class="toc-backref" href="#id79">6. Accessing the Library</a></h1>
 <blockquote>
 <p>Prior to executing a program that uses the <em>CobolSQLite3</em> Library you need  to set the <strong>COB_PRE_LOAD</strong> environment variable. This tells the <em>GnuCOBOL</em>  runtime link resolver what dynamic link modules are included in a run.</p>
 <pre class="literal-block">
@@ -676,7 +701,7 @@ export COB_LIBRARY_PATH=/path/to/library
 </blockquote>
 </div>
 <div class="section" id="example-test-programs">
-<h1><a class="toc-backref" href="#id77">7. Example/Test Programs</a></h1>
+<h1><a class="toc-backref" href="#id80">7. Example/Test Programs</a></h1>
 <blockquote>
 <p><strong>Test-1.cob</strong> Open a new SQLite3 Database; create a Table with an <em>Integer</em>,   <em>Real (IEEE Floating Point)</em> and <em>Text</em> column; load 4 entries into the Table;   display all entries from the Table; and close the Database.</p>
 <pre class="code cobolfree literal-block">
@@ -1110,7 +1135,7 @@ export COB_LIBRARY_PATH=/path/to/library
 </blockquote>
 </div>
 <div class="section" id="modification-history">
-<h1><a class="toc-backref" href="#id78">8. Modification History</a></h1>
+<h1><a class="toc-backref" href="#id81">8. Modification History</a></h1>
 <blockquote>
 <p>Version A.00.00  September 2017 Robert W.Mills (<a class="reference external" href="mailto:CobolMac&#64;btinternet.com">CobolMac&#64;btinternet.com</a>)</p>
 <ul class="simple">
@@ -1141,14 +1166,34 @@ A new status code, -14, and error message was added.</li>
 </blockquote>
 </div>
 <div class="section" id="planned-enhancements">
-<h1><a class="toc-backref" href="#id79">9. Planned Enhancements</a></h1>
+<h1><a class="toc-backref" href="#id82">9. Planned Enhancements</a></h1>
 <blockquote>
 <ul>
-<li><p class="first">Add optional parameter to DBERRMSG to return error message for any Status Code.</p>
+<li><p class="first">DBERRMSG: Add optional parameter to return error message for any Status Code.</p>
 <p>Scheduled for A.01.00</p>
 </li>
 <li><p class="first">Implement 'binding values to prepared statements' (aka Parameter Substitution).</p>
 <p>Scheduled for A.01.00</p>
+</li>
+<li><p class="first">DBINFO: Add Mode 200 (Check if specified table exists).</p>
+</li>
+<li><p class="first">Add an <em>Object</em> array for holding list of SQL Objects.</p>
+</li>
+<li><p class="first">DBCOMPILE: Add a copy of SQL Object to the <em>Object</em> array.</p>
+</li>
+<li><p class="first">DBRELEASE: Remove SQL Object entry from the <em>Object</em> array. Return count of SQL Objects released instead of Status Code.</p>
+</li>
+<li><p class="first">DBCLOSE: Check the <em>Object</em> array and release all remaining SQL Objects. Count of released SQL Objects to be returned instead of Status Code.</p>
+</li>
+<li><p class="first">DBRESET: Return count of SQL Objects re-initialised instead of Status Code.</p>
+</li>
+<li><p class="first">DBSQL: Return number of rows affected instead of Status Code.</p>
+</li>
+<li><p class="first">DBGET: Return length of row-buffer used instead of Status Code.</p>
+</li>
+<li><p class="first">DBEXECUTE: Return ? instead of Status Code.</p>
+</li>
+<li><p class="first">Update example/test programs as above changes are implemented.</p>
 </li>
 </ul>
 </blockquote>

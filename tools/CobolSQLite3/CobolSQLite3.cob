@@ -34,6 +34,9 @@ REPLACE =="V.UU.FF"== BY =="A.00.00"==.
 *><* 1. License
 *><* ----------
 *><*
+*><* 1.1. CobolSQLite3 Library
+*><* ~~~~~~~~~~~~~~~~~~~~~~~~~
+*><*
 *><*   This program is free software: you can redistribute it and/or modify it
 *><+    under the terms of the GNU General Public License as published by the Free
 *><+    Software Foundation, either version 3 of the License, or (at your option)
@@ -44,8 +47,20 @@ REPLACE =="V.UU.FF"== BY =="A.00.00"==.
 *><+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 *><+    more details.
 *><*
-*><*   You should have received a copy of the GNU General Public License along with
-*><+    this program. If not, see <http://www.gnu.org/licenses/#GPL>.
+*><*   You should have received a copy of the GNU General Public License, in the
+*><+    file COPYING, along with this program. If not, see
+*><+    <http://www.gnu.org/licenses/gpl.txt>.
+*><*
+*><* 1.2. CobolSQLite3 User Guide
+*><* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*><*
+*><*   Permission is granted to copy, distribute and/or modify this document
+*><+    under the terms of the GNU Free Documentation License, Version 1.3
+*><+    or any later version published by the Free Software Foundation;
+*><+    with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+*><*
+*><*   A copy of this license, in the file COPYING, should be included with this
+*><+    software. If not, see <http://www.gnu.org/licenses/fdl.txt>.
 *><*
 *><* --------------
 *><* 2. Description
@@ -67,6 +82,23 @@ REPLACE =="V.UU.FF"== BY =="A.00.00"==.
 *><*   - Retrieve all columns from a SELECTed row.
 *><*   - Request information about the Database (currently a limited function).
 *><*   - Translate a Status Code into human-readable text.
+*><*
+*><* 2.1. Quote from SQLite author
+*><* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*><*
+*><*   D Richard Hipp, architect and primary author of *SQLite* as well as the
+*><+    Fossil SCM, said:
+*><*
+*><*   "*SQLite* is a C library that implements an embeddable SQL database engine.
+*><+    Programs that link with the *SQLite library* can have SQL database access
+*><+    without running a separate RDBMS process. The distribution comes with a
+*><+    standalone command-line access program (*SQLite*) that can be used to
+*><+    administer a *SQLite database* and which serves as an example of how to use
+*><+    the *SQLite library*.
+*><*
+*><*   *SQLite* is not a client library used to connect to a big database server.
+*><+    *SQLite* is the server. The *SQLite library* reads and writes directly to and
+*><+    from the database files on disk."
 *><*
 
 *> *****************************************************************************
@@ -1036,7 +1068,8 @@ identification division.
 *><* Notes
 *><* #####
 *><*
-*><*   This function combines the DBCOMPILE, DBEXECUTE and DBRELEASE functionality.
+*><*   This function combines the *DBCOMPILE*, *DBEXECUTE* and *DBRELEASE*
+*><+    functionality.
 *><*
 
 environment division.
@@ -1261,6 +1294,11 @@ procedure division using sql-object, delims, row-buffer
 
     perform get-column-count
 
+    if sqlite3-column-count = ZERO then *> no data returned
+      move -15 to CobolSQLite3-Database-Status, db-status
+      goback
+    end-if
+
     move SPACES to row-buffer
     move 1 to row-buffer-idx
 
@@ -1278,11 +1316,6 @@ procedure division using sql-object, delims, row-buffer
     call static "sqlite3_column_count" using by value sql-object-ptr
                                    returning sqlite3-column-count
     end-call
-
-    if sqlite3-column-count = ZERO then *> no data returned
-      move -15 to CobolSQLite3-Database-Status, db-status
-      goback
-    end-if
     .
 
   get-column-data.
@@ -1702,7 +1735,7 @@ end function DBERRMSG.
 *><+     the sanity checks created by the test procedures included within the
 *><+     Cobol85 suite as well as the *make check* procedure.
 *><*
-*><*   **SQLite 3:** Version 3.11.0 (or greater).
+*><*   **SQLite3:** Version 3.11.0 (or greater).
 *><*
 *><*     As a minimum you need to install the Shared Library (*Libsqlite3-0*) and
 *><+     Development Files (*Libsqlite3-dev*). Available from most Linux Distros.
