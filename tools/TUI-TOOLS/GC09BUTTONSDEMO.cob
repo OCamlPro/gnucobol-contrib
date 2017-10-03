@@ -119,7 +119,7 @@ Move ' 6008036     Help    ' & x'00' to Bu-Ele(02)
 Move '15010036    Ignore   ' & x'00' to Bu-Ele(03)
 Move ' 5012036    Cancel   ' & x'00' to Bu-Ele(04)
 Move ' 7014036     Exit    ' & x'00' to Bu-Ele(05)
-Move ' 7016036      ?      ' & x'00' to Bu-Ele(06)
+Move ' 7016036      1      ' & x'00' to Bu-Ele(06)
 call GC09BUTTONS using BUTTONS-AREA
 
 move space to wString
@@ -153,6 +153,50 @@ move "==" to Bu-Arrow-Chars
 Move ' 5009061    Pause    ' & x'00' to Bu-Ele(01)
 Move '14011061   Ignore    ' & x'00' to Bu-Ele(02)
 Move ' 5013061    Enter    ' & x'00' to Bu-Ele(03)
+call GC09BUTTONS using BUTTONS-AREA
+
+move space to wString
+STRING " Bu-Selected ......: " Bu-Selected into wSTRING.
+DISPLAY wSTRING AT 002004 with foreground-color white background-color blue.
+STRING " Bu-Key code ......: " Bu-Key      into wSTRING.
+DISPLAY wSTRING AT 003004 with foreground-color white background-color blue.
+call static "getch" returning Key-Pressed end-call.
+
+
+*> ******************************************************************************+
+*> ERASE THE SCREEN
+*> *******************************************************************************
+display wDummy at 0101 with blank screen end-display
+
+*> *********************************************************************************
+*> DISPLAY BUTTONS NUMBER 3 bis
+*> *********************************************************************************
+    display ' 3 horizontal buttons other colors and ''(   )'' as ''button marker'' '
+          at 2403 with foreground-color white background-color blue
+*> DISPLAY A BOX
+set  Box-bco  Box-fco to white
+move '013017017072' to Box-rc
+move 'S'      to Box-style
+move 'N'      to Box-3D Box-shadow
+move "E" to Box-3D
+Move 'Y' to Box-tit
+Move ' Buttons ' & x'00' to Box-titDes
+call GC01BOX using BOX-AREA
+*> DISPLAY BUTTONS
+initialize Buttons-area ALL TO VALUE
+move low-value to Bu-tab
+move green  to Bu-bcoN
+move white  to Bu-fcoN
+move blue to Bu-bcoS
+move yellow  to Bu-fcoS
+move '2' to Bu-Arrow
+move "(" to Bu-Arrow-Char1
+move ")" to Bu-Arrow-Char2
+move 'N' to Bu-Click
+
+Move '13015020  1 Continue   ' & x'00' to Bu-Ele(01)
+Move ' 3015037  2  Cancel    ' & x'00' to Bu-Ele(02)
+Move ' 3015054  3 Inspect    ' & x'00' to Bu-Ele(03)
 call GC09BUTTONS using BUTTONS-AREA
 
 move space to wString
@@ -320,7 +364,7 @@ Move ' 6010036     Help    ' & x'00' to Bu-Ele(02)
 Move '15012036    Ignore   ' & x'00' to Bu-Ele(03)
 Move ' 5014036    Cancel   ' & x'00' to Bu-Ele(04)
 Move ' 7016036     Exit    ' & x'00' to Bu-Ele(05)
-Move ' 7018036      ?      ' & x'00' to Bu-Ele(06)
+Move ' 7018036      1      ' & x'00' to Bu-Ele(06)
 call GC09BUTTONS using BUTTONS-AREA
 
 call static 'scr_restore' using by reference szScreenName returning iScrOk end-call
