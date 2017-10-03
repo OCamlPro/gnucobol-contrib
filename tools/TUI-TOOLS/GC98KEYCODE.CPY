@@ -172,7 +172,8 @@
       05  Key-7            pic 9(3) value 055.
       05  Key-8            pic 9(3) value 056.
       05  Key-9            pic 9(3) value 057.
-      05  Key-Numpad0      pic 9(3) value 082.
+    03  Key-num-Table redefines Key-num.
+      05 Key-num-Ele        pic 9(3) occurs 10 indexed by Key-num-Idx.
 
    03 Key-others.
       05  Key-space        pic 9(3) value 032.  *>  space
