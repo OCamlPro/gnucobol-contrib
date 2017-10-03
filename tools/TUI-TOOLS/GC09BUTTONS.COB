@@ -9,19 +9,17 @@ PROGRAM-ID. GC09BUTTONS is initial.
 *> Parameters: look at GC09BUTTONS.cpy (use with copy Version: 1.1)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.3 2017.07.10
+*> Version:    1.4 2017.10.03
 *> Changelog:  1.0 first release.
 *>             1.1 changed from ACCEPT a DUMMY field to "call getch"
 *>             1.2 added the "click effect" and beep on request
 *>             1.3 some estethic changes
+*>             1.4 added hot key management.
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
-CONFIGURATION SECTION.
-SPECIAL-NAMES.
-   *> CRT STATUS IS wCRT-STATUS.
+
 DATA DIVISION.
 Working-Storage Section.
-
 01  .
     03  wLoop        pic  9(04) value  0.
     03  wCol         pic s9(02) value +0.
@@ -30,16 +28,19 @@ Working-Storage Section.
     03  w            pic s9(02) value +0.
     03  i            pic s9(02) value +1.
     03  j            pic s9(02) value +1.
+    03  k            pic 9(02) value 1.
+    03  Item-Len     pic 9(02) value 0.
+    03  Item-MaxLen  pic 9(02) value 0.
     03  salva-j      pic s9(02) value +1.
-    03  Btn-Number     pic s9(02) value +0.
+    03  Btn-Number     pic s9(02) value +0. *> count how many button items
     03  bco          PIC 9(02).
     03  fco          PIC 9(02).
     03  fcoH         PIC X(01).
     03  wDummy       PIC X(01) VALUE SPACE.
-    *> 03  wCRT-STATUS       PIC 9(04) VALUE 9999.
     03  wlen         pic 9(02) value 0.
     03  len-voce     pic 9(02) value 0.
-01 wInt        BINARY-SHORT. *> SIGNED.
+
+01 wChar        PIC X(01).
 
 01 black   constant as 0.
 01 blue    constant as 1.
@@ -52,19 +53,9 @@ Working-Storage Section.
 
 01  wVisibilityNew   BINARY-SHORT .
 01  wVisibilityOld   BINARY-SHORT .
-
-*> Values that may be returned in CRT STATUS (or COB-CRT-STATUS)
-*> 78  K-ENTER       VALUE 0000.
-*> 78  K-UP          VALUE 2003.
-*> 78  K-DOWN        VALUE 2004.
-*> 78  K-LEFT        VALUE 2009.
-*> 78  K-RIGHT       VALUE 2010.
-*> 78  K-ESC         VALUE 2005.
-*> 78  K-TAB         VALUE 2007.
-*> 78  K-BACKTAB     VALUE 2008.
-*> 78  K-PAGEUP      VALUE 2001.
-*> 78  K-PAGEDOWN    VALUE 2002.
-*> 78  K-ESCAPE      VALUE 2005.
+01 wChars.
+   03  wChars1 pic x(26) value 'abcdefghijklmnopqrstuvwxyz'.
+   03  wChars-Ele redefines wChars1 pic x(01) occurs 26 indexed by wChars-Idx.
 
 COPY 'GC98KEYCODE.CPY'.
 
@@ -81,7 +72,6 @@ PROCEDURE DIVISION using Buttons-Area.
 *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
 set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
 set environment 'COB_SCREEN_ESC'        TO 'Y'.
-
 
    move 1 to i, j, w, Btn-Number.
 
@@ -105,7 +95,7 @@ Main.
       move Bu-fcoN to fco
    end-if
 
-   perform Display-Button thru Display-ButtonEx
+   perform DisplayButton thru DisplayButtonEx
    add  1 to i
 
    *> go to display next Button
@@ -140,7 +130,7 @@ call static "getch" returning Key-Pressed end-call
       Move Bu-bcoN to bco
       Move Bu-fcoN to fco
       Move Bu-fcoNH to fcoH
-      perform Display-Button thru Display-ButtonEx
+      perform DisplayButton thru DisplayButtonEx
       if   Bu-Selected = Btn-Number
            move 1 to Bu-Selected i
       else
@@ -151,7 +141,7 @@ call static "getch" returning Key-Pressed end-call
       Move Bu-bcoS to bco
       Move Bu-fcoS to fco
       Move Bu-fcoSH to fcoH
-      perform Display-Button thru Display-ButtonEx
+      perform DisplayButton thru DisplayButtonEx
 
    when Key-Pressed = Key-CursLeft
      or Key-Pressed = Key-CursUp
@@ -165,7 +155,7 @@ call static "getch" returning Key-Pressed end-call
       Move Bu-fcoN to fco
       Move Bu-fcoNH to fcoH
 
-      perform Display-Button thru Display-ButtonEx
+      perform DisplayButton thru DisplayButtonEx
       if   Bu-Selected = 1
            move Btn-Number to Bu-Selected i
       else
@@ -176,7 +166,41 @@ call static "getch" returning Key-Pressed end-call
       Move Bu-bcoS to bco
       Move Bu-fcoS to fco
       Move Bu-fcoSH to fcoH
-      perform Display-Button thru Display-ButtonEx
+      perform DisplayButton thru DisplayButtonEx
+
+    *> *****************************************************************************************
+    *> IF USER HAS TYPED A LETTER - SEARCH IF IT IS A HOT KEY
+    *> *****************************************************************************************
+     when Key-Pressed >= Key-lc-a and <= Key-lc-z
+        *> search the index of Key Pressed
+        set wChars-Idx Key-lc-Idx to 0
+        search Key-lc-Ele varying  Key-lc-Idx
+               at end set Key-lc-Idx to 0
+               when   Key-lc-Ele (Key-lc-Idx) = Key-Pressed  continue
+        end-search
+
+        set wChars-Idx to Key-lc-Idx
+        perform varying k from 1 by 1 until k > Btn-Number
+                move Bu-Item(k) (Bu-Hot(k):1) to wChar
+                inspect wChar converting 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'abcdefghijklmnopqrstuvwxyz'
+                if wChar = wChars-Ele(wChars-Idx)
+                    *> the letter typed by the user is a valid hotkey !
+                    *> change display of active item to display as normal item
+                    move Bu-Selected to i
+                    move space       to Bu-Act(Bu-Selected)
+                    Move Bu-bcoN  to bco
+                    Move Bu-fcoN  to fco
+                    Move Bu-fcoNH to fcoH
+                    perform DisplayButton thru DisplayButtonEx
+                   *> change the item with the hotkey to display from normal item to display as active item
+                    move k to Bu-Selected i
+                    move '1'   to Bu-Act(Bu-Selected)
+                    Move Bu-bcoS  to bco
+                    Move Bu-fcoS  to fco
+                    Move Bu-fcoSH to fcoH
+                    perform DisplayButton thru DisplayButtonEx
+                end-if
+        end-perform
 
    END-EVALUATE
 
@@ -208,11 +232,10 @@ END-PROGRAM.
 *> ***********************************************************************************
 *> DISPLAY A BUTTON
 *> ***********************************************************************************
-Display-Button.
-
-   If Bu-Arrow = '1' or '2'
+DisplayButton.
+   if Bu-Arrow = '1' or '2'
      perform varying j from 1 by 1 until Bu-Item(i) (j:1) = x'00' end-perform
-   End-if
+   end-if
 
    Evaluate True
      when Bu-Arrow = '1'
@@ -260,12 +283,13 @@ loop1.
    go to loop1.
 loop1-ex.
    if bu-Shadow = 'Y'
-    perform Shadow-Button thru Shadow-Button-ex end-if
-   .
-Display-ButtonEx. exit.
+      perform ShadowButton thru ShadowButtonEx
+   end-if
+   continue.
+DisplayButtonEx. exit.
 
 
-Shadow-Button.
+ShadowButton.
 *> the shadow is made of Ascii chars x'DF' & x'DC'
 *> with same background color of existing background
    move j to salva-j  *> j = last button column
@@ -280,7 +304,7 @@ loop2.
       *> half lower  char (last position at right of button)
       display X'DC' at line wR col wC
           with background-color Bu-bcoShadow foreground-color black end-display
-      go Shadow-Button-ex
+      go ShadowButtonEx
    end-if
 
    compute wR = Bu-r(i) + 1
@@ -289,7 +313,7 @@ loop2.
    display X'DF' at line wR col wC
         with background-color Bu-bcoShadow foreground-color black end-display
    go to loop2.
-Shadow-Button-EX. exit.
+ShadowButtonEx. exit.
 
 *> *******************************************************************************
 *> CLICK EFFECT
@@ -302,7 +326,7 @@ Click.
     move black to bco
     move white to fco
     Move "N"   to Bu-shadow
-    perform Display-Button thru Display-ButtonEx
+    perform DisplayButton thru DisplayButtonEx
 
    *> delete the char at left of the button
    compute wR = Bu-r(i)
