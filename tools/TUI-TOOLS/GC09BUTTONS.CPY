@@ -6,9 +6,10 @@
 *> Usage:      call GC09BUTTONS using Buttons-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.1 2017.02.28
+*> Version:    1.2 2017.10.0402.28
 *> Changelog:  1.0 first release.
 *>             1.1 added beep parameter
+*>             1.2 added hot key management
 *> ***********************************************************************************
 *> on screen You can manage max 24 buttons of 1 row .
 *> Each button has tobe inserted in a table with 25 elements
@@ -41,11 +42,10 @@
 *> Bu-c      first row & col are 01, 01, last are 25,80 (row 25 col 80)
 *>           buttons can be displayed in every position, also sparse.
 *>           buttons cannot be overlapped ! (the fuction does not havecontrols !)
-*>
 *> Bu-Item   charatcters string to be displayed on Button (max 80 chars).
 *>           It has to be in ASCIIZ format (must have x'00'(low-value) as last byte
-*> Bu-Hot    NOY YET IMPLEMENTED . number of char to be used as hot key (Alt-Key) .
-*>           ex. if item is "Exit" and this field is 2, the typing ALT-X is like select the item
+*> Bu-Hot    number of char to be used as hot key .
+*>           ex. if Bu-Item = "Exit" and Bu-Hot = 2, typing X or x activate the button
 *> Bu-Shadow Y= draw a shadow around buttons  Default = Y
 *> Bu-Arrow  If the selected button displayed in "selected" color,
 *>           has also "arrows" before and after the button description
@@ -66,7 +66,7 @@
      03 Bu-Tab  value low-value.
         04 Bu-Ele occurs 25.
            05 Bu-Act          pic x(01).
-           05 Bu-Hot          pic x(01).
+           05 Bu-Hot          pic 9(01).
            05 Bu-r            pic 9(03).
            05 Bu-c            pic 9(03).
            05 Bu-Item         pic x(81).
