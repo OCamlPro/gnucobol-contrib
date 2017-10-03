@@ -124,7 +124,7 @@ copy 'GC53CALENDAR.CPY'.
 *> ***********************************************************************************
 *>           P R O C E D U R E   D I V I S I O N
 *> ***********************************************************************************
-PROCEDURE DIVISION. *> using Calendar-Area
+PROCEDURE DIVISION using Calendar-Area.
 
      ACCEPT WINPDATE-RECORD FROM DATE YYYYMMDD
      MOVE WINPD-YEAR  TO INPD-YEAR
