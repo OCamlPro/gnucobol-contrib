@@ -1,8 +1,8 @@
-connect to testdb;
+connect to testdb user db2local using db2localPW;
 
 CREATE TABLE BOOK (
 	 ISBN               DECIMAL(13, 0) DEFAULT 0 NOT NULL
-	,AUTHOR             CHAR(40) DEFAULT '' NOT NULL
+	,AUTHORS            CHAR(40) DEFAULT '' NOT NULL
 	,TITLE              CHAR(60) DEFAULT '' NOT NULL
 	,PUB_DATE           DATE DEFAULT CURRENT DATE NOT NULL
 	,PAGE_NR            DECIMAL(4, 0) DEFAULT 0 NOT NULL
@@ -15,7 +15,7 @@ CREATE TABLE BOOK (
 	);
 
 CREATE INDEX BOOKX1 ON BOOK (
-	 AUTHOR
+	 AUTHORS
 	,TITLE
 	,ISBN
 	);

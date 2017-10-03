@@ -80,7 +80,7 @@
 
        01 WS-INP-BOOK.  
          02 WS-INP-ISBN                PIC 9(13). 
-         02 WS-INP-AUTHOR              PIC X(40).
+         02 WS-INP-AUTHORS             PIC X(40).
          02 WS-INP-TITLE               PIC X(60).
          02 WS-INP-PUB-DATE            PIC X(10).
          02 WS-INP-PAGE-NR             PIC 9(4).
@@ -89,7 +89,7 @@
          
        01 WS-OUT-BOOK.  
          02 WS-OUT-ISBN                PIC 9(13). 
-         02 WS-OUT-AUTHOR              PIC X(40).
+         02 WS-OUT-AUTHORS             PIC X(40).
          02 WS-OUT-TITLE               PIC X(60).
          02 WS-OUT-PUB-DATE            PIC X(10).
          02 WS-OUT-PAGE-NR             PIC 9(4).
@@ -217,9 +217,9 @@
              VALUE "eg.: 9780345391803"
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 5 COLUMN 1
-             VALUE "Author:"
+             VALUE "Authors:"
              FOREGROUND-COLOR COB-COLOR-GREEN.
-          05 FILLER PIC X(40) FROM WS-OUT-AUTHOR
+          05 FILLER PIC X(40) FROM WS-OUT-AUTHORS
              LINE 5 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 6 COLUMN 1
@@ -288,9 +288,9 @@
              LINE 4 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 5 COLUMN 1
-             VALUE "Author:"
+             VALUE "Authors:"
              FOREGROUND-COLOR COB-COLOR-GREEN.
-          05 FILLER PIC X(40) TO WS-INP-AUTHOR
+          05 FILLER PIC X(40) TO WS-INP-AUTHORS
              LINE 5 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 6 COLUMN 1
@@ -329,9 +329,9 @@
              LINE 4 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 5 COLUMN 1
-             VALUE "Author:"
+             VALUE "Authors:"
              FOREGROUND-COLOR COB-COLOR-GREEN.
-          05 FILLER PIC X(40) USING WS-INP-AUTHOR
+          05 FILLER PIC X(40) USING WS-INP-AUTHORS
              LINE 5 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 6 COLUMN 1
@@ -600,8 +600,8 @@
         
                    MOVE WS-OUT-ISBN           OF WS-OUT-BOOK
                      TO WS-INP-ISBN           OF WS-INP-BOOK                   
-                   MOVE WS-OUT-AUTHOR         OF WS-OUT-BOOK
-                     TO WS-INP-AUTHOR         OF WS-INP-BOOK
+                   MOVE WS-OUT-AUTHORS        OF WS-OUT-BOOK
+                     TO WS-INP-AUTHORS        OF WS-INP-BOOK
                    MOVE WS-OUT-TITLE          OF WS-OUT-BOOK
                      TO WS-INP-TITLE          OF WS-INP-BOOK
                    MOVE WS-OUT-PUB-DATE       OF WS-OUT-BOOK

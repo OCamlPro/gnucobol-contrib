@@ -39,6 +39,12 @@ This program was developed and tested using:
 - cygwin (64 bit)
 - IBM DB2 Express-C 10.5 for Win (64 bit)
 
+Retested using:
+- Windows 10 (64 bit) running on a HP laptop 
+- GnuCOBOL 2.2.0, built on Sep 07 2017
+- cygwin (64 bit)
+- IBM DB2 Express-C 11.1 for Win (64 bit)
+
 Installation and Configuration
 ==============================
 
@@ -92,4 +98,7 @@ Date       Name / Change description
 ========== ==================================================================
 2015.12.24 Laszlo Erdos: 
            - first version. 
+2017.10.03 Laszlo Erdos: 
+           - Reserved word "AUTHOR" renamed to "AUTHORS". 
+           - Table OCCURS TO error corrected.
 *****************************************************************************

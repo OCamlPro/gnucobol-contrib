@@ -86,7 +86,7 @@
 
        01 WS-INP-BOOK.  
          02 WS-INP-ISBN                PIC 9(13). 
-         02 WS-INP-AUTHOR              PIC X(40).
+         02 WS-INP-AUTHORS             PIC X(40).
          02 WS-INP-TITLE               PIC X(60).
          02 WS-INP-PUB-DATE            PIC X(10).
          02 WS-INP-PAGE-NR             PIC 9(4).
@@ -95,7 +95,7 @@
          
        01 WS-OUT-BOOK.  
          02 WS-OUT-ISBN                PIC 9(13). 
-         02 WS-OUT-AUTHOR              PIC X(40).
+         02 WS-OUT-AUTHORS             PIC X(40).
          02 WS-OUT-TITLE               PIC X(60).
          02 WS-OUT-PUB-DATE            PIC X(10).
          02 WS-OUT-PAGE-NR             PIC 9(4).
@@ -110,9 +110,9 @@
       *> line data for the list screen   
        01 WS-OUT-BOOK-TABLE.
          02 WS-OUT-BOOK-TAB-LINE-NR    PIC 9(2).
-         02 WS-OUT-BOOK-TAB OCCURS 0 TO C-MAX-LINE-NR TIMES. 
+         02 WS-OUT-BOOK-TAB OCCURS C-MAX-LINE-NR TIMES. 
            03 WS-OUT-BOOK-TAB-LINE.
-             04 WS-OUT-BOOK-TAB-AUTHOR PIC X(40).
+             04 WS-OUT-BOOK-TAB-AUTHORS PIC X(40).
              04 WS-OUT-BOOK-TAB-TITLE  PIC X(60).
              04 WS-OUT-BOOK-TAB-ISBN   PIC 9(13).
 
@@ -249,9 +249,9 @@
              VALUE "eg.: 9780345391803"
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 5 COLUMN 1
-             VALUE "Author:"
+             VALUE "Authors:"
              FOREGROUND-COLOR COB-COLOR-GREEN.
-          05 FILLER PIC X(40) FROM WS-OUT-AUTHOR
+          05 FILLER PIC X(40) FROM WS-OUT-AUTHORS
              LINE 5 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 6 COLUMN 1
@@ -320,9 +320,9 @@
              LINE 4 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 5 COLUMN 1
-             VALUE "Author:"
+             VALUE "Authors:"
              FOREGROUND-COLOR COB-COLOR-GREEN.
-          05 FILLER PIC X(40) TO WS-INP-AUTHOR
+          05 FILLER PIC X(40) TO WS-INP-AUTHORS
              LINE 5 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 6 COLUMN 1
@@ -361,9 +361,9 @@
              LINE 4 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 5 COLUMN 1
-             VALUE "Author:"
+             VALUE "Authors:"
              FOREGROUND-COLOR COB-COLOR-GREEN.
-          05 FILLER PIC X(40) USING WS-INP-AUTHOR
+          05 FILLER PIC X(40) USING WS-INP-AUTHORS
              LINE 5 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 6 COLUMN 1
@@ -408,9 +408,9 @@
              LINE 4 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 5 COLUMN 1
-             VALUE "Author:"
+             VALUE "Authors:"
              FOREGROUND-COLOR COB-COLOR-GREEN.
-          05 FILLER PIC X(40) USING WS-INP-AUTHOR
+          05 FILLER PIC X(40) USING WS-INP-AUTHORS
              LINE 5 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 6 COLUMN 1
@@ -455,9 +455,9 @@
              LINE 4 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 5 COLUMN 1
-             VALUE "Author:"
+             VALUE "Authors:"
              FOREGROUND-COLOR COB-COLOR-GREEN.
-          05 FILLER PIC X(40) FROM WS-OUT-AUTHOR
+          05 FILLER PIC X(40) FROM WS-OUT-AUTHORS
              LINE 5 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 6 COLUMN 1
@@ -521,7 +521,7 @@
        01 LIST-BOOK-SCREEN.
       *>  column headers 
           05 FILLER LINE 4 COLUMN 1
-             VALUE "Author"
+             VALUE "Authors"
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 4 COLUMN 21
              VALUE "Title"
@@ -540,7 +540,7 @@
              LINE 18 COLUMN 79
              FOREGROUND-COLOR COB-COLOR-GREEN.
        01 LIST-BOOK-LINE.           
-          05 SC-AUTHOR                 PIC X(18)
+          05 SC-AUTHORS                PIC X(18)
              LINE SC-LINE-NR COLUMN 1
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 SC-TITLE                  PIC X(44)
@@ -792,8 +792,8 @@
         
                    MOVE WS-OUT-ISBN           OF WS-OUT-BOOK
                      TO WS-INP-ISBN           OF WS-INP-BOOK                   
-                   MOVE WS-OUT-AUTHOR         OF WS-OUT-BOOK
-                     TO WS-INP-AUTHOR         OF WS-INP-BOOK
+                   MOVE WS-OUT-AUTHORS        OF WS-OUT-BOOK
+                     TO WS-INP-AUTHORS        OF WS-INP-BOOK
                    MOVE WS-OUT-TITLE          OF WS-OUT-BOOK
                      TO WS-INP-TITLE          OF WS-INP-BOOK
                    MOVE WS-OUT-PUB-DATE       OF WS-OUT-BOOK
@@ -860,8 +860,8 @@
         
                    MOVE WS-OUT-ISBN           OF WS-OUT-BOOK
                      TO WS-INP-ISBN           OF WS-INP-BOOK                   
-                   MOVE WS-OUT-AUTHOR         OF WS-OUT-BOOK
-                     TO WS-INP-AUTHOR         OF WS-INP-BOOK
+                   MOVE WS-OUT-AUTHORS        OF WS-OUT-BOOK
+                     TO WS-INP-AUTHORS        OF WS-INP-BOOK
                    MOVE WS-OUT-TITLE          OF WS-OUT-BOOK
                      TO WS-INP-TITLE          OF WS-INP-BOOK
                    MOVE WS-OUT-PUB-DATE       OF WS-OUT-BOOK
@@ -995,8 +995,8 @@
                UNTIL WS-IND-1 > C-MAX-LINE-NR
                OR    WS-IND-1 > WS-OUT-BOOK-TAB-LINE-NR
                 COMPUTE SC-LINE-NR = WS-IND-1 + 5 END-COMPUTE
-                MOVE WS-OUT-BOOK-TAB-AUTHOR(WS-IND-1)
-                  TO SC-AUTHOR
+                MOVE WS-OUT-BOOK-TAB-AUTHORS(WS-IND-1)
+                  TO SC-AUTHORS
                 MOVE WS-OUT-BOOK-TAB-TITLE(WS-IND-1)
                   TO SC-TITLE
                 MOVE WS-OUT-BOOK-TAB-ISBN(WS-IND-1)
@@ -1049,8 +1049,8 @@
                   UNTIL WS-IND-1 < 1
                    IF WS-OUT-BOOK-TAB-ISBN(WS-IND-1) NOT = ZEROES
                    THEN
-                      MOVE WS-OUT-BOOK-TAB-AUTHOR(WS-IND-1)
-                        TO LN-INP-AUTHOR   OF LN-INP-BOOK
+                      MOVE WS-OUT-BOOK-TAB-AUTHORS(WS-IND-1)
+                        TO LN-INP-AUTHORS  OF LN-INP-BOOK
                       MOVE WS-OUT-BOOK-TAB-TITLE(WS-IND-1)
                         TO LN-INP-TITLE    OF LN-INP-BOOK
                       MOVE WS-OUT-BOOK-TAB-ISBN(WS-IND-1)
@@ -1067,8 +1067,8 @@
                   UNTIL WS-IND-1 > C-MAX-LINE-NR
                    IF WS-OUT-BOOK-TAB-ISBN(WS-IND-1) NOT = ZEROES
                    THEN
-                      MOVE WS-OUT-BOOK-TAB-AUTHOR(WS-IND-1)
-                        TO LN-INP-AUTHOR   OF LN-INP-BOOK
+                      MOVE WS-OUT-BOOK-TAB-AUTHORS(WS-IND-1)
+                        TO LN-INP-AUTHORS  OF LN-INP-BOOK
                       MOVE WS-OUT-BOOK-TAB-TITLE(WS-IND-1)
                         TO LN-INP-TITLE    OF LN-INP-BOOK
                       MOVE WS-OUT-BOOK-TAB-ISBN(WS-IND-1)

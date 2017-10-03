@@ -76,7 +76,7 @@
       *> host variables for the table BOOK
        01 HV-BOOK.
          05 ISBN                       PIC S9(13)V COMP-3.
-         05 AUTHOR                     PIC X(40).
+         05 AUTHORS                    PIC X(40).
          05 TITLE                      PIC X(60).
          05 PUB-DATE                   PIC X(10).
          05 PAGE-NR                    PIC S9(4)V COMP-3.
@@ -87,7 +87,7 @@
          05 LUPD-COUNTER               PIC S9(6)V COMP-3.
          05 INDICATOR-TAB-BOOK.
            20 ISBN-I                   PIC S9(4) COMP-5.
-           20 AUTHOR-I                 PIC S9(4) COMP-5.
+           20 AUTHORS-I                PIC S9(4) COMP-5.
            20 TITLE-I                  PIC S9(4) COMP-5.
            20 PUB-DATE-I               PIC S9(4) COMP-5.
            20 PAGE-NR-I                PIC S9(4) COMP-5.
@@ -118,7 +118,7 @@
        EXEC SQL
             DECLARE   CURSOR_BOOK_PF CURSOR WITH HOLD FOR
             SELECT    ISBN            
-                    , AUTHOR          
+                    , AUTHORS          
                     , TITLE           
                     , PUB_DATE        
                     , PAGE_NR         
@@ -135,7 +135,7 @@
        EXEC SQL
             DECLARE   CURSOR_BOOK_PN CURSOR WITH HOLD FOR
             SELECT    ISBN            
-                    , AUTHOR          
+                    , AUTHORS          
                     , TITLE           
                     , PUB_DATE        
                     , PAGE_NR         
@@ -157,7 +157,7 @@
        EXEC SQL
             DECLARE   CURSOR_BOOK_PP CURSOR WITH HOLD FOR
             SELECT    ISBN            
-                    , AUTHOR          
+                    , AUTHORS          
                     , TITLE           
                     , PUB_DATE        
                     , PAGE_NR         
@@ -179,7 +179,7 @@
        EXEC SQL
             DECLARE   CURSOR_BOOK_PL CURSOR WITH HOLD FOR
             SELECT    ISBN            
-                    , AUTHOR          
+                    , AUTHORS          
                     , TITLE           
                     , PUB_DATE        
                     , PAGE_NR         
@@ -319,8 +319,8 @@
           INITIALIZE HV-BOOK
           MOVE LN-INP-ISBN             OF LN-MOD 
             TO ISBN                    OF HV-BOOK
-          MOVE LN-INP-AUTHOR           OF LN-MOD   
-            TO AUTHOR                  OF HV-BOOK
+          MOVE LN-INP-AUTHORS          OF LN-MOD   
+            TO AUTHORS                 OF HV-BOOK
           MOVE LN-INP-TITLE            OF LN-MOD
             TO TITLE                   OF HV-BOOK
           MOVE LN-INP-PUB-DATE         OF LN-MOD
@@ -410,8 +410,8 @@
           INITIALIZE HV-BOOK
           MOVE LN-INP-ISBN             OF LN-MOD 
             TO ISBN                    OF HV-BOOK
-          MOVE LN-INP-AUTHOR           OF LN-MOD   
-            TO AUTHOR                  OF HV-BOOK
+          MOVE LN-INP-AUTHORS          OF LN-MOD   
+            TO AUTHORS                 OF HV-BOOK
           MOVE LN-INP-TITLE            OF LN-MOD
             TO TITLE                   OF HV-BOOK
           MOVE LN-INP-PUB-DATE         OF LN-MOD
@@ -739,8 +739,8 @@
       *>  copy selected data in linkage
           MOVE ISBN                    OF HV-BOOK
             TO LN-OUT-ISBN             OF LN-MOD
-          MOVE AUTHOR                  OF HV-BOOK
-            TO LN-OUT-AUTHOR           OF LN-MOD
+          MOVE AUTHORS                 OF HV-BOOK
+            TO LN-OUT-AUTHORS          OF LN-MOD
           MOVE TITLE                   OF HV-BOOK
             TO LN-OUT-TITLE            OF LN-MOD
           MOVE PUB-DATE                OF HV-BOOK
@@ -826,7 +826,7 @@
 
           EXEC SQL
                SELECT ISBN                
-                    , AUTHOR              
+                    , AUTHORS              
                     , TITLE               
                     , PUB_DATE            
                     , PAGE_NR                
@@ -836,7 +836,7 @@
                     , LUPD_TIMESTAMP      
                     , LUPD_COUNTER        
                INTO   :HV-BOOK.ISBN   
-                    , :HV-BOOK.AUTHOR  
+                    , :HV-BOOK.AUTHORS  
                     , :HV-BOOK.TITLE               
                     , :HV-BOOK.PUB-DATE            
                     , :HV-BOOK.PAGE-NR                
@@ -862,7 +862,7 @@
           EXEC SQL
                INSERT INTO BOOK
                (  ISBN         
-                , AUTHOR              
+                , AUTHORS              
                 , TITLE               
                 , PUB_DATE            
                 , PAGE_NR                
@@ -874,7 +874,7 @@
                )
                VALUES
                (  :HV-BOOK.ISBN
-                , :HV-BOOK.AUTHOR  
+                , :HV-BOOK.AUTHORS  
                 , :HV-BOOK.TITLE               
                 , :HV-BOOK.PUB-DATE            
                 , :HV-BOOK.PAGE-NR                
@@ -898,8 +898,8 @@
 
           EXEC SQL
                UPDATE BOOK
-               SET       AUTHOR
-                      = :HV-BOOK.AUTHOR
+               SET       AUTHORS
+                      = :HV-BOOK.AUTHORS
                       ,  TITLE
                       = :HV-BOOK.TITLE
                       ,  PUB_DATE
@@ -1004,7 +1004,7 @@
           EXEC SQL
                FETCH CURSOR_BOOK_PF
                INTO    :HV-BOOK.ISBN   
-                     , :HV-BOOK.AUTHOR  
+                     , :HV-BOOK.AUTHORS  
                      , :HV-BOOK.TITLE            
                      , :HV-BOOK.PUB-DATE         
                      , :HV-BOOK.PAGE-NR          
@@ -1028,7 +1028,7 @@
           EXEC SQL
                FETCH CURSOR_BOOK_PN
                INTO    :HV-BOOK.ISBN   
-                     , :HV-BOOK.AUTHOR  
+                     , :HV-BOOK.AUTHORS  
                      , :HV-BOOK.TITLE            
                      , :HV-BOOK.PUB-DATE         
                      , :HV-BOOK.PAGE-NR          
@@ -1052,7 +1052,7 @@
           EXEC SQL
                FETCH CURSOR_BOOK_PP
                INTO    :HV-BOOK.ISBN   
-                     , :HV-BOOK.AUTHOR  
+                     , :HV-BOOK.AUTHORS  
                      , :HV-BOOK.TITLE            
                      , :HV-BOOK.PUB-DATE         
                      , :HV-BOOK.PAGE-NR          
@@ -1076,7 +1076,7 @@
           EXEC SQL
                FETCH CURSOR_BOOK_PL
                INTO    :HV-BOOK.ISBN   
-                     , :HV-BOOK.AUTHOR  
+                     , :HV-BOOK.AUTHORS  
                      , :HV-BOOK.TITLE            
                      , :HV-BOOK.PUB-DATE         
                      , :HV-BOOK.PAGE-NR          

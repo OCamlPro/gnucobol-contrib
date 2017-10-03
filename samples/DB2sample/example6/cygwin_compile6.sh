@@ -16,6 +16,6 @@ db2cmd -i -w -c db2 -tvf db2_precompile6.sql
 read -n1 -r -p "Press any key to continue..." key
 
 # compile
-cobc -m -std=mf DB2SQLMSG.cob -I/cygdrive/c/IBM/SQLLIB/include/cobol_mf -L/cygdrive/c/IBM/SQLLIB/lib -ldb2api
-cobc -m -std=mf DB2MOD6.cbl -I/cygdrive/c/IBM/SQLLIB/include/cobol_mf -L/cygdrive/c/IBM/SQLLIB/lib -ldb2api
+cobc -m -std=mf DB2SQLMSG.cob -I/cygdrive/c/Programme/IBM/SQLLIB/include/cobol_mf -L/cygdrive/c/Programme/IBM/SQLLIB/lib -ldb2api
+cobc -m -std=mf DB2MOD6.cbl -I/cygdrive/c/Programme/IBM/SQLLIB/include/cobol_mf -L/cygdrive/c/Programme/IBM/SQLLIB/lib -ldb2api
 cobc -x DB2TEST6.cob

@@ -58,7 +58,7 @@
              04 LN-MSG-4                  PIC X(80).
            03 LN-OUT-BOOK.
              04 LN-OUT-ISBN               PIC 9(13).
-             04 LN-OUT-AUTHOR             PIC X(40).
+             04 LN-OUT-AUTHORS            PIC X(40).
              04 LN-OUT-TITLE              PIC X(60).
              04 LN-OUT-PUB-DATE           PIC X(10).
              04 LN-OUT-PAGE-NR            PIC 9(4).

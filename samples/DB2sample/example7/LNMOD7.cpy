@@ -59,7 +59,7 @@
              04 LN-PSWD                   PIC X(20).
            03 LN-INP-BOOK.
              04 LN-INP-ISBN               PIC 9(13).
-             04 LN-INP-AUTHOR             PIC X(40).
+             04 LN-INP-AUTHORS            PIC X(40).
              04 LN-INP-TITLE              PIC X(60).
              04 LN-INP-PUB-DATE           PIC X(10).
              04 LN-INP-PAGE-NR            PIC 9(4).
@@ -75,7 +75,7 @@
              04 LN-MSG-4                  PIC X(80).
            03 LN-OUT-BOOK.
              04 LN-OUT-ISBN               PIC 9(13).
-             04 LN-OUT-AUTHOR             PIC X(40).
+             04 LN-OUT-AUTHORS            PIC X(40).
              04 LN-OUT-TITLE              PIC X(60).
              04 LN-OUT-PUB-DATE           PIC X(10).
              04 LN-OUT-PAGE-NR            PIC 9(4).
@@ -87,8 +87,8 @@
            03 LN-OUT-BOOK-TABLE.
              04 LN-OUT-BOOK-TAB-LINE-NR   PIC 9(2).
       *>     see constant C-MAX-LINE-NR = 10 in the programs       
-             04 LN-OUT-BOOK-TAB OCCURS 0 TO 10 TIMES. 
+             04 LN-OUT-BOOK-TAB OCCURS 10 TIMES. 
                05 LN-OUT-BOOK-TAB-LINE.
-                 06 LN-OUT-BOOK-TAB-AUTHOR PIC X(40).
+                 06 LN-OUT-BOOK-TAB-AUTHORS PIC X(40).
                  06 LN-OUT-BOOK-TAB-TITLE  PIC X(60).
                  06 LN-OUT-BOOK-TAB-ISBN   PIC 9(13).

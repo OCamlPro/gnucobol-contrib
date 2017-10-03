@@ -78,14 +78,14 @@
 
        01 WS-INP-BOOK.  
          02 WS-INP-ISBN                PIC 9(13). 
-         02 WS-INP-AUTHOR              PIC X(40).
+         02 WS-INP-AUTHORS             PIC X(40).
          02 WS-INP-TITLE               PIC X(60).
          02 WS-INP-PUB-DATE            PIC X(10).
          02 WS-INP-PAGE-NR             PIC 9(4).
          
        01 WS-OUT-BOOK.  
          02 WS-OUT-ISBN                PIC 9(13). 
-         02 WS-OUT-AUTHOR              PIC X(40).
+         02 WS-OUT-AUTHORS             PIC X(40).
          02 WS-OUT-TITLE               PIC X(60).
          02 WS-OUT-PUB-DATE            PIC X(10).
          02 WS-OUT-PAGE-NR             PIC 9(4).
@@ -210,9 +210,9 @@
              VALUE "eg.: 9780345391803"
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 5 COLUMN 1
-             VALUE "Author:"
+             VALUE "Authors:"
              FOREGROUND-COLOR COB-COLOR-GREEN.
-          05 FILLER PIC X(40) FROM WS-OUT-AUTHOR
+          05 FILLER PIC X(40) FROM WS-OUT-AUTHORS
              LINE 5 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 6 COLUMN 1
@@ -281,9 +281,9 @@
              LINE 4 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 5 COLUMN 1
-             VALUE "Author:"
+             VALUE "Authors:"
              FOREGROUND-COLOR COB-COLOR-GREEN.
-          05 FILLER PIC X(40) TO WS-INP-AUTHOR
+          05 FILLER PIC X(40) TO WS-INP-AUTHORS
              LINE 5 COLUMN 10
              FOREGROUND-COLOR COB-COLOR-GREEN.
           05 FILLER LINE 6 COLUMN 1
