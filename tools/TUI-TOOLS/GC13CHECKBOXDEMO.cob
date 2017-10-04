@@ -209,7 +209,7 @@ Move ' 12009011 Include assertion code     ' & x'00' to Ck-Ele(05)
 Move ' 12010011 Load compatible units      ' & x'00' to Ck-Ele(06)
 Move '  4011011 Allow STATIC in objects    ' & x'00' to Ck-Ele(07)
 Move '  2012011 C like operators           ' & x'00' to Ck-Ele(08)
-Move ' 13013011 Conditional defines        ' & x'00' to Ck-Ele(09)
+Move ' 14013011 Conditional defines        ' & x'00' to Ck-Ele(09)
 
 Move ' 12016011 Counts                     ' & x'00' to Ck-Ele(10)
 Move '  2017011 Percentages                ' & x'00' to Ck-Ele(11)
