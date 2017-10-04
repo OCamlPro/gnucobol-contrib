@@ -40,10 +40,6 @@ Working-Storage Section.
     03  wlen         pic 9(02) value 0.
     03  len-voce     pic 9(02) value 0.
 
-01 wChar        PIC X(01).
-01 wNum         PIC X(01).
-
-
 01 black   constant as 0.
 01 blue    constant as 1.
 01 green   constant as 2.
@@ -55,11 +51,13 @@ Working-Storage Section.
 
 01  wVisibilityNew   BINARY-SHORT .
 01  wVisibilityOld   BINARY-SHORT .
+
+01 wChar        PIC X(01).
+01 wNum         PIC X(01).
+
 01 wChars.
    03  wChars1 pic x(26) value 'abcdefghijklmnopqrstuvwxyz'.
    03  wChars-Ele redefines wChars1 pic x(01) occurs 26 indexed by wChars-Idx.
-
-
 01 wNums.
    03  wNums1 pic x(26) value '0123456789'.
    03  wNums-Ele redefines wNums1 pic x(01) occurs 10 indexed by wNums-Idx.
@@ -188,7 +186,7 @@ call static "getch" returning Key-Pressed end-call
 
         set wChars-Idx to Key-lc-Idx
         perform varying k from 1 by 1 until k > Btn-Number
-                move Bu-Item(k) (Bu-Hot(k):1) to wChar
+                if Bu-Hot(k) not = '0' move Bu-Item(k) (Bu-Hot(k):1) to wChar end-if
                 inspect wChar converting 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'abcdefghijklmnopqrstuvwxyz'
                 if wChar = wChars-Ele(wChars-Idx)
                     *> the letter typed by the user is a valid hotkey !
@@ -210,7 +208,7 @@ call static "getch" returning Key-Pressed end-call
         end-perform
 
     *> *****************************************************************************************
-    *> IF USER HAS TYPED A NUMBER - SEARCH IF IT IS A HOT KEY
+    *> IF USER HAS TYPED A DIGIT - SEARCH IF IT IS A HOT KEY
     *> *****************************************************************************************
      when Key-Pressed >= Key-0 and <= Key-9
         *> search the index of Key Pressed
@@ -222,9 +220,9 @@ call static "getch" returning Key-Pressed end-call
 
         set wNums-Idx to Key-num-Idx
         perform varying k from 1 by 1 until k > Btn-Number
-                move Bu-Item(k) (Bu-Hot(k):1) to wNum
+                if Bu-Hot(k) not = '0' move Bu-Item(k) (Bu-Hot(k):1) to wNum end-if
                 if wNum = wNums-Ele(wNums-Idx)
-                    *> the number typed by the user is a valid hotkey !
+                    *> the digit typed by the user is a valid hotkey !
                     *> change display of active item to display as normal item
                     move Bu-Selected to i
                     move space       to Bu-Act(Bu-Selected)
