@@ -12,8 +12,9 @@ PROGRAM-ID. GC13CHECKBOX is initial.
 *> Parameters: look at GC13CHECKBOX.cpy (use with copy Version: 1.0)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2017.07.10
+*> Version:    1.1 2017.10.04
 *> Changelog:  1.0 first release.
+*>             1.1 hot key management added
 *> ***********************************************************************************
 
 ENVIRONMENT DIVISION.
@@ -27,6 +28,7 @@ Working-Storage Section.
     03  w            pic 9(02) value 0.
     03  i            pic 9(02) value 1.
     03  j            pic 9(02) value 1.
+    03  k            pic 9(02) value 1.
     03  Chk-Number     pic 9(02) value 0.
     03  bco          PIC 9(02).
     03  fco          PIC 9(02).
@@ -47,6 +49,15 @@ Working-Storage Section.
 01  wVisibilityNew   BINARY-SHORT .
 01  wVisibilityOld   BINARY-SHORT .
 
+
+01 wChar        PIC X(01).
+01 wNum         PIC X(01).
+01 wChars.
+   03  wChars1 pic x(26) value 'abcdefghijklmnopqrstuvwxyz'.
+   03  wChars-Ele redefines wChars1 pic x(01) occurs 26 indexed by wChars-Idx.
+01 wNums.
+   03  wNums1 pic x(26) value '0123456789'.
+   03  wNums-Ele redefines wNums1 pic x(01) occurs 10 indexed by wNums-Idx.
 
 COPY 'GC98KEYCODE.CPY'.
 
@@ -89,7 +100,7 @@ DisplayCheckboxItems.
       Move Ck-fcoNH to fcoH
    end-if
 
-   perform Display-Checkbox thru Display-CheckboxEx
+   perform DisplayCheckBox thru DisplayCheckBoxEx
    add  1 to i
 
    *> go to display next Checkbox item
@@ -122,7 +133,7 @@ loop-user-input.
                 end-if
                 Move Ck-bcoA to bco
                 move Ck-fcoA to fco
-                perform Display-Checkbox thru Display-CheckboxEx
+                perform DisplayCheckBox thru DisplayCheckBoxEx
 
            *> NEXT CHECKBOX ITEM WILL BECAME "ACTIVE"
            when     Key-Pressed = Key-CursRight
@@ -136,7 +147,7 @@ loop-user-input.
                   Move Ck-bcoN  to bco
                   Move Ck-fcoN  to fco
                   Move Ck-fcoNH to fcoH
-                  perform Display-Checkbox thru Display-CheckboxEx
+                  perform DisplayCheckBox thru DisplayCheckBoxEx
 
                   *> set and display next checkbox item as Active Checkbox item
                   if   Ck-Selected = Chk-Number
@@ -148,7 +159,7 @@ loop-user-input.
                   Move Ck-bcoA  to bco
                   Move Ck-fcoA  to fco
                   Move Ck-fcoAH to fcoH
-                  perform Display-Checkbox thru Display-CheckboxEx
+                  perform DisplayCheckBox thru DisplayCheckBoxEx
 
            *> PREVIOUS CHECKBOX ITEM WILL BECAME "ACTIVE"
            when     Key-Pressed = Key-CursLeft
@@ -163,7 +174,7 @@ loop-user-input.
                   Move Ck-bcoN  to bco
                   Move Ck-fcoN  to fco
                   Move Ck-fcoNH to fcoH
-                  perform Display-Checkbox thru Display-CheckboxEx
+                  perform DisplayCheckBox thru DisplayCheckBoxEx
 
                   *> set and display previous checkbox item as Active Checkbox item
                   if   Ck-Selected = 1
@@ -175,7 +186,75 @@ loop-user-input.
                   Move Ck-bcoA  to bco
                   Move Ck-fcoA  to fco
                   Move Ck-fcoAH to fcoH
-                  perform Display-Checkbox thru Display-CheckboxEx
+                  perform DisplayCheckBox thru DisplayCheckBoxEx
+
+    *> *****************************************************************************************
+    *> IF USER HAS TYPED A LETTER - SEARCH IF IT IS A HOT KEY
+    *> *****************************************************************************************
+     when Key-Pressed >= Key-lc-a and <= Key-lc-z
+        *> search the index of Key Pressed
+        set wChars-Idx Key-lc-Idx to 0
+        search Key-lc-Ele varying  Key-lc-Idx
+               at end set Key-lc-Idx to 0
+               when   Key-lc-Ele (Key-lc-Idx) = Key-Pressed  continue
+        end-search
+
+        set wChars-Idx to Key-lc-Idx
+        perform varying k from 1 by 1 until k > Chk-Number
+                if Ck-Hot(k) not = '0' move Ck-Item(k) (Ck-Hot(k):1) to wChar end-if
+                inspect wChar converting 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'abcdefghijklmnopqrstuvwxyz'
+                if wChar = wChars-Ele(wChars-Idx)
+                    *> the letter typed by the user is a valid hotkey !
+                    *> change display of active item to display as normal item
+                    move Ck-Selected to i
+                    move space       to Ck-Act(Ck-Selected)
+                    Move Ck-bcoN  to bco
+                    Move Ck-fcoN  to fco
+                    Move Ck-fcoNH to fcoH
+                    perform DisplayCheckBox thru DisplayCheckBoxEx
+                   *> change the item with the hotkey to display from normal item to display as active item
+                    move k to Ck-Selected i
+                    move '1'   to Ck-Act(Ck-Selected)
+                    Move Ck-bcoA  to bco
+                    Move Ck-fcoA  to fco
+                    Move Ck-fcoAH to fcoH
+                    perform DisplayCheckBox thru DisplayCheckBoxEx
+                end-if
+        end-perform
+
+    *> *****************************************************************************************
+    *> IF USER HAS TYPED A DIGIT - SEARCH IF IT IS A HOT KEY
+    *> *****************************************************************************************
+     when Key-Pressed >= Key-0 and <= Key-9
+        *> search the index of Key Pressed
+        set wChars-Idx Key-num-Idx to 0
+        search Key-num-Ele varying  Key-num-Idx
+               at end set Key-num-Idx to 0
+               when   Key-num-Ele (Key-num-Idx) = Key-Pressed  continue
+        end-search
+
+        set wNums-Idx to Key-num-Idx
+        perform varying k from 1 by 1 until k > Chk-Number
+                if Ck-Hot(k) not = '0' move Ck-Item(k) (Ck-Hot(k):1) to wNum end-if
+                if wNum = wNums-Ele(wNums-Idx)
+                    *> the digit typed by the user is a valid hotkey !
+                    *> change display of active item to display as normal item
+                    move Ck-Selected to i
+                    move space       to Ck-Act(Ck-Selected)
+                    Move Ck-bcoN  to bco
+                    Move Ck-fcoN  to fco
+                    Move Ck-fcoNH to fcoH
+                    perform DisplayCheckBox thru DisplayCheckBoxEx
+                   *> change the item with the hotkey to display from normal item to display as active item
+                    move k to Ck-Selected i
+                    move '1'   to Ck-Act(Ck-Selected)
+                    Move Ck-bcoA  to bco
+                    Move Ck-fcoA  to fco
+                    Move Ck-fcoAH to fcoH
+                    perform DisplayCheckBox thru DisplayCheckBoxEx
+                end-if
+        end-perform
+
    END-EVALUATE
 
    *> *************************************************************************
@@ -207,7 +286,7 @@ END-PROGRAM.
 *> ***********************************************************************************
 *> DISPLAY A CHECKBOX
 *> ***********************************************************************************
-Display-Checkbox.
+DisplayCheckBox.
    *> j = number/position of single character of checkbox item description
    move 0 to j.
 loop1.
@@ -271,7 +350,7 @@ loop1-ex.
        end-if
    end-if
    continue.
-Display-CheckboxEx. exit.
+DisplayCheckBoxEx. exit.
 
 
 End Program GC13CHECKBOX.
