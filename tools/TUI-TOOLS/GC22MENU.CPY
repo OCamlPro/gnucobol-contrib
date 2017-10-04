@@ -17,12 +17,13 @@
 *> PARAMETER DESCRIPTION
 *> --------- ----------------------------------------------------
 *> Mn-Act    1= this item is displayed as Active/tobe Selected
-*>           only one of items can have '1' . it will be displayed as active
+*>           only one of items can have Mn-Act = 1. it will be displayed as active
 *>           at first display of the menu. when you exit from the menu
 *>           the active item will have '1' other items will have blank.
-*> Mn-Hot    char number in menu item string of char to be used as "hot key" .
-*>           ex. if menu item is " Exit " and this field is 2, the typing E or ALT-E make item "active"
+*> Mn-Hot    char number in a menu item string of char to be used as "hot key" .
+*>           ex. if menu item is " Exit " and Mn-Hot = 2, typing E or e make item "active"
 *>           Hot key is case insensistive  (if hotkey is "A" you can type "a" )
+*>           only letters (lower or uppercase) or digits, no other chars (no +, ?, ! etc.)
 *> Mn-r      row & col where the menu item starts on screen
 *> Mn-c      first row & col are 01, 01, last are 25,80 (row 25 col 80)
 *>           menu items can be displayed in every position, horizontal (bar menu), vertical, sparse.
