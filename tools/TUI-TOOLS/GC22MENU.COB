@@ -33,6 +33,7 @@ WORKING-STORAGE SECTION.
 
     03  wcol         PIC 9(03).
     03  wChar        PIC X(01).
+    03  wNum         PIC X(01).
 
     03  bco          PIC 9(02).
     03  fco          PIC 9(02).
@@ -47,6 +48,10 @@ WORKING-STORAGE SECTION.
 01 wChars.
    03  wChars1 pic x(26) value 'abcdefghijklmnopqrstuvwxyz'.
    03  wChars-Ele redefines wChars1 pic x(01) occurs 26 indexed by wChars-Idx.
+01 wNums.
+   03  wNums1 pic x(26) value '0123456789'.
+   03  wNums-Ele redefines wNums1 pic x(01) occurs 10 indexed by wNums-Idx.
+
 
 01 black   constant as 0.
 01 blue    constant as 1.
@@ -203,7 +208,7 @@ Accept-a-Key.
 
         set wChars-Idx to Key-lc-Idx
         perform varying k from 1 by 1 until k > Item-Num
-                move Mn-Item(k) (Mn-Hot(k):1) to wChar
+                if Mn-Hot(k) not = '0' move Mn-Item(k) (Mn-Hot(k):1) to wChar end-if
                 inspect wChar converting 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'abcdefghijklmnopqrstuvwxyz'
                 if wChar = wChars-Ele(wChars-Idx)
                     *> the letter typed by the user is a valid hotkey !
@@ -225,8 +230,40 @@ Accept-a-Key.
                 end-if
         end-perform
 
-  END-EVALUATE
+    *> *****************************************************************************************
+    *> IF USER HAS TYPED A DIGIT - SEARCH IF IT IS A HOT KEY
+    *> *****************************************************************************************
+     when Key-Pressed >= Key-0 and <= Key-9
+        *> search the index of Key Pressed
+        set wChars-Idx Key-num-Idx to 0
+        search Key-num-Ele varying  Key-num-Idx
+               at end set Key-num-Idx to 0
+               when   Key-num-Ele (Key-num-Idx) = Key-Pressed  continue
+        end-search
 
+        set wNums-Idx to Key-num-Idx
+        perform varying k from 1 by 1 until k > Item-Num
+                if Mn-Hot(k) not = '0' move Mn-Item(k) (Mn-Hot(k):1) to wNum end-if
+                if wNum = wNums-Ele(wNums-Idx)
+                    *> the digit typed by the user is a valid hotkey !
+                    *> change display of active item to display as normal item
+                    move Mn-Selected to i
+                    move space       to Mn-Act(Mn-Selected)
+                    Move Mn-bcoN  to bco
+                    Move Mn-fcoN  to fco
+                    Move Mn-fcoNH to fcoH
+                    perform DisplayItem thru DisplayItemEx
+                   *> change the item with the hotkey to display from normal item to display as active item
+                    move k to Mn-Selected i
+                    move '1'   to Mn-Act(Mn-Selected)
+                    Move Mn-bcoS  to bco
+                    Move Mn-fcoS  to fco
+                    Move Mn-fcoSH to fcoH
+                    perform DisplayItem thru DisplayItemEx
+                end-if
+        end-perform
+
+  END-EVALUATE
 
 
   go to Accept-a-Key.
