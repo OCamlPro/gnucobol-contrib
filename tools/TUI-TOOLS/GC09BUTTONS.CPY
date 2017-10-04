@@ -34,8 +34,8 @@
 *>
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
-*> Bu-Act    1= this item is displayed as the one Active (tobe Selected)
-*>           only one of items can have '1' . it will be highlighted
+*> Bu-Act    1= this item is displayed as Active (tobe Selected)(it has the focus)
+*>           only one of items can have Bu-Act = 1. it will be highlighted
 *>           at first display of the buttons. when you exit from the buttons function
 *>           the active button (item) will have '1' other items will have blank.
 *> Bu-r      row & col where the button starts on screen
@@ -44,8 +44,10 @@
 *>           buttons cannot be overlapped ! (the fuction does not havecontrols !)
 *> Bu-Item   charatcters string to be displayed on Button (max 80 chars).
 *>           It has to be in ASCIIZ format (must have x'00'(low-value) as last byte
-*> Bu-Hot    number of char to be used as hot key .
+*> Bu-Hot    number of char of Bu-Item to be used as hot key .
 *>           ex. if Bu-Item = "Exit" and Bu-Hot = 2, typing X or x activate the button
+*>           Hot key is case insensistive  (if hotkey is "A" you can type also "a" )
+*>           only letters (lower or uppercase) or digits, no other chars (no +, ?, ! etc.)
 *> Bu-Shadow Y= draw a shadow around buttons  Default = Y
 *> Bu-Arrow  If the selected button displayed in "selected" color,
 *>           has also "arrows" before and after the button description
