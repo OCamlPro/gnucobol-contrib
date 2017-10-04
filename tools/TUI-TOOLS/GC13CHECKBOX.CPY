@@ -28,9 +28,10 @@
 *>           all items can have '1' or blank
 *>           when you exit from checkbox function marked checkbox items will have '1'
 *>           other checkbox items will have blank
-*> Ck-Hot    number of char to be used as hot key (the letter key or corresponding Alt-Key) . ex. if item
-*>           is "Option 1 " and this Ck-Hot = 2, the typing p or P or ALT-P is like acctivate the item
-*>           !!! NOT YET AVAILABLE !!!
+*> Ck-Hot    number of char of Ck-Item to be used as hot key
+*>           is "Option 1 " and this Ck-Hot = 2, the typing p or P is like acctivate the item
+*>           Hot key is case insensistive  (if hotkey is "A" you can type also "a" )
+*>           use only letters (lower or uppercase) or digits, no other chars (no +, ?, ! etc.)
 *> Ck-r      row & col where the description of checkbox item starts on screen
 *> Ck-c      first row & col are 01, 01, last are 25,80 (row 25 col 80)
 *>           CHECKBOX items can be displayed in every position, also sparse.
