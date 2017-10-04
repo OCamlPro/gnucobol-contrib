@@ -192,7 +192,7 @@ MenuManager.
            end-if
      END-EVALUATE
 
-   .
+   continue.
 MenuManagerEx. exit.
 
 DisplayMenuBar.
@@ -221,7 +221,8 @@ DisplayMenuBar.
    CALL GC22MENU USING BY REFERENCE MENU-AREA
 
    *> save configuration of MenuArea and "active" tem
-   move Menu-Area to wSaved-Menu-Area.
+   move Menu-Area to wSaved-Menu-Area
+   continue.
 DisplayMenuBarEx. exit.
 
 
@@ -353,7 +354,7 @@ RunChoice.
       when 5 go MainEx                   *> END OF WORK
      END-EVALUATE
    END-EVALUATE
-   .
+   continue.
 RunChoiceEx. exit.
 
 *> *************************************************************
@@ -376,7 +377,7 @@ MoveDropDownMenu.
    DISPLAY "MOVE MENU" AT 009004 with foreground-color white background-color red
    *> ACCEPT OMITTED
    ACCEPT wDUMMY with NO-ECHO
-   .
+   continue.
 MoveDropDownMenu-Ex. exit.
 
 DropDownMenu1.
@@ -402,7 +403,7 @@ DropDownMenu1.
    move '  Exit from this demo                                       '        to mn-mess(9)
    CALL GC22MENU USING BY REFERENCE MENU-AREA
    Move Mn-Selected to wMn-Selected-MenuDrDn
-   .
+   continue.
 DropDownMenu1Ex. exit.
 
 DropDownMenu2.
@@ -428,7 +429,7 @@ DropDownMenu2.
    move ' Stampa della distinta versamenti ENASARCO (nuova versione - rifatta)           ' to mn-mess(9)
    CALL GC22MENU USING BY REFERENCE MENU-AREA
    Move Mn-Selected to wMn-Selected-MenuDrDn
-   .
+   continue.
 DropDownMenu2ex. exit.
 
 DropDownMenu3.
@@ -467,7 +468,7 @@ DropDownMenu3.
    move ' Registrazione movimenti di solo ENASARCO (senza imponibile).              ' to mn-mess(16)
    CALL GC22MENU USING BY REFERENCE MENU-AREA
    Move Mn-Selected to wMn-Selected-MenuDrDn
-   .
+   continue.
 DropDownMenu3ex. exit.
 
 DropDownMenu4.
@@ -495,7 +496,7 @@ DropDownMenu4.
    move ' available option J                                                            '   to mn-mess(10)
    CALL GC22MENU USING BY REFERENCE MENU-AREA
    Move Mn-Selected to wMn-Selected-MenuDrDn
-   .
+   continue.
 DropDownMenu4ex. exit.
 
 DropDownMenu5.
@@ -523,7 +524,7 @@ DropDownMenu5.
    move ' Stampa delle etichette con gli indirizzi degli agenti                          '        to mn-mess(10)
    CALL GC22MENU USING BY REFERENCE MENU-AREA
    Move Mn-Selected to wMn-Selected-MenuDrDn
-   .
+   continue.
 DropDownMenu5ex. exit.
 
 DropDownMenu6.
@@ -540,7 +541,7 @@ DropDownMenu6.
    move ' Exit                           ' to mn-mess(5)
    CALL GC22MENU USING BY REFERENCE MENU-AREA
    Move Mn-Selected to wMn-Selected-MenuDrDn
-   .
+   continue.
 DropDownMenu6ex. exit.
 
 InitializeDropDownMenu.
@@ -554,8 +555,7 @@ InitializeDropDownMenu.
    move 'S' to Mn-Box-style
    move black to Mn-Box-fco
    move 'N'   to Mn-Box-fcoH
-  *>  move 'N' to Mn-Box-Fill
-   .
+   continue.
 InitializeDropDownMenuEx. exit.
 
 *> ****************************************************************************
