@@ -76,11 +76,17 @@ move 'S'   to Mn-Box-style
 CALL  'GC22MENU' USING BY REFERENCE MENU-AREA
 
 perform DisplayMess thru DisplayMessEx
+
+
 ACCEPT OMITTED
 
 
 display wDummy at 2579 with blank screen end-display.
 display wTitle at 001001 :BCOL: 4 :FCOL: 7 highlight end-display
+
+display " Activate a menu item with cursor keys or with hot keys (letters in red ) "
+        at 021002 :BCOL: 4 :FCOL: 7 highlight end-display
+
 move low-value to mn-tab
 move z'12002001 Box       '       to mn-ele(1)
 move z' 3002011 Button    '       to mn-ele(2)
@@ -98,6 +104,7 @@ move  ' Screen Savers                  ' to mn-mess(6)
 move  ' Exit from GnuCOBOL Demo        ' to mn-mess(7)
 move 'N' to Mn-Box
 call  GC22MENU using MENU-AREA.
+
 
 perform DisplayMess thru DisplayMessEx
 
@@ -231,6 +238,35 @@ move ' Exit from GnuCOBOL Demo        ' to mn-mess(7)
 call GC22MENU using MENU-AREA.
 
 perform DisplayMess thru DisplayMessEx
+
+*> ***********************************************************************************************
+*> DISPLAY ITALAN FLAG
+*> ***********************************************************************************************
+  initialize Box-area ALL TO VALUE
+    *> display a big box as background
+    move cyan     to Box-bco   set Box-fco to white
+    move '001001' to Box-r1c1  move '025080' to Box-r2c2
+    move 'D'      to Box-style move 'N'      to Box-3D
+    call GC01BOX using Box-Area
+
+     move '009036014049' to Box-rc
+     move black to Box-bco
+     move 'S' to Box-style
+     call  GC01BOX using BOX-AREA
+     display '    ' at 010037 with foreground-color white background-color Green end-display
+     display '    ' at 011037 with foreground-color white background-color Green end-display
+     display '    ' at 012037 with foreground-color white background-color Green end-display
+     display '    ' at 013037 with foreground-color white background-color Green end-display
+     display '    ' at 010041 with blink foreground-color white background-color white end-display
+     display '    ' at 011041 with blink foreground-color white background-color white end-display
+     display '    ' at 012041 with blink foreground-color white background-color white end-display
+     display '    ' at 013041 with blink foreground-color white background-color white end-display
+     display '    ' at 010045 with blink foreground-color white background-color red   end-display
+     display '    ' at 011045 with blink foreground-color white background-color red   end-display
+     display '    ' at 012045 with blink foreground-color white background-color red   end-display
+     display '    ' at 013045 with blink foreground-color white background-color red   end-display
+   ACCEPT OMITTED.
+
 
 goback.
 
