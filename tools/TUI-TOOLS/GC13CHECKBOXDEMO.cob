@@ -60,10 +60,11 @@ Start-Display.
     move 2 to Wr
 
     display ' GnuCOBOL - GC13CHECKBOX TUI TOOL at work. manage checkbox items on screen.'
-          at 2303 with foreground-color white background-color blue
+          at 2203 with foreground-color white background-color blue
     display ' Cursor/Page/Tab keys change active checkbox, spacebar mark/unmark checkbox'
-          at 2403 with foreground-color white background-color blue
-
+          at 2303 with foreground-color white background-color blue
+    display " Activate an item (give the 'focus to') also with hot keys (yellow chars) "
+          at 2403 with foreground-color white background-color blue end-display
 *> *********************************************************************************
 *> DISPLAY CHECKBOX NUMBER 1
 *> *********************************************************************************
@@ -240,11 +241,43 @@ perform DisplaySwitch thru DisplaySwitchEx.
 accept omitted at 2580
 
 if Ck-Key = Key-Escape go to Start-Display end-if
+
+
+*> ***********************************************************************************************
+*> DISPLAY ITALAN FLAG
+*> ***********************************************************************************************
+  initialize Box-area ALL TO VALUE
+    *> display a big box as background
+    move cyan     to Box-bco   set Box-fco to white
+    move '001001' to Box-r1c1  move '025080' to Box-r2c2
+    move 'D'      to Box-style move 'N'      to Box-3D
+    call GC01BOX using Box-Area
+
+     move '009036014049' to Box-rc
+     move black to Box-bco
+     move 'S' to Box-style
+     call  GC01BOX using BOX-AREA
+     display '    ' at 010037 with       foreground-color white background-color Green end-display
+     display '    ' at 011037 with       foreground-color white background-color Green end-display
+     display '    ' at 012037 with       foreground-color white background-color Green end-display
+     display '    ' at 013037 with       foreground-color white background-color Green end-display
+
+     display '    ' at 010041 with blink foreground-color white background-color white end-display
+     display '    ' at 011041 with blink foreground-color white background-color white end-display
+     display '    ' at 012041 with blink foreground-color white background-color white end-display
+     display '    ' at 013041 with blink foreground-color white background-color white end-display
+
+     display '    ' at 010045 with blink foreground-color white background-color red   end-display
+     display '    ' at 011045 with blink foreground-color white background-color red   end-display
+     display '    ' at 012045 with blink foreground-color white background-color red   end-display
+     display '    ' at 013045 with blink foreground-color white background-color red   end-display
+   ACCEPT OMITTED.
+
 goback.
 
 
 DisplaySwitch.
-    DISPLAY '                                                                     '
+    DISPLAY '                                                                           '
          AT 022003 with foreground-color white background-color blue.
     STRING ' Switches set to: -'
                       Ck-Mark(01) '-' Ck-Mark(02) '-' Ck-Mark(03) '-' Ck-mark(04) '-' Ck-Mark(05) '-'
@@ -254,8 +287,8 @@ DisplaySwitch.
                       Ck-Mark(21) '-' Ck-Mark(22) '-' Ck-Mark(23) '-' Ck-mark(24) '-' Ck-Mark(25) '-'
                       Ck-Mark(26) '-' Ck-Mark(27) '-' Ck-Mark(28) '-' Ck-mark(29) '-' Ck-Mark(30) '+'
              into wSTRING.
-    DISPLAY wSTRING AT 022003 with foreground-color white background-color blue.
-    DISPLAY Ck-Selected AT 022076 with foreground-color white background-color blue.
+    DISPLAY wSTRING AT 021003 with foreground-color white background-color blue.
+    DISPLAY Ck-Selected AT 021076 with foreground-color white background-color blue.
     continue.
 DisplaySwitchEx. Exit.
 
