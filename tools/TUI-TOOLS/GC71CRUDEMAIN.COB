@@ -254,28 +254,22 @@ RunChoice.
              call   GC71CRUDESEL using LnkFunction
              cancel GC71CRUDESEL
         when 3
-               DISPLAY 'Bar Menu 1 - DropDownMenu 3 '
-                       at 020002 with background-color green foreground-color white end-display
+               DISPLAY 'Bar Menu 1 - DropDownMenu 3 ' at 020002 with background-color green foreground-color white end-display
                ACCEPT OMITTED AT 2580
         when 4
-               DISPLAY 'Bar Menu 1 - DropDownMenu 4 '
-                       at 020002 with background-color green foreground-color white end-display
+               DISPLAY 'Bar Menu 1 - DropDownMenu 4 ' at 020002 with background-color green foreground-color white end-display
                ACCEPT OMITTED AT 2580
         when 5
-               DISPLAY 'Bar Menu 1 - DropDownMenu 5 '
-                       at 020002 with background-color green foreground-color white end-display
+               DISPLAY 'Bar Menu 1 - DropDownMenu 5 ' at 020002 with background-color green foreground-color white end-display
                ACCEPT OMITTED AT 2580
         when 6
-               DISPLAY 'Bar Menu 1 - DropDownMenu 6 '
-                       at 020002 with background-color green foreground-color white end-display
+               DISPLAY 'Bar Menu 1 - DropDownMenu 6 ' at 020002 with background-color green foreground-color white end-display
                ACCEPT OMITTED AT 2580
         when 7
-               DISPLAY 'Bar Menu 1 - DropDownMenu 7 '
-                       at 020002 with background-color green foreground-color white end-display
+               DISPLAY 'Bar Menu 1 - DropDownMenu 7 ' at 020002 with background-color green foreground-color white end-display
                ACCEPT OMITTED AT 2580
         when 8
-               DISPLAY 'Bar Menu 1 - DropDownMenu 8 '
-                       at 020002 with background-color green foreground-color white end-display
+               DISPLAY 'Bar Menu 1 - DropDownMenu 8 ' at 020002 with background-color green foreground-color white end-display
                ACCEPT OMITTED AT 2580
         when 9
              go to EndProgram
