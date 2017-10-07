@@ -133,10 +133,21 @@ Main.
 MainEx.
 
    display ' ' at 0101 with blank screen end-display
-   DISPLAY ' ...OK ! End of work.                          '
+   DISPLAY ' ...OK ! End of GC22MENUDEMO2.                                  '
             at 0401 with foreground-color white background-color red
-   DISPLAY ' ----------------------------------------------'
+   DISPLAY ' ...GnuCOBOL TUI TOOLS COLLECTION (DILO).                       '
             at 0501 with foreground-color white background-color red
+   DISPLAY ' ---------------------------------------------------------------'
+            at 0601 with foreground-color white background-color red
+
+  *> Italian Flag
+  display '  ' at 008002 with  foreground-color white background-color Green end-display
+  display '  ' at 008004 with  foreground-color white background-color white end-display
+  display '  ' at 008006 with  foreground-color white background-color red   end-display
+  display '  ' at 009002 with  foreground-color white background-color Green end-display
+  display '  ' at 009004 with  foreground-color white background-color white end-display
+  display '  ' at 009006 with  foreground-color white background-color red   end-display
+
    *> ACCEPT OMITTED
    ACCEPT wDUMMY with NO-ECHO
    GOBACK.
@@ -593,6 +604,14 @@ DisplayBackground.
   move 'N'      to Box-3D
   call  GC01BOX using BOX-AREA.
   display "[" & X"FE" & "]" at 002076 with background-color green foreground-color white highlight.
+
+  display 'GnuCOBOL TUI TOOL to manage menus on screen. GC22MENU at work.'
+          at 2103 with foreground-color white highlight background-color green
+  display 'Cursor keys change active Menu. Enter select the menu item.'
+          at 2203 with foreground-color white highlight background-color green
+  display "Activate a menu item (give the 'focus to') also with hot keys (red chars) "
+          at 2303 with foreground-color white highlight background-color green
+  continue.
 DisplayBackgroundEx. Exit.
 
 
