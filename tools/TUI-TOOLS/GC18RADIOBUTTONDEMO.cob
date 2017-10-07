@@ -61,10 +61,11 @@ Start-Display.
     move 2 to Wr
 
     display 'GnuCOBOL-GC18RADIOBUTTON TUITOOL at work.Manage RadioButton items on screen.'
-          at 2303 with foreground-color white background-color wBco
+          at 2203 with foreground-color white background-color wBco
     display 'Cursor/Page/Tab and spacebar keys change and ''mark'' active RadioButton.'
-          at 2403 with foreground-color white background-color wBco
-
+          at 2303 with foreground-color white background-color wBco
+    display "Activate an item also with hot keys (letters in yellow ) "
+          at 2403 with foreground-color white background-color wBco end-display
 *> *********************************************************************************
 *> DISPLAY RADIOBUTTON NUMBER 1
 *> *********************************************************************************
@@ -88,7 +89,7 @@ move 'N'            to Box-3D Box-shadow Box-tit
 move 'R'            to Box-3D
 
 call GC01BOX using BOX-AREA
-display ' Group 1 Options ' at 003006 with :BCOL: white :FCOL: white highlight end-display
+display ' Group 1 Options ' at 003006 with :BCOL: white :FCOL: black end-display
 *> DISPLAY RADIOBUTTON ITEMS N.1
 initialize RadioButton-Area ALL TO VALUE
 move low-value                                       to Rb-tab
@@ -245,11 +246,40 @@ perform DisplaySwitch thru DisplaySwitchEx.
 accept omitted at 2580
 
 if Rb-Key = Key-Escape go to Start-Display end-if
+
+*> ***********************************************************************************************
+*> DISPLAY ITALAN FLAG
+*> ***********************************************************************************************
+  initialize Box-area ALL TO VALUE
+    *> display a big box as background
+    move cyan     to Box-bco   set Box-fco to white
+    move '001001' to Box-r1c1  move '025080' to Box-r2c2
+    move 'D'      to Box-style move 'N'      to Box-3D
+    call GC01BOX using Box-Area
+
+     move '009036014049' to Box-rc
+     move black to Box-bco
+     move 'S' to Box-style
+     call  GC01BOX using BOX-AREA
+     display '    ' at 010037 with foreground-color white background-color Green end-display
+     display '    ' at 011037 with foreground-color white background-color Green end-display
+     display '    ' at 012037 with foreground-color white background-color Green end-display
+     display '    ' at 013037 with foreground-color white background-color Green end-display
+     display '    ' at 010041 with blink foreground-color white background-color white end-display
+     display '    ' at 011041 with blink foreground-color white background-color white end-display
+     display '    ' at 012041 with blink foreground-color white background-color white end-display
+     display '    ' at 013041 with blink foreground-color white background-color white end-display
+     display '    ' at 010045 with blink foreground-color white background-color red   end-display
+     display '    ' at 011045 with blink foreground-color white background-color red   end-display
+     display '    ' at 012045 with blink foreground-color white background-color red   end-display
+     display '    ' at 013045 with blink foreground-color white background-color red   end-display
+   ACCEPT OMITTED.
+
 goback.
 
 
 DisplaySwitch.
-    DISPLAY '                                                                     '
+    DISPLAY '                                                                            '
          AT 022003 with foreground-color white background-color wBco.
     STRING 'Options set to: -'
                       Rb-Mark(01) '-' Rb-Mark(02) '-' Rb-Mark(03) '-' Rb-mark(04) '-' Rb-Mark(05) '-'
@@ -259,8 +289,8 @@ DisplaySwitch.
                       Rb-Mark(21) '-' Rb-Mark(22) '-' Rb-Mark(23) '-' Rb-mark(24) '-' Rb-Mark(25) '-'
                       Rb-Mark(26) '-' Rb-Mark(27) '-' Rb-Mark(28) '-' Rb-mark(29) '-' Rb-Mark(30) '+'
              into wSTRING.
-    DISPLAY wSTRING     AT 022003 with foreground-color yellow highlight background-color wBco.
-    DISPLAY Rb-Selected AT 022076 with foreground-color yellow highlight background-color wBco.
+    DISPLAY wSTRING     AT 021003 with foreground-color yellow highlight background-color wBco.
+    DISPLAY Rb-Selected AT 021076 with foreground-color yellow highlight background-color wBco.
 
     continue.
 DisplaySwitchEx. Exit.
