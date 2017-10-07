@@ -3,7 +3,7 @@ ID DIVISION.
 program-id. GC09BUTTONSDEMO.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
-*> Purpose:    DEMO OF GC09BUTTONSDEMO -  DISPLAYS BUTTONS ON SCREEN
+*> Purpose:    DEMO OF HOW TO USE GC09BUTTONS -  DISPLAYS BUTTONS ON SCREEN
 *> Tectonics:  cobc -x GC09BUTTONSDEMO.COB (use GnuCOBOL 2.0 or greater)
 *> Usage:      GC09BUTTONSDEMO
 *> Parameters: none
@@ -57,9 +57,11 @@ PROCEDURE DIVISION.
     move 'D'      to Box-style move 'N'      to Box-3D
     call GC01BOX using BOX-AREA
     move 2 to Wr
-    display ' GnuCOBOL TUI TOOL to display buttons on screen. '
+    display ' GnuCOBOL TUI TOOL to display buttons on screen. GC09BUTTONS at work.'
+          at 2103 with foreground-color white background-color blue
+    display ' Cursor/Page/Tab and spacebar keys change active Button.'
           at 2203 with foreground-color white background-color blue
-    display ' See the GC09BUTTONS at work.                      '
+    display " Activate an item (give the 'focus to') also with hot keys (red characters) "
           at 2303 with foreground-color white background-color blue
 
 *> *********************************************************************************
@@ -95,7 +97,7 @@ call static "getch" returning Key-Pressed end-call.
 *> DISPLAY BUTTONS NUMBER 2
 *> *********************************************************************************
     display ' 6 Vertical buttons other colors and active ''button marker'' '
-          at 2403 with foreground-color white background-color blue
+          at 2403 with foreground-color yellow highlight background-color blue
 set  Box-bco  to white
 set  Box-fco  to white
 move '004031' to Box-r1c1
@@ -171,8 +173,14 @@ display wDummy at 0101 with blank screen end-display
 *> *********************************************************************************
 *> DISPLAY BUTTONS NUMBER 3 bis
 *> *********************************************************************************
+    display ' GnuCOBOL TUI TOOL to display buttons on screen. GC09BUTTONS at work.'
+          at 2103 with foreground-color white background-color blue
+    display ' Cursor/Page/Tab and spacebar keys change active Button.'
+          at 2203 with foreground-color white background-color blue
+    display " Activate an item (give the 'focus to') also with hot keys (red characters) "
+          at 2303 with foreground-color white background-color blue
     display ' 3 horizontal buttons other colors and ''(   )'' as ''button marker'' '
-          at 2403 with foreground-color white background-color blue
+          at 2403 with foreground-color yellow highlight background-color blue
 *> DISPLAY A BOX
 set  Box-bco  Box-fco to white
 move '013017017072' to Box-rc
@@ -215,8 +223,14 @@ display wDummy at 0101 with blank screen end-display
 *> *********************************************************************************
 *> DISPLAY BUTTONS NUMBER 4
 *> *********************************************************************************
+    display ' GnuCOBOL TUI TOOL to display buttons on screen. GC09BUTTONS at work.'
+          at 2103 with foreground-color white background-color blue
+    display ' Cursor/Page/Tab and spacebar keys change active Button.'
+          at 2203 with foreground-color white background-color blue
+    display " Activate an item (give the 'focus to') also with hot keys (red characters) "
+          at 2303 with foreground-color white background-color blue
     display ' 3 horizontal buttons other colors and ''(   )'' as ''button marker'' '
-          at 2403 with foreground-color white background-color blue
+          at 2403 with foreground-color yellow highlight background-color blue
 *> DISPLAY A BOX
 set  Box-bco  Box-fco to white
 move '013017017065' to Box-rc
@@ -255,6 +269,12 @@ call static "getch" returning Key-Pressed end-call.
 *> *********************************************************************************
 
 display wDummy at 0101 with blank screen end-display
+    display ' GnuCOBOL TUI TOOL to display buttons on screen. GC09BUTTONS at work.'
+          at 2103 with foreground-color white background-color blue
+    display ' Cursor/Page/Tab and spacebar keys change active Button.'
+          at 2203 with foreground-color white background-color blue
+    display " Activate an item (give the 'focus to') also with hot keys (red characters) "
+          at 2303 with foreground-color white background-color blue
 *> DISPLAY THE BOX
 initialize Box-area ALL TO VALUE
 set  Box-bco  to red
@@ -299,6 +319,14 @@ call GC01BOX using BOX-AREA
 
 DISPLAY '   Buttons with ''click effect''     '
         AT line 04 col 06 with foreground-color white background-color blue
+
+    display ' GnuCOBOL TUI TOOL to display buttons on screen. GC09BUTTONS at work.'
+          at 2103 with foreground-color white background-color blue
+    display ' Cursor/Page/Tab and spacebar keys change active Button.'
+          at 2203 with foreground-color white background-color blue
+    display " Activate an item (give the 'focus to') also with hot keys (red characters) "
+          at 2303 with foreground-color white background-color blue
+
 *> save the background
 move Z'SAVESCREEN.SCR' to szScreenName
 call static 'scr_dump' using by reference szScreenName returning iScrOk end-call
@@ -316,6 +344,14 @@ move 'S'      to Box-style
 move 'N'      to Box-3D
 move "E" to Box-3D Move "N" to Box-shadow
 call GC01BOX using BOX-AREA
+
+    display ' GnuCOBOL TUI TOOL to display buttons on screen. GC09BUTTONS at work.'
+          at 2103 with foreground-color white background-color blue
+    display ' Cursor/Page/Tab and spacebar keys change active Button.'
+          at 2203 with foreground-color white background-color blue
+    display " Activate an item (give the 'focus to') also with hot keys (red characters) "
+          at 2303 with foreground-color white background-color blue
+
 *> DISPLAY BUTTONS
 initialize Buttons-area ALL TO VALUE
 move low-value to Bu-tab
@@ -409,6 +445,33 @@ call GC09BUTTONS using BUTTONS-AREA
 *> accept omitted
 call static "getch" returning Key-Pressed end-call.
 
+*> ***********************************************************************************************
+*> DISPLAY ITALAN FLAG
+*> ***********************************************************************************************
+  initialize Box-area ALL TO VALUE
+    *> display a big box as background
+    move cyan     to Box-bco   set Box-fco to white
+    move '001001' to Box-r1c1  move '025080' to Box-r2c2
+    move 'D'      to Box-style move 'N'      to Box-3D
+    call GC01BOX using Box-Area
+
+     move '009036014049' to Box-rc
+     move black to Box-bco
+     move 'S' to Box-style
+     call  GC01BOX using BOX-AREA
+     display '    ' at 010037 with foreground-color white background-color Green end-display
+     display '    ' at 011037 with foreground-color white background-color Green end-display
+     display '    ' at 012037 with foreground-color white background-color Green end-display
+     display '    ' at 013037 with foreground-color white background-color Green end-display
+     display '    ' at 010041 with blink foreground-color white background-color white end-display
+     display '    ' at 011041 with blink foreground-color white background-color white end-display
+     display '    ' at 012041 with blink foreground-color white background-color white end-display
+     display '    ' at 013041 with blink foreground-color white background-color white end-display
+     display '    ' at 010045 with blink foreground-color white background-color red   end-display
+     display '    ' at 011045 with blink foreground-color white background-color red   end-display
+     display '    ' at 012045 with blink foreground-color white background-color red   end-display
+     display '    ' at 013045 with blink foreground-color white background-color red   end-display
+   ACCEPT OMITTED.
 
 goback.
 
