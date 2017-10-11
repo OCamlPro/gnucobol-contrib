@@ -16,19 +16,20 @@
 *> r1,c1     row & column of upper left corner   - DEFAULT: 07,25  (at center of screen)
 *> bco,fco   box background & foreground (the frame) color
 *> hilight   Y= the foreground (the frame of the box) is highlighted
-*> style     S= Single line, D= Double line, 1,2=character box, 3=a solid frame (does'nt work!)
-*>           N= noline (to colour a zone), C= custom
-*> custom    if style=C, here are 9 chars to draw the box: UpLeft, UpCenter, UpRight, MiddleLeft, MC, MR, LowLeft, LC, LR
+*> style     S= Single line border, D= Double line, 1,2=characters box, 3=solid frame (doesn't work!)
+*>           N= noline (just colour the backgound), C= custom
+*> custom    if style=C, here are 9 chars to draw the box:
+*>           UpLeft, UpCenter, UpRight, MiddleLeft, MC, MR, LowLeft, LC, LR
 *> fill      Y= filled box, N= transparent box, draw only the frame
 *> shadow    Y= draw a shadow low & right of the box. DEFAULT: no shadow
-*> 3D        N= no 3D; E= 3D box EMBOSSED/RELIEF; R= 3D box RECESSED
+*> 3D        N= no 3D borders; E= 3D box EMBOSSED/RELIEF; R= 3D box RECESSED
 *>           if 3D box requested, fore color is forced to black&white to have the 3D effect.
 *> add1c     Y= box width expanded 1 col at left and 1 col at right.
 *>           improve appaerance of 3D box. (not yet implemented)
-*> beep      Y= bell
+*> beep      Y= sound a bell at first display
 *> tit       Y= display a title
 *> titDes    string to be displayed as title
-*> dim       Select B= Big Size Calendar(12x30) or S= Small Size Calendar(12x23)
+*> dim       Select B= Big Size Calendar(12x30 chars) or S= Small Size Calendar(12x23)
 *> legend    Y = display a small legend
 *> Lan       1=english, 2=Italian, 3=French, 4=Spanish, 5=German, 6=Ducth(Netherland)
 *>                                        c1
@@ -44,8 +45,10 @@
 *>                                        | 26 27 28 29 30      |
 *>                   legend -->           |       CurUpDn PgUpDn|
 *>                                        +---------------------+
-
 *>                                        12345678901234567890123
+*>
+*>             F1/F2= change Fore/BackColor; F3=chgBorders type; F4/F5=Toggle Title/Shadow;
+*>             F6=Chg Language; F7= togge 3D borders; F8= toggle Legend
 *>
 *>                                       c1
 *>           Example               r1 ->  +--------- Calendar ---------+
