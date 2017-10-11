@@ -4,6 +4,9 @@ PROGRAM-ID. GC56DATEPICKER is initial.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DATEPICKER: DISPLAY A CALENDAR & LET THE USER PICK UP A DATE - RETURNS DATE TO CALLER
+*>             Cursor= change Day, PgUp/Dn change Month, +/- = change YEAR, Home= go current date
+*>             F1/F2= change Fore/BackColor; F3=chgBorders type; F4/F5=Toggle Title/Shadow;
+*>             F6=Chg Language; F7= togge 3D borders; F8= toggle Legend
 *> Tectonics:  cobc -m GC56DATEPICKER.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC56DATEPICKER using DatePicker-Area
 *> Parameters: look at GC56DATEPICKER.cpy  (use with copy Version: 1.4)
