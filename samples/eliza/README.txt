@@ -1,4 +1,4 @@
-Welcome to GNU Cobol
+Welcome to GnuCOBOL
 ====================
 
 ELIZA in GnuCOBOL.  
@@ -54,4 +54,4 @@ shut up
 If that's how you feel--goodbye...
 
 =========
-Cheers from the GNU Cobol contributors.
+Cheers from the GnuCOBOL contributors.
