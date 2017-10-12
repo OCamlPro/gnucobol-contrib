@@ -3,9 +3,13 @@ Welcome to GnuCOBOL
 
 ELIZA in GnuCOBOL.  
 
-ELIZA is based on an early natural language processing program created by Joseph Wiezenbaum at MIT around 1964.  This version is adapted from ELIZA.BAS which appeared in Creative Computing magazine in 1977, written by Jeff Shrager and adapted for IBM PC in the early 1980's by Patricia Danielson and Paul Hashfield.  
+ELIZA is based on an early natural language processing program created by Joseph 
+Wiezenbaum at MIT around 1964.  This version is adapted from ELIZA.BAS which 
+appeared in Creative Computing magazine in 1977, written by Jeff Shrager and 
+adapted for IBM PC in the early 1980's by Patricia Danielson and Paul Hashfield.  
 
-This COBOL transalation was written by Arnold Trembley on 01 October 2017 (arnold.trembley@att.net) using MinGW GnuCOBOL 2.2 on Windows 7.  
+This COBOL transalation was written by Arnold Trembley on 01 October 2017 
+(arnold.trembley@att.net) using MinGW GnuCOBOL 2.2 on Windows 7.  
 
 ELIZA simulates a psychotherapist interacting with a  
 human patient. Enter "shut up" to stop the dialog.
