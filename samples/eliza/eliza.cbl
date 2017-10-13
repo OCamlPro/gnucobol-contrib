@@ -634,7 +634,7 @@
                                       520-YOU-FIX,   520-YOU-OUT) 
                                        TO 250-SUBSTITUTE-WORK.
                                                 
-           MOVE 250-SUBSTITUTE-WORK    TO 230-TRANSLATED-INPUT.
+           MOVE 250-SUBSTITUTE-WORK    TO 230-TRANSLATED-INPUT 
            .
 
       ****************************************************************
