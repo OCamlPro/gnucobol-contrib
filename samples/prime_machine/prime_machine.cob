@@ -1,4 +1,20 @@
 *>******************************************************************************
+*>  prime_machine.cob is free software: you can redistribute it and/or 
+*>  modify it under the terms of the GNU Lesser General Public License as 
+*>  published by the Free Software Foundation, either version 3 of the License,
+*>  or (at your option) any later version.
+*>
+*>  prime_machine.cob is distributed in the hope that it will be useful, 
+*>  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+*>  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*>  See the GNU Lesser General Public License for more details.
+*>
+*>  You should have received a copy of the GNU Lesser General Public License 
+*>  along with prime_machine.cob.
+*>  If not, see <http://www.gnu.org/licenses/>.
+*>******************************************************************************
+
+*>******************************************************************************
 *> Program:      prime_machine.cob
 *>
 *> Purpose:      This example implements Conway's prime algorithm
@@ -21,23 +37,8 @@
 *>            for identical lenghts to simplify changes, use screenio.cpy,
 *>            reduce REG-SIZE to 36 for enabling use of OpenCOBOL/GnuCOBOL 1.1,
 *>            grouped ADD and SUBTRACT and added terminators (compiles with -W)
+*> 2017.10.16 License changed to GNU LGPL.
 *>
-*>******************************************************************************
-
-*>******************************************************************************
-*>  prime_machine is free software: you can redistribute it and/or modify it
-*>  under the terms of the GNU General Public License as published by the Free
-*>  Software Foundation, either version 3 of the License, or (at your option)
-*>  any later version.
-*>
-*>  prime_machine is distributed in the hope that it will be useful, but
-*>  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-*>  or FITNESS FOR A PARTICULAR PURPOSE.
-*>  See the GNU General Public License for more details.
-*>
-*>  You should have received a copy of the GNU General Public License along
-*>  with prime_machine.
-*>  If not, see <http://www.gnu.org/licenses/>.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
