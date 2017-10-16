@@ -1,6 +1,20 @@
- IDENTIFICATION DIVISION.
- PROGRAM-ID. COBDES.
-*>**********************************************************************
+*>******************************************************************************
+*>  cobdes.cob is free software: you can redistribute it and/or 
+*>  modify it under the terms of the GNU Lesser General Public License as 
+*>  published by the Free Software Foundation, either version 3 of the License,
+*>  or (at your option) any later version.
+*>
+*>  cobdes.cob is distributed in the hope that it will be useful, 
+*>  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+*>  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*>  See the GNU Lesser General Public License for more details.
+*>
+*>  You should have received a copy of the GNU Lesser General Public License 
+*>  along with cobdes.cob.
+*>  If not, see <http://www.gnu.org/licenses/>.
+*>******************************************************************************
+
+*>******************************************************************************
 *> Purpose:      DES (Data Encryption Standard) in COBOL
 *>               http://en.wikipedia.org/wiki/Data_Encryption_Standard
 *>
@@ -29,29 +43,16 @@
 *> Tectonics:    cobc -free cobdes.cob
 *>
 *> Date-Written: 21-12-1997 
-*>**********************************************************************
+*>******************************************************************************
 *> Date       Change description 
-*> ========== ==========================================================
-*> 04.10.2013 Converted to GnuCOBOL
-*>----------------------------------------------------------------------
-*> 19.09.2015 Usage extended
-*>**********************************************************************
+*> ========== ==================================================================
+*> 2013.10.04 Converted to GnuCOBOL
+*> 2015.09.19 Usage extended
+*> 2017.10.16 License changed to GNU LGPL.
+*>******************************************************************************
 
-*>**********************************************************************
-*>  COBDES is free software: you can redistribute it and/or modify it
-*>  under the terms of the GNU General Public License as published by
-*>  the Free Software Foundation, either version 3 of the License, or
-*>  (at your option) any later version.
-*>
-*>  COBDES is distributed in the hope that it will be useful, but
-*>  WITHOUT ANY WARRANTY; without even the implied warranty of
-*>  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*>  See the GNU General Public License for more details.
-*>
-*>  You should have received a copy of the GNU General Public License
-*>  along with COBDES.
-*>  If not, see <http://www.gnu.org/licenses/>.
-*>**********************************************************************
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID. COBDES.
 
  ENVIRONMENT DIVISION.
 
@@ -1423,5 +1424,3 @@
     .
  CRYPT-EX.
     EXIT.
-     
- 
