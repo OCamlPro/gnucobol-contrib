@@ -50,25 +50,26 @@
 *>           only letters (lower or uppercase) or digits, no other chars (no +, ?, ! etc.)
 *> Bu-Shadow Y= draw a shadow around buttons  Default = Y
 *> Bu-Arrow  If the selected button displayed in "selected" color,
-*>           has also "arrows" before and after the button description
-*>           1= ex.[> EXIT <] at border of button ;
-*>           2= ex. [ > EXIT < ] at 2nd and penultimate position
+*>           has also "arrows" before and after the button description*>
 *>           0 = (or other character) = no arrows;
-*> Bu-Arrow-Char1/2 Single chars to make active button more visible
+*>           1= ex. [>   EXIT   <] at border of button ;
+*>           2= ex. [ >  EXIT  < ] at 2nd and penultimate position
+*> Bu-Arrow-Char1/2 Single chars to make active button more visible (ex: > and <  or: ( and )  or: = ...)
 *> Bu-click  Y= when hit enter on a button you will have a "click effect"
-*>           move button 1 char to right, black/white color , no shadow
+*>           move button 1 char to right, changed to black/white color with no shadow
 *> Bu-beep   Y= when hit enter on button sound a beep
 *> Bu bco-shadow set it to the same back color of the underlying background
 *>
 *> Bu-selected Returns to caller the number of selected button by the user 01, 02, 03, ..
 *> Bu-Key    key code pressed by user: 0013 = Enter, 0027 = Escape
 *>           Caller pgm will know if user selected a button
-*>         with enter or has pressed Escape key to exit
+*>           with enter or has pressed Escape key to exit
 *> *************************************************************
      03 Bu-Tab  value low-value.
         04 Bu-Ele occurs 25.
            05 Bu-Act          pic x(01).
-           05 Bu-Hot          pic 9(01).
+           05 Bu-HotX.
+              07 Bu-Hot       pic 9(01).
            05 Bu-r            pic 9(03).
            05 Bu-c            pic 9(03).
            05 Bu-Item         pic x(81).
