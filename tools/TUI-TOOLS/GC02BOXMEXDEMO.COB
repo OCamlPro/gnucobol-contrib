@@ -58,10 +58,9 @@ message1.
     move '001001025080' to Box-rc
     move 'S'            to Box-style
     call GC01BOX using Box-Area
-    display ' GnuCOBOL TUI TOOL to display messages on screen. '
+    display 'GnuCOBOL TUI TOOL to display messages on screen. See the GC02BOXMEX at work.'
           at 2203 with foreground-color white background-color green
-    display ' See the GC02BOXMEX at work.                      '
-          at 2303 with foreground-color white background-color green
+
     *> ***********************************************************************************
     *>      MESSAGE N.1
     *> ***********************************************************************************
@@ -91,8 +90,8 @@ message1.
     *>      MESSAGE N.2
     *> ***********************************************************************************
 message2.
-      display ' See the click effect on the ''OK single button'' '
-          at 2403 with foreground-color yellow background-color green  highlight
+      display 'See the click effect on the ''OK single button''  '
+          at 2303 with foreground-color yellow background-color green  highlight
     initialize Boxmex-Area ALL TO VALUE
     move low-value to Bxm-tabmex
     move z' This message is to show some feature of the tools utilities on screen ' to Bxm-mex(01)
@@ -118,7 +117,7 @@ message2.
 *>      MESSAGE N.3
 *> ***********************************************************************************
 message3.
-        display ' GC02BOXMEX used with GC09BUTTONS ... message text and three buttons.'
+        display 'GC02BOXMEX used with GC09BUTTONS ... message text and three buttons.     '
           at 2403 with foreground-color yellow background-color green  highlight
     initialize Boxmex-Area ALL TO VALUE
     move low-value to Bxm-tabmex
@@ -151,6 +150,10 @@ message3.
     move 'D' to Bxm-Style
     call GC02BOXMEX using BOXMEX-AREA.
 
+    display 'Cursor/Page/Tab and spacebar keys change active Button.                      '
+          at 2303 with foreground-color white background-color green
+    display "Activate an item also with hot keys (letters in red )                        "
+          at 2403 with foreground-color white background-color green end-display
 
     *> DISPLAY BUTTONS
     initialize Buttons-area ALL TO VALUE
@@ -165,19 +168,19 @@ message3.
     move ">" to Bu-Arrow-Char2
     move 'Y' to Bu-Click
 
-    Move '16015020  Continue   ' & x'00' to Bu-Ele(01)
+    Move '13015020  Continue   ' & x'00' to Bu-Ele(01)
     Move ' 5015035   Cancel    ' & x'00' to Bu-Ele(02)
-    Move ' 6015050  Inspect    ' & x'00' to Bu-Ele(03)
+    Move ' 3015050  Inspect    ' & x'00' to Bu-Ele(03)
     call GC09BUTTONS using BUTTONS-AREA
-    .
+    continue.
 
 
 *> ***********************************************************************************
 *>      MESSAGE N.3.1
 *> ***********************************************************************************
 message3.
-        display ' GC02BOXMEX used with GC09BUTTONS ... message text and vertical buttons.'
-          at 2403 with foreground-color yellow background-color green  highlight
+        display 'GC02BOXMEX used with GC09BUTTONS ... message text and vertical buttons.     '
+          at 2203 with foreground-color yellow background-color green  highlight
     initialize Boxmex-Area ALL TO VALUE
     move low-value to Bxm-tabmex
     *>    123456789012345678901234567890123456789012345678901234567890123456789012
@@ -222,11 +225,11 @@ message3.
     move 'Y' to Bu-Click
 
     Move ' 6005062     OK      ' & x'00' to Bu-Ele(01)
-    Move '16007062  Continue   ' & x'00' to Bu-Ele(02)
+    Move '13007062  Continue   ' & x'00' to Bu-Ele(02)
     Move ' 5009062   Cancel    ' & x'00' to Bu-Ele(03)
-    Move ' 6011062    Move     ' & x'00' to Bu-Ele(04)
-    Move ' 6013062      ?      ' & x'00' to Bu-Ele(05)
-    Move ' 6015062    Help     ' & x'00' to Bu-Ele(06)
+    Move ' 5011062    Move     ' & x'00' to Bu-Ele(04)
+    Move ' 4013062   Ignore    ' & x'00' to Bu-Ele(05)
+    Move ' 5015062    Help     ' & x'00' to Bu-Ele(06)
     call GC09BUTTONS using BUTTONS-AREA
     .
 
@@ -314,6 +317,12 @@ message6.
      move black to Box-bco
      move 'S' to Box-style
      call  GC01BOX using BOX-AREA
+
+     display 'GnuCOBOL TUI TOOL to display messages on screen.'
+          at 2206 with foreground-color magenta background-color white highlight
+     display 'See the GC02BOXMEX at work. End of demo. '
+          at 2306 with foreground-color magenta background-color white highlight
+
      display '    ' at 010037 with foreground-color white background-color Green end-display
      display '    ' at 011037 with foreground-color white background-color Green end-display
      display '    ' at 012037 with foreground-color white background-color Green end-display
