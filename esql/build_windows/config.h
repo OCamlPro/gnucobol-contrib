@@ -4,7 +4,9 @@
 /* #undef EXTERNAL_LOG */
 
 /* Define to 1 if you have the `strupr' function. */
+#if defined (_MSC_VER) && _MSC_VER >= 1500
 #define HAVE_STRUPR 1
+#endif
 
 /* Define to 1 if you have the <unistd.h> header file. */
 /* #undef HAVE_UNISTD_H */

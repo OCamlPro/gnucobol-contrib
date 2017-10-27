@@ -21,6 +21,7 @@
 	#pragma warning(disable: 4996)
 #endif
 
+#include "config.h"
 #include "vcache.h"
 
 GC string::gc;

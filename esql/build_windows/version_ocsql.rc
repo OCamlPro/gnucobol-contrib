@@ -1,0 +1,64 @@
+#include <windows.h>
+#include "config.h"
+
+#define STRINGIZE_DETAIL_(v) #v
+#define STRINGIZE(v) STRINGIZE_DETAIL_(v)
+
+//
+// Version Information resources
+//
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+//LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+#ifndef DEBUG
+#define VER_DEBUG                   0
+#else
+#define VER_DEBUG                   VS_FF_DEBUG
+#endif
+
+VS_VERSION_INFO    VERSIONINFO
+  FILEVERSION      2,0,0,0
+  PRODUCTVERSION   2,0,0,0
+
+  FILEOS           VOS_NT_WINDOWS32
+
+  FILETYPE         VFT_DLL
+  FILESUBTYPE      VFT2_UNKNOWN // not used for VFT_DLL
+
+  FILEFLAGSMASK    VS_FFI_FILEFLAGSMASK
+  FILEFLAGS        (VS_FF_PRIVATEBUILD|VS_FF_PRERELEASE|VS_FF_PATCHED|VER_DEBUG)
+
+{
+  BLOCK "StringFileInfo"
+  {
+    BLOCK "040904E4" // Lang=US English, CharSet=Windows Multilingual
+    {
+      // VALUE "Comments",         "Free for personal use only.\0"
+      // VALUE "CompanyName",      "Fake Company\0"
+      VALUE "FileDescription",  PACKAGE_NAME " Runtime Library"
+      VALUE "FileVersion",      "2.0.0"
+      VALUE "InternalName",     "ocsql"
+      VALUE "LegalCopyright",   "Copyright (C) 2006-2016 Sergey Kashyrin and Contributors"
+      VALUE "LegalTrademarks",  "Runtime: GNU Lesser General Public License v3 - see COPYING.LESSER"
+      VALUE "OriginalFilename", "ocsql.dll"
+      VALUE "ProductName",      PACKAGE_NAME " Runtime Library"
+      VALUE "ProductVersion",   PACKAGE_VERSION
+      // Should be set if VS_FF_PRIVATEBUILD is set:
+      VALUE "PrivateBuild",     "Built from SVN"
+      // Should be set if VS_FF_SPECIALBUILD is set (including description what it was build for):
+      VALUE "SpecialBuild",     ""
+
+      /* Non-Standard entries */
+      VALUE "Build",            "Oct 2017"
+      VALUE "Developer",        "Sergey Kashyrin and Contributors (see AUTHORS)"
+      VALUE "Support",          "http://www.kiska.net/opencobol/esql"
+      VALUE "Users",            "Unlimited."
+    } // BLOCK "040904E4"
+  } // BLOCK "StringFileInfo"
+  BLOCK "VarFileInfo"
+  {
+    VALUE "Translation", 0x409, 1252 // 1252 = 0x04E4
+  } // BLOCK "VarFileInfo"
+}
+
