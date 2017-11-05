@@ -12,12 +12,13 @@ PROGRAM-ID. GC02BOXMEX is initial.
 *> Version:    1.0 2016.06.15
 *> Changelog:  1.0 first release.
 *>             1.1 call to GC09BUTTONS deleted.
-*>                 inserted code to  Display a single button*>
+*>                 inserted code to  Display a single button
 *>                 added possibility to have a click effect on the single button
 *>                 added: save/restore screen option and to use cursor key to move boxmex on screen
 *>                 added possibility to not displsy the single "OK" button (useful to display
 *>                 message, return immediately to the caller that will call GC09BUTTONS
 *>                 to have a message and next more buttons to be selected.
+*>             1.2 changed Bu-Hot from 9(01) to 9(02)
 *> ***********************************************************************************
 DATA DIVISION.
 WORKING-STORAGE SECTION.
@@ -100,8 +101,8 @@ WORKING-STORAGE SECTION.
 *>
 *> Bu-Item   charatcters string to be displayed on Button (max 80 chars).
 *>           It has to be in ASCIIZ format (must have x'00'(low-value) as last byte
-*> Bu-Hot    NOY YET IMPLEMENTED . number of char to be used as hot key (Alt-Key) .
-*>           ex. if item is "Exit" and this field is 2, the typing ALT-X is like select the item
+*> Bu-Hot    number of char to be used as hot key .
+*>           ex. if item is "Exit" and this field is 2, the typing X is like activate the item
 *> Bu-Shadow Y= draw a shadow around buttons  Default = Y
 *> Bu-Arrow  If the selected button displayed in "selected" color,
 *>           has also "arrows" before and after the button description
@@ -122,7 +123,7 @@ WORKING-STORAGE SECTION.
      03 Bu-Tab  value low-value.
         04 Bu-Ele occurs 25.
            05 Bu-Act          pic x(01).
-           05 Bu-Hot          pic x(01).
+           05 Bu-Hot          pic 9(02).
            05 Bu-r            pic 9(03).
            05 Bu-c            pic 9(03).
            05 Bu-Item         pic x(81).
