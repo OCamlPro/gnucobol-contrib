@@ -11,8 +11,9 @@ PROGRAM-ID. GC22MENUDEMO1.
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
-*> Version:    1.0 2017.07.20
+*> Version:    1.1 2017.11.04
 *> Changelog:  1.0 first release.
+*>             1.1 Mn-Hot from 9(01) to 9(02)
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -52,14 +53,14 @@ display " Activate a menu item with cursor keys or with hot keys (letters in red
         at 021002 :BCOL: 4 :FCOL: 7 highlight end-display
 
 move low-value                              to mn-tab
-move z'12007010 Option number one         ' to mn-ele(1)
-move z' 4008010 Second choice             ' to mn-ele(2)
-move z' 2009010 Third option              ' to mn-ele(3)
-move z' 4010010 Forth option              ' to mn-ele(4)
-move z' 6011010 Fifth option              ' to mn-ele(5)
-move z' 4012010 Sixth option              ' to mn-ele(6)
-move z' 2013010 Seventh option            ' to mn-ele(7)
-move z' 3014010 Last option               ' to mn-ele(8)
+move z'102007010 Option number one         ' to mn-ele(1)
+move z' 04008010 Second choice             ' to mn-ele(2)
+move z' 02009010 Third option              ' to mn-ele(3)
+move z' 04010010 Forth option              ' to mn-ele(4)
+move z' 06011010 Fifth option              ' to mn-ele(5)
+move z' 04012010 Sixth option              ' to mn-ele(6)
+move z' 02013010 Seventh option            ' to mn-ele(7)
+move z' 03014010 Last option               ' to mn-ele(8)
 move  ' This is the message associated to the option number one                   ' to mn-mess(1)
 move  ' Choose second menu item !                                                 ' to mn-mess(2)
 move  ' The 3rd option you can select ..... try it !                              ' to mn-mess(3)
@@ -88,13 +89,13 @@ display " Activate a menu item with cursor keys or with hot keys (letters in red
         at 021002 :BCOL: 4 :FCOL: 7 highlight end-display
 
 move low-value to mn-tab
-move z'12002001 Box       '       to mn-ele(1)
-move z' 3002011 Button    '       to mn-ele(2)
-move z' 2002022 Menu      '       to mn-ele(3)
-move z' 2002033 Calendar  '       to mn-ele(4)
-move z' 2002044 Fade Screen '     to mn-ele(5)
-move z' 4002057 Screen Saver '    to mn-ele(6)
-move z' 3002071 Other    '        to mn-ele(7)
+move z'102002001 Box       '       to mn-ele(1)
+move z' 03002011 Button    '       to mn-ele(2)
+move z' 02002022 Menu      '       to mn-ele(3)
+move z' 02002033 Calendar  '       to mn-ele(4)
+move z' 02002044 Fade Screen '     to mn-ele(5)
+move z' 04002057 Screen Saver '    to mn-ele(6)
+move z' 03002071 Other    '        to mn-ele(7)
 move  ' Demo of Boxes                  ' to mn-mess(1)
 move  ' Demo of Buttons                ' to mn-mess(2)
 move  ' Demo of Menus                  ' to mn-mess(3)
@@ -123,13 +124,13 @@ set Mn-bcoN to Cyan   *> back color for "normal" item
 set Mn-fcoN to Black  *> fore color for "normal" item
 set Mn-bcoS to black  *> back color for "active" item
 set Mn-fcoS to cyan   *> fore color for "active" item
-move z'12007010 Box          '    to mn-ele(1)
-move z' 2008010 Button       '    to mn-ele(2)
-move z' 2009010 Menu         '    to mn-ele(3)
-move z' 3010010 Calendar     '    to mn-ele(4)
-move z' 2011010 Fade Screen  '    to mn-ele(5)
-move z' 3012010 Screen Saver '    to mn-ele(6)
-move z' 3013010 Other        '    to mn-ele(7)
+move z'102007010 Box          '    to mn-ele(1)
+move z' 02008010 Button       '    to mn-ele(2)
+move z' 02009010 Menu         '    to mn-ele(3)
+move z' 03010010 Calendar     '    to mn-ele(4)
+move z' 02011010 Fade Screen  '    to mn-ele(5)
+move z' 03012010 Screen Saver '    to mn-ele(6)
+move z' 03013010 Other        '    to mn-ele(7)
 move  ' Demo of Boxes                  ' to mn-mess(1)
 move  ' Demo of Buttons                ' to mn-mess(2)
 move  ' Demo of Menus                  ' to mn-mess(3)
@@ -155,13 +156,13 @@ set Mn-bcoN to white   *> back color for "normal" item
 set Mn-fcoN to Black  *> fore color for "normal" item
 set Mn-bcoS to green  *> back color for "active" item
 set Mn-fcoS to black  *> fore color for "active" item
-move '12007030 Box          '  & x'00'  to mn-ele(1)
-move ' 2008030 Button       '  & x'00'  to mn-ele(2)
-move ' 2009030 Menu        >'  & x'00'  to mn-ele(3)
-move ' 3010030 Calendar    >'  & x'00'  to mn-ele(4)
-move ' 2011030 Fade Screen  '  & x'00'  to mn-ele(5)
-move ' 3012030 Screen Saver '  & x'00'  to mn-ele(6)
-move ' 3013030 Other        '  & x'00'  to mn-ele(7)
+move '102007030 Box          '  & x'00'  to mn-ele(1)
+move ' 02008030 Button       '  & x'00'  to mn-ele(2)
+move ' 02009030 Menu        >'  & x'00'  to mn-ele(3)
+move ' 03010030 Calendar    >'  & x'00'  to mn-ele(4)
+move ' 02011030 Fade Screen  '  & x'00'  to mn-ele(5)
+move ' 03012030 Screen Saver '  & x'00'  to mn-ele(6)
+move ' 03013030 Other        '  & x'00'  to mn-ele(7)
 move ' Demo of Boxes                  ' to mn-mess(1)
 move ' Demo of Buttons                ' to mn-mess(2)
 move ' Demo of Menus                  ' to mn-mess(3)
@@ -188,13 +189,13 @@ set Mn-fcoN to yellow *> fore color for "normal" item
 set Mn-bcoS to yellow *> back color for "active" item
 set Mn-fcoS to red    *> fore color for "active" item
 move 'Y' to Mn-fcoNH
-move '12007050 Box          '  & x'00'  to mn-ele(1)
-move ' 2008050 Button       '  & x'00'  to mn-ele(2)
-move ' 2009050 Menu         '  & x'00'  to mn-ele(3)
-move ' 3010050 Calendar     '  & x'00'  to mn-ele(4)
-move ' 2011050 Fade Screen  '  & x'00'  to mn-ele(5)
-move ' 3012050 Screen Saver '  & x'00'  to mn-ele(6)
-move ' 3013050 Other        '  & x'00'  to mn-ele(7)
+move '102007050 Box          '  & x'00'  to mn-ele(1)
+move ' 02008050 Button       '  & x'00'  to mn-ele(2)
+move ' 02009050 Menu         '  & x'00'  to mn-ele(3)
+move ' 03010050 Calendar     '  & x'00'  to mn-ele(4)
+move ' 02011050 Fade Screen  '  & x'00'  to mn-ele(5)
+move ' 03012050 Screen Saver '  & x'00'  to mn-ele(6)
+move ' 03013050 Other        '  & x'00'  to mn-ele(7)
 move ' Demo of Boxes                  ' to mn-mess(1)
 move ' Demo of Buttons                ' to mn-mess(2)
 move ' Demo of Menus                  ' to mn-mess(3)
@@ -221,13 +222,13 @@ set Mn-bcoN to white   *> back color for "normal" item
 set Mn-fcoN to magenta *> fore color for "normal" item
 set Mn-bcoS to magenta *> back color for "active" item
 set Mn-fcoS to white    *> fore color for "active" item
-move '12018030 Box          '  & x'00'  to mn-ele(1)
-move ' 2018030 Button       '  & x'00'  to mn-ele(2)
-move ' 2018030 Menu         '  & x'00'  to mn-ele(3)
-move ' 3018030 Calendar     '  & x'00'  to mn-ele(4)
-move ' 2018030 Fade Screen  '  & x'00'  to mn-ele(5)
-move ' 3018030 Screen Saver '  & x'00'  to mn-ele(6)
-move ' 3018030 Other        '  & x'00'  to mn-ele(7)
+move '102018030 Box          '  & x'00'  to mn-ele(1)
+move ' 02018030 Button       '  & x'00'  to mn-ele(2)
+move ' 02018030 Menu         '  & x'00'  to mn-ele(3)
+move ' 03018030 Calendar     '  & x'00'  to mn-ele(4)
+move ' 02018030 Fade Screen  '  & x'00'  to mn-ele(5)
+move ' 03018030 Screen Saver '  & x'00'  to mn-ele(6)
+move ' 03018030 Other        '  & x'00'  to mn-ele(7)
 move ' Demo of Boxes                  ' to mn-mess(1)
 move ' Demo of Buttons                ' to mn-mess(2)
 move ' Demo of Menus                  ' to mn-mess(3)
