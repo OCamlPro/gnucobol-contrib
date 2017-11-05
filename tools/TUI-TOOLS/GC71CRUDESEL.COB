@@ -9,9 +9,10 @@ Program-Id. GC71CRUDESEL is INITIAL program.
 *> Parameters: LnkFunction
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo -GNU LGPL , 3.0 (or greater)
-*> Version:    1.1 2017.05.28
+*> Version:    1.2 2017.11.04
 *> Changelog:  1.0 first release.
 *>             1.1 little enhancements
+*>             1.2 Bu-Hot from 9(01) to 9(02)
 *> ***********************************************************************************
 DATA DIVISION.
 Working-Storage Section.
@@ -110,14 +111,14 @@ FileSelection.
    move 'E'   to box-3d
    move 'Y' to Bu-Click bu-Shadow
    display '   SELECT A COMPANY   ' at 005031 with  background-Color white foreground-Color red
-   move '15007031     Company ALIVE      '  & x'00' to Bu-Ele(01)
-   move ' 5009031    Company BERRIES     '  & x'00' to Bu-Ele(02)
-   move ' 5011031    Company BEVERAGE    '  & x'00' to Bu-Ele(03)
-   move ' 5013031    Company DOLLARS     '  & x'00' to Bu-Ele(04)
-   move ' 5015031     Company GREAT      '  & x'00' to Bu-Ele(05)
-   move ' 5017031     Company ITALY      '  & x'00' to Bu-Ele(06)
-   move ' 5019031     Company KING''S     ' & x'00' to Bu-Ele(07)
-   move ' 5021031     Company VISION     '  & x'00' to Bu-Ele(08)
+   move '114007031     Company ALIVE      '  & x'00' to Bu-Ele(01)
+   move ' 13009031    Company BERRIES     '  & x'00' to Bu-Ele(02)
+   move ' 14011031    Company BEVERAGE    '  & x'00' to Bu-Ele(03)
+   move ' 13013031    Company DOLLARS     '  & x'00' to Bu-Ele(04)
+   move ' 14015031     Company GREAT      '  & x'00' to Bu-Ele(05)
+   move ' 14017031     Company ITALY      '  & x'00' to Bu-Ele(06)
+   move ' 14019031     Company KING''S     ' & x'00' to Bu-Ele(07)
+   move ' 14021031     Company VISION     '  & x'00' to Bu-Ele(08)
    CALL GC09BUTTONS using Buttons-Area
 
    If bu-Key = Key-Escape go Esci end-if
