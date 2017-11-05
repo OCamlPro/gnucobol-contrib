@@ -9,8 +9,9 @@ PROGRAM-ID. GC71CRUDEMAIN.
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - LGPL, 3.0 (or greater)
-*> Version:    1.0 2017.03.01
+*> Version:    1.1 2017.11.04
 *> Changelog:  1.0 first release.
+*>             1.1 Mn-Hot from 9(01) to 9(02) - call changed from GC21MENU to GC22MENU
 *> ********************************************************************************************
 *>                    GnuCOBOL C.R.U.DE APPLICATION (CREATE READ UPDATE DELETE)
 *>                    ---------------------------------------------------------
@@ -45,19 +46,19 @@ WORKING-STORAGE SECTION.
 01 yellow  constant as 6.  *> or Brown
 01 white   constant as 7.
 
-*> Values that may be returned in CRT STATUS Fiedl (or COB-CRT-STATUS register)
-78  K-ENTER       VALUE 0000.
-78  K-UP          VALUE 2003.
-78  K-DOWN        VALUE 2004.
-78  K-LEFT        VALUE 2009.
-78  K-RIGHT       VALUE 2010.
-78  K-ESC         VALUE 2005.
-78  K-TAB         VALUE 2007.
-78  K-BACKTAB     VALUE 2008.
-78  K-PAGEUP      VALUE 2001.
-78  K-PAGEDOWN    VALUE 2002.
-78  K-ESCAPE      VALUE 2005.
-78  K-NO-FIELD    VALUE 8000.  *> NO DATA FROM ACCEPT ex. a timeout is passed (also 8001)
+*> *> Values that may be returned in CRT STATUS Fiedl (or COB-CRT-STATUS register)
+*> 78  K-ENTER       VALUE 0000.
+*> 78  K-UP          VALUE 2003.
+*> 78  K-DOWN        VALUE 2004.
+*> 78  K-LEFT        VALUE 2009.
+*> 78  K-RIGHT       VALUE 2010.
+*> 78  K-ESC         VALUE 2005.
+*> 78  K-TAB         VALUE 2007.
+*> 78  K-BACKTAB     VALUE 2008.
+*> 78  K-PAGEUP      VALUE 2001.
+*> 78  K-PAGEDOWN    VALUE 2002.
+*> 78  K-ESCAPE      VALUE 2005.
+*> 78  K-NO-FIELD    VALUE 8000.  *> NO DATA FROM ACCEPT ex. a timeout is passed (also 8001)
 
 01  ws-KEY            PIC 9(04) VALUE 9999.
 01  ws-Item-Selected  PIC 9(04) VALUE 9999.
@@ -113,9 +114,10 @@ WORKING-STORAGE SECTION.
    03 wTimecc         pic  9(2).
 
 COPY 'GC01BOX.CPY'   .
-COPY 'GC21MENU.CPY'  .
+COPY 'GC22MENU.CPY'  .
 copy 'GC02BOXMEX.CPY'.
 copy 'GC03YESNO.CPY'.
+copy 'GC98KEYCODE.CPY'   .
 
 *> ***************************************************************************************
 *>                         P R O C E D U R E   D I V I S I O N
@@ -146,7 +148,7 @@ DisplayCoverScreen.
 
    *> which key was pressed on cover Screen ?
    EVALUATE ws-KEY
-     WHEN  K-ESCAPE
+     WHEN  Key-Escape
            go to EndProgram
      WHEN  OTHER
            Perform DisplayBackground thru DisplayBackgroundEx
@@ -196,7 +198,7 @@ MenuManager.
      *> **************************************************************
      EVALUATE true
          *> when pressed enter on menu bar: activate a drop down menu
-         WHEN mn-Key = K-ENTER
+         WHEN mn-Key = Key-Enter
                EVALUATE wMn-Selected-MenuBar
                    when  1 perform DropDownMenu1 thru DropDownMenu1ex
                    when  2 perform DropDownMenu2 thru DropDownMenu2ex
@@ -207,22 +209,22 @@ MenuManager.
                END-EVALUATE
                *> evaluate on drop down menu ****************************
                EVALUATE mn-Key
-                   when K-ENTER
+                   when Key-Enter
                        perform RunChoice thru RunChoiceEx
                        go to MenuManager
-                   when K-ESCAPE
+                   when Key-Escape
                         go to MenuManager
-                   when K-RIGHT
+                   when Key-CursRight
                         go to MenuManager
                         *> perform DropDownMenuMove thru DropDownMenuMove-Ex
-                   when K-LEFT
+                   when Key-CursLeft
                         go to MenuManager
                         *> perform DropDownMenuMove thru DropDownMenuMove-Ex
                  continue
                END-EVALUATE
 
          *> when pressed escape on menu bar ask if to exit
-         WHEN mn-Key = K-ESCAPE
+         WHEN mn-Key = Key-Escape
               go to EndProgram
 
      END-EVALUATE.
@@ -396,12 +398,12 @@ DisplayMenuBar.
       move 'N' to wFirstTime
       initialize menu-area ALL TO VALUE
       move low-value to mn-tab
-      move z'12001001 Master File '      to mn-ele(1)
-      move z' 2001014 CoA        '       to mn-ele(2)
-      move z' 2001026 Postings     '     to mn-ele(3)
-      move z' 3001040 System      '      to mn-ele(4)
-      move z' 2001053 Other      '       to mn-ele(5)
-      move z' 2001065 Exit     '         to mn-ele(6)
+      move z'102001001 Master File '      to mn-ele(1)
+      move z' 02001014 CoA        '       to mn-ele(2)
+      move z' 02001026 Postings     '     to mn-ele(3)
+      move z' 03001040 System      '      to mn-ele(4)
+      move z' 02001053 Other      '       to mn-ele(5)
+      move z' 02001065 Exit     '         to mn-ele(6)
 
       move ' C.R.U.DE. Application                    ' to mn-mess(1)
       move ' Chart of Account                         ' to mn-mess(2)
@@ -413,7 +415,7 @@ DisplayMenuBar.
       *> restore the Active Item
       move wSaved-Menu-Area to Menu-Area
    end-if
-   CALL GC21MENU USING BY REFERENCE MENU-AREA
+   CALL GC22MENU USING BY REFERENCE MENU-AREA
    *> save configuration of MenuArea and "active" tem
    move Menu-Area to wSaved-Menu-Area.
 DisplayMenuBarEx. exit.
@@ -423,15 +425,15 @@ DisplayMenuBarEx. exit.
 *> *************************************************************************************
 DropDownMenu1.
    perform DropDownMenuInitialize thru DropDownMenuInitializeEx
-   move ' 2003002 Create              ' & x'00' to mn-ele(1)
-   move '12004002 Read (Browse)       ' & x'00' to mn-ele(2)
-   move ' 2005002 Option number 3     ' & x'00' to mn-ele(3)
-   move ' 3006002 Option number 4     ' & x'00' to mn-ele(4)
-   move ' 4007002 Option number 5     ' & x'00' to mn-ele(5)
-   move ' 5008002 Option number 6     ' & x'00' to mn-ele(6)
-   move ' 6009002 Option number 7     ' & x'00' to mn-ele(7)
-   move ' 7010002 Option number 8     ' & x'00' to mn-ele(8)
-   move ' 2011002 End of Work         ' & x'00' to mn-ele(9)
+   move ' 02003002 Create              ' & x'00' to mn-ele(1)
+   move '102004002 Read (Browse)       ' & x'00' to mn-ele(2)
+   move ' 02005002 Option number 3     ' & x'00' to mn-ele(3)
+   move ' 03006002 Option number 4     ' & x'00' to mn-ele(4)
+   move ' 04007002 Option number 5     ' & x'00' to mn-ele(5)
+   move ' 05008002 Option number 6     ' & x'00' to mn-ele(6)
+   move ' 06009002 Option number 7     ' & x'00' to mn-ele(7)
+   move ' 07010002 Option number 8     ' & x'00' to mn-ele(8)
+   move ' 02011002 End of Work         ' & x'00' to mn-ele(9)
 
    move ' Create a data record on Master File' to mn-mess(1)
    move ' Browse a list of data records, next you can edit and/or delete records'  to mn-mess(2)
@@ -442,21 +444,21 @@ DropDownMenu1.
    move ' Message for option numer 7                                ' to mn-mess(7)
    move ' Message for option numer 8                                ' to mn-mess(8)
    move ' Exit from this C.R.U.DE. application                      ' to mn-mess(9)
-   CALL GC21MENU USING BY REFERENCE MENU-AREA
+   CALL GC22MENU USING BY REFERENCE MENU-AREA
    Move Mn-Selected to wMn-Selected-MenuDrDn.
 DropDownMenu1Ex. exit.
 
 DropDownMenu2.
    perform DropDownMenuInitialize thru DropDownMenuInitializeEx
-   move '17003015 Option number 1           ' & x'00' to mn-ele(1)
-   move ' 2004015 Option number 2           ' & x'00' to mn-ele(2)
-   move ' 2005015 Option number 3           ' & x'00' to mn-ele(3)
-   move ' 2006015 Option number 4           ' & x'00' to mn-ele(4)
-   move ' 2007015 Option number 5           ' & x'00' to mn-ele(5)
-   move ' 6008015 Option number 6           ' & x'00' to mn-ele(6)
-   move ' 2009015 Option number 7           ' & x'00' to mn-ele(7)
-   move ' 3010015 Option number 8           ' & x'00' to mn-ele(8)
-   move ' 3011015 End of work               ' & x'00' to mn-ele(9)
+   move '107003015 Option number 1           ' & x'00' to mn-ele(1)
+   move ' 02004015 Option number 2           ' & x'00' to mn-ele(2)
+   move ' 02005015 Option number 3           ' & x'00' to mn-ele(3)
+   move ' 02006015 Option number 4           ' & x'00' to mn-ele(4)
+   move ' 02007015 Option number 5           ' & x'00' to mn-ele(5)
+   move ' 06008015 Option number 6           ' & x'00' to mn-ele(6)
+   move ' 02009015 Option number 7           ' & x'00' to mn-ele(7)
+   move ' 03010015 Option number 8           ' & x'00' to mn-ele(8)
+   move ' 03011015 End of work               ' & x'00' to mn-ele(9)
 
    move ' Message for option number 1          ' to mn-mess(1)
    move ' Message for option number 2          ' to mn-mess(2)
@@ -467,28 +469,28 @@ DropDownMenu2.
    move ' Message for option number 7          ' to mn-mess(7)
    move ' Message for option number 8          ' to mn-mess(8)
    move ' Exit from this C.R.U.DE. application ' to mn-mess(9)
-   CALL GC21MENU USING BY REFERENCE MENU-AREA
+   CALL GC22MENU USING BY REFERENCE MENU-AREA
    Move Mn-Selected to wMn-Selected-MenuDrDn.
 DropDownMenu2ex. exit.
 
 DropDownMenu3.
    perform DropDownMenuInitialize thru DropDownMenuInitializeEx
-   move '19003027 Option number 1           ' & x'00' to mn-ele(1)
-   move ' 2004027 Option number 2           ' & x'00' to mn-ele(2)
-   move ' 2005027 Option number 3           ' & x'00' to mn-ele(3)
-   move ' 9006027 Option number 4           ' & x'00' to mn-ele(4)
-   move ' 2007027 Option number 5           ' & x'00' to mn-ele(5)
-   move ' 3008027 Option number 6           ' & x'00' to mn-ele(6)
-   move ' 2009027 Option number 7           ' & x'00' to mn-ele(7)
-   move ' 1010027 ------------------------- ' & x'00' to mn-ele(8)
-   move ' 2011027 Option number 8           ' & x'00' to mn-ele(9)
-   move ' 2012027 Option number 9           ' & x'00' to mn-ele(10)
-   move ' 4013027 Option number 10          ' & x'00' to mn-ele(11)
-   move ' 5014027 Option number 11          ' & x'00' to mn-ele(12)
-   move ' 3015027 Option number 12          ' & x'00' to mn-ele(13)
-   move ' 6016027 Option number 13          ' & x'00' to mn-ele(14)
-   move ' 1017027 ------------------------- ' & x'00' to mn-ele(15)
-   move ' 3018027 End of work               ' & x'00' to mn-ele(16)
+   move '109003027 Option number 1           ' & x'00' to mn-ele(1)
+   move ' 02004027 Option number 2           ' & x'00' to mn-ele(2)
+   move ' 02005027 Option number 3           ' & x'00' to mn-ele(3)
+   move ' 09006027 Option number 4           ' & x'00' to mn-ele(4)
+   move ' 02007027 Option number 5           ' & x'00' to mn-ele(5)
+   move ' 03008027 Option number 6           ' & x'00' to mn-ele(6)
+   move ' 02009027 Option number 7           ' & x'00' to mn-ele(7)
+   move ' 01010027 ------------------------- ' & x'00' to mn-ele(8)
+   move ' 02011027 Option number 8           ' & x'00' to mn-ele(9)
+   move ' 02012027 Option number 9           ' & x'00' to mn-ele(10)
+   move ' 04013027 Option number 10          ' & x'00' to mn-ele(11)
+   move ' 05014027 Option number 11          ' & x'00' to mn-ele(12)
+   move ' 03015027 Option number 12          ' & x'00' to mn-ele(13)
+   move ' 06016027 Option number 13          ' & x'00' to mn-ele(14)
+   move ' 01017027 ------------------------- ' & x'00' to mn-ele(15)
+   move ' 03018027 End of work               ' & x'00' to mn-ele(16)
    move ' Message for option number 1                                     ' to mn-mess(1)
    move ' Message for option number 2                                     ' to mn-mess(2)
    move ' Message for option number 3                                     ' to mn-mess(3)
@@ -505,22 +507,22 @@ DropDownMenu3.
    move ' Message for option number 13                                    ' to mn-mess(14)
    move ' not available                                                   ' to mn-mess(15)
    move ' Exit from this C.R.U.DE. application                            ' to mn-mess(16)
-   CALL GC21MENU USING BY REFERENCE MENU-AREA
+   CALL GC22MENU USING BY REFERENCE MENU-AREA
    Move Mn-Selected to wMn-Selected-MenuDrDn.
 DropDownMenu3ex. exit.
 
 DropDownMenu4.
    perform DropDownMenuInitialize thru DropDownMenuInitializeEx
-   move ' 2003041 a) Option a               ' & x'00' to mn-ele(1)
-   move ' 2004041 b) Option b               ' & x'00' to mn-ele(2)
-   move '12005041 c) Option c               ' & x'00' to mn-ele(3)
-   move ' 2006041 d) Option d               ' & x'00' to mn-ele(4)
-   move ' 2007041 e) Option e               ' & x'00' to mn-ele(5)
-   move ' 2008041 f) Option f               ' & x'00' to mn-ele(6)
-   move ' 2009041 g) Option g               ' & x'00' to mn-ele(7)
-   move ' 2010041 h) Option h               ' & x'00' to mn-ele(8)
-   move ' 2011041 i) Option i               ' & x'00' to mn-ele(9)
-   move ' 2012041 End of work               ' & x'00' to mn-ele(10)
+   move ' 02003041 a) Option a               ' & x'00' to mn-ele(1)
+   move ' 02004041 b) Option b               ' & x'00' to mn-ele(2)
+   move '102005041 c) Option c               ' & x'00' to mn-ele(3)
+   move ' 02006041 d) Option d               ' & x'00' to mn-ele(4)
+   move ' 02007041 e) Option e               ' & x'00' to mn-ele(5)
+   move ' 02008041 f) Option f               ' & x'00' to mn-ele(6)
+   move ' 02009041 g) Option g               ' & x'00' to mn-ele(7)
+   move ' 02010041 h) Option h               ' & x'00' to mn-ele(8)
+   move ' 02011041 i) Option i               ' & x'00' to mn-ele(9)
+   move ' 02012041 End of work               ' & x'00' to mn-ele(10)
 
    move ' Message for option a                                                 ' to mn-mess(1)
    move ' Message for option b                                                 ' to mn-mess(2)
@@ -532,22 +534,22 @@ DropDownMenu4.
    move ' Message for option h                                                 ' to mn-mess(8)
    move ' Message for option i                                                 ' to mn-mess(9)
    move ' Exit from this C.R.U.DE. application                                 ' to mn-mess(10)
-   CALL GC21MENU USING BY REFERENCE MENU-AREA
+   CALL GC22MENU USING BY REFERENCE MENU-AREA
    Move Mn-Selected to wMn-Selected-MenuDrDn.
 DropDownMenu4ex. exit.
 
 DropDownMenu5.
    perform DropDownMenuInitialize thru DropDownMenuInitializeEx
-   move '12003054 1.Option number 1      ' & x'00'  to mn-ele(1)
-   move ' 2004054 2.Option number 2      ' & x'00'  to mn-ele(2)
-   move ' 2005054 3.Option number 3      ' & x'00'  to mn-ele(3)
-   move ' 2006054>4.Option number 4      ' & x'00'  to mn-ele(4)
-   move ' 2007054>5.Option number 5      ' & x'00'  to mn-ele(5)
-   move ' 2008054 6.Option number 6      ' & x'00'  to mn-ele(6)
-   move ' 2009054 7.Option number 7      ' & x'00'  to mn-ele(7)
-   move ' 2010054 8.Option number 8      ' & x'00'  to mn-ele(8)
-   move ' 2011054 9.Option number 9      ' & x'00'  to mn-ele(9)
-   move ' 2012054 End of work            ' & x'00'  to mn-ele(10)
+   move '102003054 1.Option number 1      ' & x'00'  to mn-ele(1)
+   move ' 02004054 2.Option number 2      ' & x'00'  to mn-ele(2)
+   move ' 02005054 3.Option number 3      ' & x'00'  to mn-ele(3)
+   move ' 02006054>4.Option number 4      ' & x'00'  to mn-ele(4)
+   move ' 02007054>5.Option number 5      ' & x'00'  to mn-ele(5)
+   move ' 02008054 6.Option number 6      ' & x'00'  to mn-ele(6)
+   move ' 02009054 7.Option number 7      ' & x'00'  to mn-ele(7)
+   move ' 02010054 8.Option number 8      ' & x'00'  to mn-ele(8)
+   move ' 02011054 9.Option number 9      ' & x'00'  to mn-ele(9)
+   move ' 02012054 End of work            ' & x'00'  to mn-ele(10)
 
    move ' Message for option number 1  '     to mn-mess(1)
    move ' Message for option number 2  '     to mn-mess(2)
@@ -559,23 +561,23 @@ DropDownMenu5.
    move ' Message for option number 8  '     to mn-mess(8)
    move ' Message for option number 9  '     to mn-mess(9)
    move ' Exit from this C.R.U.DE. application                '     to mn-mess(10)
-   CALL GC21MENU USING BY REFERENCE MENU-AREA
+   CALL GC22MENU USING BY REFERENCE MENU-AREA
    Move Mn-Selected to wMn-Selected-MenuDrDn.
 DropDownMenu5ex. exit.
 
 DropDownMenu6.
    perform DropDownMenuInitialize thru DropDownMenuInitializeEx
-   move ' 2003066 Item 1      ' & x'00' to mn-ele(1)
-   move '12004066 Cover       ' & x'00' to mn-ele(2)
-   move ' 2005066 Exit to DOS ' & x'00' to mn-ele(3)
-   move ' 2006066 About       ' & x'00' to mn-ele(4)
-   move ' 2007066 End of work ' & x'00' to mn-ele(5)
+   move ' 02003066 Item 1      ' & x'00' to mn-ele(1)
+   move '102004066 Cover       ' & x'00' to mn-ele(2)
+   move ' 02005066 Exit to DOS ' & x'00' to mn-ele(3)
+   move ' 02006066 About       ' & x'00' to mn-ele(4)
+   move ' 02007066 End of work ' & x'00' to mn-ele(5)
    move ' Go to Cover Screen               ' to mn-mess(1)
    move ' Message item 2                   ' to mn-mess(2)
    move ' Temporary exit to DOS (type ''EXIT'' to return this menu).' to mn-mess(3)
    move ' About this application           ' to mn-mess(4)
    move ' Exit                             ' to mn-mess(5)
-   CALL GC21MENU USING BY REFERENCE MENU-AREA
+   CALL GC22MENU USING BY REFERENCE MENU-AREA
    Move Mn-Selected to wMn-Selected-MenuDrDn.
 DropDownMenu6ex. exit.
 
@@ -584,7 +586,7 @@ DropDownMenuInitialize.
    Initialize menu-area ALL TO VALUE
    move low-value to mn-tab
    move 'Y' to Mn-Box
-   move 'Y' to Mn-Shadow
+   move 'Y' to Mn-Box-shadow
    *> user can use only vertical cursors (Up or Down) movement
    move 'V' to Mn-Arrow
    *> return to caller if used horizontal cursor movements  (Left or Right)
@@ -682,7 +684,7 @@ About.
     move space & x'00' to Bxm-mex(13)
     move space & x'00' to Bxm-mex(14)
 
-    Move '37YSabcdefghiYYRNN37YYYN77Y' to Bxm-Parameters
+    Move '37YSabcdefghiYYRNN37YYYNNN77Y' to Bxm-Parameters
     move '004005021073'                to Bxm-rc
     call GC02BOXMEX using BOXMEX-AREA.
 AboutEx. Exit.
