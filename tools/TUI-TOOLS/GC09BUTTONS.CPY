@@ -6,10 +6,11 @@
 *> Usage:      call GC09BUTTONS using Buttons-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.2 2017.10.0402.28
+*> Version:    1.3 2017.11.04
 *> Changelog:  1.0 first release.
 *>             1.1 added beep parameter
 *>             1.2 added hot key management
+*>             1.3 Bu-Hot changed from 9(01) to 9(02)
 *> ***********************************************************************************
 *> on screen You can manage max 24 buttons of 1 row .
 *> Each button has tobe inserted in a table with 25 elements
@@ -69,7 +70,7 @@
         04 Bu-Ele occurs 25.
            05 Bu-Act          pic x(01).
            05 Bu-HotX.
-              07 Bu-Hot       pic 9(01).
+              07 Bu-Hot       pic 9(02).
            05 Bu-r            pic 9(03).
            05 Bu-c            pic 9(03).
            05 Bu-Item         pic x(81).
