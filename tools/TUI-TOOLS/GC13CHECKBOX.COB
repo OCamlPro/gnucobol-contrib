@@ -9,12 +9,13 @@ PROGRAM-ID. GC13CHECKBOX is initial.
 *>             make items active with cursors/page/tab keys, mark/unmark a checkbox whit spacebar
 *> Tectonics:  cobc -m GC13CHECKBOX.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC13CHECKBOX using CHECKBOX-AREA
-*> Parameters: look at GC13CHECKBOX.cpy (use with copy Version: 1.0)
+*> Parameters: look at GC13CHECKBOX.cpy (use with copy Version: 1.1)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.1 2017.10.04
+*> Version:    1.2 2017.11.04
 *> Changelog:  1.0 first release.
 *>             1.1 hot key management added
+*>             1.2 Ck-Hot from 9(01) to 9(02)
 *> ***********************************************************************************
 
 ENVIRONMENT DIVISION.
@@ -29,7 +30,7 @@ Working-Storage Section.
     03  i            pic 9(02) value 1.
     03  j            pic 9(02) value 1.
     03  k            pic 9(02) value 1.
-    03  Chk-Number     pic 9(02) value 0.
+    03  Chk-Number   pic 9(02) value 0.
     03  bco          PIC 9(02).
     03  fco          PIC 9(02).
     03  fcoH         PIC X(01).
@@ -201,7 +202,7 @@ loop-user-input.
 
         set wChars-Idx to Key-lc-Idx
         perform varying k from 1 by 1 until k > Chk-Number
-                if Ck-Hot(k) not = '0' move Ck-Item(k) (Ck-Hot(k):1) to wChar end-if
+                if Ck-Hot(k) not = zero move Ck-Item(k) (Ck-Hot(k):1) to wChar end-if
                 inspect wChar converting 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'abcdefghijklmnopqrstuvwxyz'
                 if wChar = wChars-Ele(wChars-Idx)
                     *> the letter typed by the user is a valid hotkey !
@@ -235,7 +236,7 @@ loop-user-input.
 
         set wNums-Idx to Key-num-Idx
         perform varying k from 1 by 1 until k > Chk-Number
-                if Ck-Hot(k) not = '0' move Ck-Item(k) (Ck-Hot(k):1) to wNum end-if
+                if Ck-Hot(k) not = zero move Ck-Item(k) (Ck-Hot(k):1) to wNum end-if
                 if wNum = wNums-Ele(wNums-Idx)
                     *> the digit typed by the user is a valid hotkey !
                     *> change display of active item to display as normal item
