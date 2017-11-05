@@ -6,8 +6,9 @@
 *> Usage:      call GC13CHECKBOX using CHECKBOX-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
-*> Version:    1.0 2017.07.10
+*> Version:    1.1 2017.11.04
 *> Changelog:  1.0 first release.
+*>             1.1 ck-Hot changed from 9(01) to 9(02)
 *> ***********************************************************************************************************
 *> on screen You can manage a group of max 98 CHECKBOX items each of 1 row .
 *> Each checkbox item has tobe inserted in a table with 99 elements
@@ -53,7 +54,7 @@
         04 Ck-Ele occurs 99.
            05 Ck-Act          pic x(01).
            05 Ck-Mark         pic x(01).
-           05 Ck-Hot          pic 9(01).
+           05 Ck-Hot          pic 9(02).
            05 Ck-r            pic 9(03).
            05 Ck-c            pic 9(03).
            05 Ck-Item         pic x(81).
