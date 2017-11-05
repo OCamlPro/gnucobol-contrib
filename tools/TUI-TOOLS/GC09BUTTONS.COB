@@ -6,15 +6,16 @@ PROGRAM-ID. GC09BUTTONS is initial.
 *> Purpose:    DISPLAYS BUTTONS ON SCREEN
 *> Tectonics:  cobc -m GC09BUTTONS.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC09BUTTONS using BUTTONS-AREA
-*> Parameters: look at GC09BUTTONS.cpy (use with copy Version: 1.1)
+*> Parameters: look at GC09BUTTONS.cpy (use with copy Version: 1.3)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.4 2017.10.03
+*> Version:    1.5 2017.11.04
 *> Changelog:  1.0 first release.
 *>             1.1 changed from ACCEPT a DUMMY field to "call getch"
 *>             1.2 added the "click effect" and beep on request
 *>             1.3 some estethic changes
 *>             1.4 added hot key management.
+*>             1.5 Bu-Hot from 9(01) to 9(02)
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 
