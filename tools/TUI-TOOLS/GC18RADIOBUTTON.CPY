@@ -6,8 +6,9 @@
 *> Usage:      call GC18RADIOBUTTON using RadioButton-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
-*> Version:    1.0 2017.07.10
+*> Version:    1.1 2017.11.04
 *> Changelog:  1.0 first release.
+*>             1.1 Rb-Hot from 9(01) to 9(02)
 *> ***********************************************************************************************************
 *> on screen You can manage a group of max 98 RadioButton items (options) each of 1 row .
 *> Each RadioButton has tobe inserted in a table with 99 elements
@@ -61,7 +62,7 @@
         04 Rb-Ele occurs 99.
            05 Rb-Act          pic x(01).
            05 Rb-Mark         pic x(01).
-           05 Rb-Hot          pic 9(01).
+           05 Rb-Hot          pic 9(02).
            05 Rb-r            pic 9(03).
            05 Rb-c            pic 9(03).
            05 Rb-Item         pic x(81).
