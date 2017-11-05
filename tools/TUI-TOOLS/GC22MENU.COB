@@ -9,11 +9,12 @@ PROGRAM-ID. GC22MENU is initial.
 *>             SAME AS GC21MENU.COB + HOT KEYS MANAGEMENT (use call getch instead of accept omitted)
 *> Tectonics:  cobc -m GC22MENU.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC22MENU using Menu-Area
-*> Parameters: look at GC22MENU.CPY (use with copy Version: 1.0 2017.07.20
+*> Parameters: look at GC22MENU.CPY (use with copy Version: 1.1
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
-*> Version:    1.0 2017.07.20
+*> Version:    1.1 2017.11.04
 *> Changelog:  1.0 first release.
+*>             1.1 Mn-Hot from 9(01) to 9(02)
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -208,7 +209,7 @@ Accept-a-Key.
 
         set wChars-Idx to Key-lc-Idx
         perform varying k from 1 by 1 until k > Item-Num
-                if Mn-Hot(k) not = '0' move Mn-Item(k) (Mn-Hot(k):1) to wChar end-if
+                if Mn-Hot(k) not = zero move Mn-Item(k) (Mn-Hot(k):1) to wChar end-if
                 inspect wChar converting 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'abcdefghijklmnopqrstuvwxyz'
                 if wChar = wChars-Ele(wChars-Idx)
                     *> the letter typed by the user is a valid hotkey !
@@ -243,7 +244,7 @@ Accept-a-Key.
 
         set wNums-Idx to Key-num-Idx
         perform varying k from 1 by 1 until k > Item-Num
-                if Mn-Hot(k) not = '0' move Mn-Item(k) (Mn-Hot(k):1) to wNum end-if
+                if Mn-Hot(k) not = zero move Mn-Item(k) (Mn-Hot(k):1) to wNum end-if
                 if wNum = wNums-Ele(wNums-Idx)
                     *> the digit typed by the user is a valid hotkey !
                     *> change display of active item to display as normal item
