@@ -6,8 +6,9 @@
 *> Usage:      call GC22MENU using Menu-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
-*> Version:    1.0 2017.07.20
+*> Version:    1.1 2017.11.04
 *> Changelog:  1.0 first release.
+*>             1.1 Mn-Hot from 9(01) to 9(02)
 *> ***********************************************************************************
 *> You can manage menus with max 24 items.
 *> Each item has to be inserted in a table of 25 elements, last char has tobe = low-value
@@ -63,7 +64,7 @@
      03 Mn-Tab  value low-value.
         05 Mn-Ele occurs 25.             *> last item has tobe low-value (x'00)')
            07 Mn-Act      pic x(01).     *> 1 = item is "active"
-           07 Mn-Hot      pic 9(01).     *> num of character used as hotkey
+           07 Mn-Hot      pic 9(02).     *> num of character used as hotkey
            07 Mn-r        pic 9(03).     *> row of menu item
            07 Mn-c        pic 9(03).     *> col of menu item
            07 Mn-Item     pic x(81).     *> menu item text, last char hast tobe = x'00'
