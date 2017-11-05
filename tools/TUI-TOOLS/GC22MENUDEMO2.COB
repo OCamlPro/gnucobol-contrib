@@ -8,8 +8,9 @@ program-id. GC22MENUDEMO2.
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
-*> Version:    1.0 2017.07.20
+*> Version:    1.1 2017.11.04
 *> Changelog:  1.0 first release.
+*>             1.1 Mn-Hot from 9(01) to 9(02)
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -211,12 +212,12 @@ DisplayMenuBar.
       move 'N' to wFirstTime
       initialize menu-area ALL TO VALUE
       move low-value to mn-tab
-      move z'12001001 Boxes       '      to mn-ele(1)
-      move z' 3001014 Buttons    '       to mn-ele(2)
-      move z' 2001026 Menu         '     to mn-ele(3)
-      move z' 2001040 Calendar    '      to mn-ele(4)
-      move z' 2001053 Other      '       to mn-ele(5)
-      move z' 2001065 Exit           '   to mn-ele(6)
+      move z'102001001 Boxes       '      to mn-ele(1)
+      move z' 03001014 Buttons    '       to mn-ele(2)
+      move z' 02001026 Menu         '     to mn-ele(3)
+      move z' 02001040 Calendar    '      to mn-ele(4)
+      move z' 02001053 Other      '       to mn-ele(5)
+      move z' 02001065 Exit           '   to mn-ele(6)
 
       move ' Demo of Boxes                            ' to mn-mess(1)
       move ' Demo of Buttons                          ' to mn-mess(2)
@@ -393,15 +394,15 @@ MoveDropDownMenu-Ex. exit.
 
 DropDownMenu1.
    perform InitializeDropDownMenu thru InitializeDropDownMenuEx
-   move '12003002 Menu item 1               ' & x'00' to mn-ele(1)
-   move ' 2004002 BOXDEMO                   ' & x'00' to mn-ele(2)
-   move ' 2005002 Option number 3           ' & x'00' to mn-ele(3)
-   move ' 2006002 Archivi saldi trimestrali ' & x'00' to mn-ele(4)
-   move ' 2007002 Duplica saldi trimestrali ' & x'00' to mn-ele(5)
-   move ' 9008002 Carica imponib.e ENASARCO ' & x'00' to mn-ele(6)
-   move ' 2009002 Ripresa saldi trimestrali ' & x'00' to mn-ele(7)
-   move ' 5010002 Crea floppy-disk x sede   ' & x'00' to mn-ele(8)
-   move ' 2011002 End of Work               ' & x'00' to mn-ele(9)
+   move '102003002 Menu item 1               ' & x'00' to mn-ele(1)
+   move ' 02004002 BOXDEMO                   ' & x'00' to mn-ele(2)
+   move ' 02005002 Option number 3           ' & x'00' to mn-ele(3)
+   move ' 02006002 Archivi saldi trimestrali ' & x'00' to mn-ele(4)
+   move ' 02007002 Duplica saldi trimestrali ' & x'00' to mn-ele(5)
+   move ' 09008002 Carica imponib.e ENASARCO ' & x'00' to mn-ele(6)
+   move ' 02009002 Ripresa saldi trimestrali ' & x'00' to mn-ele(7)
+   move ' 05010002 Crea floppy-disk x sede   ' & x'00' to mn-ele(8)
+   move ' 02011002 End of Work               ' & x'00' to mn-ele(9)
 
    move '  First option descrition - message  ' to mn-mess(1)
    move '  Some Boxes Demo                    '  to mn-mess(2)
@@ -419,15 +420,14 @@ DropDownMenu1Ex. exit.
 
 DropDownMenu2.
    perform InitializeDropDownMenu thru InitializeDropDownMenuEx
-   move '17003015 Demo Buttons              ' & x'00' to mn-ele(1)
-   move ' 2004015 Controllo archivio saldi  ' & x'00' to mn-ele(2)
-   move ' 2005015 Dist.Versamenti XXXXXXX   ' & x'00' to mn-ele(3)
-   move ' 2006015 Allegato alla distinta    ' & x'00' to mn-ele(4)
-   move ' 2007015 Individua Agenti comuni   ' & x'00' to mn-ele(5)
-   move ' 6008015 Sit.Versamenti xxxxxxxxxx ' & x'00' to mn-ele(6)
-   move ' 2009015 Sit.Imponibili ccccc      ' & x'00' to mn-ele(7)
-   move ' 3010015 Ind.Suplettiva Clientela  ' & x'00' to mn-ele(8)
-   move ' 3011015 Nuova Dist.Vers.cccccc    ' & x'00' to mn-ele(9)
+   move '107003015 Demo Buttons              ' & x'00' to mn-ele(1)
+   move ' 02004015 Controllo archivio saldi  ' & x'00' to mn-ele(2)
+   move ' 02005015 Dist.Versamenti XXXXXXX   ' & x'00' to mn-ele(3)
+   move ' 02007015 Individua Agenti comuni   ' & x'00' to mn-ele(5)
+   move ' 06008015 Sit.Versamenti xxxxxxxxxx ' & x'00' to mn-ele(6)
+   move ' 02009015 Sit.Imponibili ccccc      ' & x'00' to mn-ele(7)
+   move ' 03010015 Ind.Suplettiva Clientela  ' & x'00' to mn-ele(8)
+   move ' 03011015 Nuova Dist.Vers.cccccc    ' & x'00' to mn-ele(9)
 
    move ' Demo Buttons '    to mn-mess(1)
    move ' Controllo dati ccccccccccc trimestrale ed elenco degli errori trovati          ' to mn-mess(2)
@@ -445,22 +445,22 @@ DropDownMenu2ex. exit.
 
 DropDownMenu3.
    perform InitializeDropDownMenu thru InitializeDropDownMenuEx
-   move '19003027 Menu Demo                 ' & x'00' to mn-ele(1)
-   move ' 2004027 Inserisce nuovo Agente    ' & x'00' to mn-ele(2)
-   move ' 2005027 Stampa Anagrafica Agenti  ' & x'00' to mn-ele(3)
-   move ' 9006027 Elenco Movimenti          ' & x'00' to mn-ele(4)
-   move ' 2007027 Registrazione Movimenti   ' & x'00' to mn-ele(5)
-   move ' 3008027 Stampa Movimenti          ' & x'00' to mn-ele(6)
-   move ' 2009027 Posizione agente          ' & x'00' to mn-ele(7)
-   move ' 1010027 ------------------------- ' & x'00' to mn-ele(8)
-   move ' 2011027 Ripresa provvigioni       ' & x'00' to mn-ele(9)
-   move ' 2012027 Fatturazione agenti       ' & x'00' to mn-ele(10)
-   move ' 4013027 Stampa modulo assunzione  ' & x'00' to mn-ele(11)
-   move ' 5014027 Stampa modulo cessazione  ' & x'00' to mn-ele(12)
-   move ' 3015027 Sit.agenti alfabetica     ' & x'00' to mn-ele(13)
-   move ' 6016027 Sit.agenti per CDC        ' & x'00' to mn-ele(14)
-   move ' 1017027 ------------------------- ' & x'00' to mn-ele(15)
-   move ' 3018027 Movim.di solo ENASARCO    ' & x'00' to mn-ele(16)
+   move '109003027 Menu Demo                 ' & x'00' to mn-ele(1)
+   move ' 02004027 Inserisce nuovo Agente    ' & x'00' to mn-ele(2)
+   move ' 02005027 Stampa Anagrafica Agenti  ' & x'00' to mn-ele(3)
+   move ' 09006027 Elenco Movimenti          ' & x'00' to mn-ele(4)
+   move ' 02007027 Registrazione Movimenti   ' & x'00' to mn-ele(5)
+   move ' 03008027 Stampa Movimenti          ' & x'00' to mn-ele(6)
+   move ' 02009027 Posizione agente          ' & x'00' to mn-ele(7)
+   move ' 01010027 ------------------------- ' & x'00' to mn-ele(8)
+   move ' 02011027 Ripresa provvigioni       ' & x'00' to mn-ele(9)
+   move ' 02012027 Fatturazione agenti       ' & x'00' to mn-ele(10)
+   move ' 04013027 Stampa modulo assunzione  ' & x'00' to mn-ele(11)
+   move ' 05014027 Stampa modulo cessazione  ' & x'00' to mn-ele(12)
+   move ' 03015027 Sit.agenti alfabetica     ' & x'00' to mn-ele(13)
+   move ' 06016027 Sit.agenti per CDC        ' & x'00' to mn-ele(14)
+   move ' 01017027 ------------------------- ' & x'00' to mn-ele(15)
+   move ' 03018027 Movim.di solo ENASARCO    ' & x'00' to mn-ele(16)
    move ' Menu demo ... some options .....                                       '  to mn-mess(1)
    move ' Caricamento di una nuova anagrafica  agente                              '  to mn-mess(2)
    move ' Stampa delle anagrafiche agenti                                          '  to mn-mess(3)
@@ -484,16 +484,16 @@ DropDownMenu3ex. exit.
 
 DropDownMenu4.
    perform InitializeDropDownMenu thru InitializeDropDownMenuEx
-   move ' 2003041 1 Calendar Year           ' & x'00' to mn-ele(1)
-   move ' 2004041 2 Calendar2               ' & x'00' to mn-ele(2)
-   move '12005041 3 Calendar3  (one month)  ' & x'00' to mn-ele(3)
-   move ' 2006041 Date Picker               ' & x'00' to mn-ele(4)
-   move ' 2007041 e) option avalialble      ' & x'00' to mn-ele(5)
-   move ' 2008041 f) option avalialble      ' & x'00' to mn-ele(6)
-   move ' 2009041 g) option avalialble      ' & x'00' to mn-ele(7)
-   move ' 2010041 h) option avalialble      ' & x'00' to mn-ele(8)
-   move ' 2011041 i) option avalialble      ' & x'00' to mn-ele(9)
-   move ' 2012041 j) option avalialble      ' & x'00' to mn-ele(10)
+   move ' 02003041 1 Calendar Year           ' & x'00' to mn-ele(1)
+   move ' 02004041 2 Calendar2               ' & x'00' to mn-ele(2)
+   move '102005041 3 Calendar3  (one month)  ' & x'00' to mn-ele(3)
+   move ' 02006041 Date Picker               ' & x'00' to mn-ele(4)
+   move ' 02007041 e) option avalialble      ' & x'00' to mn-ele(5)
+   move ' 02008041 f) option avalialble      ' & x'00' to mn-ele(6)
+   move ' 02009041 g) option avalialble      ' & x'00' to mn-ele(7)
+   move ' 02010041 h) option avalialble      ' & x'00' to mn-ele(8)
+   move ' 02011041 i) option avalialble      ' & x'00' to mn-ele(9)
+   move ' 02012041 j) option avalialble      ' & x'00' to mn-ele(10)
 
    move ' A one year Calendar. Scroll days/months/years and select a date               ' to mn-mess(1)
    move ' A one year Calendar. Just to display                                          ' to mn-mess(2)
@@ -512,16 +512,16 @@ DropDownMenu4ex. exit.
 
 DropDownMenu5.
    perform InitializeDropDownMenu thru InitializeDropDownMenuEx
-   move '12003054 Dettagli Tabelle       ' & x'00'  to mn-ele(1)
-   move ' 2004054 Testate  Tabelle       ' & x'00'  to mn-ele(2)
-   move ' 2005054 Screen Saver           ' & x'00'  to mn-ele(3)
-   move ' 2006054>Backup                 ' & x'00'  to mn-ele(4)
-   move ' 2007054>Riorganizzazione       ' & x'00'  to mn-ele(5)
-   move ' 2008054 1. Crea file ASCII TXT ' & x'00'  to mn-ele(6)
-   move ' 2009054 2. Crea file ASCII TXT ' & x'00'  to mn-ele(7)
-   move ' 2010054 3. Crea file ASCII TXT ' & x'00'  to mn-ele(8)
-   move ' 2011054 Quadratura imponibili  ' & x'00'  to mn-ele(9)
-   move ' 2012054ðStampa etichette       ' & x'00'  to mn-ele(10)
+   move '102003054 Dettagli Tabelle       ' & x'00'  to mn-ele(1)
+   move ' 02004054 Testate  Tabelle       ' & x'00'  to mn-ele(2)
+   move ' 02005054 Screen Saver           ' & x'00'  to mn-ele(3)
+   move ' 02006054>Backup                 ' & x'00'  to mn-ele(4)
+   move ' 02007054>Riorganizzazione       ' & x'00'  to mn-ele(5)
+   move ' 02008054 1. Crea file ASCII TXT ' & x'00'  to mn-ele(6)
+   move ' 02009054 2. Crea file ASCII TXT ' & x'00'  to mn-ele(7)
+   move ' 02010054 3. Crea file ASCII TXT ' & x'00'  to mn-ele(8)
+   move ' 02011054 Quadratura imponibili  ' & x'00'  to mn-ele(9)
+   move ' 02012054ðStampa etichette       ' & x'00'  to mn-ele(10)
 
    move ' Gestione dettagli di una tabella  '     to mn-mess(1)
    move ' Gestione testate tabelle          '     to mn-mess(2)
@@ -540,11 +540,11 @@ DropDownMenu5ex. exit.
 
 DropDownMenu6.
    perform InitializeDropDownMenu thru InitializeDropDownMenuEx
-   move '12003066 Help        ' & x'00' to mn-ele(1)
-   move ' 2004066 Print help  ' & x'00' to mn-ele(2)
-   move ' 2005066 DOS         ' & x'00' to mn-ele(3)
-   move ' 2006066 About       ' & x'00' to mn-ele(4)
-   move ' 2007066 End of work ' & x'00' to mn-ele(5)
+   move '102003066 Help        ' & x'00' to mn-ele(1)
+   move ' 02004066 Print help  ' & x'00' to mn-ele(2)
+   move ' 02005066 DOS         ' & x'00' to mn-ele(3)
+   move ' 02006066 About       ' & x'00' to mn-ele(4)
+   move ' 02007066 End of work ' & x'00' to mn-ele(5)
    move ' Display the documentation manual' to mn-mess(1)
    move ' Print a manual    ' to mn-mess(2)
    move ' Temporary exit to DOS (type ''EXIT'' to return this menu).' to mn-mess(3)
