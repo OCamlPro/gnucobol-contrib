@@ -9,12 +9,13 @@ PROGRAM-ID. GC18RADIOBUTTON is initial.
 *>             make only one of items "marked/selected" with cursors/page/tab keys.
 *> Tectonics:  cobc -m GC18RADIOBUTTON.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC18RADIOBUTTON using RADIOBUTTON-AREA
-*> Parameters: look at GC18RADIOBUTTON.cpy (use with copy Version: 1.0)
+*> Parameters: look at GC18RADIOBUTTON.cpy (use with copy Version: 1.1)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.1 2017.10.04
+*> Version:    1.2 2017.11.04
 *> Changelog:  1.0 first release.
 *>             1.1 hot key management added
+*>             1.2 Rb-Hot from 9(01) to 9(02)
 *> ***********************************************************************************
 
 ENVIRONMENT DIVISION.
@@ -197,7 +198,7 @@ loop-user-input.
 
         set wChars-Idx to Key-lc-Idx
         perform varying k from 1 by 1 until k > Rbu-Number
-                if Rb-Hot(k) not = '0' move Rb-Item(k) (Rb-Hot(k):1) to wChar end-if
+                if Rb-Hot(k) not = zero move Rb-Item(k) (Rb-Hot(k):1) to wChar end-if
                 inspect wChar converting 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'abcdefghijklmnopqrstuvwxyz'
                 if wChar = wChars-Ele(wChars-Idx)
                     *> the letter typed by the user is a valid hotkey !
@@ -233,7 +234,7 @@ loop-user-input.
 
         set wNums-Idx to Key-num-Idx
         perform varying k from 1 by 1 until k > Rbu-Number
-                if Rb-Hot(k) not = '0' move Rb-Item(k) (Rb-Hot(k):1) to wNum end-if
+                if Rb-Hot(k) not = zero move Rb-Item(k) (Rb-Hot(k):1) to wNum end-if
                 if wNum = wNums-Ele(wNums-Idx)
                     *> the digit typed by the user is a valid hotkey !
                     *> change display of active item to display as normal item
