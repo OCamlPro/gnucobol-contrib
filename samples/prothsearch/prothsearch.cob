@@ -34,10 +34,12 @@
 *> Date       Name / Change description 
 *> ========== ==================================================================
 *> 2015.05.14 Laszlo Erdos: 
-*>            - First version created.
-*>------------------------------------------------------------------------------
-*> yyyy.mm.dd
-*>
+*>            First version created.
+*> 2017.10.19 Laszlo Erdos: 
+*>            New parameters: 
+*>            - max-small-prime <num>
+*>            - save <num>
+*>            - load
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -61,9 +63,12 @@
       88 V-CMD-LINE-PAR-KMAX           VALUE "-kmax".
       88 V-CMD-LINE-PAR-NMIN           VALUE "-nmin".
       88 V-CMD-LINE-PAR-NMAX           VALUE "-nmax".
-      88 V-CMD-LINE-PAR-VERBOSE        VALUE "-v", "-verbose".
-      88 V-CMD-LINE-PAR-WRITE-FILE     VALUE "-wf", "-write-file".
+      88 V-CMD-LINE-PAR-VERBOSE        VALUE "-v"  , "-verbose".
+      88 V-CMD-LINE-PAR-WRITE-FILE     VALUE "-wf" , "-write-file".
       88 V-CMD-LINE-PAR-PRECHECK       VALUE "-pre", "-precheck".
+      88 V-CMD-LINE-PAR-MSP            VALUE "-msp", "-max-small-prime".
+      88 V-CMD-LINE-PAR-SAVE           VALUE "-sv" , "-save".
+      88 V-CMD-LINE-PAR-LOAD           VALUE "-ld" , "-load".
 *> command line flags      
    02 CMD-LINE-PAR-K-FLAG              PIC 9(1).
       88 V-CMD-LINE-PAR-K-NO           VALUE 0.
@@ -92,6 +97,15 @@
    02 CMD-LINE-PAR-PRECHECK-FLAG       PIC 9(1).
       88 V-CMD-LINE-PAR-PRECHECK-NO    VALUE 0.
       88 V-CMD-LINE-PAR-PRECHECK-YES   VALUE 1.
+   02 CMD-LINE-PAR-MSP-FLAG            PIC 9(1).
+      88 V-CMD-LINE-PAR-MSP-NO         VALUE 0.
+      88 V-CMD-LINE-PAR-MSP-YES        VALUE 1.
+   02 CMD-LINE-PAR-SAVE-FLAG           PIC 9(1).
+      88 V-CMD-LINE-PAR-SAVE-NO        VALUE 0.
+      88 V-CMD-LINE-PAR-SAVE-YES       VALUE 1.
+   02 CMD-LINE-PAR-LOAD-FLAG           PIC 9(1).
+      88 V-CMD-LINE-PAR-LOAD-NO        VALUE 0.
+      88 V-CMD-LINE-PAR-LOAD-YES       VALUE 1.
 
  01 CMD-LINE-VALUES.
    02 CMD-LINE-K                       BINARY-LONG UNSIGNED.
@@ -100,6 +114,8 @@
    02 CMD-LINE-KMAX                    BINARY-LONG UNSIGNED.
    02 CMD-LINE-NMIN                    BINARY-LONG UNSIGNED.
    02 CMD-LINE-NMAX                    BINARY-LONG UNSIGNED.
+   02 CMD-LINE-MSP                     BINARY-LONG UNSIGNED.
+   02 CMD-LINE-SAVE-NUM                BINARY-LONG UNSIGNED.
 
  01 CMD-LINE-END-FLAG                  PIC 9(1).
     88 V-CMD-LINE-END-NO               VALUE 0.
@@ -144,53 +160,58 @@
  01 WS-START-TIME                      PIC X(22). 
  01 WS-END-TIME                        PIC X(22). 
  
-*> if the parameter "write-file" is set, then a new run-dir will be created
- 01 WS-RUN-DIR.
-   02 FILLER                           PIC X(4) VALUE "RUN_".
-   02 CDT-YEAR                         PIC 9(4).
-   02 FILLER                           PIC X(1) VALUE "-".
-   02 CDT-MONTH                        PIC 9(2). *> 01-12
-   02 FILLER                           PIC X(1) VALUE "-".
-   02 CDT-DAY                          PIC 9(2). *> 01-31
-   02 FILLER                           PIC X(1) VALUE "_".
-   02 CDT-HOUR                         PIC 9(2). *> 00-23
-   02 FILLER                           PIC X(1) VALUE "-".
-   02 CDT-MINUTES                      PIC 9(2). *> 00-59
-   02 FILLER                           PIC X(1) VALUE "-".
-   02 CDT-SECONDS                      PIC 9(2). *> 00-59
-   02 FILLER                           PIC X(1) VALUE "_".
-   02 CDT-HUNDREDTHS-OF-SECS           PIC 9(2). *> 00-99
- 
-*> linkage for the prothtest module 
+*> for the prothtest module 
  01 LNK-PROTHTEST.
-*> input; k in: k*2^n + 1
-   02 LNK-K                            BINARY-LONG UNSIGNED.
-*> input; n exponent in: k*2^n + 1
-   02 LNK-N                            BINARY-LONG UNSIGNED.
-*> input; write Proth numbers in files 
-   02 LNK-WRITE-FILE-FLAG              PIC 9(1).
-      88 V-WRITE-FILE-NO               VALUE 0.
-      88 V-WRITE-FILE-YES              VALUE 1.
-*> input; precheck only 
-   02 LNK-PRECHECK-ONLY-FLAG           PIC 9(1).
-      88 V-PRECHECK-ONLY-NO            VALUE 0.
-      88 V-PRECHECK-ONLY-YES           VALUE 1.
-*> output; flag
-   02 LNK-RESULT-FLAG                  PIC 9(1).
-      88 V-NO-RESULT                   VALUE 0.
-      88 V-PRIME-NO                    VALUE 1.
-      88 V-PRIME-YES                   VALUE 2.
-      88 V-NO-JACOBI-FOUND             VALUE 3.
-      88 V-K-GE-2-POWER-N              VALUE 4.
-      88 V-K-NOT-ODD                   VALUE 5.
-      88 V-WRITE-FILE-ERROR            VALUE 6.
-      88 V-CLOSE-FILE-ERROR            VALUE 7.
-*> output; number of digits
-   02 LNK-PROTHTEST-DIGITS             BINARY-LONG UNSIGNED.
-*> output; "a" in Jacobi symbol (a/p)
-   02 LNK-JACOBI-A-NUM                 BINARY-LONG UNSIGNED.
-*> output; the divisor, if not prime
-   02 LNK-DIVISOR                      BINARY-LONG UNSIGNED.
+   02 LNK-INPUT.
+*>   k in: k*2^n + 1
+     03 LNK-K                          BINARY-LONG UNSIGNED.
+*>   n exponent in: k*2^n + 1          
+     03 LNK-N                          BINARY-LONG UNSIGNED.
+*>   diplay more information           
+     03 LNK-VERBOSE-FLAG               PIC 9(1).
+        88 V-VERBOSE-NO                VALUE 0.
+        88 V-VERBOSE-YES               VALUE 1.
+*>   write Proth numbers in files      
+     03 LNK-WRITE-FILE-FLAG            PIC 9(1).
+        88 V-WRITE-FILE-NO             VALUE 0.
+        88 V-WRITE-FILE-YES            VALUE 1.
+*>   precheck only                     
+     03 LNK-PRECHECK-ONLY-FLAG         PIC 9(1).
+        88 V-PRECHECK-ONLY-NO          VALUE 0.
+        88 V-PRECHECK-ONLY-YES         VALUE 1.
+*>   for small primes division test 20,000 <= LNK-MAX-SMALL-PRIME <= 715,827,882
+     03 LNK-MAX-SMALL-PRIME            BINARY-LONG UNSIGNED.
+*>   save state after num counter step 
+     03 LNK-SAVE-FLAG                  PIC 9(1).
+        88 V-SAVE-NO                   VALUE 0.
+        88 V-SAVE-YES                  VALUE 1.
+*>   save num counter                  
+     03 LNK-SAVE-NUM                   BINARY-LONG UNSIGNED.
+*>   load last saved state             
+     03 LNK-LOAD-FLAG                  PIC 9(1).
+        88 V-LOAD-NO                   VALUE 0.
+        88 V-LOAD-YES                  VALUE 1.
+   02 LNK-OUTPUT.                      
+*>   flag                              
+     03 LNK-RESULT-FLAG                PIC 9(2).
+        88 V-NO-RESULT                 VALUE  0.
+        88 V-PRIME-NO                  VALUE  1.
+        88 V-PRIME-YES                 VALUE  2.
+        88 V-NO-JACOBI-FOUND           VALUE  3.
+        88 V-K-GE-2-POWER-N            VALUE  4.
+        88 V-K-NOT-ODD                 VALUE  5.
+        88 V-NOT-IN-SIX-PLUS-MINUS-1   VALUE  6.
+        88 V-WRITE-FILE-ERROR          VALUE  7.
+        88 V-READ-FILE-ERROR           VALUE  8.
+        88 V-CLOSE-FILE-ERROR          VALUE  9.
+        88 V-DELETE-FILE-ERROR         VALUE 10.
+        88 V-CHANGE-DIR-ERROR          VALUE 11.
+*>   number of digits                  
+     03 LNK-PROTHTEST-DIGITS           BINARY-LONG UNSIGNED.
+*>   "a" in Jacobi symbol (a/p)        
+     03 LNK-JACOBI-A-NUM               BINARY-LONG UNSIGNED.
+*>   the divisor, if not prime         
+     03 LNK-DIVISOR                    BINARY-LONG UNSIGNED.
       
  PROCEDURE DIVISION.
 
@@ -214,15 +235,6 @@
 *>  read parameter from command line    
     PERFORM READ-CMD-LINE
 
-*>  if the Proth numbers will be written in files,
-*>  then create and change dir
-    IF  V-ERROR-NO
-    AND V-CMD-LINE-PAR-WRITE-FILE-YES
-    AND V-CMD-LINE-PAR-PRECHECK-NO
-    THEN
-       PERFORM CREATE-RUN-DIR
-    END-IF
-    
     IF V-ERROR-NO
     THEN
        IF  V-CMD-LINE-PAR-K-YES 
@@ -262,10 +274,7 @@
     DISPLAY "Program end:   " WS-DATE-TIME
     
     STOP RUN
-    
     .
- MAIN-PROTHSEARCH-EX.
-    EXIT.
 
 *>------------------------------------------------------------------------------
  READ-CMD-LINE SECTION.
@@ -289,10 +298,8 @@
     THEN
        PERFORM CHECK-PARAMETERS
     END-IF
-    
     .
- READ-CMD-LINE-EX.
-    EXIT.
+    EXIT SECTION .
 
 *>------------------------------------------------------------------------------
  PROCESS-CMD-LINE SECTION.
@@ -380,15 +387,40 @@
         WHEN V-CMD-LINE-PAR-PRECHECK      
              SET V-CMD-LINE-PAR-PRECHECK-YES    TO TRUE
 
+        WHEN V-CMD-LINE-PAR-MSP               
+             SET V-CMD-LINE-PAR-MSP-YES        TO TRUE
+             MOVE SPACES TO CMD-LINE-PAR
+             ACCEPT CMD-LINE-PAR FROM ARGUMENT-VALUE
+             MOVE FUNCTION NUMVAL(CMD-LINE-PAR) TO CMD-LINE-MSP
+             IF CMD-LINE-MSP = ZEROES
+             THEN
+                SET V-ERROR-YES TO TRUE
+                DISPLAY "prothsearch: Error: max-small-prime (msp) not numeric!"
+                PERFORM DISPLAY-USAGE
+             END-IF
+             
+        WHEN V-CMD-LINE-PAR-SAVE               
+             SET V-CMD-LINE-PAR-SAVE-YES        TO TRUE
+             MOVE SPACES TO CMD-LINE-PAR
+             ACCEPT CMD-LINE-PAR FROM ARGUMENT-VALUE
+             MOVE FUNCTION NUMVAL(CMD-LINE-PAR) TO CMD-LINE-SAVE-NUM
+             IF CMD-LINE-SAVE-NUM = ZEROES
+             THEN
+                SET V-ERROR-YES TO TRUE
+                DISPLAY "prothsearch: Error: save not numeric!"
+                PERFORM DISPLAY-USAGE
+             END-IF
+             
+        WHEN V-CMD-LINE-PAR-LOAD      
+             SET V-CMD-LINE-PAR-LOAD-YES        TO TRUE
+             
         WHEN OTHER
              SET V-ERROR-YES TO TRUE
              DISPLAY "prothsearch: Error: Invalid parameter!"
              PERFORM DISPLAY-USAGE 
     END-EVALUATE
-
     .
- PROCESS-CMD-LINE-EX.
-    EXIT.
+    EXIT SECTION .
 
 *>------------------------------------------------------------------------------
  CHECK-PARAMETERS SECTION.
@@ -425,11 +457,29 @@
              SET V-ERROR-YES TO TRUE
              DISPLAY "prothsearch: Error: nmin > nmax!"
              PERFORM DISPLAY-USAGE
-    END-EVALUATE
 
+        WHEN V-CMD-LINE-PAR-MSP-YES AND
+             (CMD-LINE-MSP < 20000 OR CMD-LINE-MSP > 715827882)
+             SET V-ERROR-YES TO TRUE
+             DISPLAY "prothsearch: Error: 20,000 <= msp <num> <= 715,827,882!"
+             PERFORM DISPLAY-USAGE
+             
+        WHEN V-CMD-LINE-PAR-SAVE-YES AND 
+             (V-CMD-LINE-PAR-KMIN-YES OR V-CMD-LINE-PAR-KMAX-YES OR
+              V-CMD-LINE-PAR-NMIN-YES OR V-CMD-LINE-PAR-NMAX-YES)
+             SET V-ERROR-YES TO TRUE
+             DISPLAY "prothsearch: Error: Invalid parameter kombination!"
+             PERFORM DISPLAY-USAGE
+             
+        WHEN V-CMD-LINE-PAR-LOAD-YES AND 
+             (V-CMD-LINE-PAR-KMIN-YES OR V-CMD-LINE-PAR-KMAX-YES OR
+              V-CMD-LINE-PAR-NMIN-YES OR V-CMD-LINE-PAR-NMAX-YES)
+             SET V-ERROR-YES TO TRUE
+             DISPLAY "prothsearch: Error: Invalid parameter kombination!"
+             PERFORM DISPLAY-USAGE
+    END-EVALUATE
     .
- CHECK-PARAMETERS-EX.
-    EXIT.
+    EXIT SECTION .
     
 *>------------------------------------------------------------------------------
  DISPLAY-USAGE SECTION.
@@ -438,9 +488,11 @@
     DISPLAY " "
     DISPLAY "Usage:"
     DISPLAY " "
-    DISPLAY "prothsearch { -k <num> -n <num> [-v] [-wf] [-pre] }"
+    DISPLAY "prothsearch { -k <num> -n <num> [-v] [-wf] [-pre] "
+                          "[-msp <num>] [-sv <num>] [ld] }"
     DISPLAY "            { -kmin <num> -kmax <num> "
-                          "-nmin <num> -nmax <num> [-v] [-wf] [-pre] }"
+                          "-nmin <num> -nmax <num> [-v] [-wf] [-pre] "
+                          "[-msp <num>] }"
     DISPLAY " "
     DISPLAY "protsearch is a primality test for Proth numbers"
     DISPLAY " "
@@ -452,46 +504,27 @@
     DISPLAY "-v,   -verbose          Verbose mode"
     DISPLAY "-wf,  -write-file       Write Proth numbers in files"
     DISPLAY "-pre, -precheck         Only precheck, no powm test"
+    DISPLAY "-msp, -max-small-prime <num>"
+    DISPLAY "                        For small prime div test, default = 20,000"
+    DISPLAY "                        Value: 20,000 <= <num> <= 715,827,882"
+    DISPLAY "-sv,  -save <num>       Save state after <num> countdown steps"
+                                     ", write log file"
+    DISPLAY "-ld,  -load             Load last saved state"
     DISPLAY " "
-
     .
- DISPLAY-USAGE-EX.
-    EXIT.
+    EXIT SECTION .
 
-*>------------------------------------------------------------------------------
- CREATE-RUN-DIR SECTION.
-*>------------------------------------------------------------------------------
-
-*>  create run-dir name with current date-time
-    MOVE CORR CURRENT-DATE-AND-TIME TO WS-RUN-DIR
-    
-    CALL "CBL_CREATE_DIR" USING WS-RUN-DIR END-CALL
-    
-    IF RETURN-CODE NOT = ZEROES
-    THEN
-       SET V-ERROR-YES TO TRUE
-       DISPLAY "prothsearch: Error: can not create run dir!"
-    END-IF
-
-*>  change dir in new run-dir    
-    CALL "CBL_CHANGE_DIR" USING WS-RUN-DIR END-CALL
-    
-    IF RETURN-CODE NOT = ZEROES
-    THEN
-       SET V-ERROR-YES TO TRUE
-       DISPLAY "prothsearch: Error: can not change dir!"
-    END-IF
-    
-    .
- CREATE-RUN-DIR-EX.
-    EXIT.
-    
 *>------------------------------------------------------------------------------
  CALL-PROTHTEST SECTION.
 *>------------------------------------------------------------------------------
 
+    MOVE CMD-LINE-PAR-VERBOSE-FLAG     TO LNK-VERBOSE-FLAG
     MOVE CMD-LINE-PAR-WRITE-FILE-FLAG  TO LNK-WRITE-FILE-FLAG
     MOVE CMD-LINE-PAR-PRECHECK-FLAG    TO LNK-PRECHECK-ONLY-FLAG
+    MOVE CMD-LINE-MSP                  TO LNK-MAX-SMALL-PRIME
+    MOVE CMD-LINE-PAR-SAVE-FLAG        TO LNK-SAVE-FLAG
+    MOVE CMD-LINE-SAVE-NUM             TO LNK-SAVE-NUM
+    MOVE CMD-LINE-PAR-LOAD-FLAG        TO LNK-LOAD-FLAG
 
 *>  start time    
     MOVE FUNCTION CURRENT-DATE         TO CURRENT-DATE-AND-TIME
@@ -519,10 +552,18 @@
              MOVE "K >= 2^N"           TO WS-RESULT-TEXT
         WHEN V-K-NOT-ODD               OF LNK-RESULT-FLAG
              MOVE "K not odd"          TO WS-RESULT-TEXT
+        WHEN V-NOT-IN-SIX-PLUS-MINUS-1 OF LNK-RESULT-FLAG          
+             MOVE "not in 6*j+-1"      TO WS-RESULT-TEXT
         WHEN V-WRITE-FILE-ERROR        OF LNK-RESULT-FLAG
              MOVE "write error"        TO WS-RESULT-TEXT
+        WHEN V-READ-FILE-ERROR         OF LNK-RESULT-FLAG
+             MOVE "read error"         TO WS-RESULT-TEXT
         WHEN V-CLOSE-FILE-ERROR        OF LNK-RESULT-FLAG
              MOVE "close error"        TO WS-RESULT-TEXT
+        WHEN V-DELETE-FILE-ERROR       OF LNK-RESULT-FLAG
+             MOVE "delete error"       TO WS-RESULT-TEXT
+        WHEN V-CHANGE-DIR-ERROR        OF LNK-RESULT-FLAG
+             MOVE "dir error"          TO WS-RESULT-TEXT
         WHEN OTHER  
              MOVE "maybe prime"        TO WS-RESULT-TEXT
     END-EVALUATE
@@ -552,9 +593,7 @@
                "; End: "          WS-END-TIME
        END-DISPLAY
     END-IF
-    
     .
- CALL-PROTHTEST-EX.
-    EXIT.
+    EXIT SECTION .
     
  END PROGRAM prothsearch.
