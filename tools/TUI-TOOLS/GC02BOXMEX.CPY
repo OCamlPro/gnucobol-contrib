@@ -6,7 +6,7 @@
 *> Usage:      call GC02BOXMEX using Boxmex-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2016.06.15
+*> Version:    1.1 2016.06.15
 *> Changelog:  1.0 first release.
 *>             1.1 added OkButton
 *> ***********************************************************************************
@@ -14,6 +14,7 @@
 *> --------- -------------------------------------------------------------------------
 *> wait      Y= display the message and wait for a user keypress
 *>           N= diisplay the message and returns to caller without wait for a keypress by the user
+*>           in that case the caller can display 2 or more buttons associated to the message
 *> savescr   Y= program saves the screen before displaying the message and restore it
 *>              when user type enter to return to the application
 *>              If savescr = Y and wait = Y, the user can move the boxmessage
@@ -52,6 +53,7 @@
       05 Bxm-r2c2.
          07 Bxm-r2   pic 9(03) value 025.
          07 Bxm-c2   pic 9(03) value 080.
+
    03 Bxm-Parameters.
       05 Bxm-bco     pic 9(01) value white.       *> back color of box
       05 Bxm-fco     pic 9(01) value white.       *> fore color of box
@@ -63,19 +65,20 @@
       05 Bxm-3D      pic x(01) value 'E'.         *> N=no3D, 3D effect: R= Recessed, E= Embossed/Relief
       05 Bxm-add1c   pic x(01) value 'N'.         *> enlarge box for a better 3D effect
       05 Bxm-beep    pic x(01) value 'N'.         *> Y = bell
-      *> colors for the message
+      *> colors of the message
       05 Bxm-bcoM       pic 9(01) value white.    *> back color of message text (use same of box )
       05 Bxm-fcoM       pic 9(01) value black.    *> fore color of message text
       05 Bxm-fcoMH      pic X(01) value 'Y'.      *> Hilight Foreground  (message text)
+
       05 Bxm-wait       pic x(01) value 'Y'.
       05 Bxm-savescr    pic x(01) value 'Y'.
       05 Bxm-OkButton   pic x(01) value 'Y'.
       05 Bxm-Click      pic x(01) value 'N'.
-      05 Bxm-tit     pic x(01) value 'N'.         *> Y = display a title at top of the box
-      05 Bxm-titBco  pic 9(01) value white.       *> back color of titlebox
-      05 Bxm-titFco  pic 9(01) value white.       *> fore color of titlebox
-      05 Bxm-titFcoH pic X(01) value 'Y'.         *> hiligth fore color of titlebox ?
-      05 Bxm-titDes  pic x(80) value space.       *> string from 1 to 80 char, to be used as a box title
+      05 Bxm-tit        pic x(01) value 'N'.         *> Y = display a title at top of the box
+      05 Bxm-titBco     pic 9(01) value white.       *> back color of titlebox
+      05 Bxm-titFco     pic 9(01) value white.       *> fore color of titlebox
+      05 Bxm-titFcoH    pic X(01) value 'Y'.         *> hiligth fore color of titlebox ?
+      05 Bxm-titDes     pic x(80) value space.       *> string from 1 to 80 char, to be used as a box title
    *> 80 columns - 2 cols for box frame + 1 column for x'00' to have an ASCIIZ string = 79
-     03 Bxm-tabmex.
+   03 Bxm-tabmex.
       05 Bxm-mex     pic x(79) occurs 20 value low-value.
