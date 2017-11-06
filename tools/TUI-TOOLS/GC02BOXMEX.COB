@@ -55,38 +55,12 @@ WORKING-STORAGE SECTION.
 01  wVisibilityNew   BINARY-SHORT .
 01  wVisibilityOld   BINARY-SHORT .
 
-01 GC09BUTTONS pic x(11) value 'GC09BUTTONS'.
+*> ***********************************************************************************
+*>  SAME PARAMETERS OF GC09BUTTONS - call to GC09BUTTONS has been deleted,
+*>  the code to diaplay on ebutton has been inserted in this program
+*> ***********************************************************************************
 01 Buttons-Area.
 *> ***********************************************************************************
-*> GnuCOBOL TT (TUI TOOLS) AND UTILITIES COLLECTION
-*> Purpose:    WORK-AREA FOR GC09BUTTONS.COB - DISPLAY BUTTONS
-*> Usage:      call GC09BUTTONS using Buttons-Area
-*> Author:     Eugenio Di Lorenzo - Italia (DILO)
-*> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.1 2017.02.28
-*> Changelog:  1.0 first release.
-*>             1.1 added beep parameter
-*> ***********************************************************************************
-*> on screen You can manage max 24 buttons of 1 row .
-*> Each button has tobe inserted in a table with 25 elements
-*> there has to be a last item filled with low-value
-*>
-*> Example of use.
-*>
-*> step 1. display a box (not mandatory ) but good to have a better user interface
-*>     move 08    to box-r1
-*>     move 47    to box-c1
-*>     move 18    to box-r2
-*>     move 68    to box-c2
-*>     CALL GC01BOX USING BOX-AREA
-*>
-*> step 2. display Buttons inside the BOX
-*>   (remember to set the button's shadow background to the same color of the box background)
-*>   Move ' 3010051  Confirm    ' & x'00' to Bu-Ele(01)
-*>   Move ' 4012051    Exit     ' & x'00' to Bu-Ele(02)
-*>   Move '13014051   Ignore    ' & x'00' to Bu-Ele(03)
-*>   Move ' 5016051     OK      ' & x'00' to Bu-Ele(04)
-*>   CALL GC09BUTTONS using Buttons-Area.
 *>
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
@@ -156,7 +130,6 @@ WORKING-STORAGE SECTION.
      03 Bu-Key            pic 9(04).
 
 copy 'GC01BOX.CPY'.
-*> copy 'GC09BUTTONS.CPY'.
 COPY 'GC98KEYCODE.CPY'.
 
 LINKAGE SECTION.
@@ -173,7 +146,7 @@ set environment 'COB_SCREEN_ESC'        TO 'Y'.
 if Bxm-savescr = 'Y' perform ScreenSave thru ScreenSaveEx end-if.
 
 LoopMain.
-    *> Display the BOX
+    *> Display the BOX around the message
     initialize Box-area ALL TO VALUE
     move Bxm-rc     to Box-rc.
     move Bxm-bco    to Box-bco Bu-bcoShadow
@@ -181,7 +154,6 @@ LoopMain.
     move Bxm-fcoH   to Box-fcoH
     move Bxm-style  to Box-Style
     move Bxm-custom to Box-custom
-    *> move Bxm-fill   to Box-fill
     move 'Y'        to Box-fill
     move Bxm-shadow to Box-Shadow
     move Bxm-3D     to Box-3D
@@ -216,33 +188,9 @@ LoopMain.
 
 DisplayMessageEx.
 
-*> *> ***********************************************************************************
-*> *> DISPLAY AN OK BUTTON AT -2 ROWS from LOWER BOX border
-*> *> ***********************************************************************************
-*> initialize Buttons-area ALL TO VALUE
-*> move low-value to Bu-tab
-
-*> *> (back of the button has to be the same than the back of the box )
-*> move Bxm-bco to Bu-bcoShadow
-*> move '0'   to Bu-Arrow
-*> *> move '<>'  to Bu-Arrow-chars
-*> move '14000000   OK   ' & x'00' to Bu-Ele(01)
-*> compute Bu-r(1)  = Bxm-r2 - 2
-*> compute Bu-c(1)  = Bxm-c1 + ((Bxm-c2 - Bxm-c1) / 2 ) - 4
-*> *> call BUTTONS (it hide cursor, waits for a user input, reset cursor to its previous state)
-*> call GC09BUTTONS using Buttons-Area
-
-*> *> hide the cursor and save its previous state
-*> *> (use always a display or an accept at .... before to have a call to 'initscr'
-*> move 0 to wVisibilityNew
-*> call static 'curs_set' using by value wVisibilityNew returning wVisibilityOld end-call
-*> accept omitted
-*> *> reset (show) the cursor to its previous state
-*> move wVisibilityOld to wVisibilityNew
-*> call static 'curs_set' using by value wVisibilityNew returning wVisibilityOld end-call
 
 *> ***********************************************************************************
-*> DISPLAY AN OK BUTTON AT -2 ROWS from LOWER BOX border
+*> IF REQUESTED DISPLAY AN OK BUTTON AT -2 ROWS from LOWER BOX border
 *> ***********************************************************************************
 if Bxm-OkButton  = 'Y'
    initialize Buttons-area ALL TO VALUE
@@ -254,7 +202,6 @@ if Bxm-OkButton  = 'Y'
    *> (back of the button has to be the same than the back of the box)
    move Bxm-bco to Bu-bcoShadow
    move '0'    to Bu-Arrow
-   *> move '<>'  to Bu-Arrow-chars
    move '14000000   OK   ' & x'00' to Bu-Ele(01)
    compute Bu-r(1)  = Bxm-r2 - 2
    compute Bu-c(1)  = Bxm-c1 + ((Bxm-c2 - Bxm-c1) / 2 ) - 4
@@ -264,11 +211,14 @@ end-if.
 
 LoopUserInput.
     if Bxm-wait = 'Y'
+      *> after dispalyed the message wait for user key press
        call static "getch" returning Key-Pressed end-call
     else
+       *> after dispalyed the message return to caller
        go to EndProgram
     end-if
 
+    *> test if the user has pressed a cursor KEY
     if Bxm-savescr = 'Y'
        EVALUATE TRUE
            when Key-Pressed = Key-CursRight
@@ -298,6 +248,7 @@ LoopUserInput.
        END-EVALUATE
     end-if
 
+   *> test if the user has pressed Enter or Escape
    IF Key-Pressed = Key-Enter or Key-Pressed = Key-Escape
       if Bxm-click   = 'Y' perform Click         thru Click-Ex        end-if
       if Bxm-savescr = 'Y' perform ScreenRestore thru ScreenRestoreEx end-if
@@ -319,11 +270,11 @@ Display-Button.
 *> DISPLAY AN OK BUTTON AT -2 ROWS from LOWER BOX border
 *> ***********************************************************************************
 
-   *> following statements are copied from GC09BUTTONS.COB (call to GC09BUTTONS deleted)
-   *> this program can diapsly a single button and controls if have to wit for user key or not.
-   If Bu-Arrow = '1' or '2'
-     perform varying j from 1 by 1 until Bu-Item(i) (j:1) = x'00' end-perform
-   End-if
+*> following statements have been copied from GC09BUTTONS.COB (call to GC09BUTTONS has been deleted)
+*> this program can diasaplay a single button and controls if have to wait for a user key or not.
+   if Bu-Arrow = '1' or '2'
+      perform varying j from 1 by 1 until Bu-Item(i) (j:1) = x'00' end-perform
+   end-if
 
    Evaluate True
      when Bu-Arrow = '1'
@@ -405,9 +356,8 @@ Shadow-Button-EX. exit.
 *> redisplay the button 1 column right, without shedow and in black/white
 *> *******************************************************************************
 Click.
-    *> Move Bu-Selected to i
     Move 1 to i
-    add 1 to Bu-c(i)
+    add  1 to Bu-c(i)
     move black to bco
     move white to fco
     Move "N"   to Bu-shadow
@@ -434,7 +384,7 @@ Click1.
     if wLoop < len-voce go to click1 end-if
     *> small delay to show the click effect
     CALL "C$SLEEP" USING 1
-   .
+    continue.
 Click-Ex. exit.
 
 ScreenSave.
