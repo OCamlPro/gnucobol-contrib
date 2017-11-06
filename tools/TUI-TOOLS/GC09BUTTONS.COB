@@ -187,7 +187,7 @@ call static "getch" returning Key-Pressed end-call
 
         set wChars-Idx to Key-lc-Idx
         perform varying k from 1 by 1 until k > Btn-Number
-                if Bu-Hot(k) not = '0' move Bu-Item(k) (Bu-Hot(k):1) to wChar end-if
+                if Bu-Hot(k) not = zero move Bu-Item(k) (Bu-Hot(k):1) to wChar end-if
                 inspect wChar converting 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'abcdefghijklmnopqrstuvwxyz'
                 if wChar = wChars-Ele(wChars-Idx)
                     *> the letter typed by the user is a valid hotkey !
@@ -221,7 +221,7 @@ call static "getch" returning Key-Pressed end-call
 
         set wNums-Idx to Key-num-Idx
         perform varying k from 1 by 1 until k > Btn-Number
-                if Bu-Hot(k) not = '0' move Bu-Item(k) (Bu-Hot(k):1) to wNum end-if
+                if Bu-Hot(k) not = zero move Bu-Item(k) (Bu-Hot(k):1) to wNum end-if
                 if wNum = wNums-Ele(wNums-Idx)
                     *> the digit typed by the user is a valid hotkey !
                     *> change display of active item to display as normal item
