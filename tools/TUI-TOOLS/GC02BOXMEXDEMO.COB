@@ -168,9 +168,9 @@ message3.
     move ">" to Bu-Arrow-Char2
     move 'Y' to Bu-Click
 
-    Move '13015020  Continue   ' & x'00' to Bu-Ele(01)
-    Move ' 5015035   Cancel    ' & x'00' to Bu-Ele(02)
-    Move ' 3015050  Inspect    ' & x'00' to Bu-Ele(03)
+    Move '103015020  Continue   ' & x'00' to Bu-Ele(01)
+    Move ' 05015035   Cancel    ' & x'00' to Bu-Ele(02)
+    Move ' 03015050  Inspect    ' & x'00' to Bu-Ele(03)
     call GC09BUTTONS using BUTTONS-AREA
     continue.
 
@@ -224,12 +224,12 @@ message3.
     move ">" to Bu-Arrow-Char2
     move 'Y' to Bu-Click
 
-    Move ' 6005062     OK      ' & x'00' to Bu-Ele(01)
-    Move '13007062  Continue   ' & x'00' to Bu-Ele(02)
-    Move ' 5009062   Cancel    ' & x'00' to Bu-Ele(03)
-    Move ' 5011062    Move     ' & x'00' to Bu-Ele(04)
-    Move ' 4013062   Ignore    ' & x'00' to Bu-Ele(05)
-    Move ' 5015062    Help     ' & x'00' to Bu-Ele(06)
+    Move ' 06005062     OK      ' & x'00' to Bu-Ele(01)
+    Move '103007062  Continue   ' & x'00' to Bu-Ele(02)
+    Move ' 05009062   Cancel    ' & x'00' to Bu-Ele(03)
+    Move ' 05011062    Move     ' & x'00' to Bu-Ele(04)
+    Move ' 04013062   Ignore    ' & x'00' to Bu-Ele(05)
+    Move ' 05015062    Help     ' & x'00' to Bu-Ele(06)
     call GC09BUTTONS using BUTTONS-AREA
     .
 
