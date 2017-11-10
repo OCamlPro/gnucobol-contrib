@@ -101,6 +101,10 @@ GC74HELPxxxx.COB
 A "HELP" system. You can write text help files , load it on indexed files.
 List the indexde file , access to this HELP messages from any CRUDE application.
 
+GC99BANNER.COB
+accept a string and print that string in big character.
+Useful to print a banner page for your reports.
+
 
 GC99COPYGEN.COB
 Copy generator for cobol programs that write reports,
