@@ -11,8 +11,9 @@ program-id. GC18RADIOBUTTONDEMO.
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License LGPL 3.0 (or greater)
-*> Version:    1.0 2017.07.10
+*> Version:    1.1 2017.11.04
 *> Changelog:  1.0 first version.
+*>             1.1 Rb-hot from 9(01) to 9(02)
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 DATA DIVISION.
@@ -93,15 +94,15 @@ display ' Group 1 Options ' at 003006 with :BCOL: white :FCOL: black end-display
 *> DISPLAY RADIOBUTTON ITEMS N.1
 initialize RadioButton-Area ALL TO VALUE
 move low-value                                       to Rb-tab
-Move '  2004011 Stop after first error     ' & x'00' to Rb-Ele(01)
-Move '112005011 Allow LABEL and GOTO       ' & x'00' to Rb-Ele(02)
-Move '  2006011 Enable macros              ' & x'00' to Rb-Ele(03)
-Move '  3007011 Allow inline               ' & x'00' to Rb-Ele(04)
-Move '  2008011 Include assertion code     ' & x'00' to Rb-Ele(05)
-Move '  2009011 Load compatible units      ' & x'00' to Rb-Ele(06)
-Move '  5010011 Allow STATIC in objects    ' & x'00' to Rb-Ele(07)
-Move '  2011011 C like operators           ' & x'00' to Rb-Ele(08)
-Move '  3012011 Conditional defines        ' & x'00' to Rb-Ele(09)
+Move '  02004011 Stop after first error     ' & x'00' to Rb-Ele(01)
+Move '1102005011 Allow LABEL and GOTO       ' & x'00' to Rb-Ele(02)
+Move '  02006011 Enable macros              ' & x'00' to Rb-Ele(03)
+Move '  03007011 Allow inline               ' & x'00' to Rb-Ele(04)
+Move '  02008011 Include assertion code     ' & x'00' to Rb-Ele(05)
+Move '  02009011 Load compatible units      ' & x'00' to Rb-Ele(06)
+Move '  05010011 Allow STATIC in objects    ' & x'00' to Rb-Ele(07)
+Move '  02011011 C like operators           ' & x'00' to Rb-Ele(08)
+Move '  03012011 Conditional defines        ' & x'00' to Rb-Ele(09)
 call GC18RADIOBUTTON using RadioButton-Area
 perform DisplaySwitch thru DisplaySwitchEx.
 
@@ -123,13 +124,13 @@ move 'x'       to Rb-MarkChar
 move '[]'      to Rb-BracketChars
 move blue to Rb-bcoN Rb-bcoA Rb-bcoH
 move cyan to Rb-fcoN
-Move '  2004054 Counts              ' & x'00' to Rb-Ele(01)
-Move '112005054 Percentages         ' & x'00' to Rb-Ele(02)
-Move '  2006054 Valid uppercase     ' & x'00' to Rb-Ele(03)
-Move '  2007054 Error Messages      ' & x'00' to Rb-Ele(04)
-Move '  2008054 Reserved words      ' & x'00' to Rb-Ele(05)
-Move '  3009054 Colums stats        ' & x'00' to Rb-Ele(06)
-Move '  2010054 Total stats         ' & x'00' to Rb-Ele(07)
+Move '  02004054 Counts              ' & x'00' to Rb-Ele(01)
+Move '1102005054 Percentages         ' & x'00' to Rb-Ele(02)
+Move '  02006054 Valid uppercase     ' & x'00' to Rb-Ele(03)
+Move '  02007054 Error Messages      ' & x'00' to Rb-Ele(04)
+Move '  02008054 Reserved words      ' & x'00' to Rb-Ele(05)
+Move '  03009054 Colums stats        ' & x'00' to Rb-Ele(06)
+Move '  02010054 Total stats         ' & x'00' to Rb-Ele(07)
 call GC18RADIOBUTTON using RadioButton-Area
 perform DisplaySwitch thru DisplaySwitchEx.
 
@@ -140,19 +141,21 @@ move 'S'            to Box-style
 move 'N'            to Box-3D Box-shadow Box-tit
 move 'R'            to Box-3D
 call GC01BOX using BOX-Area
+display ' Group 3 Options ' at 014006 with :BCOL: white :FCOL: black end-display
 *> DISPLAY RADIOBUTTON ITEMS N.3
 initialize RadioButton-Area ALL TO VALUE
 move low-value                                   to Rb-tab
 move 'o'  to Rb-MarkChar
 move '<>' to Rb-BracketChars
-Move '  2015011 Counts                     ' & x'00' to Rb-Ele(01)
-Move '112016011 Percentages                ' & x'00' to Rb-Ele(02)
-Move '  2017011 Valid uppercase            ' & x'00' to Rb-Ele(03)
+Move '  02015011 Counts                     ' & x'00' to Rb-Ele(01)
+Move '1102016011 Percentages                ' & x'00' to Rb-Ele(02)
+Move '  02017011 Valid uppercase            ' & x'00' to Rb-Ele(03)
 call GC18RADIOBUTTON using RadioButton-Area
 perform DisplaySwitch thru DisplaySwitchEx.
 
 
 *> DISPLAY RADIOBUTTON ITEMS N.4
+display ' Group 4 Options ' at 012045 with :BCOL: white :FCOL: black end-display
 initialize RadioButton-Area ALL TO VALUE
 move low-value                                       to Rb-tab
 move 'o'     to Rb-MarkChar
@@ -160,16 +163,16 @@ move blue    to Rb-bcoN Rb-bcoA Rb-bcoH
 move yellow  to Rb-fcoN
 move red     to Rb-fcoH
 move 'Y'     to Rb-fcoNH
-Move '  0013048 01-Stop after first error ' & x'00' to Rb-Ele(01)
-Move '  0014048 02-Allow LABEL and GOTO   ' & x'00' to Rb-Ele(02)
-Move '110015048 03-Enable macros          ' & x'00' to Rb-Ele(03)
-Move '  0016048 04-Disable warnings       ' & x'00' to Rb-Ele(04)
-Move '  0017048 05-Overnight              ' & x'00' to Rb-Ele(05)
-Move '  0017048 06-Include assertion code ' & x'00' to Rb-Ele(06)
-Move '  0017048 07-Load compatible units  ' & x'00' to Rb-Ele(07)
-Move '  0017048 08-Allow STATIC in objects' & x'00' to Rb-Ele(08)
-Move '  0017048 09-C like operators       ' & x'00' to Rb-Ele(09)
-Move '  0017048 0A-Overlapped items !     ' & x'00' to Rb-Ele(10)
+Move '  00013048 01-Stop after first error ' & x'00' to Rb-Ele(01)
+Move '  00014048 02-Allow LABEL and GOTO   ' & x'00' to Rb-Ele(02)
+Move '1100015048 03-Enable macros          ' & x'00' to Rb-Ele(03)
+Move '  00016048 04-Disable warnings       ' & x'00' to Rb-Ele(04)
+Move '  00017048 05-Overnight              ' & x'00' to Rb-Ele(05)
+Move '  00017048 06-Include assertion code ' & x'00' to Rb-Ele(06)
+Move '  00017048 07-Load compatible units  ' & x'00' to Rb-Ele(07)
+Move '  00017048 08-Allow STATIC in objects' & x'00' to Rb-Ele(08)
+Move '  00017048 09-C like operators       ' & x'00' to Rb-Ele(09)
+Move '  00017048 0A-Overlapped items !     ' & x'00' to Rb-Ele(10)
 call GC18RADIOBUTTON using RadioButton-Area
 perform DisplaySwitch thru DisplaySwitchEx.
 
@@ -207,38 +210,38 @@ display 'Command set' at 015007 with :BCOL: white :FCOL: black  end-display
 display 'Auto-Save'   at 013042 with :BCOL: white :FCOL: black  end-display
 initialize RadioButton-Area ALL TO VALUE
 move low-value                                       to Rb-tab
-Move '  2005011 Stop after first error     ' & x'00' to Rb-Ele(01)
-Move '  2006011 Allow LABEL and GOTO       ' & x'00' to Rb-Ele(02)
-Move '  2007011 Enable macros              ' & x'00' to Rb-Ele(03)
-Move '  3008011 Allow inline               ' & x'00' to Rb-Ele(04)
-Move '  2009011 Include assertion code     ' & x'00' to Rb-Ele(05)
-Move '  2010011 Load compatible units      ' & x'00' to Rb-Ele(06)
-Move '  4011011 Allow STATIC in objects    ' & x'00' to Rb-Ele(07)
-Move '  2012011 C like operators           ' & x'00' to Rb-Ele(08)
-Move '  3013011 Conditional defines        ' & x'00' to Rb-Ele(09)
+Move '  02005011 Stop after first error     ' & x'00' to Rb-Ele(01)
+Move '  02006011 Allow LABEL and GOTO       ' & x'00' to Rb-Ele(02)
+Move '  02007011 Enable macros              ' & x'00' to Rb-Ele(03)
+Move '  03008011 Allow inline               ' & x'00' to Rb-Ele(04)
+Move '  02009011 Include assertion code     ' & x'00' to Rb-Ele(05)
+Move '  02010011 Load compatible units      ' & x'00' to Rb-Ele(06)
+Move '  04011011 Allow STATIC in objects    ' & x'00' to Rb-Ele(07)
+Move '  02012011 C like operators           ' & x'00' to Rb-Ele(08)
+Move '  03013011 Conditional defines        ' & x'00' to Rb-Ele(09)
 
-Move '  2016011 Counts                     ' & x'00' to Rb-Ele(10)
-Move '  2017011 Percentages                ' & x'00' to Rb-Ele(11)
-Move '  2018011 Valid uppercase            ' & x'00' to Rb-Ele(12)
+Move '  02016011 Counts                     ' & x'00' to Rb-Ele(10)
+Move '  02017011 Percentages                ' & x'00' to Rb-Ele(11)
+Move '  02018011 Valid uppercase            ' & x'00' to Rb-Ele(12)
 
-Move '  0005046 Counts                    ' & x'00' to Rb-Ele(13)
-Move '110006046 Percentages               ' & x'00' to Rb-Ele(14)
-Move '  0007046 Valid uppercase           ' & x'00' to Rb-Ele(15)
-Move '  0008046 Error Messages            ' & x'00' to Rb-Ele(16)
-Move '  0009046 Reserved words            ' & x'00' to Rb-Ele(17)
-Move '  0010046 Colums stats              ' & x'00' to Rb-Ele(18)
-Move '  0011046 Total stats               ' & x'00' to Rb-Ele(19)
+Move '  00005046 Counts                    ' & x'00' to Rb-Ele(13)
+Move '1100006046 Percentages               ' & x'00' to Rb-Ele(14)
+Move '  00007046 Valid uppercase           ' & x'00' to Rb-Ele(15)
+Move '  00008046 Error Messages            ' & x'00' to Rb-Ele(16)
+Move '  00009046 Reserved words            ' & x'00' to Rb-Ele(17)
+Move '  00010046 Colums stats              ' & x'00' to Rb-Ele(18)
+Move '  00011046 Total stats               ' & x'00' to Rb-Ele(19)
 
-Move '  3014046 01-Stop after first error ' & x'00' to Rb-Ele(20)
-Move '  3015046 02-Allow LABEL and GOTO   ' & x'00' to Rb-Ele(21)
-Move '  3016046 03-Enable macros          ' & x'00' to Rb-Ele(22)
-Move '  3017046 03-Disable warnings       ' & x'00' to Rb-Ele(23)
-Move '  3018046 04-Overnight              ' & x'00' to Rb-Ele(24)
-Move '  3018046 05-Include assertion code ' & x'00' to Rb-Ele(25)
-Move '  3018046 06-Load compatible units  ' & x'00' to Rb-Ele(26)
-Move '  3018046 07-Allow STATIC in objects' & x'00' to Rb-Ele(27)
-Move '  3018046 08-C like operators       ' & x'00' to Rb-Ele(28)
-Move '  3018046 09-Overlapped items !     ' & x'00' to Rb-Ele(29)
+Move '  03014046 01-Stop after first error ' & x'00' to Rb-Ele(20)
+Move '  03015046 02-Allow LABEL and GOTO   ' & x'00' to Rb-Ele(21)
+Move '  03016046 03-Enable macros          ' & x'00' to Rb-Ele(22)
+Move '  03017046 03-Disable warnings       ' & x'00' to Rb-Ele(23)
+Move '  03018046 04-Overnight              ' & x'00' to Rb-Ele(24)
+Move '  03018046 05-Include assertion code ' & x'00' to Rb-Ele(25)
+Move '  03018046 06-Load compatible units  ' & x'00' to Rb-Ele(26)
+Move '  03018046 07-Allow STATIC in objects' & x'00' to Rb-Ele(27)
+Move '  03018046 08-C like operators       ' & x'00' to Rb-Ele(28)
+Move '  03018046 09-Overlapped items !     ' & x'00' to Rb-Ele(29)
 
 call GC18RADIOBUTTON using RadioButton-Area
 perform DisplaySwitch thru DisplaySwitchEx.
