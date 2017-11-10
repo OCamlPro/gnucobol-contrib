@@ -11,8 +11,9 @@ program-id. GC13CHECKBOXDEMO.
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License LGPL 3.0 (or greater)
-*> Version:    1.0 2017.07.10
+*> Version:    1.1 2017.11.04
 *> Changelog:  1.0 first version.
+*>             1.1 Ck-hot from 9(01) to 9(02)
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 DATA DIVISION.
@@ -75,7 +76,7 @@ move 'S'            to Box-style
 move 'N'            to Box-3D Box-shadow
 move 'E'            to Box-3D
 Move 'Y' to Box-tit
-move ' Set switches ' & x'00' to Box-titDes
+move ' Mark or unmark one or more switches per group ' & x'00' to Box-titDes
 call GC01BOX using BOX-AREA
 
 *> DISPLAY A BOX AS BACKGROUND OF A CHECKBOX ITEMS GROUP
@@ -85,19 +86,19 @@ move 'S'            to Box-style
 move 'N'            to Box-3D Box-shadow Box-tit
 move 'R'            to Box-3D
 call GC01BOX using BOX-AREA
-display 'Frame 1' at 003007 with :BCOL: white :FCOL: white highlight end-display
+display 'Group 1 switches' at 003007 with :BCOL: white :FCOL: black end-display
 *> DISPLAY CHECKBOX ITEMS N.1
 initialize CHECKBOX-area ALL TO VALUE
 move low-value                                       to Ck-tab
-Move '112004011 Stop after first error     ' & x'00' to Ck-Ele(01)
-Move ' 12005011 Allow LABEL and GOTO       ' & x'00' to Ck-Ele(02)
-Move '  2006011 Enable macros              ' & x'00' to Ck-Ele(03)
-Move ' 13007011 Allow inline               ' & x'00' to Ck-Ele(04)
-Move ' 12008011 Include assertion code     ' & x'00' to Ck-Ele(05)
-Move ' 12009011 Load compatible units      ' & x'00' to Ck-Ele(06)
-Move '  5010011 Allow STATIC in objects    ' & x'00' to Ck-Ele(07)
-Move '  2011011 C like operators           ' & x'00' to Ck-Ele(08)
-Move ' 13012011 Conditional defines        ' & x'00' to Ck-Ele(09)
+Move '1102004011 Stop after first error     ' & x'00' to Ck-Ele(01)
+Move ' 102005011 Allow LABEL and GOTO       ' & x'00' to Ck-Ele(02)
+Move '  02006011 Enable macros              ' & x'00' to Ck-Ele(03)
+Move ' 103007011 Allow inline               ' & x'00' to Ck-Ele(04)
+Move ' 102008011 Include assertion code     ' & x'00' to Ck-Ele(05)
+Move ' 102009011 Load compatible units      ' & x'00' to Ck-Ele(06)
+Move '  05010011 Allow STATIC in objects    ' & x'00' to Ck-Ele(07)
+Move '  02011011 C like operators           ' & x'00' to Ck-Ele(08)
+Move ' 103012011 Conditional defines        ' & x'00' to Ck-Ele(09)
 call GC13CHECKBOX using CHECKBOX-AREA
 perform DisplaySwitch thru DisplaySwitchEx.
 
@@ -109,7 +110,7 @@ move 'S'            to Box-style
 move 'N'            to Box-3D Box-shadow Box-tit
 move 'R'            to Box-3D
 call GC01BOX using BOX-AREA
-
+display 'Group 2 switches' at 003050 with :BCOL: white :FCOL: black end-display
 *> DISPLAY CHECKBOX ITEMS N.2
 
 initialize CHECKBOX-area ALL TO VALUE
@@ -118,13 +119,13 @@ move 'x'       to Ck-MarkChar
 move '()'      to Ck-BracketChars
 move blue to Ck-bcoN Ck-bcoA Ck-bcoH
 move cyan to Ck-fcoN
-Move ' 12004054 Counts              ' & x'00' to Ck-Ele(01)
-Move '112005054 Percentages         ' & x'00' to Ck-Ele(02)
-Move '  2006054 Valid uppercase     ' & x'00' to Ck-Ele(03)
-Move ' 12007054 Error Messages      ' & x'00' to Ck-Ele(04)
-Move ' 12008054 Reserved words      ' & x'00' to Ck-Ele(05)
-Move ' 13009054 Colums stats        ' & x'00' to Ck-Ele(06)
-Move '  2010054 Total stats         ' & x'00' to Ck-Ele(07)
+Move ' 102004054 Counts              ' & x'00' to Ck-Ele(01)
+Move '1102005054 Percentages         ' & x'00' to Ck-Ele(02)
+Move '  02006054 Valid uppercase     ' & x'00' to Ck-Ele(03)
+Move ' 102007054 Error Messages      ' & x'00' to Ck-Ele(04)
+Move ' 102008054 Reserved words      ' & x'00' to Ck-Ele(05)
+Move ' 103009054 Colums stats        ' & x'00' to Ck-Ele(06)
+Move '  02010054 Total stats         ' & x'00' to Ck-Ele(07)
 call GC13CHECKBOX using CHECKBOX-AREA
 perform DisplaySwitch thru DisplaySwitchEx.
 
@@ -135,19 +136,21 @@ move 'S'            to Box-style
 move 'N'            to Box-3D Box-shadow Box-tit
 move 'R'            to Box-3D
 call GC01BOX using BOX-AREA
+display 'Group 3 switches' at 014007 with :BCOL: white :FCOL: black highlight end-display
 *> DISPLAY CHECKBOX ITEMS N.3
 initialize CHECKBOX-area ALL TO VALUE
 move low-value                                   to Ck-tab
 move 'o'  to Ck-MarkChar
 move '<>' to Ck-BracketChars
-Move ' 12015011 Counts                     ' & x'00' to Ck-Ele(01)
-Move '1 2016011 Percentages                ' & x'00' to Ck-Ele(02)
-Move '  2017011 Valid uppercase            ' & x'00' to Ck-Ele(03)
+Move ' 102015011 Counts                     ' & x'00' to Ck-Ele(01)
+Move '1 02016011 Percentages                ' & x'00' to Ck-Ele(02)
+Move '  02017011 Valid uppercase            ' & x'00' to Ck-Ele(03)
 call GC13CHECKBOX using CHECKBOX-AREA
 perform DisplaySwitch thru DisplaySwitchEx.
 
 
 *> DISPLAY CHECKBOX ITEMS N.4
+display 'Group 4 switches' at 012045 with :BCOL: white :FCOL: black highlight end-display
 initialize CHECKBOX-area ALL TO VALUE
 move low-value                                       to Ck-tab
 move 'o'     to Ck-MarkChar
@@ -155,16 +158,16 @@ move blue    to Ck-bcoN Ck-bcoA Ck-bcoH
 move yellow  to Ck-fcoN
 move red     to Ck-fcoH
 move 'Y'     to Ck-fcoNH
-Move '1 0013048 01-Stop after first error ' & x'00' to Ck-Ele(01)
-Move ' 10014048 02-Allow LABEL and GOTO   ' & x'00' to Ck-Ele(02)
-Move '  0015048 03-Enable macros          ' & x'00' to Ck-Ele(03)
-Move '  0016048 03-Disable warnings       ' & x'00' to Ck-Ele(04)
-Move ' 10017048 04-Overnight              ' & x'00' to Ck-Ele(05)
-Move ' 10017048 05-Include assertion code ' & x'00' to Ck-Ele(06)
-Move ' 10017048 06-Load compatible units  ' & x'00' to Ck-Ele(07)
-Move '  0017048 07-Allow STATIC in objects' & x'00' to Ck-Ele(08)
-Move '  0017048 08-C like operators       ' & x'00' to Ck-Ele(09)
-Move ' 10017048 09-Overlapped items !     ' & x'00' to Ck-Ele(10)
+Move '1 00013048 01-Stop after first error ' & x'00' to Ck-Ele(01)
+Move ' 100014048 02-Allow LABEL and GOTO   ' & x'00' to Ck-Ele(02)
+Move '  00015048 03-Enable macros          ' & x'00' to Ck-Ele(03)
+Move '  00016048 03-Disable warnings       ' & x'00' to Ck-Ele(04)
+Move ' 100017048 04-Overnight              ' & x'00' to Ck-Ele(05)
+Move ' 100017048 05-Include assertion code ' & x'00' to Ck-Ele(06)
+Move ' 100017048 06-Load compatible units  ' & x'00' to Ck-Ele(07)
+Move '  00017048 07-Allow STATIC in objects' & x'00' to Ck-Ele(08)
+Move '  00017048 08-C like operators       ' & x'00' to Ck-Ele(09)
+Move ' 100017048 09-Overlapped items !     ' & x'00' to Ck-Ele(10)
 call GC13CHECKBOX using CHECKBOX-AREA
 perform DisplaySwitch thru DisplaySwitchEx.
 
@@ -202,38 +205,38 @@ display 'Command set' at 015007 with :BCOL: white :FCOL: black  end-display
 display 'Auto-Save'   at 013042 with :BCOL: white :FCOL: black  end-display
 initialize CHECKBOX-area ALL TO VALUE
 move low-value                                       to Ck-tab
-Move ' 12005011 Stop after first error     ' & x'00' to Ck-Ele(01)
-Move ' 12006011 Allow LABEL and GOTO       ' & x'00' to Ck-Ele(02)
-Move '  2007011 Enable macros              ' & x'00' to Ck-Ele(03)
-Move ' 13008011 Allow inline               ' & x'00' to Ck-Ele(04)
-Move ' 12009011 Include assertion code     ' & x'00' to Ck-Ele(05)
-Move ' 12010011 Load compatible units      ' & x'00' to Ck-Ele(06)
-Move '  4011011 Allow STATIC in objects    ' & x'00' to Ck-Ele(07)
-Move '  2012011 C like operators           ' & x'00' to Ck-Ele(08)
-Move ' 14013011 Conditional defines        ' & x'00' to Ck-Ele(09)
+Move ' 102005011 Stop after first error     ' & x'00' to Ck-Ele(01)
+Move ' 102006011 Allow LABEL and GOTO       ' & x'00' to Ck-Ele(02)
+Move '  02007011 Enable macros              ' & x'00' to Ck-Ele(03)
+Move ' 103008011 Allow inline               ' & x'00' to Ck-Ele(04)
+Move ' 102009011 Include assertion code     ' & x'00' to Ck-Ele(05)
+Move ' 102010011 Load compatible units      ' & x'00' to Ck-Ele(06)
+Move '  04011011 Allow STATIC in objects    ' & x'00' to Ck-Ele(07)
+Move '  02012011 C like operators           ' & x'00' to Ck-Ele(08)
+Move ' 104013011 Conditional defines        ' & x'00' to Ck-Ele(09)
 
-Move ' 12016011 Counts                     ' & x'00' to Ck-Ele(10)
-Move '  2017011 Percentages                ' & x'00' to Ck-Ele(11)
-Move '  2018011 Valid uppercase            ' & x'00' to Ck-Ele(12)
+Move ' 102016011 Counts                     ' & x'00' to Ck-Ele(10)
+Move '  02017011 Percentages                ' & x'00' to Ck-Ele(11)
+Move '  02018011 Valid uppercase            ' & x'00' to Ck-Ele(12)
 
-Move ' 10005046 Counts                    ' & x'00' to Ck-Ele(13)
-Move '110006046 Percentages               ' & x'00' to Ck-Ele(14)
-Move '  0007046 Valid uppercase           ' & x'00' to Ck-Ele(15)
-Move ' 10008046 Error Messages            ' & x'00' to Ck-Ele(16)
-Move ' 10009046 Reserved words            ' & x'00' to Ck-Ele(17)
-Move ' 10010046 Colums stats              ' & x'00' to Ck-Ele(18)
-Move '  0011046 Total stats               ' & x'00' to Ck-Ele(19)
+Move ' 100005046 Counts                    ' & x'00' to Ck-Ele(13)
+Move '1100006046 Percentages               ' & x'00' to Ck-Ele(14)
+Move '  00007046 Valid uppercase           ' & x'00' to Ck-Ele(15)
+Move ' 100008046 Error Messages            ' & x'00' to Ck-Ele(16)
+Move ' 100009046 Reserved words            ' & x'00' to Ck-Ele(17)
+Move ' 100010046 Colums stats              ' & x'00' to Ck-Ele(18)
+Move '  00011046 Total stats               ' & x'00' to Ck-Ele(19)
 
-Move '  3014046 01-Stop after first error ' & x'00' to Ck-Ele(20)
-Move ' 13015046 02-Allow LABEL and GOTO   ' & x'00' to Ck-Ele(21)
-Move '  3016046 03-Enable macros          ' & x'00' to Ck-Ele(22)
-Move '  3017046 03-Disable warnings       ' & x'00' to Ck-Ele(23)
-Move ' 13018046 04-Overnight              ' & x'00' to Ck-Ele(24)
-Move ' 13018046 05-Include assertion code ' & x'00' to Ck-Ele(25)
-Move ' 13018046 06-Load compatible units  ' & x'00' to Ck-Ele(26)
-Move '  3018046 07-Allow STATIC in objects' & x'00' to Ck-Ele(27)
-Move '  3018046 08-C like operators       ' & x'00' to Ck-Ele(28)
-Move ' 13018046 09-Overlapped items !     ' & x'00' to Ck-Ele(29)
+Move '  03014046 01-Stop after first error ' & x'00' to Ck-Ele(20)
+Move ' 103015046 02-Allow LABEL and GOTO   ' & x'00' to Ck-Ele(21)
+Move '  03016046 03-Enable macros          ' & x'00' to Ck-Ele(22)
+Move '  03017046 03-Disable warnings       ' & x'00' to Ck-Ele(23)
+Move ' 103018046 04-Overnight              ' & x'00' to Ck-Ele(24)
+Move ' 103018046 05-Include assertion code ' & x'00' to Ck-Ele(25)
+Move ' 103018046 06-Load compatible units  ' & x'00' to Ck-Ele(26)
+Move '  03018046 07-Allow STATIC in objects' & x'00' to Ck-Ele(27)
+Move '  03018046 08-C like operators       ' & x'00' to Ck-Ele(28)
+Move ' 103018046 09-Overlapped items !     ' & x'00' to Ck-Ele(29)
 
 call GC13CHECKBOX using CHECKBOX-AREA
 perform DisplaySwitch thru DisplaySwitchEx.
