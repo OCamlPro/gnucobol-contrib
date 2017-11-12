@@ -39,7 +39,7 @@ public final class TESTSUITE {
 
 	public TESTSUITE(File file) throws Exception {
 		File fbase = file.getAbsoluteFile().getParentFile();
-		fdir = new File(fbase, "testdir");
+		fdir = new File(fbase, "testsuite.dir");
 		if(!fdir.exists() && !fdir.mkdirs()) {
 			throw new IllegalArgumentException("Can not create test directory " + fdir.getAbsolutePath());
 		}
@@ -534,7 +534,8 @@ public final class TESTSUITE {
 			if(line.startsWith("AT_SETUP(")) {
 				++testnum;
 				bFAILED = false;
-				fwrkdir = new File(fdir, "test" + testnum);
+				String testdir = String.format("%03d_win", testnum);
+				fwrkdir = new File(fdir, testdir);
 				if(!fwrkdir.exists() && !fwrkdir.mkdirs()) {
 					throw new Exception("Can not create directory " + fwrkdir.getAbsolutePath());
 				}
@@ -804,11 +805,11 @@ public final class TESTSUITE {
 
 	public static void main(String[] args) {
 		if(args.length == 0 || args.length > 2) {
-			System.out.println("Usage: java -cp wintest.jar [-keep] org.fsf.gnucobol.TESTSUITE path-to-testsuite.at");
+			System.out.println("Usage: java -cp wintest.jar [-debug] org.fsf.gnucobol.TESTSUITE path-to-testsuite.at");
 			return;
 		}
 		int nf = 0;
-		if(args[0].equalsIgnoreCase("-keep")) {
+		if(args[0].equalsIgnoreCase("-debug") || args[0].equalsIgnoreCase("--debug")) {
 			bKEEP = true;
 			++nf;
 		}
@@ -818,7 +819,7 @@ public final class TESTSUITE {
 		}
 		if(f == null || !f.exists() || !f.isFile()) {
 			if(f != null) System.out.println("ERROR: File does not exist: " + f.getAbsolutePath());
-			System.out.println("Usage: java -cp wintest.jar [-keep] org.fsf.gnucobol.TESTSUITE path-to-testsuite.at");
+			System.out.println("Usage: java -cp wintest.jar [-debug] org.fsf.gnucobol.TESTSUITE path-to-testsuite.at");
 			return;
 		}
 		try {
