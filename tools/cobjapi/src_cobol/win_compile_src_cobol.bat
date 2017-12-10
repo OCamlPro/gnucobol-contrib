@@ -21,13 +21,13 @@ if errorlevel 1 (
 )
 
 :: test if directories exist
-if not exist %src_cobol_dir%\" (
+if not exist "%src_cobol_dir%\" (
    echo ERROR: Please set %src_cobol_dircorrect, currently set to %src_cobol_dir%
    goto :end
 )
 
 :: change directory
-pushd %src_cobol_dir%"
+pushd "%src_cobol_dir%"
 
 :: delete old files (ignoring errors)
 del "*.obj"    2>NUL
