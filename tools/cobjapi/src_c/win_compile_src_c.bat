@@ -35,10 +35,12 @@ pushd "%src_c_dir%"
 :: delete old files (ignoring errors)
 del *.obj    2>NUL
 
-:: compile the C programs
-cobc.exe -c -v fileselect.c
-cobc.exe -c -v imageio.c
-cobc.exe -c -v japilib.c
+echo compile the C programs
+cobc.exe -c %verbose% fileselect.c
+cobc.exe -c %verbose% imageio.c
+cobc.exe -c %verbose% japilib.c
+
+echo compilation finished
 
 
 :end

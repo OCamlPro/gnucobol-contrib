@@ -2,7 +2,7 @@
 setlocal
 
 :: set directories to match your installation (only necessary for systems older than WinXP...)
-set %src_cobol_dir%~dp0
+set "src_cobol_dir=%~dp0"
 
 
 :: check if started directly
@@ -36,7 +36,7 @@ del "*.obj"    2>NUL
 call "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"
 
 :: compile the cobjapi interface
-cobc -c -free -v cobjapi.cob
+cobc -c -free -v %* cobjapi.cob
 
 
 :end

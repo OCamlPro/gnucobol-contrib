@@ -5,13 +5,14 @@ setlocal
 call "C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\vcvarsall.bat"
 
 :: set compiler parameters
-SET COBCOBJ=cobjapi.obj fileselect.obj imageio.obj japilib.obj
-SET COBCLIB=-lWS2_32.Lib
+set "COBCOBJ=cobjapi.obj fileselect.obj imageio.obj japilib.obj"
+set "COBCLIB=-lWS2_32"
+rem set "verbose=-v"
 
 :: set directories to match your installation (only necessary for systems older than WinXP...)
-set examples_simple_dir="%~dp0
-set src_c_dir=%examples_simple_dir%../src_c
-set src_cobol_dir=%examples_simple_dir%../src_cobol
+set "examples_simple_dir=%~dp0"
+set "src_c_dir=%examples_simple_dir%..\src_c"
+set "src_cobol_dir=%examples_simple_dir%..\src_cobol"
 
 
 :: check if started directly
@@ -54,63 +55,65 @@ del *.exp    2>NUL
 del *.exe    2>NUL
 
 
-:: compile the C programs
-cobc -c -v "%src_c_dir%\fileselect.c"
-cobc -c -v "%src_c_dir%\imageio.c"
-cobc -c -v "%src_c_dir%\japilib.c"
+echo compile the C programs...
+cobc -c %verbose% "%src_c_dir%\fileselect.c"
+cobc -c %verbose% "%src_c_dir%\imageio.c"
+cobc -c %verbose% "%src_c_dir%\japilib.c"
 
-:: compile the cobjapi interface
-cobc -c -free -v "%src_cobol_dir%\cobjapi.cob"
+echo compile the cobjapi interface...
+cobc -c -free %verbose% "%src_cobol_dir%\cobjapi.cob" %*
 
-:: compile the simple examples
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% alert.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% borderlayout.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% borderpanel.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% button.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% canvas.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% checkbox.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% choice.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% colors.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% colors1.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% componentlistener.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% cursor.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% daemon.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% dialog.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% dialogmodal.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% filedialog.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% flowlayout.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% flowsimple.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% focuslistener.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% font.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% frame.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% graphic.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% graphicbutton.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% graphiclabel.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% gridlayout.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% image.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% insets.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% keylistener.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% label.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% lines.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% list.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% listmultiple.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% menu.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% mousebuttons.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% mouselistener.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% panel.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% popupmenu.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% print.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% radiobutton.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% rubberband.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% scaledimage.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% scrollbar.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% scrollpane.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% simple.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% simplemenu.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% textfield.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% vumeter.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% window.cob
-cobc -x -free -v -I"%src_cobol_dir%" %COBCOBJ% %COBCLIB% windowlistener.cob
+echo compile the simple examples...
+cobc -x -free %verbose% -I"%src_cobol_dir%" alert.cob             %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" borderlayout.cob      %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" borderpanel.cob       %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" button.cob            %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" canvas.cob            %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" checkbox.cob          %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" choice.cob            %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" colors.cob            %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" colors1.cob           %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" componentlistener.cob %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" cursor.cob            %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" daemon.cob            %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" dialog.cob            %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" dialogmodal.cob       %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" filedialog.cob        %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" flowlayout.cob        %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" flowsimple.cob        %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" focuslistener.cob     %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" font.cob              %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" frame.cob             %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" graphic.cob           %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" graphicbutton.cob     %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" graphiclabel.cob      %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" gridlayout.cob        %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" image.cob             %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" insets.cob            %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" keylistener.cob       %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" label.cob             %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" lines.cob             %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" list.cob              %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" listmultiple.cob      %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" menu.cob              %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" mousebuttons.cob      %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" mouselistener.cob     %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" panel.cob             %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" popupmenu.cob         %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" print.cob             %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" radiobutton.cob       %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" rubberband.cob        %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" scaledimage.cob       %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" scrollbar.cob         %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" scrollpane.cob        %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" simple.cob            %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" simplemenu.cob        %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" textfield.cob         %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" vumeter.cob           %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" window.cob            %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" windowlistener.cob    %* %COBCOBJ% %COBCLIB%
+
+echo compilation finished
 
 :end
 if _%interactive%_==_0_ (
