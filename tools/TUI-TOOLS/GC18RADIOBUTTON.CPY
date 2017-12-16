@@ -6,9 +6,10 @@
 *> Usage:      call GC18RADIOBUTTON using RadioButton-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
-*> Version:    1.1 2017.11.04
+*> Version:    1.2 2017.11.15
 *> Changelog:  1.0 first release.
 *>             1.1 Rb-Hot from 9(01) to 9(02)
+*>             1.2 Rb-wait added
 *> ***********************************************************************************************************
 *> on screen You can manage a group of max 98 RadioButton items (options) each of 1 row .
 *> Each RadioButton has tobe inserted in a table with 99 elements
@@ -49,6 +50,8 @@
 *>           It has to be in ASCIIZ format (must have x'00'(low-value) as last byte
 *> Rb-Markchar   single char used to "mark" the single chechbox item. example an "*"  asterisk
 *> Rb-Bracket-Char1/2 - Single chars to make active RadioButton more visible example ( ) or [ ]
+*> CRb-wait  Y= display radiobutton items and wait for a user keypress
+*>           N= display radiobutton items  and returns to caller without wait for a keypress by the user
 *>
 *> Rb-Selected  return to caller the number of the Option selected/marked by the user
 *>           Caller pgm will know if user selected a RadioButton with enter
@@ -84,6 +87,7 @@
         05 Rb-fcoH            pic 9(01) value yellow. *> forecolor for "hot key" char
         05 Rb-fcoHH           pic X(01) Value 'Y'.    *> foreground hotkey char in Highlight ?
         *> back color of shadow background (it has tobe settled to the same of box background)
+        05 Rb-wait            pic x(01) value 'Y'.
      *> *************************************************************
      *> RETUNRS TO CALLER
      *> *************************************************************
