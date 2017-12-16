@@ -50,7 +50,7 @@ WORKING-STORAGE SECTION.
 01 wLin      Pic 99    value zero.
 01 wCol      Pic 99    value zero.
 01 wColor    pic 9     value zero.
-01 wColorDes pic x(07) value space.
+01 wColorDes pic x(08) value space.
 
 01 Ir pic 99.
 01 Ic pic 99.
@@ -206,27 +206,30 @@ loop2.
             perform BigCursorDisplay thru BigCursorDisplayEx
             go to loop1
       when Key-Pressed = Key-F1
-            *> F1 change Fore Color
+            *> F1 change frame Fore Color
             add 1 to Cop-Fco Cop-titFco
             If Cop-Fco > 7 move 0 to Cop-Fco Cop-titFco end-if
+            move 1 to Ic Ir
+            move zero to wBackCol wForeCol
             perform BigCursorReset thru BigCursorResetEx
             go to loop0
       when Key-Pressed = Key-F2
-            *> F2 change Back Color
+            *> F2 change frame Back Color
             add 1 to Cop-Bco Cop-titBco
-            If Cop-Bco > 7 move 0 to Cop-Bco Cop-titBco end-if
+            If Cop-Bco > 7 move 0 to Cop-Bco Cop-titBco  end-if
+            move 1 to Ic Ir
+            move zero to wBackCol wForeCol
             perform BigCursorReset thru BigCursorResetEx
             go to loop0
+      when Key-Pressed = Key-Enter
+            move Key-Enter to Cop-Key
+            go to End-Program
+      when Key-Pressed =  Key-Escape
+            move  Key-Escape to Cop-Key
+            go to End-Program
       when Other
-            continue
+             go to loop2
    END-EVALUATE
-
-   *> test if the user pressed Enter Key or Escape key
-   IF Key-Pressed = Key-Enter or Key-Pressed = Key-Escape
-      go to End-Program
-   else
-      go to loop2
-   end-if
 
    continue.
 End-Program.
@@ -284,31 +287,31 @@ DisplayColorInformation.
    *> Display Colors Informations under Color MAP
    compute wLin = ROW1 + 17
    Compute wCol = COL1 - 1
-   display ' BG: '   at line wLin col wCol :BC Cop-bco :FC Cop-fco end-display
+   display ' BG: '   at line wLin col wCol :BC Cop-bco :FC Cop-fco highlight end-display
    Compute wCol = wCol + 4
-   display wBackCol  at line wLin col wCol :BC Cop-bco :FC Cop-fco end-display
+   display wBackCol  at line wLin col wCol :BC Cop-bco :FC Cop-fco highlight end-display
    move    wBackCol  to wColor Cop-BackCol
    perform DecodeColor thru DecodeColorEx
    Compute wCol = wCol + 1
-   display wColordes at line wLin col wCol :BC Cop-bco :FC Cop-fco end-display
+   display wColordes at line wLin col wCol :BC Cop-bco :FC Cop-fco highlight end-display
 
-   Compute wCol = wCol + 7
-   display ' FG: '   at line wLin col wCol :BC Cop-bco :FC Cop-fco end-display
+   Compute wCol = wCol + 8
+   display ' FG: '   at line wLin col wCol :BC Cop-bco :FC Cop-fco highlight end-display
    Compute wCol = wCol + 4
-   display wForeCol  at line wLin col wCol :BC Cop-bco :FC Cop-fco end-display
+   display wForeCol  at line wLin col wCol :BC Cop-bco :FC Cop-fco highlight end-display
    move    wForeCol  to wColor Cop-ForeCol
    perform DecodeColor thru DecodeColorEx
    Compute wCol = wCol + 1
-   display wColordes at line wLin col wCol :BC Cop-bco :FC Cop-fco end-display
+   display wColordes at line wLin col wCol :BC Cop-bco :FC Cop-fco highlight end-display
 
    *> Display the "Color pair"
-   Compute wCol = wCol + 7
-   display ' CP: '   at line wLin col wCol :BC Cop-bco :FC Cop-fco end-display
+   Compute wCol = wCol + 8
+   display ' CP: '   at line wLin col wCol :BC Cop-bco :FC Cop-fco highlight end-display
    Compute wCol = wCol + 4
    move    wColorPair-Ele(Ir, Ic) to Cop-ColorPair
-   display wColorPair-Ele(Ir, Ic) at line wLin col wCol :BC Cop-bco :FC Cop-fco end-display
+   display wColorPair-Ele(Ir, Ic) at line wLin col wCol :BC Cop-bco :FC Cop-fco highlight end-display
    Compute wCol = wCol + 2
-   display '   '                  at line wLin col wCol :BC Cop-bco :FC Cop-fco end-display
+   display ' '                    at line wLin col wCol :BC Cop-bco :FC Cop-fco end-display
    continue.
 DisplayColorInformationEx. exit.
 
