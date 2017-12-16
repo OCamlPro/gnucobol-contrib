@@ -4,7 +4,7 @@ PROGRAM-ID. GC02BOXMEXDEMO.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DEMO OF GC02BOXMEX -  DISPLAYS A MESSAGE IN A BOX ON SCREEN
-*> Tectonics:  cobc -x GC01BOXDEMO.COB (use GnuCOBOL 2.0 or greater)
+*> Tectonics:  cobc -x GC01BOXMEXDEMO.COB (use GnuCOBOL 2.0 or greater)
 *> Usage:      GC02BOXMEXDEMO
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
