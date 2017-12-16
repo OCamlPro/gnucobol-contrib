@@ -12,10 +12,11 @@ PROGRAM-ID. GC18RADIOBUTTON is initial.
 *> Parameters: look at GC18RADIOBUTTON.cpy (use with copy Version: 1.1)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.2 2017.11.04
+*> Version:    1.3 2017.11.15
 *> Changelog:  1.0 first release.
 *>             1.1 hot key management added
 *>             1.2 Rb-Hot from 9(01) to 9(02)
+*>             1.3 Rb-wait management added
 *> ***********************************************************************************
 
 ENVIRONMENT DIVISION.
@@ -118,8 +119,15 @@ loop-user-input.
     move 0 to wVisibilityNew
     call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
 
-    call static "getch" returning Key-Pressed end-call
+    *> call static "getch" returning Key-Pressed end-call
 
+    if Rb-wait  = 'Y'
+      *> after displayed radiobutton items wait for user key press
+       call static "getch" returning Key-Pressed end-call
+    else
+       *> after displayed radiobutton items return to caller
+       go to END-PROGRAM
+    end-if
 
    EVALUATE TRUE
    *> i = number of RadioButton item
