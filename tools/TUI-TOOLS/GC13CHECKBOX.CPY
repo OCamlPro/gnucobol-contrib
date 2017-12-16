@@ -6,9 +6,10 @@
 *> Usage:      call GC13CHECKBOX using CHECKBOX-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
-*> Version:    1.1 2017.11.04
+*> Version:    1.2 2017.11.15
 *> Changelog:  1.0 first release.
 *>             1.1 ck-Hot changed from 9(01) to 9(02)
+*>             1.2 Ck-wait added
 *> ***********************************************************************************************************
 *> on screen You can manage a group of max 98 CHECKBOX items each of 1 row .
 *> Each checkbox item has tobe inserted in a table with 99 elements
@@ -43,6 +44,8 @@
 *>           It has to be in ASCIIZ format (must have x'00'(low-value) as last byte
 *> Ck-Markchar   single char used to "mark" the single chechbox item. example an "X"
 *> Ck-Bracket-Char1/2 - Single chars to make active checkbox more visible example [ ] or ( )
+*> Ck-wait   Y= display checkbox items and wait for a user keypress
+*>           N= display checkbox items  and returns to caller without wait for a keypress by the user
 *>
 *> Ck-Selected  return to caller the number (in the table) of the checkbox item "active" at exit
 *> Ck-Key    key code pressed by user: 0013 = Enter, 0027 = Escape
@@ -76,6 +79,7 @@
         05 Ck-fcoH            pic 9(01) value yellow. *> forecolor for "hot key" char
         05 Ck-fcoHH           pic X(01) Value 'Y'.    *> foreground hotkey char in Highlight ?
         *> back color of shadow background (it has tobe settled to the same of box background)
+        05 Ck-wait            pic x(01) value 'Y'.
      *> *************************************************************
      *> RETUNRS TO CALLER
      *> *************************************************************
