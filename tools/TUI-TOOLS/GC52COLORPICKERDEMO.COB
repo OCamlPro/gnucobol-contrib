@@ -95,7 +95,6 @@ loop1.
     move z' GnuCOBOL are Keisuke Nishida and Roger While.                           ' to Bxm-mex(09)
     move space & x'00' to Bxm-mex(10)
 
-
     move '004003015077' to Bxm-rc
     if wFirst-Time = "Y"
        continue
@@ -104,8 +103,10 @@ loop1.
        move red    to Bxm-bcoM
        move yellow to Bxm-fcoM
     else
-       move Cop-BackCol to Bxm-bco Bxm-bcoM Bxm-titBco
-       move Cop-ForeCol to Bxm-fco Bxm-fcoM Bxm-titFco
+       if Cop-Key = Key-Enter
+          move Cop-BackCol to Bxm-bco Bxm-bcoM Bxm-titBco
+          move Cop-ForeCol to Bxm-fco Bxm-fcoM Bxm-titFco
+       end-if
     end-if
 
     move 'Y' to Bxm-tit         Bxm-titFcoH
