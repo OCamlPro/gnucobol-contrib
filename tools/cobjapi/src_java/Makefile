@@ -1,8 +1,21 @@
+# GNU MAKE Makefile for japi library used in COBJAPI
+
 JAVAC = javac
 JAR = jar
 JARFLAGS = cvfm
 
+uname_S := $(shell uname -s 2>/dev/null)
+ifeq ($(uname_S),)
+	DELETE = -del
+else
+	DELETE = rm -f
+endif
+
+
+# actual target...
 all : JAPI.jar
+
+.PHONY: clean
 
 # create class files
 JAPI.class : $(wildcard *.java)
@@ -22,5 +35,5 @@ JAPI.jar  : JAPI.class
 
 # clean
 clean :
-	rm JAPI.jar *.class 
-	
+	$(DELETE) JAPI.jar *.class 
+
