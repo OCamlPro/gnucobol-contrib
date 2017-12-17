@@ -1,113 +1,68 @@
-*** GCTTC: GnuCOBOL TUI (TEXT USER INTERFACE) TOOLS AND UTILITIES COLLECTON ***
+*** GnuCOBOL TUI (TEXT USER INTERFACE) TOOLS AND UTILITIES COLLECTON ***
 
-In this folder you can find COBOL TUI TOOLS (GC01xxxxxx to GC98xxxxxx) and COBOL Utilities (GC99xxxxxx) 
+In this folder you can find GnuCOBOL TUI TOOLS (GC01xxxxxx to GC98xxxxxx) and GnuCOBOL Utilities (GC99xxxxxx) 
 
 Although the textual interfaces are now replaced by graphical interfaces, a good compiler 
 must allow to develop complete applications in an easy way even with textual user interfaces.
-
 GnuCOBOL have to generate applications with those objects that allow a classical and friendly
 user interface like other programming languages on windows and unix platform.
-
-GCTTC is a collection of COBOL modules (functions/sources) useful for this purpose.
-GCTTC includes modules to manage classical TUI objects like: dropdown menus, 
-multiple-choice Buttons, buttons of YES NO type, calendar for selecting a date, 
-on-screen messages, boxes, check boxes, radio buttons, and so on.
-
+This is a collection of GnuCOBOL modules (functions/sources) useful for this purpose.
+It includes modules to manage classical TUI objects like: dropdown menus, 
+multiple-choice Buttons, buttons of YES NO type, calendar to pickup a date, 
+on-screen messages, boxes, checkboxes, radiobuttons, and so on.
 All modules have been developed exclusively using GnuCOBOL 
 (Pure COBOL with also call to "C" funtions but no C wrappers).
-
 They are COBOL programs you can "CALL" from your source to manage dropdown menus, 
 display box, buttons ... 
 You can choose: position, size, colors, borders, shadows, titles, 3D effect ...
-
-All source files are well commented. Documentation of parameters are inside the copybooks.
-Each TOOL have corresponding demo programs to demonstrate how to "call" the TOOL 
-and some of other main effects.
-Those modules are called "GnuCOBOL TTC = TUI (TEXT USER INTERFACE) TOOLS COLLECTION"
+Source files are well commented. Documentation of parameters are inside the copybooks.
+Each TOOL have corresponding demo programs to demonstrate how to use the TOOLS.
 The sources have been compiled with GnuCOBOL 2.0.
-
-The naming convention of tools is: GnnXXXXXX. 
-Where nn = a code that identifies the function and xxxxx = a brief description of the function.
-For each tools there is a COBOL source and a COPY book in which there are 
-all parameters of the function and parameter to be returned to the caller.
-
 Let me know if you have any suggestion or idea to improve/extend the tools.
 Your suggestions will be very useful and welcome.
-
 The collection is made by folllowing programs (other modules will follow in the future)
 
-GC01BOX.COB 
-call it to display boxes on screen, you can specify back/fore colors, size, position, 
-single/double/custom borders, 3D effect and so on. 
+GC01BOX.COB - call it to display boxes on screen, you can specify back/fore colors, 
+size, position, single/double/custom borders, 3D effect and so on. 
 This function is mainly developed to be used by other following tools.
-
-GC02BOXMEX.COB 
-call it to display messages on screen, you can specify back/fore colors, size, position, 
-single/double/custom borders, 3D effect and so on.
-
-GC03YESNO.COB 
-call it to display a BOX with a simple message and two big buttons YES & NO on screen, 
-you can specify back/fore colors, size, position, and so on.
-
-GC09BUTTONS.COB 
-call it to display buttons on screen, you can specify number of buttons, 
-back/fore colors, size, position, text of buttons and so on.
-
-GC13CHEKBOX.COB 
-call it to display checkbox items (switches) on screen, you can specify number of items, 
-back/fore colors, size, position, symbol , brackets and so on.
-
-GC18RADIOBUTTON.COB 
-call it to display rediobutton items (options) on screen, you can specify number of items, 
-back/fore colors, size, position, symbol , brackets and so on.
-
-GC21MENU.COB 
-call it to display menus on screen, you can manage bar menu, dropdown menu, 
-specify number of items, text and length of items, back/fore colors, position, 
+GC02BOXMEX.COB - call it to display messages on screen, you can specify back/fore 
+colors, size, position, single/double/custom borders, 3D effect and so on.
+GC03YESNO.COB - it display a BOX with a simple message and two big buttons 
+YES & NO on screen, you can specify back/fore colors, size, position, and so on.
+GC09BUTTONS.COB - call it to display buttons on screen, you can specify number of 
+buttons,back/fore colors, size, position, text of buttons and so on.
+GC13CHEKBOX.COB - call it to display checkbox items (switches) on screen, you can 
+specify number of items, back/fore colors, size, position, symbol , brackets and so on.
+GC18RADIOBUTTON.COB - call it to display rediobutton items (options) on screen, you can 
+specify number of items, back/fore colors, size, position, symbol , brackets and so on.
+GC21MENU.COB - call it to display menus on screen, you can manage bar menu, dropdown 
+menu, specify number of items, text and length of items, back/fore colors, position, 
 messages associated to menu items, and so on.
-
-GC22MENU.COB 
-a new version of GC21MENU implementing hot keys.
+GC22MENU.COB - a new version of GC21MENU implementing hot keys.
 It use "call getch" instead of ACCEPT OMITTED to detect normal letter keypress from user.
-
-GC51CALYEAR.COB
-call it to display a one year calendar on screen.
+GC51CALYEAR.COB - call it to display a one year calendar on screen.
 User can browse days, months and years to pick-up a date.
-
-GC53CALENDAR.COB
-call it to display a calendar on screen. three months on on erow 
+GC52 COLORPICKER - Dislay a color pair map (back / foreground colors) and letterthe user 
+browse on it and pick up  color pair 
+GC53CALENDAR.COB - call it to display a calendar on screen. three months on on erow 
 User can scroll months and years 
-
-GC56DATEPICKER.COB
-call it to display a one month calendar (regular or small size)
-you can specify starting date, back/fore colors, size, position, 
-single/double/custom borders, 3D effect and so on.
-User can browse days, months and years to pick-up a date.
-
-GC58SAVERCLOCK.COB
-call it to display a screen saver with a big clock and a scrolling string.
-the big clock will move randomly on screen.
-you can specify back/fore colors, size, position, single/double/custom borders, 
-3D effect and so on.
-
-GC71CRUDExxxx.COB
-A "CRUDE" application. It shows hot to create, read(browse), update, delete indexed file records.
-This is a real application showing how to accept fields on screen, numeric fileds (with sign and decimals)
-How to pickup a date. How to use indexed files with alternate index.
-How to display context sensitive help information (from GC74HELPxxx TOOL)
-Copying and modifying this programs you can develop a lot of other type of applications. 
-
-GC74HELPxxxx.COB
-A "HELP" system. You can write text help files , load it on indexed files.
+GC56DATEPICKER.COB - call it to display a one month calendar (regular or small size)
+you can specify starting date, back/fore colors, size, position, single/double/custom 
+borders, 3D effect and so on.User can browse days, months and years to pick-up a date.
+GC58SAVERCLOCK.COB - call it to display a screen saver with a big clock and a scrolling 
+string. the big clock will move randomly on screen. you can specify back/fore colors, 
+size, position, single/double/custom borders, 3D effect and so on.
+GC71CRUDExxxx.COB - A "CRUDE" application. It shows hot to create, read(browse), update, 
+delete indexed file records. This is a real application showing how to accept fields on 
+screen, numeric fileds (with sign and decimals). How to pickup a date. How to use indexed 
+files with alternate index. How to display context sensitive help information (from GC74HELPxxx 
+TOOL). Copying and modifying this programs you can develop a lot of other type of applications. 
+GC74HELPxxxx.COB - A "HELP" system. You can write text help files , load it on indexed files.
 List the indexde file , access to this HELP messages from any CRUDE application.
 
-GC99BANNER.COB
-accept a string and print that string in big character.
+GC99BANNER.COB - accept a string and print that string in big character.
 Useful to print a banner page for your reports.
-
-
-GC99COPYGEN.COB
-Copy generator for cobol programs that write reports,
+GC99COPYGEN.COB - Copy generator for cobol programs that write reports,
 How to use it:
 1. create a text file with the layout of the report. Set all constants and variables. 
 Use the $ symbol when you want a PIC X field,use the # symbol when you want a PIC 9. 
