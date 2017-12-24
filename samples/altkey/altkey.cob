@@ -6,8 +6,8 @@
 
        Environment division.
        Configuration section.
-       Source-computer.  GNU-Cobol.
-       Object-computer.  GNU-Cobol.
+       Source-computer.  GnuCOBOL.
+       Object-computer.  GnuCOBOL.
        Special-names.
       * Display x upon std-out, to get 1>file1.txt.
            console is std-out
@@ -24,7 +24,9 @@
                record key is iftest-key
                alternate key is iftest-alternate
                    with duplicates
+      >> IF NOSUPPRESS NOT DEFINED
                    suppress when space
+      >> END-IF
                file status is ws-file-status.
 
        Data division.
@@ -65,8 +67,9 @@
              & "                                                  "
              & "   Blank alternate keys do not appear in the read "
              & "loop because of the 'suppress when spaces' clause."
-             & "As an exercise, comment out the clause and see    "
-             & "the difference when the program is run again.     "
+             & "As an exercise, recompile with -DNOSUPPRESS or    "
+             & "comment out the clause and see the difference     "
+             & "when the program is run again.                    "
              & "                                                  "
              & "1)  The file is opened output, to create it.      "
              & "2)  Six sample records are written, some with     "
@@ -287,7 +290,9 @@
            Move iftest-record to ws-record.
            Perform sfo-show-file-operation thru sfo-exit.
 
-           If ws-file-status is equal to "10"
+      *    Note: EOF would be "10", but to prevent an endless loop in
+      *          the case something unexpected happen check against "00"
+           If ws-file-status is not equal to "00"
                Set flag-eof-yes to true
                Go to 11-exit
            end-if.
