@@ -75,7 +75,7 @@
       *>***************************************************************
       *>                                                             **
       *> AUTHOR:       GARY L. CUTLER                                **
-      *>               Copyright (C) 2009-2017, Gary L. Cutler, GPL  **
+      *>               Copyright (C) 2009-2018, Gary L. Cutler, GPL  **
       *>                                                             **
       *> DATE-WRITTEN: June 14, 2009                                 **
       *>                                                             **
@@ -83,7 +83,7 @@
       *>  DATE  CHANGE DESCRIPTION                                   **
       *> ====== ==================================================== **
       *> GC0609 Don't display compiler messages file if compilation  **
-      *>  GCL   Is successful.  Also don't display messages if the   **
+      *>  GLC   Is successful.  Also don't display messages if the   **
       *>        output file is busy (just put a message on the       **
       *>        screen, leave the OC screen up & let the user fix    **
       *>        the problem & resubmit.                              **
@@ -93,18 +93,18 @@
       *>        Changed the title bar to lowlighted reverse video &  **
       *>        the message area to highlighted reverse-video.       **
       *> GC0809 Add a SPACE in front of command-line args when       **
-      *>  GCL   executing users program.  Add a SPACE after the      **
+      *>  GLC   executing users program.  Add a SPACE after the      **
       *>        -ftraceall switch when building cobc command.        **
       *> GC0909 Convert to work on Cygwin/Linux as well as MinGW     **
       *> GC0310 Virtualized the key codes for S-F1 thru S-F7 as they **
-      *>  GCL   differ depending upon whether PDCurses or NCurses is **
+      *>  GLC   differ depending upon whether PDCurses or NCurses is **
       *>        being used.                                          **
       *> GC0410 Introduced the cross-reference and source listing    **
-      *>  GCL   features.  Also fixed a bug in EXTRA switch proces-  **
+      *>  GLC   features.  Also fixed a bug in EXTRA switch proces-  **
       *>        sing where garbage will result if more than the      **
       *>        EXTRA switch is specified.                           **
       *> GC1010 Corrected several problems reported by Vince Coen:   **
-      *>  GCL   1) Listing/Xref wouldn't work if '-I' additional     **
+      *>  GLC   1) Listing/Xref wouldn't work if '-I' additional     **
       *>           cobc switch specified.                            **
       *>        2) Programs coded with lowercase reserved words did  **
       *>           not get parsed properly when generating listing   **
@@ -122,7 +122,7 @@
       *>        if specified.                                        **
       *> GC0711 Tailored for 29APR2011 version of GNU COBOL 2.0      **
       *> GC0712 Replaced all switches with configuration settings;   **
-      *>  GCL   Tailored for 11FEB2012 version of GNU COBOL 2.0;     **
+      *>  GLC   Tailored for 11FEB2012 version of GNU COBOL 2.0;     **
       *>        Reformatted screen layout to fit a 24x80 screen      **
       *>        rather than a 25x81 screen and to accommodate shell  **
       *>        environments having only F1-F12 (like 'terminal' in  **
@@ -133,19 +133,26 @@
       *>        directives EJECT,SKIP1,SKIP2,SKIP3 (any of these in  **
       *>        copybooks will be ignored)                           **
       *> GC0313 Expand the source code record from 80 chars to 256   **
-      *>  GCL   to facilitate looking for "LINKAGE SECTION" in a     **
+      *>  GLC   to facilitate looking for "LINKAGE SECTION" in a     **
       *>        free-format file.                                    **
       *> GC1113 Edited to support the change of "OpenCOBOL" to "GNU  **
       *>  GLC   COBOL"                                               **
       *> GC1213 Updated for 23NOV2013 version of GNU COBOL 2.1       **
       *> GC0114 Introduce a "Press ENTER to Close" action after run- **
-      *>  GCL   ning the compiled program in the compiler window (F4)**
-      *> GC0617 Remove the Blinking in meny screen as uncomfortable  **
+      *>  GLC   ning the compiled program in the compiler window (F4)**
+      *> VC0617 Remove the Blinking in meny screen as uncomfortable  **
       *>  VBC   Update version printed to 2.2 30JUN2017.             **
       *>        Move the system constant settings to a copy file     **
       *>        const-set-1.cpy  in case GCic is updated.            **
       *>        Added  SET ENVIRONMENT "COB_EXIT_WAIT" TO "0" to     **
       *>        100-Initialization section.                          **
+      *> VC0717 Replaced compile param instrinsic=all with           **
+      *>  VBC   intrinstics=ALL. Changed mod detail inits for Gary   **
+      *>        from GCL to GLC.                                     **
+      *>        Update version printed to 2.2 20JUL2017.             **
+      *>        Should really get this from the compiler if avail?   **
+      *> VC1217 Update compiler version to v3.0 24DEC2017.           **
+      *>        and copyright to 2018 (in 3 places).                 **
       *>***************************************************************
       *>
        ENVIRONMENT DIVISION.
@@ -170,8 +177,9 @@ GC1010     SELECT F-Cobc-Output-FILE   ASSIGN TO WS-Listing-Filename-TXT
 GC0313 01  F-Source-Code-REC                     PIC X(256).
 
        WORKING-STORAGE SECTION.
+       >>source free
        COPY screenio.
-
+       >>source fixed
 GC0712 01  WS-Compilation-Switches-TXT.
 GC0712     05 WS-CS-Args-TXT VALUE SPACES.
 GC0712        10 WS-CS-Arg-H1-TXT                PIC X(76).
@@ -359,7 +367,7 @@ GC0712        88 WS-RS-Source-Rec-Ignored-BOOL   VALUE ' '.
       *>         1         2         3         4         5         6         7         8
       *>12345678901234567890123456789012345678901234567890123456789012345678901234567890
       *>================================================================================
-   01 *> GCic (2011/07/11 08:52) - GNU COBOL V2.1 23NOV2013 Interactive Compilation
+   01 *> GCic (2017/12/24 08:52) - GNU COBOL V3.0 24DEC2017 Interactive Compilation
    02 *>+------------------------------------------------------------------------------+
    03 *>| Folder:   E:\GNU COBOL\Samples                                               |
    04 *>| Filename: GCic.cbl                                                           |
@@ -382,7 +390,7 @@ GC0712        88 WS-RS-Source-Rec-Ignored-BOOL   VALUE ' '.
    21 *>| ____________________________________________________________________________ |
    22 *>| ____________________________________________________________________________ |
    23 *>+------------------------------------------------------------------------------+
-   24 *> GCic Copyright (C) 2009-2017, Gary L. Cutler, GPL
+   24 *> GCic Copyright (C) 2009-2018, Gary L. Cutler, GPL
       *>================================================================================
       *>12345678901234567890123456789012345678901234567890123456789012345678901234567890
       *>         1         2         3         4         5         6         7         8
@@ -518,9 +526,9 @@ GC0712    03 BACKGROUND-COLOR COB-COLOR-BLUE
              FOREGROUND-COLOR COB-COLOR-WHITE HIGHLIGHT.
 GC0410       05 LINE 01 COL 01 VALUE ' GCic ('.
 GC0410       05         COL 08 PIC X(16) FROM WS-OC-Compile-DT.
-GC1213       05         COL 24 VALUE ') GNU COBOL 2.2 30JUN2017 ' &
+GC1213       05         COL 24 VALUE ') GNUCOBOL 3.0 24DEC2017 ' &
 GC0410                               'Interactive Compilation        '.
-GC0617    03 BACKGROUND-COLOR COB-COLOR-RED
+VC0617    03 BACKGROUND-COLOR COB-COLOR-RED
 GC0712       FOREGROUND-COLOR COB-COLOR-WHITE HIGHLIGHT.
 GC0712       05 LINE 24 COL 01 PIC X(80) FROM WS-Output-Msg-TXT.
       *>
@@ -697,7 +705,7 @@ GC0609     END-PERFORM
       *>***************************************************************
            SET ENVIRONMENT 'COB_SCREEN_EXCEPTIONS' TO 'Y'
            SET ENVIRONMENT 'COB_SCREEN_ESC'        TO 'Y'
-GC0617     SET ENVIRONMENT "COB_EXIT_WAIT"         TO "0".
+VC0617     SET ENVIRONMENT "COB_EXIT_WAIT"         TO "0".
       *>***************************************************************
       *> Get GCic Compilation Date/Time                              **
       *>***************************************************************
@@ -796,7 +804,7 @@ GC0712     END-IF
 GC0909     MOVE ALL LD-Horiz-Line TO WS-Horizontal-Line-TXT.
 GC0410     MOVE CONCATENATE(' GCic for '
 GC0410                      TRIM(WS-OS-Type-TXT(WS-OS-Type-CD),Trailing)
-GC1213                      ' Copyright (C) 2009-2017, Gary L. '
+GC1213                      ' Copyright (C) 2009-2018, Gary L. '
 GC0410                      'Cutler, GPL')
 GC0410       TO WS-Output-Msg-TXT.
 GC0909
@@ -938,7 +946,7 @@ GC0809         STRING '-ftraceall '
                    WITH POINTER WS-I-SUB
            END-IF
 GC0712     IF WS-CS-NOFUNC-CHR NOT = ' '
-GC0712         STRING '-fintrinsic=all '
+VC0717         STRING '-fintrinsics=ALL '
 GC0712             DELIMITED SIZE INTO WS-Cobc-Cmd-TXT
 GC0712             WITH POINTER WS-I-SUB
 GC0712     END-IF
@@ -1397,6 +1405,7 @@ GC0712                          BY REFERENCE L-Argument-2-CHR.
       *> GC0314 Fix problem where 1st char of 1st token on a line is **
       *>        lost if >>SOURCE MODE IS FREE is in effect and the   **
       *>        1st character is non-blank.                          **
+      *> VC1217 Updated compiler version & date to v3.0 & 24DEC2017. **
       *>***************************************************************
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
@@ -2421,10 +2430,10 @@ GC1213     MOVE 'N' TO WS-Suppress-FF-CHR
 GC1213     MOVE SPACES TO WS-Copyright-TXT
 GC1213     STRING 'GCic for '                  DELIMITED SIZE
 GC1213            WS-OS-Type-TXT(L-OS-Type-CD) DELIMITED SPACE
-GC1213            ' Copyright (C) 2009-2017, Gary L. Cutler, GPL'
+GC1213            ' Copyright (C) 2009-2018, Gary L. Cutler, GPL'
 GC1213                                         DELIMITED SIZE
 GC1213            INTO WS-Copyright-TXT
-GC1213     MOVE 'GNU COBOL 2.2 30JUN2017' TO WS-Version-TXT
+GC1213     MOVE 'GNUCOBOL 3.0 24DEC2017' TO WS-Version-TXT
            MOVE TRIM(L-Src-Fn-TXT,Leading) TO L-Src-Fn-TXT
 GC1010     PERFORM VARYING WS-I-SUB FROM LENGTH(L-Src-Fn-TXT) BY -1 *> Locate last directory delimiter character so that the filename can be extracted
 GC1010               UNTIL L-Src-Fn-TXT(WS-I-SUB:1) = '/' OR '\'
