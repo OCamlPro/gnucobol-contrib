@@ -12,6 +12,10 @@
 *> ***********************************************************************************
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
+*> r1,c1     row & column of upper left corner   - DEFAULT: 01,01
+*> r2,c2     row & column of lower right corner  - DEFAULT: 25, 80
+*> bco,fco   box background & foreground (the frame) color
+*> hilight   Y= the foreground (the frame of the box) is highlighted
 *> wait      Y= display the message and wait for a user keypress
 *>           N= diisplay the message and returns to caller without wait for a keypress by the user
 *>           in that case the caller can display 2 or more buttons associated to the message
@@ -22,6 +26,18 @@
 *>           N= program does not save  / restore the screen . Is the caller that have
 *>              to save the screen before calling G09BOXMEX and restoe the screen when return
 *>           Note: setting wait=N & savescr=N you will have a permanent message on screen
+*> style     S= Single line, D= Double line, 1,2=character box, 3=a solid frame (does'nt work!)
+*>           N= noline (to colour a zone), C= custom
+*> custom    if style=C, here are 9 chars to draw the box: UpLeft, UpCenter, UpRight, MiddleLeft, MC, MR, LowLeft, LC, LR
+*> fill      Y= filled box, N= transparent box, draw only the frame
+*> shadow    Y= draw a shadow low & right of the box. DEFAULT: no shadow
+*> 3D        N= no 3D; E= 3D box EMBOSSED/RELIEF; R= 3D box RECESSED
+*>           if 3D box requested, fore color is forced to black&white to have the 3D effect.
+*> add1c     Y= box width expanded 1 col at left and 1 col at right.
+*>           improve appaerance of 3D box. (not yet implemented)
+*> beep      Y= bell
+*> tit       Y= display a title
+*> titDes    string to be displayed as title
 *> OkButton  Y= display a single OK button at row = r2 -2 . N = not display the single button.
 *> click     Y= when hit enter on the single button you will have a "click effect"
 *>           move button 1 char to right, black/white color , no shadow
