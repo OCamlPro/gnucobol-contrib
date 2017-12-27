@@ -50,7 +50,7 @@
       05 Cop-titBco  pic 9(01) value cyan.          *> back color of titleBox
       05 Cop-titFco  pic 9(01) value white.         *> fore color of titleBox
       05 Cop-titFcoH pic X(01) value "Y".           *> hiligth fore color of titleBox ?
-      05 Cop-titDes  pic x(80) value x'B4' & ' Color Picker '  & x'C3' & x'00' .
+      05 Cop-titDes  pic x(80) value x'B4' & ' Color Pair Picker (F1=Help) '  & x'C3' & x'00' .
 *> *************************************************************
 *> RETUNRS TO CALLER
 *> *************************************************************
