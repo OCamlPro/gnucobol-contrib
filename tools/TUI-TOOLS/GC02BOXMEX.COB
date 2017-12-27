@@ -356,6 +356,8 @@ Shadow-Button-EX. exit.
 *> redisplay the button 1 column right, without shedow and in black/white
 *> *******************************************************************************
 Click.
+    *> if Ok Button not = Y , click effect is not considered
+    if Bxm-OkButton not = 'Y' go to Click-ex end-if
     Move 1 to i
     add  1 to Bu-c(i)
     move black to bco
