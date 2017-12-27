@@ -11,6 +11,7 @@ PROGRAM-ID. GC52COLORPICKERDEMO.
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
 *> Version:    1.0 2017.12.12
 *> Changelog:  1.0 first release.
+*>             1.1 added F1 = help
 *> ***********************************************************************************
 DATA DIVISION.
 WORKING-STORAGE SECTION.
@@ -22,28 +23,27 @@ WORKING-STORAGE SECTION.
 01 magenta constant as 5.
 01 yellow  constant as 6.  *> or Brown
 01 white   constant as 7.
-01 wDummy            pic x(01) VALUE     ' '.
-01  i    pic 999.
-01  j    pic 999.
-01  wR   pic 999 value zero.
-01  wC   pic 999 value zero.
-01 wInt        BINARY-SHORT . *>  SIGNED.
+01 wDummy  pic x(01) VALUE     ' '.
+01 i       pic 999.
+01 j       pic 999.
+01 wR      pic 999 value zero.
+01 wC      pic 999 value zero.
+01 wInt    BINARY-SHORT .
 
 01 wFirst-Time Pic X value 'Y'.
 *> SAVE/RESTORE SCREEN VARIABLES
-01 wScreenName        PIC X(256).
-01 wiScrOk            BINARY-LONG.
+01 wScreenName PIC X(256).
+01 wiScrOk     BINARY-LONG.
 
+01 wCursorHide  BINARY-SHORT value 0.
+01 wCursorShow  BINARY-SHORT value 2.
+01 wVisibility  BINARY-SHORT.
 
-01 wCursorHide  BINARY-SHORT value 0. *>  SIGNED.
-01 wCursorShow  BINARY-SHORT value 2. *>  SIGNED.
-01 wVisibility  BINARY-SHORT.         *>  SIGNED.
-
-copy 'GC01BOX.CPY'.
-copy 'GC02BOXMEX.CPY'.
+copy         'GC01BOX.CPY'.
+copy      'GC02BOXMEX.CPY'.
 copy 'GC52COLORPICKER.CPY'.
-COPY 'GC09BUTTONS.CPY'.
-COPY 'GC98KEYCODE.CPY'.
+COPY     'GC98KEYCODE.CPY'.
+
 *> ***********************************************************************************
 *>           P R O C E D U R E   D I V I S I O N
 *> ***********************************************************************************
@@ -83,21 +83,20 @@ loop0.
 loop1.
     move low-value to Bxm-tabmex
 
-    move ' *** GnuCOBOL GnuCOBOL GnuCOBOL *** ' & x'00'       to Bxm-titDes
-    move z' GnuCOBOL is an open-source COBOL compiler and runtime environment.      ' to Bxm-mex(01)
-    move z' The GnuCOBOL compiler generates C code which is automatically compiled  ' to Bxm-mex(02)
-    move z' and linked. While originally developed for UNIX operating systems,      ' to Bxm-mex(03)
-    move z' GnuCOBOL has also been successfully built for OSX computers or Windows  ' to Bxm-mex(04)
-    move z' computers utilizing the UNIX-emulation features of such tools as Cygwin ' to Bxm-mex(05)
-    move z' and MinGW. It has also been built as a truly native Windows application ' to Bxm-mex(06)
-    move z' utilizing Microsoft"s freely-downloadable Visual Studio Express package ' to Bxm-mex(07)
-    move z' to provide the C compiler and linker/loader.The principal developers of ' to Bxm-mex(08)
-    move z' GnuCOBOL are Keisuke Nishida and Roger While.                           ' to Bxm-mex(09)
+    move ' ***  GnuCOBOL  GnuCOBOL  GnuCOBOL *** ' & x'00'       to Bxm-titDes
+    move z' GnuCOBOL (formerly OpenCOBOL) is a free COBOL compiler. cobc translates ' to Bxm-mex(01)
+    move z' COBOL source to executable using intermediate C, C compiler and linker. ' to Bxm-mex(02)
+    move z' GnuCOBOL 2.2 has been released and is the current version.              ' to Bxm-mex(03)
+    move z' A programmer"s guide, by Gary Cutler, and other documentation,          ' to Bxm-mex(04)
+    move z' is indexed at http://open-cobol.sourceforge.net/                        ' to Bxm-mex(05)
+    move z' OpenCOBOL was written by K.Nishida and Roger While, from 2001 to 2012.  ' to Bxm-mex(06)
+    move z' GnuCOBOL is also authored by S.Sobisch, R.Norman, E.Hart, S.Kashyrin,   ' to Bxm-mex(07)
+    move z' D.Pitts and B.Tiffin. Others listed in the AUTHORS and THANKS files.    ' to Bxm-mex(08)
+    move z' Copyright 2001-2017 Free Software Foundation, Inc.                      ' to Bxm-mex(09)
     move space & x'00' to Bxm-mex(10)
 
     move '004003015077' to Bxm-rc
-    if wFirst-Time = "Y"
-       continue
+    if wFirst-Time = "Y" or Cop-Key not = Key-Enter
        move red    to Bxm-bco Bxm-titBco
        move white  to Bxm-fco Bxm-titFco
        move red    to Bxm-bcoM
@@ -126,12 +125,12 @@ loop2.
    call static "getch" returning Key-Pressed end-call
 
    EVALUATE TRUE
-      when Key-Pressed = Key-F1
-            perform ColorPicker thru ColorPickerEx
-            move 'N' to wFirst-Time
-            go to loop1
-      when Other
-            continue
+   when Key-Pressed = Key-F1
+        perform ColorPicker thru ColorPickerEx
+        move 'N' to wFirst-Time
+        go to loop0
+   when Other
+        continue
    END-EVALUATE
 
    *> test if the user pressed Escape key
@@ -143,13 +142,13 @@ End-Program.
     *> clear screen
     display wDummy at 2579 with blank screen end-display
     display ' GnuCOBOL TUI TOOL to pick up a "color pair" - END OF DEMO.'
-          at 0301 with foreground-color white background-color green
+            at 0301 with foreground-color white background-color green
+
     *> DISPLAY ITALIAN FLAG
      move '009036014049' to Box-rc
      move black to Box-bco
      move 'S' to Box-style
      call  GC01BOX using BOX-AREA
-
      display '    ' at 010037 with       background-color Green end-display
      display '    ' at 011037 with       background-color Green end-display
      display '    ' at 012037 with       background-color Green end-display
@@ -167,6 +166,7 @@ End-Program.
 
 ColorPicker.
    perform ScreenSave thru ScreenSaveEx
+   *> move x'B4' & ' Color Pair Picker '  & x'C3' & x'00' to Cop-titDes
    call GC52COLORPICKER  using ColorPicker-Area cancel GC52COLORPICKER
    perform ScreenRestore thru ScreenRestoreEx.
 ColorPickerEx. exit.
