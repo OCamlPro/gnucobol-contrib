@@ -5,7 +5,6 @@ REPLACE ==:BC== BY ==with background-color==
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DISPLAY A COLOR MAP OF 8 BACKGR x 8 FOREGR = 64 COLOR PAIR COMBINATION
 *>             LET THE USER BROWSE ON THE COLOR MAP TO CHOOSE - RETURNS TO CALLER
-*>             use F1 and F2 to change Fore / back Color of the frame
 *> Tectonics:  cobc -m GC52COLORPICKER.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC52COLORPICKER using ColorPicker-Area
 *> Parameters: look at GC52COLORPICKER.CPY  (use with copy Version: 1.0)
@@ -13,6 +12,7 @@ REPLACE ==:BC== BY ==with background-color==
 *> License:    Copyright 2017 - GNU Lesser General Public License, LGPL, 3.0 (or greater)
 *> Version:    1.0 2017.12.01
 *> Changelog:  1.0 first release.
+*>             1.1 added F1 = help
 *> ***********************************************************************************
 ID DIVISION.
 PROGRAM-ID. GC52COLORPICKER.
@@ -60,6 +60,10 @@ WORKING-STORAGE SECTION.
 01  wVisibilityNew   BINARY-SHORT .
 01  wVisibilityOld   BINARY-SHORT .
 
+*> SAVE/RESTORE SCREEN VARIABLES
+01 wScreenName        PIC X(256).
+01 wiScrOk            BINARY-LONG.
+
 *> ****************************************************************************
 *>  COLOR PAIR TAB FROM 00 TO 63.
 *>  exceptions are 00 = white on black, 01 = green on black
@@ -86,13 +90,9 @@ WORKING-STORAGE SECTION.
       05 wColorPair-Col occurs 8.
          07 wColorPair-Ele Pic 99.
 
-
-
 COPY         'GC01BOX.CPY'.
-
+copy      'GC02BOXMEX.CPY'.
 COPY     'GC98KEYCODE.CPY'.
-
-
 
 LINKAGE SECTION.
 COPY 'GC52COLORPICKER.CPY'.
@@ -206,19 +206,23 @@ loop2.
             perform BigCursorDisplay thru BigCursorDisplayEx
             go to loop1
       when Key-Pressed = Key-F1
-            *> F1 change frame Fore Color
+            *> F1 HELP
+            perform DisplayHelp thru DisplayHelpEx
+            go to loop0
+      when Key-Pressed = Key-F2
+            *> F2 change frame Fore Color
             add 1 to Cop-Fco Cop-titFco
             If Cop-Fco > 7 move 0 to Cop-Fco Cop-titFco end-if
             move 1 to Ic Ir
-            move zero to wBackCol wForeCol
+            move 0 to wBackCol wForeCol
             perform BigCursorReset thru BigCursorResetEx
             go to loop0
-      when Key-Pressed = Key-F2
-            *> F2 change frame Back Color
+      when Key-Pressed = Key-F3
+            *> F3 change frame Back Color
             add 1 to Cop-Bco Cop-titBco
             If Cop-Bco > 7 move 0 to Cop-Bco Cop-titBco  end-if
             move 1 to Ic Ir
-            move zero to wBackCol wForeCol
+            move 0 to wBackCol wForeCol
             perform BigCursorReset thru BigCursorResetEx
             go to loop0
       when Key-Pressed = Key-Enter
@@ -233,9 +237,9 @@ loop2.
 
    continue.
 End-Program.
-  *> reset the cursor
-  perform CursorReset thru CursorResetEx
-  GOBACK.
+   *> reset the cursor
+   perform CursorReset thru CursorResetEx
+   GOBACK.
 
 
 *> ***********************************************************************************
@@ -286,7 +290,7 @@ BigCursorresetEx. exit.
 DisplayColorInformation.
    *> Display Colors Informations under Color MAP
    compute wLin = ROW1 + 17
-   Compute wCol = COL1 - 1
+   compute wCol = COL1 - 1
    display ' BG: '   at line wLin col wCol :BC Cop-bco :FC Cop-fco highlight end-display
    Compute wCol = wCol + 4
    display wBackCol  at line wLin col wCol :BC Cop-bco :FC Cop-fco highlight end-display
@@ -329,5 +333,54 @@ CursorReset.
     call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
     continue.
 CursorResetEx. exit.
+
+DisplayHelp.
+   perform ScreenSave thru ScreenSaveEx
+   *> DISPLAY THE FRAME AND THE HELP TEXT
+    initialize Boxmex-Area ALL TO VALUE
+    move low-value to Bxm-tabmex
+    move z' Cursor, Tab, Page, space keys = ' to Bxm-mex(01)
+    move z' browse the color pair map       ' to Bxm-mex(02)
+    move z' F1 = displays this screen       ' to Bxm-mex(03)
+    move z' F2 = change forecolor of frame  ' to Bxm-mex(04)
+    move z' F3 = change backcolor of frame  ' to Bxm-mex(05)
+    move z' Enter= select the color pair    ' to Bxm-mex(06)
+    move z' ESC  = exit from color picker   ' to Bxm-mex(07)
+    move z'                                 ' to Bxm-mex(08)
+    move z' color pair map:                 ' to Bxm-mex(09)
+    move z' B  B  G  R  C  M  Y  W          ' to Bxm-mex(10)
+    move z' L  L  R  E  Y  A  E  H          ' to Bxm-mex(11)
+    move z' 63 02 01 03 04 05 06 00  BLACK  ' to Bxm-mex(12)
+    move z' 07 08 09 10 11 12 13 14  BLUE   ' to Bxm-mex(13)
+    move z' 15 16 17 18 19 20 21 22  GREEN  ' to Bxm-mex(14)
+    move z' 23 24 25 26 27 28 29 30  RED    ' to Bxm-mex(15)
+    move z' 31 32 33 34 35 36 37 38  CYAN   ' to Bxm-mex(16)
+    move z' 39 40 41 42 43 44 45 46  MAGENTA' to Bxm-mex(17)
+    move z' 47 48 49 50 51 52 53 54  YELLOW ' to Bxm-mex(18)
+    move z' 55 56 57 58 59 60 61 62  WHITE  ' to Bxm-mex(19)
+
+    move blue     to Bxm-bco    Bxm-titBco Bxm-bcoM
+    move white    to Bxm-fco    Bxm-titFco Bxm-fcoM
+    move 'Y'      to Bxm-Click  Bxm-tit
+    move 'N'      to Bxm-3D     Bxm-OkButton
+    move 'D'      to Bxm-style
+    move ' HELP ' & x'00'    to Bxm-titDes
+   compute Bxm-r1 = Cop-r1 - 2
+   compute Bxm-c1 = Cop-c1 - 2
+   compute Bxm-r2 = Bxm-r1 + 20
+   compute Bxm-c2 = Bxm-c1 + 34
+   call GC02BOXMEX using BOXMEX-AREA
+   perform ScreenRestore thru ScreenRestoreEx.
+DisplayHelpEx. exit.
+
+ScreenSave.
+   move Z'SCRDUMP.SCR' to wScreenName
+   call static 'scr_dump' using by reference wScreenName returning wiScrOk end-call.
+ScreenSaveEx. exit.
+
+ScreenRestore.
+   call static 'scr_restore' using by reference wScreenName returning wiScrOk end-call
+   CALL 'CBL_DELETE_FILE' USING wScreenName.
+ScreenRestoreEx. exit.
 
 End Program GC52COLORPICKER.
