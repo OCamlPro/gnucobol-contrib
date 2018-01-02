@@ -208,6 +208,9 @@ loop2.
       when Key-Pressed = Key-F1
             *> F1 HELP
             perform DisplayHelp thru DisplayHelpEx
+            move 1 to Ic Ir
+            move 0 to wBackCol wForeCol
+            perform BigCursorReset thru BigCursorResetEx
             go to loop0
       when Key-Pressed = Key-F2
             *> F2 change frame Fore Color
@@ -346,25 +349,25 @@ DisplayHelp.
     move z' F3 = change backcolor of frame  ' to Bxm-mex(05)
     move z' Enter= select the color pair    ' to Bxm-mex(06)
     move z' ESC  = exit from color picker   ' to Bxm-mex(07)
-    move z'                                 ' to Bxm-mex(08)
-    move z' color pair map:                 ' to Bxm-mex(09)
-    move z' B  B  G  R  C  M  Y  W          ' to Bxm-mex(10)
-    move z' L  L  R  E  Y  A  E  H          ' to Bxm-mex(11)
-    move z' 63 02 01 03 04 05 06 00  BLACK  ' to Bxm-mex(12)
-    move z' 07 08 09 10 11 12 13 14  BLUE   ' to Bxm-mex(13)
-    move z' 15 16 17 18 19 20 21 22  GREEN  ' to Bxm-mex(14)
-    move z' 23 24 25 26 27 28 29 30  RED    ' to Bxm-mex(15)
-    move z' 31 32 33 34 35 36 37 38  CYAN   ' to Bxm-mex(16)
-    move z' 39 40 41 42 43 44 45 46  MAGENTA' to Bxm-mex(17)
-    move z' 47 48 49 50 51 52 53 54  YELLOW ' to Bxm-mex(18)
-    move z' 55 56 57 58 59 60 61 62  WHITE  ' to Bxm-mex(19)
+    move z'------ color pair code map ------' to Bxm-mex(08)
+    move z' 0B 1B 2G 3R 4C 5M 6Y 7W <-(FG)  ' to Bxm-mex(09)
+    move z'  L  L  R  E  Y  A  E  H         ' to Bxm-mex(10)
+    move z'  A  U  E  D  A  G  L  I   (BG)  ' to Bxm-mex(11)
+    move z' 63 02 01 03 04 05 06 00 0BLACK  ' to Bxm-mex(12)
+    move z' 07 08 09 10 11 12 13 14 1BLUE   ' to Bxm-mex(13)
+    move z' 15 16 17 18 19 20 21 22 2GREEN  ' to Bxm-mex(14)
+    move z' 23 24 25 26 27 28 29 30 3RED    ' to Bxm-mex(15)
+    move z' 31 32 33 34 35 36 37 38 4CYAN   ' to Bxm-mex(16)
+    move z' 39 40 41 42 43 44 45 46 5MAGENTA' to Bxm-mex(17)
+    move z' 47 48 49 50 51 52 53 54 6YELLOW ' to Bxm-mex(18)
+    move z' 55 56 57 58 59 60 61 62 7WHITE  ' to Bxm-mex(19)
 
     move blue     to Bxm-bco    Bxm-titBco Bxm-bcoM
     move white    to Bxm-fco    Bxm-titFco Bxm-fcoM
     move 'Y'      to Bxm-Click  Bxm-tit
     move 'N'      to Bxm-3D     Bxm-OkButton
-    move 'D'      to Bxm-style
-    move ' HELP ' & x'00'    to Bxm-titDes
+    move 'S'      to Bxm-style
+    move x'B4' & ' Colorpair Picker - HELP '  & x'C3' & x'00' to Bxm-titDes
    compute Bxm-r1 = Cop-r1 - 2
    compute Bxm-c1 = Cop-c1 - 2
    compute Bxm-r2 = Bxm-r1 + 20
