@@ -1,8 +1,6 @@
 COBJAPI a GnuCOBOL interface (wrapper) for JAPI
 ===============================================
 
-This is a work in progress. 
-
 The following notice excludes the doc/ folder, whose contents' copyrights belong
 to Dr. Merten Joost:
 
@@ -123,12 +121,19 @@ cobjapi/src_cobol           -> GnuCOBOL functions for JAPI
 cobjapi/src_java            -> Java programs for JAPI
 
 
-Compile with cygwin
--------------------
+Compile with linux or cygwin
+----------------------------
 Use the makefiles, first compile the sources, then the examples. 
 
-Or compile with MS Visual Studio
---------------------------------
+There are recursive make files on every directory levels. That means, you can
+compile all programs if you start the make file in the cobjapi main directory. 
+
+With make you can use the following options (please see the make file):
+Usage: make [DEBUG=Y] [VERBOSE=Y] [COBFLAGS=-Wno-unfinished] [CFLAGS=-Wno-unused-result]
+
+
+Compile with MS Visual Studio
+-----------------------------
 Change the batch compile files according to your environment.
 Use the batch files, first compile the sources, then the examples. 
 There are the following batch compile files:
