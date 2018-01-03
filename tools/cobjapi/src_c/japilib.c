@@ -72,19 +72,9 @@ extern int __write_image(FILE*,char*,char*,char*,int,int,int);
 	#define _GCC
 #endif
 
-#ifdef lcc
-	#define _MSC_VER
+#if defined (__MINGW32__) || defined (__MINGW64__)
+    #define _MINGW
 #endif
-
-#if defined (bcc32) || defined (__BORLANDC__)
-	#ifndef bcc32
-		#define bcc32
-	#endif
-	#ifndef _WIN32
-		#define _WIN32
-	#endif
-#endif
-
 
 #ifdef _GCC
 	#include <sys/time.h>
@@ -604,7 +594,7 @@ int nbytes;
 	while(n_bytes_gelesen < nbytes)
     {
     	posbuf= (char*) (buf+n_bytes_gelesen);
-#ifdef _MSC_VER
+#if defined (_MSC_VER) || defined (_MINGW)        
     	n = recv(file_d,posbuf,nbytes-n_bytes_gelesen,0);
 #else
     	n = read(file_d,posbuf,nbytes-n_bytes_gelesen);
