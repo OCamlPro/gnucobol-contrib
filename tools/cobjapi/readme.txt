@@ -132,17 +132,45 @@ With make you can use the following options (please see the make file):
 Usage: make [DEBUG=Y] [VERBOSE=Y] [COBFLAGS=-Wno-unfinished] [CFLAGS=-Wno-unused-result]
 
 
+Compile with MinGW 32 or 64 bit (MinGW packages provided by Arnold)
+-------------------------------------------------------------------
+Change the batch compile files according to your environment (32 or 64 bit).
+Use the batch files, first compile the sources, then the examples. 
+There are the following batch compile files for MinGW:
+- win_mingw_compile_src_c.bat
+- win_mingw_compile_src_cobol.bat
+- win_compile_src_java.bat   (this is only java compile, independent from MinGW)  
+
+- win_mingw_compile_examples_simple.bat
+- win_mingw_compile_colorpicker.bat
+- win_mingw_compile_digits.bat
+- win_mingw_compile_drawables.bat
+- win_mingw_compile_imageviewer.bat
+- win_mingw_compile_mandelbrot.bat
+- win_mingw_compile_texteditor.bat
+- win_mingw_compile_thinclient.bat
+- win_mingw_compile_video.bat
+
+
 Compile with MS Visual Studio
 -----------------------------
 Change the batch compile files according to your environment.
 Use the batch files, first compile the sources, then the examples. 
-There are the following batch compile files:
-- win_compile_src_c.bat
-- win_compile_src_cobol.bat
-- win_compile_src_java.bat
-- win_compile_examples_simple.bat
-- win_compile_texteditor.bat
-- win_compile_video.bat
+There are the following batch compile files for MS Visual Studio:
+- win_msvs_compile_src_c.bat
+- win_msvs_compile_src_cobol.bat
+- win_compile_src_java.bat   (this is only java compile, independent from msvs)  
+
+- win_msvs_compile_examples_simple.bat
+- win_msvs_compile_colorpicker.bat
+- win_msvs_compile_digits.bat
+- win_msvs_compile_drawables.bat
+- win_msvs_compile_imageviewer.bat
+- win_msvs_compile_mandelbrot.bat
+- win_msvs_compile_texteditor.bat
+- win_msvs_compile_thinclient.bat
+- win_msvs_compile_video.bat
+
 
 Configuration
 -------------
