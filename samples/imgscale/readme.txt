@@ -12,9 +12,10 @@ Sources:
 imgscale.c         - module with the convert and scale function
 imgscale-test.cob  - test program 
 
-rainbow.jpg        - input test image, size 3968x2976
+rainbow.jpg        - input test image, size 3968x2976, (rainbow in Grindelwald)
 
-rainbow_400.bmp    - output converted images, size 400x300 
+The test program creates the following output images with size 400x300: 
+rainbow_400.bmp
 rainbow_400.gif
 rainbow_400.jpg
 rainbow_400.png

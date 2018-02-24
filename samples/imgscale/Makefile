@@ -5,3 +5,4 @@ imgscale-test:	imgscale-test.cob imgscale.c
 
 clean:
 	rm imgscale-test
+	rm *_400.*
