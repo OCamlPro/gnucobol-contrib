@@ -66,6 +66,7 @@ cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" alert.cob           
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" borderlayout.cob      %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" borderpanel.cob       %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" button.cob            %* %COBCOBJ% %COBCLIB% 
+cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" button-keylsnr.cob    %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" canvas.cob            %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" checkbox.cob          %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" choice.cob            %* %COBCOBJ% %COBCLIB% 
