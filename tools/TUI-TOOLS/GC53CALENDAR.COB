@@ -5,13 +5,14 @@ PROGRAM-ID.  GC53CALENDAR.
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DISPLAY A CALENDAR ON SCREEN
 *> Tectonics:  cobc -x GC53CALENDAR.COB  (use GnuCOBOL 2.0 or greater)
-*> Usage:      GC53CALENDAR
+*> Usage:      call GC53CALENDAR using Calendar-Area
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) and source from Rosetta Code
 *> License:    Copyright 2017 E.Di Lorenzo
 *>             GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0
+*> Version:    1.1 2018.03.10
 *> Changelog:  1.0 first release.
+*>             1.1 enhancements of color management
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 INPUT-OUTPUT SECTION.
@@ -354,14 +355,7 @@ WORKING-STORAGE SECTION.
 01  wVisibilityOld9  pic 9(8).
 
 COPY      'GC01BOX.CPY'.
-
-01 Cn.
-    05  Cn-Back          pic s9(04) comp-5 value +02.
-    05  Cn-Fore          pic s9(04) comp-5 value +00.
-    05  Cn-BoxShadow     pic  x(01) value 'Y'.
-    *> colori del box ripetuti in due formati diversi
-    05  Cn-BoxBack       pic s9(04) comp-5 value +02.
-    05  Cn-BoxFore       pic s9(04) comp-5 value +07.
+COPY      'GC53CALENDAR.CPY'.
 
 LINKAGE SECTION.
 01 WS-TABLE-TEXT.
@@ -457,15 +451,15 @@ DisplayTable.
 
            EVALUATE WS-TABLE-TEXT-LINE(i + i-ini) (01:01)
 
-           WHEN "M"
+           WHEN "M"    *> DISPLAY MONTH AND YEAR
            display WS-TABLE-TEXT-LINE(i + i-ini) (06:72) at line lin-table column col1
-                   with background-color Cn-Back foreground-color YELLOW highlight
-           WHEN "W"
+                   with background-color Cn-Back foreground-color Cn-ForeMonth highlight
+           WHEN "W"    *> DISPLAY DAYS OF THE WEEK
            display WS-TABLE-TEXT-LINE(i + i-ini) (06:72) at line lin-table column col1
-                   with background-color Cn-Back foreground-color BLUE highlight
-           WHEN "D"
+                   with background-color Cn-Back foreground-color Cn-ForeWeekDays highlight
+           WHEN "D"    *> DISPLAY DAYS NUMBERS
            display WS-TABLE-TEXT-LINE(i + i-ini) (06:72) at line lin-table column col1
-                   with background-color Cn-Back foreground-color WHITE highlight
+                   with background-color Cn-Back foreground-color Cn-ForeDaysNumber highlight
            WHEN OTHER
            display WS-TABLE-TEXT-LINE(i + i-ini) (06:72) at line lin-table column col1
                    with background-color Cn-Back foreground-color Cn-Fore
