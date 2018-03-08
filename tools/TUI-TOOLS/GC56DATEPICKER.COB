@@ -480,8 +480,8 @@ end-search1.
                 compute date-aRYYYY = date-aRYYYY + 1
                 move 1 to date-aRMM
              end-if
-             if date-aRDD = 31 and date-aRMM = 04 or 06 or 09 or 11 move 30 to date-aRDD end-if
-             if (date-aRDD = 31 or 30 or 29) and date-aRMM = 02     move 28 to date-aRDD end-if
+             if  date-aRDD = 31              and (date-aRMM = 04 or 06 or 09 or 11) move 30 to date-aRDD end-if
+             if (date-aRDD = 31 or 30 or 29) and  date-aRMM = 02                    move 28 to date-aRDD end-if
           else
              compute date-aRDD = date-aRDD + 7
           end-if
