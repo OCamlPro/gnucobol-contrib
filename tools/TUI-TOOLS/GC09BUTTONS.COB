@@ -29,11 +29,11 @@ Working-Storage Section.
     03  w            pic s9(02) value +0.
     03  i            pic s9(02) value +1.
     03  j            pic s9(02) value +1.
-    03  k            pic 9(02) value 1.
-    03  Item-Len     pic 9(02) value 0.
-    03  Item-MaxLen  pic 9(02) value 0.
+    03  k            pic  9(02) value 1.
+    03  Item-Len     pic  9(02) value 0.
+    03  Item-MaxLen  pic  9(02) value 0.
     03  salva-j      pic s9(02) value +1.
-    03  Btn-Number     pic s9(02) value +0. *> count how many button items
+    03  Btn-Number   pic s9(02) value +0. *> count how many button items
     03  bco          PIC 9(02).
     03  fco          PIC 9(02).
     03  fcoH         PIC X(01).
