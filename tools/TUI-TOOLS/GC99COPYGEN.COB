@@ -34,11 +34,11 @@
       *>* *************************************************************
        DATA DIVISION.
        FILE SECTION.
-       Fd  FILEINP label record omitted.
+       Fd  FILEINP. *> label record omitted.
        01  I-rec.
            03 I-char pic x occurs 133.
 
-       Fd  FILEOUT label record omitted.
+       Fd  FILEOUT. *> label record omitted.
        01  O-rec    pic x(80).
 
       *>* *************************************************************
