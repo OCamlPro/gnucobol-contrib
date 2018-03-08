@@ -50,7 +50,7 @@ file-control.
 DATA DIVISION.
 file section.
 
-fd  ANAGE label records are standard.
+fd  ANAGE . *> label records are standard.
 01  FdAnageRec.
    03 FdAnageKey    pic 9(009). *> Key (a REC.ID)
    03 FdAnageCodAge pic x(010). *> code
@@ -531,9 +531,9 @@ EVALUATE-KEY.
                 if NoErrors
                    perform ScreenSave thru ScreenSaveEx
                    evaluate LnkFunction
-                          when 'C' move '        CONFIRM TO CREATE ?        ' to Yn-mess
-                          when 'U' move '        CONFIRM TO UPDATE ?        ' to Yn-mess
-                          when 'D' move '        CONFIRM TO DELETE ?        ' to Yn-mess
+                          when 'C' move '       CONFIRM TO CREATE ?        ' to Yn-mess
+                          when 'U' move '       CONFIRM TO UPDATE ?        ' to Yn-mess
+                          when 'D' move '       CONFIRM TO DELETE ?        ' to Yn-mess
                    end-evaluate
                    CALL GC03YESNO using by reference YESNO-AREA
                    perform ScreenRestore thru ScreenRestoreEx
@@ -576,7 +576,7 @@ EVALUATE-KEY.
     when K-ESCAPE
          perform ScreenSave thru ScreenSaveEx
          move 'Y' to Yn-yesno
-         move '         CONFIRM THE EXIT ?        ' to Yn-mess
+         move '        CONFIRM THE EXIT ?        ' to Yn-mess
          CALL GC03YESNO using by reference YESNO-AREA
          if Yn-yesno = 'Y' and Yn-Key = 13
             go End-of-Program
