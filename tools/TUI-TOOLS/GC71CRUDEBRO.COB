@@ -38,7 +38,7 @@ File-Control.
 DATA DIVISION.
 File Section.
 
-fd  ANAGE label records are standard.
+fd  ANAGE . *> label records are standard.
 01  FdAnageRec.
    03 FdAnageKey    pic 9(009). *> chiave del file
    03 FdAnageCodAge pic x(010). *> codice agente nella divisione
