@@ -51,7 +51,7 @@ File-Control.
 
 DATA DIVISION.
 FILE SECTION.
-FD  STAMPA label record is omitted.
+FD  STAMPA. *>  label record is omitted.
 01  Report-Row                  PIC X(133).
 
 
