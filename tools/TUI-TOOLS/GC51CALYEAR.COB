@@ -127,10 +127,7 @@ Working-Storage Section.
 01  wkP2           pic 9(02).
 
 01  wDesDate       pic x(32).
-01  wkDate.
-   05 wkDD         pic 9(02).
-   05 wkMM         pic 9(02).
-   05 wkYY         pic 9(02).
+
 
 01 wkDIV   pic 9(9) value zero.
 01 wkREM   pic 9(9) value zero.
@@ -193,7 +190,12 @@ Working-Storage Section.
    *> 03 wkNomeMA                  pic x(03) occurs 12.
 
 *> **************************************************************
-01  wkDate.
+01  wkDate1.
+   05 wkDD         pic 9(02).
+   05 wkMM         pic 9(02).
+   05 wkYY         pic 9(02).
+
+   01  wkDate.
    05 wkDateYYYY  pic 9(04).
    05 redefines wkDateYYYY.
       07          pic 9(02).
