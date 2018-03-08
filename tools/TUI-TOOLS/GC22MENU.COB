@@ -145,8 +145,8 @@ Accept-a-Key.
   *> if pressed a hotkey then de-activate current item and activate menu item with that hotkey
   *> move space to mn-Act of curr.item, move '1' to mn-Act of next/previous/hotkey item, other keys have no effect
   EVALUATE TRUE
-     when Key-Pressed = Key-CursRight and (Mn-Arrow = 'H' or ' ')    *> Key -> or down
-       or Key-Pressed = Key-CursDn    and (Mn-Arrow = 'V' or ' ')
+     when (Key-Pressed = Key-CursRight and (Mn-Arrow = 'H' or ' ') )   *> Key -> or down
+       or (Key-Pressed = Key-CursDn    and (Mn-Arrow = 'V' or ' ') )
           move Mn-Selected to i
           move space       to Mn-Act(Mn-Selected)
           *> change display active item to display as normal item
@@ -165,8 +165,8 @@ Accept-a-Key.
           perform DisplayItem    thru DisplayItemEx
           perform DisplayMessage thru DisplayMessageEx
 
-     when Key-Pressed = Key-CursLeft and (Mn-Arrow = 'H' or ' ')     *> key <- or up
-       or Key-Pressed = Key-CursUp   and (Mn-Arrow = 'V' or ' ')
+     when (Key-Pressed = Key-CursLeft and (Mn-Arrow = 'H' or ' ') )     *> key <- or up
+       or (Key-Pressed = Key-CursUp   and (Mn-Arrow = 'V' or ' ') )
           move Mn-Selected to i
           move space       to Mn-Act(Mn-Selected)
           *> change display from active item to display as normal item
