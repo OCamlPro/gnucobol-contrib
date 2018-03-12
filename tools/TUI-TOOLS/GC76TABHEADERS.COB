@@ -11,7 +11,7 @@ program-id. GC76TABHEADERS.
 *> Parameters:
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - LGPL, 3.0 (or greater)
-*> Version:    1.0 2017.07.01
+*> Version:    1.0 2018.01.01
 *> Changelog:  1.0 first release.
 *> ************************************************************************************
 ENVIRONMENT DIVISION.
@@ -20,8 +20,10 @@ SPECIAL-NAMES.
    CRT STATUS IS ws-KEY.
    Currency Sign is '€'.
    Decimal-Point is Comma.
+REPOSITORY.
+    FUNCTION ALL INTRINSIC.
 INPUT-OUTPUT SECTION.
-file-control.
+FILE-CONTROL.
    select Tabe
           assign       to TABEFSPEC
           access mode  is dynamic
@@ -30,7 +32,6 @@ file-control.
           file status  is Tabe-fs.
 
 DATA DIVISION.
-
 FILE SECTION.
 *>****************************************************************
 *> SYSTEM TABLES     LREC = 100 Key = 7 data = 93 (75 + 18 filler)
@@ -212,14 +213,12 @@ SCREEN SECTION.
    03 line 25.
    03 col 01 pic x(80) from riga-pf.
 
-
 *>*****************************************************************
 *>              P R O C E D U R E   D I V I S I O N
 *>*****************************************************************
 PROCEDURE DIVISION.
 
 Start-Program.
-
   *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
   set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
   set environment 'COB_SCREEN_ESC'        TO 'Y'.
@@ -228,37 +227,33 @@ Start-Program.
   If bu-Key = Key-Escape go End-Program end-if
   move    wFileName to TABEFSPEC
 
-  display ' ' at 0101 with Background-Color 07 Foreground-Color 00
+  display ' ' at 0101 :BCOL: 07 :FCOL: 00
 
    open i-o Tabe.
    if Tabe-fs not = '00'
-      DISPLAY "  Open File Error...: "        AT 002005  with foreground-color white background-color red
-      DISPLAY Tabe-FS                         AT 002026  with foreground-color white background-color red
-      DISPLAY " press Enter to continue ... " AT 002038  with foreground-color white background-color red
+      DISPLAY "  Open File Error...: "        AT 002005  :BCOL: red :FCOL: white
+      DISPLAY Tabe-FS                         AT 002026  :BCOL: red :FCOL: white
+      DISPLAY " press Enter to continue ... " AT 002038  :BCOL: red :FCOL: white
       accept omitted
       perform Create-Tabe thru Create-TabeEx
       open i-o Tabe
-      DISPLAY "  File Created......:   "      AT 003005  with foreground-color white background-color red
-      DISPLAY wFileName                       AT 003026  with foreground-color white background-color red
-      DISPLAY " press Enter to continue ... " AT 003038  with foreground-color white background-color red
+      DISPLAY "  File Created......:   "      AT 003005  :BCOL: red :FCOL: white
+      DISPLAY wFileName                       AT 003026  :BCOL: red :FCOL: white
+      DISPLAY " press Enter to continue ... " AT 003038  :BCOL: red :FCOL: white
       accept omitted
    end-if
    continue.
 
-     move space to wTabe-rec.
-     move 0     to wTabe-ktab9.
-     move  " F1=Help F2/F3=chgFore/BackCol Enter=Update ESC=Exit " to riga-pf.
-     perform fill-Screen thru fill-Screen-ex.
+    move space to wTabe-rec.
+    move 0     to wTabe-ktab9.
+    move  " F1=Help F2/F3=chgFore/BackCol Enter=Update ESC=Exit " to riga-pf.
+    perform fill-Screen thru fill-Screen-ex.
 
  DisplayScreen.
      display Screen-clear.
-    *> re-show the cursor
-    move 2 to wInt
-    call static "curs_set" using by value wInt end-call
-
+     perform ShowCursor thru ShowCursor-ex
 
      string ' TABLE HEADERS MANAGEMENT - File: '  wFileName ' -' delimited by size into Testata
-
      display Screen1.
      display Screen2.
      display Screen3.
@@ -276,7 +271,6 @@ Start-Program.
      else
         go to DisplayScreen.
 
-
      move 09 to Yn-r1
      move '       Confirm the update ?       ' to Yn-mess
      call GC03YESNO using YESNO-AREA
@@ -286,7 +280,6 @@ Start-Program.
      else
           go to DisplayScreen
      end-if
-
      continue.
 
 End-Program.
@@ -352,14 +345,13 @@ Rewrite-File.
      move '                              ' & x'00' to bxm-mex(7)
      perform DisplayMessage thru DisplayMessageEx
      continue.
-
 Rewrite-File-ex. exit.
 
 *>****************************************************************
 *>                                F 1
 *>****************************************************************
 DisplayHelp.
-   perform hide-cursor thru hide-cursor-ex
+   perform HideCursor thru HideCursor-ex
    move low-value to bxm-tabmex
    move 05 to Bxm-r1
    move 40 to Bxm-c1
@@ -380,27 +372,23 @@ DisplayHelp.
    move "   Use corresponding function to   " & x'00' to bxm-mex(12)
    move "    manage table records (items)   " & x'00' to bxm-mex(13)
    CALL GC02BOXMEX USING BY REFERENCE BOXMEX-AREA
-   perform show-cursor thru show-cursor-ex
+   perform ShowCursor thru ShowCursor-ex
    move '1' to sw-gfx.
-
 DisplayHelp-ex. exit.
 
 Create-Tabe.
   Open Output Tabe
   move space  to wTabe-Rec
   move "H"    to wTabe-ktip
-
   perform varying wCtr from 1 by 1 until wCtr > 20
           move    wCtr        to   wTabe-ktab9
           string ' please insert here your TABLE HEADER ' wCtr  into wTabe-data
           write   Tabe-Record from wTabe-Rec
   end-perform
-
   close Tabe.
 Create-TabeEx. exit.
 
 DisplayMessage.
-   *> perform ScreenSave thru ScreenSaveEx
    move 'Y' to Bxm-click
    move '010020019051' to Bxm-rc
    move red to Bxm-bco Bxm-bcoM move white to Bxm-fco Bxm-fcoM
@@ -408,19 +396,15 @@ DisplayMessage.
    move 'S' to Bxm-style
    call GC02BOXMEX using BOXMEX-AREA
    initialize Bxm-tabmex all to value.
-   *> perform ScreenRestore thru ScreenRestoreEx .
 DisplayMessageEx. exit.
-
 
 TableFileSelection.
    *> background box
    move '002001025080' to Box-rc
    set Box-bco to green Move 'N' to Box-3D
    CALL GC01BOX USING BY CONTENT BOX-AREA
-
    display ' TABLE HEADERS MANAGEMENT                                                       '
-                  at 0101 with Background-Color green Foreground-Color white highlight
-   *> display ED121COASEL at 0168 with background-color green foreground-color white highlight
+                  at 0101 :BCOL: green Foreground-Color white highlight
 
    *> ********************************************************
    *> SELECTION OF A TABLE FILE
@@ -431,7 +415,7 @@ TableFileSelection.
 
    move 'E'   to box-3d
    move 'Y' to Bu-Click bu-Shadow
-   display '   SELECT A TABLE FILE ' at 005031 with  background-Color white foreground-Color red
+   display '   SELECT A TABLE FILE ' at 005031 :BCOL: white foreground-Color red
    move '104007031   1  TABLE FILE 001     '  & x'00' to Bu-Ele(01)
    move ' 04009031   2  TABLE FILE 002     '  & x'00' to Bu-Ele(02)
    move ' 04011031   3  TABLE FILE 003     '  & x'00' to Bu-Ele(03)
@@ -452,17 +436,15 @@ TableFileSelection.
        when 7 move '007' to wFileName(6:3)
        when 8 move '008' to wFileName(6:3)
    end-evaluate
-   .
+   continue.
 TableFileSelectionEx. exit.
 
-hide-cursor.
-    *> hide the cursor
+HideCursor. *> hide the cursor
     move 0 to wInt
     call static "curs_set" using by value wInt end-call.
-hide-cursor-ex. exit.
+HideCursor-ex. exit.
 
-show-cursor.
-    *> re-show the cursor
+ShowCursor. *> re-show the cursor
     move 2 to wInt
     call static "curs_set" using by value wInt end-call.
-show-cursor-ex. exit.
+ShowCursor-ex. exit.
