@@ -11,7 +11,7 @@ Program-id. GC76TABITEMS.
 *> Parameters:
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - LGPL, 3.0 (or greater)
-*> Version:    1.0 2017.07.01
+*> Version:    1.0 2018.01.01
 *> Changelog:  1.0 first release.
 *> ************************************************************************************
 ENVIRONMENT DIVISION.
@@ -20,6 +20,8 @@ SPECIAL-NAMES.
    CRT STATUS IS ws-KEY.
    Currency Sign is '€'.
    Decimal-Point is Comma.
+REPOSITORY.
+    FUNCTION ALL INTRINSIC.
 INPUT-OUTPUT SECTION.
 File-Control.
    select Tabe
@@ -30,8 +32,7 @@ File-Control.
           file status  is Tabe-fs.
 
  DATA DIVISION.
-
- file section.
+ FILE SECTION.
 *>****************************************************************
 *> SYSTEM TABLES     LREC = 100 Key = 7 data = 93 (75 + 18 filler)
 *>****************************************************************
@@ -283,7 +284,7 @@ Start-Program.
   end-if
 
   move    wFileName to TABEFSPEC
-  display ' ' at 0101 with Background-Color 07 Foreground-Color 00
+  display ' ' at 0101 :BCOL: 07 :FCOL: 00
   perform HideCursor thru HideCursor-ex
 
   open i-o Tabe.
@@ -298,8 +299,8 @@ Start-Program.
         perform DisplayErrorMessage thru DisplayErrorMessageEx
         go Start-program
      else
-        display '* Table open error,  fs= ' at 0202 with Background-Color 07 Foreground-Color 00
-        display Tabe-fs                     at 0230 with Background-Color 07 Foreground-Color 00
+        display '* Table open error,  fs= ' at 0202 :BCOL: 07 :FCOL: 00
+        display Tabe-fs                     at 0230 :BCOL: 07 :FCOL: 00
         accept omitted
         goback
      end-if
@@ -320,13 +321,13 @@ DisplayBackground.
 Select-A-Table.
      move space to wString
      string ' TABLE ITEMS MANAGEMENT - File: '  wFileName ' - SELECT A TABLE ' delimited by size into wString
-     display wString at 0101 with Background-Color green Foreground-Color white highlight
+     display wString at 0101 :BCOL: green :FCOL: white highlight
      move space to wString
      string 'TAB DESCRIPTION ' delimited by size into wString
-     display wString at 0303 with Background-Color green Foreground-Color white highlight
+     display wString at 0303 :BCOL: green :FCOL: white highlight
      move space to wString
      string '--- ----------------------------------------------------------------------' delimited by size into wString
-     display wString at 0403 with Background-Color green Foreground-Color white highlight
+     display wString at 0403 :BCOL: green :FCOL: white highlight
     *> display buttons with table headers
      initialize Buttons-area ALL TO VALUE
      move '1'   to Bu-Act(1)
@@ -556,29 +557,6 @@ DeleteRec.
    Delete Tabe.
 DeleteRecEx. exit.
 
-*> SetScreenHeader.
-*> move 'H001' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod01. move wTabe-data to wScrRec01.
-*> move 'H002' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod02. move wTabe-data to wScrRec02.
-*> move 'H003' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod03. move wTabe-data to wScrRec03.
-*> move 'H004' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod04. move wTabe-data to wScrRec04.
-*> move 'H005' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod05. move wTabe-data to wScrRec05.
-*> move 'H006' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod06. move wTabe-data to wScrRec06.
-*> move 'H007' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod07. move wTabe-data to wScrRec07.
-*> move 'H008' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod08. move wTabe-data to wScrRec08.
-*> move 'H009' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod09. move wTabe-data to wScrRec09.
-*> move 'H010' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod10. move wTabe-data to wScrRec10.
-*> move 'H011' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod11. move wTabe-data to wScrRec11.
-*> move 'H012' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod12. move wTabe-data to wScrRec12.
-*> move 'H013' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod13. move wTabe-data to wScrRec13.
-*> move 'H014' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod14. move wTabe-data to wScrRec14.
-*> move 'H015' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod15. move wTabe-data to wScrRec15.
-*> move 'H016' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod16. move wTabe-data to wScrRec16.
-*> move 'H017' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod17. move wTabe-data to wScrRec17.
-*> move 'H018' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod18. move wTabe-data to wScrRec18.
-*> move 'H019' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod19. move wTabe-data to wScrRec19.
-*> move 'H020' to Tabe-key. read Tabe into wTabe-Rec. move wTabe-ktab to wScrCod20. move wTabe-data to wScrRec20.
-*> SetScreenHeaderEx. exit.
-
 *>*****************************************************************
 *>  TABLE HEADERS ARE LOADED IN MEMORY
 *>*****************************************************************
@@ -636,7 +614,7 @@ TableFileSelection.
    Move 'N'             to Box-3D
    CALL GC01BOX USING BY CONTENT BOX-AREA
    display ' TABLE ITEMS MANAGEMENT                                                         '
-                  at 0101 with Background-Color green Foreground-Color white highlight
+                  at 0101 :BCOL: green :FCOL: white highlight
 
    *> ********************************************************
    *> SELECTION OF A FILE
@@ -648,7 +626,7 @@ TableFileSelection.
    move 'E'   to box-3d
    initialize Buttons-area ALL TO VALUE
    move 'Y' to Bu-Click bu-Shadow
-   display '   SELECT A TABLE FILE ' at 005031 with  background-Color white foreground-Color red
+   display '   SELECT A TABLE FILE ' at 005031 with  background-Color white :FCOL: red
    move '104007031   1  TABLE FILE 001     '  & x'00' to Bu-Ele(01)
    move ' 04009031   2  TABLE FILE 002     '  & x'00' to Bu-Ele(02)
    move ' 04011031   3  TABLE FILE 003     '  & x'00' to Bu-Ele(03)
