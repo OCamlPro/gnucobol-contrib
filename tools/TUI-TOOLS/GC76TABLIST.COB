@@ -9,9 +9,10 @@ program-id. GC76TABLIST.
 *> Tectonics:  cobc -x GC76TABLIST.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      GC76TABLIST
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
-*> License:    Copyright 2017 E.Di Lorenzo - LGPL, 3.0 (or greater)
-*> Version:    1.0 2017.07.01
+*> License:    Copyright 2018 E.Di Lorenzo - LGPL, 3.0 (or greater)
+*> Version:    1.1 2018.03.12
 *> Changelog:  1.0 first release.
+*>             1.1 small bug fix
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 Configuration Section.
@@ -19,6 +20,8 @@ Special-Names.
    CRT STATUS IS wKeyPressed
    Currency Sign is '€'
    Decimal-Point is Comma.
+REPOSITORY.
+    FUNCTION ALL INTRINSIC.
 Input-Output  Section.
 File-Control.
    select TABE
@@ -32,7 +35,7 @@ File-Control.
 *>           D A T A     D I V I S I O N
 *> **************************************************************
 DATA DIVISION.
-File Section.
+FILE SECTION.
 
  fd  TABE. *>      label records are standard.
  01  Tabe-Rec.
@@ -136,14 +139,20 @@ Working-Storage Section.
     03 pic x(18)    value 'Filler'.
     03 pic x(01)    value '³'.
     03 pic x(33)    value ' <== end of data'.
-    03 pic x(10)    value space.
+    03 pic x(400)    value space.
 
 01  Testata pic x(080) value space.
 01  ruler.
-    05 pic x(100) value
+    05 pic x(450) value
       '1...+....1....+....2....+....3....+....4....+....5' &
-      '0...+....6....+....7....+....8....+....9....+....1'.
-
+      '0...+....6....+....7....+....8....+....9....+....1' &
+      '00..+....1....+....2....+....3....+....4....+....5' &
+      '0...+....6....+....7....+....8....+....9....+....2' &
+      '00..+....1....+....2....+....3....+....4....+....5' &
+      '0...+....6....+....7....+....8....+....9....+....3' &
+      '00..+....1....+....2....+....3....+....4....+....5' &
+      '0...+....6....+....7....+....8....+....9....+....4' &
+      '00..+....1....+....2....+....3....+....4....+....5' .
 01  top-of-list.
     03  pic x(100) value
     '****** top of file ***    *** top of file ***     ' &
@@ -207,7 +216,7 @@ Start-program.
 *> *************************************************************
 *> WAIT FOR USER INPUT
 *> *************************************************************
-loop-tasti.
+Loop-Accept-A-Key.
   perform Accept-a-Key thru Accept-a-KeyEx
 
   *> which key was pressed ?
@@ -250,8 +259,7 @@ loop-tasti.
              perform Prepare-Row thru Prepare-RowEx
              move riga to t1-riga(t1-max)
           end-if
-          display t1-riga (t1-max) (li-start:80) at line penult column 01
-           with background-color bco foreground-color li-fore
+          display t1-riga (t1-max) (li-start:80) at line penult column 01 :BCOL: bco :FCOL: li-fore
          end-if
         else
            if ptr < PtrMax
@@ -298,8 +306,7 @@ loop-tasti.
       end-if
 
       *> show the row
-      display t1-riga (1) (li-start:80) at line 03 column 01
-        with background-color bco foreground-color li-fore
+      display t1-riga (1) (li-start:80) at 0301 :BCOL: bco :FCOL: li-fore
      end-if
     else
      compute Ptr = Ptr - 1
@@ -376,10 +383,10 @@ loop-tasti.
     end-if
 
    *> *************************************************************
-   *> CURSORE A DESTRA   ->
+   *> TAB OR CURSORE A DESTRA   ->
    *> *************************************************************
    WHEN wKeyPressed = K-RIGHT or K-TAB
-    if li-start <= (length of t1-riga(1) - 80)    *> 132-80=52
+    if li-start <= (length of t1-riga(1) - 80)
      add li-scroll to li-start
      if li-start > length of t1-riga(1) - 80 + 1
       compute li-start = length of t1-riga(1) - 80  + 1
@@ -416,8 +423,7 @@ loop-tasti.
    when wKeyPressed = K-F2 or wKeyPressed = K-SHIFT-F2
     if flip-flop = 0
      move 1 to flip-flop
-     display ruler(li-start:80) at line li-righe column 01
-      with background-color t-back foreground-color t-fore
+     display ruler(li-start:80) at line li-righe column 01 :BCOL: t-back :FCOL: t-fore
     else
      move 0 to flip-flop
      perform DisplayPF-Row thru DisplayPF-RowEx
@@ -427,16 +433,15 @@ loop-tasti.
 
    if SW-DISPLAY = 1
       perform DisplayTable   thru DisplayTableEx
-      perform DisplayHeader   thru DisplayHeaderEx
+      perform DisplayHeader  thru DisplayHeaderEx
       move 0 to sw-display
       if flip-flop = 1
-       display ruler(li-start:80) at line li-righe column 01
-        with background-color t-back foreground-color t-fore
+       display ruler(li-start:80) at line li-righe column 01 :BCOL: t-back :FCOL: t-fore
       end-if
    end-if
    perform HideCursor thru HideCursorEx
 
-   go loop-tasti.
+   go Loop-Accept-A-Key.
 
 End-Program.
    DISPLAY  ' ' AT 0101 with blank screen END-DISPLAY
@@ -453,32 +458,28 @@ End-Program.
      move 2 to k
      perform varying i from 1 by 1 until i > t1-max
       add 1 to k
-      display t1-riga (i) (li-start:80) at line k column 01
-       with background-color bco foreground-color li-fore
+      display t1-riga (i) (li-start:80) at line k column 01 :BCOL: bco :FCOL: li-fore
      end-perform
-
      *> change colors to the "cursor row"
      compute k = Ptr + 2
-     display t1-riga (Ptr) (li-start:80) at line k column 01
-      with background-color c-back foreground-color c-fore
+     display t1-riga (Ptr) (li-start:80) at line k column 01 :BCOL: c-back :FCOL: c-fore
      .
  DisplayTableEx. EXIT.
 
  DisplayHeader.
      string ' TABLE LIST MANAGEMENT - File: '  wFileName ' -' delimited by size into Testata
-     display Testata line 01 column 01 with  background-Color t-back foreground-Color 00
+     display Testata line 01 column 01 :BCOL: t-back :FCOL: 00
      *> intestazione di campi della riga
-     display RigaT(li-start:80) at line 2 column 01 with background-color 04 foreground-color 14           .
+     display RigaT(li-start:80) at 0201 :BCOL: 04 :FCOL: 14           .
  DisplayHeaderEx. exit.
 
  DisplayPF-Row.
      move li-scroll to menu(78:2)
-     display menu   at line li-righe column 01 with background-color t-back foreground-color t-fore.
+     display menu   at line li-righe column 01 :BCOL: t-back :FCOL: t-fore.
  DisplayPF-RowEx. exit.
 
  InitializeTable.
-     *> riempimento iniziale della tabella: viene eseguito
-     move   0           to PtrMax
+     move   0   to PtrMax
      Open input TABE
      if Tabe-FS not = '35' *> test if file exist
         if PrimaVolta = 'Y' *> alla prima chiamata parte da in.file
@@ -508,8 +509,7 @@ End-Program.
            set Eof to true
         end-if
      else *> if File does not exist
-         display '> FILE DOES NOT EXIST ! '  at 0146
-                 with  background-Color t-back foreground-Color red highlight
+         display '> FILE DOES NOT EXIST ! '  at 0146 :BCOL: t-back :FCOL: red highlight
          move end-of-list to t1-riga(1)
          set Eof to true
      end-if
@@ -528,13 +528,10 @@ End-Program.
 
  ImpostaPrimaDellaCall.
      perform ShowCursor thru ShowCursorEx
-
      perform ScreenSave thru ScreenSaveEx
      Close TABE
-
-     move T1-riga(ptr)          to riga
-
-     move 'N' to PrimaVolta
+     move T1-riga(ptr)  to riga
+     move 'N'           to PrimaVolta
      perform InitializeTable thru InitializeTableEx
      if Eof
         perform LastPage thru LastPageEx
@@ -542,7 +539,6 @@ End-Program.
      end-if
      perform DisplayPF-Row thru DisplayPF-RowEx
      move 1 to sw-display
-
      perform ScreenRestore thru ScreenRestoreEx .
  ImpostaPrimaDellaCallEx. exit.
 
@@ -585,12 +581,9 @@ Accept-a-Key.
     compute lin3 = 01
     accept wOra from time
     string wOra(1:2) ':' wOra(3:2) ':' wOra(5:2) delimited by size into wOrax
-    display ' '   at line lin3 column 71
-            with background-color TimeBackCol foreground-color TimeForeCol
-    display wOrax at line lin3 column 72
-            with background-color TimeBackCol foreground-color TimeForeCol highlight
-    display ' '   at line lin3 column 80
-            with background-color TimeBackCol foreground-color TimeForeCol
+    display ' '   at line lin3 column 71  :BCOL: TimeBackCol :FCOL: TimeForeCol
+    display wOrax at line lin3 column 72  :BCOL: TimeBackCol :FCOL: TimeForeCol highlight
+    display ' '   at line lin3 column 80  :BCOL: TimeBackCol :FCOL: TimeForeCol
 
    *> loop to diaplay time until a key is pressed
    perform forever
@@ -599,34 +592,30 @@ Accept-a-Key.
            *> after a timeout, accept returns 8001
               accept wOra from time
               string wOra(1:2) ':' wOra(3:2) ':' wOra(5:2) delimited by size into wOrax
-              display ' '   at line lin3 column 71
-                      with background-color TimeBackCol foreground-color TimeForeCol
-              display wOrax at line lin3 column 72
-                      with background-color TimeBackCol foreground-color TimeForeCol highlight
-              display ' '   at line lin3 column 80
-                      with background-color TimeBackCol foreground-color TimeForeCol
+              display ' '   at line lin3 column 71 :BCOL: TimeBackCol :FCOL: TimeForeCol
+              display wOrax at line lin3 column 72 :BCOL: TimeBackCol :FCOL: TimeForeCol highlight
+              display ' '   at line lin3 column 80 :BCOL: TimeBackCol :FCOL: TimeForeCol
           else
               EXIT PERFORM
           END-IF
    end-perform.
 Accept-a-KeyEx.
 
-
  BEEPPA.
-          CALL X'E5'
-          perform HideCursor thru HideCursorEx.
+   CALL X'E5'
+   perform HideCursor thru HideCursorEx.
  BEEPPA-EX. exit.
 
  HideCursor.
     move 0 to wInt
     call static "curs_set" using by value wInt end-call.
-     continue.
+    continue.
  HideCursorEx. EXIT.
 
  ShowCursor.
     move 2 to wInt
     call static "curs_set" using by value wInt end-call.
-     continue.
+    continue.
  ShowCursorEx. EXIT.
 
  *> **************************************************************
@@ -686,7 +675,7 @@ Accept-a-KeyEx.
    CALL GC01BOX USING BY CONTENT BOX-AREA
 
    display ' TABLE LIST MANAGEMENT                                                          '
-                  at 0101 with Background-Color green Foreground-Color white highlight
+                  at 0101 :BCOL: green Foreground-Color white highlight
 
    *> ********************************************************
    *> SELECTION OF A FILE
@@ -697,7 +686,7 @@ Accept-a-KeyEx.
 
    move 'E'   to box-3d
    move 'Y' to Bu-Click bu-Shadow
-   display '   SELECT A TABLE FILE ' at 005031 with  background-Color white foreground-Color red
+   display '   SELECT A TABLE FILE ' at 005031 :BCOL: white foreground-Color red
    move '104007031   1  TABLE FILE 001     '  & x'00' to Bu-Ele(01)
    move ' 04009031   2  TABLE FILE 002     '  & x'00' to Bu-Ele(02)
    move ' 04011031   3  TABLE FILE 003     '  & x'00' to Bu-Ele(03)
