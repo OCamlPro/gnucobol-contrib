@@ -1,8 +1,5 @@
-COBJAPI a GnuCOBOL interface (wrapper) for JAPI
-===============================================
-
-The following notice excludes the doc/ folder, whose contents' copyrights belong
-to Dr. Merten Joost:
+COBJAPI a GnuCOBOL interface (wrapper) for JAPI 2
+=================================================
 
 COBJAPI is free software: you can redistribute it and/or modify it under the
 terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,6 +27,19 @@ functions with new ones. Even more, he has allowed the use and upload of
 the JAPI package along with COBJAPI on SourceForge. The JAPI package
 contains the Java programs, C programs, documentation, pictures and 
 sound files for the examples.
+
+The newer Japi 2 kernel was created by Vera Christ, Daniel Vivas Estevao
+and Maximilian Strauch in 2015. The SWING GUI toolkit providing more 
+modern GUI elements and features. 
+https://userpages.uni-koblenz.de/~evol/japi/japi2/japi.html
+https://github.com/maxstrauch/Japi2-kernel
+
+Japi and Japi 2 kernel are free software and licensed under the terms and
+conditions of the GNU Lesser General Public License.
+In short this means that you can use it free of charge and you can also embed
+it into proprietary, non-free software.
+This program is distributed WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ************************************************************************
 
 
@@ -39,10 +49,9 @@ Introduction
 What does it do?
 ----------------
 COBJAPI is a collection of UDFs (User Defined Functions), it is an
-interface to JAPI. With COBJAPI you can easily write GUI programs with
+interface to JAPI 2. With COBJAPI you can easily write GUI programs with
 GnuCOBOL. There is no complicated OO theory and no pointer, only two 
-data types (integers and text), and you can use the full Java AWT 
-tool-kit. 
+data types (integers and text), and you can use the Java SWING tool-kit. 
 
 Requirements
 ------------
@@ -53,17 +62,16 @@ Requirements
   wsock32.lib. The library WS2_32.Lib comes with the Windows SDK and not 
   with MS Visual Studio. (Windows SDKs are available free on the 
   Microsoft Download Center.)
-- For compile: JDK (Java Development Kit) 1.7 or above, but you can also
-  try it with older versions.
+- For compile: JDK (Java Development Kit) 1.7 or above.
 - For running: JRE (Java Runtime Environment) or JDK. 
   
-Features of JAPI (from http://www.japi.de)
-------------------------------------------
-- JAPI is an open source free software GUI tool-kit, which makes it easy
+Features of JAPI 2
+------------------
+- JAPI 2 is an open source free software GUI tool-kit, which makes it easy
   to develop platform independent applications. Written in JAVA and C, 
-  it provides the JAVA AWT tool-kit to non object oriented languages.
+  it provides the JAVA SWING tool-kit to non object oriented languages.
 
-- JAPI is free software. You can use under the conditions of the 
+- JAPI 2 is free software. You can use under the conditions of the 
   GNU Lesser General Public License. In short this means that you can 
   use it free of charge and you can also embed it into proprietary, 
   non-free software. 
@@ -78,30 +86,27 @@ Features of JAPI (from http://www.japi.de)
   and Solaris. Porting your application between platforms is as easy as
   recompiling. 
 	
-- JAPI is built on top of the AWT. The AWT (abstract windowing tool-kit)
-  is part of the freely distributed Java Developer Tool-kit (JDK). The 
-  AWT is composed of a package of classes and it supports everything
-  from creating buttons, menus, and dialog boxes to complete GUI 
-  applications. Notable, the AWT is platform independent. 
+- JAPI 2 is built on top of the SWING. The SWING is part of the freely 
+  distributed Java Developer Tool-kit (JDK). The SWING is composed of
+  a package of classes and it supports everything from creating buttons,
+  menus, and dialog boxes to complete GUI applications. Notable, the SWING
+  is platform independent. 
   
-- The functionality of AWT is now brought to GnuCOBOL via JAPI.
+- The functionality of SWING is now brought to GnuCOBOL via JAPI 2.
   So you do not need to learn JAVA. All you need is a running Java 
   Runtime Environment (JRE) on your host. 
 
 Screen-shots
 ------------
 For every GnuCOBOL example program I have included screen-shots.
-See under cobjapi/examples_simple/screenshots. 
+See under examples_simple/screenshots. 
 
 Test
 ----
-This program was developed using GnuCOBOL 2.0.0. 
-Built Dec 03 2014 09:52:44 and Windows 7 (64 bit) running on a HP 
-laptop. 
+This program was developed using GnuCOBOL 2.2.0. 
+Built Dec 09 2017 14:45:54 and Windows 10 (64 bit) running on a HP laptop. 
 It was tested 
-- with cygwin (64 bit) and Java version: 1.7.0_51 (64 bit).
-- with MS Visual Studio Express V10 (32 bit) 
-  and Java version: 1.7.0_51 (64 bit).
+- with cygwin (64 bit) and Java version: 1.8.0_161 (64 bit).
 
 
 Installation and Configuration
@@ -109,16 +114,14 @@ Installation and Configuration
 
 Directory structure
 -------------------
-cobjapi                     -> main directory
-cobjapi/doc                 -> programming and reference manual for JAPI
-cobjapi/examples            -> this is a work in progress...
-cobjapi/examples/texteditor -> text editor demo program
-cobjapi/examples/video      -> video demo program
-cobjapi/examples_simple     -> 48 simple GUI examples
+SWING                     -> main directory
+SWING/examples/...        -> examples
+SWING/examples_simple     -> simple GUI examples
                             
-cobjapi/src_c               -> C programs for JAPI
-cobjapi/src_cobol           -> GnuCOBOL functions for JAPI
-cobjapi/src_java            -> Java programs for JAPI
+SWING/src_c               -> C programs for JAPI 2
+SWING/src_cobol           -> GnuCOBOL functions for JAPI 2
+SWING/src_java            -> Java programs for JAPI 2
+                             Java doc: src_java/dist/javadoc/index.html
 
 
 Compile with linux or cygwin
@@ -183,10 +186,10 @@ Configuration
   
 Please set your PATH and the environment variable, example on windows:
 In PATH:
-C:\Java\jdk1.7.0_51\bin 
+C:\Java\jdk1.8.0_144\bin 
 
 Env. var.: 
-COBJAPI_JAPIJAR_HOME=C:\cygwin64\home\Laszlo.Erdoes\cobjapi\src_java 
+COBJAPI_JAPIJAR_HOME=C:\cygwin64\home\laszlo.erdoes\cobjapi\SWING\src_java 
 
 
 Usage
@@ -211,7 +214,9 @@ The japilib.c program checks if a JAPI.jar is already running. If not,
 then it starts a new JAPI.jar.
 
 But you can also start a JAPI.jar manually by running:
-java -cp JAPI.jar JAPI 
+java -jar japi2.jar
+
+(For start parameters please read the docs under SWING/src_java.)
 
 Therefore, it is possible that your program and the GUI (JAPI.jar) 
 run on different computers and communicate via TCP/IP. See the
@@ -283,16 +288,6 @@ and not this:
 "MOVE J-SETSIZE(WS-BUTTON, 80, 20) TO WS-RET"
 
 
-Todo's
-======
-
-- Porting a few example programs.
-- A complex example program with a data base and multiple windows.
-- A COBOL screen section to JAPI converter.
-- A GUI designer for JAPI.
-- Add Java swing GUI components support to JAPI.
-
-
 Changelog
 =========
 
@@ -302,6 +297,9 @@ Program history, changes and bug fixes are listed in program headers.
 *****************************************************************************
 Date       Name / Change description 
 ========== ==================================================================
+2018.03.13 Laszlo Erdos: 
+           - GnuCOBOL support for JAPI 2 added. 
+-----------------------------------------------------------------------------
 2014.12.24 Laszlo Erdos: 
            - GnuCOBOL support for JAPI added. 
 -----------------------------------------------------------------------------
