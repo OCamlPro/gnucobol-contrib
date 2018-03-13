@@ -1,0 +1,76 @@
+@echo off
+setlocal
+
+:: set env. variables
+call "C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\vcvarsall.bat"
+
+:: set compiler parameters
+set "COBCOBJ=cobjapi.obj fileselect.obj imageio.obj japilib.obj"
+set "COBCLIB=-lWS2_32"
+rem set "verbose=-v"
+
+:: set directories to match your installation (only necessary for systems older than WinXP...)
+set "example_dir=%~dp0"
+set "src_c_dir=%example_dir%..\..\src_c"
+set "src_cobol_dir=%example_dir%..\..\src_cobol"
+
+
+:: check if started directly
+echo %cmdcmdline% | find /i "%~0" >nul
+if errorlevel 1 (
+   set interactive=1
+) else (
+   set interactive=0
+)
+
+:: check for cobc executable
+where /q cobc.exe
+if errorlevel 1 (
+   echo ERROR: cobc.exe is missing in PATH
+   goto :end
+)
+
+:: test if directories exist
+if not exist "%example_dir%\" (
+   echo ERROR: Please set example_dir correct, currently set to %example_dir%
+   goto :end
+)
+if not exist "%src_c_dir%\" (
+   echo ERROR: Please set src_c_dir correct, currently set to %src_c_dir%
+   goto :end
+)
+if not exist "%src_cobol_dir%\" (
+   echo ERROR: Please set src_cobol_dir correct, currently set to %src_cobol_dir%
+   goto :end
+)
+
+:: change directory
+pushd "%example_dir%"
+
+:: delete old files (ignoring errors)
+del *.obj  2>NUL
+del *.lib  2>NUL
+del *.exp  2>NUL
+del *.exe  2>NUL
+
+echo compile the C programs
+cobc -c %verbose% "%src_c_dir%\fileselect.c"
+cobc -c %verbose% "%src_c_dir%\imageio.c"
+cobc -c %verbose% "%src_c_dir%\japilib.c"
+
+echo compile the cobjapi interface
+cobc -c -free %verbose% "%src_cobol_dir%\cobjapi.cob" %*
+
+echo compile the program
+cobc -x -free %verbose% -I"%src_cobol_dir%" thinclient.cob %* %COBCOBJ% %COBCLIB%
+
+echo compilation finished
+
+
+:end
+if _%interactive%_==_0_ (
+   echo.
+   pause
+)
+
+endlocal
