@@ -38,6 +38,9 @@
 *>------------------------------------------------------------------------------
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added.
+*>------------------------------------------------------------------------------
+*> 2018.03.10 Laszlo Erdos: 
+*>            - Small change for JAPI 2.0.
 *>******************************************************************************
 */
 
@@ -45,6 +48,15 @@
 
     #define JAPI_H
 
+
+
+
+    /*  APPLICATION_NAME   */
+
+
+
+    /*  ERROR   */
+    #define J_ERROR                                 -1
 
 
 
@@ -188,6 +200,9 @@
 
     extern  int   j_start ( void  );
     extern  int   j_connect ( char*  );
+    extern  int   j_splitpane ( int , int , int  );
+    extern  void  j_setsplitpaneleft ( int , int  );
+    extern  void  j_setsplitpaneright ( int , int  );
     extern  void  j_setport ( int  );
     extern  void  j_setdebug ( int  );
     extern  int   j_frame ( char*  );
@@ -239,7 +254,7 @@
     extern  void  j_setfontname ( int , int  );
     extern  void  j_setfontsize ( int , int  );
     extern  void  j_setfontstyle ( int , int  );
-    extern  void  j_seperator ( int  );
+    extern  void  j_separator ( int  );
     extern  void  j_disable ( int  );
     extern  void  j_enable ( int  );
     extern  int   j_getstate ( int  );

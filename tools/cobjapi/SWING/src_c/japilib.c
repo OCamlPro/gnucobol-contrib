@@ -47,6 +47,9 @@
 *>            - Define _MSC changed to _MSC_VER for MS Visual Studio C++.
 *>            - Header file winsock.h renamed to winsock2.h.
 *>            - Type correction in function establish_connect: int length.
+*>------------------------------------------------------------------------------
+*> 2018.03.10 Laszlo Erdos: 
+*>            - Small change for JAPI 2.0.
 *>******************************************************************************
 */
 
@@ -287,7 +290,9 @@ static int start_kernel()
 	args[0]=JVM;
 	args[1]="-cp";
 	args[2]="./JAPI.jar";
-	args[3]="JAPI";
+	//args[3]="JAPI";
+	// Main class is now:
+	args[3] = "de.japi.Japi2";
 	args[4]=malloc(10);
 	sprintf(args[4],"%d",port);
 	args[5]=NULL;
@@ -309,9 +314,10 @@ static int start_kernel()
 			#ifdef _UNIX
 				system("xmessage \"No Java Runtime Environment found ...\" ");
 			#else
-				system("Java_Runtime_Environment");
+				system("msg * /time:0 \"No Java Runtime Environment found ...\" ");
 			#endif
 
+			printf("No Java Runtime Environment found ...\n");
 			return(J_FALSE);
 		}
 		if(debuglevel > 0) printf(" found JAVA\n");
@@ -877,6 +883,18 @@ static void send_intarray(int* v, int n)
 
 
                                /* J A P I   Funktionen */
+
+int japi_splitpane(int parent, int orientation, int init_position) {
+	return send_4int_get_int(JAPI_SPLITPANE, parent, orientation, init_position);
+}
+
+void japi_setsplitpaneleft(int sp, int component) {
+	send_3int(JAPI_SETSPLITPANELEFT, sp, component);
+}
+
+void japi_setsplitpaneright(int sp, int component) {
+	send_3int(JAPI_SETSPLITPANERIGHT, sp, component);
+}
 void japi_setport(int p)
 {   port=p; }
 
@@ -1115,8 +1133,8 @@ void japi_setfontsize(int obj, int size)
 void japi_setfontstyle(int obj, int size)
 {	send_3int(JAPI_SETFONTSTYLE,obj,size); }
 
-void japi_seperator(int menu)
-{	send_2int(JAPI_SEPERATOR,menu); }
+void japi_separator(int menu)
+{	send_2int(JAPI_SEPARATOR,menu); }
 
 void japi_disable(int obj)
 {	send_2int(JAPI_DISABLE,obj); }

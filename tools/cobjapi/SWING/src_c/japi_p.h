@@ -38,6 +38,9 @@
 *>------------------------------------------------------------------------------
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added.
+*>------------------------------------------------------------------------------
+*> 2018.03.10 Laszlo Erdos: 
+*>            - Small change for JAPI 2.0.
 *>******************************************************************************
 */
 
@@ -147,6 +150,8 @@
   #define JAPI_APPENDTEXT                         2111
   #define JAPI_BEEP                               2112
   #define JAPI_SETDANGER                          2113
+  #define JAPI_SETSPLITPANELEFT                   2114
+  #define JAPI_SETSPLITPANERIGHT                  2115
 
 
 
@@ -208,7 +213,7 @@
   #define JAPI_HELPMENU                           4102
   #define JAPI_MENUITEM                           4103
   #define JAPI_CHECKMENUITEM                      4104
-  #define JAPI_SEPERATOR                          4105
+  #define JAPI_SEPARATOR                          4105
   #define JAPI_PANEL                              4106
   #define JAPI_LABEL                              4107
   #define JAPI_CHECKBOX                           4108
@@ -239,6 +244,7 @@
   #define JAPI_LED                                4133
   #define JAPI_SEVENSEGMENT                       4134
   #define JAPI_METER                              4135
+  #define JAPI_SPLITPANE                          4136
 
 
 
@@ -265,6 +271,9 @@
 
   extern  int   japi_start (  );
   extern  int   japi_connect ( char*  );
+  extern  int   japi_splitpane ( int , int , int  );
+  extern  void  japi_setsplitpaneleft ( int , int  );
+  extern  void  japi_setsplitpaneright ( int , int  );
   extern  void  japi_setport ( int  );
   extern  void  japi_setdebug ( int  );
   extern  int   japi_frame ( char*  );
@@ -316,7 +325,7 @@
   extern  void  japi_setfontname ( int , int  );
   extern  void  japi_setfontsize ( int , int  );
   extern  void  japi_setfontstyle ( int , int  );
-  extern  void  japi_seperator ( int  );
+  extern  void  japi_separator ( int  );
   extern  void  japi_disable ( int  );
   extern  void  japi_enable ( int  );
   extern  int   japi_getstate ( int  );
