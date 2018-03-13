@@ -38,10 +38,16 @@
 *>------------------------------------------------------------------------------
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
+*>------------------------------------------------------------------------------
+*> 2018.03.10 Laszlo Erdos: 
+*>            - Small change for JAPI 2.0.
 *>******************************************************************************
 
  FUNCTION J-START
  FUNCTION J-CONNECT
+ FUNCTION J-SPLITPANE
+ FUNCTION J-SETSPLITPANELEFT
+ FUNCTION J-SETSPLITPANERIGHT
  FUNCTION J-SETPORT
  FUNCTION J-SETDEBUG
  FUNCTION J-FRAME
@@ -93,7 +99,7 @@
  FUNCTION J-SETFONTNAME
  FUNCTION J-SETFONTSIZE
  FUNCTION J-SETFONTSTYLE
- FUNCTION J-SEPERATOR
+ FUNCTION J-SEPARATOR
  FUNCTION J-DISABLE
  FUNCTION J-ENABLE
  FUNCTION J-GETSTATE

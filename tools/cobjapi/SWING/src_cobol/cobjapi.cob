@@ -38,6 +38,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - japi4c.c converted into cobjapi.cob. 
+*>------------------------------------------------------------------------------
+*> 2018.03.10 Laszlo Erdos: 
+*>            - Small change for JAPI 2.0.
 *>******************************************************************************
  
 *>------------------------------------------------------------------------------
@@ -112,6 +115,136 @@
  MAIN-J-CONNECT-EX.
     EXIT.
  END FUNCTION J-CONNECT.
+
+    
+*>------------------------------------------------------------------------------
+*> int  j_splitpane( int arg0, int arg1, int arg2)
+*> { return( japi_splitpane(arg0, arg1, arg2));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SPLITPANE.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-1                          BINARY-INT.
+ 01 LNK-ARG-2                          BINARY-INT.
+ 01 LNK-RET                            BINARY-INT.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                          BY VALUE     LNK-ARG-2
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SPLITPANE SECTION.
+
+    CALL STATIC "japi_splitpane" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+               BY VALUE LNK-ARG-2
+         RETURNING LNK-RET 
+    END-CALL 
+ 
+    GOBACK
+
+    .
+ MAIN-J-SPLITPANE-EX.
+    EXIT.
+ END FUNCTION J-SPLITPANE.
+
+
+*>------------------------------------------------------------------------------
+*> void j_setsplitpaneleft( int arg0, int arg1)
+*> { japi_setsplitpaneleft(arg0, arg1);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETSPLITPANELEFT.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-1                          BINARY-INT.
+ 01 LNK-RET                            BINARY-INT.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETSPLITPANELEFT SECTION.
+
+    CALL STATIC "japi_setsplitpaneleft" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETSPLITPANELEFT-EX.
+    EXIT.
+ END FUNCTION J-SETSPLITPANELEFT.
+
+
+*>------------------------------------------------------------------------------
+*> void j_setsplitpaneright( int arg0, int arg1)
+*> { japi_setsplitpaneright(arg0, arg1);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETSPLITPANERIGHT.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-1                          BINARY-INT.
+ 01 LNK-RET                            BINARY-INT.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETSPLITPANERIGHT SECTION.
+
+    CALL STATIC "japi_setsplitpaneright" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETSPLITPANERIGHT-EX.
+    EXIT.
+ END FUNCTION J-SETSPLITPANERIGHT.
 
  
 *>------------------------------------------------------------------------------
@@ -2272,11 +2405,11 @@
 
  
 *>------------------------------------------------------------------------------
-*> void j_seperator( int arg0)
-*> { japi_seperator(arg0);  }
+*> void j_separator( int arg0)
+*> { japi_separator(arg0);  }
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
- FUNCTION-ID. J-SEPERATOR.
+ FUNCTION-ID. J-SEPARATOR.
  AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
@@ -2294,9 +2427,9 @@
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
 
- MAIN-J-SEPERATOR SECTION.
+ MAIN-J-SEPARATOR SECTION.
 
-    CALL STATIC "japi_seperator" 
+    CALL STATIC "japi_separator" 
          USING BY VALUE LNK-ARG-0
          RETURNING OMITTED 
     END-CALL 
@@ -2306,9 +2439,9 @@
     GOBACK
 
     .
- MAIN-J-SEPERATOR-EX.
+ MAIN-J-SEPARATOR-EX.
     EXIT.
- END FUNCTION J-SEPERATOR.
+ END FUNCTION J-SEPARATOR.
 
  
 *>------------------------------------------------------------------------------

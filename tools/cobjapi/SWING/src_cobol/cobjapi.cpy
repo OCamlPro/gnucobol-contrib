@@ -38,7 +38,13 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - japi.h converted into cobjapi.cpy. 
+*>------------------------------------------------------------------------------
+*> 2018.03.10 Laszlo Erdos: 
+*>            - Small change for JAPI 2.0.
 *>******************************************************************************
+
+*> ERROR
+ 01 J-ERROR                            BINARY-INT VALUE -1.
 
 *> BOOLEAN
  01 J-TRUE                             BINARY-INT VALUE 1.
