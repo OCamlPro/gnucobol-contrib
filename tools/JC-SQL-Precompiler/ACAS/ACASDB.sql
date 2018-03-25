@@ -1,8 +1,8 @@
--- MySQL dump 10.15  Distrib 10.0.29-MariaDB, for Linux (x86_64)
+-- MySQL dump 10.15  Distrib 10.0.33-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: localhost
+-- Host: localhost    Database: ACASDB
 -- ------------------------------------------------------
--- Server version	10.0.29-MariaDB
+-- Server version	10.0.33-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -406,6 +406,41 @@ LOCK TABLES `PUDELINV-REC` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `PUINV-LINES-REC`
+--
+
+DROP TABLE IF EXISTS `PUINV-LINES-REC`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `PUINV-LINES-REC` (
+  `IL-LINE-KEY` char(10) NOT NULL,
+  `IL-INVOICE` int(8) unsigned NOT NULL,
+  `IL-LINE` tinyint(2) unsigned NOT NULL,
+  `IL-PRODUCT` char(13) NOT NULL,
+  `IL-PA` char(2) NOT NULL,
+  `IL-QTY` smallint(6) unsigned NOT NULL,
+  `IL-TYPE` char(1) NOT NULL,
+  `IL-DESCRIPTION` char(24) NOT NULL,
+  `IL-NET` decimal(9,2) NOT NULL,
+  `IL-UNIT` decimal(9,2) NOT NULL,
+  `IL-DISCOUNT` decimal(4,2) unsigned NOT NULL,
+  `IL-VAT` decimal(9,2) NOT NULL,
+  `IL-VAT-CODE` tinyint(1) unsigned NOT NULL,
+  `IL-UPDATE` char(1) NOT NULL,
+  PRIMARY KEY (`IL-LINE-KEY`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `PUINV-LINES-REC`
+--
+
+LOCK TABLES `PUINV-LINES-REC` WRITE;
+/*!40000 ALTER TABLE `PUINV-LINES-REC` DISABLE KEYS */;
+/*!40000 ALTER TABLE `PUINV-LINES-REC` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `PUINVOICE-REC`
 --
 
@@ -413,13 +448,9 @@ DROP TABLE IF EXISTS `PUINVOICE-REC`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `PUINVOICE-REC` (
-  `INVOICE-KEY` bigint(11) unsigned NOT NULL,
-  `INVOICE-SUPPLIER` char(7) NOT NULL,
-  `INVOICE-DAT` int(8) unsigned NOT NULL,
-  `INV-ORDER` char(10) NOT NULL,
-  `INVOICE-TYPE` tinyint(1) unsigned NOT NULL,
+  `PINVOICE-KEY` char(10) NOT NULL,
   `IH-INVOICE` int(8) unsigned NOT NULL,
-  `IH-TEST` tinyint(3) unsigned NOT NULL,
+  `IH-TEST` tinyint(2) unsigned NOT NULL,
   `IH-SUPPLIER` char(7) NOT NULL,
   `IH-DAT` int(8) unsigned NOT NULL,
   `IH-ORDER` char(10) NOT NULL,
@@ -433,29 +464,29 @@ CREATE TABLE `PUINVOICE-REC` (
   `IH-DISCOUNT` decimal(9,2) NOT NULL,
   `IH-E-VAT` decimal(9,2) NOT NULL,
   `IH-C-VAT` decimal(9,2) NOT NULL,
-  `IH-STATUS` char(1) NOT NULL,
-  `IH-LINES` tinyint(3) unsigned NOT NULL,
+  `IH-STATUS` char(1) NOT NULL COMMENT 'STATUS-X not yet used',
+  `IH-STATUS-A` char(1) NOT NULL COMMENT 'Applied',
+  `IH-STATUS-C` char(1) NOT NULL COMMENT 'cleared',
+  `IH-STATUS-I` char(1) NOT NULL COMMENT 'Invoiced',
+  `IH-STATUS-L` char(1) NOT NULL COMMENT 'printed',
+  `IH-STATUS-P` char(1) NOT NULL COMMENT 'Pending',
   `IH-DEDUCT-DAYS` tinyint(3) unsigned NOT NULL,
-  `IH-DEDUCT-AMT` decimal(5,3) unsigned NOT NULL,
-  `IH-DEDUCT-VAT` decimal(5,3) unsigned NOT NULL,
+  `IH-DEDUCT-AMT` decimal(5,2) unsigned NOT NULL,
+  `IH-DEDUCT-VAT` decimal(5,2) unsigned NOT NULL,
   `IH-DAYS` tinyint(3) unsigned NOT NULL,
   `IH-CR` int(8) unsigned NOT NULL,
+  `IH-LINES` tinyint(2) unsigned NOT NULL,
   `IH-DAY-BOOK-FLAG` char(1) NOT NULL,
-  `IH-UPDATE` char(1) NOT NULL,
-  `IL-INVOICE` int(8) unsigned NOT NULL,
-  `IL-LINE` tinyint(3) unsigned NOT NULL,
-  `IL-PRODUCT` char(13) NOT NULL,
-  `IL-PA` char(2) NOT NULL,
-  `IL-QTY` tinyint(3) unsigned NOT NULL,
-  `IL-TYPE` char(1) NOT NULL,
-  `IL-DESCRIPTION` char(24) NOT NULL,
-  `IL-NET` decimal(9,2) NOT NULL,
-  `IL-UNIT` decimal(9,2) NOT NULL,
-  `IL-DISCOUNT` decimal(4,2) unsigned NOT NULL,
-  `IL-VAT` decimal(9,2) NOT NULL,
-  `IL-VAT-CODE` tinyint(1) unsigned NOT NULL,
-  `IL-UPDATE` char(1) NOT NULL,
-  PRIMARY KEY (`INVOICE-KEY`)
+  `IH-UPDATE` char(1) NOT NULL COMMENT 'jic, Invoice rec merged with OTM rec',
+  `OTM5-KEY` char(15) NOT NULL COMMENT 'jic',
+  `OTM5-APPLIED` char(1) NOT NULL COMMENT 'jic',
+  `OTM5-BATCH` char(8) NOT NULL COMMENT 'jic',
+  `OTM5-DATE-CLEARED` int(8) unsigned NOT NULL COMMENT 'jic',
+  `OTM5-HOLD-FLAG` char(1) NOT NULL COMMENT 'jic',
+  `OTM5-PAID` decimal(9,2) NOT NULL COMMENT 'jic',
+  `OTM5-UNAPL` char(1) NOT NULL COMMENT 'jic',
+  PRIMARY KEY (`PINVOICE-KEY`),
+  UNIQUE KEY `OTM5-KEY` (`OTM5-KEY`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -466,6 +497,56 @@ CREATE TABLE `PUINVOICE-REC` (
 LOCK TABLES `PUINVOICE-REC` WRITE;
 /*!40000 ALTER TABLE `PUINVOICE-REC` DISABLE KEYS */;
 /*!40000 ALTER TABLE `PUINVOICE-REC` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PUITM5-REC`
+--
+
+DROP TABLE IF EXISTS `PUITM5-REC`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `PUITM5-REC` (
+  `OI5-KEY` char(15) NOT NULL COMMENT 'Supplier, Invoice',
+  `OI5-SUPPLIER` char(7) NOT NULL,
+  `OI5-INVOICE` int(8) unsigned NOT NULL,
+  `OI5-DAT` int(8) unsigned NOT NULL,
+  `OI5-BATCH` char(8) NOT NULL,
+  `OI5-BATCH-NOS` char(5) NOT NULL COMMENT 'Batch content',
+  `OI5-BATCH-ITEM` char(3) NOT NULL COMMENT 'Batch content',
+  `OI5-TYPE` char(1) NOT NULL,
+  `OI5-REF` char(10) NOT NULL,
+  `OI5-ORDER` char(10) NOT NULL,
+  `OI5-HOLD-FLAG` char(1) NOT NULL,
+  `OI5-UNAPL` char(1) NOT NULL,
+  `OI5-P-C` decimal(9,2) NOT NULL,
+  `OI5-NET` decimal(9,2) NOT NULL COMMENT 'Also called Approp',
+  `OI5-EXTRA` decimal(9,2) NOT NULL,
+  `OI5-CARRIAGE` decimal(9,2) NOT NULL,
+  `OI5-VAT` decimal(9,2) NOT NULL,
+  `OI5-DISCOUNT` decimal(9,2) NOT NULL,
+  `OI5-E-VAT` decimal(9,2) NOT NULL,
+  `OI5-C-VAT` decimal(9,2) NOT NULL,
+  `OI5-PAID` decimal(9,2) NOT NULL,
+  `OI5-STATUS` char(1) NOT NULL,
+  `OI5-DEDUCT-DAYS` tinyint(3) unsigned NOT NULL,
+  `OI5-DEDUCT-AMT` decimal(5,2) NOT NULL,
+  `OI5-DEDUCT-VAT` decimal(5,2) NOT NULL,
+  `OI5-DAYS` tinyint(3) unsigned NOT NULL,
+  `OI5-CR` int(8) NOT NULL,
+  `OI5-APPLIED` char(1) NOT NULL,
+  `OI5-DATE-CLEARED` int(8) unsigned NOT NULL,
+  PRIMARY KEY (`OI5-KEY`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `PUITM5-REC`
+--
+
+LOCK TABLES `PUITM5-REC` WRITE;
+/*!40000 ALTER TABLE `PUITM5-REC` DISABLE KEYS */;
+/*!40000 ALTER TABLE `PUITM5-REC` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -516,71 +597,6 @@ CREATE TABLE `PULEDGER-REC` (
 LOCK TABLES `PULEDGER-REC` WRITE;
 /*!40000 ALTER TABLE `PULEDGER-REC` DISABLE KEYS */;
 /*!40000 ALTER TABLE `PULEDGER-REC` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `PUOIFILE5-REC`
---
-
-DROP TABLE IF EXISTS `PUOIFILE5-REC`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `PUOIFILE5-REC` (
-  `INVOICE-NOS` int(8) unsigned NOT NULL,
-  `ITEM-NOS` tinyint(3) unsigned NOT NULL,
-  `OI5-INVOICE-KEY` char(10) NOT NULL,
-  `INVOICE-SUPPLIER` char(7) NOT NULL,
-  `INVOICE-DAT` int(11) NOT NULL,
-  `INV-ORDER` char(10) NOT NULL,
-  `INVOICE-TYPE` int(11) NOT NULL,
-  `IH-INVOICE` int(8) unsigned NOT NULL,
-  `IH-TEST` tinyint(3) unsigned NOT NULL,
-  `IH-SUPPLIER` char(7) NOT NULL,
-  `IH-DAT` int(8) unsigned NOT NULL,
-  `IH-ORDER` char(10) NOT NULL,
-  `IH-TYPE` tinyint(1) unsigned NOT NULL,
-  `IH-REF` char(10) NOT NULL,
-  `IH-P-C` decimal(9,2) NOT NULL,
-  `IH-NET` decimal(9,2) NOT NULL,
-  `IH-EXTRA` decimal(9,2) NOT NULL,
-  `IH-CARRIAGE` decimal(9,2) NOT NULL,
-  `IH-VAT` decimal(9,2) NOT NULL,
-  `IH-DISCOUNT` decimal(9,2) NOT NULL,
-  `IH-E-VAT` decimal(9,2) NOT NULL,
-  `IH-C-VAT` decimal(9,2) NOT NULL,
-  `IH-STATUS` char(1) NOT NULL,
-  `IH-LINES` tinyint(3) unsigned NOT NULL,
-  `IH-DEDUCT-DAYS` tinyint(3) unsigned NOT NULL,
-  `IH-DEDUCT-AMT` decimal(5,2) unsigned NOT NULL,
-  `IH-DEDUCT-VAT` decimal(5,2) unsigned NOT NULL,
-  `IH-DAYS` tinyint(3) unsigned NOT NULL,
-  `IH-CR` int(8) unsigned NOT NULL,
-  `IH-DAY-BOOK-FLAG` char(1) NOT NULL,
-  `IH-UPDATE` char(1) NOT NULL,
-  `IL-INVOICE` int(8) unsigned NOT NULL,
-  `IL-LINE` tinyint(3) unsigned NOT NULL,
-  `IL-PRODUCT` char(12) NOT NULL,
-  `IL-PA` char(2) NOT NULL,
-  `IL-QTY` tinyint(3) unsigned NOT NULL,
-  `IL-TYPE` char(1) NOT NULL,
-  `IL-DESCRIPTION` char(24) NOT NULL,
-  `IL-NET` decimal(9,2) NOT NULL,
-  `IL-UNIT` decimal(9,2) NOT NULL,
-  `IL-DISCOUNT` decimal(4,2) unsigned NOT NULL,
-  `IL-VAT` decimal(9,2) NOT NULL,
-  `IL-VAT-CODE` tinyint(1) unsigned NOT NULL,
-  `IL-UPDATE` char(1) NOT NULL,
-  PRIMARY KEY (`OI5-INVOICE-KEY`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `PUOIFILE5-REC`
---
-
-LOCK TABLES `PUOIFILE5-REC` WRITE;
-/*!40000 ALTER TABLE `PUOIFILE5-REC` DISABLE KEYS */;
-/*!40000 ALTER TABLE `PUOIFILE5-REC` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -903,12 +919,6 @@ CREATE TABLE `STOCK-REC` (
 -- Dumping data for table `STOCK-REC`
 --
 
-LOCK TABLES `STOCK-REC` WRITE;
-/*!40000 ALTER TABLE `STOCK-REC` DISABLE KEYS */;
-INSERT INTO `STOCK-REC` VALUES ('0000000000001','0000001','','','','Test stock item 1','','In-De-Kitn','Pa1','Sa1','N',0.00,0,0,0,2,2,0,0,0,0,2.50,1.8500,0.00,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),('0000000000002','0000002','','','','Test WIP block','','kitchen','Pa1','Sa1','N',0.00,0,0,0,0,0,0,0,0,0,2.55,1.9500,0.00,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),('00080484','MACKERL','','','','Sainsbury\'s Mackeral Fillets 125','','kitchen-c1','','','N',0.00,0,0,0,0,2,0,0,1,0,0.40,0.4000,0.40,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),('00358477','S-BEENS','','','','Sainsbury\'s Baked Beans 220g','','kitchen-c1','','','N',0.00,0,0,0,1,5,0,0,2,0,0.30,0.3000,0.60,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),('5000436408451','TESCOTM','','','','\r\nTesco Value Chopped Tomatoes','','kitchen-c1','','','N',0.00,0,0,0,1,5,0,0,2,0,0.40,0.4000,0.80,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),('5018374294401','ANCHOVY','','','','Tesco Anchovy Fillets 50g (30g)','','','','','',0.00,0,0,0,0,0,0,0,0,0,0.40,0.4000,0.40,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),('8000320010118','CIRIOTM','','','','Cirio Chopped Tomatoes','','kitchen-C1','','','N',0.00,0,0,0,1,5,0,0,1,0,0.45,0.4500,0.45,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),('800320010118','\r\nCIRIO','','','','Cirio Chopped Tomatoes','','Kitch-C-1','P','','N',0.00,0,0,0,2,5,0,0,1,0,1.00,1.0000,1.00,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-/*!40000 ALTER TABLE `STOCK-REC` ENABLE KEYS */;
-UNLOCK TABLES;
-
 --
 -- Table structure for table `STOCKAUDIT-REC`
 --
@@ -1021,7 +1031,6 @@ CREATE TABLE `SYSTEM-REC` (
   `POST-CODE` char(12) NOT NULL,
   `COUNTRY` char(24) NOT NULL,
   `PRINT-SPOOL-NAME` char(48) NOT NULL,
-  `FILE-STATUSES` char(32) NOT NULL,
   `PASS-VALUE` tinyint(1) unsigned NOT NULL,
   `LEVEL-1` tinyint(1) unsigned NOT NULL,
   `LEVEL-2` tinyint(1) unsigned NOT NULL,
@@ -1256,4 +1265,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-02-26  0:00:02
+-- Dump completed on 2018-01-10  0:00:02

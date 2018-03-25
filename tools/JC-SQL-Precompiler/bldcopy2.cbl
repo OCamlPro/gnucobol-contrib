@@ -1,74 +1,109 @@
        >>SOURCE FREE
  identification division.
- program-id.    bldcopy.
+ program-id.    bldcopy2.
 *>Author.       J. C. Currey.
 *>Updates.      V. B. Coen, Applewood Computers.
 *>**
-*> Security.    Copyright (C) 2009-2016, Jim Curry.
+*> Security.    Copyright (C) 2009-2018, Jim Currey.
 *>              Distributed under the GNU General Public License
 *>              v2.0. See the file COPYING for details.
+*>**
+*> Copy books used.
+*>              mysql-variables.
+*>              mysql-procedures
 *>
-*>***********************************************************
-*>      Builds copy books from mysql for GnuCobol or        *
-*>                                       Open Cobol         *
-*>                                                          *
-*>   Copy books created for fixed with no comments so can   *
-*>    be used in free format programs.                      *
-*>                                                          *
-*> Change code at 1010-Process-Chained-Data to match your   *
-*> MySQL | Mariadb installation.                            *
-*>                                                          *
-*>   version 001--original version                          *
-*>                 4/04/2009--j c currey                    *
-*>   version 002--data type bigint cannot be defined as an  *
-*>                s9(19).  changed program to define bigint *
-*>                as s9(18).                                *
-*>                1324086--jim currey                       *
-*>                11/16/2009--pete mcthompson               *
-*>                                                          *
-*>   version 002b-added local changes to access mysql       *
-*>                See Process-Changed-Data                  *
-*>                 CHANGE  to your installation.            *
-*>                18/10/2015--Vincent Coen                  *
-*>                                                          *
-*>   version 002c-changes for db acasdb                     *
-*>                20/05/2016--Vince Coen                    *
-*>                                                          *
-*>   version 002d-Changed source for free format.           *
-*>                O/P left as fixed as works with free srcs *
-*>                                                          *
-*>   version 002e-Changed to accept data when program       *
-*>                called in the form of : -                 *
-*>                bldcopy o/p file name                     *
-*>                        database name                     *
-*>                        table name                        *
-*>                        field prefix                      *
-*>                E.g., bldcopy test-1 ACASDB STOCK-REC stk *
-*>                Also bldcopy help = list of params        *
-*>                07/06/2016 -- Vince Coen.                 *
-*>                                                          *
-*>     reversioned as 1.03                                  *
-*>                Changed field array from 256 to 512       *
-*>                16/08/2016 Vince Coen.                    *
-*>                                                          *
-*>           1.04-Support for unsigned fields in PIC        *
-*>                to match up with prtschema.               *
-*>                Uniform the help message to match others. *
-*>                21/08/2016 Vince Coen.                    *
-*>                                                          *
-*>           1.05-Do not over-ride numeric-precision unless *
-*>                it is zero but use one in row table/def   *
-*>                Does depend on MySQL server defaults thou.*
-*>                So may well not do anything.              *
-*>                25/08/2016 Vince Coen.                    *
-*>                                                          *
-*>***********************************************************
+*>**********************************************************************
+*>      Builds copy books from mysql for GnuCobol or                   *
+*>                                       Open Cobol                    *
+*>                                                                     *
+*>   Copy books created for fixed with no comments so can              *
+*>    be used in free format programs.                                 *
+*>                                                                     *
+*> Change code at 1010-Process-Chained-Data to match your              *
+*> MySQL | Mariadb installation.                                       *
+*>                                                                     *
+*>   version 001--original version                                     *
+*>                 4/04/2009--j c currey                               *
+*>   version 002--data type bigint cannot be defined as an             *
+*>                s9(19).  changed program to define bigint            *
+*>                as s9(18).                                           *
+*>                1324086--jim currey                                  *
+*>                11/16/2009--pete mcthompson                          *
+*>                                                                     *
+*>   version 002b-added local changes to access mysql                  *
+*>                See Process-Changed-Data                             *
+*>                 CHANGE  to your installation.                       *
+*>                18/10/2015--Vincent Coen                             *
+*>                                                                     *
+*>   version 002c-changes for db acasdb                                *
+*>                20/05/2016--Vince Coen                               *
+*>                                                                     *
+*>   version 002d-Changed source for free format.                      *
+*>                O/P left as fixed as works with free srcs            *
+*>                                                                     *
+*>   version 002e-Changed to accept data when program                  *
+*>                called in the form of : -                            *
+*>                bldcopy o/p file name                                *
+*>                        database name                                *
+*>                        table name                                   *
+*>                        field prefix                                 *
+*>                E.g., bldcopy test-1 ACASDB STOCK-REC stk            *
+*>                Also bldcopy help = list of params                   *
+*>                07/06/2016 -- Vince Coen.                            *
+*>                                                                     *
+*>     reversioned as 1.03                                             *
+*>                Changed field array from 256 to 512                  *
+*>                16/08/2016 Vince Coen.                               *
+*>                                                                     *
+*>           1.04-Support for unsigned fields in PIC                   *
+*>                to match up with prtschema.                          *
+*>                Uniform the help message to match others.            *
+*>                21/08/2016 Vince Coen.                               *
+*>                                                                     *
+*>           1.05-Do not over-ride numeric-precision unless            *
+*>                it is zero but use one in row table/def              *
+*>                Does depend on MySQL server defaults thougth.        *
+*>                So may well not do anything.                         *
+*>                25/08/2016 Vince Coen.                               *
+*>                                                                     *
+*>           1.06-Cosmetic added 'e' to Curry > Currey.                *
+*>                                                                     *
+*>          2.06 - For bldcopy2 the Mysql connection set up that       *
+*>                 needs to reflect your MySql site requirements are   *
+*>                 taken from a file found within the CURRENT working  *
+*>                 directory BUT the version of cobmysqlapi (taken     *
+*>                 from dbpre) MUST be used instead of                 *
+*>                 cobmysqlapi.005.c and this is included in the       *
+*>                 archive.                                            *
+*>                                                                     *
+*>                 This version will read a file containing the        *
+*>                 six RDB parameters e.g.,                            *
+*>                 DBHOST=localhost                                    *
+*>                 DBUSER=root                                         *
+*>                 DBPASSWD=PaSsWoRd                                   *
+*>                 DBNAME= any as over ridden                          *
+*>                 DBPORT=03306                                        *
+*>                 DBSOCKET=/home/mysql/mysql.sock                     *
+*>                 in file presql2.param                               *
+*>                                                                     *
+*>       Then issues a call to the dbpre version (ONLY) of cobmysqlapi *
+*>        to read in this file that MUST be in the working directory.  *
+*>                                                                     *
+*>       This way bcdcopy2 can be used for more than one MySQL server  *
+*>       on more than one system within a LAN.                         *
+*>        See the example file called bcdcopy2.param                   *
+*>                     31 August 2016 (160830)                         *
+*>                                                                     *
+*>          2.07 - Added updated copyright dating and copybook info at *
+*>                 beginning comment area. Updated presql manual.      *
+*>                     27 February 2018.                               *
+*>**********************************************************************
 *>
 *> COPYRIGHT NOTICE.
-*>*****************
+*> *****************
 *>
 *> This file/program is part of the Mysql pre-processor presql
-*> and is copyright (c) Jim Curry. 2009-2016 and later.
+*>  and is copyright (c) Jim Currey. 2009-2018 and later.
 *>
 *> This program is free software; you can redistribute it and/or
 *> modify it under the terms of the GNU General Public License as
@@ -103,7 +138,9 @@
 *>***************************************************
 *>   Constants, Counters And Work Areas             *
 *>***************************************************
- 01  ws-name-program                     pic x(12) value "bldcopy 1.05".
+ 01  ws-name-program                     pic x(13) value "bldcopy2 2.06".
+   *> needed 4 read-params call.
+ 01  ws-parm-prog-name                   pic x(8)  value "bldcopy2".
  01  ws-output-file-name                 pic x(64) value spaces.
  01  ws-schema-name                      pic x(64) value spaces.
  01  ws-table-name                       pic x(64) value spaces.
@@ -191,15 +228,24 @@
      display  "A) 4 - Enter The Field Prefix Wanted " with no advancing.
      accept   ws-field-prefix.
 *>
- 1010-Process-Chained-Data.        *> Change for YOUR installation.
+ 1010-Process-Chained-Data.
      open     output Output-file.
-     move     "information_schema" & x"00" to ws-mysql-base-name.
-     move     "localhost"          & x"00" to ws-mysql-host-name.
-     move     "dev-prog-001"       & x"00" to ws-mysql-implementation.
-     move     "mysqlpass"          & x"00" to ws-mysql-password.
-     move     "3306"                       to ws-mysql-port-number.
-     move     "/home/mysql/mysql.sock" & x"00"
-                                           to ws-mysql-socket.
+ 1050-Init-RDB.        *> reads file bldcopy2.param
+     move     spaces to               WS-MYSQL-Host-Name
+                                      WS-MYSQL-Implementation
+                                      WS-MYSQL-Password
+                                      WS-MYSQL-Base-Name
+                                      WS-MYSQL-Port-Number
+                                      WS-MYSQL-Socket.
+*>
+     Call     "read_params"     USING ws-parm-prog-name
+                                      WS-MYSQL-Host-Name
+                                      WS-MYSQL-Implementation
+                                      WS-MYSQL-Password
+                                      WS-MYSQL-Base-Name
+                                      WS-MYSQL-Port-Number
+                                      WS-MYSQL-Socket
+     End-call
      perform  mysql-1000-open thru mysql-1090-exit.
  1990-exit.
      exit.
@@ -307,7 +353,7 @@
          move tb-numeric-precision to ws-ab-numeric-precision (ws-i)
          move tb-numeric-scale     to ws-ab-numeric-scale (ws-i)
 *>
-*>  Now update if percision is zero because DBA didn't include it
+*>  Now update if precision is zero because DBA didnt include it
 *>
        when "year"
          move    4 to ws-ab-numeric-precision (ws-i)

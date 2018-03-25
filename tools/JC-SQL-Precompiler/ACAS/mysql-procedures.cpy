@@ -125,7 +125,7 @@
 *>
  Mysql-1110-Report-Problem.
 *>  Calling program needs screen sections set up - see stockMT.scb as example
-*>    along with message ST001
+*>    along with message ST001/ST901
 *>
      display  Display-Message-2 with erase eos.
      display  ST901 at line ws-lines col 1.
@@ -202,7 +202,9 @@
  Mysql-1249-Exit.
      exit.
 *>
- Mysql-1300-DB-Error.   *>  This replaces for 1210 operation tests first
+ Mysql-1300-DB-Error.
+*>
+*>  This replaces for 1210, operation tests first
 *>
 *>  Clear switch for retry.
 *>
@@ -250,6 +252,8 @@
 *>
  Mysql-1390-Exit.
      exit.
+*>
+*>***************************************************************
 *>
 *>      Close data base
 *>

@@ -1,2 +1,2 @@
-cobc -m acas011.cbl cobmysqlapi.o -L/usr/lib64 -lmysqlclient -lz
+cobc -m acas011.cbl cobmysqlapi.o -L/usr/local/mysql/lib -lmysqlclient -lz
 

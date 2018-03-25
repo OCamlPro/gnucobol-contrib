@@ -1,22 +1,30 @@
-       IDENTIFICATION DIVISION.
-       PROGRAM-ID.    PRESQL.
-      *AUTHOR.        J C CURREY.
-      *UPDATES.       Vincent B Coen, Applewood Computers.
-      *               and many others.
+       >>source fixed
+       IDENTIFICATION  DIVISION.
+       PROGRAM-ID.     PRESQL2.
+      * AUTHOR.        J C CURREY.
+      * UPDATES.       Vincent B Coen, Applewood Computers.
+      *                and others.
       ***
-      * Security.     Copyright (C) 2009-2016, Jim Curry.
-      *               Distributed under the GNU General Public License
-      *               v2.0. See the file COPYING for details.
+      * Security.      Copyright (C) 2009-2018, Jim Currey,
+      *                                         Vincent Coen.
+      *                Distributed under the GNU General Public License
+      *                v2.0. See the file COPYING for details.
       ***
       * Version.       See WS-Prog-Version in Ws.
       * CALLED BY.     None.
       * CALLED AS.
-      *                presql  and enter param by hand
+      *                presql2  and enter param by hand
       *                          OR
-      *                presql inputfile outputfile src-format
+      *                presql2 inputfile outputfile src-format
       *
       *                Note that in and out files must not have
       *                the same names.
+      *
+      *                By convention input file extension should be
+      *                .scb standing for s=sql, cb=cobol.
+      *
+      *                Again output file extension should be .cbl
+      *
       *                if no files are specified the files will
       *                  be requested.
       *                third param = spaces
@@ -32,20 +40,24 @@
       *      See Working storage under Error-Messages
       *                            and Warning Messages.
       ************************************************************
-      *  ***********  WARNING **** This program only accepts     *
-      *                  FIXED format sources   *************    *
-      *  Updated in v1.12 to accept both fixed and free          *
-      *   but all MYSQL command must still be in upper case      *
+      *  Updated in v1.12 to accept both fixed and free sources  *
+      *   but all MYSQL commands must still be in UPPER CASE     *
       *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*
       *
       *************************************************************
-      *  CHANGE the items at lines 340/346 under
-      *                0000-MAIN SECTION
-      *       to reflect your MySql site requirements
-      *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      *  Your MySql site requirements :
       *
-      *      SQL PRE PROCESSOR FOR OPEN COBOL 1.1                      *
-      *                            GNU Cobol 2.0                       *
+      *  For presql2 (v2) these are taken from a file found within the
+      *   current working directory so this requirement is no longer
+      *    needed BUT the version of cobmysqlapi (taken from dbpre)
+      *     MUST be used instead of cobmysqlapi.005.c and this is
+      *      included in the archive.
+      *
+      *     This filename MUST be presql2.param
+      *
+      *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*
+      *                                                                *
+      *      SQL PRE PROCESSOR FOR GnuCOBOL 2.x & 3.x                  *
       *                                                                *
       *      THIS PROGRAM READS A COBOL SOURCE FILE WITH SQL           *
       *        PRE PROCESSOR STATEMENTS IN IT AND CREATES AN           *
@@ -117,23 +129,23 @@
       *                1353954--JIM CURREY                             *
       *                11/14/2011--SANDY DOSS                          *
       *                                                                *
-      *   Version 009--Added support for longtext as for medium        *
+      * 151016 vbc - 009 Added support for longtext as for medium      *
       *                Added debug displays to help tracing            *
       *                  rem'd out                                     *
       *                Added close files before STOP RUN o/p           *
       *                  might be useful for debugging.                *
       *                Changed comments to lowercase when going        *
       *                through the code for other changes which makes  *
-      *                it easier to read.
-      *                16 October 2015 (151016)--VINCE COEN            *
+      *                it easier to read & change versioning comments. *
+      *                date at the top in form yymmdd with             *
+      *                programmer initials                             *
       *                                                                *
-      *   Version 010--Changed Mysql params for VBC test Env           *
+      * 151019 vbc - 010 Changed Mysql params for VBC test Env         *
       *                likewise for ACS env.                           *
       *                Added comments about GC v2 and fixed            *
       *                format Cobol sources only                       *
-      *                19 October 2015 (151019)--Vince Coen            *
       *                                                                *
-      *   Version 011--Removed a dup IF statement-No not me!           *
+      * 160605 vbc - 011 Removed a dup IF statement-No not me!         *
       *                modified for using command to have the          *
       *                parameters when called.                         *
       *                Called by:                                      *
@@ -141,11 +153,9 @@
       *                                                                *
       *                Note that in and out files must NOT have        *
       *                the same name/extensions.                       *
-      *                5 June 2016                                     *
       *                                                                *
-      *   version 012--Coding for FREE source input including          *
-      *                renumbered to                                   *
-      *   version 1.12                                                 *
+      * 160612 vbc - 1.12 Coding for FREE source input including       *
+      *                renumbered to 1.12                              *
       *                                                                *
       *                FIXED format                                    *
       *                third param = spaces | blank                    *
@@ -158,24 +168,42 @@
       *                >>SOURCE FIXED|FREE upper or lower case.        *
       *                Support for warning/error message tables to     *
       *                allow for messages in other languages.          *
-      *                Increased these comment lines to cc72           *
-      *                12 June 2016 (160612)                           *
+      *                Increased these comment lines to cc72.          *
       *                                                                *
-      *   version 1.13 Changed ALL created/generated cobol statements  *
+      * 160622 vbc - 1.13 Changed ALL generated cobol statements       *
       *                to have NO periods at end of each procedure     *
       *                statement. This way they can be inbedded within *
       *                a IF or EVALUATE statement.                     *
       *                Programmer MUST remember to terminate with      *
       *                a "." when required.                            *
-      *                22 June 2016 (160622)                           *
       *                                                                *
-      *   version 1.14 Test for lines 1 or 2 for FULL >>source         *
+      * 160817 vbc - 1.14 Test for lines 1 or 2 for FULL >>source      *
       *                Rem'd out dup initialise at start               *
       *                variations 'FORMAT FIXED|FREE'                  *
       *                           'FORMAT IS FIXED|FREE'               *
       *                Extra comments below for changes required       *
       *                before compiling presql                         *
-      *                17 August 2016 (160817)                         *
+      *                                                                *
+      *        vbc - 1.15 Cosmetic - Add an 'e' to Curry > Currey.     *
+      *                Clean up a debug block that displays the        *
+      *                found VAR tables (not spaces) and is rem'd out. *
+      *                                                                *
+      * 160830 vbc - 2.16 This version will read a file containing the *
+      *                six RDB parameters e.g.,                        *
+      * DBHOST=localhost                                               *
+      * DBUSER=root                                                    *
+      * DBPASSWD=PaSsWoRd                                              *
+      * DBNAME= any as over ridden                                     *
+      * DBPORT=03306                                                   *
+      * DBSOCKET=/home/mysql/mysql.sock                                *
+      *    in file presql2.param                                       *
+      *                                                                *
+      *  Then issues a call to the dbpre version (ONLY) of cobmysqlapi *
+      *   to read in this file that MUST be in the working directory.  *
+      *                                                                *
+      *  This way presql2 can be used for more than one MySQL server   *
+      *  on more than one system within a LAN.                         *
+      *    See the example file called presql2.param                   *
       *                                                                *
       *  TO BE DONE:                                                   *
       *               Support for lower-case /MYSQL commends e.g.,     *
@@ -183,30 +211,46 @@
       *      For the moment this is somewhat long winding so will put  *
       *      it on the back burner.                                    *
       *                                                                *
-      *================================================================*
-      * WARNING - WARNING                                              *
-      *  You must change code to support your MySQL/MariaDB set up     *
-      *  in the following procedure areas  : -                         *
+      * 161108 vbc - 2.17 Now have two versions of presql2 namely :    *
+      *            presql2Maria for MariaDB has one more column in     *
+      *             information_schema                                 *
+      *            presql2Mysql for MySQL.                             *
       *                                                                *
-      * 0000-MAIN SECTION                                              *
-      * 3402-INIT-LOOP & 2131-ENDER.                                   *
+      * 162220 vbc - 2.18 Signed comp values now has a test to check   *
+      *            if unsigned is set in ws-ca-column-type (WS-I) & if *
+      *            so removes the sign 'S' see low in 2142-FIELD-LOOP. *
+      *            same as prtschema2M & prtschema2o                   *
       *                                                                *
-      *  This is an example of the code -                              *
-      *     MOVE     "information_schema"                              *
-      *                              & X"00" TO CC-MYSQL-BASE-NAME.    *
-      *     MOVE     "localhost"     & X"00" to CC-MYSQL-HOST-NAME.    *
-151019*     MOVE     "mysql"         & X"00" TO CC-MYSQL-IMPLEMENTATION*
-151019*     MOVE     "mysqlpass"     & X"00" TO CC-MYSQL-PASSWORD.     *
-      *     MOVE     "3306"                  TO CC-MYSQL-PORT-NUMBER.  *
-151018*     MOVE     "/var/run/mysqld/mysqld.sock" & X"00"             *
-      *                                      TO CC-MYSQL-SOCKET.       *
+      * 161112 vbc - 2.19 Modified all reads to have spaces in buffer. *
+      *             test for fixed free after each.                    *
+      *             changed free test at 8000 as needed a rewrite.     *
+      *                                                                *
+      * 170103 vbc - 2.20 Removed start/end displays along with the    *
+      *             RDB params & added name of source prog compiling.  *
+      *                                                                *
+      * 180203 vbc - 2.21 Made param 1 (P1) compulsory so that if P2   *
+      *              is blank o/p filename created from i/p + '.cbl'   *
+      *              This is to allow easy builds using bash scripts.  *
+      *              If p3 ommited format will be set from the CDF     *
+      *              directive >>source fixed|free statement if used   *
+      *              within source records 1 or 2.                     *
+      *              'format is' is checked for as well. See para      *
+      *              2000-PROCESS.                                     *
+      *              Added CDF >>source to source - JIC.               *
+      *                                                                *
+      * 180227 vbc - 2.22 Program name now presql2, discontinued M & O *
+      *              variants which hopefully is no longer needed.     *
+      *              (See update 2.17).                                *
+      *              Updated copyright dating.                         *
+      *              Subject to testing against Mysql at some point.   *
+      *                                                                *
       ******************************************************************
       *
       * COPYRIGHT NOTICE.
       ******************
       *
       * This file/program is part of the Mysql pre-processor presql
-      * and is copyright (c) Jim Curry. 2009-2016 and later.
+      * and is copyright (c) Jim Currey. 2009-2018 and later.
       *
       * This program is free software; you can redistribute it and/or
       * modify it under the terms of the GNU General Public License as
@@ -253,12 +297,17 @@
       *   CONSTANTS, COUNTERS AND WORK AREAS             *
       ****************************************************
 160612 01  WS-NAME-PROGRAM.
-160612     03  WS-Program-Name              pic x(6) value "presql".
-160612     03  ws-Prog-Version              pic x(6) value " 1.14 ".
+160612     03  WS-Program-Name              pic x(7) value "presql2".
+160830     03  ws-Prog-Version              pic x(6) value " 2.22 ".
+      *> needed 4 read-params call.
+160830 01  ws-parm-prog-name                pic x(7) value "presql2".
+      *
        01  WS-NO-PARAGRAPH                  PIC S9(4) COMP value zero.
+161112 01  WS-LLength                       pic 9(4)  comp value zero.
 160612 01  WS-A                             PIC 9(4)  COMP value zero.
 160612 01  WS-B                             PIC 9(4)  COMP value zero.
 160612 01  WS-C                             PIC 9(4)  COMP value zero.
+161112 01  WS-D                             PIC 9(4)  COMP value zero.
 160612 01  WS-Line-Length                   pic 9(4)  comp value zero.
        01  WS-I                             PIC S9(4) COMP.
        01  WS-J                             PIC S9(4) COMP.
@@ -304,13 +353,14 @@
        01  WS-SOCKET                        PIC X(64)      VALUE SPACE.
        01  WS-RUNTIME                       PIC X          VALUE "N".
       *
-151019 01  CC-MYSQL-HOST-NAME               PIC X(64).
-151019 01  CC-MYSQL-IMPLEMENTATION          PIC X(64).
-151019 01  CC-MYSQL-PASSWORD                PIC X(64).
-151019 01  CC-MYSQL-BASE-NAME               PIC X(64).
-151019 01  CC-MYSQL-PORT-NUMBER             PIC X(4).
-151019 01  CC-MYSQL-SOCKET                  PIC X(64).
-
+       01  WS-IR-Buffer                     pic x(256).
+      *
+151019* 01  CC-MYSQL-HOST-NAME               PIC X(64).
+151019* 01  CC-MYSQL-IMPLEMENTATION          PIC X(64).
+151019* 01  CC-MYSQL-PASSWORD                PIC X(64).
+151019* 01  CC-MYSQL-BASE-NAME               PIC X(64).
+151019* 01  CC-MYSQL-PORT-NUMBER             PIC X(4).
+151019* 01  CC-MYSQL-SOCKET                  PIC X(64).
       *
       *
 160612 01  Warning-Messages.
@@ -326,6 +376,7 @@
                "PSE002 Un-Terminated /MYSQL VAR\ Construct".
            03  PSE003  pic x(49) value
                "PSE003 Must have base statement after /MYSQL VAR\".
+               *>" Stops my editor using red text as does not like slashes etc.
            03  PSE004  pic x(33)  value
                "PSE004 Invalid command at record=".
            03  PSE005  pic x(39)  value
@@ -334,8 +385,8 @@
                "PSE006 Invalid table spec at record=".
            03  PSE007  pic x(26)  value "PSE007 More than 32 Tables".
            03  PSE008A pic x(14)  value "PSE008 Table '".
-           03  PSE008B pic x(40)  value
-               "' Does not exist in MYSQL VAR Definition".
+           03  PSE008B pic x(41)  value
+               "' Does not exist in MYSQL VAR Definition ".
            03  PSE009A pic x(39)  value
                "PSE009 Unsupported data type in column ".
            03  PSE009B pic x(10)  value " of Table=".
@@ -387,6 +438,7 @@
       *
        01  COLUMN-BUFFER.
            05  CB-COLUMN-NAME               PIC X(64).
+161113     05  CB-COLUMN-TYPE               PIC X(4096).  *> New - vbc
            05  CB-DATA-TYPE                 PIC X(64).
            05  CB-CHARACTER-MAXIMUM-LENGTH  PIC S9(19).
            05  CB-NUMERIC-PRECISION         PIC S9(19).
@@ -404,6 +456,7 @@
        01  WS-COLUMN-ARRAY-BUFFER.
            05  WS-CA-HIGH-POINT             PIC S9(4) COMP.
            05  WS-CA-COLUMN-NAME            PIC X(32)      OCCURS 1024.
+161110     05  WS-CA-COLUMN-TYPE            PIC X(32)      occurs 1024.
            05  WS-CA-DATA-TYPE              PIC X(12)      OCCURS 1024.
            05  WS-CA-CHARACTER-MAXIMUM-LENGTH PIC S9(19)   OCCURS 1024.
            05  WS-CA-NUMERIC-PRECISION      PIC S9(19)     OCCURS 1024.
@@ -419,26 +472,6 @@
                                    ws-Source-Format.
        0000-MAIN SECTION.
            PERFORM  1000-INITIALIZATION THRU 1990-EXIT.
-      *
-      *************************************************************
-      *  CHANGE the items below to reflect your site requirements
-      *  ALSO see 3402-INIT-LOOP & 2131-ENDER.
-      *
-      *  In both cases the socket had to be moved as the x"00" causes
-      *   problems - Have not yet found out why  ???
-      *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      *
-           MOVE     "information_schema"
-                                    & X"00" TO CC-MYSQL-BASE-NAME.
-           MOVE     "localhost"     & X"00" to CC-MYSQL-HOST-NAME.
-151019*
-151019     MOVE     "mysql"         & X"00" TO CC-MYSQL-IMPLEMENTATION.
-151019     MOVE     "mysqlpass"     & X"00" TO CC-MYSQL-PASSWORD.
-           MOVE     "3306"                  TO CC-MYSQL-PORT-NUMBER.
-151019*
-151018     MOVE     "/var/run/mysqld/mysqld.sock" & X"00"
-                                            TO CC-MYSQL-SOCKET.
-      *
            PERFORM  2000-PROCESS THRU 7990-EXIT.
            PERFORM  9000-END-OF-PROGRAM THRU 9990-EXIT.
            STOP     RUN.
@@ -447,23 +480,38 @@
       ****************************************************************
        1000-INITIALIZATION.
            MOVE     1000 TO WS-NO-PARAGRAPH.
-160612     if       function upper-case (ws-name-input-file)
-                                     not = "HELP"
-                    DISPLAY  "I) " WS-NAME-PROGRAM
-                             PSW003 FUNCTION CURRENT-DATE
-           end-if
+160612*    if       function upper-case (ws-name-input-file)
+170103*                              not = "HELP"
+170103*             DISPLAY  "I) " WS-NAME-PROGRAM
+170103*                      PSW003 FUNCTION CURRENT-DATE
+170103*    end-if
            INITIALIZE
                     WS-TABLES-USED
                     WS-COLUMN-ARRAY-BUFFER.
       *
            if       function upper-case (ws-name-input-file) = "HELP"
                     display WS-NAME-PROGRAM " - - help "
-                    display "       P1 = Input File Name  "
+180203              display "       P1 = Input File Name  "
                     display "       P2 = Output File Name "
-                    display "       P3 = fixed | FIXED | free | FREE "
+180203              display "       P3 = fixed | FIXED | free | FREE "
+180203              display " P1 is compulsory"
+180203              display " P2 missing o/p = input name + '.cbl' "
+                    display " P3 missing taken from CDF record within"
+                    display "    first 2 lines"
                     display " "
                     stop run
-           end-if
+           end-if.
+180203*
+180203* Hack to build a missing P2 from P1 if needed.
+180203*
+180203     if       ws-name-output-file = spaces
+180203       and    ws-name-input-file not = spaces
+180203              string  ws-name-input-file delimited by "."
+180203                                  ".cbl" delimited by size
+180203                   into ws-name-output-file
+180203              end-string
+180203     end-if
+      *
            if       ws-name-input-file not = spaces
                 and ws-name-output-file not = spaces
                 and ws-name-input-file not = ws-name-output-file
@@ -501,6 +549,7 @@
 160612 1005-Init.
       *     INITIALIZE
 160817*              WS-TABLES-USED.       *> Done earlier
+170103     display  WS-NAME-PROGRAM " compiling " ws-name-input-file.
            MOVE     1 TO WS-TABLE-ARRAY-HIGH-POINT.
        1990-EXIT.
            EXIT.
@@ -518,6 +567,7 @@
       *  The I/P file will be closed and re-opened later on
       *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
       *
+161112     move     spaces to INPUT-RECORD.
            READ     INPUT-FILE NEXT RECORD AT END
                     GO TO 2130-ENDER.
            ADD      1 TO WS-Record-Number.
@@ -526,7 +576,7 @@
       * Check for a '>>SOURCE' compiler directive lines 1 or 2
       *  yes a bit simple but KISS rules :)
       *
-           if       ws-Record-Number < 3
+           if       WS-Record-Number < 3
             if      function upper-case (IR-Buffer (8:14))
                                         = ">>SOURCE FREE "
 160817          or  function upper-case (IR-Buffer (8:21))
@@ -534,13 +584,15 @@
                  or function upper-case (IR-Buffer (8:24))
                                         = ">>SOURCE FORMAT IS FREE "
                     move "FREE" to ws-Source-Format
+161112              go to 2000-Process
             else if function upper-case (IR-Buffer (8:14))
                                         = ">>SOURCE FIXED"
 160817           or function upper-case (IR-Buffer (8:21))
 160817                                  = ">>SOURCE FORMAT FIXED"
                  or function upper-case (IR-Buffer (8:24))
                                         = ">>SOURCE FORMAT IS FIXED"
-                    move "FIXED" to ws-Source-Format.
+                    move "FIXED" to ws-Source-Format
+161112              go to 2000-Process.
       *
       **************************************************************
       * Here we need to add in tests for fixed / free and if free
@@ -559,19 +611,20 @@
 160612     if       Source-Fixed
                     move 72 to ws-Line-Length.
 160612     if       Source-Free
-                    move WS-B to ws-Line-Length.
+161112              move WS-LLength to ws-Line-Length.
       *
            MOVE ZERO TO WS-I.
 160612     INSPECT IR-BUFFER (1:ws-Line-Length)
-                   TALLYING WS-I FOR ALL "/MYSQL VAR\".
-           IF WS-I IS EQUAL TO 1
-              MOVE "Y" TO WS-SWITCH-VAR
-              GO TO 2100-PROCESS-VAR.
+                   TALLYING WS-I FOR ALL "/MYSQL VAR\". *>"
+161113     IF      WS-I not = zero         *> Could have more than one !
+                   MOVE "Y" TO WS-SWITCH-VAR
+                   GO TO 2100-PROCESS-VAR.
            GO TO 2000-PROCESS.
       *
       *    Build table arrays
       *
        2100-PROCESS-VAR.
+161112     move     spaces to INPUT-RECORD.
            READ     INPUT-FILE NEXT RECORD AT END
 160612              DISPLAY PSE002
 151016              close input-file output-file
@@ -590,7 +643,7 @@
 160612              if       Source-fixed
                              MOVE "      " TO IR-BUFFER (1:6)
                     end-if
-                       MOVE FUNCTION SUBSTITUTE (IR-BUFFER," BASE="," ")
+                    MOVE FUNCTION SUBSTITUTE (IR-BUFFER," BASE="," ")
                                   TO IR-BUFFER
                     MOVE FUNCTION TRIM (IR-BUFFER)
                       TO WS-BASE-NAME-ARRAY (WS-TABLE-ARRAY-HIGH-POINT)
@@ -599,9 +652,11 @@
                     STOP RUN
            END-IF.
        2110-READ-LOOP.
-           MOVE 2110 TO WS-NO-PARAGRAPH.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+           MOVE     2110 TO WS-NO-PARAGRAPH.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
 160612     IF       Source-Fixed
               and   IR-BUFFER (7:1) = "*"
                     GO TO 2110-READ-LOOP.
@@ -610,9 +665,9 @@
                     if      Comment-Found
                             go to 2110-Read-Loop.
            MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
            IF WS-I IS EQUAL TO 1
-             GO TO 2000-PROCESS.
+              GO TO 2000-PROCESS.
            MOVE ZERO TO WS-I.
            INSPECT IR-BUFFER TALLYING WS-I FOR ALL " TABLE="
            IF       WS-I IS NOT EQUAL TO 1
@@ -690,24 +745,44 @@
        2130-ENDER.
            MOVE 1 TO WS-I.
        2131-ENDER.
-      *    DISPLAY "D) WS-BASE-NAME-ARRAY=", WS-BASE-NAME-ARRAY (WS-I).
-      *    DISPLAY "D) WS-TABLE-ARRAY=", WS-TABLE-ARRAY (WS-I).
-      *    DISPLAY "D) WS-I=", WS-I.
-           ADD      1 TO WS-I.
-           IF       WS-I IS LESS THAN 33 GO TO 2131-ENDER.
-160612     MOVE     CC-MYSQL-BASE-NAME      TO WS-MYSQL-BASE-NAME.
-160612     MOVE     CC-MYSQL-HOST-NAME      to WS-MYSQL-HOST-NAME.
-160612     MOVE     CC-MYSQL-PASSWORD       TO WS-MYSQL-PASSWORD.
-160612     MOVE     CC-MYSQL-PORT-NUMBER    TO WS-MYSQL-PORT-NUMBER.
-160612*     MOVE     CC-MYSQL-IMPLEMENTATION TO WS-MYSQL-IMPLEMENTATION.
-160612     MOVE     "dev-prog-001"  & X"00" TO WS-MYSQL-IMPLEMENTATION.
+      * Debug code [ ws-table-array-high-point is 1 higher than content]
+      D    DISPLAY "D) WS-BASE-NAME-ARRAY=", WS-BASE-NAME-ARRAY (WS-I).
+      D    DISPLAY "D) WS-TABLE-ARRAY=", WS-TABLE-ARRAY (WS-I).
+      D    DISPLAY "D) WS-I=", WS-I.
+      D    ADD      1 TO WS-I.
+      D    IF       WS-I IS LESS THAN 33
+      D        and  WS-I < WS-TABLE-ARRAY-HIGH-POINT
+      D             GO TO 2131-ENDER.
+      * End debug coding
       *
-160612* Local setting replace with above (var/run ) etc.
+       2131-Get-RDB-Params.                  *> reads file presql2.param
+           move     spaces to               WS-MYSQL-Host-Name
+                                            WS-MYSQL-Implementation
+                                            WS-MYSQL-Password
+                                            WS-MYSQL-Base-Name
+                                            WS-MYSQL-Port-Number
+                                            WS-MYSQL-Socket.
+           Call     "read_params"     USING ws-parm-prog-name
+                                            WS-MYSQL-Host-Name
+                                            WS-MYSQL-Implementation
+                                            WS-MYSQL-Password
+                                            WS-MYSQL-Base-Name
+                                            WS-MYSQL-Port-Number
+                                            WS-MYSQL-Socket
+           End-call
       *
-160612     move     "/home/mysql/mysql.sock" & x"00"
-                    TO WS-MYSQL-SOCKET.
+170103*    display "Using as RDB calls ".
+170103*    display "Host=" WS-MYSQL-Host-Name.
+170103*    display "BaseName=" WS-MYSQL-BASE-NAME.
+170103*    display "User=" WS-MYSQL-Implementation.
+170103*    display "Password=" WS-MYSQL-Password.
+170103*    display "Port=" WS-MYSQL-Port-Number.
+170103*    display "Socket=" WS-MYSQL-Socket.
+170103*    display " ".
+
            PERFORM  MYSQL-1000-OPEN THRU MYSQL-1090-EXIT.
-           SUBTRACT 1 FROM WS-TABLE-ARRAY-HIGH-POINT.
+      *> Now = last table entry.
+           SUBTRACT 1 FROM WS-TABLE-ARRAY-HIGH-POINT.   *> Now = last table entry.
       *
       *    In the loops below:
       *      WS-I = Pointer to the table being processed
@@ -721,7 +796,7 @@
 111411     MOVE     SPACE TO WS-MYSQL-COMMAND.
            STRING   "SELECT COLUMN_NAME, DATA_TYPE, ",
                     "CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, ",
-                    "NUMERIC_SCALE FROM COLUMNS WHERE ",
+                    "NUMERIC_SCALE, COLUMN_TYPE FROM COLUMNS WHERE ",
                     'TABLE_SCHEMA="',
                     FUNCTION TRIM (WS-BASE-NAME-ARRAY (WS-I)),
                     '" AND TABLE_NAME="',
@@ -731,12 +806,16 @@
                     X"00"
                                INTO WS-MYSQL-COMMAND
            END-STRING.
+      D    display " Looking in for "
+      D    display  WS-MYSQL-COMMAND (1:240).
+      *
            PERFORM  MYSQL-1200-SELECT THRU MYSQL-1209-EXIT.
            PERFORM  MYSQL-1220-STORE-RESULT THRU MYSQL-1239-EXIT.
 072810     IF       WS-MYSQL-COUNT-ROWS IS LESS THAN 1
 072810              THEN DISPLAY PSE008A
 072810                        FUNCTION TRIM(WS-TABLE-ARRAY ( WS-I ))
 072810                     PSE008B
+      D                     "=" ws-i
 151016              close input-file output-file
 072810              STOP RUN
 072810	   END-IF.
@@ -747,7 +826,8 @@
                                             CB-DATA-TYPE,
                                             CB-CHARACTER-MAXIMUM-LENGTH,
                                             CB-NUMERIC-PRECISION,
-                                            CB-NUMERIC-SCALE.
+                                            CB-NUMERIC-SCALE,
+                                            CB-COLUMN-TYPE.
            IF RETURN-CODE IS EQUAL TO -1
              ADD 1 TO WS-I
              IF WS-I IS GREATER THAN WS-TABLE-ARRAY-HIGH-POINT
@@ -755,7 +835,9 @@
                ELSE GO TO 2132-TABLE-LOOP
              END-IF
            END-IF.
-      *                 (BLOB, MEDIUMBLOB, MEDIUMTEXT, TEXT)     *
+      *
+      *  (BLOB, MEDIUMBLOB, MEDIUMTEXT, TEXT)
+      *
            EVALUATE CB-DATA-TYPE
              WHEN "blob"
 	     WHEN "mediumblob"
@@ -766,13 +848,15 @@
                             PSE009B
                             FUNCTION TRIM (WS-TABLE-ARRAY (WS-I))
 151016              close input-file output-file
-                    STOP RUN.
+161113              STOP RUN
+161113     end-evaluate.
            MOVE CB-COLUMN-NAME TO WS-CA-COLUMN-NAME (WS-J).
            MOVE CB-DATA-TYPE TO WS-CA-DATA-TYPE (WS-J).
            MOVE CB-CHARACTER-MAXIMUM-LENGTH
              TO WS-CA-CHARACTER-MAXIMUM-LENGTH (WS-J).
            MOVE CB-NUMERIC-PRECISION TO WS-CA-NUMERIC-PRECISION (WS-J).
            MOVE CB-NUMERIC-SCALE TO WS-CA-NUMERIC-SCALE (WS-J).
+161110     move CB-COLUMN-TYPE   to WS-CA-COLUMN-TYPE (WS-J).
            ADD 1 TO WS-J.
            GO TO 2134-COLUMN-LOOP.
       *
@@ -783,11 +867,15 @@
            MOVE WS-J TO WS-TABLE-START (WS-I).
            SUBTRACT 1 FROM WS-J GIVING WS-CA-HIGH-POINT.
            MOVE 1 TO WS-I.
-151016*      display "D=  WS-I=", WS-I.
-151016*      display "D=  WS=CA-DATA-TYPE=" WS-CA-DATA-TYPE (WS-I).
-
+151016D      display "D=  WS-I=", WS-I.
+151016D      display "D=  WS-CA-DATA-TYPE=" WS-CA-DATA-TYPE (WS-I).
+161113D      display "D=  WS-CA-COLUMN-TYPE=" WS-CA-COLUMN-TYPE (WS-I).
+      *
        2142-FIELD-LOOP.
-      *         DATE ITEMS DO NOT SHOW PRECISION IN THE SCHEMA
+      *
+      *   First evaluate for
+      *   Date Items that do not show precision in the Schema
+      *
            EVALUATE WS-CA-DATA-TYPE (WS-I)
              WHEN "date"
                MOVE 10 TO WS-CA-CHARACTER-MAXIMUM-LENGTH (WS-I)
@@ -802,7 +890,9 @@
              WHEN "bigint"
                MOVE 18 TO WS-CA-NUMERIC-PRECISION (WS-I)
            END-EVALUATE.
-      *         DECIMAL ITEMS NEED TO HAVE THEIR LENGTHS FIXED
+      *
+      *   Decimal items need to have their lengths fixed
+      *
            EVALUATE WS-CA-DATA-TYPE (WS-I)
              WHEN "dec"
              WHEN "decimal"
@@ -841,9 +931,18 @@
              WHEN "tinyint"
                MOVE WS-CA-NUMERIC-PRECISION (WS-I) TO WS-ED2
                MOVE WS-CA-NUMERIC-SCALE (WS-I) TO WS-ED2-SECOND
-               MOVE "PIC S9(XX) COMP" TO WS-CA-PICTURE (WS-I)
+161110         move zero to ws-A
+161110         inspect  ws-ca-column-type (WS-I)
+161110                  tallying ws-A for all "unsigned"
+161110         if ws-A = zero
+161110               move "PIC S9(XX) COMP" to ws-ca-picture (WS-I)
+161110         else
+161110               move "PIC  9(XX) COMP" to ws-ca-picture (WS-I)
+161110         end-if
+      D        display ws-ca-column-type (ws-I) " for "
+      D                ws-ca-column-name (ws-I)
                MOVE WS-ED2 TO WS-CA-PICTURE (WS-I) (8:2)
-               IF WS-CA-NUMERIC-SCALE (WS-I) IS NOT EQUAL TO ZERO
+               IF WS-CA-NUMERIC-SCALE (WS-I) NOT = ZERO
                  THEN MOVE "V9(XX) COMP" TO WS-CA-PICTURE (WS-I) (11:11)
                       MOVE WS-ED2-SECOND TO WS-CA-PICTURE (WS-I) (14:2)
                END-IF
@@ -855,9 +954,9 @@
                     STOP RUN
            END-EVALUATE.
            ADD 1 TO WS-I.
-           IF WS-I IS GREATER THAN WS-CA-HIGH-POINT
-             THEN NEXT SENTENCE
-             ELSE GO TO 2142-FIELD-LOOP.
+           IF       WS-I not > WS-CA-HIGH-POINT
+                    GO TO 2142-FIELD-LOOP
+           end-if
            CLOSE INPUT-FILE.
            OPEN INPUT INPUT-FILE.
            IF       WS-INPUT-FILE-STATUS = 35
@@ -865,28 +964,38 @@
 151016              close input-file output-file
                     STOP RUN.
            MOVE ZERO TO WS-RECORD-NUMBER.
+161113     move     zero to WS-Comment-Found.
       *
-      *    NOW WE CAN PROCESS THE STATEMENTS
+      *    Now we can process the statements
+      *     starting at beginning of source file.
       *
        2810-READ.
-           MOVE 2110 TO WS-NO-PARAGRAPH.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 2980-EOF.
-           ADD 1 TO WS-RECORD-NUMBER.
+           MOVE     2110 TO WS-NO-PARAGRAPH.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 2980-EOF.
+           ADD      1 TO WS-RECORD-NUMBER.
 160612     IF       Source-Fixed
               and   IR-BUFFER (7:1) = "*"
                     PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT
-                    GO TO 2810-READ.
+                    GO TO 2810-READ
+161113     end-if
 160612     if       Source-Free
                     perform 8000-Find-Comment-Lines thru 8010-Exit
                     if      Comment-Found
                             PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT
-                            GO TO 2810-READ.
+                            GO TO 2810-READ
+                    end-if
+           end-if
            MOVE ZERO TO WS-I.
            INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL".
            IF WS-I IS EQUAL TO ZERO
              MOVE IR-BUFFER TO OR-BUFFER
              WRITE OUTPUT-RECORD
              GO TO 2810-READ.
+      *
+      * Got start of PSQL commands
+      *
            MOVE "N" TO WS-SWITCH-GOT-TABLE-NAME.
            MOVE "N" TO WS-SWITCH-GOT-WHERE.
            MOVE ZERO TO WS-I.
@@ -922,7 +1031,7 @@
            IF WS-I IS NOT EQUAL TO ZERO GO TO 3900-VAR.
        2980-EOF.
            GO TO 7990-EXIT.
-      **************************************************************
+      ************************************************************** "
       *    Execute mysql close                                     *
       **************************************************************
        3000-CLOSE.
@@ -933,7 +1042,8 @@
            WRITE OUTPUT-RECORD.
 160612     if       Source-Fixed
                     MOVE "      *    CLOSE THE DATABASE" TO OR-BUFFER
-220616     else     move "*>    Close the Database" TO OR-BUFFER.
+220616     else
+220616              move "*>    Close the Database" TO OR-BUFFER.
            WRITE OUTPUT-RECORD.
 160612     if       Source-Fixed
                     MOVE "      *" TO OR-BUFFER
@@ -942,28 +1052,32 @@
            MOVE "           PERFORM MYSQL-1980-CLOSE"
 220616       & " THRU MYSQL-1999-EXIT" TO OR-BUFFER.
            WRITE OUTPUT-RECORD.
-           MOVE "/MYSQL CLOSE\" TO WS-LAST-MYSQL-COMMAND.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
-           MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+           MOVE "/MYSQL CLOSE\" TO WS-LAST-MYSQL-COMMAND. *>"
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
+           MOVE     ZERO TO WS-I.
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
            IF WS-I IS NOT EQUAL TO 1 GO TO 5000-ERROR.
+161113     PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT.
            GO TO 2810-READ.
       **************************************************************
       *    Define the rows in a table                              *
       **************************************************************
        3050-DEFINE.
            PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT.
-           MOVE "/MYSQL DEFINE\" TO WS-LAST-MYSQL-COMMAND.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
+           MOVE "/MYSQL DEFINE\" TO WS-LAST-MYSQL-COMMAND. *>"
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
 160612     if       Source-fixed
                     MOVE SPACES TO IR-BUFFER (1:7).
            ADD 1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
            INSPECT IR-BUFFER TALLYING WS-I FOR ALL "TABLE=".
-           IF       WS-I IS EQUAL TO 1
-                    NEXT SENTENCE
-160612      ELSE    DISPLAY PSE012
+161113     IF       WS-I not = 1
+161113              DISPLAY PSE012
                             WS-RECORD-NUMBER
 151016              close input-file output-file
                     STOP RUN.
@@ -1050,10 +1164,12 @@
            ADD 1 TO WS-J.
            IF WS-J IS LESS THAN WS-TABLE-START (WS-I + 1)
              GO TO 3058-COLUMN-LOOP.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
-           MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
+           MOVE     ZERO TO WS-I.
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
            IF WS-I IS NOT EQUAL TO 1 GO TO 5000-ERROR.
            PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT.
            GO TO 2810-READ.
@@ -1074,10 +1190,12 @@
                     MOVE "      *" TO OR-BUFFER
            else     move "*>" TO OR-BUFFER.
            WRITE OUTPUT-RECORD.
-           MOVE "/MYSQL DELETE\" TO WS-LAST-MYSQL-COMMAND.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
-           MOVE ZERO TO WS-I.
+           MOVE "/MYSQL DELETE\" TO WS-LAST-MYSQL-COMMAND. *>"
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
+           MOVE     ZERO TO WS-I.
            INSPECT IR-BUFFER TALLYING WS-I FOR ALL "TABLE=".
            IF       WS-I not = 1
 160612              DISPLAY PSE016
@@ -1119,9 +1237,11 @@
            MOVE '             " WHERE "' TO OR-BUFFER.
            WRITE OUTPUT-RECORD.
        3106-READ-LOOP.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
-           MOVE ZERO TO WS-I.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
+           MOVE     ZERO TO WS-I.
            INSPECT IR-BUFFER TALLYING WS-I FOR ALL "WHERE=".
 160612     if       Source-fixed
                     MOVE SPACES TO IR-BUFFER (1:7).
@@ -1141,11 +1261,13 @@
 220616         & ' THRU MYSQL-1219-EXIT'
                  TO OR-BUFFER
              WRITE OUTPUT-RECORD
-             READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR
-             ADD 1 TO WS-RECORD-NUMBER
+161112       move     spaces to INPUT-RECORD
+             READ     INPUT-FILE NEXT RECORD AT END
+                      GO TO 5000-ERROR
+             ADD      1 TO WS-RECORD-NUMBER
            END-IF.
            MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
            IF WS-I IS EQUAL TO 1
              THEN IF WS-SWITCH-GOT-WHERE IS EQUAL TO "N"
 160612              DISPLAY PSE018
@@ -1161,7 +1283,7 @@
       **************************************************************
        3200-FETCH.
            PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT.
-           MOVE "/MYSQL FETCH\" TO WS-LAST-MYSQL-COMMAND.
+           MOVE "/MYSQL FETCH\" TO WS-LAST-MYSQL-COMMAND. *>"
 160612     if       Source-Fixed
                     MOVE "      *" TO OR-BUFFER
            else     move "*>" to OR-Buffer.
@@ -1174,8 +1296,10 @@
                     MOVE "      *" TO OR-BUFFER
            else     move "*>" to OR-Buffer.
            WRITE OUTPUT-RECORD.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
            INSPECT IR-BUFFER TALLYING WS-I FOR ALL "TABLE=".
            IF       WS-I not = 1
@@ -1238,10 +1362,12 @@
 220616*     MOVE "." TO OR-BUFFER (20:1)
 220616     move     " end-call" to OR-BUFFER (20:1)
            WRITE OUTPUT-RECORD.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
            IF WS-I IS EQUAL TO 1
              THEN PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT
                   GO TO 2810-READ
@@ -1251,7 +1377,7 @@
       **************************************************************
        3300-FREE.
            PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT.
-           MOVE "/MYSQL FREE\" TO WS-LAST-MYSQL-COMMAND.
+           MOVE "/MYSQL FREE\" TO WS-LAST-MYSQL-COMMAND. *>"
 160612     if       Source-Fixed
                     MOVE "      *" TO OR-BUFFER
            else     move "*>" to OR-Buffer.
@@ -1264,8 +1390,10 @@
                     MOVE "      *" TO OR-BUFFER
            else     move "*>" to OR-Buffer.
            WRITE OUTPUT-RECORD.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
            INSPECT IR-BUFFER TALLYING WS-I FOR ALL "TABLE=".
            IF       WS-I not = 1
@@ -1306,10 +1434,12 @@
            MOVE '           CALL "MySQL_free_result"'
 220616      & " USING WS-MYSQL-RESULT end-call" TO OR-BUFFER.
            WRITE OUTPUT-RECORD.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
            IF WS-I IS NOT EQUAL TO 1 GO TO 5000-ERROR.
            PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT.
            GO TO 2810-READ.
@@ -1319,7 +1449,7 @@
       **************************************************************
        3400-INIT.
            MOVE 3400 TO WS-NO-PARAGRAPH.
-           MOVE "/MYSQL INIT\" TO WS-LAST-MYSQL-COMMAND.
+           MOVE "/MYSQL INIT\" TO WS-LAST-MYSQL-COMMAND. *>"
            PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT.
 160612     if       Source-Fixed
                     MOVE "      *" TO OR-BUFFER
@@ -1334,8 +1464,10 @@
            else     move "*>" to OR-Buffer.
            WRITE OUTPUT-RECORD.
        3402-INIT-LOOP.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
            INSPECT IR-BUFFER TALLYING WS-I FOR ALL "BASE=".
            IF WS-I IS EQUAL TO 1
@@ -1402,7 +1534,7 @@
              GO TO 3402-INIT-LOOP
            END-IF.
            MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
            IF WS-I IS EQUAL TO 1
              THEN NEXT SENTENCE
              ELSE GO TO 5000-ERROR.
@@ -1415,10 +1547,9 @@
            IF       WS-IMPLEMENTATION IS EQUAL TO SPACES
                     MOVE "mysql" TO WS-IMPLEMENTATION.
            IF       WS-PORT IS EQUAL TO SPACES
-160612              MOVE CC-MYSQL-PORT-NUMBER to WS-Port.
+160612              MOVE "3306"  to WS-Port.
            IF       WS-SOCKET IS EQUAL TO SPACES
-151018              MOVE     "/var/run/mysqld/mysqld.sock"
-                                 to WS-Socket.
+151018              MOVE "/var/run/mysqld/mysqld.sock" to WS-Socket.
            INITIALIZE OR-BUFFER.
            IF WS-RUNTIME IS EQUAL TO "N"
              STRING
@@ -1496,9 +1627,11 @@
                     MOVE "      *" TO OR-BUFFER
            else     move "*>" to OR-Buffer.
            WRITE OUTPUT-RECORD.
-           MOVE "/MYSQL INSERT\" TO WS-LAST-MYSQL-COMMAND.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+           MOVE "/MYSQL INSERT\" TO WS-LAST-MYSQL-COMMAND. *>"
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
            INSPECT IR-BUFFER TALLYING WS-I FOR ALL "TABLE=".
            IF       WS-I not = 1
@@ -1575,10 +1708,12 @@
 220616       " THRU MYSQL-1219-EXIT"
                INTO OR-BUFFER.
            WRITE OUTPUT-RECORD.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
            IF WS-I IS EQUAL TO 1
              THEN PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT
                   GO TO 2810-READ
@@ -1594,11 +1729,13 @@
                     MOVE ' COPY "mysql-procedures.cpy".' TO OR-BUFFER
 160612     end-if
            WRITE OUTPUT-RECORD.
-           MOVE "/MYSQL PRO\" TO WS-LAST-MYSQL-COMMAND.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+           MOVE "/MYSQL PRO\" TO WS-LAST-MYSQL-COMMAND. *>"
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
            IF WS-I IS NOT EQUAL TO 1 GO TO 5000-ERROR.
            PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT.
            GO TO 2810-READ.
@@ -1619,9 +1756,11 @@
                     MOVE "      *" TO OR-BUFFER
            else     move "*>" to OR-Buffer.
            WRITE OUTPUT-RECORD.
-           MOVE "/MYSQL SELECT\" TO WS-LAST-MYSQL-COMMAND.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+           MOVE "/MYSQL SELECT\" TO WS-LAST-MYSQL-COMMAND. *>"
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
            INSPECT IR-BUFFER TALLYING WS-I FOR ALL "TABLE=".
            IF       WS-I not = 1
@@ -1666,8 +1805,10 @@
            WRITE OUTPUT-RECORD.
            INITIALIZE OR-BUFFER.
        3706-READ-LOOP.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
 160612     if       Source-fixed
                     MOVE SPACES TO IR-BUFFER (1:7).
@@ -1705,11 +1846,14 @@
              INSPECT OR-BUFFER REPLACING ALL "_" BY "-"
              WRITE OUTPUT-RECORD
              INITIALIZE OR-BUFFER
-             READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR
-             ADD 1 TO WS-RECORD-NUMBER
+161112       move     spaces to INPUT-RECORD
+             READ     INPUT-FILE NEXT RECORD AT END
+                      GO TO 5000-ERROR
+             end-read
+             ADD      1 TO WS-RECORD-NUMBER
            END-IF.
            MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
 160605     IF WS-I IS EQUAL TO 1
              THEN IF WS-SWITCH-GOT-WHERE IS EQUAL TO "N"
 160612               DISPLAY PSE024
@@ -1725,7 +1869,7 @@
       **************************************************************
        3750-SWITCH-DB.
            PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT.
-           MOVE "/MYSQL SWITCHDB\" TO WS-LAST-MYSQL-COMMAND.
+           MOVE "/MYSQL SWITCHDB\" TO WS-LAST-MYSQL-COMMAND. *>"
 160612     if       Source-Fixed
                     MOVE "      *" TO OR-BUFFER
            else     move "*>" to OR-Buffer.
@@ -1742,10 +1886,12 @@
            MOVE "           PERFORM MYSQL-1240-SWITCH-DB THRU "
 220616       & "MYSQL-1249-EXIT" TO OR-BUFFER.
            WRITE OUTPUT-RECORD.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
            IF WS-I IS NOT EQUAL TO 1 GO TO 5000-ERROR.
            PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT.
            GO TO 2810-READ.
@@ -1766,9 +1912,11 @@
                     MOVE "      *" TO OR-BUFFER
            else     move "*>" to OR-Buffer.
            WRITE OUTPUT-RECORD.
-           MOVE "/MYSQL UPDATE\" TO WS-LAST-MYSQL-COMMAND.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+           MOVE "/MYSQL UPDATE\" TO WS-LAST-MYSQL-COMMAND. *>"
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
            INSPECT IR-BUFFER TALLYING WS-I FOR ALL "TABLE=".
            IF       WS-I not = 1
@@ -1824,8 +1972,10 @@
              TO OR-BUFFER.
            WRITE OUTPUT-RECORD.
            PERFORM 5200-STRING-COLUMNS THRU 5290-EXIT.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
 160612     if       Source-fixed
                     MOVE SPACES TO IR-BUFFER (1:7).
@@ -1869,10 +2019,12 @@
 220616         'THRU MYSQL-1219-EXIT'
                  INTO OR-BUFFER
              WRITE OUTPUT-RECORD.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
            IF       WS-I = 1
              THEN   IF  WS-SWITCH-GOT-WHERE = "N"
 160612                  display PSE026 WS-RECORD-NUMBER
@@ -1891,12 +2043,14 @@
       **************************************************************
        3900-VAR.
            PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT.
-           MOVE "/MYSQL VAR\" TO WS-LAST-MYSQL-COMMAND.
+           MOVE "/MYSQL VAR\" TO WS-LAST-MYSQL-COMMAND. *>"
            MOVE "N" TO WS-SWITCH-FOUND-BASE.
        3910-READ-LOOP.
            MOVE 3910 TO WS-NO-PARAGRAPH.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
 160612     IF       IR-BUFFER (7:1) = "*"
                     PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT
                     GO TO 3910-READ-LOOP.
@@ -1933,7 +2087,7 @@
            STOP RUN.
        3914-CONTINUE.
            MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
            IF WS-I IS EQUAL TO 1
              THEN NEXT SENTENCE
              ELSE PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT
@@ -2046,9 +2200,11 @@
                     MOVE "      *" TO OR-BUFFER
            else     move "*>" to OR-Buffer.
            WRITE OUTPUT-RECORD.
-           MOVE "/MYSQL LOCK\" TO WS-LAST-MYSQL-COMMAND.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+           MOVE "/MYSQL LOCK\" TO WS-LAST-MYSQL-COMMAND. *>"
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
            INSPECT IR-BUFFER TALLYING WS-I FOR ALL "TABLE=".
            IF       WS-I not = 1
@@ -2097,10 +2253,12 @@
 220616         & ' THRU MYSQL-1219-EXIT'
              TO OR-BUFFER.
            WRITE OUTPUT-RECORD.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
            IF WS-I IS EQUAL TO 1
              THEN PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT
                   GO TO 2810-READ
@@ -2122,7 +2280,7 @@
                     MOVE "      *" TO OR-BUFFER
            else     move "*>" to OR-Buffer.
            WRITE OUTPUT-RECORD.
-           MOVE "/MYSQL UNLOCK\" TO WS-LAST-MYSQL-COMMAND.
+           MOVE "/MYSQL UNLOCK\" TO WS-LAST-MYSQL-COMMAND. *>"
            INITIALIZE OR-BUFFER.
 220616     MOVE '           INITIALIZE WS-MYSQL-COMMAND'
              TO OR-BUFFER.
@@ -2136,10 +2294,12 @@
 220616       & ' THRU MYSQL-1219-EXIT'
              TO OR-BUFFER.
            WRITE OUTPUT-RECORD.
-           READ INPUT-FILE NEXT RECORD AT END GO TO 5000-ERROR.
-           ADD 1 TO WS-RECORD-NUMBER.
+161112     move     spaces to INPUT-RECORD.
+           READ     INPUT-FILE NEXT RECORD AT END
+                    GO TO 5000-ERROR.
+           ADD      1 TO WS-RECORD-NUMBER.
            MOVE ZERO TO WS-I.
-           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\".
+           INSPECT IR-BUFFER TALLYING WS-I FOR ALL "/MYSQL-END\". *>"
            IF WS-I IS EQUAL TO 1
              THEN PERFORM 5100-OUTPUT-COMMENT THRU 5109-EXIT
                   GO TO 2810-READ
@@ -2156,13 +2316,16 @@
       *    Output mysql command as a comment
       *
        5100-OUTPUT-COMMENT.
-           MOVE IR-BUFFER TO OR-BUFFER.
 160612     if       Source-Fixed
+                    MOVE IR-BUFFER TO OR-BUFFER
                     MOVE   "*" TO OR-BUFFER (7:1)
            else
+             if     Comment-Found
+                    MOVE IR-BUFFER TO OR-BUFFER
+             else
 160612              move   spaces to OR-Buffer
                     string "*> "      delimited by size
-                           IR-Buffer (1:ws-Line-Length)
+                           IR-Buffer  *>  (1:ws-Line-Length)
                                    into OR-Buffer
                     end-string
            end-if
@@ -2380,62 +2543,125 @@
            EXIT.
       *
 160612 8000-Find-Comment-lines.
-      *
+161112*
+161112* Complete rewrite of paragraph
+161112*
       ******************************************************************
-      *  Processing for free format comment lines and trailing comments
-      *    and if present is /MYSQL string also present
-      *     and after the comment
+      * Called after a new source line is read in : -
+      *  Processing for free format comment lines, trailing comments
+      *    and if present is PSQL (presql) uppercase string also
+      *     present and where is the comment.
+      *   We will ignore comments AFTER PSQL as valid as presql
+      *       will work
       ******************************************************************
       *
            move     zero to Ws-Comment-Found.
       *
-      * Make sure we have free format source
+      * Make sure we have only now process free format source
       *
            if       Source-Fixed
                     go to 8010-Exit.
-           perform  varying WS-A from 256 by -1 until
-                    WS-A < 2 or IR-Buffer (WS-A:1) not = space
+      *
+      * Work out actual length of the source record.
+      *
+           perform  varying WS-LLength from 256 by -1 until
+                    WS-LLength < 2 or
+                    IR-Buffer (WS-LLength:1) not = space
            end-perform
       *
       * Treat blank line as comment
       *
-           if       WS-A < 2
+           if       WS-LLength < 2
                     move 1 to ws-Comment-Found
                     go to 8010-Exit.
       *
-           subtract WS-A from 256 giving WS-B.
+      *  See if we have any PSQL commands [with complete list]
+      *   with WS-D holding count of all occurances on a line
+      *  Note that none are Cobol reserved words.
       *
-      * Now have record data length of IR-Buffer in ws-B as a CC
-      *   with text present
-      *   and see if we have a floating comment
+           move     zero to WS-D.
+           inspect  IR-Buffer tallying WS-D for all "/MYSQL"
+                                                all "TABLE="
+                                                all "BASE="
+                                                all "WHERE="
+                                                all "HOST="
+                                                all "IMPLEMENTATION="
+                                                all "PASSWORD="
+                                                all "PORT="
+                                                all "SOCKET="
+                                                all "RUNTIME".
       *
-           perform  varying WS-A from 1 by 1 until
-                    WS-A not < WS-B  or
-                    IR-Buffer (WS-A:2) = "*>"
-           end-perform.
+      * Now have record data length of IR-Buffer in ws-LLength
+      *    as a CC with text present so see if we have a
+      *     floating comment
       *
-      * If we do, check for /MYSQL string and if it is after the comment
-      *   but check case insensitive
+           perform  varying WS-B from 1 by 1 until
+                    WS-B not < WS-LLength  or
+                    IR-Buffer (WS-B:2) = "*>"
+           end-perform
       *
-           if       IR-Buffer (WS-A:2) = "*>"
-                    perform varying WS-C from 1 by 1 until
-                      WS-C not < WS-B or
-                      function upper-case (IR-Buffer (WS-C:6))
-                                               = "/MYSQL"
-                    end-perform
-           end-if
+      *    If no comment or no PSQL command, done
       *
-      * Now check if /MYSQL is before a comment
+           if       WS-B not < WS-LLength  *> no float comments, done
+                    go to 8010-Exit.
       *
-           if       IR-Buffer (WS-A:2) = "*>"
-                and function upper-case (IR-Buffer (WS-C:6)) = "/MYSQL"
-                and WS-A < WS-C
+      * Comment found, so far - -
+      *
+           if       IR-Buffer (WS-B:2) = "*>"     *> this is not needed
+                and WS-D = zero
                     move 1 to ws-Comment-Found
-                    go to 8010-Exit
-           end-if.
+                    go to 8010-Exit.
       *
-      * We now know that if /MYSQL is present, it is not commented
-      *   so it is valid and all is good - I hope
+      *   At this point we have -
+      *     a floating comment at WS-B:2 AND
+      *     a PSQL command.
+      *   So lets find out where each is on the basis of only one
+      *    of each will be present at most and if the command is
+      *    after "*>" make it a comment so no processing is done.
+      *
+      * Got a comment at pointer WS-B so test for command after
+      *   and yes I know that 'WS-C:any' can be longer than the
+      *     length of data but buffer is 256 chars long.
+      *
+           perform  varying WS-C from WS-B  by 1 until
+                            WS-C not < WS-LLength or
+                            IR-Buffer (WS-C:5)  = "BASE="   or
+                                                = "HOST="   or
+                                                = "PORT="   or
+                            IR-Buffer (WS-C:6)  = "/MYSQL"  or
+                                                = "TABLE="  or
+                                                = "WHERE="  or
+                            IR-Buffer (WS-C:7)  = "SOCKET=" or
+                                                = "RUNTIME" or
+                            IR-Buffer (WS-C:9)  = "PASSWORD=" or
+                            IR-Buffer (WS-C:15) = "IMPLEMENTATION="
+           end-perform
+      *
+      * Next should not happen but for completeness . .
+      *
+           if       WS-C not < WS-LLength  *> no PSQL, so treat as comment
+                    move 1 to ws-Comment-Found
+                    go to 8010-Exit.
+      *
+      *  Found PSQL command but is it before a comment
+      *    If after, clear it from buffer so its safe for main
+      *      routines to process  as comment.
+      * Data WS-B pointer to comment
+      *      WS-C pointer to PSQL
+      *
+           if       IR-Buffer (WS-B:2) = "*>"
+                and WS-B < WS-C             *> got comment before PSQL
+                    move 1 to WS-Comment-Found
+                    go to 8010-Exit.
+      *
+      * Test for comment after, if so done as presql will handle.
+      *
+           if       IR-Buffer (WS-B:2) = "*>"
+               and  WS-B > WS-C
+                    go to 8010-Exit.
+      *
+           display  "Program Logic Error".
+           stop run.
       *
        8010-Exit.
 160612    exit.
@@ -2447,8 +2673,8 @@
            MOVE 9000 TO WS-NO-PARAGRAPH.
            CLOSE INPUT-FILE.
            CLOSE OUTPUT-FILE.
-           DISPLAY  "I) " WS-NAME-PROGRAM PSW004
-                    FUNCTION CURRENT-DATE.
+170103*    DISPLAY  "I) " WS-NAME-PROGRAM PSW004
+170103*             FUNCTION CURRENT-DATE.
        9990-EXIT.
            EXIT.
       *

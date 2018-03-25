@@ -8,7 +8,7 @@
  identification division.
  Program-Id.            fhlogger.
 *>**
-*> Author.              Vincent B Coen, FBCS, FIDMP, CPL
+*> Author.              Vincent B Coen, FBCS, FIDM, FIDPM, CPL
 *>                      for Applewood Computers.
 *>**
 *> Security.            Copyright (C) 2016 and later, Vincent Bryan Coen.
@@ -64,7 +64,7 @@
 *> ACAS is distributed in the hope that it will be useful, but WITHOUT
 *> ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 *> FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-*> for more details. If it breaks, you own both pieces but I will endevor
+*> for more details. If it breaks, you own both pieces but I will endeavour
 *> to fix it, providing you tell me about the problem. See below for my
 *> email address to use for this purpose.
 *>
@@ -75,7 +75,7 @@
 *>**********************************************************************************
 *>
  environment division.
-      *> copy "envdiv.cob".
+ copy "envdiv.cob".
 *>
  input-output section.
  file-control.

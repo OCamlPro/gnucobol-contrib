@@ -1,3 +1,3 @@
-cobc -x stockLD.cbl cobmysqlapi.o -L/usr/lib64 -lmysqlclient -lz
+cobc -x stockLD.cbl cobmysqlapi.o -L/usr/local/mysql/lib -lmysqlclient -lz
 
 

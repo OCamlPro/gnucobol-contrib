@@ -1,118 +1,147 @@
        >>SOURCE FREE
  identification division.
- program-id.    PRTSCHEMA.
+ program-id.    Prtschema2.
 *>Author.       J. C. Currey.
 *>Updates.      V. B. Coen, Applewood Computers.
 *>**
-*> Security.    Copyright (C) 2009-2016, Jim Curry.
+*> Security.    Copyright (C) 2009-2016, Jim Currey.
 *>              Distributed under the GNU General Public License
 *>              v2.0. See the file COPYING for details.
-*>***********************************************************
-*> PURPOSE:                                                 *
-*>      MySQL schema print for GNU/open cobol 1.1 & v2.0    *
-*>       and MySQL and Mariadb.                             *
-*>                                                          *
-*>    This program prints a Full schema from a mysql        *
-*>           data base placing the result into file         *
-*>           schema.t which is then printed.                *
-*>           You will need to CHANGE the CUPS spool name    *
-*>           to match your installation - see               *
-*>            01  print-report.                             *
-*>                                                          *
-*>    Depending on the size of your database tables this    *
-*>     could be a long print out so you might want to leave *
-*>     the current cups spool name as is to stop a report ! *
-*>    Report is landscape as it takes up to 132 columns.    *
-*>     and is generally used for reference only.            *
-*>                                                          *
-*>**                                                        *
-*>  COMPILE: Using prtschema.sh                             *
-*>**                                                        *
-*>  USAGE:                                                  *
-*>       prtschema DatabaseName PrintSpoolName              *
-*>   OR                                                     *
-*>      prtschema                                           *
-*>           and parameters will be requested.              *
-*>**                                                        *
-*> Change Record.                                           *
-*>   version 001--Original version                          *
-*>                                                          *
-*>                 February, 2010--J C Currey               *
-*>                                                          *
-*>           002--Only prints character-set-name,           *
-*>                  collation-name, and privileges          *
-*>                  if they are non-standard                *
-*>                 March 11, 2010--J C Currey               *
-*>                                                          *
-*>   version 003--Fixed the bug that allowed a line to be   *
-*>                skipped at the beginning of a new page    *
-*>                1353122--Randy Coman                      *
-*>                08/30/2011--Efrain Aguilera               *
-*>                                                          *
-*>           03b--Rem'd out the laser printer formatting    *
-*>                as only applies to jc site but set up     *
-*>                for landscape + char size etc, now done   *
-*>                using the lpr command, see rev 004 notes. *
-*>                Changed mysql params at location of       *
-*>                /MYSQL INIT\ so do same for your site.    *
-*>                 See 1050-Init-RDB                        *
-*>                                                          *
-*>                Note tested against mariadb ONLY which is *
-*>                a drop in replacement for Mysql.          *
-*>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^     *
-*>                20151015 -- Vince Coen                    *
-*>                                                          *
-*>   version 004--Added support for longtext as for medium. *
-*>                extra display info for unhandled          *
-*>                datatypes and close files.                *
-*>                changed 9000 for more detailed lpr prt    *
-*>                 command.                                 *
-*>                Changed to free format source code.       *
-*>                20151016 -- Vince Coen                    *
-*>                                                          *
-*>           005--Check update-time and check-time for null *
-*>                e.g., not starting with "2"               *
-*>                NOTE prt name limited to 32 chars.        *
-*>                Amended to print 0 if empty (151019)      *
-*>                Replaced silly NEXT SENTENCE clauses      *
-*>                20151018 -- Vince Coen                    *
-*>                                                          *
-*>   Version renamed 1.05 20160628 -- Vince Coen            *
-*>          1.06 - Added extra notes/comments here and proc.*
-*>                 Coding clean up.                         *
-*>                 Removed print command display at EOJ.    *
-*>                 Added chaining so params added at        *
-*>                 program load time in the form :          *
-*>                  prtschema DataBaseName CupsSpoolName    *
-*>                                                          *
-*>                 If not present will ask for these.       *
-*>                                                          *
-*>          1.07 - Change tests on ws-Mysql-Count-Rows from *
-*>                 'not > zero' to '= zero'                 *
-*>                 Add blank line before new page.          *
-*>                 Moved date & time over 4 char to allign. *
-*>                 20160821 -- Vince Coen.                  *
-*>                                                          *
-*>          1.08 - Moved over KEY 2 chars to stop trunc'n.  *
-*>                 Support for unsigned fields in PIC       *
-*>          1.09 - Added Intl dating formatting for O/P.    *
-*>                 for LC_TIME accepts :                    *
-*>                    en_GB   for the UK                    *
-*>                    en_US   for the USA                   *
-*>                    other   for Unix format (CCYY/MM/DD)  *
-*>                 More tidying up for heads line 1         *
-*>                 Display a '.' for each table processed   *
-*>                  subject to buffering                    *
-*>                  can be a bit slow accessing MySQL/Maria *
-*>                 20160821 -- Vince Coen.                  *
-*>                                                          *
-*>***********************************************************
+*>**********************************************************************
+*> PURPOSE:                                                            *
+*>      MySQL schema print for GNU/open cobol 1.1 & v2.0               *
+*>       and MySQL and Mariadb.                                        *
+*>                                                                     *
+*>    This program prints a Full schema from a mysql                   *
+*>           data base placing the result into file                    *
+*>           schema.t which is then printed.                           *
+*>           You will need to CHANGE the CUPS spool name               *
+*>           to match your installation - see                          *
+*>            01  print-report.                                        *
+*>                                                                     *
+*>    Depending on the size of your database tables this               *
+*>     could be a long print out so you might want to leave            *
+*>     the current cups spool name as is to stop a report !            *
+*>    Report is landscape as it takes up to 132 columns.               *
+*>     and is generally used for reference only.                       *
+*>                                                                     *
+*>**                                                                   *
+*>  COMPILE: Using prtschema.sh                                        *
+*>**                                                                   *
+*>  USAGE:                                                             *
+*>       prtschema DatabaseName PrintSpoolName                         *
+*>   OR                                                                *
+*>      prtschema                                                      *
+*>           and parameters will be requested.                         *
+*>**                                                                   *
+*> Change Record.                                                      *
+*>   version 001--Original version                                     *
+*>                                                                     *
+*>                 February, 2010--J C Currey                          *
+*>                                                                     *
+*>           002--Only prints character-set-name,                      *
+*>                  collation-name, and privileges                     *
+*>                  if they are non-standard                           *
+*>                 March 11, 2010--J C Currey                          *
+*>                                                                     *
+*>   version 003--Fixed the bug that allowed a line to be              *
+*>                skipped at the beginning of a new page               *
+*>                1353122--Randy Coman                                 *
+*>                08/30/2011--Efrain Aguilera                          *
+*>                                                                     *
+*>           03b--Rem'd out the laser printer formatting               *
+*>                as only applies to jc site but set up                *
+*>                for landscape + char size etc, now done              *
+*>                using the lpr command, see rev 004 notes.            *
+*>                Changed mysql params at location of                  *
+*> *>                /MYSQL INIT\ so do same for your site.               *
+*>                 See 1050-Init-RDB                                   *
+*>                                                                     *
+*>                Note tested against mariadb ONLY which is            *
+*>                a drop in replacement for Mysql.                     *
+*>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                *
+*>                20151015 -- Vince Coen                               *
+*>                                                                     *
+*>   version 004--Added support for longtext as for medium.            *
+*>                extra display info for unhandled                     *
+*>                datatypes and close files.                           *
+*>                changed 9000 for more detailed lpr prt               *
+*>                 command.                                            *
+*>                Changed to free format source code.                  *
+*>                20151016 -- Vince Coen                               *
+*>                                                                     *
+*>           005--Check update-time and check-time for null            *
+*>                e.g., not starting with "2"                          *
+*>                NOTE prt name limited to 32 chars.                   *
+*>                Amended to print 0 if empty (151019)                 *
+*>                Replaced silly NEXT SENTENCE clauses                 *
+*>                20151018 -- Vince Coen                               *
+*>                                                                     *
+*>   Version renamed 1.05 20160628 -- Vince Coen                       *
+*>          1.06 - Added extra notes/comments here and proc.           *
+*>                 Coding clean up.                                    *
+*>                 Removed print command display at EOJ.               *
+*>                 Added chaining so params added at                   *
+*>                 program load time in the form :                     *
+*>                  prtschema DataBaseName CupsSpoolName               *
+*>                                                                     *
+*>                 If not present will ask for these.                  *
+*>                                                                     *
+*>          1.07 - Change tests on ws-Mysql-Count-Rows from            *
+*>                 'not > zero' to '= zero'                            *
+*>                 Add blank line before new page.                     *
+*>                 Moved date & time over 4 char to allign.            *
+*>                 20160821 -- Vince Coen.                             *
+*>                                                                     *
+*>          1.08 - Moved over KEY 2 chars to stop trunc'n.             *
+*>                 Support for unsigned fields in PIC                  *
+*>          1.09 - Added Intl dating formatting for O/P.               *
+*>                 for LC_TIME accepts :                               *
+*>                    en_GB   for the UK                               *
+*>                    en_US   for the USA                              *
+*>                    other   for Unix format (CCYY/MM/DD)             *
+*>                 More tidying up for heads line 1                    *
+*>                 Display a '.' for each table processed              *
+*>                  subject to buffering                               *
+*>                  can be a bit slow accessing MySQL/Maria            *
+*>                 20160821 -- Vince Coen.                             *
+*>                                                                     *
+*>          1.10 - Cosmetic added 'e' to Curry > Currey.               *
+*>          2.11 - For prtschema2 the Mysql connection set up that     *
+*>                 needs to reflect your MySql site requirements are   *
+*>                 taken from a file found within the current working  *
+*>                 directory BUT the version of cobmysqlapi (taken     *
+*>                 from dbpre) MUST be used instead of                 *
+*>                 cobmysqlapi.005.c and this is included in the       *
+*>                 archive.                                            *
+*>                 Unused Format file processing that was commented    *
+*>                 out has now been removed.                           *
+*>                                                                     *
+*>                 This version will read a file containing the        *
+*>                 six RDB parameters e.g.,                            *
+*>                 DBHOST=localhost                                    *
+*>                 DBUSER=root                                         *
+*>                 DBPASSWD=PaSsWoRd                                   *
+*>                 DBNAME= any as over ridden                          *
+*>                 DBPORT=03306                                        *
+*> *>                 DBSOCKET=/home/mysql/mysql.sock                     *
+*>                 in file presql2.param                               *
+*>                                                                     *
+*>       Then issues a call to the dbpre version (ONLY) of cobmysqlapi *
+*>        to read in this file that MUST be in the working directory.  *
+*>                                                                     *
+*>       This way prtscema2 can be used for more than one MySQL server *
+*>       on more than one system within a LAN.                         *
+*>        See the example file called prtschema2.param                 *
+*>                     30 August 2016 (160830)                         *
+*>                                                                     *
+*>**********************************************************************
 *>
 *> COPYRIGHT NOTICE.
 *>*****************
 *>
 *> This file/program is part of the Mysql pre-processor presql
-*> and is copyright (c) Jim Curry. 2009-2016 and later.
+*> and is copyright (c) Jim Currey. 2009-2016 and later.
 *>
 *> This program is free software; you can redistribute it and/or
 *> modify it under the terms of the GNU General Public License as
@@ -138,14 +167,6 @@
                              organization line sequential
                              file status ws-Print-File-Status.
 *>
-*>  Next file used for Curry Atkins site so not used.
-*>  it loads up special records that will set up printer
-*>     for landscape, narrow text etc. This is now done using
-*>       the lpr command & Print-Report variable.
-*>
-*>     select Format-File      assign ws-name-format-file
-*>                             organization line sequential
-*>                             file status ws-format-file-status.
  data division.
  file section.
 *>
@@ -153,24 +174,22 @@
  01  Print-Record.
      05  pr-buffer                       pic x(136).
 *>
-*>fd  format-file.
-*>01  format-record                        pic x(140).
-*>
  working-storage section.
 *>***************************************************
 *>   Constants, Counters And Work Areas             *
 *>***************************************************
- 01  ws-Name-Program                     pic x(14)     value "prtschema 1.09".
+ 01  ws-Name-Program                     pic x(15)     value "prtschema2 2.11".
+   *> needed 4 read-params call.
+ 01  ws-parm-prog-name                   pic x(10) value "prtschema2".
+*>
  01  ws-No-Paragraph                     pic s9(4) comp.
  01  ws-A                                pic s9(4) comp.
  01  ws-I                                pic s9(4) comp.
  01  ws-J                                pic s9(4) comp.
  01  ws-K                                pic s9(4) comp.
  01  ws-Name-Print-File                  pic x(64)     value spaces.
- 01  ws-Name-Format-File                 pic x(128)    value spaces.
  01  ws-Line-Printer-Name                pic x(64).
  01  ws-Print-File-Status                pic xx.
-*>01  ws-Format-File-Status               pic xx.
  01  ws-Print-Command                    pic x(192).
  01  ws-Read-Area                        pic x(80).
  01  ws-Date                             pic 9(8).
@@ -237,11 +256,63 @@
      05  ws-ca-Numeric-Precision         pic s9(19).
      05  ws-ca-Numeric-Scale             pic s9(19).
      05  ws-ca-Picture                   pic x(32).
- /MYSQL VAR\
-       BASE=information_schema
-       TABLE=TABLES,TB
-       TABLE=COLUMNS,CB
- /MYSQL-END\
+*>  /MYSQL VAR\
+*>        information_schema
+*>        TABLE=TABLES,TB
+*>        TABLE=COLUMNS,CB
+ COPY "mysql-variables.cpy".
+*>
+*>    Definitions for the TABLES Table
+*>
+       01  TP-TABLES                             USAGE POINTER.
+       01  TD-TABLES.
+           05  TB-TABLE-CATALOG                  PIC X(512).
+           05  TB-TABLE-SCHEMA                   PIC X(64).
+           05  TB-TABLE-NAME                     PIC X(64).
+           05  TB-TABLE-TYPE                     PIC X(64).
+           05  TB-ENGINE                         PIC X(64).
+           05  TB-VERSION                        PIC S9(18) COMP.
+           05  TB-ROW-FORMAT                     PIC X(10).
+           05  TB-TABLE-ROWS                     PIC S9(18) COMP.
+           05  TB-AVG-ROW-LENGTH                 PIC S9(18) COMP.
+           05  TB-DATA-LENGTH                    PIC S9(18) COMP.
+           05  TB-MAX-DATA-LENGTH                PIC S9(18) COMP.
+           05  TB-INDEX-LENGTH                   PIC S9(18) COMP.
+           05  TB-DATA-FREE                      PIC S9(18) COMP.
+           05  TB-AUTO-INCREMENT                 PIC S9(18) COMP.
+           05  TB-CREATE-TIME                    PIC X(19).
+           05  TB-UPDATE-TIME                    PIC X(19).
+           05  TB-CHECK-TIME                     PIC X(19).
+           05  TB-TABLE-COLLATION                PIC X(32).
+           05  TB-CHECKSUM                       PIC S9(18) COMP.
+           05  TB-CREATE-OPTIONS                 PIC X(255).
+           05  TB-TABLE-COMMENT                  PIC X(2048).
+*>
+*>    Definitions for the COLUMNS Table
+*>
+       01  TP-COLUMNS                            USAGE POINTER.
+       01  TD-COLUMNS.
+           05  CB-TABLE-CATALOG                  PIC X(512).
+           05  CB-TABLE-SCHEMA                   PIC X(64).
+           05  CB-TABLE-NAME                     PIC X(64).
+           05  CB-COLUMN-NAME                    PIC X(64).
+           05  CB-ORDINAL-POSITION               PIC S9(18) COMP.
+           05  CB-COLUMN-DEFAULT                 PIC X(94967295).
+           05  CB-IS-NULLABLE                    PIC X(3).
+           05  CB-DATA-TYPE                      PIC X(64).
+           05  CB-CHARACTER-MAXIMUM-LENGTH       PIC S9(18) COMP.
+           05  CB-CHARACTER-OCTET-LENGTH         PIC S9(18) COMP.
+           05  CB-NUMERIC-PRECISION              PIC S9(18) COMP.
+           05  CB-NUMERIC-SCALE                  PIC S9(18) COMP.
+           05  CB-DATETIME-PRECISION             PIC S9(18) COMP.
+           05  CB-CHARACTER-SET-NAME             PIC X(32).
+           05  CB-COLLATION-NAME                 PIC X(32).
+           05  CB-COLUMN-TYPE                    PIC X(94967295).
+           05  CB-COLUMN-KEY                     PIC X(3).
+           05  CB-EXTRA                          PIC X(27).
+           05  CB-PRIVILEGES                     PIC X(80).
+           05  CB-COLUMN-COMMENT                 PIC X(1024).
+*>  /MYSQL-END\
 *>***************************************************************
 *>                Procedure Division                            *
 *>***************************************************************
@@ -281,7 +352,7 @@
               end-if
               go to 1050-Init-RDB
      end-if.
-
+*>
  1002-get-base-name-file.
      display  "A) Enter Data Base Name " with no advancing.
      accept   ws-name-data-base.
@@ -293,39 +364,41 @@
      if       ws-print-file-status not = zero
               display "T) Cannot Open Print File, Status=" ws-print-file-status
               stop run.
-*>    move "/ca/laserjet_113D" to ws-name-format-file.
-*>    open input format-file.
-*>    if ws-format-file-status is not equal to zero
-*>      display "T) CANNOT OPEN FORMAT FILE, STATUS=",
-*>        ws-format-file-status
-*>      stop run.
-*>1010-output-pcl-codes.
-*>    read format-file next record at end go to 1020-format-eof.
-*>    move format-record to pr-buffer.
-*>    write print-record.
-*>    go to 1010-output-pcl-codes.
-*>1020-format-eof.
-*>    close format-file.
 *>
-*>  Change below values (between HOST and SOCKET) to match your site.
-*>    Here for notes regarding doing so :  [ comments can NOT be placed any where within
-*>                                           mysql xxxx and mysql end ]
-*>                                         Variable names are lower-case here also for same reason.
+ 1050-Init-RDB.        *> reads file prtschema2.param
+     move     spaces to               WS-MYSQL-Host-Name
+                                      WS-MYSQL-Implementation
+                                      WS-MYSQL-Password
+                                      WS-MYSQL-Base-Name
+                                      WS-MYSQL-Port-Number
+                                      WS-MYSQL-Socket.
+     Call     "read_params"     USING ws-parm-prog-name
+                                      WS-MYSQL-Host-Name
+                                      WS-MYSQL-Implementation
+                                      WS-MYSQL-Password
+                                      WS-MYSQL-Base-Name
+                                      WS-MYSQL-Port-Number
+                                      WS-MYSQL-Socket
+     End-call
 *>
-*>     host=localhost                   *> Where the RDB is use localhost for same box as development.
-*>     implementation=dev-prog-001      *> This is Mysql user or anyone else who has access to read
-*>                                             all, normally 'mysql'
-*>     password=mysqlpass               *>  password for above
-*>     socket=/home/mysql/mysql.sock    *>  RDB socket for your site and will NOT be the same.
+*>     display  "Using as RDB calls ".
+*>     display  "Host=" WS-MYSQL-Host-Name.
+*>     display  "BaseName=" WS-MYSQL-BASE-NAME.
+*>     display  "User=" WS-MYSQL-Implementation.
+*>     display  "Password=" WS-MYSQL-Password.
+*>     display  "Port=" WS-MYSQL-Port-Number.
+*>     display  "Socket=" WS-MYSQL-Socket.
+*>     display  " ".
 *>
- 1050-Init-RDB.
- /MYSQL INIT\
-     BASE=information_schema
-     HOST=localhost
-     IMPLEMENTATION=dev-prog-001
-     PASSWORD=mysqlpass
-     SOCKET=/home/mysql/mysql.sock
- /MYSQL-END\
+*> *> /MYSQL INIT\
+*>     BASE=information_schema
+*>     HOST=localhost
+*>     IMPLEMENTATION=dev-prog-001
+*>     PASSWORD=mysqlpass
+*> *>     SOCKET=/home/mysql/mysql.sock
+*> *> /MYSQL-END\
+     PERFORM  MYSQL-1000-OPEN THRU MYSQL-1090-EXIT.
+*>
      move     "select,insert,update,references" to ws-privileges.
      move     "latin1" to ws-character-set-name.
 *>
@@ -348,18 +421,56 @@
               function trim (ws-name-data-base)
               '"'
                   into ws-where.
- /MYSQL SELECT\
-     TABLE=TABLES
-     WHERE=WS-WHERE
- /MYSQL-END\
+*>  /MYSQL SELECT\
+*>
+*>    Select rows
+*>
+*>      TABLE=TABLES
+           INITIALIZE WS-MYSQL-COMMAND
+           STRING "SELECT * FROM "
+             "`TABLES`"
+             " WHERE "
+             WS-WHERE
+            ";"  X"00" INTO WS-MYSQL-COMMAND
+           PERFORM MYSQL-1210-COMMAND THRU MYSQL-1219-EXIT
+           PERFORM MYSQL-1220-STORE-RESULT THRU MYSQL-1239-EXIT
+           MOVE WS-MYSQL-RESULT TO TP-TABLES
+*>  /MYSQL-END\
      if       ws-Mysql-Count-Rows = zero     *>   not > zero
               display "T) NO TABLES DEFINED IN "
                       function trim (ws-name-data-base)
               stop run.
  2010-fetch-tables-loop.
- /MYSQL FETCH\
-     TABLE=TABLES
- /MYSQL-END\
+*>  /MYSQL FETCH\
+*>
+*>    Fetch next record
+*>
+*>      TABLE=TABLES
+           MOVE TP-TABLES TO WS-MYSQL-RESULT
+           CALL "MySQL_fetch_record" USING WS-MYSQL-RESULT
+                    TB-TABLE-CATALOG
+                    TB-TABLE-SCHEMA
+                    TB-TABLE-NAME
+                    TB-TABLE-TYPE
+                    TB-ENGINE
+                    TB-VERSION
+                    TB-ROW-FORMAT
+                    TB-TABLE-ROWS
+                    TB-AVG-ROW-LENGTH
+                    TB-DATA-LENGTH
+                    TB-MAX-DATA-LENGTH
+                    TB-INDEX-LENGTH
+                    TB-DATA-FREE
+                    TB-AUTO-INCREMENT
+                    TB-CREATE-TIME
+                    TB-UPDATE-TIME
+                    TB-CHECK-TIME
+                    TB-TABLE-COLLATION
+                    TB-CHECKSUM
+                    TB-CREATE-OPTIONS
+                    TB-TABLE-COMMENT
+
+*>  /MYSQL-END\
      if       return-code = -1
               go to 9000-end-of-program.
      move     "Y" to ws-switch-table.
@@ -460,10 +571,21 @@
               function trim (tb-table-name)
               '"'
                    into ws-where.
- /MYSQL SELECT\
-     TABLE=COLUMNS
-     WHERE=WS-WHERE
- /MYSQL-END\
+*>  /MYSQL SELECT\
+*>
+*>    Select rows
+*>
+*>      TABLE=COLUMNS
+           INITIALIZE WS-MYSQL-COMMAND
+           STRING "SELECT * FROM "
+             "`COLUMNS`"
+             " WHERE "
+             WS-WHERE
+            ";"  X"00" INTO WS-MYSQL-COMMAND
+           PERFORM MYSQL-1210-COMMAND THRU MYSQL-1219-EXIT
+           PERFORM MYSQL-1220-STORE-RESULT THRU MYSQL-1239-EXIT
+           MOVE WS-MYSQL-RESULT TO TP-COLUMNS
+*>  /MYSQL-END\
      if       ws-mysql-count-rows = zero     *>   not > zero
               go to 2010-fetch-tables-loop.
      initialize pr-buffer.
@@ -476,9 +598,35 @@
      move     "KEY" to pr-buffer (105:3).
      perform  3000-print-line thru 3090-exit.
  2110-fetch-columns-loop.
- /MYSQL FETCH\
-     TABLE=COLUMNS
- /MYSQL-END\
+*>  /MYSQL FETCH\
+*>
+*>    Fetch next record
+*>
+*>      TABLE=COLUMNS
+           MOVE TP-COLUMNS TO WS-MYSQL-RESULT
+           CALL "MySQL_fetch_record" USING WS-MYSQL-RESULT
+                    CB-TABLE-CATALOG
+                    CB-TABLE-SCHEMA
+                    CB-TABLE-NAME
+                    CB-COLUMN-NAME
+                    CB-ORDINAL-POSITION
+                    CB-COLUMN-DEFAULT
+                    CB-IS-NULLABLE
+                    CB-DATA-TYPE
+                    CB-CHARACTER-MAXIMUM-LENGTH
+                    CB-CHARACTER-OCTET-LENGTH
+                    CB-NUMERIC-PRECISION
+                    CB-NUMERIC-SCALE
+                    CB-DATETIME-PRECISION
+                    CB-CHARACTER-SET-NAME
+                    CB-COLLATION-NAME
+                    CB-COLUMN-TYPE
+                    CB-COLUMN-KEY
+                    CB-EXTRA
+                    CB-PRIVILEGES
+                    CB-COLUMN-COMMENT
+
+*>  /MYSQL-END\
      if       return-code = -1
               go to 2010-fetch-tables-loop.
      initialize pr-buffer.
@@ -637,8 +785,8 @@
               move spaces to Print-Record
               write Print-Record after 1.
      move     ws-name-program to ws-heading-buffer.
-     move     "--" to ws-heading-buffer (16:2).
-     move     ws-name-data-base to ws-heading-buffer (19:32).
+     move     "--" to ws-heading-buffer (17:2).
+     move     ws-name-data-base to ws-heading-buffer (20:32).
      move     "PAGE " to ws-heading-buffer (124:5).
      move     ws-page-number to ws-ed3s.
      move     ws-ed3s to ws-heading-buffer (129:4).
@@ -704,8 +852,11 @@
      close    print-file.
      call     "SYSTEM" using print-report.
 *>
- /MYSQL CLOSE\
- /MYSQL-END\
+*>  /MYSQL CLOSE\
+*>
+*>    Close the Database
+*>
+           PERFORM MYSQL-1980-CLOSE THRU MYSQL-1999-EXIT
      display  " ".
      display  "I) " ws-name-program " COMPLETED NORMALLY AT--"
               function current-date.
@@ -713,5 +864,6 @@
  9990-exit.
      exit.
 *>
- /MYSQL PRO\
- /MYSQL-END\
+*>  /MYSQL PRO\
+ COPY "mysql-procedures.cpy".
+*>  /MYSQL-END\
