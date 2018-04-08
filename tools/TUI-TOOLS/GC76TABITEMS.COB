@@ -10,7 +10,7 @@ Program-id. GC76TABITEMS.
 *> Usage:      GC76TABITEMS
 *> Parameters:
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
-*> License:    Copyright 2017 E.Di Lorenzo - LGPL, 3.0 (or greater)
+*> License:    Copyright 2018 E.Di Lorenzo - LGPL, 3.0 (or greater)
 *> Version:    1.0 2018.01.01
 *> Changelog:  1.0 first release.
 *> ************************************************************************************
@@ -158,6 +158,7 @@ File-Control.
  COPY 'GC76TABCOPY.CPY'.
  COPY 'GC01BOX.CPY'.
  COPY 'GC02BOXMEX.CPY'.
+ copy 'GC03YESNO.CPY'.
  COPY 'GC09BUTTONS.CPY'.
  COPY 'GC98KEYCODE.CPY'.
 
@@ -169,20 +170,18 @@ File-Control.
 
  01  Screen-clear1.
      03 blank screen.
-*>   foreground-color is 0 background-color is 7.
 
- 01  Screen0 foreground-color is 7 highlight background-color is 2.
+ 01  Screen-Header foreground-color is 7 highlight background-color is 2.
      03 line 01 col 01           value ' '.
      03  Testata pic x(080) value space.
      03 line 02 col 01           value ' '.
      03  Testata2 pic x(080) value space.
 
- 01  Screen1 foreground-color is 0 background-color is 7 auto.
+ 01  Screen-RulerTop foreground-color is 0 background-color is 7 auto.
      03 line 03.
-     03 col 01 value "REC 1...+....10...+....20...+....30...".
-     03        value "+....40...+....50...+....60...+....70...+.".
+     03 col 01 value "REC 1...+....10...+....20...+....30...+....40...+....50...+....60...+....70...+".
 
- 01 Screen2 foreground-color wFco background-color wBco auto.
+ 01 Screen-Rows foreground-color wFco background-color wBco auto.
      03 line 04  col   01   pic x(03) from  wScrCod01.
      03          col + 02   pic x(75) using wScrRec01.
      03 line + 1 col   01   pic x(03) from  wScrCod02.
@@ -224,16 +223,15 @@ File-Control.
      03 line + 1 col   01   pic x(03) from  wScrCod20.
      03          col + 02   pic x(75) using wScrRec20.
 
- 01  Screen2b foreground-color is 0 background-color is 7 auto.
+ 01  Screen-RulerBottom foreground-color is 0 background-color is 7 auto.
      03 line 24.
-     03 col 01 value "REC 1...+....10...+....20...+....30...".
-     03        value "+....40...+....50...+....60...+....70...+.".
+     03 col 01 value "REC 1...+....10...+....20...+....30...+....40...+....50...+....60...+....70...+".
 
- 01  Screen3 foreground-color 07 highlight background-color 02 auto.
+ 01  Screen-PF-Row foreground-color 07 highlight background-color 02 auto.
      03 line 25.
      03 col 01 pic x(80) from riga-pf.
 
- 01  ScreenF1 foreground-color is 15 background-color is 1 auto.
+ 01  Screen-Help foreground-color is 15 background-color is 1 auto.
      03 line 06     col 35 value
         "旼컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴커".
      03 line + 1    col 35 value
@@ -299,7 +297,7 @@ Start-Program.
         perform DisplayErrorMessage thru DisplayErrorMessageEx
         go Start-program
      else
-        display '* Table open error,  fs= ' at 0202 :BCOL: 07 :FCOL: 00
+        display '* Table open error,  FS= ' at 0202 :BCOL: 07 :FCOL: 00
         display Tabe-fs                     at 0230 :BCOL: 07 :FCOL: 00
         accept omitted
         goback
@@ -315,15 +313,14 @@ DisplayBackground.
    move '002001025080' to Box-rc
    set Box-bco to green Move 'N' to Box-3D
    CALL GC01BOX USING BY CONTENT BOX-AREA
-
    continue.
 
-Select-A-Table.
+*> Select-A-Table.
      move space to wString
      string ' TABLE ITEMS MANAGEMENT - File: '  wFileName ' - SELECT A TABLE ' delimited by size into wString
      display wString at 0101 :BCOL: green :FCOL: white highlight
      move space to wString
-     string 'TAB DESCRIPTION ' delimited by size into wString
+     string 'TAB TABLE HEADER (DESCRIPTION) ' delimited by size into wString
      display wString at 0303 :BCOL: green :FCOL: white highlight
      move space to wString
      string '--- ----------------------------------------------------------------------' delimited by size into wString
@@ -355,35 +352,36 @@ Select-A-Table.
      move Bu-selected to  numtab
      move  " F1=Help F2/F3=chgFore/BackCol PgUp/Dn=Prev/NextPg F7=DelPg Enter=UpdPg ESC=Exit" to riga-pf
     *> read table header
-     move space  to wTabe-Rec
-     move 'H'    to wTabe-ktip
-     move numtab to wTabe-ktab
-     move space  to wTabe-kcod.
-     move wTabe-key to   Tabe-key
+     move space     to wTabe-Rec
+     move 'H'       to wTabe-ktip
+     move numtab    to wTabe-ktab
+     move space     to wTabe-kcod.
+     move wTabe-key to  Tabe-key
      read Tabe     into wTabe-Rec
      if   Tabe-fs not = "00"
           move all '?' to destab go DisplayBackground end-if
      move wTabe-data to destab
      continue.
 
-DysplayItemsScreen.
-    *> re-show the cursor
-    perform ShowCursor thru ShowCursor-ex
-    *> move 2 to wInt
-    *> call static "curs_set" using by value wInt end-call
-
+DisplayScreen.
+     perform ShowCursor thru ShowCursor-ex     *> re-show the cursor
      string ' TABLE ITEMS MANAGEMENT - File: '  wFileName  delimited by size into Testata
      string ' Items of table...............: ' wDescrTable delimited by size into Testata2
-     display Screen0.
-     display Screen1.
-     perform SetScreen thru SetScreenEx.
-     display Screen2.
-     display Screen2b.
-     display Screen3.
-     accept  Screen2.
+     display Screen-Header
+     display Screen-RulerTop
 
+     perform SetScreen thru SetScreenEx *> red table items. Create (write) table items if does not exist.
+
+     display Screen-Rows
+     display Screen-RulerBottom
+     display Screen-PF-Row
+     accept  Screen-Rows
+
+     *>****************************************************************
+     *>                       EVALUATE USER INPUT
+     *>****************************************************************
      evaluate true
-         when ws-KEY = K-ESCAPE  *> go to File selection
+         when ws-KEY = K-ESCAPE  *> exit to File selection
               close Tabe
               go to Start-Program
          when ws-KEY = K-F1
@@ -395,9 +393,16 @@ DysplayItemsScreen.
               add 1 to wBco
               if wBco > 7 move 0 to wBco end-if
          when ws-KEY = K-F7
-              perform DeleteRecords thru DeleteRecordsEx
-              compute wPAGE = wPAGE - 1
-              if wPAGE = 0 move 1 to wPAGE End-if
+              move 09 to Yn-r1
+              move '       Confirm the delete ?       ' to Yn-mess
+              call GC03YESNO using YESNO-AREA
+              if   Yn-Yesno = "Y"
+                   perform DeleteRecords thru DeleteRecordsEx
+                   compute wPAGE = wPAGE - 1
+                   if wPAGE = 0 move 1 to wPAGE end-if
+              else
+                   continue
+              end-if
          when ws-Key = K-ENTER
               perform RewriteRecords thru RewriteRecordsEx
          when ws-Key = K-PAGEDOWN
@@ -407,7 +412,7 @@ DysplayItemsScreen.
               if wPAGE = 0 move 1 to wPAGE end-if
       end-evaluate
 
-      go to DysplayItemsScreen
+      go to DisplayScreen
       continue.
 
 End-Program.
@@ -421,7 +426,7 @@ SetScreen.
    move 'I' to wTabe-ktip.
    Compute Num = (wPAGE - 1 ) * 20
    move space to Tabe-data.
-   *> Read Tale Items (records) if exist else create the items (records)
+   *> Read Table Items (records) if exist else create the items (records)
    Add  1 to NUM move Num to wTabe-kcod. move wTabe-key to Tabe-key. read Tabe into wTabe-Rec.
    if Tabe-fs = "23"  move 'Y' to wNewPage end-if
 
@@ -468,7 +473,7 @@ SetScreen.
       move space to wNewPage
       move '                              ' & x'00' to bxm-mex(1)
       move ' New Page created             ' & x'00' to bxm-mex(2)
-   string ' from ' wScrCod01 ' to ' wScrCod20 '               '  x'00' into bxm-mex(3)
+      string ' from REC ' wScrCod01 ' to REC ' wScrCod20 '      '  x'00' into bxm-mex(3)
       move '                              ' & x'00' to bxm-mex(4)
       move '                              ' & x'00' to bxm-mex(5)
       move '                              ' & x'00' to bxm-mex(6)
@@ -507,7 +512,7 @@ RewriteRecords.
 
    move '                              ' & x'00' to bxm-mex(1)
    move ' Table records UPDATED        ' & x'00' to bxm-mex(2)
-   string ' from ' wScrCod01 ' to ' wScrCod20 '               '  x'00' into bxm-mex(3)
+   string ' from REC ' wScrCod01 ' to REC ' wScrCod20 '      '  x'00' into bxm-mex(3)
    move '                              ' & x'00' to bxm-mex(4)
    move '                              ' & x'00' to bxm-mex(5)
    move '                              ' & x'00' to bxm-mex(6)
@@ -544,7 +549,7 @@ DeleteRecords.
 
    move '                              ' & x'00' to bxm-mex(1)
    move ' Page Deleted                 ' & x'00' to bxm-mex(2)
-   string ' from ' wScrCod01 ' to ' wScrCod20 '               '  x'00' into bxm-mex(3)
+   string ' from REC ' wScrCod01 ' to REC ' wScrCod20 '      '  x'00' into bxm-mex(3)
    move '                              ' & x'00' to bxm-mex(4)
    move '                              ' & x'00' to bxm-mex(5)
    move '                              ' & x'00' to bxm-mex(6)
@@ -563,10 +568,10 @@ DeleteRecEx. exit.
 ReadHeaders.
    move 'H'    to Tabe-key
    perform varying ind from 1 by 1 until ind > 20
-          move ind        to   Tabe-kTab
-          read Tabe       into wTabe-Rec
-          move wTabe-ktab to   wTableHeader-cod (ind)
-          move wTabe-data to   wTableHeader-des (ind)
+      move ind        to   Tabe-kTab
+      read Tabe       into wTabe-Rec
+      move wTabe-ktab to   wTableHeader-cod (ind)
+      move wTabe-data to   wTableHeader-des (ind)
    end-perform
    move 'H'       to wTabe-ktip
    move space     to Tabe-data
@@ -576,9 +581,9 @@ ReadHeadersEx. exit.
 *>****************************************************************
 DisplayHelp.
      perform HideCursor thru HideCursor-ex
-     display ScreenF1.
-     accept  ScreenF1.
-      perform ShowCursor thru ShowCursor-ex
+     display Screen-Help.
+     accept  Screen-Help.
+     perform ShowCursor thru ShowCursor-ex
    continue.
 DisplayHelp-ex. exit.
 
@@ -597,8 +602,8 @@ ShowCursor-ex. exit.
 DisplayMessage.
    *> perform ScreenSave thru ScreenSaveEx
    move 'Y' to Bxm-click
-   move '010020019051' to Bxm-rc
-   move red   to Bxm-bco Bxm-bcoM
+   move '010040019071' to Bxm-rc
+   move cyan  to Bxm-bco Bxm-bcoM
    move white to Bxm-fco Bxm-fcoM
    move 'Y' to Bxm-fcoH
    move 'S' to Bxm-style
@@ -609,13 +614,16 @@ DisplayMessageEx. exit.
 
 TableFileSelection.
    *> background box
-   move '002001025080'  to Box-rc
+   move '002001024080'  to Box-rc
    set Box-bco          to green
    Move 'N'             to Box-3D
    CALL GC01BOX USING BY CONTENT BOX-AREA
    display ' TABLE ITEMS MANAGEMENT                                                         '
                   at 0101 :BCOL: green :FCOL: white highlight
-
+   display  ' Enter=Select CursorKeys PgUp/Dn Tab/Backtab Spacebar ESC=Exit                  '
+ *>          12345678901234567890123456789012345678901234567890123456789012345678901234567890
+ *>                   1         2         3         4         5         6         7
+          at 2501 with background-color green foreground-color white highlight
    *> ********************************************************
    *> SELECTION OF A FILE
    *> ********************************************************
@@ -653,7 +661,7 @@ TableFileSelectionEx. exit.
 DisplayErrorMessage.
    *> perform ScreenSave thru ScreenSaveEx
    move 'Y' to Bxm-click
-   move '010020021051' to Bxm-rc
+   move '010040021071' to Bxm-rc
    move red to Bxm-bco Bxm-bcoM move white to Bxm-fco Bxm-fcoM
    move 'Y' to Bxm-fcoH
    move 'S' to Bxm-style
