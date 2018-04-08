@@ -10,7 +10,7 @@ program-id. GC76TABHEADERS.
 *> Usage:      GC76TABHEADERS
 *> Parameters:
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
-*> License:    Copyright 2017 E.Di Lorenzo - LGPL, 3.0 (or greater)
+*> License:    Copyright 2018 E.Di Lorenzo - LGPL, 3.0 (or greater)
 *> Version:    1.0 2018.01.01
 *> Changelog:  1.0 first release.
 *> ************************************************************************************
@@ -133,7 +133,6 @@ WORKING-STORAGE SECTION.
      03 wScrRec20 pic x(75).
 
 COPY 'GC76TABCOPY.CPY'.
-
 COPY 'GC01BOX.CPY'.
 copy 'GC02BOXMEX.CPY'.
 copy 'GC03YESNO.CPY'.
@@ -158,8 +157,7 @@ SCREEN SECTION.
 
 01 Screen3 foreground-color is 0 background-color is 7 auto.
    03 line 03.
-   03 col  01 value "TAB 1...+....10...+....20...+....30...".
-   03         value "+....40...+....50...+....60...+....70...+.".
+   03 col  01 value "TAB 1...+....10...+....20...+....30...+....40...+....50...+....60...+....70...+".
 
 *> 01 Screen4 foreground-color 00 background-color 03 auto.
 01 Screen4 foreground-color wFco background-color wBco auto.
@@ -206,8 +204,7 @@ SCREEN SECTION.
 
 01 Screen4b foreground-color is 0 background-color is 7 auto.
    03 line 24.
-   03 col  01 value "TAB 1...+....10...+....20...+....30...".
-   03         value "+....40...+....50...+....60...+....70...+.".
+   03 col  01 value "TAB 1...+....10...+....20...+....30...+....40...+....50...+....60...+....70...+".
 
 01 Screen5 foreground-color is 7 highlight background-color is 2.
    03 line 25.
@@ -225,7 +222,7 @@ Start-Program.
 
   perform TableFileSelection thru TableFileSelectionEx
   If bu-Key = Key-Escape go End-Program end-if
-  move    wFileName to TABEFSPEC
+  move    wTabeFileName to TABEFSPEC
 
   display ' ' at 0101 :BCOL: 07 :FCOL: 00
 
@@ -233,13 +230,13 @@ Start-Program.
    if Tabe-fs not = '00'
       DISPLAY "  Open File Error...: "        AT 002005  :BCOL: red :FCOL: white
       DISPLAY Tabe-FS                         AT 002026  :BCOL: red :FCOL: white
-      DISPLAY " press Enter to continue ... " AT 002038  :BCOL: red :FCOL: white
+      DISPLAY " press a Key to continue ..... " AT 002038  :BCOL: red :FCOL: white
       accept omitted
       perform Create-Tabe thru Create-TabeEx
       open i-o Tabe
       DISPLAY "  File Created......:   "      AT 003005  :BCOL: red :FCOL: white
-      DISPLAY wFileName                       AT 003026  :BCOL: red :FCOL: white
-      DISPLAY " press Enter to continue ... " AT 003038  :BCOL: red :FCOL: white
+      DISPLAY wTabeFileName                       AT 003026  :BCOL: red :FCOL: white
+      DISPLAY " press a Key to continue ..... " AT 003038  :BCOL: red :FCOL: white
       accept omitted
    end-if
    continue.
@@ -253,7 +250,7 @@ Start-Program.
      display Screen-clear.
      perform ShowCursor thru ShowCursor-ex
 
-     string ' TABLE HEADERS MANAGEMENT - File: '  wFileName ' -' delimited by size into Testata
+     string ' TABLE HEADERS MANAGEMENT - File: '  wTabeFileName ' -' delimited by size into Testata
      display Screen1.
      display Screen2.
      display Screen3.
@@ -267,7 +264,7 @@ Start-Program.
      if ws-KEY = K-F2     add 1 to wFco if wFco > 7 move 0 to wFco end-if go to DisplayScreen.
      if ws-KEY = K-F3     add 1 to wBco if wBco > 7 move 0 to wBco end-if go to DisplayScreen.
      if ws-KEY = K-ENTER
-        continue *> next sentence
+        continue
      else
         go to DisplayScreen.
 
@@ -390,8 +387,8 @@ Create-TabeEx. exit.
 
 DisplayMessage.
    move 'Y' to Bxm-click
-   move '010020019051' to Bxm-rc
-   move red to Bxm-bco Bxm-bcoM move white to Bxm-fco Bxm-fcoM
+   move '010023019054' to Bxm-rc
+   move cyan to Bxm-bco Bxm-bcoM move white to Bxm-fco Bxm-fcoM
    move 'Y' to Bxm-fcoH
    move 'S' to Bxm-style
    call GC02BOXMEX using BOXMEX-AREA
@@ -400,11 +397,15 @@ DisplayMessageEx. exit.
 
 TableFileSelection.
    *> background box
-   move '002001025080' to Box-rc
+   move '002001024080' to Box-rc
    set Box-bco to green Move 'N' to Box-3D
    CALL GC01BOX USING BY CONTENT BOX-AREA
    display ' TABLE HEADERS MANAGEMENT                                                       '
                   at 0101 :BCOL: green Foreground-Color white highlight
+   display  ' Enter=Select CursorKeys PgUp/Dn Tab/Backtab Spacebar ESC=Exit                  '
+ *>          12345678901234567890123456789012345678901234567890123456789012345678901234567890
+ *>                   1         2         3         4         5         6         7
+          at 2501 with background-color green foreground-color white highlight
 
    *> ********************************************************
    *> SELECTION OF A TABLE FILE
@@ -427,14 +428,14 @@ TableFileSelection.
    CALL GC09BUTTONS using Buttons-Area
 
    evaluate Bu-selected
-       when 1 move '001' to wFileName(6:3)
-       when 2 move '002' to wFileName(6:3)
-       when 3 move '003' to wFileName(6:3)
-       when 4 move '004' to wFileName(6:3)
-       when 5 move '005' to wFileName(6:3)
-       when 6 move '006' to wFileName(6:3)
-       when 7 move '007' to wFileName(6:3)
-       when 8 move '008' to wFileName(6:3)
+       when 1 move '001' to wTabeFileName(6:3)
+       when 2 move '002' to wTabeFileName(6:3)
+       when 3 move '003' to wTabeFileName(6:3)
+       when 4 move '004' to wTabeFileName(6:3)
+       when 5 move '005' to wTabeFileName(6:3)
+       when 6 move '006' to wTabeFileName(6:3)
+       when 7 move '007' to wTabeFileName(6:3)
+       when 8 move '008' to wTabeFileName(6:3)
    end-evaluate
    continue.
 TableFileSelectionEx. exit.
