@@ -1,6 +1,6 @@
        >>SOURCE FORMAT IS FREE
        REPLACE ==:BCOL:== BY ==with BACKGROUND-COLOR==
-               ==:FCOL:== BY ==FOREGROUND-COLOR==.
+               ==:FCOL:== BY ==FOREGROUND-COLOR== .
 IDENTIFICATION DIVISION.
 program-id. GC76TABLIST.
 *> ***********************************************************************************
@@ -75,8 +75,8 @@ Working-Storage Section.
 78  K-SHIFT-F2    VALUE 1014.
 01  wKeyPressed       PIC  9(04) VALUE 9999.
 
-01  TimeBackCol       pic s9(04) comp-5 value white.
-01  TimeForeCol       pic s9(04) comp-5 value blue.
+01  TimeBackCol       pic s9(04) value white.
+01  TimeForeCol       pic s9(04) value blue.
 01  wOra.
     03 wOrahh         pic  9(2).
     03 wOramm         pic  9(2).
@@ -87,17 +87,17 @@ Working-Storage Section.
 
 01  pic  x.
    88 eof-lista            value '*'.
-01  lin3         pic s9(04) comp-5 value   0.
-01  i            pic s9(04) comp-5 value   0.
-01  k            pic s9(02) comp-5 value   0.
-01  Ptr          pic s9(02) comp-5 value   0.
-01  PtrMax       pic s9(02) comp-5 value   0.
-01  wrk1         pic s9(04) comp-5 value   0.
-01  penult       pic s9(02) comp-5 value   0.
-01  flip-flop    pic s9(02) comp-5 value   0.
-01  flip-flop2   pic s9(02) comp-5 value   2.
-01  sw-display   pic s9(02) comp-5 value   0.
-01  bco          pic s9(04) comp-5 value +15.
+01  lin3         pic s9(04) value   0.
+01  i            pic s9(04) value   0.
+01  k            pic s9(02) value   0.
+01  Ptr          pic s9(02) value   0.
+01  PtrMax       pic s9(02) value   0.
+01  wrk1         pic s9(04) value   0.
+01  penult       pic s9(02) value   0.
+01  flip-flop    pic s9(02) value   0.
+01  flip-flop2   pic s9(02) value   2.
+01  sw-display   pic s9(02) value   0.
+01  bco          pic s9(04) value +15.
 01  wInt         BINARY-SHORT SIGNED.
 01  PrimaVolta   pic  x(01) value 'Y'.
 
@@ -114,7 +114,7 @@ Working-Storage Section.
     88 NoBof  value 'N'.
 
 01  t1.
-    03 t1-max          pic s9(04) comp-5.
+    03 t1-max          pic s9(04).
     03 t1-tab.
        05 t1-el        occurs 50.
           07 t1-riga   pic  x(450).
@@ -177,15 +177,15 @@ Working-Storage Section.
    05  li-righe    pic  9(04) value  25.
    05  li-scroll   pic  9(02) value  10.
    05  li-start    pic s9(04) value  +1.
-   05  li-back1    pic s9(04) comp-5 value +01. *> blu
-   05  li-fore     pic s9(04) comp-5 value +14. *> giallo
+   05  li-back1    pic s9(04) value +01. *> blu
+   05  li-fore     pic s9(04) value +14. *> giallo
 
 *> colori testata
-01  t-back         pic s9(04) comp-5 value +07. *> bianco
-01  t-fore         pic s9(04) comp-5 value +00. *> nero
+01  t-back         pic s9(04) value +07. *> bianco
+01  t-fore         pic s9(04) value +00. *> nero
 *> colori della riga col cursore
-01  c-back         pic s9(04) comp-5 value +03. *> ciano
-01  c-fore         pic s9(04) comp-5 value +14. *> giallo
+01  c-back         pic s9(04) value +03. *> ciano
+01  c-fore         pic s9(04) value +14. *> giallo
 
 
 *> **************************************************************
@@ -193,16 +193,14 @@ Working-Storage Section.
 *> **************************************************************
 PROCEDURE DIVISION. *> using LnkFileName.
 
-
 *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
 set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
 set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
 Start-program.
-
-  perform TableFileSelection thru TableFileSelectionEx
-  If bu-Key = Key-Escape go End-Program end-if
-  move    wFileName to TABEFSPEC
+   perform TableFileSelection thru TableFileSelectionEx
+   if bu-Key = Key-Escape go End-Program end-if
+   move    wTabeFilename to TABEFSPEC
 
    move 01       to li-start
    compute t1-max = li-righe - 3
@@ -463,11 +461,11 @@ End-Program.
      *> change colors to the "cursor row"
      compute k = Ptr + 2
      display t1-riga (Ptr) (li-start:80) at line k column 01 :BCOL: c-back :FCOL: c-fore
-     .
+     continue.
  DisplayTableEx. EXIT.
 
  DisplayHeader.
-     string ' TABLE LIST MANAGEMENT - File: '  wFileName ' -' delimited by size into Testata
+     string ' TABLE LIST MANAGEMENT - File: '  wTabeFilename ' -' delimited by size into Testata
      display Testata line 01 column 01 :BCOL: t-back :FCOL: 00
      *> intestazione di campi della riga
      display RigaT(li-start:80) at 0201 :BCOL: 04 :FCOL: 14           .
@@ -512,6 +510,7 @@ End-Program.
          display '> FILE DOES NOT EXIST ! '  at 0146 :BCOL: t-back :FCOL: red highlight
          move end-of-list to t1-riga(1)
          set Eof to true
+         perform beeppa thru beeppa-ex
      end-if
 
      move 'bot' to curr-row
@@ -636,22 +635,22 @@ Accept-a-KeyEx.
        move 22 to Bxm-r2 move 75 to Bxm-c2
        move 'N' to Bxm-fcoMH
        move '                                   ' & x'00' to bxm-mex(01)
-       move ' > CURSOR UP/DOWN                  ' & x'00' to bxm-mex(02)
-       move ' > TAB / BACKTAB                   ' & x'00' to bxm-mex(03)
-       move '                                   ' & x'00' to bxm-mex(04)
-       move ' > ESCAPE = exit                   ' & x'00' to bxm-mex(05)
-       move '                                   ' & x'00' to bxm-mex(06)
-       move ' > F2= toggle (display/hide) ruler ' & x'00' to bxm-mex(07)
-       move ' > PAGE UP / DOWN                  ' & x'00' to bxm-mex(08)
+       move ' > CURSOR UP/DOWN scroll one line  ' & x'00' to bxm-mex(02)
+       move ' >                                 ' & x'00' to bxm-mex(03)
+       move ' > PAGE UP / DOWN scroll one page  ' & x'00' to bxm-mex(04)
+       move ' >                                 ' & x'00' to bxm-mex(05)
+       move ' > TAB / BACKTAB scroll horizontal ' & x'00' to bxm-mex(06)
+       move ' >                                 ' & x'00' to bxm-mex(07)
+       move ' > F2= Display or Hide a ruler     ' & x'00' to bxm-mex(08)
        move ' >                                 ' & x'00' to bxm-mex(09)
-       move ' >                                 ' & x'00' to bxm-mex(10)
-       move '                                   ' & x'00' to bxm-mex(11)
+       move ' > ESCAPE = exit                   ' & x'00' to bxm-mex(10)
+       move ' >                                 ' & x'00' to bxm-mex(11)
        move ' >                                 ' & x'00' to bxm-mex(12)
        move ' >                                 ' & x'00' to bxm-mex(13)
        move ' >                                 ' & x'00' to bxm-mex(14)
        move ' >                                 ' & x'00' to bxm-mex(15)
        move ' >                                 ' & x'00' to bxm-mex(16)
-       move '                                   ' & x'00' to bxm-mex(17)
+       move ' >                                 ' & x'00' to bxm-mex(17)
        CALL GC02BOXMEX USING BY REFERENCE BOXMEX-AREA
 
        perform ScreenRestore thru ScreenRestoreEx .
@@ -670,13 +669,16 @@ Accept-a-KeyEx.
 
  TableFileSelection.
    *> background box
-   move '002001025080' to Box-rc
+   move '002001024080' to Box-rc
    set Box-bco to green Move 'N' to Box-3D
    CALL GC01BOX USING BY CONTENT BOX-AREA
 
    display ' TABLE LIST MANAGEMENT                                                          '
                   at 0101 :BCOL: green Foreground-Color white highlight
-
+   display  ' Enter=Select CursorKeys PgUp/Dn Tab/Backtab Spacebar ESC=Exit                  '
+ *>          12345678901234567890123456789012345678901234567890123456789012345678901234567890
+ *>                   1         2         3         4         5         6         7
+          at 2501 with background-color green foreground-color white highlight
    *> ********************************************************
    *> SELECTION OF A FILE
    *> ********************************************************
@@ -698,14 +700,14 @@ Accept-a-KeyEx.
    CALL GC09BUTTONS using Buttons-Area
 
    evaluate Bu-selected
-       when 1 move '001' to wFileName(6:3)
-       when 2 move '002' to wFileName(6:3)
-       when 3 move '003' to wFileName(6:3)
-       when 4 move '004' to wFileName(6:3)
-       when 5 move '005' to wFileName(6:3)
-       when 6 move '006' to wFileName(6:3)
-       when 7 move '007' to wFileName(6:3)
-       when 8 move '008' to wFileName(6:3)
+       when 1 move '001' to wTabeFilename(6:3)
+       when 2 move '002' to wTabeFilename(6:3)
+       when 3 move '003' to wTabeFilename(6:3)
+       when 4 move '004' to wTabeFilename(6:3)
+       when 5 move '005' to wTabeFilename(6:3)
+       when 6 move '006' to wTabeFilename(6:3)
+       when 7 move '007' to wTabeFilename(6:3)
+       when 8 move '008' to wTabeFilename(6:3)
    end-evaluate
    continue.
 TableFileSelectionEx. exit.
