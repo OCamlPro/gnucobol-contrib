@@ -17,5 +17,5 @@
     03 wTabe-Fill                           pic x(18).
 
 01  Tabe-fs                                 pic x(02).
-01  wFileName                               pic x(012) value 'GC76F---.DAT'.
+01  wTabeFileName                           pic x(012) value 'GC76F---.DAT'.
 01  TABEFSPEC                               PIC X(012).
