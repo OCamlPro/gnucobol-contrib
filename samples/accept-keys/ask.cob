@@ -165,18 +165,22 @@ procedure division.
     Move "The HOME key goes to the beginning of   " to tabl-demo (3).
     Move "the text.  Press HOME.                  " to tabl-demo (4).
     Move "                                        " to tabl-demo (5).
-    Move "The Alt-HOME key goes to the beginning  " to tabl-demo (6).
-    Move "of the field.  Press Alt-HOME.          " to tabl-demo (7).
-    Move "                                        " to tabl-demo (8).
-    Move "The END key goes to the end of the text." to tabl-demo (9).
-    Move "Press END.                              " to tabl-demo (10).
-    Move "                                        " to tabl-demo (11).
-    Move "The Alt-END key goes to the end of the  " to tabl-demo (12).
-    Move "field.  Press Alt-END.                  " to tabl-demo (13).
-    Move "                                        " to tabl-demo (14).
-    Move "Press these keys in any sequence, and   " to tabl-demo (15).
-    Move "enter some characters, to get a feel for" to tabl-demo (16).
-    Move "how to use them.                        " to tabl-demo (17).
+    Move "Press HOME again to go to the beginning " to tabl-demo (6).
+    Move "of the field.  Repeated pressing        " to tabl-demo (7).
+    Move "alternates these positions.             " to tabl-demo (8).
+    Move "                                        " to tabl-demo (9).
+    Move "The END key goes to the end of the text." to tabl-demo (10).
+    Move "Press END.                              " to tabl-demo (11).
+    Move "                                        " to tabl-demo (12).
+    Move "Press END again to go to the end of the " to tabl-demo (13).
+    Move "field.  Repeated pressing alternates    " to tabl-demo (14).
+    Move "these positions.                        " to tabl-demo (15).
+    Move "                                        " to tabl-demo (16).
+    Move "Press these keys in any sequence, and   " to tabl-demo (17).
+    Move "enter some characters, to get a feel for" to tabl-demo (18).
+    Move "how to use them.                        " to tabl-demo (19).
+    Move "                                        " to tabl-demo (20).
+
 *> Display demo on the screen.
     Perform swd-show-which-demo thru swd-exit.
 
@@ -672,12 +676,15 @@ swd-exit.
 
 *> Display error.
     Display ws-x-30
+        line 1 column 1
     end-display.
     Display "Press enter."
+        line 2 column 3
     end-display.
 
 *> Wait for enter to be pressed.
     Accept ws-accept-enter
+        line 2 column 1
     end-accept.
 
 *> Stop.
