@@ -105,7 +105,7 @@ Displaylist.
  *>     123456789012345678901234567890123456789012345678901234567890123456789012345678901
 
   move 'Y' to Lv-Box-tit Lv-Box-shadow Lv-Box Lv-RowCmd-SW
-  move '003004' to Lv-r1c1
+  move '005004' to Lv-r1c1
   move 30 to Lv-TabNumRows
   move 81 to Lv-TabNumCols
   move 12 to Lv-WinNumRows
@@ -205,6 +205,6 @@ DisplayBox.
   move '001001025080' to Box-rc
   move 'S'            to Box-style
   call GC01BOX using Box-Area
-  display " GnuCOBOL - TUI TOOLS - DEMO OF 'LIST VIEW' " at 002002 :BCOL: green :FCOL: white highlight end-display
+  display " GnuCOBOL - TUI TOOLS - DEMO OF 'GC26LISTVIEW' " at 002002 :BCOL: green :FCOL: white highlight end-display
   continue.
 DisplayBoxEx. exit.
