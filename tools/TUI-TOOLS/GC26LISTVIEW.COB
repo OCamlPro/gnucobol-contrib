@@ -5,13 +5,15 @@ IDENTIFICATION DIVISION.
 program-id. GC26LISTVIEW is initial.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
-*> Purpose:    list ELEMENTS OF A TABLE on screen and let the user pick-up one
-*> Tectonics:  cobc -x GC26LISTVIEW.COB  (use GnuCOBOL 2.0 or greater)
+*> Purpose:    list ITEMS at a window on screen and let the user pick-up one
+*> Tectonics:  cobc -m GC26LISTVIEW.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC26LISTVIEW using Listview-Area
+*> Parameters: look at GC26LISTVIEW.CPY
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2018 E.Di Lorenzo - LGPL, 3.0 (or greater)
 *> Version:    1.1 2018.03.12
 *> Changelog:  1.0 first release.
+*>             1.1 Lv-beep added
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 Configuration Section.
@@ -80,7 +82,7 @@ PROCEDURE DIVISION using ListView-Area.
    perform DisplayRowCmd       thru DisplayRowCmdEx
    perform DisplayList         thru DisplayListEx
    perform CursorHide          thru CursorHideEx
-   string 'e' wInd 'c' wColIni delimited by size into wString end-string
+   string 'i' wInd 'c' wColIni delimited by size into wString end-string
    perform DisplayPos          thru DisplayPosEx
    continue.
 
@@ -205,7 +207,7 @@ Loop-Wait-for-a-Key.
           perform CursorHide  thru CursorHideEx
    END-EVALUATE
 
-   string 'e' wInd 'c' wColIni delimited by size into wString end-string
+   string 'i' wInd 'c' wColIni delimited by size into wString end-string
    perform DisplayPos thru DisplayPosEx
 
 
@@ -272,7 +274,7 @@ DisplayPos.
   *> Display Position at command row
   if Lv-RowCmd-SW = 'Y'
       compute wLin = (Lv-r1 + Lv-WinNumRows + 1)
-      *> if < 38 there is no space for display postion "e001c001"
+      *> if < 38 there is no space for display postion "i001c001"
       if Lv-WinNumCols >= 38
          compute wCol = Lv-c1 + Lv-WinNumCols - 8
          display wString at Line wLin col wCol :BCOL: Lv-Box-bco :FCOL: Lv-Box-fco highlight
@@ -331,8 +333,8 @@ DisplayHelp.
 DisplayHelpEx. exit.
 
 Beep1.
-  CALL X'E5'
-  perform CursorHide thru CursorHideEx.
+  if Lv-Beep = 'Y' CALL X'E5' end-if
+  continue.
 Beep1Ex. exit.
 
 CursorHide.
@@ -348,7 +350,7 @@ CursorShow.
 CursorShowEx. EXIT.
 
 ScreenSave.
-    move Z'BOXMEX.SCR' to wScreenName
+    move Z'GC26LISTVIEW.TMP' to wScreenName
     call static 'scr_dump' using by reference wScreenName returning wiScrOk end-call.
 ScreenSaveEx. Exit.
 
