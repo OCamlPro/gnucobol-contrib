@@ -8,6 +8,7 @@
 *> License:    Copyright 2018 E.Di Lorenzo - GNU LGPL 3.0 (or greater)
 *> Version:    1.0 2018.03.31
 *> Changelog:  1.0 first release.
+*>             1.1 Lv-Beep added
 *> ***********************************************************************************
 *> You can manage lists with max 999 rows, each one of max 999 cols.
 *> Each row has to be inserted in a table of 999 elements,
@@ -66,6 +67,7 @@
     05 Lv-fcoH       pic 9(01) value yellow. *> forecolor for "header" listview row
     05 Lv-fcoHH      pic X(01) Value 'Y'.    *> forecolor of header in Highlight ?
 
+    05 Lv-Beep           pic x(01) value 'Y'.          *> Y= sound if scroll vert/horiz
     05 Lv-Box            pic x(01) value 'Y'.          *> Y= display a box around list items
     05 Lv-Box-Parameters.                              *> only used when Lv-Box = Y
         07 Lv-Box-bco     pic 9(01) value white.       *> backcolor of the box
@@ -87,7 +89,7 @@
   *> ***********************************************************************************
   *> HEADER AND LIST ROWS CONTENT
   *> ***********************************************************************************
-  03 Lv-RowHeader pic x(999) value ' LIST OF ELEMENTS                      '.
+  03 Lv-RowHeader pic x(999) value 'LIST OF ELEMENTS                      '.
   03 Lv-RowCmd-SW pic x(001) value 'Y'.          *> Y= display Cmd
   03 Lv-RowCmd    pic x(030) value 'Enter=Select ESC=Exit PF1=Help'.
   03 Lv-Tab       value space.                   *> table with list items
