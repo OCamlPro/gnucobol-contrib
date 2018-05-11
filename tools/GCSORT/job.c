@@ -1935,10 +1935,22 @@ job_save_exit:
 	return retcode_func;
 }
 
-int job_set_area (struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen )
+int job (struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen )
 {
+// 20180511 s.m. start
+    int nLenRek = job->inputFile->stFileDef->record->size;
+// 20180511 s.m. end
 // set area data
 	memcpy(file->stFileDef->record->data, szBuf, nLen);
+
+// 20180511 s.m. start
+    // 
+	// Padding - Only for FILE_ORGANIZATION_LINESEQUENTIAL, Fixed and Variable Len, and when length not equal for input/output
+    // 
+    if ((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) && (nLenRek < nLen)) {
+            memset(file->stFileDef->record->data+nLenRek, 0x20, nLen - nLenRek); // padding wirh blank (0x20)
+    }
+// 20180511 s.m. end
 	if (job->outputFile->format == FILE_TYPE_VARIABLE){
 		job->outputFile->stFileDef->record->size = nLen;
 		cob_set_int(job->outputFile->stFileDef->variable_record, (int)nLen);
