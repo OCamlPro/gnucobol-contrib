@@ -1,10 +1,21 @@
 all:	SHAKE128.dll SHAKE256.dll SHA3-224.dll \
         SHA3-256.dll SHA3-384.dll SHA3-512.dll KECCAK.o \
-        TESTSHA3.exe
+        TESTSHA3.exe SHA3-256.o   SESSION-ID.o TEST-SESSION-ID.exe
 
+# SESSION-ID        
+TEST-SESSION-ID.exe:	TEST-SESSION-ID.cob
+	cobc -x -free TEST-SESSION-ID.cob
+
+SESSION-ID.o:	SESSION-ID.cob SHA3-256.o KECCAK.o
+	cobc -m -free SESSION-ID.cob SHA3-256.o KECCAK.o
+    
+SHA3-256.o:	SHA3-256.cob
+	cobc -c -free SHA3-256.cob
+
+# SHA3    
 TESTSHA3.exe:	TESTSHA3.cob
 	cobc -x -free TESTSHA3.cob
-        
+    
 SHAKE128.dll:	SHAKE128.cob KECCAK.o
 	cobc -m -free SHAKE128.cob KECCAK.o
     
@@ -36,3 +47,6 @@ clean:
 	rm SHA3-384.dll
 	rm SHA3-512.dll
 	rm TESTSHA3.exe
+	rm SHA3-256.o
+	rm SESSION-ID.dll
+	rm TEST-SESSION-ID.exe

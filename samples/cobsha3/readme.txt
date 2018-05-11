@@ -54,6 +54,9 @@ The delivered files:
 - TESTSHA3.cob - test program 
 - win_compile.bat - Windows batch compile file    
 
+- SESSION-ID.cob      - generates a session ID, it uses SHA3-256
+- TEST-SESSION-ID.cob - test program
+
 Compiling with cygwin
 ---------------------
 Use the makefile.
