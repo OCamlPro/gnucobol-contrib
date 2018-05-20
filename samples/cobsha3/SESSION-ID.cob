@@ -33,7 +33,9 @@
 *>               timestamp and a random number. After it will be SHA3-256 
 *>               called to create a hash. The output hash is available in binary
 *>               and in hexadecimal format.
-*>
+*>               It creates also a USER-AGENT-HASH from the HTTP-USER-AGENT CGI
+*>               Environment Variable. You can use it to track the client 
+*>               browser. 
 *>******************************************************************************
 *> Date       Name / Change description 
 *> ========== ==================================================================
@@ -51,7 +53,7 @@
 
  DATA DIVISION.
  WORKING-STORAGE SECTION.
- 01 WS-SHA3-256-INPUT                  PIC X(200).
+ 01 WS-SHA3-256-INPUT                  PIC X(8000).
  01 WS-SHA3-256-INPUT-BYTE-LEN         BINARY-DOUBLE UNSIGNED.
  01 WS-SHA3-256-OUTPUT                 PIC X(32).
 
@@ -94,15 +96,43 @@
  LINKAGE SECTION.
  01 LNK-SESSION-ID.
    02 LNK-INPUT.
-     03 LNK-IP-ADDR                    PIC X(100).
+     03 LNK-REMOTE-ADDR                PIC X(100).
+     03 LNK-REMOTE-ADDR-FLAG           PIC 9.
+       88 V-NO                         VALUE 0.
+       88 V-YES                        VALUE 1.
+     03 LNK-HTTP-USER-AGENT            PIC X(8000).
+     03 LNK-HTTP-USER-AGENT-FLAG       PIC 9.
+       88 V-NO                         VALUE 0.
+       88 V-YES                        VALUE 1.
    02 LNK-OUTPUT.
      03 LNK-SESSION-ID-BIN             PIC X(32).
      03 LNK-SESSION-ID-HEX             PIC X(64).
+     03 LNK-USER-AGENT-HASH-BIN        PIC X(32).
+     03 LNK-USER-AGENT-HASH-HEX        PIC X(64).
  
  PROCEDURE DIVISION USING LNK-SESSION-ID.          
 
 *>------------------------------------------------------------------------------
  MAIN-SESSION-ID SECTION.
+*>------------------------------------------------------------------------------
+
+*>  compute session-id from remote-addr
+    IF V-YES OF LNK-REMOTE-ADDR-FLAG
+    THEN
+       PERFORM COMPUTE-SESSION-ID
+    END-IF    
+
+*>  compute user-agent hash    
+    IF V-YES OF LNK-HTTP-USER-AGENT-FLAG
+    THEN
+       PERFORM COMPUTE-USER-AGENT-HASH
+    END-IF    
+
+    GOBACK
+    .
+
+*>------------------------------------------------------------------------------
+ COMPUTE-SESSION-ID SECTION.
 *>------------------------------------------------------------------------------
 
 *>  init fields
@@ -119,11 +149,11 @@
     MOVE FUNCTION RANDOM(WS-TV-NSEC) TO WS-RANDOM-NR
 
 *>  string all together    
-    STRING LNK-IP-ADDR OF LNK-SESSION-ID DELIMITED BY SPACE
-           WS-CDT-DATE-AND-TIME          DELIMITED BY SIZE
-           WS-RND-NR                     DELIMITED BY SPACE
-           WS-TV-SEC                     DELIMITED BY SIZE
-           WS-TV-NSEC                    DELIMITED BY SIZE
+    STRING LNK-REMOTE-ADDR OF LNK-SESSION-ID DELIMITED BY SPACE
+           WS-CDT-DATE-AND-TIME              DELIMITED BY SIZE
+           WS-RND-NR                         DELIMITED BY SPACE
+           WS-TV-SEC                         DELIMITED BY SIZE
+           WS-TV-NSEC                        DELIMITED BY SIZE
       INTO WS-SHA3-256-INPUT
     END-STRING  
     
@@ -142,10 +172,38 @@
     MOVE WS-SHA3-256-OUTPUT TO WS-NUM-DATA
     PERFORM DATA-BUFF-IN-HEXA
     MOVE WS-HEX-DATA        TO LNK-SESSION-ID-HEX OF LNK-SESSION-ID
-
-    GOBACK
     .
+    EXIT SECTION .
 
+*>------------------------------------------------------------------------------
+ COMPUTE-USER-AGENT-HASH SECTION.
+*>------------------------------------------------------------------------------
+
+*>  init fields
+    INITIALIZE WS-SHA3-256-INPUT
+    INITIALIZE WS-SHA3-256-OUTPUT
+
+    MOVE LNK-HTTP-USER-AGENT OF LNK-SESSION-ID
+      TO WS-SHA3-256-INPUT
+    
+    MOVE FUNCTION STORED-CHAR-LENGTH(WS-SHA3-256-INPUT) 
+      TO WS-SHA3-256-INPUT-BYTE-LEN    
+      
+*>  compute the hash      
+    CALL "SHA3-256" USING WS-SHA3-256-INPUT
+                          WS-SHA3-256-INPUT-BYTE-LEN
+                          WS-SHA3-256-OUTPUT
+    END-CALL
+
+    MOVE WS-SHA3-256-OUTPUT TO LNK-USER-AGENT-HASH-BIN OF LNK-SESSION-ID
+    
+*>  convert in hexa
+    MOVE WS-SHA3-256-OUTPUT TO WS-NUM-DATA
+    PERFORM DATA-BUFF-IN-HEXA
+    MOVE WS-HEX-DATA        TO LNK-USER-AGENT-HASH-HEX OF LNK-SESSION-ID
+    .
+    EXIT SECTION .
+    
 *>----------------------------------------------------------------------
  GETTIME SECTION.
 *>----------------------------------------------------------------------
