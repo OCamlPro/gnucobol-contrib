@@ -11,9 +11,11 @@ program-id. GC26LISTVIEW is initial.
 *> Parameters: look at GC26LISTVIEW.CPY
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2018 E.Di Lorenzo - LGPL, 3.0 (or greater)
-*> Version:    1.1 2018.03.12
+*> Version:    1.3 2018.06.02  with GC26LISTVIEW.CPY version 1.2
 *> Changelog:  1.0 first release.
 *>             1.1 Lv-beep added
+*>             1.2 HOME key management (go top of list)
+*>             1.3 added Lv-Dis management (itmes non selectable)
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 Configuration Section.
@@ -186,9 +188,26 @@ Loop-Wait-for-a-Key.
             perform Beep1 thru Beep1Ex
         end-if
      *> *************************************************************
+     *> HOME = GO TO TOP OF LIST
+     *> *************************************************************
+     when Key-Pressed = Key-Home
+          move 1 to wPtrCursor wColIni
+          move 0 to wBase
+          perform DisplayList thru DisplayListEx
+     *> *************************************************************
+     *> ALT-HOME = GO TO TOP OF LIST AND COL = 1
+     *> *************************************************************
+     *> when Key-Pressed = Key-Alt-Home
+          *> move 1 to wPtrCursor
+          *> move 0 to wBase
+     *> *************************************************************
      *> ENTER
      *> *************************************************************
      when Key-Pressed = Key-Enter
+          if Lv-Dis(wInd) = '1'   *> if this item is not selectable
+             perform Beep1 thru Beep1Ex
+             go Loop-Wait-for-a-Key
+          end-if
           move Key-Pressed    to Lv-Key
           compute Lv-Selected = wBase + wPtrCursor
           go End-Program
@@ -209,7 +228,6 @@ Loop-Wait-for-a-Key.
 
    string 'i' wInd 'c' wColIni delimited by size into wString end-string
    perform DisplayPos thru DisplayPosEx
-
 
    go Loop-Wait-for-a-Key
    continue.
@@ -315,7 +333,7 @@ DisplayHelp.
     compute Bxm-c1  = Lv-c1 + 1
     move blue  to Bxm-bco Bxm-bcoM Bxm-titBco
     move white to Bxm-fcoM
-    move  4 to wWinNumRows
+    move  5 to wWinNumRows
     move 36 to wWinNumCols
     compute Bxm-r2 = Bxm-r1 + wWinNumRows + 1
     compute Bxm-c2 = Bxm-c1 + wWinNumCols + 1
@@ -325,8 +343,9 @@ DisplayHelp.
     *> 4 rows of 36 cols
     move 'Cursor UP/DOWN   : Scroll vertical  ' & x'00' to bxm-mex(01)
     move 'Cursor RIGHT/LEFT: Scroll horizontal' & x'00' to bxm-mex(02)
-    move 'Enter            : Select the item  ' & x'00' to bxm-mex(03)
-    move 'Escape           : Exit             ' & x'00' to bxm-mex(04)
+    move 'Home             : Go to Top of List' & x'00' to bxm-mex(03)
+    move 'Enter            : Select the item  ' & x'00' to bxm-mex(04)
+    move 'Escape           : Exit             ' & x'00' to bxm-mex(05)
     CALL GC02BOXMEX USING BY REFERENCE BOXMEX-AREA
     perform ScreenRestore thru ScreenRestoreEx
     continue.
