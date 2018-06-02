@@ -206,11 +206,13 @@ Loop-Wait-for-a-Key.
      when Key-Pressed = Key-Enter
           if Lv-Dis(wInd) = '1'   *> if this item is not selectable
              perform Beep1 thru Beep1Ex
-             go Loop-Wait-for-a-Key
+             perform DisplayError thru DisplayErrorEx
+             perform CursorHide  thru CursorHideEx
+          else                    *> if this item is selectable
+             move Key-Pressed    to Lv-Key
+             compute Lv-Selected = wBase + wPtrCursor
+             go End-Program
           end-if
-          move Key-Pressed    to Lv-Key
-          compute Lv-Selected = wBase + wPtrCursor
-          go End-Program
      *> *************************************************************
      *> ESCAPE= EXIT
      *> *************************************************************
@@ -350,6 +352,31 @@ DisplayHelp.
     perform ScreenRestore thru ScreenRestoreEx
     continue.
 DisplayHelpEx. exit.
+
+DisplayError.
+    perform ScreenSave thru ScreenSaveEx
+    move low-value to bxm-tabmex
+    compute Bxm-r1 =  Lv-r1 + 2
+    compute Bxm-c1  = Lv-c1 + 1
+    move blue  to Bxm-bco Bxm-bcoM Bxm-titBco
+    move white to Bxm-fcoM
+    move  5 to wWinNumRows
+    move 36 to wWinNumCols
+    compute Bxm-r2 = Bxm-r1 + wWinNumRows + 1
+    compute Bxm-c2 = Bxm-c1 + wWinNumCols + 1
+    move 'N' to Bxm-OkButton Bxm-fcoMH Bxm-3D
+    move 'Y' to Bxm-tit
+    move ' ERROR ' & x'00' to Bxm-titDes
+    *> 4 rows of 36 cols
+    move '                                    ' & x'00' to bxm-mex(01)
+    move '                                    ' & x'00' to bxm-mex(02)
+    move ' This item cannot be selected !     ' & x'00' to bxm-mex(03)
+    move '                                    ' & x'00' to bxm-mex(04)
+    move '                                    ' & x'00' to bxm-mex(05)
+    CALL GC02BOXMEX USING BY REFERENCE BOXMEX-AREA
+    perform ScreenRestore thru ScreenRestoreEx
+    continue.
+DisplayErrorEx. exit.
 
 Beep1.
   if Lv-Beep = 'Y' CALL X'E5' end-if
