@@ -6,9 +6,10 @@
 *> Usage:      call GC26LISTVIEW using Listview-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2018 E.Di Lorenzo - GNU LGPL 3.0 (or greater)
-*> Version:    1.0 2018.03.31
+*> Version:    1.1 2018.03.31
 *> Changelog:  1.0 first release.
 *>             1.1 Lv-Beep added
+*>             1.2 Lv-Dis added
 *> ***********************************************************************************
 *> You can manage lists with max 999 rows, each one of max 999 cols.
 *> Each row has to be inserted in a table of 999 elements,
@@ -39,6 +40,7 @@
 *> Lv-RowHeader        header of columns of the list
 *> Lv-RowCmd           command diaplayed on the last window ros (the bottom box line)
 *>
+*> Lv-Dis     1 = this row is displayed but not selectable
 *> Lv-Row    list items (move here yout list elements (max 999 elemnts in the table)
 *> Lv-Selected Number of elemnts in the table selected by the user
 *> Lv-Key    ScanCode returned to caller at exit from the program, 0013= Enter, 0027= ESACPE
@@ -92,9 +94,13 @@
   03 Lv-RowHeader pic x(999) value 'LIST OF ELEMENTS                      '.
   03 Lv-RowCmd-SW pic x(001) value 'Y'.          *> Y= display Cmd
   03 Lv-RowCmd    pic x(030) value 'Enter=Select ESC=Exit PF1=Help'.
+  03 Lv-Tab2      value space.                   *> table disabled flag
+    05 Lv-Ele2    occurs 999 indexed by Lv-Idx2.
+        07 Lv-Dis pic x(001).  *> 1= this row is disabled (not selectable)
   03 Lv-Tab       value space.                   *> table with list items
     05 Lv-Ele     occurs 999 indexed by Lv-Idx.
         07 Lv-Row pic x(999).
+
 
   *> ***********************************************************************************
   *> FIELDS RETURNED TO CALLER
