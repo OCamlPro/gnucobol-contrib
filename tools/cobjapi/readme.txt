@@ -1,11 +1,13 @@
 COBJAPI a GnuCOBOL interface (wrapper) for JAPI
 ===============================================
 
-- AWT: this is the original Japi kernel, it uses the Abstract Window Toolkit (AWT).
-       Japi was created by Dr. Merten Joost in 2003.
+- AWT:   
+  This is the original Japi kernel, it uses the Abstract Window Toolkit (AWT).
+  Japi was created by Dr. Merten Joost in 2003.
        
-- SWING: the Japi 2 kernel was created by Vera Christ, Daniel Vivas Estevao
-         and Maximilian Strauch in 2015. The SWING GUI toolkit providing more 
-         modern GUI elements and features.
+- SWING:
+  The Japi 2 kernel was created by Vera Christ, Daniel Vivas Estevao
+  and Maximilian Strauch in 2015. The SWING GUI toolkit provides more 
+  modern GUI elements and features.
 
 For more information please read the readme.txt files under AWT and SWING.

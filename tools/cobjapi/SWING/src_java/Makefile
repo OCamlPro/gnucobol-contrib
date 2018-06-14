@@ -1,5 +1,20 @@
+# GNU MAKE Makefile for japi library used in COBJAPI
+# note: most of the actual compilation work is done in make.sh
 
-all : bin JAPI.jar
+uname_S := $(shell uname -s 2>/dev/null)
+ifeq ($(uname_S),)
+	DELETE = -del
+	COPY = -copy
+else
+	DELETE = rm -f
+	COPY = cp
+endif
+
+# actual target...
+#all : bin JAPI.jar
+all : JAPI.jar
+
+.PHONY: clean
 	
 bin :
 	make -C ../bin
@@ -9,13 +24,18 @@ bin :
 #JAPI_Const.java: ../lib/japiconst.def ../bin/makejapiconstjava
 #	../bin/makejapiconstjava > JAPI_Const.java
 
-JAPI.jar : 
+japi2.jar :
 	@./make.sh
-	cp japi2.jar JAPI.jar
+
+JAPI.jar : japi2.jar
+	$(COPY) japi2.jar JAPI.jar
 
 	@echo WARNING: no generation of JAPI_Calls.java used
 	@echo WARNING: no generation of JAPI_Const.java used
 
 
-clean:
-	rm JAPI.jar japi2.jar
+
+# clean
+clean :
+	$(DELETE) JAPI.jar japi2.jar
+
