@@ -44,7 +44,7 @@
  WORKING-STORAGE SECTION.
  
  01 WS-IMG-IN                          PIC X(256). 
- 01 WS-IMG-IN-TYPE                     BINARY-INT. 
+ 01 WS-IMG-IN-TYPE                     BINARY-LONG. 
     88 V-BMP                           VALUE 0. 
     88 V-GIF                           VALUE 1. 
     88 V-JPG                           VALUE 2. 
@@ -52,15 +52,15 @@
     88 V-TIF                           VALUE 4. 
 
  01 WS-IMG-OUT                         PIC X(256). 
- 01 WS-IMG-OUT-TYPE                    BINARY-INT. 
+ 01 WS-IMG-OUT-TYPE                    BINARY-LONG. 
     88 V-BMP                           VALUE 0. 
     88 V-GIF                           VALUE 1. 
     88 V-JPG                           VALUE 2. 
     88 V-PNG                           VALUE 3. 
     88 V-TIF                           VALUE 4. 
- 01 WS-WIDTH-OUT                       BINARY-INT. 
+ 01 WS-WIDTH-OUT                       BINARY-LONG. 
 
- 01 WS-RETVAL                          BINARY-INT. 
+ 01 WS-RETVAL                          BINARY-LONG. 
  
  PROCEDURE DIVISION.
 
