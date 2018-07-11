@@ -1,4 +1,5 @@
        >> SOURCE FORMAT IS FREE
+       *> use :BCOL: & :FCOL: to have less "cobol verbosity"
        REPLACE ==:BCOL:== BY ==BACKGROUND-COLOR==
                ==:FCOL:== BY ==FOREGROUND-COLOR==.
 IDENTIFICATION DIVISION.
@@ -9,14 +10,16 @@ PROGRAM-ID. GC13CHECKBOX is initial.
 *>             make items active with cursors/page/tab keys, mark/unmark a checkbox whit spacebar
 *> Tectonics:  cobc -m GC13CHECKBOX.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC13CHECKBOX using CHECKBOX-AREA
-*> Parameters: look at GC13CHECKBOX.cpy (use with copy Version: 1.1)
+*> Parameters: look at GC13CHECKBOX.cpy (use with copy Version: 1.3)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.3 2017.11.15
+*> Version:    1.4 2018.06.30
 *> Changelog:  1.0 first release.
 *>             1.1 hot key management added
 *>             1.2 Ck-Hot from 9(01) to 9(02)
 *>             1.3 Ck-wait management added
+*>             1.4 Chk-Number changed to Ck-Number that is added in GC13CHECKBOX.cpy
+*>                 use PgUp, PgDn, Tab to exit from Checkbox
 *> ***********************************************************************************
 
 ENVIRONMENT DIVISION.
@@ -31,7 +34,7 @@ Working-Storage Section.
     03  i            pic 9(02) value 1.
     03  j            pic 9(02) value 1.
     03  k            pic 9(02) value 1.
-    03  Chk-Number   pic 9(02) value 0.
+    *> 03  Chk-Number    pic 9(02) value 0.
     03  bco          PIC 9(02).
     03  fco          PIC 9(02).
     03  fcoH         PIC X(01).
@@ -66,7 +69,6 @@ COPY 'GC98KEYCODE.CPY'.
 LINKAGE SECTION.
 copy 'GC13CHECKBOX.CPY'.
 
-
 *> ***********************************************************************************
 *>
 *>                       P R O C E D U R E   D I V I S I O N
@@ -77,7 +79,7 @@ PROCEDURE DIVISION using CHECKBOX-Area.
     set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
     set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
-    move 1 to i, j, w, Chk-Number.
+    move 1 to i, j, w. *> Ck-Number .
 
 *> ***********************************************************************************
 *> display ALL CHECKBOXES and wait for user input
@@ -85,7 +87,7 @@ PROCEDURE DIVISION using CHECKBOX-Area.
 DisplayCheckboxItems.
    *> to count how many CHECKBOX
    if Ck-ele(i) = low-value
-      compute Chk-Number  =  i - 1
+      compute Ck-Number   =  i - 1
       move    Ck-Selected to i
       go to DisplayCheckboxItemsEx end-if
 
@@ -148,8 +150,8 @@ loop-user-input.
            *> NEXT CHECKBOX ITEM WILL BECAME "ACTIVE"
            when     Key-Pressed = Key-CursRight
                  or Key-Pressed = Key-CursDn
-                 or Key-Pressed = Key-Tab
-                 or Key-Pressed = Key-PgDn
+                 *> or Key-Pressed = Key-Tab
+                 *> or Key-Pressed = Key-PgDn
 
                   *> set and display "current" checkbox item as Normal Checkbox item
                   move Ck-Selected to i
@@ -160,7 +162,7 @@ loop-user-input.
                   perform DisplayCheckBox thru DisplayCheckBoxEx
 
                   *> set and display next checkbox item as Active Checkbox item
-                  if   Ck-Selected = Chk-Number
+                  if   Ck-Selected = Ck-Number
                        move 1 to Ck-Selected i
                   else
                        add  1 to Ck-Selected i
@@ -175,7 +177,7 @@ loop-user-input.
            when     Key-Pressed = Key-CursLeft
                  or Key-Pressed = Key-CursUp
                  *> or Key-Pressed = Key-BackTab  (backtab doesn't work ?!?!?)
-                 or Key-Pressed = Key-PgUp
+                 *> or Key-Pressed = Key-PgUp
 
                   *> set and display "current" checkbox item as Normal Checkbox item
                   move Ck-Selected to i
@@ -188,7 +190,7 @@ loop-user-input.
 
                   *> set and display previous checkbox item as Active Checkbox item
                   if   Ck-Selected = 1
-                       move Chk-Number to Ck-Selected i
+                       move Ck-Number  to Ck-Selected i
                   else
                        subtract 1 from Ck-Selected i
                   end-if
@@ -210,7 +212,7 @@ loop-user-input.
         end-search
 
         set wChars-Idx to Key-lc-Idx
-        perform varying k from 1 by 1 until k > Chk-Number
+        perform varying k from 1 by 1 until k > Ck-Number
                 if Ck-Hot(k) not = zero move Ck-Item(k) (Ck-Hot(k):1) to wChar end-if
                 inspect wChar converting 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'abcdefghijklmnopqrstuvwxyz'
                 if wChar = wChars-Ele(wChars-Idx)
@@ -244,7 +246,7 @@ loop-user-input.
         end-search
 
         set wNums-Idx to Key-num-Idx
-        perform varying k from 1 by 1 until k > Chk-Number
+        perform varying k from 1 by 1 until k > Ck-Number
                 if Ck-Hot(k) not = zero move Ck-Item(k) (Ck-Hot(k):1) to wNum end-if
                 if wNum = wNums-Ele(wNums-Idx)
                     *> the digit typed by the user is a valid hotkey !
@@ -265,23 +267,21 @@ loop-user-input.
                 end-if
         end-perform
 
+   *> *************************************************************************
+   *> EXIT WITH ONE OF FOLLOWING KEYS
+   *> *************************************************************************
+       when Key-Pressed = Key-Enter
+         or Key-Pressed = Key-PgUp
+         or Key-Pressed = Key-PgDn
+         or Key-Pressed = Key-Tab
+         or Key-Pressed = Key-Escape
+         or Key-Pressed = Key-F1
+         or Key-Pressed = Key-F12
+            move Key-Pressed to Ck-Key
+            go to END-PROGRAM
    END-EVALUATE
 
-   *> *************************************************************************
-   *> ENTER = SELECTED A Checkbox
-   *> *************************************************************************
-   IF Key-Pressed = Key-Enter
-      move Key-Enter  to Ck-Key
-      go to END-PROGRAM
-   end-if
-
-   IF Key-Pressed = Key-Escape
-      move Key-Escape to Ck-Key
-      go to END-PROGRAM
-   end-if
-
    go to loop-user-input
-
    continue.
 END-PROGRAM.
 
