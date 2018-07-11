@@ -9,14 +9,16 @@ PROGRAM-ID. GC18RADIOBUTTON is initial.
 *>             make only one of items "marked/selected" with cursors/page/tab keys.
 *> Tectonics:  cobc -m GC18RADIOBUTTON.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC18RADIOBUTTON using RADIOBUTTON-AREA
-*> Parameters: look at GC18RADIOBUTTON.cpy (use with copy Version: 1.1)
+*> Parameters: look at GC18RADIOBUTTON.cpy (use with copy Version: 1.3)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.3 2017.11.15
+*> Version:    1.4 2018-06.30
 *> Changelog:  1.0 first release.
 *>             1.1 hot key management added
 *>             1.2 Rb-Hot from 9(01) to 9(02)
 *>             1.3 Rb-wait management added
+*>             1.4 Rbu-Number changed to Rb-Number that is added in GC18RADIOBUTTON.cpy
+*>                 Use PgUp, PgDn, Tab to exit from Radiobutton
 *> ***********************************************************************************
 
 ENVIRONMENT DIVISION.
@@ -24,14 +26,13 @@ CONFIGURATION SECTION.
 
 DATA DIVISION.
 Working-Storage Section.
-
 01  wWork.
     03  wCol         pic 9(02) value 0.
     03  w            pic 9(02) value 0.
     03  i            pic 9(02) value 1.
     03  j            pic 9(02) value 1.
     03  k            pic 9(02) value 1.
-    03  Rbu-Number   pic 9(02) value 0.
+    *> 03  Rbu-Number    pic 9(02) value 0.
     03  bco          PIC 9(02).
     03  fco          PIC 9(02).
     03  fcoH         PIC X(01).
@@ -50,6 +51,9 @@ Working-Storage Section.
 
 01  wVisibilityNew   BINARY-SHORT .
 01  wVisibilityOld   BINARY-SHORT .
+01  wVisibilityNot   BINARY-SHORT .
+01  wCursorShow       BINARY-SHORT SIGNED value 2.
+01  wCursorHide       BINARY-SHORT SIGNED value 0.
 
 01 wChar        PIC X(01).
 01 wNum         PIC X(01).
@@ -65,7 +69,6 @@ COPY 'GC98KEYCODE.CPY'.
 LINKAGE SECTION.
 copy 'GC18RADIOBUTTON.CPY'.
 
-
 *> ***********************************************************************************
 *>
 *>                       P R O C E D U R E   D I V I S I O N
@@ -76,15 +79,15 @@ PROCEDURE DIVISION using RadioButton-Area.
     set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
     set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
-    move 1 to i, j, w, Rbu-Number.
+    move 1 to i, j, w. *> Rb-Number .
 
 *> ***********************************************************************************
-*> display ALL RADIOBUTTON itemS and wait for user input
+*> display ALL RADIOBUTTON items and wait for user input
 *> ***********************************************************************************
 DisplayRadioButtonItems.
    *> to count how many RadioButton
    if Rb-ele(i) = low-value
-      compute Rbu-Number  =  i - 1
+      compute Rb-Number   =  i - 1
       move    Rb-Selected to i
       go to DisplayRadioButtonItemsEx end-if
 
@@ -113,31 +116,27 @@ DisplayRadioButtonItemsEx. exit.
 *> AFTER DISPLAYED RADIOBUTTON ITEMS WAIT FOR USER INPUT
 *> ***********************************************************************************
 loop-user-input.
-
     *> hide the cursor and save its previous state
     *> (use always a display or an accept at .... before to have a call to "initscr"
-    move 0 to wVisibilityNew
-    call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
-
-    *> call static "getch" returning Key-Pressed end-call
+    *> move 0 to wVisibilityNew
+    *> call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
+    perform CursorHide thru CursorHideEx
 
     if Rb-wait  = 'Y'
       *> after displayed radiobutton items wait for user key press
        call static "getch" returning Key-Pressed end-call
     else
-       *> after displayed radiobutton items return to caller
+       *> after displayed radiobutton items return to caller without waiting for user input
+       *> useful whren you have just to display radiobuttons on screen
        go to END-PROGRAM
     end-if
 
    EVALUATE TRUE
    *> i = number of RadioButton item
-
-           *> NEXT RADIOBUTTON ITEM WILL BECAME "ACTIVE" AND MARKED
+           *> NEXT RADIOBUTTON ITEM WILL BECAME "ACTIVE" AND "MARKED"
            when Key-Pressed = Key-CursRight
-                 or Key-Pressed = Key-CursDn
-                 or Key-Pressed = Key-Tab
-                 or Key-Pressed = Key-PgDn
-                 or Key-Pressed = Key-space
+             or Key-Pressed = Key-CursDn
+             or Key-Pressed = Key-space
 
                   *> set and display "current" RadioButton item as Normal & unmarked RadioButton item
                   move ' '         to Rb-Mark(i)   *> unmark the item
@@ -150,7 +149,7 @@ loop-user-input.
                   perform DisplayRadioButton thru DisplayRadioButtonEx
 
                   *> set & display next RadioButton item as Active and marked RadioButton item
-                  if   Rb-Selected = Rbu-Number
+                  if   Rb-Selected = Rb-Number
                        move 1 to Rb-Selected i
                   else
                        add  1 to Rb-Selected i
@@ -165,9 +164,7 @@ loop-user-input.
 
            *> PREVIOUS RADIOBUTTON ITEM WILL BECAME "ACTIVE" AND MARKED
            when Key-Pressed = Key-CursLeft
-                 or Key-Pressed = Key-CursUp
-                 *> or Key-Pressed = Key-BackTab
-                 or Key-Pressed = Key-PgUp
+             or Key-Pressed = Key-CursUp
 
                   *> set and display "current" RadioButton item as Normal & unmerked RadioButton item
                   move ' ' to Rb-Mark(i)   *> unmark the item
@@ -181,7 +178,7 @@ loop-user-input.
 
                   *> set and display previous RadioButton item as Active and marked RadioButton item
                   if   Rb-Selected = 1
-                       move Rbu-Number to Rb-Selected i
+                       move Rb-Number  to Rb-Selected i
                   else
                        subtract 1 from Rb-Selected i
                   end-if
@@ -205,7 +202,7 @@ loop-user-input.
         end-search
 
         set wChars-Idx to Key-lc-Idx
-        perform varying k from 1 by 1 until k > Rbu-Number
+        perform varying k from 1 by 1 until k > Rb-Number
                 if Rb-Hot(k) not = zero move Rb-Item(k) (Rb-Hot(k):1) to wChar end-if
                 inspect wChar converting 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'abcdefghijklmnopqrstuvwxyz'
                 if wChar = wChars-Ele(wChars-Idx)
@@ -241,7 +238,7 @@ loop-user-input.
         end-search
 
         set wNums-Idx to Key-num-Idx
-        perform varying k from 1 by 1 until k > Rbu-Number
+        perform varying k from 1 by 1 until k > Rb-Number
                 if Rb-Hot(k) not = zero move Rb-Item(k) (Rb-Hot(k):1) to wNum end-if
                 if wNum = wNums-Ele(wNums-Idx)
                     *> the digit typed by the user is a valid hotkey !
@@ -264,26 +261,21 @@ loop-user-input.
                 end-if
         end-perform
 
+   *> *************************************************************************
+   *> EXIT WITH ON EOF FOLLOWING KEYS ONLY ONE OPTION SELECTED - THE  MARKED RADIOBUTTON
+   *> *************************************************************************
+       when Key-Pressed = Key-Enter
+         or Key-Pressed = Key-PgUp
+         or Key-Pressed = Key-PgDn
+         or Key-Pressed = Key-Tab
+         or Key-Pressed = Key-Escape
+         or Key-Pressed = Key-F1
+         or Key-Pressed = Key-F12
+            move Key-Pressed to Rb-Key
+            go to END-PROGRAM
    END-EVALUATE
 
-   *> *************************************************************************
-   *> ENTER = EXIT WITH ONLY ONE OPTION SELECTED - THE  MARKED RADIOBUTTON
-   *> *************************************************************************
-   IF Key-Pressed = Key-Enter
-      move Key-Enter  to Rb-Key
-      go to END-PROGRAM
-   end-if
-
-   *> *************************************************************************
-   *> ENTER = EXIT WITH ONLY ONE OPTION SELECTED - THE  MARKED RADIOBUTTON
-   *> *************************************************************************
-   IF Key-Pressed = Key-Escape
-      move Key-Escape to Rb-Key
-      go to END-PROGRAM
-   end-if
-
    go to loop-user-input
-
    continue.
 END-PROGRAM.
 
@@ -364,5 +356,20 @@ loop1-ex.
    continue.
 DisplayRadioButtonEx. exit.
 
+CursorHide.
+    *> save cursor state and hide the cursor
+    *> (use always a "display ...at ..."  or an "accept ... at ..." before to have a call to "initscr"
+    move wCursorHide  to wVisibilityNew
+    call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
+    continue.
+CursorHideEx. exit.
+
+*> CursorReset.
+    *> perform CursorReset thru CursorResetEx
+    *> *> reset (show) the cursor to its saved previous state
+    *> move wVisibilityOld to wVisibilityNew
+    *> call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
+    *> continue.
+*> CursorResetEx. exit.
 
 End Program GC18RADIOBUTTON.
