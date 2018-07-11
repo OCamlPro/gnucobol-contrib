@@ -6,11 +6,12 @@ PROGRAM-ID. GC58SAVERCLOCK.
 *> Purpose:    SCREENSAVER DISPLAYING A MOVING CLOCK and optionally A SCROLLING STRING
 *> Tectonics:  cobc -x GC58SAVERCLOCK.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC58SAVERCLOCK using SAVER-AREA
-*> Parameters: look at GC58SAVERCLOCK.cpy  (use with copy Version: 1.0 2016.06.15)
+*> Parameters: look at GC58SAVERCLOCK.cpy  (use with copy Version: 1.2)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
-*> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2016.06.15
+*> License:    Copyright 2016 E.Di Lorenzo - GNU LGPL, 3.0 (or greater)
+*> Version:    1.1 2018.07.11
 *> Changelog:  1.0 first release.
+*>             1.1 SSChangeCol & SSChangeColT (change clock and scrolling string colors)
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -138,7 +139,7 @@ PROCEDURE DIVISION  using SAVER-AREA.
 
 MAIN.
   *> SAVE SCREEN
-  MOVE Z"SAVESCREEN.TMP" TO szScreenName.   *> Filename ends with X"00"
+  MOVE Z"GC58SAVERCLOCK.TMP" TO szScreenName.   *> Filename ends with X"00"
   CALL STATIC "scr_dump" USING BY REFERENCE szScreenName RETURNING iScrOk END-CALL.
 
   *> erase the screen
@@ -215,14 +216,23 @@ DisplayClock.
              if wCol1  <  4 move 31 to wCol1 end-if
              if wlin1  > 20 move 13 to wlin1 end-if
              if wlin1  <  3 move 19 to wlin1 end-if
-             add      1      to FlipFlop
+             add 1 to FlipFlop
           end-if
 
           move wCol1 to wCol
           compute wlin2 = wlin1 + 1
           compute wlin3 = wlin1 + 2
+
           perform DisplayBox    thru DisplayBoxEx
           perform DisplayTme    thru DisplayTmeEx
+
+          *> change colors to clock and/or to scrolling string if requested
+          if SSChangeCol  = 'Y' add 1 to SSbackcol  SSforecol  end-if
+          if SSChangeColT = 'Y' add 1 to SSbackcolT SSforecolT end-if
+          if SSbackcol  > 7 move 1 to SSbackcol  end-if
+          if SSforecol  > 7 move 1 to SSforecol  end-if
+          if SSbackcolT > 7 move 1 to SSbackcolT end-if
+          if SSforecolT > 7 move 1 to SSforecolT end-if
      else
         perform DisplayBox thru DisplayBoxEx
         perform DisplayTme thru DisplayTmeEx
@@ -237,6 +247,8 @@ DisplayBox.
    compute box-c1 = wCol  - 2
    compute box-r2 = wlin3 + 1
    compute box-c2 = wCol  + 36
+   move SSbackcol to Box-bco
+   move SSforecol to Box-fco
    CALL GC01BOX USING BY CONTENT BOX-AREA
    .
 DisplayBoxEx. exit.
@@ -259,7 +271,7 @@ DisplayTme.
    display wClockRow1 line wlin1 column wCol with background-color SSbackcol foreground-color SSforecol highlight
    display wClockRow2 line wlin2 column wCol with background-color SSbackcol foreground-color SSforecol highlight
    display wClockRow3 line wlin3 column wCol with background-color SSbackcol foreground-color SSforecol highlight
-   .
+   continue.
 DisplayTmeEx. exit.
 
 
