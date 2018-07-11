@@ -6,25 +6,28 @@
 *> Usage:      call GC18RADIOBUTTON using RadioButton-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
-*> Version:    1.2 2017.11.15
+*> Version:    1.3 2018.06.30
 *> Changelog:  1.0 first release.
 *>             1.1 Rb-Hot from 9(01) to 9(02)
 *>             1.2 Rb-wait added
+*>             1.3 Rb-Number added
 *> ***********************************************************************************************************
 *> on screen You can manage a group of max 98 RadioButton items (options) each of 1 row .
 *> Each RadioButton has tobe inserted in a table with 99 elements
 *> there has to be a last item in the table, filled with low-value
 *>
 *> Example of use.
-*> step 1. display a box (not mandatory ) but good to have a better user interface
-*> step 2. display RadioButton items (options) inside the BOX
+*> step 0: display box and radiobuttons (none active) just to display initial screen
+*>         (fields, radiobuttons, checkboxes...) without wait for user input
+*> step 1. re-display a box (not mandatory ) but good to have a better user interface
+*> step 2. dre-isplay RadioButton items (options) inside the BOX, one of them is active (hs the focus)
 *> wait for user input (cursors keys,spacebar to activate one of the options, enter/escape = exit
 *>
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
-*> Rb-Act    1= this item is displayed as Active (it has the focus)
-*>           only one of RadioButton items can have '1'. it will be highlighted (has the focus)
-*>           at first display of the RadioButton items. when you exit from the RadioButton function
+*> Rb-Act    1= this item is displayed as Active (it has the focus). only one of RadioButton
+*>           items can have '1'. it will be highlighted (has the focus) at first display
+*>           of RadioButton items. when you exit from the RadioButton function
 *>           the active (with focus) RadioButton item will have '1' other items will have blank.
 *> Rb-Mark   if = 1 at display this item is displayed as Marked, marked = (*), not marked = ( )
 *>           only one RadioButton item can have '1' all others must be = blank
@@ -35,7 +38,6 @@
 *>           Then if a certain radiobutton item have Rb-Act = 1, it must have also Rb-Mark = 1.
 *>           Although it can be done differently (having an active item and a different item marked),
 *>           this is not a good practice and it is not recommended.
-*>
 *> Rb-Hot    number of char of Rb-Item to be used as hot key
 *>           is "Option 1 " and this Rb-Hot = 2, the typing p or P is like acctivate the item
 *>           Hot key is case insensistive  (if hotkey is "A" you can type also "a" )
@@ -50,9 +52,10 @@
 *>           It has to be in ASCIIZ format (must have x'00'(low-value) as last byte
 *> Rb-Markchar   single char used to "mark" the single chechbox item. example an "*"  asterisk
 *> Rb-Bracket-Char1/2 - Single chars to make active RadioButton more visible example ( ) or [ ]
-*> CRb-wait  Y= display radiobutton items and wait for a user keypress
+*> Rb-wait   Y= display radiobutton items and wait for a user keypress
 *>           N= display radiobutton items  and returns to caller without wait for a keypress by the user
-*>
+*>           useful to display the radiobutton list at first screen entire display
+*> in that case non eof radiobtton is "active"  (has the focus) none has Rn-Act = 1.
 *> Rb-Selected  return to caller the number of the Option selected/marked by the user
 *>           Caller pgm will know if user selected a RadioButton with enter
 *>           or has pressed Escape key to exit whitout selection
@@ -60,6 +63,7 @@
 *>           Caller pgm will know if user has selected radiobutton items and exit with enter
 *>           to confirm the selections or has pressed Escape key to exit
 *>           it is up to the caller to decide how to use the returned selection of switches
+*> Rb-Number  Count how many items are in the Radiobutton panel (= before the low value item)
 *> ***********************************************************************************************************
      03 Rb-Tab  value low-value.
         04 Rb-Ele occurs 99.
@@ -70,7 +74,7 @@
            05 Rb-c            pic 9(03).
            05 Rb-Item         pic x(81).
      03 Rb-Parameters.
-        05 Rb-MarkChar        pic x(01) value '*'.
+        05 Rb-MarkChar        pic x(01) value 'o'.
         05 Rb-BracketChars.
            07 Rb-BracketChar1 pic x(01) value '('.
            07 Rb-BracketChar2 pic x(01) value ')'.
@@ -91,5 +95,6 @@
      *> *************************************************************
      *> RETUNRS TO CALLER
      *> *************************************************************
-     03 Rb-Selected           pic 9(02).
-     03 Rb-Key                pic 9(04).
+     03 Rb-Selected           pic 9(02) value 0.
+     03 Rb-Key                pic 9(04) value 0.
+     03 Rb-Number             pic 9(02) value 0.
