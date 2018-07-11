@@ -9,7 +9,7 @@ PROGRAM-ID. GC02BOXMEX is initial.
 *> Parameters: look at GC02BOXMEX.CPY (use with copy Version: 1.1)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2016.06.15
+*> Version:    1.3 2018.06.30
 *> Changelog:  1.0 first release.
 *>             1.1 call to GC09BUTTONS deleted.
 *>                 inserted code to  Display a single button
@@ -19,6 +19,7 @@ PROGRAM-ID. GC02BOXMEX is initial.
 *>                 message, return immediately to the caller that will call GC09BUTTONS
 *>                 to have a message and next more buttons to be selected.
 *>             1.2 changed Bu-Hot from 9(01) to 9(02)
+*>             1.3 added DELETE TMP file at exit
 *> ***********************************************************************************
 DATA DIVISION.
 WORKING-STORAGE SECTION.
@@ -391,12 +392,13 @@ Click-Ex. exit.
 
 ScreenSave.
    accept wTime from time
-   string 'BOXMEX' wTime '.SCR' x'00' into wScreenName
+   string 'GC02BOXMEX' wTime '.TMP' x'00' into wScreenName
    call static 'scr_dump' using by reference wScreenName returning wiScrOk end-call.
 ScreenSaveEx. Exit.
 
 ScreenRestore.
    call static 'scr_restore' using by reference wScreenName returning wiScrOk end-call.
+   CALL 'CBL_DELETE_FILE' USING wScreenName.
 ScreenRestoreEx. Exit.
 
 End Program GC02BOXMEX.
