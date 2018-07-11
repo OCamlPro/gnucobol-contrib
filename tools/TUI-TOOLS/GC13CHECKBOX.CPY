@@ -6,10 +6,11 @@
 *> Usage:      call GC13CHECKBOX using CHECKBOX-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
-*> Version:    1.2 2017.11.15
+*> Version:    1.3 2018.06.30
 *> Changelog:  1.0 first release.
 *>             1.1 ck-Hot changed from 9(01) to 9(02)
 *>             1.2 Ck-wait added
+*>             1.3 Ck-Number added
 *> ***********************************************************************************************************
 *> on screen You can manage a group of max 98 CHECKBOX items each of 1 row .
 *> Each checkbox item has tobe inserted in a table with 99 elements
@@ -46,12 +47,13 @@
 *> Ck-Bracket-Char1/2 - Single chars to make active checkbox more visible example [ ] or ( )
 *> Ck-wait   Y= display checkbox items and wait for a user keypress
 *>           N= display checkbox items  and returns to caller without wait for a keypress by the user
-*>
+*>           useful to display the checkbox list at first screen entire display
 *> Ck-Selected  return to caller the number (in the table) of the checkbox item "active" at exit
 *> Ck-Key    key code pressed by user: 0013 = Enter, 0027 = Escape
 *>           Caller pgm will know if user selected checkbox items and exit with enter
 *>           to confirm the selections or has pressed Escape key to exit
 *>           it is up to the caller to decide how to use the returned option selected by the user
+*> Ck-Number  Count how many items are in the Checkbox panel (= before the low value item)
 *> ***********************************************************************************************************
      03 Ck-Tab  value low-value.
         04 Ck-Ele occurs 99.
@@ -83,5 +85,6 @@
      *> *************************************************************
      *> RETUNRS TO CALLER
      *> *************************************************************
-     03 Ck-Selected           pic 9(02).
-     03 Ck-Key                pic 9(04).
+     03 Ck-Selected           pic 9(02) value 0.
+     03 Ck-Key                pic 9(04) value 0.
+     03 Ck-Number             pic 9(02) value 0.
