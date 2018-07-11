@@ -1,4 +1,6 @@
        >>SOURCE FORMAT IS FREE
+       REPLACE ==:BCOL:== BY ==with BACKGROUND-COLOR==
+               ==:FCOL:== BY ==FOREGROUND-COLOR==.
 ID DIVISION.
 PROGRAM-ID. GC71CRUDEMAIN.
 *> ***********************************************************************************
@@ -9,9 +11,10 @@ PROGRAM-ID. GC71CRUDEMAIN.
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - LGPL, 3.0 (or greater)
-*> Version:    1.1 2017.11.04
+*> Version:    1.2 2018.07.11
 *> Changelog:  1.0 first release.
 *>             1.1 Mn-Hot from 9(01) to 9(02) - call changed from GC21MENU to GC22MENU
+*>             1.2 Screensaver added
 *> ********************************************************************************************
 *>                    GnuCOBOL C.R.U.DE APPLICATION (CREATE READ UPDATE DELETE)
 *>                    ---------------------------------------------------------
@@ -36,6 +39,25 @@ CONFIGURATION SECTION.
 SPECIAL-NAMES. CRT STATUS IS ws-KEY.
 DATA DIVISION.
 WORKING-STORAGE SECTION.
+*> Values that may be returned in CRT STATUS (or COB-CRT-STATUS)
+78  K-ENTER       VALUE 0000.
+78  K-UP          VALUE 2003.
+78  K-DOWN        VALUE 2004.
+78  K-LEFT        VALUE 2009.
+78  K-RIGHT       VALUE 2010.
+78  K-ESCAPE      VALUE 2005.
+78  K-TAB         VALUE 2007.
+78  K-BACKTAB     VALUE 2008.
+78  K-PAGEUP      VALUE 2001.
+78  K-PAGEDOWN    VALUE 2002.
+78  K-NO-DATA     VALUE 8000.
+78  K-TIMEOUT     VALUE 8001.
+78  K-F1          VALUE 1001.
+78  K-F4          VALUE 1004.
+78  K-F10         VALUE 1010.
+78  K-F12         VALUE 1012.
+78  K-SHIFT-F1    VALUE 1013.
+78  K-SHIFT-F3    VALUE 1015.
 
 01 black   constant as 0.
 01 blue    constant as 1.
@@ -45,20 +67,6 @@ WORKING-STORAGE SECTION.
 01 magenta constant as 5.
 01 yellow  constant as 6.  *> or Brown
 01 white   constant as 7.
-
-*> *> Values that may be returned in CRT STATUS Fiedl (or COB-CRT-STATUS register)
-*> 78  K-ENTER       VALUE 0000.
-*> 78  K-UP          VALUE 2003.
-*> 78  K-DOWN        VALUE 2004.
-*> 78  K-LEFT        VALUE 2009.
-*> 78  K-RIGHT       VALUE 2010.
-*> 78  K-ESC         VALUE 2005.
-*> 78  K-TAB         VALUE 2007.
-*> 78  K-BACKTAB     VALUE 2008.
-*> 78  K-PAGEUP      VALUE 2001.
-*> 78  K-PAGEDOWN    VALUE 2002.
-*> 78  K-ESCAPE      VALUE 2005.
-*> 78  K-NO-FIELD    VALUE 8000.  *> NO DATA FROM ACCEPT ex. a timeout is passed (also 8001)
 
 01  ws-KEY            PIC 9(04) VALUE 9999.
 01  ws-Item-Selected  PIC 9(04) VALUE 9999.
@@ -106,17 +114,33 @@ WORKING-STORAGE SECTION.
 01  wUserName    pic x(16) value space.
 01  wFirstTime   pic x(01) value 'Y'.
 
+01 wDAY.
+   05 CD-YEAR  PIC 9(4).
+   05 CD-MONTH PIC 9(2).
+   05 CD-DAY   PIC 9(2).
+
 01  TimeX              pic  x(15).
 01  wTime.
    03 wTimehh         pic  9(2).
    03 wTimemm         pic  9(2).
    03 wTimess         pic  9(2).
    03 wTimecc         pic  9(2).
+01 wTimeR       redefines wTime pic 9(8) .
+
+01  wTimeBase.
+   03 wTimehh         pic  9(2).
+   03 wTimemm         pic  9(2).
+   03 wTimess         pic  9(2).
+   03 wTimecc         pic  9(2).
+01  wTimeBaseR  redefines wTimeBase pic 9(8) .
+01  wDiff             pic  9(8).
+01  Date-Time         pic  x(25).
 
 COPY 'GC01BOX.CPY'   .
 COPY 'GC22MENU.CPY'  .
 copy 'GC02BOXMEX.CPY'.
 copy 'GC03YESNO.CPY'.
+copy 'GC58SAVERCLOCK.CPY'.
 copy 'GC98KEYCODE.CPY'   .
 
 *> ***************************************************************************************
@@ -134,16 +158,36 @@ InitialSettings.
 DisplayCoverScreen.
    perform DisplayCover thru DisplayCoverEx.
 
+    accept wTimeBase from time
+    accept wDay  from date YYYYMMDD
+    accept wTime from time
+    string wDay ' ' wTime(1:2) ':' wTime(3:2) ':' wTime(5:2) delimited by size into Date-Time
+    display Date-Time at 024062 :BCOL: Red :FCOL: white end-display
+
    *> ***************************************************************************
    *> loop on cover to display time every 1 sec
    *> ***************************************************************************
    PERFORM FOREVER
-     accept wDummy at 025080 with auto timeout 1 end-accept
+     accept omitted at 025080 with auto timeout 1 end-accept
      *> accept whitout value returns 8001 to CRT-STATUS
-     if ws-KEY not = 8001 exit perform end-if
-     accept wTime from time
-     string ' Time ' wTime(1:2) ':' wTime(3:2) ':' wTime(5:2) delimited by size into TimeX
-     display TimeX at 024066 with foreground-color white background-color red end-display
+     if ws-KEY not = K-TIMEOUT exit perform end-if
+     *> accept wTime from time
+     *> string ' Time ' wTime(1:2) ':' wTime(3:2) ':' wTime(5:2) delimited by size into TimeX
+     *> display TimeX at 024066 with foreground-color white background-color red end-display
+
+      accept wDay  from date YYYYMMDD
+      accept wTime from time
+      string wDay ' ' wTime(1:2) ':' wTime(3:2) ':' wTime(5:2) delimited by size into Date-Time
+      display Date-Time at 024062 :BCOL: Red :FCOL: white end-display
+      compute wDiff = wTimeR - wTimeBaseR
+      *> DISPLAY SCREEN SAVER AFTER 5 sec (without user input)
+      if wDiff > 500
+        move 'Y' to SSbeep
+        move 10  to SSMove *> move the clock every 10 sec
+        call  GC58SAVERCLOCK using Saver-Area
+        go to DisplayCoverScreen
+      end-if
+
    END-PERFORM
 
    *> which key was pressed on cover Screen ?
