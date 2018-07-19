@@ -1,5 +1,5 @@
       *>************************************************************************
-      *>  This file is part of DB2sample.
+      *>  This file is part of DBsample.
       *>
       *>  LNMOD7.cpy is free software: you can redistribute it and/or 
       *>  modify it under the terms of the GNU Lesser General Public License as 
