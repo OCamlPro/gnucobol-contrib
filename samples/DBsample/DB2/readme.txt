@@ -1,5 +1,5 @@
-DB2sample is an example for using GnuCOBOL with IBM DB2 SQL
-===========================================================
+DBsample/DB2 is an example for using GnuCOBOL with IBM DB2 SQL
+==============================================================
 
 Licensed under the GNU Lesser General Public License as published by the
 Free Software Foundation, either version 3 of the License, or (at your 
@@ -19,8 +19,8 @@ Requirements
 To compile and run this example you need an IBM DB2 database. For example
 you can use the DB2 Express-C, the no-charge community edition of DB2 server.
   
-Features of DB2sample
----------------------
+Features of DBsample/DB2
+------------------------
 The examples build on each other. This means that example2 includes example1,
 and example3 includes example2, and so on. All examples use only one simple
 SQL table, the BOOK table. With this BOOK table will simple SQL commands be
@@ -29,7 +29,7 @@ performed.
 Screen-shots
 ------------
 There are some screen-shots for every example program.
-See under DB2sample/screenshots. 
+See under DBsample/DB2/screenshots. 
 
 Test
 ----
@@ -50,16 +50,16 @@ Installation and Configuration
 
 Directory structure
 -------------------
-DB2sample\                  -> main directory
-DB2sample\example1          -> connect to DB2 / connect reset
-DB2sample\example2          -> select book
-DB2sample\example3          -> insert book
-DB2sample\example4          -> update book
-DB2sample\example5          -> delete book
-DB2sample\example6          -> paging (select first, next, previous, last)
-DB2sample\example7          -> list   (select first, next, previous, last)
-DB2sample\screenshots       -> screen-shots 
-DB2sample\SQLtable          -> scripts for creating table and inserting
+DBsample\DB2\               -> main directory
+DBsample\DB2\example1       -> connect to DB2 / connect reset
+DBsample\DB2\example2       -> select book
+DBsample\DB2\example3       -> insert book
+DBsample\DB2\example4       -> update book
+DBsample\DB2\example5       -> delete book
+DBsample\DB2\example6       -> paging (select first, next, previous, last)
+DBsample\DB2\example7       -> list   (select first, next, previous, last)
+DBsample\DB2\screenshots    -> screen-shots 
+DBsample\DB2\SQLtable       -> scripts for creating table and inserting
                                test data
 
 In the example1 (this is similar for the other examples) 
@@ -77,7 +77,7 @@ Compile and run
 ---------------
 First of all you have to create the BOOK SQL table in your
 DB2 database, and after it fill the table with the test data. 
-For this please see the shell- and SQL-scripts under DB2sample\SQLtable.
+For this please see the shell- and SQL-scripts under DBsample\DB2\SQLtable.
 
 For compiling and running under cygwin please use the provided files:
 - cygwin_compilex.sh
