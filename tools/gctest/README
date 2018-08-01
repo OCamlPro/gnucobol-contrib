@@ -19,25 +19,30 @@ to create an autotest.at file named from -p programname
 Where [options] are:
   -p program      The COBOL program to compile and test
   -C mod.c        A C module used by 'program' to compile
+  -B copybook     Include 'copybook' to autotest file for compile
   -i inputfile    Define input file for test program
   -o outputfile   Define Output report file
   -O LSoutfile    Define LINE SEQUENIAL output file
+  -a              Append to program.at; Default is write
   -b              Make test code start with blank line
   -e              test compile only; Expecting errors
   -E              compile only; both std=mf & std=2002; Expecting errors
+  -f opt          Add '-f opt' to compile command
+  -F opt          Add '-opt' to compile command
+  -g              compile as shared module
   -m              use -std=mf instead of -std=cobol2002
+  -M name         use 'name.at' for autotest file name
   -I              use -std=ibm instead of -std=cobol2002
+  -t std          use -std=std; (mf,ibm,2002,2014,85,ibm,mvs,acu,bs2000)
   -w              Compile with no warnings
+  -S name=value   Environment variable to be set for test
+  -D name=value   Compiler Directing variable is set to value
+  -X name=value   Push environment variable before running 'cobc'
   -c "compile command"  
   -k "Test keywords"  
   -s "Test setup name"  
  
 Example command:
  gctest -m -b -k report -s "Sample REPORT" -i STUDENT=./student0.inp \
-           -o REPORT1=./REPORT0.txt -p rwtst0.bat
-
-
-Example of usage:
-    gctest -m -b -k report -s "Sample REPORT" -i STUDENT=./student0.inp \
            -o REPORT1=./REPORT0.txt -p rwtst0.bat
 

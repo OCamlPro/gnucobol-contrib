@@ -37,7 +37,9 @@
 extern char *optarg;
 extern int optind;
 
-static int incrErr = 0;
+static int  incrErr = 0;
+static int  bShareMod = 0;
+static int	bVerbose = 0;
 static char progexe[100] = " ? $ ";
 static char progname[100] = " ";
 static char diffProg[32] = "gcdiff";
@@ -58,13 +60,21 @@ usage(char *binname)
 	printf("  -i inputfile    Define input file for test program\n");
 	printf("  -o outputfile   Define Output report file\n");
 	printf("  -O LSoutfile    Define LINE SEQUENIAL output file\n");
+	printf("  -a              Append to program.at; Default is write\n");
 	printf("  -b              Make test code start with blank line\n");
 	printf("  -e              test compile only; Expecting errors\n");
 	printf("  -E              compile only; both std=mf & std=2002; Expecting errors\n");
+	printf("  -f opt          Add '-f opt' to compile command\n");
+	printf("  -F opt          Add '-opt' to compile command\n");
+	printf("  -g              compile as shared module\n");
 	printf("  -m              use -std=mf instead of -std=cobol2002\n");
+	printf("  -M name         use 'name.at' for autotest file name\n");
 	printf("  -I              use -std=ibm instead of -std=cobol2002\n");
+	printf("  -t std          use -std=std; (mf,ibm,2002,2014,85,ibm,mvs,acu,bs2000)\n");
 	printf("  -w              Compile with no warnings\n");
 	printf("  -S name=value   Environment variable to be set for test\n");
+	printf("  -D name=value   Compiler Directing variable is set to value\n");
+	printf("  -X name=value   Push environment variable before running 'cobc'\n");
 	printf("  -c \"compile command\"  \n");
 	printf("  -k \"Test keywords\"  \n");
 	printf("  -s \"Test setup name\"  \n");
@@ -104,7 +114,7 @@ static void
 copyFile(FILE *fi, FILE *fo, int addBlank, int rmvseq, int showit, char *oldnm, char *newnm, int incrnum, int tabs)
 {
 	char	buf[4096], wrk[4096], *p;
-	int		i,j,k,olen = 0, nlen = 0;
+	int		i,j,k,pos,olen = 0, nlen = 0;
 	int		didName = 0;
 	int		atBegin = 1;
 	int		didProgId = 0;
@@ -126,7 +136,8 @@ copyFile(FILE *fi, FILE *fo, int addBlank, int rmvseq, int showit, char *oldnm, 
 		if(addBlank
 		&& atBegin
 		&& k < 1) {
-			printf("Note: program already starts with a blank line!\n");
+			if(bVerbose)
+				printf("Note: program already starts with a blank line!\n");
 			addBlank = 0;
 			incrErr = 0;
 		}
@@ -136,57 +147,81 @@ copyFile(FILE *fi, FILE *fo, int addBlank, int rmvseq, int showit, char *oldnm, 
 			addBlank = 0;
 		}
 		for(j=6; buf[j] == ' '; j++);
-		if(memcmp(&buf[j],"PROGRAM-ID.",11) == 0
-		&& !didProgId) {
-			didProgId = 1;
-			if(strstr(buf," INITIAL") != NULL) {
-				strcpy(&buf[j],"PROGRAM-ID. prog INITIAL.");
-			} else {
-				strcpy(&buf[j],"PROGRAM-ID. prog.");
-			}
-		} else if(buf[6] != '*'
-			&& !didEndProg
-			&& strstr(buf,"END PROGRAM") != NULL) {
-			didEndProg = 1;
-			strcpy(buf,"           END PROGRAM prog.");
-		}
-		if(strstr(buf,"SYSTEM") != NULL
-		&& (p=strstr(buf,progexe)) != NULL) {
-			memcpy(p,"./prog",6);
-		}
-		k = 1;
-		while(k) {
-			k = 0;
-			if((p=strstr(buf,progname))!=NULL) {
-				i = (int) (p - &buf[0]);
-				j = strlen(progname);
-				k = 8;
-				memcpy(wrk,buf,i);
-				if (j > k
-				&& buf[i+j] != '\'') {
-					memset(&wrk[i],' ',j);
-					memcpy(&wrk[i],"prog.cob",k);
-					strcpy(&wrk[i+j],&buf[i+j]);
+		if (!bShareMod) {
+			if(memcmp(&buf[j],"PROGRAM-ID.",11) == 0
+			&& !didProgId) {
+				didProgId = 1;
+				if(strstr(buf," INITIAL") != NULL) {
+					strcpy(&buf[j],"PROGRAM-ID. prog INITIAL.");
 				} else {
-					strcpy(&wrk[i],"prog.cob");
-					strcpy(&wrk[i+k],&buf[i+j]);
+					strcpy(&buf[j],"PROGRAM-ID. prog.");
 				}
-				strcpy(buf,wrk);
+			} else if(buf[6] != '*'
+				&& !didEndProg
+				&& strstr(buf,"END PROGRAM") != NULL) {
+				didEndProg = 1;
+				strcpy(buf,"           END PROGRAM prog.");
 			}
-			if((p=strstr(buf,progexe))!=NULL) {
-				i = (int) (p - &buf[0]);
-				j = strlen(progexe);
-				k = 4;
-				memcpy(wrk,buf,i);
-				if (j > k) {
-					memset(&wrk[i],' ',j);
-					memcpy(&wrk[i],"prog",k);
-					strcpy(&wrk[i+j],&buf[i+j]);
-				} else {
-					strcpy(&wrk[i],"prog");
-					strcpy(&wrk[i+k],&buf[i+j]);
+			if(strstr(buf,"SYSTEM") != NULL
+			&& (p=strstr(buf,progexe)) != NULL) {
+				memcpy(p,"./prog",6);
+			}
+			k = 1;
+			while(k) {
+				k = 0;
+				if((p=strstr(buf,progname))!=NULL) {
+					i = (int) (p - &buf[0]);
+					j = strlen(progname);
+					k = 8;
+					memcpy(wrk,buf,i);
+					if (j > k
+					&& buf[i+j] != '\'') {
+						memset(&wrk[i],' ',j);
+						memcpy(&wrk[i],"prog.cob",k);
+						if(buf[i+j] == ':')
+							strcpy(&wrk[i+k],&buf[i+j]);
+						else
+							strcpy(&wrk[i+j],&buf[i+j]);
+					} else {
+						strcpy(&wrk[i],"prog.cob");
+						strcpy(&wrk[i+k],&buf[i+j]);
+					}
+					strcpy(buf,wrk);
+					if(incrnum > 0) {
+						for(i=j=0; buf[j] != 0; ) {
+							if(buf[j] == ':'
+							&& buf[j+1] == ' '
+							&& isdigit(buf[j+2])) {
+								pos = j;
+								k = atoi(&buf[j+2]);
+								for(j=j+2; isdigit(buf[j]); j++);
+								if(buf[j] == ':') 		/* A line number? */
+									i += sprintf(&wrk[i],": %d",k+incrnum);
+								else
+									i += sprintf(&wrk[i],"%.*s",j-pos,&buf[pos]);	/* Leave as it was */
+							} else {
+								wrk[i++] = buf[j++];
+							}
+						}
+						wrk[i] = 0;
+						strcpy(buf,wrk);
+					}
 				}
-				strcpy(buf,wrk);
+				if((p=strstr(buf,progexe))!=NULL) {
+					i = (int) (p - &buf[0]);
+					j = strlen(progexe);
+					k = 4;
+					memcpy(wrk,buf,i);
+					if (j > k) {
+						memset(&wrk[i],' ',j);
+						memcpy(&wrk[i],"prog",k);
+						strcpy(&wrk[i+j],&buf[i+j]);
+					} else {
+						strcpy(&wrk[i],"prog");
+						strcpy(&wrk[i+k],&buf[i+j]);
+					}
+					strcpy(buf,wrk);
+				}
 			}
 		}
 		if(rmvseq) {
@@ -355,24 +390,32 @@ main(
 	int		getKeyword = 1;
 	int		fixedFormat = 1;
 	int		bCompileOnly = 0;
+	int		bCompileModule = 0;
 	int		bCompile = 1;
 	int		bWall = 1;
 	int		bStdMf = 0;
 	int		bStdIBM = 0;
 	int		bStd2002 = 1;
+	int		bStd2014 = 0;
+	int		bStd85 = 0;
+	int		bStdDefault = 0;
+	int		bAppendAutoTest = 0;
+	int		bDoSetup = 0;
 	int		preln;
 	char	inpdd[48],outdd[48],*p,setdd[48],settestfile[200];
-	char	tmp[300],wrk[200],progout[200],cmod[80];
+	char	tmp[300],wrk[200],progout[200],cmod[80], cobstd[12], autoname[48];
 	char	setup[200],keywords[200],callfh[48];
 	char	inptestfile[200],outtestfile[200],compilecmd[256];
 	char	outlst[80],errlst[80],compprefx[64];
-	char	libs[256],flags[128];
+	char	libs[256],flags[128], exshr[8];
 	char	outFiles[dMaxFile][80];
 	char	ddFiles[dMaxFile][80];
 	char	bookFiles[dMaxFile][80];
 	char	setEnv[dMaxFile][80];
+	char	setCompEnv[dMaxFile][80];
+	char	setDef[dMaxFile][80];
 	FILE	*at,*fi;
-	int		addBlank = 0, numFiles = 0, numBooks = 0, numEnv = 0;
+	int		addBlank = 0, numFiles = 0, numBooks = 0, numEnv = 0, numDef = 0, numCenv = 0;
 
 	strcpy(setup,"SAMPLE PROGRAM");
 	strcpy(keywords,"report");
@@ -388,32 +431,79 @@ main(
 	memset(callfh,0,sizeof(callfh));
 	memset(libs,0,sizeof(libs));
 	memset(flags,0,sizeof(flags));
+	memset(autoname,0,sizeof(autoname));
 	putenv("SHELL=/bin/sh");
-	while ((opt=getopt(argc, argv, "i:o:O:c:d:hp:C:B:s:S:k:x:eEbImwVL:l:f:")) != EOF) {
+	strcpy(exshr,"-x");
+	strcpy(cobstd,"cobol2002");
+	while ((opt=getopt(argc, argv, "ai:o:O:c:d:hp:B:C:D:X:s:S:k:x:eEgbImwvVM:t:L:l:f:F:")) != EOF) {
 		switch(opt) {
+		case 'a':
+			bAppendAutoTest = 1;
+			break;
+		case 'v':
+			bVerbose = 1;
+			break;
 		case 'm':
+			bStdIBM = bStd2002 = bStd2014 = bStd85 = bStdDefault = bStdMf = 0;
 			bStdMf = 1;
-			bStdIBM = 0;
-			bStd2002 = 0;
 			bCompile = 0;
+			strcpy(cobstd,"mf");
 			break;
 		case 'I':
-			bStdMf = 0;
+			bStdIBM = bStd2002 = bStd2014 = bStd85 = bStdDefault = bStdMf = 0;
 			bStdIBM = 1;
-			bStd2002 = 0;
-			bCompile = 0;
+			strcpy(cobstd,"ibm");
+			break;
+		case 't':
+			bStdIBM = bStd2002 = bStd2014 = bStd85 = bStdDefault = bStdMf = 0;
+			if (strstr(optarg,"2002")) {
+				bStd2002 = 1;
+				strcpy(cobstd,"cobol2002");
+			} else if (strstr(optarg,"2014")) {
+				bStd2014 = 1;
+				strcpy(cobstd,"cobol2014");
+			} else if (strstr(optarg,"85")) {
+				bStd85 = 1;
+				strcpy(cobstd,"cobol85");
+			} else if (strstr(optarg,"ibm")) {
+				bStdIBM = 1;
+				strcpy(cobstd,"ibm");
+			} else if (strstr(optarg,"mvs")) {
+				bStdIBM = 1;
+				strcpy(cobstd,"mvs");
+			} else if (strstr(optarg,"mf")) {
+				bStdMf = 1;
+				strcpy(cobstd,"mf");
+			} else if (strstr(optarg,"bs2000")) {
+				strcpy(cobstd,"bs2000");
+			} else if (strstr(optarg,"acu")) {
+				strcpy(cobstd,"acu");
+			} else {
+				bStdDefault = 1;
+				strcpy(cobstd,"default");
+			}
 			break;
 		case 'w':
 			bWall = 0;	/* No warnings */
 			bCompile = 0;
+			break;
+		case 'M':		/* COMPILE subroutine */
+			strcpy(autoname,optarg);
+			break;
+		case 'g':		/* COMPILE subroutine */
+			bCompileOnly = 1;
+			bCompileModule = 1;
+			strcpy(exshr,"");
+			bShareMod = 1;
 			break;
 		case 'e':		/* COMPILE only as errors expected */
 			bCompileOnly = 1;
 			break;
 		case 'E':		/* COMPILE only as errors expected */
 			bCompileOnly = 1;
-			bStdMf = 1;
-			bStd2002 = 1;
+			bStdIBM = bStd2002 = bStd2014 = bStd85 = bStdDefault = bStdMf = 0;
+			bStdMf = bStd2002 = 1;
+			strcpy(cobstd,"default");
 			break;
 		case 'i':
 			getFileName(inpdd,inptestfile,optarg);
@@ -445,13 +535,25 @@ main(
 		case 's':
 			strcpy(setup,optarg);
 			getSummary = 0;
+			bDoSetup = 1;
 			break;
 		case 'S':
 			if(numEnv < dMaxFile) {
 				strcpy(setEnv[numEnv],optarg);
 				putenv(strdup(optarg));
-				printf("DBG Push: %s :\n",optarg);
 				numEnv++;
+			}
+			break;
+		case 'D':
+			if(numDef < dMaxFile) {
+				strcpy(setDef[numDef],optarg);
+				numDef++;
+			}
+			break;
+		case 'X':
+			if(numCenv < dMaxFile) {
+				strcpy(setCompEnv[numCenv],optarg);
+				numCenv++;
 			}
 			break;
 		case 'x':
@@ -486,6 +588,13 @@ main(
 		case 'f':
 			sprintf(&flags[strlen(flags)]," -f%s",optarg);
 			break;
+		case 'F':
+			sprintf(&flags[strlen(flags)]," -%s",optarg);
+			if(strcmp(optarg,"m")==0) {
+				strcpy(exshr,"");
+				bShareMod = 1;
+			}
+			break;
 		default:
 			printf("Unknown option '%c' \n",opt);
 		case 'h':
@@ -499,15 +608,10 @@ main(
 			break;
 		}
 	}
-	if(bStdIBM)
-		sprintf(compprefx,"cobc -x -std=ibm");
-	else if(bStdMf)
-		sprintf(compprefx,"cobc -x -std=mf");
-	else
-		sprintf(compprefx,"cobc -x -std=cobol2002");
-	strcat(compprefx," -debug");
+	sprintf(compprefx,"cobc %s -std=%s",exshr,cobstd);
+
 	if(bWall)
-		strcat(compprefx," -Wall");
+		strcat(compprefx," -debug -Wall");
 	else
 		strcat(compprefx," -w");
 	if(callfh[0] > ' ')
@@ -536,15 +640,21 @@ main(
 	snifFile(fi,&fixedFormat,getSummary,setup,getKeyword,keywords);
 	fi = NULL;
 	sprintf(tmp,"%s.at",progout);
-	at = fopen(tmp,"w");
+	if(autoname[0] > ' ')
+		sprintf(tmp,"%s.at",autoname);
+	at = fopen(tmp,bAppendAutoTest?"a":"w");
 	if(at == NULL) {
 		perror(tmp);
 		exit(-1);
 	}
 	fprintf(at,"\n");
-	fprintf(at,"AT_SETUP([%s])\n",setup);
-	fprintf(at,"AT_KEYWORDS([%s])\n",keywords);
-	fprintf(at,"\n");
+	if(autoname[0] <= ' '
+	|| bDoSetup
+	|| !bAppendAutoTest) {
+		fprintf(at,"AT_SETUP([%s])\n",setup);
+		fprintf(at,"AT_KEYWORDS([%s])\n",keywords);
+		fprintf(at,"\n");
+	}
 
 	if(inptestfile[0] > ' ') {
 		sprintf(tmp,"DD_%s=%s",inpdd,inptestfile);
@@ -556,6 +666,12 @@ main(
 	}
 	makeCommand(tmp,compilecmd,progout,progname,cmod);
 	unlink(outlst); unlink(errlst);
+	for(i=0; i <numCenv; i++) {
+		putenv(strdup(setCompEnv[i]));
+	}
+	for(i=0; i < numDef; i++) {
+		sprintf(&tmp[strlen(tmp)]," -D%s",setDef[i]);
+	}
 	sprintf(&tmp[strlen(tmp)]," 1>%s 2>%s",outlst,errlst);
 	compsts = system(tmp);
 	if(compsts != 0)
@@ -591,8 +707,13 @@ main(
 		perror(progname);
 		exit(-1);
 	}
-	fprintf(at,"AT_DATA([prog.cob], [");
-	copyFile(fi,at,addBlank,fixedFormat,0,NULL,NULL,0,0);
+	if(bCompileModule) {
+		fprintf(at,"AT_DATA([%s], [",progname);
+		copyFile(fi,at,addBlank,fixedFormat,0,NULL,NULL,0,0);
+	} else {
+		fprintf(at,"AT_DATA([prog.cob], [");
+		copyFile(fi,at,addBlank,fixedFormat,0,NULL,NULL,0,0);
+	}
 	fclose(fi);
 	fi = NULL;
 	fprintf(at,"])\n\n");
@@ -615,21 +736,36 @@ ReDoCompile:
 		strcpy(wrk,compilecmd);
 	} else
 	if(memcmp(compilecmd,compprefx,preln) == 0) {
-		sprintf(wrk,"$COMPILE %s%s",bStdMf?"-std=mf ":"",&compilecmd[preln]);
-		if(bCompileOnly)
-			sprintf(wrk,"$COMPILE_ONLY %s%s",bStdMf?"-std=mf ":"",&compilecmd[preln]);
+		sprintf(wrk,"$COMPILE -std=%s %s",cobstd,&compilecmd[preln]);
+		if(bCompileModule)
+			sprintf(wrk,"$COMPILE_MODULE -std=%s -m %s",cobstd,&compilecmd[preln]);
+		else if(bCompileOnly)
+			sprintf(wrk,"$COMPILE_ONLY -std=%s %s",cobstd,&compilecmd[preln]);
 	} else if(memcmp(compilecmd,"cobc -x",7) == 0) {
-		sprintf(wrk,"$COMPILE %s%s",bStdMf?"-std=mf ":"",&compilecmd[7]);
-		if(bCompileOnly)
-			sprintf(wrk,"$COMPILE_ONLY %s%s",bStdMf?"-std=mf ":"",&compilecmd[7]);
+		sprintf(wrk,"$COMPILE -std=%s %s",cobstd,&compilecmd[7]);
+		if(bCompileModule)
+			sprintf(wrk,"$COMPILE_MODULE -std=%s -m %s",cobstd,&compilecmd[7]);
+		else if(bCompileOnly)
+			sprintf(wrk,"$COMPILE_ONLY -std=%s %s",cobstd,&compilecmd[7]);
 	} else {
 		strcpy(wrk,compilecmd);
 	}
-	makeCommand(tmp,wrk,"prog","prog.cob",cmod[0]>' '?"cmod.c":"");
+	if(bCompileModule) {
+		makeCommand(tmp,wrk,progexe,progname,cmod[0]>' '?"cmod.c":"");
+	} else {
+		makeCommand(tmp,wrk,"prog","prog.cob",cmod[0]>' '?"cmod.c":"");
+	}
 	if((p=strstr(tmp,"-o prog ")) != NULL) {
 		memmove(p,p+8,48);
 	}
-	fprintf(at,"AT_CHECK([%s], [%d], [],",tmp,WEXITSTATUS(compsts));
+	for(i=0; i < numDef; i++) {
+		sprintf(&tmp[strlen(tmp)]," -D%s",setDef[i]);
+	}
+	fprintf(at,"AT_CHECK([");
+	for(i=0; i <numCenv; i++) {
+		fprintf(at,"export %s; ",setCompEnv[i]);
+	}
+	fprintf(at,"%s], [%d], [],",tmp,WEXITSTATUS(compsts));
 	if(bCompileOnly)
 		fprintf(at,"\n[");
 	else
@@ -645,7 +781,7 @@ ReDoCompile:
 	&& bStdMf
 	&& bStd2002) {
 		bStdMf = 0;
-		sprintf(compprefx,"cobc -x -std=cobol2002");
+		sprintf(compprefx,"cobc %s -std=%s",exshr,"cobol2002");
 		if(bWall)
 			strcat(compprefx," -debug -Wall");
 		else
@@ -744,11 +880,14 @@ ReDoCompile:
 			fprintf(at,"AT_CHECK([%s reference %s], [0], [], [])\n\n",diffProg,outFiles[i]);
 		}
 	}
-	fprintf(at,"AT_CLEANUP\n\n");
+	if (!bShareMod)
+		fprintf(at,"AT_CLEANUP\n\n");
 	fclose(at);
 	unlink(outlst); unlink(errlst);
-	sprintf(tmp,"./%s",progout);
-	unlink(tmp);
+	if(!bCompileModule) {
+		sprintf(tmp,"./%s",progout);
+		unlink(tmp);
+	}
 	exit(0);
 	return 0;
 }
