@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2015 Sergey Kashyrin <ska@kiska.net>
+ * Copyright (C) 2006-2018 Sergey Kashyrin <ska@kiska.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

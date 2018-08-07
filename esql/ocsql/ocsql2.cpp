@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Sergey Kashyrin <ska@kiska.net>
+ * Copyright (C) 2006-2018 Sergey Kashyrin <ska@kiska.net>
  *               2012 enhanced by Doug Vogel <dv11674@gmail.com>
  *               2013 fixes and enhancements by Atilla Akarsular <030ati@gmail.com>
  *
@@ -191,17 +191,15 @@ struct OC_SQLV {
  *       SQL-LEN == 2  Cobol S9(4)  COMP-5 == C/C++ short int (16-bit)
  *       SQL-LEN == 4  Cobol S9(8)  COMP-5 == C/C++ int (32-bit)
  *       SQL-LEN == 8  Cobol S9(18) COMP-5 == C/C++ long long (64-bit)
- * 'X' - CHAR. Cobol PIC X(SQL-LEN) followed by PIC X VALUE LOW-VALUE == C/C++ char[] (0-terminated)
- * 'V' - VARCHAR. Cobol structure. C/C++ struct { short len; char val[SQL_LEN+1];} 0-terminated.
+ * 'X' - CHAR. Cobol PIC X(SQL-LEN) NOT 0-terminated
+ * 'V' - VARCHAR. Cobol structure. C/C++ struct { short len; char val[SQL_LEN];} NOT 0-terminated.
  *         01 X.
  *           02 LEN PIC S9(4) COMP-5.
  *           02 VAL PIC X(SQL-LEN).
- *           02 FILLER PIC X VALUE LOW-VALUE.
- * 'L' - LONG VARCHAR. Cobol structure. C/C++ struct { int len; char val[SQL_LEN+1];} 0-terminated.
+ * 'L' - LONG VARCHAR. Cobol structure. C/C++ struct { int len; char val[SQL_LEN];} NOT 0-terminated.
  *         01 X.
  *           02 LEN PIC S9(8) COMP-5.
  *           02 VAL PIC X(SQL-LEN).
- *           02 FILLER PIC X VALUE LOW-VALUE.
  * 'B' - The same as 'X' but SQL type is BINARY
  * 'v' - The same as 'V' but SQL type is BINARY
  * 'l' - The same as 'L' but SQL type is BINARY
@@ -1888,3 +1886,5 @@ static bool movecomp3(char * comp3, int bytelen, int precision, char * unpacked)
 	}
 	return true;
 }
+
+static const char * copyr = "Copyright (C) 2006-2018 Sergey Kashyrin <ska@kiska.net>";

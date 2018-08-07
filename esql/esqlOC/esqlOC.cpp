@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Sergey Kashyrin <ska@kiska.net>
+ * Copyright (C) 2006-2018 Sergey Kashyrin <ska@kiska.net>
  *               2012 enhanced by Doug Vogel <dv11674@gmail.com>
  *               2013 fixes and enhancements by Atilla Akarsular <030ati@gmail.com>
  *
@@ -618,6 +618,9 @@ private:
 						cl2.sqlaction = 1;
 					}
 					break;
+				case 4:
+					processvar(cl, n);
+					break;
 				case 5:
 					processSEL(cl, n);
 					break;
@@ -1065,7 +1068,51 @@ private:
 			bool unhandled = false;
 #if !defined(WORDS_BIGENDIAN) || defined(LITTLE_ENDIAN)
 			if(vvar->indexof("COMP-5") < 0) {
-				unhandled = true;
+				if(level == 49) {
+					int ix = cl.line.indexof(" COMP");
+					if(ix >= 0) {
+						string sc = cl.line.substr(ix);
+						cl.line = cl.line.substr(0, ix);
+						sc.trim();
+						ix = sc.indexof("COMPUTATIONAL-4");
+						if(ix >= 0) {
+							sc = "           COMP-5" + sc.substr(ix+15);
+							addln(lineno++, sc);
+						} else {
+							ix = sc.indexof("COMP-4");
+							if(ix >= 0) {
+								sc = "           COMP-5" + sc.substr(ix+6);
+								addln(lineno++, sc);
+							} else {
+								ix = sc.indexof("COMPUTATIONAL");
+								if(ix >= 0) {
+									sc = "           COMP-5" + sc.substr(ix+13);
+									addln(lineno++, sc);
+								} else {
+									ix = sc.indexof("COMP");
+									if(ix >= 0) {
+										sc = "           COMP-5" + sc.substr(ix+4);
+										addln(lineno++, sc);
+									} else {
+										unhandled = true;
+										sc = "           " + sc;
+										addln(lineno++, sc);
+										fprintf(stderr, "WARNING: Program '%s' line %d: unsupported %s at level 49\n", cl.fname, cl.lineno, (const char *)svar);
+										sprintf(buf, "      * Incorrect/Unsupported %s at level 49", (const char *)svar);
+										addln(lineno++, buf);
+									}
+								}
+							}
+						}
+					} else {
+						unhandled = true;
+						fprintf(stderr, "WARNING: Program '%s' line %d: unsupported %s at level 49\n", cl.fname, cl.lineno, (const char *)svar);
+						sprintf(buf, "      * Incorrect/Unsupported %s at level 49", (const char *)svar);
+						addln(lineno++, buf);
+					}
+				} else {
+					unhandled = true;
+				}
 			}
 #endif
 			int ctd, ctv;
@@ -1254,7 +1301,7 @@ private:
 			sprintf(buf, "line %d: VAR variable not found: %s", cl.lineno, (const char *)svar);
 			throw buf;
 		}
-		if(var.starts("LONG") && !var.starts("LONG RAW") && !var.starts("LONG VARRAW") && !var.starts("LONG BINARY") && !var.starts("LONG VARBINARY")) {
+		if(v->type != 'S' && var.starts("LONG") && !var.starts("LONG RAW") && !var.starts("LONG VARRAW") && !var.starts("LONG BINARY") && !var.starts("LONG VARBINARY")) {
 			sprintf(buf, "      * %s accepted as LONG CHAR/VARCHAR(%d)", (const char *)v->name, v->size);
 			addln(lineno++, buf);
 		} else if(v->type == 'X') {
@@ -2152,3 +2199,5 @@ int main(int argsLength, char ** args)
 	}
 	return rc;
 }
+
+static const char * copyr = "Copyright (C) 2006-2018 Sergey Kashyrin <ska@kiska.net>";
