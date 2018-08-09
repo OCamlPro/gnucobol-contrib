@@ -19,7 +19,8 @@ Relies on exported CFLAGS for the include file search path.
 Example
 -------
 
-~~
+~~~
+::text
 prompt$ gcc -o gcv gcv.c
 
 prompt$ export CFLAGS='-I /usr/local/include'
@@ -28,7 +29,7 @@ prompt$ ./gcv AG_OBJECT_READONLY agar/core.h -C
 
 prompt$ ./gcv AG_OBJECT_NAME_MAX agar/core.h
 64prompt$
-~~
+~~~
 
 gcv was written to help bind libAgar into a GnuCOBOL user defined function
 repository, -D AGAR during gcv compile will add the Agar core and gui headers
@@ -45,7 +46,8 @@ Paired with `commands.sed` `gcv` can be pretty handy when interfacing with C
 sources.  It will display values that are normally C preprocessor or C enums
 and hidden from COBOL.
 
-~~sed
+~~~
+::sed
 # Replace #indent prog params# with the captured output indented 4 spaces
 s%#indent ([^ ]*)[ ]?([^ ]*)[ ]?([^ ]*)[ ]?([^ ]*)[ ]?(.*)#%\1 \2 \3 \4 \5 | sed 's/^/    /'%e
 
@@ -54,14 +56,14 @@ s%#command ([^ ]*)[ ]?([^ ]*)[ ]?([^ ]*)[ ]?([^ ]*)[ ]?(.*)#%\1 \2 \3 \4 \5%e
 
 # Replace agar constants and C expressions
 s#(.*)\[\[symbol[ ]?(.*)[ ]?(.*)\]\](.*)#printf "%s%s%s" "\1" "$(./gcv \2 \3)" "\4"#e
-s#(.*)\[\[eval[ ]?'(.*)'[ ]?(.*)\]\](.*)#printf "%s%s%s" "\1" "$(./gcv "\2" \3)" "\4"#e 
+s#(.*)\[\[eval[ ]?'(.*)'[ ]?(.*)\]\](.*)#printf "%s%s%s" "\1" "$(./gcv "\2" \3)" "\4"#e
 
 # Output suitable for replacement in COBOL source
-s#(.*)\[\[constant[ ]?(.*)[ ]?(.*)\]\](.*)#printf "%s%s%s" "\1" "$(./gcv \2 \3 -c)" "\4"#e 
-s#(.*)\[\[value[ ]?(.*)[ ]?(.*)\]\](.*)#printf "%s%s%s" "\1" "$(./gcv \2 \3 -v)" "\4"#e 
+s#(.*)\[\[constant[ ]?(.*)[ ]?(.*)\]\](.*)#printf "%s%s%s" "\1" "$(./gcv \2 \3 -c)" "\4"#e
+s#(.*)\[\[value[ ]?(.*)[ ]?(.*)\]\](.*)#printf "%s%s%s" "\1" "$(./gcv \2 \3 -v)" "\4"#e
 
 s#(.*)\[\[shell[ ]?([^ ]*)[ ]?'(.*)'[ ]?\]\](.*)#printf "%s%s%s" "\1" "$("\2" "\3")" "\4"#e
-~~
+~~~
 
 Usage:
 
