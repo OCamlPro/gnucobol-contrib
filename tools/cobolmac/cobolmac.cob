@@ -1758,7 +1758,8 @@ procedure division.
     perform s015-read-key-macrolib
 
     if w906-macrolib-key-found then *> We have a duplicate macro name.
-      perform d110-found-duplicate-macro
+      *> perform d110-found-duplicate-macro
+      perform d120-add-macro-to-library
 
     else *> We have a new macro. Add it to Macro Library.
       perform d120-add-macro-to-library
@@ -2829,7 +2830,10 @@ procedure division.
     *>  Write a record to the Macro Library file.
     *> -------------------------------------------------------------------------
 
-    write macrolib-record end-write
+    write macrolib-record
+        invalid key
+            rewrite macrolib-record
+    end-write
 
     if not w500-success then
       move "s017-write-macrolib" to w600-sub-location

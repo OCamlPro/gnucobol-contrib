@@ -128,7 +128,7 @@ GCobol >>SOURCE FORMAT IS FREE
                    end-display
                else
                    display
-                       "units command failure: " pipe-status
+                       "units command failure: " pipe-status upon syserr
                    end-display
                end-if
            end-if
