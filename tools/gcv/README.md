@@ -83,5 +83,5 @@ Not using gcv:
 
 For Markdown or ReStructuredText documentation:
 
-   #indent command args# replaced with output of command, indented
-   #command command args# replaced with output of command
+    #indent command args# replaced with output of command, indented
+    #command command args# replaced with output of command
