@@ -1440,7 +1440,7 @@ extern "C" OCEXPORT int OCSQLFTC(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 	logd(901, "OCSQL: FETCH %.*s", S.SQL_STMLEN, S.SQL_STMT);
 	SQLRETURN rc;
 	mysql * sql = (mysql *) S.SQL_IPTR;
-	SQLHANDLE stmt = *(sql->ST);
+	SQLHANDLE stmt = (sql == NULL) ? (SQLHANDLE) 0 : *(sql->ST);
 	if(stmt == 0) {
 		// cursor in invalid state
 		strcpy(E.OC_SQLSTATE, "07705");
@@ -1662,7 +1662,7 @@ extern "C" OCEXPORT int OCSQLCCU(STMT & S, OC_SQLCA & E)
 	}
 	logd(901, "OCSQL: CLOSE CURSOR %.*s", S.SQL_STMLEN, S.SQL_STMT);
 	mysql * msql = (mysql *) S.SQL_IPTR;
-	SQLHANDLE stmt = *(msql->ST);
+	SQLHANDLE stmt = (msql == NULL) ? (SQLHANDLE) 0 : *(msql->ST);
 	if(stmt == 0) {
 		// cursor in invalid state
 		strcpy(E.OC_SQLSTATE, "07705");
@@ -1719,7 +1719,7 @@ static void prnerr(SQLSMALLINT ht, SQLHANDLE h, OC_SQLCA * E)
 				if(i == 1 || E->OC_SQLCODE == 0 || !codewasset) {
 					if(err == 0) {
 						if(state[0] == 'H') {
-							E->OC_SQLCODE = 999;	// Fatal error typically on commit
+							E->OC_SQLCODE = -9999;	// Fatal error typically on commit
 						} else {
 							E->OC_SQLCODE = - atoi((char *)state);
 						}

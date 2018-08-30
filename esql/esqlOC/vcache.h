@@ -171,7 +171,7 @@ public:
 	}
 
 	char & operator[](int i) { return v[i];}
-	operator const char *() { return v; }
+	operator const char *() { return v == NULL ? "" : v; }
 
 	string & operator +=(string & s) {
 		if(s.Length == 0) return *this;
@@ -398,6 +398,12 @@ public:
 		for(int i = 0; i < Length - 1; ++i) {
 			if(v[i] == '\'') bQ = !bQ;
 			if(bQ) continue;
+			if(v[i] == ':' && v[i + 1] == ' ') {
+				strmove(v+i+1, v+i+2);
+				--i;
+				--Length;
+				continue;
+			}
 			if(v[i] == ' ') {
 				if(v[i + 1] == ' ' ||
 					v[i + 1] == ',' ||

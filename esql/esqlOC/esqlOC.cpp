@@ -106,6 +106,7 @@ private:
 	int tmpvarnum;
 	int skiptolevel;
 	string groupName;
+	int inside_declare;
 
 public:
 
@@ -181,6 +182,7 @@ public:
 		sqlca_included = false;
 		tmpvarnum = 0;
 		skiptolevel = 0;
+		inside_declare = 0;
 	}
 
 	~CobPgm() {
@@ -295,13 +297,21 @@ private:
 		string sqlu(sql);
 		sqlu.toupper();
 		if(sqlu.starts("BEGIN DECLARE SECTION")) {
-			cl.bSQL = true;
-			cl.sqlaction = 2;	// start mark
+			if(inside_declare == 0) {
+				cl.bSQL = true;
+				cl.sqlaction = 2;	// start mark
+			}
+			++inside_declare;
 			return;
 		}
 		if(sqlu.starts("END DECLARE SECTION")) {
-			cl.bSQL = true;
-			cl.sqlaction = 3;	// end mark
+			if(inside_declare > 0) {
+				--inside_declare;
+			}
+			if(inside_declare == 0) {
+				cl.bSQL = true;
+				cl.sqlaction = 3;	// end mark
+			}
 			return;
 		}
 		if(sqlu == "INCLUDE SQLCA") {
@@ -333,6 +343,15 @@ private:
 					*fn += exts[n];
 					FILE * r = fopen(*fn, "r");
 					if(r != NULL) {
+						if(inside_declare == 0) {
+							cobline * l = new cobline("      * implicit begin declare section");
+							l->lineno = 0;
+							l->fname = (char *)(const char *)*fn;
+							src.insert(lineno, l);
+							++lineno;
+							l->bSQL = true;
+							l->sqlaction = 2;	// start mark
+						}
 						int lno = 0;
 						while(NULL != fgets(buf, sizeof buf, r)) {
 							cobline * l = new cobline(buf);
@@ -351,12 +370,21 @@ private:
 							}
 						}
 						fclose(r);
+						if(inside_declare == 0) {
+							cobline * l = new cobline("      * implicit end declare section");
+							l->lineno = ++lno;
+							l->fname = (char *)(const char *)*fn;
+							src.insert(lineno, l);
+							++lineno;
+							l->bSQL = true;
+							l->sqlaction = 3;	// end mark
+						}
 						return;	// don't delete "fn" - there was a lot of references to this string
 					}
 					delete fn;
 				}
 			}
-			sprintf(buf, "line %d: SQL COPYBOOK NOT FOUND: %s", cl.lineno, (const char *)sql);
+			sprintf(buf, "line %d of %s: SQL COPYBOOK NOT FOUND: %s", cl.lineno, cl.fname, (const char *)sql);
 			throw buf;
 		}
 		if(sqlu.starts("VAR ")) {
@@ -388,13 +416,13 @@ private:
 			sql = sql.substr(8);
 			int x = sql.indexof(' ');
 			if(x < 0) {
-				sprintf(buf, "line %d: Incorrect SQL DECLARE: %s", cl.lineno, (const char *)sql);
+				sprintf(buf, "line %d of %s: Incorrect SQL DECLARE: %s", cl.lineno, cl.fname, (const char *)sql);
 				throw buf;
 			}
 			string svar = sqlu.substr(0, x);
 			x = sqlu.indexof("SELECT ");
 			if(x < 0) {
-				sprintf(buf, "line %d: Incorrect SQL DECLARE: %s", cl.lineno, (const char *)sql);
+				sprintf(buf, "line %d of %s: Incorrect SQL DECLARE: %s", cl.lineno, cl.fname, (const char *)sql);
 				throw buf;
 			}
 			bool bWH = false;
@@ -418,7 +446,7 @@ private:
 		} else if(sqlu.starts("CONNECT ")) {
 			cl.sqlaction = 16;
 		} else {
-			sprintf(buf, "line %d: unsupported SQL: %s", cl.lineno, (const char *)sql);
+			sprintf(buf, "line %d of %s: unsupported SQL: %s", cl.lineno, cl.fname, (const char *)sql);
 			throw buf;
 		}
 		int ct = 0;
@@ -880,7 +908,7 @@ private:
 		varline += *vvar;
 		int isp = vvar->indexof(' ');
 		if(isp < 0) {
-			fprintf(stderr, "WARNING: Program '%s' line %d: unknown construction in DECLARE SECTION: %s\n", cl.fname, cl.lineno, (const char *)*vvar);
+			fprintf(stderr, "WARNING: line %d of %s: unknown construction in DECLARE SECTION: %s\n", cl.lineno, cl.fname, (const char *)*vvar);
 			string ss("      * UNKNOWN ");
 			ss += *vvar;
 			addln(lineno++, ss);
@@ -989,7 +1017,7 @@ private:
 			iv = vvar->indexof("PICTURE ");
 		}
 		if(iv < 0) {
-			fprintf(stderr, "WARNING: Program '%s' line %d: unknown construction in DECLARE SECTION: %s\n", cl.fname, cl.lineno, (const char *)*vvar);
+			fprintf(stderr, "WARNING: line %d of %s: unknown construction in DECLARE SECTION: %s\n", cl.lineno, cl.fname, (const char *)*vvar);
 			sprintf(buf, "      * Incorrect/Unsupported %s", (const char *)svar);
 			addln(lineno++, buf);
 			vvar = NULL;
@@ -1009,7 +1037,7 @@ private:
 			bool unhandled = ((*vvar)[0] != 'S');
 			bool valid = countprec((const char *) *vvar, ctd, ctv);
 			if(!valid) {
-				fprintf(stderr, "WARNING: Program '%s' line %d: unsupported type: %s\n", cl.fname, cl.lineno, (const char *)*vvar);
+				fprintf(stderr, "WARNING: line %d of %s: unsupported type: %s\n", cl.lineno, cl.fname, (const char *)*vvar);
 				sprintf(buf, "      * Incorrect/Unsupported %s", (const char *)svar);
 				addln(lineno++, buf);
 				vvar = NULL;
@@ -1052,7 +1080,7 @@ private:
 			iv = vvar->indexof("COMPUTATIONAL-X");
 		}
 		if(iv >= 0) {
-			fprintf(stderr, "WARNING: Program '%s' line %d: COMP-X is unsupported: %s\n", cl.fname, cl.lineno, (const char *)*vvar);
+			fprintf(stderr, "WARNING: line %d of %s: COMP-X is unsupported: %s\n", cl.lineno, cl.fname, (const char *)*vvar);
 			sprintf(buf, "      * Incorrect/Unsupported %s", (const char *)svar);
 			addln(lineno++, buf);
 			vvar = NULL;
@@ -1097,7 +1125,7 @@ private:
 										unhandled = true;
 										sc = "           " + sc;
 										addln(lineno++, sc);
-										fprintf(stderr, "WARNING: Program '%s' line %d: unsupported %s at level 49\n", cl.fname, cl.lineno, (const char *)svar);
+										fprintf(stderr, "WARNING: line %d of %s: unsupported %s at level 49\n", cl.lineno, cl.fname, (const char *)svar);
 										sprintf(buf, "      * Incorrect/Unsupported %s at level 49", (const char *)svar);
 										addln(lineno++, buf);
 									}
@@ -1106,7 +1134,7 @@ private:
 						}
 					} else {
 						unhandled = true;
-						fprintf(stderr, "WARNING: Program '%s' line %d: unsupported %s at level 49\n", cl.fname, cl.lineno, (const char *)svar);
+						fprintf(stderr, "WARNING: line %d of %s: unsupported %s at level 49\n", cl.lineno, cl.fname, (const char *)svar);
 						sprintf(buf, "      * Incorrect/Unsupported %s at level 49", (const char *)svar);
 						addln(lineno++, buf);
 					}
@@ -1118,7 +1146,7 @@ private:
 			int ctd, ctv;
 			bool valid = countprec((const char *) *vvar, ctd, ctv);
 			if(!valid) {
-				fprintf(stderr, "WARNING: Program '%s' line %d: unsupported type: %s\n", cl.fname, cl.lineno, (const char *)*vvar);
+				fprintf(stderr, "WARNING: line %d of %s: unsupported type: %s\n", cl.lineno, cl.fname, (const char *)*vvar);
 				sprintf(buf, "      * Incorrect/Unsupported %s", (const char *)svar);
 				addln(lineno++, buf);
 				delete v;
@@ -1191,7 +1219,7 @@ private:
 			int ctd, ctv;
 			bool valid = countprec((const char *) *vvar, ctd, ctv);
 			if(!valid) {
-				fprintf(stderr, "WARNING: Program '%s' line %d: unsupported type: %s\n", cl.fname, cl.lineno, (const char *)*vvar);
+				fprintf(stderr, "WARNING: line %d of %s: unsupported type: %s\n", cl.lineno, cl.fname, (const char *)*vvar);
 				sprintf(buf, "      * Incorrect/Unsupported %s", (const char *)svar);
 				addln(lineno++, buf);
 				vvar = NULL;
@@ -1227,7 +1255,7 @@ private:
 			if((*vvar)[x] == '(' && ctX > 0) {
 				iv = vvar->indexof(')');
 				if(iv < 0) {
-					fprintf(stderr, "WARNING: Program '%s' line %d: incorrect PIC: %s\n", cl.fname, cl.lineno, (const char *)*vvar);
+					fprintf(stderr, "WARNING: line %d of %s: incorrect PIC: %s\n", cl.lineno, cl.fname, (const char *)*vvar);
 					sprintf(buf, "      * Incorrect/Unsupported %s", (const char *)svar);
 					addln(lineno++, buf);
 					upvar = NULL;
@@ -1243,7 +1271,7 @@ private:
 			if((*vvar)[x] == ' ' || (*vvar)[x] == '.') {
 				break;
 			}
-			fprintf(stderr, "WARNING: Program '%s' line %d: unsupported type in DECLARE SECTION: %s\n", cl.fname, cl.lineno, (const char *)*vvar);
+			fprintf(stderr, "WARNING: line %d of %s: unsupported type in DECLARE SECTION: %s\n", cl.lineno, cl.fname, (const char *)*vvar);
 			sprintf(buf, "      * Incorrect/Unsupported %s", (const char *)svar);
 			addln(lineno++, buf);
 			upvar = NULL;
@@ -1284,7 +1312,7 @@ private:
 		var.toupper();
 		int iv = var.indexof(' ');
 		if(iv < 0) {
-			sprintf(buf, "line %d: unknown VAR construction in DECLARE SECTION: %s", cl.lineno, (const char *)var);
+			sprintf(buf, "line %d of %s: unknown VAR construction in DECLARE SECTION: %s", cl.lineno, cl.fname, (const char *)var);
 			throw buf;
 		}
 		string svar = var.substr(0, iv);
@@ -1293,12 +1321,12 @@ private:
 		if(!var.starts("RAW") && !var.starts("BINARY") && !var.starts("LONG") &&
 			!var.starts("VARRAW") && !var.starts("VARBINARY"))
 		{
-			sprintf(buf, "line %d: unsupported VAR construction in DECLARE SECTION: %s", cl.lineno, (const char *)var);
+			sprintf(buf, "line %d of %s: unsupported VAR construction in DECLARE SECTION: %s", cl.lineno, cl.fname, (const char *)var);
 			throw buf;
 		}
 		varholder * v = sym[svar];
 		if(v == NULL) {
-			sprintf(buf, "line %d: VAR variable not found: %s", cl.lineno, (const char *)svar);
+			sprintf(buf, "line %d of %s: VAR variable not found: %s", cl.lineno, cl.fname, (const char *)svar);
 			throw buf;
 		}
 		if(v->type != 'S' && var.starts("LONG") && !var.starts("LONG RAW") && !var.starts("LONG VARRAW") && !var.starts("LONG BINARY") && !var.starts("LONG VARBINARY")) {
@@ -1317,7 +1345,7 @@ private:
 			sprintf(buf, "      * %s is accepted as LONG VARBINARY(%d)", (const char *)v->name, v->size);
 			addln(lineno++, buf);
 		} else {
-			sprintf(buf, "line %d: VAR incompatible variable type: %s", cl.lineno, (const char *)svar);
+			sprintf(buf, "line %d of %s: VAR incompatible variable type: %s", cl.lineno, cl.fname, (const char *)svar);
 			throw buf;
 		}
 	}
@@ -1382,18 +1410,18 @@ private:
 				svar = svar.substr(0, ix);
 				vi = sym[ivar];
 				if(vi == NULL) {
-					sprintf(buf, "line %d: indicator variable not found: %s", cl.lineno, (const char *)ivar);
+					sprintf(buf, "line %d of %s: indicator variable not found: %s", cl.lineno, cl.fname, (const char *)ivar);
 					throw buf;
 				}
 				if(vi->type != 'I' || vi->size != 2) {
-					sprintf(buf, "line %d: indicator variable %s must be S9(4) COMP-5", cl.lineno, (const char *)ivar);
+					sprintf(buf, "line %d of %s: indicator variable %s must be S9(4) COMP-5", cl.lineno, cl.fname, (const char *)ivar);
 					throw buf;
 				}
 				vi->inuse = true;
 			}
 			varholder * v = sym[svar];
 			if(v == NULL) {
-				sprintf(buf, "line %d: variable not found: %s", cl.lineno, (const char *)svar);
+				sprintf(buf, "line %d of %s: variable not found: %s", cl.lineno, cl.fname, (const char *)svar);
 				throw buf;
 			}
 			sql = sql.substr(ib);
@@ -1542,18 +1570,18 @@ private:
 				svar = svar.substr(0, ix);
 				vi = sym[ivar];
 				if(vi == NULL) {
-					sprintf(buf, "line %d: indicator variable not found: %s", cl.lineno, (const char *)ivar);
+					sprintf(buf, "line %d of %s: indicator variable not found: %s", cl.lineno, cl.fname, (const char *)ivar);
 					throw buf;
 				}
 				if(vi->type != 'I' || vi->size != 2) {
-					sprintf(buf, "line %d: indicator variable %s must be S9(4) COMP-5", cl.lineno, (const char *)ivar);
+					sprintf(buf, "line %d of %s: indicator variable %s must be S9(4) COMP-5", cl.lineno, cl.fname, (const char *)ivar);
 					throw buf;
 				}
 				vi->inuse = true;
 			}
 			varholder * v = sym[svar];
 			if(v == NULL) {
-				sprintf(buf, "line %d: variable not found: %s", cl.lineno, (const char *)svar);
+				sprintf(buf, "line %d of %s: variable not found: %s", cl.lineno, cl.fname, (const char *)svar);
 				throw buf;
 			}
 			sql = sql.substr(ib);
@@ -1695,7 +1723,7 @@ private:
 		string & sql = *cl.sql;
 		int ix = sql.indexof(':');
 		if(ix < 0) {
-			sprintf(buf, "line %d: incorrect SQL : %s", cl.lineno, (const char *)sql);
+			sprintf(buf, "line %d of %s: incorrect SQL : %s", cl.lineno, cl.fname, (const char *)sql);
 			throw buf;
 		}
 		int ib = sql.indexof(' ', ix);
@@ -1708,11 +1736,11 @@ private:
 		svar.toupper();
 		varholder * v = sym[svar];
 		if(v == NULL) {
-			sprintf(buf, "line %d: variable not found: %s", cl.lineno, (const char *)svar);
+			sprintf(buf, "line %d of %s: variable not found: %s", cl.lineno, cl.fname, (const char *)svar);
 			throw buf;
 		}
 		if(v->type != 'X') {
-			sprintf(buf, "line %d: incorrect variable datatype: %s", cl.lineno, (const char *)svar);
+			sprintf(buf, "line %d of %s: incorrect variable datatype: %s", cl.lineno, cl.fname, (const char *)svar);
 			throw buf;
 		}
 		v->inuse = true;
@@ -1735,7 +1763,7 @@ private:
 		sarray moves;
 		varholder * v = sym[sql];
 		if(v == NULL || (v->type != 'C' && v->type != 'c')) {
-			sprintf(buf, "line %d: Cursor not found: %s", cl.lineno, (const char *)sql);
+			sprintf(buf, "line %d of %s: Cursor not found: %s", cl.lineno, cl.fname, (const char *)sql);
 			throw buf;
 		}
 		bool bWH = (v->type == 'c');
@@ -1778,18 +1806,18 @@ private:
 				svar = svar.substr(0, ix);
 				vi = sym[ivar];
 				if(vi == NULL) {
-					sprintf(buf, "line %d: indicator variable not found: %s", cl.lineno, (const char *)ivar);
+					sprintf(buf, "line %d of %s: indicator variable not found: %s", cl.lineno, cl.fname, (const char *)ivar);
 					throw buf;
 				}
 				if(vi->type != 'I' || vi->size != 2) {
-					sprintf(buf, "line %d: indicator variable %s must be S9(4) COMP-5", cl.lineno, (const char *)ivar);
+					sprintf(buf, "line %d of %s: indicator variable %s must be S9(4) COMP-5", cl.lineno, cl.fname, (const char *)ivar);
 					throw buf;
 				}
 				vi->inuse = true;
 			}
 			v = sym[svar];
 			if(v == NULL) {
-				sprintf(buf, "line %d: variable not found: %s", cl.lineno, (const char *)svar);
+				sprintf(buf, "line %d of %s: variable not found: %s", cl.lineno, cl.fname, (const char *)svar);
 				throw buf;
 			}
 			sql = sql.substr(ib);
@@ -1904,7 +1932,7 @@ private:
 		cname.toupper();
 		varholder * v = sym[cname];
 		if(v == NULL || (v->type != 'C' && v->type != 'c')) {
-			sprintf(buf, "line %d: Cursor not found: %s", cl.lineno, (const char *)sql);
+			sprintf(buf, "line %d of %s: Cursor not found: %s", cl.lineno, cl.fname, (const char *)sql);
 			throw buf;
 		}
 		v->inuse = true;
@@ -1921,18 +1949,18 @@ private:
 				svar = svar.substr(0, ix);
 				vi = sym[ivar];
 				if(vi == NULL) {
-					sprintf(buf, "line %d: indicator variable not found: %s", cl.lineno, (const char *)ivar);
+					sprintf(buf, "line %d of %s: indicator variable not found: %s", cl.lineno, cl.fname, (const char *)ivar);
 					throw buf;
 				}
 				if(vi->type != 'I' || vi->size != 2) {
-					sprintf(buf, "line %d: indicator variable %s must be S9(4) COMP-5", cl.lineno, (const char *)ivar);
+					sprintf(buf, "line %d of %s: indicator variable %s must be S9(4) COMP-5", cl.lineno, cl.fname, (const char *)ivar);
 					throw buf;
 				}
 				vi->inuse = true;
 			}
 			v = sym[svar];
 			if(v == NULL) {
-				sprintf(buf, "line %d: variable not found: %s", cl.lineno, (const char *)svar);
+				sprintf(buf, "line %d of %s: variable not found: %s", cl.lineno, cl.fname, (const char *)svar);
 				throw buf;
 			}
 			sql = sql.substr(ib);
@@ -2028,7 +2056,7 @@ private:
 		sql.toupper();
 		varholder * v = sym[sql];
 		if(v == NULL || (v->type != 'C' && v->type != 'c')) {
-			sprintf(buf, "line %d: Cursor not found: %s", cl.lineno, (const char *)sql);
+			sprintf(buf, "line %d of %s: Cursor not found: %s", cl.lineno, cl.fname, (const char *)sql);
 			throw buf;
 		}
 		v->inuse = true;
@@ -2051,7 +2079,7 @@ private:
 				addln(lineno++, buf);
 				return;
 			}
-			sprintf(buf, "line %d: incorrect SQL : %s", cl.lineno, (const char *)sql);
+			sprintf(buf, "line %d of %s: incorrect SQL : %s", cl.lineno, cl.fname, (const char *)sql);
 			throw buf;
 		}
 		int ib = sql.indexof(' ', ix);
@@ -2063,11 +2091,11 @@ private:
 		svar.toupper();
 		varholder * v = sym[svar];
 		if(v == NULL) {
-			sprintf(buf, "line %d: variable not found: %s", cl.lineno, (const char *)svar);
+			sprintf(buf, "line %d of %s: variable not found: %s", cl.lineno, cl.fname, (const char *)svar);
 			throw buf;
 		}
 		if(v->type != 'X') {
-			sprintf(buf, "line %d: incorrect variable datatype: %s", cl.lineno, (const char *)svar);
+			sprintf(buf, "line %d of %s: incorrect variable datatype: %s", cl.lineno, cl.fname, (const char *)svar);
 			throw buf;
 		}
 		v->inuse = true;

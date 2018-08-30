@@ -1,4 +1,3 @@
 
-2017-04-27  Sergey Kashyrin <ska@kiska.net>
-
-	* stub
+2018-08-08  Sergey Kashyrin <ska@kiska.net>
+	* Fixing SIGSEGV when trying to FETCH the cursor which was not open

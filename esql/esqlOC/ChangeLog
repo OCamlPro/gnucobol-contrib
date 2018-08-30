@@ -1,6 +1,6 @@
+2018-08-08 Sergey Kashyrin <ska@kiska.net>
+	* Now SQL DECLARE SECTION is not necessary for SQL INCLUDE
+	* Fixing bug when there is a space between : and SQL variable like ": A"
+
 2018-08-07 Sergey Kashyrin <ska@kiska.net>
 	* For level 49 on little-endian automatically changing COMP/COMP-4 to COMP-5
-
-2017-04-27  Sergey Kashyrin <ska@kiska.net>
-
-	* stub
