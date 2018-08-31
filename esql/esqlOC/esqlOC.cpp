@@ -46,7 +46,10 @@ static char Q = '\'';
 static const char * sQ = "'";
 static bool bStatic = false;	// static call
 static const char * sSQ = "";
-static bool bFree = true;		// free format - not implemented yet !
+static bool bForceUnknown = false;	// force unknown statements to be EXECUTE IMMEDIATE
+static string W_ERR("");	// WHENEVER SQLERROR
+static string W_WARN("");	// WHENEVER SQLWARNING
+static string W_NOTFOUND("");	// WHENEVER NOT FOUND
 
 static char outfilepath[1024] = "";
 static sarray copydir;
@@ -186,8 +189,8 @@ public:
 	}
 
 	~CobPgm() {
-		delete name;
-		if(outname != NULL) delete outname;	// Well, I know "if" is not necessary :-)
+		delete [] name;
+		if(outname != NULL) delete [] outname;	// Well, I know "if" is not necessary :-)
 	}
 
 	const char * getName() { return name;}
@@ -420,22 +423,25 @@ private:
 				throw buf;
 			}
 			string svar = sqlu.substr(0, x);
-			x = sqlu.indexof("SELECT ");
-			if(x < 0) {
-				sprintf(buf, "line %d of %s: Incorrect SQL DECLARE: %s", cl.lineno, cl.fname, (const char *)sql);
-				throw buf;
-			}
-			bool bWH = false;
-			int opt = sqlu.indexof(" CURSOR WITH HOLD ");
-			if(opt > 0 && opt < x) {
-				bWH = true;
-			}
-			sql = sql.substr(x);
-			cl.sqlnum = sqlcmd.add(sql);
-			varholder * v = new varholder(svar);
-			v->type = bWH ? 'c' : 'C';
-			v->size = cl.sqlnum;
-			sym.put(v);
+			sqlu = sqlu.substr(x + 1);
+			if(sqlu.starts("CURSOR")) {
+				x = sqlu.indexof("SELECT ");
+				if(x < 0) {
+					sprintf(buf, "line %d of %s: Incorrect SQL DECLARE: %s", cl.lineno, cl.fname, (const char *)sql);
+					throw buf;
+				}
+				bool bWH = false;
+				int opt = sqlu.indexof(" CURSOR WITH HOLD ");
+				if(opt > 0 && opt < x) {
+					bWH = true;
+				}
+				sql = sql.substr(x);
+				cl.sqlnum = sqlcmd.add(sql);
+				varholder * v = new varholder(svar);
+				v->type = bWH ? 'c' : 'C';
+				v->size = cl.sqlnum;
+				sym.put(v);
+			} // else ignoring
 			cl.sqlaction = 12;
 		} else if(sqlu.starts("OPEN ")) {
 			cl.sqlaction = 13;
@@ -445,6 +451,13 @@ private:
 			cl.sqlaction = 15;
 		} else if(sqlu.starts("CONNECT ")) {
 			cl.sqlaction = 16;
+		} else if(sqlu.starts("DISCONNECT ")) {
+			cl.sqlaction = 16;
+		} else if(sqlu.starts("WHENEVER ")) {
+			cl.sqlaction = 17;
+		} else if(bForceUnknown) {
+			cl.sqlnum = sqlcmd.add(sql);
+			cl.sqlaction = 18;
 		} else {
 			sprintf(buf, "line %d of %s: unsupported SQL: %s", cl.lineno, cl.fname, (const char *)sql);
 			throw buf;
@@ -680,6 +693,12 @@ private:
 				case 16:
 					processCONNECT(cl, n);
 					break;
+				case 17:
+					processWHENEVER(cl, n);
+					break;
+				case 18:
+					processUNKNOWN(cl, n);
+					break;
 				default:
 					throw "Internal Error: processexec";
 			}
@@ -791,20 +810,20 @@ private:
 			fl += sql;
 			fl += Q;
 			fl += '.';
-			lineno = processfmt(lineno, fl);
+			processfmt(lineno, fl);
 			addln(lineno++, "      **********************************************************************");
 		}
 	}
 
 	// format back into fixed cobol positions (1-6,7,8-72)
-	int processfmt(int lineno, string & line)
+	void processfmt(int & lineno, string & line)
 	{
 		bool bQQ = false;
 		for(; ; ) {
 			int x = line.length();
 			if(x <= 72) {
 				addln(lineno++, line);
-				return lineno;
+				return;
 			}
 			// check for unpaired quote
 			int spos = 7;
@@ -1510,6 +1529,7 @@ private:
 		addln(lineno++, buf);
 		sprintf(buf, "%s                     SQLCA", shift);
 		addln(lineno++, buf);
+		doWHENEVER(lineno);
 		if(!bWasInd) {
 			addln(lineno++, "           END-IF");
 		}
@@ -1519,6 +1539,7 @@ private:
 		sprintf(buf, "           CALL %sOCSQLEXE%s USING SQL-STMT-%d", sSQ, sSQ, cl.sqlnum);
 		addln(lineno++, buf);
 		addln(lineno++, "                               SQLCA");
+		doWHENEVER(lineno);
 	}
 
 	void processSEL(cobline & cl, int & lineno)
@@ -1680,6 +1701,7 @@ private:
 		addln(lineno++, buf);
 		sprintf(buf, "%s                     SQLCA", shift);
 		addln(lineno++, buf);
+		doWHENEVER(lineno);
 		if(!bWasInd) {
 			addln(lineno++, "           END-IF");
 		}
@@ -1692,17 +1714,20 @@ private:
 		for(int i = 0; i < movesout.size(); ++i) {
 			addln(lineno++, movesout[i]);
 		}
+		doWHENEVER(lineno);
 	}
 
 	void processCOMMIT(cobline & cl, int & lineno)
 	{
 		sprintf(buf, "           CALL %sOCSQLCMT%s USING SQLCA END-CALL", sSQ, sSQ);
 		addln(lineno++, buf);
+		doWHENEVER(lineno);
 		string sqlu(*cl.sql);
 		sqlu.toupper();
 		if(ixFull(sqlu, "RELEASE") > 0) {
 			sprintf(buf, "           CALL %sOCSQLDIS%s USING SQLCA END-CALL", sSQ, sSQ);
 			addln(lineno++, buf);
+			doWHENEVER(lineno);
 		}
 	}
 
@@ -1710,12 +1735,98 @@ private:
 	{
 		sprintf(buf, "           CALL %sOCSQLRBK%s USING SQLCA END-CALL", sSQ, sSQ);
 		addln(lineno++, buf);
+		doWHENEVER(lineno);
 		string sqlu(*cl.sql);
 		sqlu.toupper();
 		if(ixFull(sqlu, "RELEASE") > 0) {
 			sprintf(buf, "           CALL %sOCSQLDIS%s USING SQLCA END-CALL", sSQ, sSQ);
 			addln(lineno++, buf);
+			doWHENEVER(lineno);
 		}
+	}
+
+	void doWHENEVER(int & lineno)
+	{
+		if(W_ERR.length() > 0) {
+			addln(lineno++, "           IF SQLCODE OF SQLCA < 0");
+			sprintf(buf, "               %s", (const char *) W_ERR);
+			string fl(buf);
+			processfmt(lineno, fl);
+			addln(lineno++, "           END-IF");
+		}
+		if(W_WARN.length() > 0) {
+			addln(lineno++, "           IF SQLCODE OF SQLCA > 0 AND SQLCODE OF SQLCA NOT = 100");
+			sprintf(buf, "               %s", (const char *) W_WARN);
+			string fl(buf);
+			processfmt(lineno, fl);
+			addln(lineno++, "           END-IF");
+		}
+		if(W_NOTFOUND.length() > 0) {
+			addln(lineno++, "           IF SQLCODE OF SQLCA = 100");
+			sprintf(buf, "               %s", (const char *) W_NOTFOUND);
+			string fl(buf);
+			processfmt(lineno, fl);
+			addln(lineno++, "           END-IF");
+		}
+	}
+
+	void processWHENEVER(cobline & cl, int & lineno)
+	{
+		string sqlu(*cl.sql);
+		sqlu.toupper();
+		sqlu = sqlu.substr(9);
+		int ix = 9;
+		string * cond;
+		if(sqlu.starts("SQLERROR ")) {
+			sqlu = sqlu.substr(9);
+			ix += 9;
+			cond = &W_ERR;
+		} else if(sqlu.starts("SQLWARNING ")) {
+			sqlu = sqlu.substr(11);
+			ix += 11;
+			cond = &W_WARN;
+		} else if(sqlu.starts("NOTFOUND ")) {
+			sqlu = sqlu.substr(9);
+			ix += 9;
+			cond = &W_NOTFOUND;
+		} else if(sqlu.starts("NOT FOUND ")) {
+			sqlu = sqlu.substr(10);
+			ix += 10;
+			cond = &W_NOTFOUND;
+		} else {
+			sprintf(buf, "line %d of %s: incorrect SQL : %s", cl.lineno, cl.fname, (const char *)*cl.sql);
+			throw buf;
+		}
+		if(sqlu.starts("CONTINUE")) {
+			*cond = "";
+			return;
+		}
+		if(sqlu.starts("STOP")) {
+			*cond = "STOP RUN";
+			return;
+		}
+		if(sqlu.starts("GOTO ")) {
+			*cond = "GO TO " + cl.sql->substr(ix + 5);
+			return;
+		}
+		if(sqlu.starts("GO TO ")) {
+			*cond = cl.sql->substr(ix);
+			return;
+		}
+		if(sqlu.starts("DO ")) {
+			sqlu = sqlu.substr(3);
+			ix += 3;
+		}
+		if(sqlu.starts("CALL ")) {
+			*cond = cl.sql->substr(ix);
+			return;
+		}
+		if(sqlu.starts("PERFORM ")) {
+			*cond = cl.sql->substr(ix);
+			return;
+		}
+		sprintf(buf, "line %d of %s: incorrect SQL : %s", cl.lineno, cl.fname, (const char *)*cl.sql);
+		throw buf;
 	}
 
 	void processEXECUTEIMMED(cobline & cl, int & lineno)
@@ -1751,6 +1862,19 @@ private:
 		addln(lineno++, "                               SQL-LEN(1)");
 		addln(lineno++, "                               SQLCA");
 		addln(lineno++, "           END-CALL");
+		doWHENEVER(lineno);
+	}
+
+	void processUNKNOWN(cobline & cl, int & lineno)
+	{
+		sprintf(buf, "           MOVE %d TO SQL-LEN(1)", (int)strlen(sqlcmd[cl.sqlnum]));
+		addln(lineno++, buf);
+		sprintf(buf, "           CALL %sOCSQLIMM%s USING SQL-STMT-%d", sSQ, sSQ, cl.sqlnum);
+		addln(lineno++, buf);
+		addln(lineno++, "                               SQL-LEN(1)");
+		addln(lineno++, "                               SQLCA");
+		addln(lineno++, "           END-CALL");
+		doWHENEVER(lineno);
 	}
 
 	void processOPENCURSOR(cobline & cl, int & lineno)
@@ -1905,6 +2029,7 @@ private:
 		addln(lineno++, buf);
 		sprintf(buf, "%s                     SQLCA", shift);
 		addln(lineno++, buf);
+		doWHENEVER(lineno);
 		if(!bWasInd) {
 			addln(lineno++, "           END-IF");
 		}
@@ -1914,6 +2039,8 @@ private:
 		sprintf(buf, "           CALL %sOCSQLOCU%s USING SQL-STMT-%d", sSQ, sSQ, sqlnum);
 		addln(lineno++, buf);
 		addln(lineno++, "                               SQLCA");
+		addln(lineno++, "           END-CALL");
+		doWHENEVER(lineno);
 	}
 
 	void processFETCH(cobline & cl, int & lineno)
@@ -2046,6 +2173,7 @@ private:
 		for(int i = 0; i < moves.size(); ++i) {
 			addln(lineno++, moves[i]);
 		}
+		doWHENEVER(lineno);
 	}
 
 	void processCLOSECURSOR(cobline & cl, int & lineno)
@@ -2065,18 +2193,20 @@ private:
 		sprintf(buf, "           CALL %sOCSQLCCU%s USING SQL-STMT-%d", sSQ, sSQ, sqlnum);
 		addln(lineno++, buf);
 		addln(lineno++, "                               SQLCA");
+		doWHENEVER(lineno);
 	}
 
 	void processCONNECT(cobline & cl, int & lineno)
 	{
 		string & sql = *cl.sql;
+		string sqlu(sql);
+		sqlu.toupper();
 		int ix = sql.indexof(':');
-		if(ix < 0) {
-			string sqlu(sql);
-			sqlu.toupper();
-			if(ixFull(sqlu, "RESET") > 0) {
+		if(ix < 0 || sqlu.starts("DISCONNECT")) {
+			if(ixFull(sqlu, "RESET") > 0 || sqlu.starts("DISCONNECT")) {
 				sprintf(buf, "           CALL %sOCSQLDIS%s USING SQLCA END-CALL", sSQ, sSQ);
 				addln(lineno++, buf);
+				doWHENEVER(lineno);
 				return;
 			}
 			sprintf(buf, "line %d of %s: incorrect SQL : %s", cl.lineno, cl.fname, (const char *)sql);
@@ -2106,6 +2236,7 @@ private:
 		addln(lineno++, "                               SQL-LEN(1)");
 		addln(lineno++, "                               SQLCA");
 		addln(lineno++, "           END-CALL");
+		doWHENEVER(lineno);
 	}
 
 	static int ixFull(string & s, const char * s1) {
@@ -2140,7 +2271,10 @@ char CobPgm::buf[2048];
 
 static int nstart;
 static void usage(char * pg) {
-	fprintf(stderr, "Usage: %s [-Q] [-static] [-I <copybook-directory> [| -I <copybook-directory>]] [-o <output-file>] <filename> ...\n", pg);
+	fprintf(stderr, "Usage: %s [-Q] [-F] [-static] [-I <copybook-directory> [| -I <copybook-directory>]] [-o <output-file>] <filename> ...\n", pg);
+	fprintf(stderr, "       -Q        Use single quotes\n");
+	fprintf(stderr, "       -F        Force unknown SQL statements to be accepted as \"execute immediate\"\n");
+	fprintf(stderr, "       -static   Use static calls to OCSQL library\n");
 }
 
 int main(int argsLength, char ** args)
@@ -2197,9 +2331,11 @@ int main(int argsLength, char ** args)
 			sSQ = sQ;
 			continue;
 		}
+		if(0 == strcmp(args[nstart], "-F")) {
+			bForceUnknown = true;
+			continue;
+		}
 		if(0 == strcmp(args[nstart], "-free")) {
-			bFree = true;
-			//continue;
 			fprintf(stderr, "%s: Free format is not implemented yet.\n", *args);
 			return 16;
 		}

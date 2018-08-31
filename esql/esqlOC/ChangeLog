@@ -1,3 +1,9 @@
+2018-08-31 Sergey Kashyrin <ska@kiska.net>
+	* Accepting EXEC SQL DISCONNECT
+	* Adding -F flag to accept unknown SQL statements as "EXECUTE IMMEDIATE"
+	* Implementing EXEC SQL WHENEVER
+	* Ignoring EXEC SQL DECLARE other than CURSOR (i.e. DECLARE TABLE)
+
 2018-08-08 Sergey Kashyrin <ska@kiska.net>
 	* Now SQL DECLARE SECTION is not necessary for SQL INCLUDE
 	* Fixing bug when there is a space between : and SQL variable like ": A"
