@@ -424,6 +424,7 @@ private:
 			}
 			string svar = sqlu.substr(0, x);
 			sqlu = sqlu.substr(x + 1);
+			sql = sql.substr(x + 1);
 			if(sqlu.starts("CURSOR")) {
 				x = sqlu.indexof("SELECT ");
 				if(x < 0) {
@@ -455,6 +456,8 @@ private:
 			cl.sqlaction = 16;
 		} else if(sqlu.starts("WHENEVER ")) {
 			cl.sqlaction = 17;
+		} else if(sqlu.starts("INVOKE ")) {
+			cl.sqlaction = 12;
 		} else if(bForceUnknown) {
 			cl.sqlnum = sqlcmd.add(sql);
 			cl.sqlaction = 18;
@@ -531,7 +534,7 @@ private:
 			}
 			if(h->type != 'I') throw "Internal Error: processgenvars()";
 			int sz = 4;
-			if(h->size == 4) sz = 7;
+			if(h->size == 4) sz = 9;
 			else if(h->size == 8) sz = 15;
 			sprintf(buf, "           05 %s  PIC S9(%d) COMP-5.", (const char *) h->name, sz);
 			gen.add(buf);
@@ -734,12 +737,12 @@ private:
 			}
 		}
 		addln(lineno++, "       01 SQLV.");
-		sprintf(buf, "           05 SQL-ARRSZ  PIC S9(7) COMP-5 VALUE %d.", maxparmnum);
+		sprintf(buf, "           05 SQL-ARRSZ  PIC S9(9) COMP-5 VALUE %d.", maxparmnum);
 		addln(lineno++, buf);
-		addln(lineno++, "           05 SQL-COUNT  PIC S9(7) COMP-5.");
+		addln(lineno++, "           05 SQL-COUNT  PIC S9(9) COMP-5.");
 		sprintf(buf, "           05 SQL-ADDR   POINTER OCCURS %d TIMES.", maxparmnum);
 		addln(lineno++, buf);
-		sprintf(buf, "           05 SQL-LEN    PIC S9(7) COMP-5 OCCURS %d TIMES.", maxparmnum);
+		sprintf(buf, "           05 SQL-LEN    PIC S9(9) COMP-5 OCCURS %d TIMES.", maxparmnum);
 		addln(lineno++, buf);
 		sprintf(buf, "           05 SQL-TYPE   PIC X OCCURS %d TIMES.", maxparmnum);
 		addln(lineno++, buf);
@@ -934,6 +937,10 @@ private:
 			return;
 		}
 		int level = atoi(vvar->substr(0, isp));
+		if(level == 88) { // ignore
+			vvar = NULL;
+			return;
+		}
 		if(skiptolevel != 0) {
 			if(level > skiptolevel) {
 				vvar = NULL;

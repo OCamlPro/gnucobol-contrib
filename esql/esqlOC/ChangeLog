@@ -1,3 +1,9 @@
+2018-10-02 Sergey Kashyrin <ska@kiska.net>
+	* Fixing major bug introduced on 2018-08-31 for CURSOR processing (Thanks, Ron !)
+	* Ignoring EXEC SQL INVOKE
+	* Ignoring 88 level items in DECLARE SECTION (was producing error)
+	* Changing S9(7) COMP-5 to S9(9) COMP-5 for intermediate variables (I am assuming there is no real difference)
+
 2018-08-31 Sergey Kashyrin <ska@kiska.net>
 	* Accepting EXEC SQL DISCONNECT
 	* Adding -F flag to accept unknown SQL statements as "EXECUTE IMMEDIATE"
