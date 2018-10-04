@@ -1,3 +1,8 @@
+2018-10-03 Sergey Kashyrin <ska@kiska.net>
+	* Allowing COMP-X through temporary variables
+	* Relaxing indicator variable type a little bit if generated temp variable is S9(4) COMP-5.
+	* Fixing small typo bug for OPEN CURSOR with qualified (A.B) parameter
+
 2018-10-02 Sergey Kashyrin <ska@kiska.net>
 	* Fixing major bug introduced on 2018-08-31 for CURSOR processing (Thanks, Ron !)
 	* Ignoring EXEC SQL INVOKE
@@ -16,3 +21,5 @@
 
 2018-08-07 Sergey Kashyrin <ska@kiska.net>
 	* For level 49 on little-endian automatically changing COMP/COMP-4 to COMP-5
+
+Changes from 2005 to 2018 were not recorded and it will be too much work to analyze SourceSafe :-)

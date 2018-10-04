@@ -39,6 +39,7 @@
 
 #include "vcache.h"
 
+static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCobol Version 2 (2018.10.03) Build " __DATE__ "\n";
 /**  Version is present in SQLCA. Current is 02 */
 
 static bool bAPOST = true;		// use apostroph instead of quote
@@ -868,6 +869,32 @@ private:
 		src.insert(nl, l);
 	}
 
+	int countX()
+	{
+		int ctX = 0;
+		for(int x = 0; x < vvar->length(); ++x) {
+			if((*vvar)[x] == 'X') {
+				++ctX;
+				continue;
+			}
+			if((*vvar)[x] == '(' && ctX > 0) {
+				int iv = vvar->indexof(')', x);
+				if(iv < 0) {
+					return -1;
+				}
+				int rct = atoi(vvar->substr(x + 1, iv - x - 1));
+				ctX += rct - 1;
+				x = iv;
+				continue;
+			}
+			if((*vvar)[x] == ' ' || (*vvar)[x] == '.') {
+				break;
+			}
+			return -1;
+		}
+		return ctX;
+	}
+
 	bool countprec(const char * pic, int & p1, int & p2)
 	{
 		int ct9 = 0;
@@ -1106,12 +1133,48 @@ private:
 			iv = vvar->indexof("COMPUTATIONAL-X");
 		}
 		if(iv >= 0) {
+			int ctX = countX();
+			if(ctX < 0) {
+				fprintf(stderr, "WARNING: line %d of %s: unsupported type in DECLARE SECTION: %s\n", cl.lineno, cl.fname, (const char *)*vvar);
+				sprintf(buf, "      * Incorrect/Unsupported %s", (const char *)svar);
+				addln(lineno++, buf);
+				upvar = NULL;
+				vvar = NULL;
+				delete v;
+				return;
+			}
+			upvar = NULL;
+			sprintf(buf, "SQL-VAR-%04d", ++tmpvarnum);
+			varholder * h = new varholder(buf);
+			v->type = 'O';
+			v->over = h;
+			sym.put(v);
+			if(isGroup == 0) {
+				varholder * v = new varholder(groupName + "." + svar);
+				v->type = 'O';
+				v->over = h;
+				sym.put(v);
+			}
+			v = h;
+			v->type = 'I';
+			if(ctX < 3) {
+				v->size = 2;
+			} else if(ctX < 5) {
+				v->size = 4;
+			} else {
+				v->size = 8;
+			}
+			sym.put(v);
+			vvar = NULL;
+			return;
+			/*
 			fprintf(stderr, "WARNING: line %d of %s: COMP-X is unsupported: %s\n", cl.lineno, cl.fname, (const char *)*vvar);
 			sprintf(buf, "      * Incorrect/Unsupported %s", (const char *)svar);
 			addln(lineno++, buf);
 			vvar = NULL;
 			delete v;
 			return;
+			*/
 		}
 
 		iv = vvar->indexof("COMP");
@@ -1272,7 +1335,17 @@ private:
 			return;
 		}
 
-		int ctX = 0;
+		int ctX = countX();
+		if(ctX < 0) {
+			fprintf(stderr, "WARNING: line %d of %s: unsupported type in DECLARE SECTION: %s\n", cl.lineno, cl.fname, (const char *)*vvar);
+			sprintf(buf, "      * Incorrect/Unsupported %s", (const char *)svar);
+			addln(lineno++, buf);
+			upvar = NULL;
+			vvar = NULL;
+			delete v;
+			return;
+		}
+		/*
 		for(int x = 0; x < vvar->length(); ++x) {
 			if((*vvar)[x] == 'X') {
 				++ctX;
@@ -1305,6 +1378,7 @@ private:
 			delete v;
 			return;
 		}
+		*/
 		v->type = 'X';
 		v->size = ctX;
 		sym.put(v);
@@ -1438,6 +1512,23 @@ private:
 				if(vi == NULL) {
 					sprintf(buf, "line %d of %s: indicator variable not found: %s", cl.lineno, cl.fname, (const char *)ivar);
 					throw buf;
+				}
+				if(vi->type == 'O' && vi->over->type == 'I' && vi->over->size == 2) {
+					vi->inuse = true;
+					iv = vi->name.indexof('.');
+					if(iv > 0) {
+						sprintf(buf, "           MOVE %s", (const char *)vi->name.substr(iv + 1));
+						moves.add(buf);
+						sprintf(buf, "             OF %s", (const char *) vi->name.substr(0,iv));
+						moves.add(buf);
+						sprintf(buf, "             TO %s    ", (const char *)vi->over->name);
+					} else {
+						sprintf(buf, "           MOVE %s", (const char *)vi->name);
+						moves.add(buf);
+						sprintf(buf, "             TO %s", (const char *)vi->over->name);
+					}
+					moves.add(buf);
+					vi = vi->over;
 				}
 				if(vi->type != 'I' || vi->size != 2) {
 					sprintf(buf, "line %d of %s: indicator variable %s must be S9(4) COMP-5", cl.lineno, cl.fname, (const char *)ivar);
@@ -1600,6 +1691,23 @@ private:
 				if(vi == NULL) {
 					sprintf(buf, "line %d of %s: indicator variable not found: %s", cl.lineno, cl.fname, (const char *)ivar);
 					throw buf;
+				}
+				if(vi->type == 'O' && vi->over->type == 'I' && vi->over->size == 2) {
+					vi->inuse = true;
+					iv = vi->name.indexof('.');
+					if(iv > 0) {
+						sprintf(buf, "           MOVE %s", (const char *)vi->over->name);
+						movesout.add(buf);
+						sprintf(buf, "             TO %s    ", (const char *)vi->name.substr(iv + 1));
+						movesout.add(buf);
+						sprintf(buf, "             OF %s", (const char *) vi->name.substr(0,iv));
+					} else {
+						sprintf(buf, "           MOVE %s", (const char *)vi->over->name);
+						movesout.add(buf);
+						sprintf(buf, "             TO %s", (const char *)vi->name);
+					}
+					movesout.add(buf);
+					vi = vi->over;
 				}
 				if(vi->type != 'I' || vi->size != 2) {
 					sprintf(buf, "line %d of %s: indicator variable %s must be S9(4) COMP-5", cl.lineno, cl.fname, (const char *)ivar);
@@ -1940,6 +2048,23 @@ private:
 					sprintf(buf, "line %d of %s: indicator variable not found: %s", cl.lineno, cl.fname, (const char *)ivar);
 					throw buf;
 				}
+				if(vi->type == 'O' && vi->over->type == 'I' && vi->over->size == 2) {
+					vi->inuse = true;
+					iv = vi->name.indexof('.');
+					if(iv > 0) {
+						sprintf(buf, "           MOVE %s", (const char *)vi->name.substr(iv + 1));
+						moves.add(buf);
+						sprintf(buf, "             OF %s", (const char *) vi->name.substr(0,iv));
+						moves.add(buf);
+						sprintf(buf, "             TO %s    ", (const char *)vi->over->name);
+					} else {
+						sprintf(buf, "           MOVE %s", (const char *)vi->name);
+						moves.add(buf);
+						sprintf(buf, "             TO %s", (const char *)vi->over->name);
+					}
+					moves.add(buf);
+					vi = vi->over;
+				}
 				if(vi->type != 'I' || vi->size != 2) {
 					sprintf(buf, "line %d of %s: indicator variable %s must be S9(4) COMP-5", cl.lineno, cl.fname, (const char *)ivar);
 					throw buf;
@@ -1963,7 +2088,7 @@ private:
 				if(iv > 0) {
 					sprintf(buf, "           MOVE %s OF %s", (const char *)v->name.substr(iv + 1), (const char *)v->name.substr(0,iv) );
 					moves.add(buf);
-					sprintf(buf, "             TO %s TO ", (const char *)h->name);
+					sprintf(buf, "             TO %s", (const char *)h->name);
 				} else {
 					sprintf(buf, "           MOVE %s TO %s", (const char *)v->name, (const char *)h->name);
 				}
@@ -2085,6 +2210,23 @@ private:
 				if(vi == NULL) {
 					sprintf(buf, "line %d of %s: indicator variable not found: %s", cl.lineno, cl.fname, (const char *)ivar);
 					throw buf;
+				}
+				if(vi->type == 'O' && vi->over->type == 'I' && vi->over->size == 2) {
+					vi->inuse = true;
+					iv = vi->name.indexof('.');
+					if(iv > 0) {
+						sprintf(buf, "           MOVE %s", (const char *)vi->over->name);
+						moves.add(buf);
+						sprintf(buf, "             TO %s    ", (const char *)vi->name.substr(iv + 1));
+						moves.add(buf);
+						sprintf(buf, "             OF %s", (const char *) vi->name.substr(0,iv));
+					} else {
+						sprintf(buf, "           MOVE %s", (const char *)vi->over->name);
+						moves.add(buf);
+						sprintf(buf, "             TO %s", (const char *)vi->name);
+					}
+					moves.add(buf);
+					vi = vi->over;
 				}
 				if(vi->type != 'I' || vi->size != 2) {
 					sprintf(buf, "line %d of %s: indicator variable %s must be S9(4) COMP-5", cl.lineno, cl.fname, (const char *)ivar);
@@ -2279,7 +2421,7 @@ char CobPgm::buf[2048];
 static int nstart;
 static void usage(char * pg) {
 	fprintf(stderr, "Usage: %s [-Q] [-F] [-static] [-I <copybook-directory> [| -I <copybook-directory>]] [-o <output-file>] <filename> ...\n", pg);
-	fprintf(stderr, "       -Q        Use single quotes\n");
+	fprintf(stderr, "       -Q        Use double quotes\n");
 	fprintf(stderr, "       -F        Force unknown SQL statements to be accepted as \"execute immediate\"\n");
 	fprintf(stderr, "       -static   Use static calls to OCSQL library\n");
 }
@@ -2292,7 +2434,7 @@ int main(int argsLength, char ** args)
 	_CrtSetDbgFlag(tmpFlag);
 #endif
 
-	fprintf(stdout, "%s: ESQL for OpenCobol Version 2 Build " __DATE__ "\n", *args);
+	fprintf(stdout, HEADER, *args);
 	copydir.add(".");
 	for(nstart = 1; nstart < argsLength; ++nstart) {
 		if(0 == strcmp(args[nstart], "-I")) {
