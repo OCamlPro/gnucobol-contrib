@@ -109,6 +109,7 @@ cobc -x -free %verbose% -I"%src_cobol_dir%" scrollbar.cob         %* %COBCOBJ% %
 cobc -x -free %verbose% -I"%src_cobol_dir%" scrollpane.cob        %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" simple.cob            %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" simplemenu.cob        %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" 2frames.cob           %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" textfield.cob         %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" vumeter.cob           %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" window.cob            %* %COBCOBJ% %COBCLIB% 

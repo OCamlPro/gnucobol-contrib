@@ -108,6 +108,7 @@ cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" scrollpane.cob      
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" simple.cob            %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" simplemenu.cob        %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" splitpane.cob         %* %COBCOBJ% %COBCLIB% 
+cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" 2frames.cob           %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" textfield.cob         %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" vumeter.cob           %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" window.cob            %* %COBCOBJ% %COBCLIB% 
