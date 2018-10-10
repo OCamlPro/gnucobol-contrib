@@ -2309,6 +2309,40 @@
  MAIN-J-SEPERATOR-EX.
     EXIT.
  END FUNCTION J-SEPERATOR.
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SEPARATOR.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-RET                            BINARY-INT.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SEPERATOR SECTION.
+
+    CALL STATIC "japi_seperator" 
+         USING BY VALUE LNK-ARG-0
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SEPERATOR-EX.
+    EXIT.
+ END FUNCTION J-SEPARATOR.
 
  
 *>------------------------------------------------------------------------------

@@ -21,7 +21,7 @@ with COBJAPI in the file COPYING. If not, see <http://www.gnu.org/licenses/>.
 Acknowledgment
 ===============
 The author of JAPI is Dr. Merten Joost (University of Koblenz-Landau).
-Website of JAPI: http://www.japi.de
+Website of JAPI: https://userpages.uni-koblenz.de/~evol/japi/japi.html
 
 I would like to express my special thanks to Dr. Merten Joost who gave
 me the opportunity to do this contribution. He has sent me an updated
@@ -302,6 +302,8 @@ Program history, changes and bug fixes are listed in program headers.
 *****************************************************************************
 Date       Name / Change description
 ========== ==================================================================
+2018.10.10 Simon Sobisch:
+           - JAPI 2 compatibly alias-function J-SEPARATOR for J-SEPERATOR
 2014.12.24 Laszlo Erdos:
            - GnuCOBOL support for JAPI added.
 -----------------------------------------------------------------------------
