@@ -8,7 +8,7 @@ This implementation was created as part of the GnuCOBOL course by Fiducia & GAD 
 
 **Output**
 
-![Output](124p37-animation.gif?raw=true)
+![Output](124p37-animation.gif?format=raw)
 
 **Exit with**
 
