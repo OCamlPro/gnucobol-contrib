@@ -8,41 +8,42 @@
 000800*================================
 000900*
 001000***
-001100 program-id.           dectrans.
-001200*Author.               V.B.Coen FBCS., via NAVY VER pre NOV 68.
-001300*Date-rewritten.       7th August 1987 from code dated Nov 1968.
-001400*Version.              See PROG-NAME in ws.
-001500*Security.             Copyright (C) 1968-2012, Vincent Bryan Coen.
-001600*                      Distributed under the GNU General Public License
-001700*                      v3.0. Only.
-001800*                      See the file COPYING for details.
+001100 program-id.       dectrans.
+001200 Author.           V.B.Coen FBCS., via NAVY VER pre NOV 68.
+001300*Date-rewritten.   7th August 1987 from code dated Nov 1968.
+001400*Version.          See PROG-NAME in ws.
+001500*Security.         Copyright (C) 1968-2018, Vincent Bryan Coen.
+001600*                  Distributed under the GNU General Public
+001700*                  License v3.0. Only.
+001800*                  See the file COPYING for details.
 001900*
-002000* Usage.               Decision Table Translator for Cobol.
-002010*                      it accepts and produces only in fixed format.
+002000* Usage.           Decision Table Translator for Cobol.
+002010*                  it accepts and produces only in fixed format.
 002100*
-002200* Changes.             See Changelog.
-002300**************************************************************************
+002200* Changes.         See Changelog.
+002300******************************************************************
 002400*
 002500* Copyright Notice.
 002600******************
 002700*
-002800* This file/program is part of DecTrans and is copyright (c) Vincent B Coen.
-002810*  parts of it come via the US Navy which is also Open Source.
-002900*
-003000* This program is free software; you can redistribute it and/or modify it
-003100* under the terms of the GNU General Public License as published by the
-003200* Free Software Foundation; version 333003300*
-003400* Cobxref is distributed in the hope that it will be useful, but WITHOUT
-003500* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-003600* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-003700* for more details.
-003800*
-003900* You should have received a copy of the GNU General Public License along
-004000* with Cobxref; see the file COPYING.  If not, write to the Free Software
-004100* Foundation, 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-004200**************************************************************************
+002800* This file/program is part of DecTrans and is copyright (c)
+002900*  Vincent B Coen., parts of it come via the US Navy which is also
+003000*  Open Source.
+003100*
+003200* This program is free software; you can redistribute it and/or
+003300* modify it under the terms of the GNU General Public License as
+003400* published by the Free Software Foundation; version 3.
+003500* Cobxref is distributed in the hope that it will be useful, but
+003600* WITHOUT ANY WARRANTY; without even the implied warranty of
+003700* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+003800* See the GNU General Public License for more details.
+003900*
+004000* You should have received a copy of the GNU General Public
+004100* License along with Cobxref; see the file COPYING.  If not, write
+004110* to the Free Software Foundation, 59 Temple Place, Suite 330,
+004120* Boston, MA 02111-1307 USA.
+004200******************************************************************
 004300*
-004400*****
 004500 environment             division.
 004600*================================
 004700*
@@ -129,7 +130,7 @@
 012800 working-storage section.
 012900*=======================
 013000*
-013100 77  Prog-Name               pic x(17) value "DecTrans v1.01.04".
+013100 77  Prog-Name               pic x(17) value "DecTrans v1.01.05".
 013200 77  index1                  pic s999  comp  value zero.
 013300 77  index2                  pic s999  comp  value zero.
 013400 77  index3                  pic s999  comp  value zero.
@@ -162,14 +163,19 @@
 016100 77  x-entry                 pic x(18)       value "X".
 016200 77  r-entry                 pic x(18)       value "R".
 016300*
-016400 77  Input-FileName          pic x(128)  value spaces.
-016500 77  Output-FileName         pic x(128)  value spaces.
-016600 77  Report-FileName         pic x(128)  value spaces.
+016400 77  Input-FileName          pic x(128)      value spaces.
+016500 77  Output-FileName         pic x(128)      value spaces.
+016600 77  Report-FileName         pic x(128)      value spaces.
 016700*
-016800 77  cbl-status              pic 9      value zero.
-016900  88 cbl-fixed                          value zero.
-017000  88 cbl-free                           value 1.
+016800 77  cbl-status              pic 9           value zero.
+016900     88  cbl-fixed                           value zero.
+017000     88  cbl-free                            value 1.
 017100*
+017110 01  WSE-Date.
+017120     03  WSE-Year            pic 9(4).
+017130     03  WSE-Month           pic 99.
+017140     03  WSE-Days            pic 99.
+017150*
 017200 01  fs-reply                pic xx          value zeros.
 017300*
 017400 01  tag-building-slot.
@@ -214,10 +220,10 @@
 021300     03  filler              pic x      value ".".
 021400*
 021500 01  new-image.
-021600     03  instruction-field   pic x   occurs 61.
+021600     03  instruction-field   pic x     occurs 61.
 021700*
 021800 01  rough-statement.
-021900     03  staging-area        pic x   occurs 137.
+021900     03  staging-area        pic x     occurs 137.
 022000*
 022100 01  patch-area redefines rough-statement.
 022200     03  ifslot              pic xxx.
@@ -240,7 +246,7 @@
 023900     03  go-to-plug          pic x(5)   value "GO TO".
 024000     03  next-sentence-plug  pic x(13)  value "NEXT SENTENCE".
 024100     03  else-go-to-plug     pic x(10)  value "ELSE GO TO".
-024200
+024200*
 024300* no end-if, could be problems with no period
 024400*
 024500 01  yestagstack.
@@ -258,23 +264,23 @@
 025700     03  number-of-rules     pic 999.
 025800     03  filler              pic xx.
 025900     03  g-check             pic x.
-026000         88  g-suppress               value "G".
+026000         88  g-suppress                 value "G".
 026100*
 026200 01  dummy-stub.
-026300     03  temp-stub           pic x    occurs 72.
+026300     03  temp-stub           pic x      occurs 72.
 026400*
 026500 01  dummy-entry.
-026600     03  temp-col            pic x    occurs 18.
+026600     03  temp-col            pic x      occurs 18.
 026700*
 026800 01  dummy-entry1.
-026900     03  dumy-char           pic x    occurs 18.
+026900     03  dumy-char           pic x      occurs 18.
 027000*
 027100 01  ycounttable.
-027200     03  relative-y          pic 99   occurs 25.
+027200     03  relative-y          pic 99     occurs 25.
 027300 01  ncounttable.
-027400     03  relative-n          pic 99   occurs 25.
+027400     03  relative-n          pic 99     occurs 25.
 027500 01  totaltable.
-027600     03  total-rule          pic 99   occurs 26.
+027600     03  total-rule          pic 99     occurs 26.
 027700 01  stub-table.
 027800     03  condition-stub      pic x(72)  occurs 26.
 027900     03  action-stub         pic x(72)  occurs 26.
@@ -284,7 +290,7 @@
 028300     03  number-of-columns   pic 999    occurs 26.
 028400*
 028500 01  error-message.
-028600	   03  filler              pic x(3)   value "**E".
+028600	    03  filler              pic x(3)   value "**E".
 028700     03  error-type          pic 99     value zeroes.
 028800     03  filler              pic x      value spaces.
 028900*
@@ -339,15 +345,15 @@
 033800*
 033900 01  warning-table.
 034000     03  filler              pic x(72)  value
-034100	   "SEQUENCE ERROR".
-034200	   03  filler              pic x(72)  value
-034300	   "LAST RULE WAS NOT ELSE RULE, TREATED AS SUCH".
-034400	   03  filler              pic x(72)  value
-034500	   "TABLE IS LIMITED BUT LOGICALLY INCOMPLETE".
-034600	   03  filler              pic x(72)  value
-034700	   "ENIT NOT FOUND, RHDR TERMINATES INIT SECTION".
-034800	   03  filler              pic x(72)  value
-034900	   "AUTO GOTO SUPPRESSED, GOTO MUST BE PROVIDED TO LEAVE EACH SE
+034100    "SEQUENCE ERROR".
+034200    03  filler               pic x(72)  value
+034300    "LAST RULE WAS NOT ELSE RULE, TREATED AS SUCH".
+034400    03  filler               pic x(72)  value
+034500    "TABLE IS LIMITED BUT LOGICALLY INCOMPLETE".
+034600    03  filler               pic x(72)  value
+034700    "ENIT NOT FOUND, RHDR TERMINATES INIT SECTION".
+034800    03  filler               pic x(72)  value
+034900     "AUTO GOTO SUPPRESSED, GOTO MUST BE PROVIDED TO LEAVE EACH SE
 035000-    "T OF ACTIONS".
 035100*
 035200 01  filler redefines warning-table.
@@ -359,7 +365,7 @@
 035800*
 035900* holds program parameter values from command line
 036000 01  Arg-Vals                           value spaces.
-036100     03  Arg-Value           pic x(128)  occurs 4.
+036100     03  Arg-Value           pic x(128) occurs 4.
 036200*
 036300 01  ws-head1.
 036400     03  p-prog-name         pic x(19).
@@ -380,7 +386,7 @@
 037900 Trans68.
 038000********
 038100*
-038200* get source, output & report filenames
+038200* Get source, output & report filenames
 038300*
 038400     accept   Arg-Number from argument-number.
 038500     if       Arg-Number > zero
@@ -422,6 +428,7 @@
 042100              end-if
 042200              move zero to Index1
 042300     end-if
+042310     accept   wse-date from date YYYYMMDD.
 042400*
 042500* Give help if args empty
 042600*
@@ -429,13 +436,17 @@
 042800              display  space
 042900              display  Prog-Name
 043000                       "  Cobol Decision Table Translator"
-043100              display "Copyright (C) 1968-2009 Vincent Bryan Coen"
+043100              display "Copyright (C) 1968-"  with no advancing
+043110              display WSE-Year with no advancing
+043120              display " Vincent Bryan Coen, FBCS"
 043200              display " "
 043300              display "Parameters are"
 043400              display space
 043500              display "1: Input  FileName (Mandatory)"
-043600           display "2: Output FileName (Mandatory if not IFN.cpy)"
-043700           display "3: Report FileName (Mandatory if not IFN.lst)"
+043600              display
+043610                   "2: Output FileName (Mandatory if not IFN.cpy)"
+043700              display
+043710                   "3: Report FileName (Mandatory if not IFN.lst)"
 043800              stop run returning 16.
 043900*
 044000     open     input input-file
@@ -511,9 +522,8 @@
 051000     move     partag to a-margin.
 051100     perform  sequence-ident-fetch thru card-write.
 051200     perform  card-read.
-051300*
 051400*
-051500* code here for INIT & ENIT & error checks
+051500* Code here for INIT & ENIT & error checks
 051600*
 051700     if       id-field = "INIT"
 051800              go to init-header-processor.
@@ -1450,7 +1460,7 @@
 144900 action-stub-loop.
 145000*****************
 145100*
-145200* write action tables
+145200* Write action tables
 145300*
 145400     compute  index2 =
 145500                   number-of-conditions + 1 + deleted-conditions.
@@ -1627,7 +1637,7 @@
 162600 card-write.
 162700***********
 162800*
-162900* only print decision related data
+162900* Only print decision related data
 163000*
 163100     if       in-table-flag not = zero
 163200              move a-card to log-record

@@ -1,44 +1,42 @@
-2017-03-23  Vince Coen <vbcoen@gmail.com>
+2018-10-15  Vincent B Coen <vbcoen@btconnect.com>
+        v1.01.23  * Replace any reference to Open Cobol to GnuCOBOL.
+                    Renamed/Renumbered zz310 & zz400 routines to
+                     zz220 & zz240 so that the copybook routines
+                     can go back in without changes - Right!
+        v1.01.24  * Restore copy lib processing code from routines starting
+                    zz300. init taking it from printcbl and comparing with
+                    the profiler code base. Updated copyright notices.
+
+2018-09-19  Vincent B Coen <vbcoen@btconnect.com>
+        v1.01.22  * Increased additional reserved lists from 1024 to 2048.
+
+2017-03-23  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.21  * Removed XREF list code (01.20).
-                  * Removed test code for printer error/s in (cobc).
-                  * Removed (see 01.19) lines printed no longer needed.
-                  * Added in heads year CC and changed format if
+                    Removed test code for printer error/s in (cobc).
+                    Removed (see 01.19) lines printed no longer needed.
+                    Added in heads year CC and changed format if
                     LC-TIME = en_GB = Great Britain format,
                               en_US = U.S.A format,
                      else defaults to unix format (ccyy/mm/dd).
                     More can be added if details known.
                     Must be a way of doing this inside Cobol using
                     GC compiler but do not know how ?
-                  * Problems still exist in cobc at 1481 regarding listing
+                    Problems still exist in cobc at 1481 regarding listing
                     source where more than one program is in src file and
-                  * likewise for only one program where xref occurs before the
+                    likewise for only one program where xref occurs before the
                     source list.
 
-                    Likewise the listing order is wrong should be :
-                    source program 1
-                    xref program 1
-                    source program 2
-                    xref program 2
-                    etc, etc.
-                    What is happening is :
-                    xref prog 1
-                    source prog 1
-                    etc and no still like it for v2.2 Final with a stack of other issues.
-
-                    NOTE that code for second program is now in the sources of
-                    cobxref.cbl so it is the only source file compile script amended.
-
-2017-03-22  Vince Coen <vbcoen@gmail.com>
+2017-03-22  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.20  * Added new lpr file for XREF where data taken from the
-                  * Normal printfile that is still held by cobc.
+                    Normal printfile that is still held by cobc.
                     This is more test code than anything else.
 
-2016-08-16  Vince Coen <vbcoen@gmail.com>
+2016-08-16  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.19  * Add extra display for total lines printed. Still tracing
                     for problem via cobc call with missing report.
-                  * Moved code from get-reserved-lists into cobxref.
+                    Moved code from get-reserved-lists into cobxref.
 
-2016-07-06  Vince Coen <vbcoen@gmail.com>
+2016-07-06  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.17  * Added test if listing file exists is it the same time or
                     within 1 minute if so treat as -A applied.
                     Added display of input rec count to help test o/p of
@@ -53,19 +51,19 @@
                     to see if cobc not closing print file before calling
                     cobxref. No definative answer and still happening.
 
-2016-07-05  Vince Coen <vbcoen@gmail.com>
+2016-07-05  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.16  * Add param option -A to append listing to existing file.
                     Introduced with the new compiler option -T | -t
                     which now creates a sensible program listing.
 
-2014-11-08  Vince Coen <vbcoen@gmail.com>
+2014-11-08  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.15  * Fix bug where option -G still produced all other reports.
                     Now it just produces a all in 1 report similar to MF & IBM.
                     **********************************************************
                     Must get round to performing reports one at a time instead
                     of full-through coding.
 
-2014-11-05  Vince Coen <vbcoen@gmail.com>
+2014-11-05  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.14  * Fix bug where multi braces inside or right of : e.g.,
                     fred)anything:anything)
 
@@ -75,7 +73,7 @@
         v1.01.12  * Improved error msg bb053 with more info and
 	            outputing blank lines at req. Rob. Mills
 
-2014-11-01  Vince Coen <vbcoen@gmail.com>
+2014-11-01  Vincent B Coen <vbcoen@btconnect.com>
 	v1.01.11  * Last version before adding in COPY library processing so
 	            that the program can be fully used outside cobc control as
 	            the source file provided by cobc has been converted to short
@@ -92,7 +90,7 @@
 	            a pic 9 field changed to a test against pic x vales 0 - 9.
 	            Added/uncommented code for new headings every 60 lines.
 
-2014-07-13  Vince Coen <vbcoen@gmail.com>
+2014-07-13  Vincent B Coen <vbcoen@btconnect.com>
 	v1.01.09  * Added error msg # to error messages.
 	            Added GNU to compiler name for both modules in notices.
 	            Added message numbers Msg11 - Msg14 to get-reserved-lists
@@ -101,12 +99,12 @@
 	            on get-reserved and cobxref which may have started with
 		    v1.01.7.  More looking needed.
 
-2011-10-02  Vince Coen <vbcoen@gmail.com>
+2011-10-02  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.08  * Global-Current-Level to use 99 instead of high-values for OC v2.0
 		    No I have no idea why I should need to as highest value on a
 		    numeric field is 99.
 
-2010-09-26  Vince Coen <vbcoen@gmail.com>
+2010-09-26  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.07  * Changed zz170 to make it tighter with less processing steps
                     as original was getting hit hard as seen using the profiler.
                   * Clean up date in copyright display to include current year.
@@ -121,12 +119,12 @@
                   * Program default will now list the source code prior to the
                     cross reference listing, -R now stops it.
 
-2009-02-21  Vince Coen <vbcoen@gmail.com>
+2009-02-21  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.04  * Added support for .pre via cobc with other very minor
                     changes and upgraded version to v1 prior to incl into cobc.
                   * fixed bug with blogs(nocare) in Screen or Report Sec.
 
-2009-02-14  Vince Coen <vbcoen@gmail.com>
+2009-02-14  Vincent B Coen <vbcoen@btconnect.com>
         v0.95.75  * fixed bugs regarding Special-names and file-control
                     where one or both may not be present. Extra suport
                     for Report writer but note that user names will be shown
@@ -144,7 +142,7 @@
                     release v0.96.00 which may well be the next release subject
                     to bug reports.
 
-2009-02-13  Vince Coen <vbcoen@gmail.com>
+2009-02-13  Vincent B Coen <vbcoen@btconnect.com>
         v0.95.68  * Now support for user defined words in WS areas not
                     covered ie Report Writer (ba040 - ba049) ie:
                     line|col|column [number|linage is]
@@ -153,7 +151,7 @@
                     footings [at]  &  top|bottom
                     and any other
 
-2009-02-12  Vince Coen <vbcoen@gmail.com>
+2009-02-12  Vincent B Coen <vbcoen@btconnect.com>
         v0.95.67  * Added support for special-names Currency sign is
                     as needed for test at ws on PIC.
                     Also added extra tests here for other leading chars.
@@ -165,23 +163,23 @@
                     Added 3 additional non-reserved reserved words to lists
                     so that they are not reported on.
 
-2009-01-31  Vince Coen <vbcoen@gmail.com>
+2009-01-31  Vincent B Coen <vbcoen@btconnect.com>
         v0.95.44  * Restored -G param Group listings to make it easier to
                     compare listings from xref with MF or IBM as they are
                     more basic.
 
-2009-01-20  Vince Coen <vbcoen@gmail.com>
+2009-01-20  Vincent B Coen <vbcoen@btconnect.com>
         v0.95.43  * extra sub verbs in screen section added more needed
                   * ditto in ws sub verbs see DONE.
                   * Added to function table: CONCATENATE, SUBSTITUTE/-CASE
 
-2009-01-14  Vince Coen <vbcoen@gmail.com>
+2009-01-14  Vincent B Coen <vbcoen@btconnect.com>
         v0.95.41  * Support for free format source lines up to 255 chars
                   * Support for Cobol word sizes of 31 chars and allowance
                     for this to be increased without major problems
                     both in compliance for INCITS PL 22.4 20xx
 
-2009-01-13  Vince Coen <vbcoen@gmail.com>
+2009-01-13  Vincent B Coen <vbcoen@btconnect.com>
         v0.95.40  * Cleared bugs related to ws fields used in proc. with
                     )) after, ditto the (1 1 1) format. These bugs traced
                     after putting a large m/f program through OC and xref
@@ -194,7 +192,7 @@
                   * Other changes made to cater for cobxref being called by
                     cobc.
 
-2009-01-03  Vince Coen <vbcoen@gmail.com>
+2009-01-03  Vincent B Coen <vbcoen@btconnect.com>
         v0.95.24  * added Check for unreferenced Globals in nested modules
                     and extra report for it
                   * More code clean ups
@@ -202,7 +200,7 @@
                     but more to do
                   * Tidied up some of the reports
 
-2008-12-30  Vince Coen <vbcoen@gmail.com>
+2008-12-30  Vincent B Coen <vbcoen@btconnect.com>
         v0.95.20  * Clear loop on processing nested programs due copy proc
                     removal to cobc o/p (fn.i) and others co-related issues.
                   * Bugs related to value 0/1. due copy code removal, again.
@@ -214,7 +212,7 @@
                   * Unref'd fields in nested to be reported at end - DONE
                   * Issued version to sourceforge & add1tocobol
 
-2008-12-21  Vince Coen <vbcoen@gmail.com>
+2008-12-21  Vincent B Coen <vbcoen@btconnect.com>
         v0.95.13  * Added in updated reserved.c lists which include
                     SUBSTITUTE and some new functions
                   * System reserved names are deliberately omitted so
@@ -222,7 +220,7 @@
                   * Cleared some more cosmetic bugs in reports
                   * Issued version to sourceforge
 
-2008-12-19  Vince Coen <vbcoen@gmail.com>
+2008-12-19  Vincent B Coen <vbcoen@btconnect.com>
         v0.95.10  * Fixed program name in reports for case as indicated by
 	 	    commandline -l
 	          * Added module name in reports if nested source
@@ -232,7 +230,7 @@
 		  * Cleaned up some Cobol code ie tighter & maybe faster & added
 		    code for profiling
 
-2008-12-14  Vince Coen <vbcoen@gmail.com>
+2008-12-14  Vincent B Coen <vbcoen@btconnect.com>
         v0.95.02  * Input changed, now input comes via cobc using progname.i
 	            (filename.i) ONLY. All COPY verb processing removed as the
 		    .i file has already processed COPY verbs & compiler
@@ -248,7 +246,7 @@
                   * Code for producing 01 record layout sizing but should it be
 		    added?
 
-2008-03-29  Vince Coen <vbcoen@gmail.com>
+2008-03-29  Vincent B Coen <vbcoen@btconnect.com>
         v0.94.00  * On multi progs in source not sending to .src 1st  line of
 		    new prog ie ID Division but ok in .lst
                     This may relate to the next bug.
@@ -256,14 +254,14 @@
 		    going to ba000 section etc
                   * literals using ' not treated as " in places
 
-2008-01-07  Vince Coen <vbcoen@gmail.com>
+2008-01-07  Vincent B Coen <vbcoen@btconnect.com>
         v0.93.00  * Reserved words changed to reflect OC v1.1 as 3/1/08.
 
-2007-04-01  Vince Coen <vbcoen@gmail.com>
+2007-04-01  Vincent B Coen <vbcoen@btconnect.com>
         v0.92.00  * Support for Copy to 99 levels.
 
-2007-03-19  Vince Coen <vbcoen@gmail.com>
+2007-03-19  Vincent B Coen <vbcoen@btconnect.com>
         v0.91.00  * Added extra features and clear out bugs.
 
-2007-03-10  Vince Coen <vbcoen@gmail.com>
+2007-03-10  Vincent B Coen <vbcoen@btconnect.com>
         v0.90.00  * Fast major rewrite to clear many bugs & add features

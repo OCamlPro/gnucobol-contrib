@@ -1,8 +1,16 @@
+2018-11-12  Vince Coen <vbcoen@gmail.com>
+ v1.01.05  * Minor tidy up of comments to keep within cc72
+           * Likewise use UC for 1st char in code comments
+           * Refresh sequence numbers.
+           * Update copyright notices internally and in displayed help.
+           * Confirm operation with GnuCOBOL v3.
+           * Small updates to text document files.
+
 2010-03-14  Vince Coen <vbcoen@gmail.com>
-	v1.01.04  * Change paragraph name justify-left as it is
-	          *  now a reserved word.
+ v1.01.04  * Change paragraph name justify-left as it is
+           *  now a reserved word.
 
 2009-01-06  Vince Coen <vbcoen@gmail.com>
-	v1.01.01  * Create Module & basic Manual
-		  * Test System for Open Cobol.
+ v1.01.01  * Create Module & basic Manual
+           * Test System for Open Cobol.
 

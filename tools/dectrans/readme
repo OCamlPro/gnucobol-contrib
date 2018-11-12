@@ -56,9 +56,8 @@ Supplied files with the dectrans tarbel:
 ***************************************
 
 Changelog               History of changes made to cobxref sources
-dectrans		The pre-compiled binary for Linux 32 bit systems
-dectrans.odt		Manual and Usage procedure for dectrans
-dectrans.cbl		Original Cobol source of dectrans
+dectrans.pdf            Manual and Usage procedure for dectrans
+dectrans.cbl            Original Cobol source of dectrans
 COPYING                 Software License for copying code.
 readme                  This file
 TODO                    Lists any outstanding programming or new functionality.
@@ -66,7 +65,7 @@ TODO                    Lists any outstanding programming or new functionality.
 NOTES:
 *****
 
-Please also read dectrans.txt for instructions on using program.
+Please also read dectrans.txt for instructions on using the program.
 
 As any bug fixes will be applied to the Cobol code please note that
 all bug fixes should only be made to the original Cobol source code.
@@ -76,4 +75,4 @@ contributions area at trunk/tools/dectrans.
 Please report all bugs found to the contributions forum
 and send a copy to the author at vbcoen@gmail.com.
 
-
+Content updated 12/11/2018 - minor typos.

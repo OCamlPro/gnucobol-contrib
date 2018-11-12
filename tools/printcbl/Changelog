@@ -1,19 +1,24 @@
+2018-02-27 Vincent B Coen
+        *    v2.01.17
+                1. Clean up help screen add some extra comments in src.
+                2. Point out that default copy libs is from env. vars COBCPY.
+
 2014-12-02 Vincent B Coen
-	*    v2.01.16 Functional additions:
-	        1. If P5 is unused then current directory is used for
-	           searching for copy books before COBCPY etc.
-	        2. Added option NOPRINT|noprint to P4 to prevent output file
-	           containing headings - can be used as a updated source file
-	           Same as using >>NOPRINT|*>NOPRINT etc in line 1.
+        *    v2.01.16 Functional additions:
+                1. If P5 is unused then current directory is used for
+                   searching for copy books before COBCPY etc.
+                2. Added option NOPRINT|noprint to P4 to prevent output file
+                   containing headings - can be used as a updated source file
+                   Same as using >>NOPRINT|*>NOPRINT etc in line 1.
                 3. Possible overflow issues when examining file buffer during
                    copy file name.
                 4. Issues when using copy books NOT in quotes, ongoing
-		   tracing for reasons etc.
+                   tracing for reasons etc.
 
 2014-11-05 Vincent B Coen
-	*    v2.01.15 Test for table size not done after table was
-		 increased by 1. Silly error but was not expecting
-		 depth to go to 9 let alone higher! Clean this doc up.
+        *    v2.01.15 Test for table size not done after table was
+                   increased by 1. Silly error but was not expecting
+                   depth to go to 9 let alone higher! Clean this doc up.
 
 2014-11-01 Vincent B Coen
 	*    v2.01.14 Changed inspect statement from FOR LEADING "FREE"

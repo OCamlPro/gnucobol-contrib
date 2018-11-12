@@ -1,15 +1,15 @@
        >>source free
  Identification division.
  program-id.            cobxref.
-*>author.               Vincent Bryan Coen, Applewood Computers,
+ author.                Vincent Bryan Coen, Applewood Computers, FBCS,
 *>                      17 Stag Green Avenue, Hatfield, Herts, AL9 5EB, UK.
-*>Date-Written.         28 July 1983 with code going back to 1967.
-*>Date-Rewriten.        10 March 2007 with code going back to 1983.
-*>Date-Compiled.        Today & Dont forget to update prog-name for builds.
-*>Security.             Copyright (C) 1967-2017, Vincent Bryan Coen.
+ Date-Written.          28 July 1983 with code going back to 1967.
+*> Date-Rewriten.       10 March 2007 with code going back to 1983.
+ Date-Compiled.         Today & Dont forget to update prog-name for builds.
+*> Security.              Copyright (C) 1967-2019, Vincent Bryan Coen.
 *>                      Distributed under the GNU General Public License
 *>                      v2.0. Only. See the file COPYING for details but
-*>                      for use within GNUCobol ONLY.
+*>                      for use within GnuCOBOL ONLY.
 *>
 *> Usage.               Cobol Cross Referencer for GNU Cobol from v1.1
 *>                      but code reflects for v2.n.
@@ -35,18 +35,19 @@
 *>*****************
 *>
 *> This file/program is part of Cobxref AND GNU Cobol and is copyright
-*> (c) Vincent B Coen 1967-2017. This version bears no resemblance to the
+*> (c) Vincent B Coen 1967-2019. This version bears no resemblance to the
 *> original versions running on ICL 1501/1901 and IBM 1401 & 360/30 in the
 *> 1960's and 70's.
 *>
 *> A version for running with MVS 3.8J and ANSI Cobol is available for those
 *> users running IBM emulation with Hercules.
-*>  This uses the original code from the 60s and will ONLY run with ANSI Cobol.
+*> This uses a modified version of the original code from the 60s and will
+*>  ONLY run with ANSI Cobol.
 *>
 *> This program is free software; you can redistribute it and/or modify it
 *> under the terms of the GNU General Public License as published by the
-*> Free Software Foundation; version 3 (and later) ONLY within GNUCobol,
-*> providing the package continues to be issued or marketed as GNUCobol and
+*> Free Software Foundation; version 3 (and later) ONLY within GnuCOBOL,
+*> providing the package continues to be issued or marketed as GnuCOBOL and
 *> is available FREE OF CHARGE AND WITH FULL SOURCE CODE.
 *>
 *> It cannot be included or used with any other Compiler without the
@@ -74,7 +75,7 @@
  input-Output section.
  file-control.
 *>
-*>  These 2 are needed as OC (& many others) does NOT support real
+*>  These 2 are needed as GC (& many others) does NOT support real
 *>    variable length tables and they can get very large
 *>            They are also very handy for debugging also during test
 *>            these two files are not deleted at EOJ but code is present
@@ -147,7 +148,7 @@
      03  SdSortKey         pic x(40).
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v1.01.21".
+ 77  Prog-Name             pic x(13) value "Xref v1.01.24".
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
  77  S-Pointer             Binary-long  value zero.
@@ -257,6 +258,11 @@
  77  Global-Current-Refno  pic 9(6)        value zero.
  77  Global-Current-Level  pic 99          value zero.
  77  FoundFunction         pic 9           value zero.
+*> from printcbl 4 copylib processing
+ 77  fn                    pic 999  comp   value zero.
+ 01  WS-Copy-File-Name     pic x(768)      value spaces.
+ 01  WS-Hold-Copy-File-Name pic x(768)     value spaces.
+*>
 *>
  01  HoldID                pic x(32)       value spaces.
  01  HoldID-Module         pic x(32)       value spaces.
@@ -481,10 +487,10 @@
      03  Short-Section-Name          occurs 8.
          05  Sht-Section-Name  pic x(16).
 *>
-*> Here for cb_intrinsic_table in GOC see :
-*>   cobc/reserved.c in the G/open-cobol source directory but Totally ingoring the system_table as not needed/used by xref
+*> Here for cb_intrinsic_table in GC see :
+*>   cobc/reserved.c in the gnuCOBOL source directory but Totally ingoring the system_table as not needed/used by xref
 *>
-*> Also note that the number 0 or 1 indicates if the function/reserved word is implemented in G/Open Cobol
+*> Also note that the number 0 or 1 indicates if the function/reserved word is implemented in gnuCOBOL
 *>   but xref treats all as being reserved as they are still so, in someones compiler
 *>
  01  Function-Table.                                                 *> updated by Get-Reserved-Lists.cbl
@@ -510,7 +516,7 @@
 *> ignore this one, gets confused with username and this
 *>     03  filler pic x(31) value "0E                          ".
 *>
-*> so does OC
+*> so does GC
 *>
      03  filler pic x(31) value "1EXCEPTION-FILE             ".
      03  filler pic x(31) value "0EXCEPTION-FILE-N           ".
@@ -596,7 +602,7 @@
 *>
 *> Note that system names are omitted so that they turn up in the cross refs
 *>
-*> Here for all reserved words in OC see: struct reserved reserved_words in cobc/reserved.c in the open-cobol source directory
+*> Here for all reserved words in GC see: struct reserved reserved_words in cobc/reserved.c in the open-cobol source directory
 *>
  01  Additional-Reserved-Words.                                   *> updatable by Get-Reserved-Lists.cbl
      03  filler pic x(31) value "1ACCEPT             ".
@@ -1178,10 +1184,10 @@
      03  filler pic x(31) value "1ZEROS".     *>  577 to here
 *>
      03  filler    value high-values.
-         05  filler  pic x(31)  occurs 447.   *> total of 1024
+         05  filler  pic x(31)  occurs 1471.   *> total of 2048
 *>
  01  Additional-Reserved-Words-R redefines Additional-Reserved-Words.      *> updated by Get-Reserved-Lists.cbl
-     03  Reserved-Names       occurs 1024 ascending key Resvd-Word indexed by Resvd-Idx.
+     03  Reserved-Names       occurs 2048 ascending key Resvd-Word indexed by Resvd-Idx.
          05  Resvd-Implemented pic x.
          05  Resvd-Word        pic x(30).
  01  Resvd-Table-Size          pic s9(5)   comp    value 577.   *> updated by Get-Reserved-Lists.cbl
@@ -1199,16 +1205,228 @@
  01  Global-Item-Table                         value high-values.
      03  Git-Elements  occurs 10 to 10001 depending on Git-Table-Size.
 *> +1 used, when testing for max table size
-       05  Git-Word        pic x(32).
-       05  Git-Prog-Name   pic x(32).
-       05  Git-RefNo       pic 9(6).
-       05  Git-HoldWSorPD  pic 9.
-       05  Git-HoldWSorPD2 pic 9.
-       05  Git-Build-No    pic 99.
-       05  Git-In-Use-Flag pic x.
-       05  filler          pic x.
+         05  Git-Word        pic x(32).
+         05  Git-Prog-Name   pic x(32).
+         05  Git-RefNo       pic 9(6).
+         05  Git-HoldWSorPD  pic 9.
+         05  Git-HoldWSorPD2 pic 9.
+         05  Git-Build-No    pic 99.
+         05  Git-In-Use-Flag pic x.
+         05  filler          pic x.
  01  Git-Table-Size        Binary-Long value 10.
  01  Git-Table-Count       Binary-Long value zero.
+*>
+*>  START OF COPY LIB WS Storage areas taken from printcbl.
+*>
+*>   ***************************************
+*>   | List of possible source file .exts, |
+*>   |  First one is ALWAYS space.         |
+*>   ***************************************
+*>
+ 01  Extention-Table        pic x(28)     value "    .cpy.CPY.cbl.CBL.cob.COB".
+ 01  filler redefines Extention-Table.
+     03  File-Ext           pic x(4)  occurs 7.
+ 01  Ext-Table-Size         pic 9         value 7.
+*>
+*>   **********************************************************    NOTE: that GC only goes 2-5
+*>   *  Now follows the tables needed for the 9 depth levels  *          or does it
+*>   *  that support the copy verb  within a copy verb.       *
+*>   *  First is ALWAYS the source file.                      *
+*>   **********************************************************
+*>
+ 01  Copy-Record.
+     05  CR-Buffer          pic x(256).            *> Both; max size for free format + 1
+ 01  CR-Buffer-Data-Size    pic 999     comp       value zero.
+*>
+ 01  Input-Record.
+     05  IR-Buffer          pic x(256).
+ 01  IR-Buffer-Data-Size    pic 999     comp       value zero.
+ 01  Temp-Input-Record.
+     03  TIR                pic x(256).
+*>
+*>   WARNING: Do NOT alter these Structures or Formats!
+*>
+ 01  Copy-Depth             pic 99                 value zero.
+ 01  Max-Copy-Depth         pic 99                 value zero.
+*>
+ 01  Copy-Max-Length        pic 9(6)    comp       value 65536.      *> Is this too high? NOT USED
+*>
+ 01  File-Handle-Tables.                                             *>  1st occurrence is for orig source file.
+     03  FHT                            occurs 1 to 10 depending on Fht-Table-Size.
+         05  Fht-Byte-Count        pic x(4)    comp-x  value 1048576.
+         05  Fht-Var-Block.
+             07  Fht-File-Handle   pic x(4).
+             07  Fht-File-OffSet   pic x(8)    comp-x  value zero.
+             07  Fht-File-Size     pic x(8)    comp-x  value zero.
+             07  Fht-Block-OffSet  pic x(8)    comp-x  value zero.
+             07  Fht-Pointer       pic s9(7)   comp    value zero.
+             07  Fht-P1            pic s9(7)   comp    value zero.   *> WS-P1 Storage Not yet used
+             07  Fht-P2            pic s9(7)   comp    value zero.   *> WS-P2 Storage Not yet used
+             07  Fht-Copy-Line-End pic s9(5)   comp    value zero.   *>  All new not programmed
+             07  Fht-Copy-Words    pic s9(5)   comp    value zero.   *>  All new not programmed
+             07  Fht-SW-Eof        pic 9               value zero.
+                 88  Fht-Eof                           value 1     False is 0.
+             07  Fht-Copy-Found    pic 9               value zero.   *>  All new not programmed
+             07  Fht-Replace-Found pic 9               value zero.   *>      ----- ' --------
+             07  Fht-Literal-Found pic 9               value zero.   *>      ----- ' --------
+             07  Fht-Continue      pic 9               value zero.   *>      ----- ' --------
+             07  Fht-Quote-Found   pic 9               value zero.   *>      ----- ' --------
+             07  Fht-Quote-Type    pic x               value space.  *>      ----- ' --------
+             07  Fht-Source-Format pic 9               value zero.
+                 88  Fht-Fixed                         value 0.
+                 88  Fht-Free                          value 1.
+             07  Fht-Block-Status  pic 9               value zero.
+                 88  Fht-Block-Eof                     value 1.
+         05  Fht-Current-Rec       pic x(256)          value spaces. *> Max size of free recs + 1
+         05  Fht-File-Name         pic x(768)          value spaces.
+         05  Fht-Buffer.
+             07  filler            pic x(1024)  occurs 1024.         *> same as Fht-Buffer-Size
+             07  filler            pic x.                            *> Fht-Buffer-Size + 1
+         05  filler                pic x               value x"FF".  *> Trap for buffer overflow Hopefully!
+*>
+ 01  Fht-Buffer-Size               pic s9(7)   comp    value 1048576.
+ 01  Fht-Table-Size                pic s999    comp    value zero.
+ 01  Fht-Max-Table-Size            pic 999     comp    value 10.     *> same as occurs in (above) FHT.
+ 01  CRT-Replace-Arguments-Size    pic 999     comp    value 50.     *> Same as occurs in WS- | CRT-Replace-Arguments
+ 01  CRT-Table-Size                pic 999     comp    value zero.
+ 01  Copy-Replacing-Table.                                           *>  occurs per copy file
+     03  CRT-Instance        occurs 1 to 10 depending on CRT-Table-Size. *> well nine is correct figure ..
+         05  CRT-Active-Flag       pic 9               value zero.
+             88  CRT-Active                            value 1     False is 0.
+         05  CRT-Copy-Found-Flag   pic 9               value zero.
+             88  CRT-Copy-Found                        value 1     False is 0.
+         05  CRT-Copy-Library-Flag pic 9               value zero.
+             88  CRT-COPY-Lib-Found                    value 1     False is 0.
+         05  CRT-Copy-Fname-Ext-Flag pic 9             value zero.
+             88  CRT-Copy-Fname-Ext                    value 1     False is 0.
+         05  CRT-Replace-Found-Flag   pic 9            value zero.
+             88  CRT-Replace-Found                     value 1     False is 0.
+         05  CRT-Quote-Found-Flag     pic 9            value zero.
+             88  CRT-Quote-Found                       value 1     False is 0.
+         05  CRT-Quote-Type        pic x               value space.
+         05  CRT-Literal-Found-Flag   pic 9            value zero.   *>  All new not programmed
+             88  CRT-Literal-Found                     value 1     False is 0. *> not programmed
+         05  CRT-Continue-Flag     pic 9               value zero.   *>  All new not programmed
+             88  CRT-Continue                          value 1     False is 0. *> not programmed
+         05  CRT-Within-Comment    pic 9               value zero.   *>  All new not programmed
+         05  CRT-Within-Bracket    pic 9               value zero.   *>  All new not programmed
+         05  CRT-Need-Quotation-Flag  pic 9            value zero.   *>  All new not programmed
+         05  CRT-Need-Continuation pic 9               value zero.   *>  All new not programmed
+         05  CRT-Replace-Space     pic 9               value zero.   *>  All new not programmed
+         05  CRT-Suppress-Flag     pic 9               value zero.
+             88  CRT-Suppress                          value 1     False is 0.
+         05  CRT-Consecutive-Quotation pic 9           value zero.   *>  All new not programmed
+         05  CRT-Newline-Count     pic 999     comp    value zero.   *>  All new not programmed
+         05  CRT-Replacing-Count   pic 999     comp    value zero.
+         05  CRT-Copy-Length       pic 9(7)    comp    value zero.   *>  All new not programmed [ used in testing 4 prints]
+         05  CRT-Copy-Statement                        value spaces. *> The entire copy statement but not really needed
+             07  filler            pic x(1024)  occurs 1024.         *> 1 MB                      except during testing
+         05  CRT-Copy-FileName     pic x(256)          value spaces.
+         05  CRT-Copy-Library      pic x(512)          value spaces.
+         05  CRT-Replace-Arguments      occurs  50.                  *>  Fixed size, Usage is CRT-Replacing-Count.
+             07  CRT-Leading-Flag  pic 9               value zero.
+                 88  Crt-Leading                       value 1     False is 0.
+             07  CRT-Trailing-Flag pic 9               value zero.
+                 88  Crt-Trailing                      value 1     False is 0.
+             07  CRT-Replace-Type  pic 9               value zero.
+                 88  CRT-RT-Lit                        value 1.
+                 88  CRT-RT-Pseudo                     value 2.
+                 88  CRT-RT-Else                       value 3.
+                 88  CRT-RT-Oops                       value 0.
+             07  CRT-Found-Src     pic 99              value zero.    *> non zero if a replacing target is found
+             07  CRT-Source-Size   pic 9(4)            value zero.    *> these sizes relate to the replacing-source and target
+             07  CRT-Target-Size   pic 9(4)            value zero.    *>   - - - -  ditto - - - -
+*>
+*>  On paper these can be as large as 65,535 BUT coding can only cope if literal or word is on same source line
+*>     So not relevant at this time (30 April 2012) v02.01.*
+*>
+             07  CRT-Replacing-Source  pic x(2048)     value spaces.  *> Make larger if required (coding changes also needed)
+             07  CRT-Replacing-Target  pic x(2048)     value spaces.  *> ditto
+*>
+ 01  Cbl-File-Fields.
+     03  Cbl-File-name      pic x(768).
+     03  Cbl-Access-Mode    pic x          comp-x  value 1.
+     03  Cbl-Deny-Mode      pic x          comp-x  value 3.
+     03  Cbl-Device         pic x          comp-x  value zero.
+     03  Cbl-Flags          pic x          comp-x  value zero.       *> normal 0 or 128 returns filesize in file offset
+     03  Cbl-File-Handle    pic x(4)               value zero.
+     03  Cbl-File-OffSet    pic x(8)       comp-x  value zero.
+*>
+ 01  Cbl-File-Details.
+     03  Cbl-File-Size      pic x(8)       comp-x  value zero.
+     03  Cbl-File-Date.
+         05  Cbl-File-Day   pic x          comp-x  value zero.
+         05  Cbl-File-Mth   pic x          comp-x  value zero.
+         05  Cbl-File-Year  pic xx         comp-x  value zero.
+     03  Cbl-File-time.
+         05  Cbl-File-Hour  pic x          comp-x  value zero.
+         05  Cbl-File-Min   pic x          comp-x  value zero.
+         05  Cbl-File-Sec   pic x          comp-x  value zero.
+         05  Cbl-File-Hund  pic x          comp-x  value zero.
+*>
+*>  Extra Buffers needed for replacing  For Active Copy
+*>
+ 01  IB-Size                pic 9(7)               value zero.
+ 01  Input-Buffer.
+     03  In-Buffer          pic x(1024)    occurs 1024.  *> 1 MB buffers
+ 01  CInput-Buffer.                                      *> Converted to uppercase for test
+     03  CIn-Buffer         pic x(1024)    occurs 1024.  *> 1 MB buffers
+ 01  OB-Size                pic 9(7)               value zero.
+ 01  Temp-Replacing-Source  pic x(2048).                 *> same as size of CRT-Replacing-Source
+ 01  Temp-Replacing-Target  pic x(2048).                 *>  - - Ditto for Target
+ 01  Temp-Record            pic x(256).
+*>
+*> Copy of current Copy table block to save accessing a table when processing COPY
+*>
+ 01  WS-CRT-Active-Copy-Table     pic s999    comp    value zero.    *> taken from CRT-Table-Size
+ 01  WS-CRT-Instance.
+     03  WS-CRT-Active-Flag       pic 9               value zero.
+         88  WS-CRT-Active                            value 1     False is 0.
+     03  WS-CRT-Copy-Found-Flag   pic 9               value zero.
+         88  WS-CRT-Copy-Found                        value 1     False is 0.
+     03  WS-CRT-Copy-Library-Flag pic 9               value zero.
+         88  WS-CRT-COPY-Lib-Found                    value 1     False is 0.
+     03  WS-CRT-Copy-Fname-Ext-Flag   pic 9           value zero.
+         88  WS-CRT-Copy-Fname-Ext                    value 1     False is 0.
+     03  WS-CRT-Replace-Found-Flag    pic 9           value zero.
+         88  WS-CRT-Replace-Found                     value 1     False is 0.
+     03  WS-CRT-Quote-Found-Flag  pic 9               value zero.
+         88  WS-CRT-Quote-Found                       value 1     False is 0.
+     03  WS-CRT-Quote-Type        pic x               value space.
+     03  WS-CRT-Literal-Found-Flag    pic 9           value zero.
+         88  WS-CRT-Literal-Found                     value 1     False is 0.
+     03  WS-CRT-Continue-Flag     pic 9               value zero.
+         88  WS-CRT-Continue                          value 1     False is 0.
+     03  WS-CRT-Within-Comment    pic 9               value zero.    *>  All new not programmed
+     03  WS-CRT-Within-Bracket    pic 9               value zero.    *>  All new not programmed
+     03  WS-CRT-Need-Quotation-Flag   pic 9           value zero.    *>  All new not programmed
+     03  WS-CRT-Need-Continuation pic 9               value zero.    *>  All new not programmed
+     03  WS-CRT-Replace-Space     pic 9               value zero.    *>  All new not programmed
+     03  WS-CRT-Suppress-Flag     pic 9               value zero.
+         88  WS-CRT-Suppress                          value 1     False is 0.
+     03  WS-CRT-Consecutive-Quotation pic 9           value zero.    *>  All new not programmed
+     03  WS-CRT-Newline-Count     pic 999     comp    value zero.    *>  All new not programmed
+     03  WS-CRT-Replacing-Count   pic 999     comp    value zero.
+     03  WS-CRT-Copy-Length       pic 9(7)    comp    value zero.
+     03  WS-CRT-Copy-Statement                        value spaces.
+         05  filler               pic x(1024)  occurs 1024.          *> 1 MB
+     03  WS-CRT-Copy-FileName     pic x(256)          value spaces.
+     03  WS-CRT-Copy-Library      pic x(512)          value spaces.
+     03  WS-CRT-Replace-Arguments      occurs  50.                   *>  Usage WS-CRT-Replacing-Count
+         05  WS-CRT-Leading-Flag  pic 9               value zero.
+             88  WS-CRT-Leading                       value 1     False is 0.
+         05  WS-CRT-Trailing-Flag pic 9               value zero.
+             88  WS-CRT-Trailing                      value 1     False is 0.
+         05  WS-CRT-Replace-Type  pic 9               value zero.
+             88  WS-CRT-RT-Lit                        value 1.
+             88  WS-CRT-RT-Pseudo                     value 2.
+             88  WS-CRT-RT-Else                       value 3.
+             88  WS-CRT-RT-Oops                       value 0.
+         05  WS-CRT-Found-Src     pic 99              value zero.    *> non zero if a replacing target is found
+         05  WS-CRT-Source-Size   pic 9(4)            value zero.    *> these sizes relate to the replacing-source and target
+         05  WS-CRT-Target-Size   pic 9(4)            value zero.    *>   - - - -  ditto - - - -
+         05  WS-CRT-Replacing-Source  pic x(2048)     value spaces.  *> Make larger if required
+         05  WS-CRT-Replacing-Target  pic x(2048)     value spaces.  *> ditto
 *>
  procedure division.
  aa000-xref-Data    section.
@@ -2832,7 +3050,7 @@
                   write SortRecord
               end-if
               if   HoldWSorPD > 7  *> only do for proc div
-                   perform zz310-Check-For-Globals thru zz319-Exit
+                   perform zz220-Check-For-Globals thru zz229-Exit
               end-if
      end-if.
 *>
@@ -2856,7 +3074,7 @@
               GO TO zz100-Exit.
      move     function upper-case (SourceRecIn) to SourceInWS.
 *>
-*> change tabs to spaces prior to printing & remove OC comment lines eg '#'
+*> change tabs to spaces prior to printing & remove GC comment lines eg '#'
 *>
      if       (SourceInWS (1:1) = "#" or = "$")
               go to zz100-Get-A-Source-Record.
@@ -3201,7 +3419,7 @@
 *>   i.e., compatible with *nix?  Soon find out from users.
 *>
      if       hddate not = "00000000"
-              perform  zz400-Convert-Date thru zz400-Exit.
+              perform  zz240-Convert-Date thru zz240-Exit.
      accept   hdtime from time.
      if       hdtime not = "00000000"
               move hd-hh to hd2-hh
@@ -3222,6 +3440,7 @@
      move     spaces to PrintLine.
      write    PrintLine after 1.
      move     2 to Line-count.
+*>
  zz150-WriteHdb1.
      move     spaces to Hdr5-Prog-Name.
      string   HoldID delimited by space
@@ -3236,6 +3455,7 @@
      write    PrintLine from hdr6-symbols.
      add      2 to Line-Count
      go       to zz150-Exit.
+*>
  zz150-WriteHdb2.
      move     spaces to PrintLine.
      write    PrintLine.
@@ -3248,6 +3468,7 @@
      write    PrintLine.
      add      4 to Line-Count
      go       to zz150-Exit.
+*>
  zz150-WriteHdb2b.
      move     spaces to PrintLine.
      write    PrintLine.
@@ -3258,6 +3479,7 @@
      write    PrintLine.
      add      4 to Line-Count
      go       to zz150-Exit.
+*>
  zz150-WriteHdb3.
      write    PrintLine from hdr8-ws.
      write    PrintLine from hdr3.
@@ -3265,24 +3487,28 @@
      write    PrintLine.
      add      3 to Line-Count
      go       to zz150-Exit.
+*>
  zz150-WriteHdb4.
      write    PrintLine from hdr9.
      move     spaces to PrintLine.
      write    PrintLine.
      add      2 to Line-Count
      go       to zz150-Exit.
+*>
  zz150-WriteHdb5.
      write    PrintLine from hdr10.
      move     spaces to PrintLine.
      write    PrintLine.
      add      2 to Line-Count
      go       to zz150-Exit.
+*>
  zz150-WriteHdb6.
      write    PrintLine from hdr9B.
      move     spaces to PrintLine.
      write    PrintLine.
      add      2 to Line-Count
      go       to zz150-Exit.
+*>
  zz150-WriteHdb7.
      write    PrintLine from hdr11.
      write    PrintLine from hdr12-hyphens.
@@ -3290,6 +3516,7 @@
      write    PrintLine.
      add      3 to Line-Count
      go       to zz150-Exit.
+*>
  zz150-WriteHdb8.
      write    PrintLine from hdr2.
      write    PrintLine from hdr3.
@@ -3297,10 +3524,8 @@
      write    PrintLine.
      add      3 to Line-Count
      go       to zz150-Exit.
-
-
- zz150-Exit.
-     exit.
+*>
+ zz150-Exit.  exit.
 *>
  zz160-Clean-Number.
       move    zero to Build-Number.
@@ -3309,8 +3534,8 @@
               go to zz160-Exit.
       if      Word-Length = 2
               compute Build-Number = (wsf3-1 * 10) + wsf3-2.
- zz160-Exit.
-     exit.
+*>
+ zz160-Exit.  exit.
 *>
  zz170-Check-4-Section.
      move     space to GotASection.
@@ -3333,8 +3558,8 @@
 *>
      if       GotASection = "Y"
               move zero to sw-Git.
- zz170-Exit.
-     exit.
+*>
+ zz170-Exit.  exit.
 *>
  zz180-Open-Source-File.
 *>*********************
@@ -3507,11 +3732,9 @@
                  "Sort1tmp" delimited by size   into Sort1tmp.
      if we-are-testing
            display  "Temp path used is " Temp-PathName.
- zz182-Exit.
-     Exit.
+ zz182-Exit.  Exit.
 *>
- zz180-Exit.
-     exit.
+ zz180-Exit.  exit.
 *>
  zz190-Init-Program.
 *>
@@ -3528,8 +3751,8 @@
      move     zeros to GotEndProgram sw-Source-Eof Section-Used-Table
               HoldWSorPD HoldWSorPD2 Con-Tab-Count.
      move     1 to S-Pointer F-Pointer S-Pointer2.
- zz190-Exit.
-     exit.
+*>
+ zz190-Exit.  exit.
 *>
  zz200-Load-Git.
 *>
@@ -3552,10 +3775,10 @@
      move     HoldID to Git-Prog-Name (Git-Table-Count).
      move     HoldWSorPD  to Git-HoldWSorPD (Git-Table-Count).
      move     HoldWSorPD2 to Git-HoldWSorPD2 (Git-Table-Count).
- zz200-Exit.
-     exit.
 *>
- zz310-Check-For-Globals.
+ zz200-Exit.  exit.
+*>
+ zz220-Check-For-Globals.
 *>**********************
      move zero to a1.
      perform  varying a1 from 1 by 1 until a1 > Git-Table-Count
@@ -3565,10 +3788,9 @@
               end-if
      end-perform.
 *>
- zz319-Exit.
-     exit.
+ zz229-Exit.  exit.
 *>
- zz400-Convert-Date.
+ zz240-Convert-Date.
 *>*****************
 *>
 *>  Converts date from Accept DATE YYYYMMDD to UK/USA/Intl date format
@@ -3603,16 +3825,372 @@
               move HD-M  to HD2-Date (6:2)
               move HD-D  to HD2-Date (9:2).
 *>
- zz400-Exit.
+ zz240-Exit.  exit.
+*>
+ zz300-Copy-Control Section.
+*>*************************
+*>=======================================================================
+*>
+*> zz300, zz400, zz500 & zz600 all relate to copy files/libraries via the COPY verb
+*>
+*>  this code allows for 9 levels of COPY, plus source file
+*>
+ zz300-Open-File.
+*>**************
+*> Open a Copy file using CBL-OPEN-File
+*>  filename is using Cbl-File-name
+*>
+     move     zero to Return-Code.
+     if       Fht-Table-Size not < Fht-Max-Table-Size                *> 10
+              move 24 to Return-Code                             *> RT 24 file table limit exceeded
+              display Msg1
+              go to zz300-Exit
+     end-if
+*>
+*>   First test that we do NOT have duplicate copy's (within copy's)
+*>
+     if       Fht-Table-Size not = zero
+              perform  varying fn from 1 by 1 until fn > Fht-Table-Size
+                       if    Fht-File-Name (fn) = WS-Copy-File-Name
+                             move 23 to Return-Code              *> RT 23 recursive copy filenames
+                             go to zz300-Exit                    *> Prevents dead lock in prtcbl
+                       end-if
+              end-perform
+     end-if
+*>
+*> set up New entry in File Table
+*>
+     add      1 to Fht-Table-Size.
+     move     Fht-Table-Size to e.
+     initialize Fht-Var-Block (e).
+     move     Fht-Buffer-Size  to   Fht-Byte-Count (e).
+     move     spaces to Fht-Current-Rec (e)
+                        Fht-Buffer (e).
+     move     1      to Fht-pointer (e).
+*>
+     perform  zz400-Check-File-Exists thru zz400-Exit.
+     if       Return-Code not = zero             *> Could have 26, 25, 35 = no file found
+                                                 *> 24 = table exceeded or another?
+              subtract 1 from Fht-Table-Size
+              go to zz300-Exit.
+*>
+     move     Fht-Table-Size to e.               *> just in case its been altered or used etc
+     move     Cbl-File-Size to Fht-File-Size (e).
+     move     Cbl-File-Name to Fht-File-Name (e).
+     move     1    to Cbl-Access-Mode
+                      Cbl-Deny-Mode.             *> deny write
+     move     zero to Cbl-Device
+                      Cbl-File-Handle.
+     move     zero to Return-Code.
+     call     "CBL_OPEN_FILE" using
+              Cbl-File-name
+              Cbl-Access-Mode
+              Cbl-Deny-Mode
+              Cbl-Device
+              Cbl-File-Handle
+     end-call
+     if       Return-Code not = zero
+              display Msg3 cbl-File-name (1:59)
+              display "zz300 - This should not happen here"
+              subtract 1 from Fht-Table-Size
+              go to zz300-exit
+     end-if
+*>
+     move     Cbl-File-Handle to Fht-File-Handle (e).
+     add      1 to Copy-Depth.
+     if       Copy-Depth > Max-Copy-Depth           *> Keep track of how deep we went!
+              move Copy-Depth to Max-Copy-Depth.
+*>
+ zz300-Exit.  exit.
+*>
+ zz400-Check-File-Exists.
+*>
+*> Check for correct filename and extention, taken from COPY verb
+*>
+*>  Input : WS-Copy-File-Name     ( A copy lib path could precede FN )
+*> Output : Return-Code = 0  :    Cbl-File-Details & Cbl-File-name
+*>          Return-Code = 25/26 : Failed fn in WS-Copy-File-Name
+*>
+*> in profiler it uses wsFoundNewWord2 as input.
+*>
+     move     zero to e.
+     inspect  WS-Copy-File-Name tallying e for all ".".
+     if       e not = zero                           *> We have 'copy foo.ext' or 'copy path/foo.ext'
+        or    No-Search
+              go to zz400-Try1
+     end-if
+     perform  varying a from 1 by 1  until Return-Code = zero or a > Ext-Table-Size
+              move   spaces to Cbl-File-name
+              string WS-Copy-File-Name delimited by space
+                     File-Ext (a)      delimited by size into Cbl-File-name
+              end-string
+              move   zero to Return-Code
+              if we-are-testing2
+                  move spaces to formatted-line
+                  string "Checking for "
+                         Cbl-File-Name into formatted-line
+                  end-string
+                  perform zz010-Write-Print-Line2
+              end-if
+              call   "CBL_CHECK_FILE_EXIST" using
+                                            Cbl-File-name
+                                            Cbl-File-Details
+              end-call
+              if   Return-Code not = zero
+               and a = Ext-Table-Size                           *> error 35 (well it should be)
+                     exit perform                               *> and we tried all combinations
+              end-if
+     end-perform
+     if       Return-Code not = zero    *> On, 'copy foo', NO .ext can be found on this copy lib path
+              move 25 to Return-Code                            *> RT 25 - file not found
+              if we-are-testing2
+                  move spaces to formatted-line
+                  string "Not found "
+                         Cbl-File-Name into formatted-line
+                  end-string
+                  perform zz010-Write-Print-Line2
+              end-if
+              go to zz400-Exit
+     end-if
+*>                                                                 OK, file now found
+     go       to zz400-Exit.
+*>
+ zz400-Try1.
+*>
+*> We have 'copy foo.ext' or 'copy path/foo.ext' OR it could be the main source file
+*>
+     move     WS-Copy-File-Name to Cbl-File-Name.
+     move     zero to Return-Code.
+     call     "CBL_CHECK_FILE_EXIST" using
+              Cbl-File-name
+              Cbl-File-Details
+     end-call
+     if       Return-Code not = zero
+              move 26 to Return-Code             *> foo.ext not found (error 26)!
+              if  we-are-testing2
+                  move spaces to formatted-line
+                  string "We cant find "
+                         Cbl-File-Name into formatted-line
+                  end-string
+                  perform zz010-Write-Print-Line2
+              end-if
+              go to zz400-Exit.
+*>
+*> OK, file now found
+*>
+     if     we-are-testing2
+              move spaces to formatted-line
+              string "We have found "
+                    Cbl-File-Name into formatted-line
+              end-string
+              perform zz010-Write-Print-Line2
+     end-if.
+*>
+ zz400-Exit.  exit.
+*>
+ zz500-Close-File.
+     call     "CBL_CLOSE_FILE" using Fht-File-Handle (Fht-Table-Size).
+     if       Return-Code not = zero
+              move return-code to WS-Disp3
+              display Msg4 WS-Disp3
+              display " on " Fht-File-Name (Fht-Table-Size)
+     end-if
+     subtract 1 from Fht-Table-Size.
+*>
+     subtract 1 from Copy-Depth.
+     move     zero to Return-Code.
+     go       to zz500-Exit.
+*>
+ zz500-Exit.  exit.
+*>
+ zz600-Read-File.
+*>**************
+*> Called using file-handle returning  Fht-Current-Rec (Fht-Table-Size)
+*>
+*> If buffer enpty read a block and regardless,
+*>     move record terminated by x"0a" to Fht-Current-Rec (Fht-Table-Size)
+*>
+     if       Fht-Eof (Fht-Table-Size) and Fht-Block-Eof (Fht-Table-Size)
+*>              perform zz500-Close-File thru zz500-Exit
+              go to zz600-Exit.
+*>
+     if       Fht-File-OffSet (Fht-Table-Size) = zero
+         and  Fht-Block-OffSet (Fht-Table-Size) = zero
+              perform zz600-Read-A-Block thru zz600-Read-A-Block-Exit
+              if      Return-Code = -1 or = 10
+                      set Fht-Block-Eof (Fht-Table-Size) to true
+                      go to zz600-Exit
+              end-if
+              go to zz600-Get-A-Record.
+*>
+ zz600-Get-A-Record.
+*>*****************
+*> Now to extract a record from buffer and if needed read a block
+*>         then extract
+*>
+     if       Fht-Eof (Fht-Table-Size)
+         and  Fht-Block-Eof (Fht-Table-Size)
+              go to zz600-Exit.
+*>
+     move     spaces to Fht-Current-Rec (Fht-Table-Size).
+     add      1 to Fht-Block-OffSet (Fht-Table-Size) giving g.
+*>
+*> note size is buffer size + 1
+*>
+     unstring Fht-Buffer (Fht-Table-Size) (1:Fht-Buffer-Size + 1)    *>  1048577)  *> (1:4097)
+                delimited by x"0A" or x"FF"
+                into         Fht-Current-Rec (Fht-Table-Size)
+                delimiter    Word-Delimit
+                pointer      g.
+*>
+*> Get next Block of data ?
+*>
+     if       Word-Delimit = x"FF"
+          and g not <  Fht-Buffer-Size + 1 *>  1048577     *> 4097
+              add Fht-Block-OffSet (Fht-Table-Size) to Fht-File-OffSet (Fht-Table-Size)
+              perform zz600-Read-A-Block thru zz600-Read-A-Block-Exit
+              if      Return-Code = -1 or Fht-Block-Eof (Fht-Table-Size)
+                      set Fht-Eof (Fht-Table-Size) to true
+                      if we-are-testing2
+                         move spaces to formatted-line
+                         string "Blk/Rec EOF on "
+                                Fht-File-Name (Fht-Table-Size) into formatted-line
+                         end-string
+                         perform zz010-Write-Print-Line2
+                      end-if
+                      go to zz600-Exit
+              end-if
+              go to zz600-Get-A-Record.
+*> EOF?
+     move     1 to Fht-Pointer (Fht-Table-Size).
+     if       Word-Delimit = x"FF"
+              set Fht-Eof (Fht-Table-Size) to true
+              go to zz600-Exit.
+*> So. now tidy up
+     subtract 1 from g giving Fht-Block-OffSet (Fht-Table-Size).
+     go       to zz600-exit.
+*>
+ zz600-Read-A-Block.
+*>*****************
+     if       Fht-Block-Eof (Fht-Table-Size)
+*>              set Fht-Eof (Fht-Table-Size) to true
+              go to zz600-Read-A-Block-Exit
+     move     all x"FF" to Fht-Buffer (Fht-Table-Size).  *> next 2 put back
+     if       Fht-File-Size (Fht-Table-Size) < Fht-Byte-Count (Fht-Table-Size) and not = zero   *> 4096
+              move Fht-File-Size (Fht-Table-Size) to Fht-Byte-Count (Fht-Table-Size).
+*>
+     call     "CBL_READ_FILE" using
+              Fht-File-Handle (Fht-Table-Size)
+              Fht-File-OffSet (Fht-Table-Size)
+              Fht-Byte-Count (Fht-Table-Size)
+              Cbl-Flags
+              Fht-Buffer (Fht-Table-Size)
+     end-call
+     if       Return-Code = -1 or = 10
+              set Fht-Block-Eof (Fht-Table-Size) to true
+              if we-are-testing2
+                  move spaces to formatted-line
+                  string "Blk EOF on "
+                         Fht-File-Name (Fht-Table-Size) into formatted-line
+                  end-string
+                  perform zz010-Write-Print-Line2
+              end-if
+              go to zz600-Read-A-Block-Exit
+     end-if
+     if       Return-Code not = zero              *> Could be indicating EOF (-1 ? )
+              set Fht-Block-Eof (Fht-Table-Size) to true
+              move Return-Code to WS-Disp3
+              move spaces to formatted-line
+              if   No-Printing
+                   string "*> "
+                          Msg5
+                          WS-Disp3 into PL-Text
+                   end-string
+              else
+                   string Msg5
+                          WS-Disp3 into PL-Text
+                   end-string
+              end-if
+              perform zz010-Write-Print-Line2
+              go to zz600-Read-A-Block-Exit
+     end-if
+*> just in case all ff does not work
+     move     x"FF" to Fht-Buffer (Fht-Table-Size) (Fht-Buffer-Size + 1:1)     *>  1048577:1)          *> (4097:1).
+     move     zero to Fht-Block-OffSet (Fht-Table-Size).
+     subtract Fht-Byte-Count (Fht-Table-Size) from Fht-File-Size (Fht-Table-Size).
+*>
+ zz600-Read-A-Block-Exit.
      exit.
+*>
+ zz600-Exit.  exit.
+*>
+ zz900-Process-Replace  Section.
+*>*****************************
+*>
+*> Now we have read a RECORD first check if table < 2 (not a copylib)
+*>  and check if active copy (active-table) has replacing active!
+*>
+     if       CRT-Table-Size < 1
+              go to zz900-Exit.
+     if       Fht-Table-Size > 1
+              move CRT-Instance (Fht-Table-Size - 1) to WS-CRT-Instance
+     else
+              go to zz900-Exit
+     end-if
+     if       not WS-CRT-Replace-Found
+              go to zz900-Exit.
+*>
+*> Process one at a time, Cannot see how to do it in one sweep !!
+*>
+     perform  varying WS-P11 from 1 by 1 until WS-P11 > WS-CRT-Replacing-Count
+                                            or WS-CRT-Replacing-Count > CRT-Replace-Arguments-Size
+*>              if       WS-CRT-Leading (WS-P11)
+*>                or     WS-CRT-Trailing (WS-P11)
+*>                       exit perform cycle
+*>              end-if
+              move  WS-CRT-Replacing-Source (WS-P11) to Temp-Replacing-Source
+              move  WS-CRT-Replacing-Target (WS-P11) to Temp-Replacing-Target
+              if    WS-CRT-RT-Lit (WS-P11)
+                    subtract 2 from WS-CRT-Source-Size (WS-P11) giving WS-P12    *> skip quotes
+                    subtract 2 from WS-CRT-Target-Size (WS-P11) giving WS-P13
+                    inspect  Input-Record tallying WS-CRT-Found-Src (WS-P11) for all Temp-Replacing-Source (2:WS-P12)
+                    move     function substitute (Input-Record                   *> Copy Record
+                             Temp-Replacing-Source (2:WS-P12)
+                             Temp-Replacing-Target (2:WS-P13)) to Temp-Record
+                    move     Temp-Record to Input-Record
+              end-if
+              if    WS-CRT-RT-Pseudo (WS-P11)
+                    subtract 4 from WS-CRT-Source-Size (WS-P11) giving WS-P12    *> skip the '==' & case no care
+                    subtract 4 from WS-CRT-Target-Size (WS-P11) giving WS-P13
+                    inspect  Input-Record tallying WS-CRT-Found-Src (WS-P11) for all Temp-Replacing-Source (3:WS-P12)
+                    move     function substitute-case (Input-Record
+                             Temp-Replacing-Source (3:WS-P12)
+                             Temp-Replacing-Target (3:WS-P13)) to Temp-Record
+                    move     Temp-Record to Input-Record
+              end-if
+              if    WS-CRT-RT-Else (WS-P11)
+                    move     WS-CRT-Source-Size (WS-P11) to WS-P12               *> No skips as its a field name & case no care
+                    move     WS-CRT-Target-Size (WS-P11) to WS-P13
+                    inspect  Input-Record tallying WS-CRT-Found-Src (WS-P11) for all Temp-Replacing-Source (1:WS-P12)
+                    move     function substitute-case (Input-Record
+                             Temp-Replacing-Source (1:WS-P12)
+                             Temp-Replacing-Target (1:WS-P13)) to Temp-Record
+                    move     Temp-Record to Input-Record
+              end-if
+              move  WS-CRT-Found-Src (WS-P11) to CRT-Found-Src (Fht-Table-Size - 1, WS-P11)
+     end-perform.
+*>
+ zz900-Exit.  Exit section.
+*>*********   ************
+*>
 *>
 *> End of cobxref source
 *>
  Identification division.
 *>**********************
-      program-id.       get-reserved-lists.
+   program-id.          get-reserved-lists.
 *>**
-*>    Author.           Vincent Bryan Coen, Applewood Computers.
+   Author.              Vincent Bryan Coen, Applewood Computers, FBCS.
 *>                      Stag Green Avenue, Hatfield, Hertfordshire, UK.
 *>**
 *>    Date-Written.     26 September 2010.
@@ -3620,9 +4198,9 @@
 *>    Security.         Copyright (C) 2010- forever, Vincent Bryan Coen.
 *>                      Distributed under the GNU General Public License
 *>                      v2.0. Only. See the file COPYING for details but
-*>                      for use within GNU/Open Cobol ONLY.
+*>                      for use within GnuCOBOL ONLY.
 *>**
-*>    Usage.            Get the reserved word lists from GNU/Open Cobols
+*>    Usage.            Get the reserved word lists from GnuCOBOL
 *>                      cobc, from v1.1 & v2.n for Intrinsic and reserved words.
 *>                      Note that Mnemonics - devices, features and switch names
 *>                      are NOT obtained so that they can appear in xref listings.
@@ -3642,13 +4220,13 @@
 *> Copyright Notice.
 *>*****************
 *>
-*> This file/program is part of Cobxref AND GNUCobol and is copyright
+*> This file/program is part of Cobxref AND GnuCOBOL and is copyright
 *> (c) Vincent B Coen 2010 - forever.
 *>
 *> This program is free software; you can redistribute it and/or modify it
 *> under the terms of the GNU General Public License as published by the
-*> Free Software Foundation; version 2 ONLY within Open Cobol, providing
-*> the package continues to be issued or marketed as 'GNU/Open Cobol' and
+*> Free Software Foundation; version 2 ONLY within GnuCOBOL, providing
+*> the package continues to be issued or marketed as 'GnuCOBOL' and
 *> is available FREE OF CHARGE AND WITH FULL SOURCE CODE.
 *>
 *> It cannot be included or used with any other Compiler without the
@@ -3693,11 +4271,11 @@
 *>
  working-storage section.
 *>**********************
- 77  Prog-Name              pic x(27) value "get-reserved-lists v1.00.01".
- 77  S-Ptr                  Binary-long  value zero.
- 77  Res-Start              Binary-char  value zero.
+ 77  Prog-Name              pic x(27)       value "get-reserved-lists v1.00.01".
+ 77  S-Ptr                  Binary-long     value zero.
+ 77  Res-Start              Binary-char     value zero.
  77  ws-Function-Table-Size pic s9(5)  comp value zero.
- 77  ws-Resvd-Table-Size    pic s9(5)   comp value zero.
+ 77  ws-Resvd-Table-Size    pic s9(5)  comp value zero.
  77  FS-Reply               pic 99.
 *>
  01  Placement-Res          pic x(30).
@@ -3715,11 +4293,11 @@
 *>**************
  01  ws-Return-Code          binary-char.
 *>
-*> Here for cb_intrinsic_table in G/OC see cobc/reserved.c in the GNU/Open Cobol source directory but
+*> Here for cb_intrinsic_table in GC see cobc/reserved.c in the GnuCOBOL source directory but
 *>    Totally ingoring the system_table as not needed/used by xref
 *>
 *> Also note that the number 0 or 1 indicates if the function/reserved word is implemented in
-*> GNU/Open Cobol but xref treats all, as being reserved as they are so (reserved that is)
+*> GnuCOBOL but xref treats all, as being reserved as they are so (reserved that is)
 *>
  01  Function-Table-R.
      03  All-Functions                 occurs 256 ascending key P-Function indexed by All-Fun-Idx.
@@ -3729,11 +4307,11 @@
 *>
 *> Note that system names are omitted so that they turn up in the cross refs
 *>
-*> Here for all reserved words in G/OC see :
-*>           struct reserved reserved_words in cobc/reserved.c in the GNU/Open Cobol source directory
+*> Here for all reserved words in GC see :
+*>           struct reserved reserved_words in cobc/reserved.c in the GnuCOBOL source directory
 *>
  01  Additional-Reserved-Words-R.
-     03  Reserved-Names                occurs 1024 ascending key Resvd-Word indexed by Resvd-Idx.
+     03  Reserved-Names                occurs 2048 ascending key Resvd-Word indexed by Resvd-Idx.
          05  Resvd-Implemented pic x.
          05  Resvd-Word        pic x(30).
  01  Resvd-Table-Size          pic s9(5)   comp.
@@ -3800,7 +4378,6 @@
      go to ba020-get-thru-base-data.
 *>
  ca000-Get-Reserved-Words section.
-*>*******************************
  ca010-init.
      open     input Reserve-Stream.
      if       FS-Reply = 35
@@ -3869,7 +4446,7 @@
      move     zero to ws-return-code.
      close    Reserve-Stream.
      if       Resvd-Table-Size > ws-Resvd-Table-Size
-                 display Msg14                                  *> updated
+                    display Msg14                                 *> updated
      end-if
      exit     section.
 *>

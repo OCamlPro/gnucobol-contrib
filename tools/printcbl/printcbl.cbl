@@ -1,7 +1,7 @@
        >>SOURCE FREE
  identification division.
  program-id.    printcbl.
-*> Author.      Vincent B Coen New verson v2.01.14+) 01/5/13 See Changelog file
+*> Author.      Vincent B Coen New verson v2.01.17+) See Changelog file
 *>                                                  for all changes.
 *> Tesing Level 1/2
 *>*****************
@@ -24,8 +24,8 @@
 *>   Notes transferred to a manual in LibreOffice & PDF formats.
 *>     Need more clean up as a bit of a mess!
 *>
-*>  Make sure that you have tested the GunCobol compiler by running both
-*>   make check  and  make test and that you get no errors what so ever
+*>  Make sure that you have tested the GnuCobol compiler by running
+*>   make checkall and that you get no errors what so ever
 *>    otherwise you get compiler induced errors when running.
 *>
 *>  Latest version at http://applewoodbbs.dtdns.net/files/Cobol-Dev/printcbl-latest.zip
@@ -37,7 +37,7 @@
 *>   subject to the issue or problem.
 *>
 *> If you wish to be on a update & bug report email list for:
-*> Printcbl, Cobxref, Profiler (Cobol), dectrans and anything else
+*> Printcbl, Cobxref, Profiler (Cobol), Dectrans and anything else
 *> related to Cobol development, Send your details to above
 *> adddress with subject: 'Update lists' and you will
 *> be added to my address list for such purposes.
@@ -46,7 +46,7 @@
 *>*************************************************************
 *> Purpose:
 *>         Produces a print (or an updated source file) of a
-*>      Cobol source program with all of it's copy books included.
+*>      Cobol source program with all of its copy books included.
 *>      =========================================================
 *>
 *>  See manual for more information
@@ -75,7 +75,7 @@
  working-storage section.
 *>======================
 *>
- 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.16".  *> ver.rel.build
+ 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.17".  *> ver.rel.build
 *>
 *>   **************************************
 *>   *     User changeable values here:   ****************************************************
@@ -113,7 +113,7 @@
     "cpi=16.6 " &                                                 *> Change if font size wrong
     "lpi=9' -P ".                                                 *> change if lines per inch wrong
      03  PSN                pic x(48) value "Officejet-Pro-8600 ". *> Change to your Print Spool Name
-*>
+*> "
 *>>>>>>        Change To Your Spool Name for printer NOTE THAT THERE IS A TRAILING SPACE
 *> This is the Cups print spool, change it for yours,
 *>  if your printer can not handle Duplex (double sided) printing remove string
@@ -130,7 +130,7 @@
  01  WS-Locale              pic x(16)     value spaces.     *> Holds o/p from env var. LC_TIME but only uses 1st 5 chars
  01  WS-Local-Time-Zone     pic 9         value 3.          *> Defaults to International, See comments below !
 *>
-*> Set WS-Local-Time-Zone ^~^ to one of these 88 value's according to your local requirements
+*> Set WS-Local-Time-Zone ^~^ to one of these 88 values according to your local requirements
 *> NOTE Environment var. LC_TIME is checked for "en_GB" for UK (1) and "en_US" for USA (2)
 *>   at start of program. For any other, you can add yours if different but let the author know,
 *>     so it can be added to the master sources
@@ -178,7 +178,7 @@
      88  WS-Fixed-Set                      value zero.
      88  WS-Free-Set                       value 1.
  01  WS-Search              pic 9          value zero.  *> Search in copy libs
-     88  No-Search                         value 1.     *> Don't, as we are using source file
+     88  No-Search                         value 1.     *> Dont, as we are using source file
      88  Yes-Search                        value zero.  *> Do so, as we are using Copy files
  01  WS-Number-Test.
      03  WS-Number          pic 9.
@@ -532,8 +532,8 @@
       end-if
      end-if.
 *>
-     display  "4) Enter Print Spool Name - "        at 1801  with erase eos.
-     Accept   PSN at 1829 with update.
+     display  "4) Enter Print Spool Name (or noprint) - "        at 1801  with erase eos.
+     Accept   PSN at 1842 with update.
 *>
      display  "WARNING: Only using Env. vars. for searches" at 2001 with background-color 3.
 *>
@@ -642,7 +642,7 @@
 *>  Support for source update only (no report) but can only happen on the first line of the source code
 *>   and any Compiler directives MUST be from line 2. This is to make SURE no print lines are produced.
 *>
-*>  Paramter 4 (print filename) can be "NOPRINT"|"noprint" and will do the same as of 2.01.16.
+*>  Parameter 4 (print filename) can be "NOPRINT"|"noprint" and will do the same as of 2.01.16.
 *>
      if       WS-Line-Number = zero
       and     ((ws-fixed-set and function upper-case (IR-Buffer (7:9)) = "**NOPRINT")
@@ -688,14 +688,14 @@
      if       (ws-Fixed-Set and IR-Buffer (7:1) = "*")
          or   (ws-Fixed-Set and IR-Buffer (7:1) = "$")  *> ex MF source/lists
          or   (ws-Fixed-Set and IR-Buffer (7:1) = "#")  *> can we get them here cc7 ?
-         or   (ws-Free-Set and IR-Buffer (1:2) = "*>")
-         or   (ws-Free-Set and IR-Buffer (1:1) = "$")
-         or   (ws-Free-Set and IR-Buffer (1:1) = "#")
+         or   (ws-Free-Set  and IR-Buffer (1:2) = "*>")
+         or   (ws-Free-Set  and IR-Buffer (1:1) = "$")
+         or   (ws-Free-Set  and IR-Buffer (1:1) = "#")
               go to ba000-Process
      end-if
 *>
-*>  As we have now output record we can clean it up, hopefully won't upset any searches
-*>         looks like it might do so rem' this lot out
+*>  As we have now output record we can clean it up, hopefully wont upset any searches
+*>         looks like it might do so rem this lot out
 *>     inspect  Input-Record replacing all x"09" by space   *> TAB
 *>                                         X"0D" by space   *> CR
 *>                                         x"00" by space   *> null
@@ -785,7 +785,7 @@
               set WS-CRT-Copy-Fname-Ext to false
      end-if                                                   *> Got space, now get 'IN' or 'OF'
 *>
-*> Could be "literal" so skip " or ' & copy rest to copy-file
+*> Could be "literal" so skip double & single quotes copy rest to copy-file
 *>
      if       WS-CRT-Quote-Found
               move 2 to WS-P1                                 *> quote bypass
@@ -805,7 +805,7 @@
 
      Move     WS-Copy-File-Name To WS-Hold-Copy-File-Name.
 *>
-*> Check for 'in "../../foo". clause (quotes have been removed) and think about replacing clause
+*> Check for in "../../foo". clause (quotes have been removed) and think about replacing clause
 *>
      if       WS-CRT-Copy-Lib-Found
               move spaces to Arg-Test
@@ -819,8 +819,9 @@
 *>
  ba040-Open-CopyFile.
 *>
-*> Look for name, if not found add .ext's but if it was in ' or "
-*>       going to get some silly .exts eg, foo.ext.cpy             >>>  NEED to look at this and STOP it.
+*> Look for name, if not found add .exts but if it was in single / double quote
+*>       going to get some silly .exts eg, foo.ext.cpy
+*>            >>  NEED to look at this and STOP it.
 *>
 
     if we-are-testing
@@ -946,7 +947,7 @@
 *>   *  multiple source records.                                          *
 *>   * While doing so we can set the found-Replacing flag.                *
 *>   *    and other related fields so we can process the full copy        *
-*>   *        statement in one hit.  Well that's the theory !!            *
+*>   *        statement in one hit.  Well thats the theory !!             *
 *>   *                                                                    *
 *>   *  Then return to main process loop to act on it having set index    *
 *>   *  to point at next word after 'COPY '                               *
@@ -1377,7 +1378,8 @@
               end-perform
      end-if
 *>
-*> Now we have dumped out the copy statement from source, concatinated source and as broken down in table.
+*> Now we have dumped out the copy statement from source, concatenated source
+*>       and as broken down in table.
 *>
      go to bb000-Exit.
 *>
@@ -1466,7 +1468,7 @@
      move     function upper-case (Input-Record) to Temp-Input-Record.
      if       Temp-Input-Record (8:8) not = ">>SOURCE"
               go to da000-Exit.
- DISPLAY "Found >>SOURCE as " Temp-input-record (8:48) end-display
+*> DISPLAY "Found >>SOURCE as " Temp-input-record (8:48) end-display
      inspect  Temp-Input-Record tallying WS-P7 for all "FREE".  *> was LEADING
      inspect  Temp-Input-Record tallying WS-P8 for all "FIXED".  *> was LEADING
      if       WS-P8 > zero
@@ -1578,26 +1580,23 @@
 *>
      accept   Arg-Number from argument-number.
      if       Arg-Number < 4 or > 5
-              display " " at 0101 with erase eos
-              display WS-Name-Program " Usage:"
-              display " "
-              display " Prtcbl P1 P2 P3 P4 P5"
-              display "  P1: Input Filename"
-              display "  P2: Output-Filename"
-              display "  P3: Source format [-fixed | -free, fixed | free]"
-              display "  P4: PSN (Print Spool Name) or NOPRINT | noprint"
-              display "  P5: 'Temp-CopyLib-Path'"
-              display " "
-              display " P1 thru P4 are Mandatory"
-              display " "
-              display " Prtcbl also looks for Open Cobol Env. variables"
-              display "  COBCPY and COB_COPY_DIR for copy library search paths"
-              display " "
-              display " Hit return to accept parameters manually"
-              accept  Hold-Word1 (1:1)
+              display space at 0101 with erase eos
+              display WS-Name-Program " Usage:" at 0201
+              display " Printcbl P1 P2 P3 P4 P5"  at 0401
+              display "  P1: Input Filename"  at 0501
+              display "  P2: Output-Filename" at 0601
+              display "  P3: Source format [-fixed | -free, fixed | free]" at 0701
+              display "  P4: PSN (Print Spool Name) or NOPRINT | noprint"  at 0801
+              display "  P5: 'Temp-CopyLib-Path'" at 0901
+              display " P1 thru P4 are Mandatory"  at 1101
+              display " Prtcbl also looks for Open Cobol Env. variables" at 1301
+              display "  COBCPY and COB_COPY_DIR for copy library search paths" at 1401
+              display " Hit return to accept parameters manually"  at 1601
+              display space a
+              accept  Hold-Word1 (1:1) at 1643
               move    space to Hold-Word1 (1:1)
               go      to zz020-exit
-     end-if .
+     end-if.
 *>
  zz020b-get-args.
      move     zero to z.
@@ -1631,7 +1630,7 @@
               end-if
      end-perform.
 *>
-*>               v2.01.16 update: Support for blank P5 : Get current directory and place in as P5
+*>   v2.01.16 update: Support for blank P5 : Get current directory and place in as P5
 *>
      if       z < 5
               call    "CBL_GET_CURRENT_DIR" using by value 0
@@ -1652,15 +1651,17 @@
 *>   \  We now have (if present): /
 *>    \**************************/
 *>
-*>  From P! = Input File Name   thats in current directory
+*>  From P1 = Input File Name   thats in current directory
 *>  From P2 = Output/Print file going in current directory
-*>  From P3 = -Fixed | Fixed or -Free | Free for type of source code
+*>  From P3 = Fixed | Free | -Fixed | -Free for type of source code
 *>  From P4 = PSN (Print Spool Name) or NOPRINT | noprint
-*>  From P5 = The Path of one or more Copy Libraries But not more than 9 eg, foo:bar:nuts
+*>  From P5 = The Path of one or more Copy Libraries But not more than
+*>             9 eg, foo:bar:nuts
 *>     which should be more than enough for anyone !!
 *>      where No-Of-Copy-Dirs = number of ALL copylib paths
 *>        stored in Copy-Lib (n) where n = 0(none), 1 - 10
 *>                    Happy days!!
+*>            Default copy libs taken from env. vars COBCPY if present.
  zz020c-Disp-Data.
      if       not We-Are-Testing
               move   zero to x y z
