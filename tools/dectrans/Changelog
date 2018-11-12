@@ -5,10 +5,20 @@
            * Update copyright notices internally and in displayed help.
            * Confirm operation with GnuCOBOL v3.
            * Small updates to text document files.
+           * Fixed errors with display going over cc72
+             and missing continuation char in a message literal.
+           * Minor tidy up in both A4 and Letter format manuals including
+             copyright dating and removed text regarding how to modify it
+             for other documents.
+           * Updated EOJ display messages to include 'messages Issued'
+             for both Warnings and Errors.
+           * updated test example dectest4.cbl from the current source file and placed
+             table source at end of file. Removed the unneeded dectest4.cpy
+             file from the test examples.zip file.
 
 2010-03-14  Vince Coen <vbcoen@gmail.com>
  v1.01.04  * Change paragraph name justify-left as it is
-           *  now a reserved word.
+           *  now a reserved word though not used in GnuCOBOL.
 
 2009-01-06  Vince Coen <vbcoen@gmail.com>
  v1.01.01  * Create Module & basic Manual

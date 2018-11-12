@@ -1672,10 +1672,10 @@
 166100     close    input-file transout transhist.
 166200     if       warning-flag not = zero
 166300              display "CAUTION:"
-166400              display "Warnings".   *> upon crt-under.
+166400              display "Warnings messages Issued".   *> upon crt-under.
 166500     if       error-flag not = zero
 166600              display "CAUTION:"
-166700              display "Errors".     *> upon crt-under.
+166700              display "Errors messages Issued".     *> upon crt-under.
 166800     stop     run.
 166900*
 167000 log-warning.
