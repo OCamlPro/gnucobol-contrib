@@ -22,7 +22,7 @@ cobweb-agar.o: cobweb-agar.cob
 
 # relies on .gc. extension extension
 clean:
-> -rm cobweb-agar.gc.c cobweb-agar.gc.c.* cobweb-agar.i cobweb-agar.so gcv gnucobol-agar-starter*
+> -rm cobweb-agar.gc.c cobweb-agar.gc.c.* cobweb-agar.i cobweb-agar.so gcv libagar.cpy gnucobol-agar-starter*
 
 # documentation
 cobweb-agar.html: cobweb-agar.rst cobweb-agar.so commands.sed

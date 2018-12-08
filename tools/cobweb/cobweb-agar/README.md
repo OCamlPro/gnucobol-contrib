@@ -11,10 +11,24 @@ SDL or OpenGL (including SDL framebuffers with or without a window manager).
 Getting started
 ---------------
 
+### libagar
+
 Install Agar.  http://www.libagar.org/download.html  1.5.0 preferred.
 
 - http://www.libagar.org/docs/
 - http://www.libagar.org/docs/inst/linux.html
+
+cobweb-agar is tested against libagar with threads disabled.  GnuCOBOL is not
+yet thread safe, and a single threaded libagar GUI is much safer.
+
+Within the extract directory of Agar:
+
+    prompt$ ./configure --disable-threads
+    prompt$ make depend all
+    prompt$ sudo make install
+    prompt$ sudo ldconfig
+
+### cobweb-agar
 
 Get the contribution.
 
