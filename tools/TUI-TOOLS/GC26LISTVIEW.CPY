@@ -91,15 +91,16 @@
   *> ***********************************************************************************
   *> HEADER AND LIST ROWS CONTENT
   *> ***********************************************************************************
-  03 Lv-RowHeader pic x(999) value 'LIST OF ELEMENTS                      '.
-  03 Lv-RowCmd-SW pic x(001) value 'Y'.          *> Y= display Cmd
-  03 Lv-RowCmd    pic x(030) value 'Enter=Select ESC=Exit PF1=Help'.
-  03 Lv-Tab2      value space.                   *> table disabled flag
-    05 Lv-Ele2    occurs 999 indexed by Lv-Idx2.
-        07 Lv-Dis pic x(001).  *> 1= this row is disabled (not selectable)
-  03 Lv-Tab       value space.                   *> table with list items
-    05 Lv-Ele     occurs 999 indexed by Lv-Idx.
-        07 Lv-Row pic x(999).
+  03 Lv-Parameters2.
+    05 Lv-RowHeader pic x(999) value 'LIST OF ELEMENTS                      '.
+    05 Lv-RowCmd-SW pic x(001) value 'Y'.          *> Y= display Cmd
+    05 Lv-RowCmd    pic x(030) value 'Enter=Select ESC=Exit PF1=Help'.
+    05 Lv-Tab2      value space.                   *> table disabled flag
+      07 Lv-Ele2    occurs 999 indexed by Lv-Idx2.
+          09 Lv-Dis pic x(001).  *> 1= this row is disabled (not selectable)
+    05 Lv-Tab       value space.                   *> table with list items
+      07 Lv-Ele     occurs 999 indexed by Lv-Idx.
+          09 Lv-Row pic x(999).
 
 
   *> ***********************************************************************************
