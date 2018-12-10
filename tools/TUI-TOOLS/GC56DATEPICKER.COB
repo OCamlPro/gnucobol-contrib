@@ -9,14 +9,15 @@ PROGRAM-ID. GC56DATEPICKER is initial.
 *>             F6=Chg Language; F7= togge 3D borders; F8= toggle Legend
 *> Tectonics:  cobc -m GC56DATEPICKER.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC56DATEPICKER using DatePicker-Area
-*> Parameters: look at GC56DATEPICKER.cpy  (use with copy Version: 1.4)
+*> Parameters: look at GC56DATEPICKER.cpy  (use with copy Version: 1.5)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)  - baseed on jrls (John Ellis) 05-Sept-2008 program
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.4 2017.02.14
+*> Version:    1.5 2018.08.31
 *> Changelog:  1.0 first release.
 *>             1.1 small enhancement (new field in copy Dtp-legend , F8 to toggle legend)
 *>             1.2 and 1.3 bug correction
 *>             1.4 added Dtp-Lan to manage 6 languages EN IT FR ES DE NL
+*>             1.5 added Dtp-Wait management
 *> ***********************************************************************************
 DATA DIVISION.
 WORKING-STORAGE SECTION.
@@ -437,7 +438,16 @@ end-search1.
 *> ***********************************************************************************
 *> WAIT FOR A KEY
 *> ***********************************************************************************
-    call static "getch" returning Key-Pressed end-call
+    *> call static "getch" returning Key-Pressed end-call
+
+    if Dtp-Wait  = 'Y'
+      *> after displayed datepicker wait for user key press
+       call static "getch" returning Key-Pressed end-call
+    else
+       *> after displayed datepicker return to caller without waiting for user input
+       *> useful whren you have just to display datepicker (calendar) on screen
+       go to End-Program
+    end-if
 
     EVALUATE Key-Pressed
     *> next month
