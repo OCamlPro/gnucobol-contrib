@@ -65,8 +65,9 @@ WORKING-STORAGE SECTION.
 01 wiScrOk            BINARY-LONG.
 
 *> ****************************************************************************
-*>  COLOR PAIR TAB FROM 00 TO 63.
-*>  exceptions are 00 = white on black, 01 = green on black
+*>  COLOR PAIR TAB - 64 combinations FROM 00 TO 63.
+*>  in the table there are some exceptions (all when BackGround is black) mainly:
+*>  black on black= 63, white on black= 00, green on black= 01
 *> ****************************************************************************
 
 
