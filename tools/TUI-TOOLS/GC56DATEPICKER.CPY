@@ -6,10 +6,11 @@
 *> Usage:      call GC56DATEPICKER using DatePicker-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2015 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.4 2017.02.14
+*> Version:    1.5 2018.08.31
 *> Changelog:  1.0 first release.
 *>             1.1 modified Example below of the calendar, added Dtp-legend
 *>             1.4 added Dtp-Lan to manage 6 languages EN IT FR ES DE NL
+*>             1.5 added Dtp-Wait
 *> ***********************************************************************************
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
@@ -32,6 +33,8 @@
 *> dim       Select B= Big Size Calendar(12x30 chars) or S= Small Size Calendar(12x23)
 *> legend    Y = display a small legend
 *> Lan       1=english, 2=Italian, 3=French, 4=Spanish, 5=German, 6=Ducth(Netherland)
+*> wait      Y= display datepicker and wait for a user keypress
+*>           N= display datepicker and returns to caller without wait for a keypress by the user
 *>                                        c1
 *>           Example               r1 ->  +------ Calendar -----+
 *>           style = 1         displays:  |JUNE             2016|
@@ -93,6 +96,7 @@
       05 Dtp-dim     pic x(01) value 'B'.           *> B= big size, S= Small size
       05 Dtp-legend  pic x(01) value 'Y'.           *> Y= display legend on last calendar row
       05 Dtp-Lan     pic 9(03) value 001.           *> Language
+      05 Dtp-Wait    pic x(01) value 'Y'.
 *> *************************************************************
 *> RETUNRS TO CALLER
 *> *************************************************************
