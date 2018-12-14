@@ -3,7 +3,7 @@
       *> Licensed for use under the GNU LGPL 3+
       *> https://www.gnu.org/licenses/lgpl-3.0.en.html
       *> Date:     October 2017
-      *> Modified: 2018-12-06/05:28-0500 btiffin
+      *> Modified: 2018-12-14/13:36-0500 btiffin
       *>+<*
       *>
       *> cobweb-agar.cob:  libagar user defined functions
@@ -379,7 +379,7 @@
        01 filename-pointer usage pointer.
        01 last-element usage pointer.
        01 filename.
-          05 value "/home/btiffin/filename.cob".
+          05 value "filename.cob".
 
       *> Unicode viewer
        01 unicode-win usage pointer.
@@ -559,12 +559,11 @@
        display "obj size: " length(trial-thing)
 
        call "AG_SurfaceFromBMP" using
-           by reference z"/home/btiffin/.agartest/agar.bmp"
+           by reference z"images/agar.bmp"
            returning agar-surface(1)
 
        call "AG_SurfaceFromPNG" using
-         by reference "/usr/share/icons/oxygen/base/16x16/apps/" &
-                      "preferences-desktop-display-color.png"
+         by reference "images/preferences-desktop-display-color.png"
          returning agar-surface(2)
 
        call "AG_IconFromSurface" using
@@ -853,7 +852,7 @@
        " "                                                      newline
        "      *> user defined function widget records"          newline
        "       01 window-record."                               newline
-       "          05 window usage pointer."                     newline
+       "          05 window-p usage pointer."                   newline
        "       01 box-record."                                  newline
        "          05 box usage pointer."                        newline
        "       01 button-record."                               newline
@@ -872,7 +871,7 @@
        "         to window-record"                              newline
        " "                                                      newline
        "      *> make a box for the button and the label"       newline
-       "       move agar-box(window, AG-BOX-HORIZ,"
+       "       move agar-box(window-p, AG-BOX-HORIZ,"
        " AG-BOX-HFILL)"                                         newline
        "         to box-record"                                 newline
        " "                                                      newline
@@ -892,14 +891,14 @@
        " "                                                      newline
        "      *> add a user edit text field"                    newline
        "       move z""Welcome to cobweb-agar"" to text-line"   newline
-       "       move agar-textbox(window, AG-TEXTBOX-HFILL,"
+       "       move agar-textbox(window-p, AG-TEXTBOX-HFILL,"
        " ""Text:"", text-line, ""textbox-callback"","
        " ""textline"")"                                         newline
        "         to textbox-record"                             newline
        "       move agar-widget-focus(textbox) to result-code"  newline
        " "                                                      newline
        "      *> display the window"                            newline
-       "       move agar-window-show(window)"                   newline
+       "       move agar-window-show(window-p)"                 newline
        "         to extraneous"                                 newline
        " "                                                      newline
        "      *> run the Agar event loop"                       newline
@@ -932,11 +931,11 @@
        "       01 sentinel-z     usage binary-long."            newline
        " "                                                      newline
        "       linkage section."                                newline
-       "       01 event usage pointer."                         newline
+       "       01 evnt usage pointer."                          newline
        " "                                                      newline
        "      *> different handlers may return a value"         newline
        "       procedure division extern using"                 newline
-       "           by value event"                              newline
+       "           by value evnt"                               newline
        "           returning omitted."                          newline
        " "                                                      newline
        "       move 0 to sentinel-z"                            newline
@@ -953,10 +952,10 @@
        " "                                                      newline
        "      *> textbox-prechg, postchg & return events"       newline
        "      *> this will end the GUI on textbox-return"       newline
-       "       if agar-eventname(event) equals"
+       "       if agar-eventname(evnt) equals"
        " ""textbox-return"" then"                               newline
        "           call ""windown"" using"                      newline
-       "               by value event"                          newline
+       "               by value evnt"                           newline
        "               returning omitted"                       newline
        "       end-if"                                          newline
        " "                                                      newline
@@ -1055,8 +1054,8 @@
        call "AG_SetString" using
            by value ag-config-object
            by reference z"save-path"
-           by reference "/home/btiffin/junk/agar/"
-           by value size size-t 24
+           by reference "/tmp"
+           by value size size-t 4
            returning agar-variable
        display "Setting save-path"
 
