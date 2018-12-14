@@ -1,0 +1,110 @@
+Read the manual FIRST.
+
+Yes, the manual may not be complete or contain errors on both layout
+and content.  Please report any you find using the Tracker tool on the
+website or use the Forums if you cannot work out how to use it.
+
+Reminders for users to do:
+1. Script changes for your usage based on location or ..
+
+A. Copy prtpdf-sh-A4 or prtpdf.sh-Letter to prtpdf.sh depending on
+the paper size you use. 
+
+It has been tested using a HP8600 inkjet
+using Linux distro's Mageia v6 X64 and Raspberry Pi 3B+ Debian.
+Where the Pi has an attached USB 1Tb hard drive linked to / via
+/etc/fstab.
+
+Likewise testing for flightlog has been run on the Pi and works exactly
+the same as on Mageia v6 platform (an Redhat sourced version).
+
+B. Copy run-flightlog.sh-UK or run-flightlog.sh-USA or run-flightlog.sh-Unix
+to run-flightlog.sh depending on your date format, see manual for more
+information.
+
+Now modify run-flightlog.sh to your requirements if needed.
+Note that this script uses an argument (date with suggested format of
+yyyy-mm-dd or yyyymmdd etc) to create the back up archive.
+If no argument is provided it will create as is a file called :
+backup-.zip.  The script could be changed to test for no argument and if
+so force date based on today or even not do a backup. If I remember and
+have time I will do this but assume I haven't.
+
+
+2. The directory Airfields contains a list by 1st 2 chars of the ICAO code
+for many countries but by no means all of them.
+
+There is two files from the UK Air Pilot - as a pdf and txt
+starting with EG_AD_1_3_en_2018-09-13 (.pdf and .txt).
+
+There is also 2 files for each .PDF file obtained from the web and the
+txt file which has been edited removing accented character and unwanted
+(OK, by me) excessive text like 'Airfield', 'Airport' with international
+replaced by Int'l in some cases and other just removed.
+
+Note many of these include Public Heliports and one's at hospitals.
+
+Just got bored, trying to clean them up when I considered adding them
+to the airfield file. Went off that idea :)
+
+Now an option for those that have a need? Is to using their countries
+version of these or/and others is to create from them a csv record type
+4 (Airfields) and add them into the Airfield file but it is a fair amount
+of work when most pilots use but a fraction of the total in use for a
+country and therefore just update after flying to a new airfield.
+
+That said,  commercial crew may well want to do this when they get 
+on new routes and just add them in one hit - Your choice.
+
+
+Here is a list of TODO features for the Flightlog program that may or
+may not be added subject to user requests along with any reasons why:
+
+There is no reason why it cannot be added to as a new Feature request.
+
+ TODO may be? (outstanding):
+
+  30/09/18            2. Consider a compressed log book report giving full remarks but using:
+                     airfield NAME and flight times only one's flown so that the Pn time
+                     data would look instead of P1 P2 P3 for day and night etc, be like:
+                     depart time arr time Pn hh.mm (day and night) IFR hh.nn Mult hh.nn.
+                     If flight duty is split then next line/s would have spaces for
+                     date, A/C type, Reg, captain start and end times, from. to and
+                     Pn times for other duties, etc. where two entries for same flight
+                     should have a start time difference of one minute: you
+                     cannot have two or more entries using the same date and start time.
+                     Priority LOW. as likely to look like a mess or 'very' wide o/p
+                     that is too wide for A4 let alone US letter although printing
+                     to 160 cc continuous stationery would work but who has a matrix
+                     printer these days. VERY LOW.
+
+  20/10/18            4. Consider using Mysql RDB for all data used on a per pilot
+                     basis. Worth doing ?.
+                     Would allow for extra statistics using SQL queries but again is
+                     this useful ?.
+                     If application used as a web based system allows for multi
+                     pilots by using one database per pilot by name via a login
+                     facility.    Priority LOW / MEDIUM as would require users
+                     to install Mysql package, bit ITT for low exp. users.
+                     Could consider using Sqlite but err, why ?
+
+  07/11/18            6. Consider using a web browser interface for display
+                     and accepting data. Could be linked to (4).
+                     THIS IS A HIGH TIME work load though, so unlikely.
+                     Priority LOW.
+
+  20/11/18            7. Consider CSV data reformatting from EBCDIC to ASCII if
+                     users requests it. Just have to work out how to, so worry about
+                     it then.  Priority LOW as users could use x3270 type programs
+                     during transfer to PC to convert a file. Just depends on how
+                     users get their CSV data file but they could ask company to
+                     supply in correct format !.
+
+
+End of README
+
+30/11/2018 vbc - Initial creation.
+13/12/2018 vbc - Monor clean up / updates for scripts.
+14/12/2018 vbc - More script updates and other content.
+ 
+

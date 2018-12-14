@@ -1,0 +1,175 @@
+GA - Mali
+
+GAAO – Ansongo – Ansongo
+GABD – Bandiagara – Bandiagara
+GABF – Bafoulabe – Bafoulabe
+GABG – Bougouni – Bougouni
+GABR – Bourem – Bourem
+GABS – Senou – Bamako
+GADZ – Douentza – Douentza
+GAGM – Goundam – Goundam
+GAGO – Gao (Korogoussou) – Gao
+GAKA – Kenieba – Kenieba
+GAKD – Kayes – Kayes
+GAKL – Kidal – Kidal
+GAKN – Kolokani – Kolokani
+GAKO – Koutiala – Koutiala
+GAKT – Kita – Kita
+GAMA – Markala – Markala
+GAMB – Mopti (Barbe) – Mopti
+GAMK – Menaka – Menaka, Menaka Cercle
+GANF – Niafunke – Niafunke
+GANK – Keibane – Nara
+GANR – Nioro – Nioro
+GASK – Sikasso – Sikasso
+GATB – Tombouctou – Tombouctou
+GATS – Tessalit – Tessalit
+GAYE – Yelimane – Yelimane
+
+GB - The Gambia
+GBYD – Banjul (Yundum Int'l) – Banjul
+
+GC - Canary Islands (Spain)
+GCFV – Fuerteventura – Fuerteventura
+GCGM – La Gomera – La Gomera
+GCHI – El Hierro – El Hierro
+GCLA – La Palma – La Palma
+GCLP – Gran Canaria – Las Palmas
+GCRR – Lanzarote – Arrecife, Lanzarote
+GCTS – Tenerife South – Santa Cruz de Tenerife
+GCXO – Tenerife North – Tenerife
+
+GE - Ceuta and Melilla (Spain)
+GECE – Ceuta Heliport – Ceuta
+GEML – Melilla – Melilla
+
+GF - Sierra Leone
+GFBN – Sherbro – Bonthe
+GFBO – Bo – Bo
+GFGK – Gbangbatok – Gbangbatoke
+GFHA – Hastings – Freetown
+GFKB – Kabala – Kabala
+GFKE – Kenema – Kenema
+GFLL – Lungi – Freetown
+GFYE – Yengema – Yengema
+
+GG - Guinea-Bissau
+GGBU – Bubaque – Bubaque
+GGCF – Cufar – Cufar
+GGOV – Osvaldo Vieira – Bissau
+
+GL - Liberia
+GLBU – Buchanan – Buchanan
+GLCP – Cape Palmas – Harper
+GLGE – Greenville/Sinoe – Greenville (Sinoe)
+GLLB – Lamco – Buchanan
+GLMR – Spriggs Payne – Monrovia
+GLNA – Nimba – Nimba
+GLRB – Roberts – Monrovia
+GLST – Sasstown – Sasstown
+GLTN – Tchien – Tchien
+GLVA – Voinjama – Voinjama
+
+GM - Morocco
+GMAA – Inezgane – Agadir, Souss-Massa-Drâa
+GMAD – Al Massira – Agadir, Souss-Massa-Drâa
+GMAG – Guelmim – Guelmim, Guelmim-Es Semara
+GMAT – Tan Tan (Plage Blanche) – Tan Tan, Guelmim-Es Semara
+GMAZ – Zagora – Zagora, Souss-Massa-Drâa
+GMFA – Ouezzane – Ouezzane, Gharb-Chrarda-Beni Hssen
+GMFB – Bouarfa – Bouarfa, Oriental
+GMFF – Saïss – Fes, Fès-Boulemane
+GMFI – Ifrane – Ifrane, Meknès-Tafilalet
+GMFK – Moulay Ali Cherif – Errachidia, Meknès-Tafilalet
+GMFM – Bassatine Air Base (Second Royal Air Force Base) – Meknes, Meknès-Tafilalet
+GMFO – Angads – Oujda, Oriental
+GMFU – Sefrou – Fes, Fès-Boulemane
+GMFZ – Taza – Taza, Taza-Al Hoceima-Taounate
+GMMB – Ben Slimane – Ben Slimane, Chaouia-Ouardigha
+GMMC – Anfa – Casablanca, Greater Casablanca
+GMMD – Beni Mellal – Beni Mellal, Tadla-Azilal
+GMME – Rabat-Sale (First Royal Air Force Base) – Rabat / Sale, Rabat-Sale-Zemmour-Zaer
+GMMF – Sidi Ifni – Sidi Ifni, Souss-Massa-Drâa
+GMMI – Mogador – Essaouira (Mogador), Marrakech-Tensift-El Haouz
+GMMJ – El Jadida – El Jadida, Doukkala-Abda
+GMMN – Mohammed V – Casablanca, Greater Casablanca
+GMMO – Taroudant – Taroudannt, Souss-Massa-Drâa
+GMMS – Safi – Safi, Doukkala-Abda
+GMMT – Tit Mellil – Casablanca, Greater Casablanca
+GMMW – Nador (Al Aroui) – Nador, Oriental
+GMMX – Marrakech-Menara – Marrakech, Marrakech-Tensift-El Haouz
+GMMY – Kenitra Air Base (Third Royal Air Force Base) – Kenitra, Gharb-Chrarda-Beni Hssen
+GMMZ – Ouarzazate – Ouarzazate, Souss-Massa-Drâa
+GMSL – Sidi Slimane Air Base (Fifth Royal Air Force Base) – Sidi Slimane, Gharb-Chrarda-Beni Hssen
+GMTA – Cherif Al Idrissi – Al Hoceima, Taza-Al Hoceima-Taounate
+GMTN – Sania Ramel – Tetouan, Tangier-Tetouan
+GMTT – Ibn Battouta – Tangier (Tanger), Tangier-Tetouan
+
+GO - Senegal
+GOBD – Blaise Diagne – Dakar
+GOGG – Ziguinchor – Ziguinchor
+GOGK – Kolda North – Kolda
+GOGS – Cap Skiring – Cap Skiring
+GOOK – Kaolack – Kaolack
+GOOY – Leopold Sedar Senghor – Dakar
+GOSM – Ouro Sogui – Matam
+GOSP – Podor – Podor
+GOSR – Richard Toll – Richard Toll
+GOSS – Saint-Louis – Saint-Louis
+GOTB – Bakel – Bakel
+GOTK – Kedougou – Kedougou
+GOTS – Simenti – Simenti
+GOTT – Tambacounda – Tambacounda
+
+GQ - Mauritania
+GQNA – Aioun el Atrouss – Aioun el Atrouss
+GQNB – Boutilimit – Boutilimit
+GQNC – Tichitt – Tichitt
+GQND – Tidjikja – Tidjikja
+GQNE – Abbaye – Boghe
+GQNF – Kiffa – Kiffa
+GQNH – Timbedra – Timbedra
+GQNI – Nema – Nema
+GQNJ – Akjoujt – Akjoujt
+GQNK – Kaedi – Kaedi
+GQNL – Letfotar – Moudjeria
+GQNM – Dahara – Timbedra
+GQNN – Nouakchott (closed) – Nouakchott
+GQNO – Nouakchott-Oumtounsy – Nouakchott
+GQNS – Selibaby – Selibaby
+GQNT – Tamchakett – Tamchakett
+GQPA – Atar – Atar
+GQPF – Fderik – Fderik
+GQPP – Nouadhibou – Nouadhibou
+GQPT – Bir Moghrein – Bir Moghrein
+GQPZ – Tazadit – Zouerat
+
+GS - Western Sahara
+GSAI – Hassan I (El Aaiun) – El Aaiun (Laâyoune) (also see GMML)
+GSMA – Smara – Smara (also see GMMA)
+GSVO – Dakhla – Dakhla (Villa Cisneros) (also see GMMH)
+
+GU - Guinea
+GUCY – Conakry (Gbessia Int'l) – Conakry
+GUFA – Fria – Fria
+GUFH – Faranah – Faranah
+GUGO – Gbenko – Banankoro
+GUKR – Kawass – Port Kamsar
+GUKU – Kissidougou – Kissidougou
+GULB – Tata – Labe
+GUMA – Macenta – Macenta
+GUNZ – Nzerekore – N'zerekore
+GUOK – Boke Baralande – Boke
+GUSA – Sangaredi – Sangaredi, Guinea
+GUSB – Sambailo – Koundara
+GUSI – Siguiri – Siguiri
+GUXD – Kankan – Kankan
+GVAC – Amílcar Cabral – Espargos, Sal
+GVAN – Agostinho Neto (closed) – Ponta do Sol, Santo Antao
+GVBA – Rabil – Rabil, Boa Vista
+GVMA – Maio – Vila do Maio, Maio
+GVMT – Mosteiros (closed) – Mosteiros, Fogo
+GVNP – Praia – Santiago, Praia
+GVSF – Sao Filipe – Sao Filipe, Fogo
+GVSN – Preguica – Preguica, Sao Nicolau
+GVSV – Cesária evora – Sao Pedro, Sao Vicente

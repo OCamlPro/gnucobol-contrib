@@ -1,0 +1,1121 @@
+EBAW Antwerp – Antwerp/Deurne
+EBBR Zaventem – Brussels
+EBCI Charleroi - Brussels
+EBKT Kortrijk - Flanders Wevelgem
+EBLG Liege – Liege
+EBOS Ostend – Bruges
+EBBE Beauvechain – Beauvechain
+EBBL Kleine Brogel – Kleine Brogel
+EBBX Jehonville – Bertrix
+EBCV Chievres – Chievres
+EBDT Schaffen – Schaffen
+EBFN Koksijde – Koksijde
+EBFS Florennes – Florennes
+EBLB Elsenborn-Butgenbach – Elsenborn
+EBMB Melsbroek – Brussels/Zaventem
+EBSU Saint-Hubert – Saint-Hubert
+EBUL Ursel – Ursel
+EBWE Weelde – Weelde
+EBBT Brasschaat – Brasschaat
+EBCF Cerfontaine – Cerfontaine
+EBGB Grimbergen – Grimbergen
+EBGG Overboelare – Geraardsbergen/Overboelare
+EBHN Hoevenen – Hoevenen
+EBKH Balen-Keiheuvel – Balen
+EBLE Beverlo – Leopoldsburg/Beverlo
+EBMO Moorsele – Moorsele
+EBNM Namur-Suarlee – Namur
+EBSG Saint-Ghislain – Saint-Ghislain
+EBSH Saint-Hubert – Saint-Hubert
+EBSL Zutendaal – Zutendaal
+EBSP Spa-La Sauveniere – Spa
+EBST Brustem – Brustem/Sint-Truiden
+EBTN Goetsenhoven – Goetsenhoven
+EBTX Verviers-Theux – Theux
+EBTY Maubray – Tournai
+EBZH Kiewit – Hasselt
+EBZR Oostmalle – Zoersel/Oostmalle
+EBZW Zwartberg – Genk
+EBAM Amougies – Amougies
+EBAR Arlon-Sterpenich – Arlon
+EBAV Avernas-le-Bauduin – Hannut
+EBBN Büllingen – Bullingen
+EBBY Baisy-Thy – Genappe
+EBBZ Buzet – Pont-a-Celles
+EBIS Ath/Isieres – Ath
+EBLN Liernu – Eghezee
+EBMG Doische-Matagne – Doische
+EBML Maillen – Assesse
+EBNE Neerpelt – Neerpelt
+EBOR Orchimont – Vresse-sur-Semois
+EBZU Zuienkerke – Zuienkerke
+EBAL Aalst Hospital Heliport – Aalst
+EBBA Baudour Heliport – Douvrain
+EBEU Universitair Ziekenhuis Antwerpen Hospital Edegem
+EBGA UZ Leuven Hospital Heliport – Leuven
+EBGE Grand Hopital de Charleroi – Loverval
+EBGT Ghent/Industry Zone Heliport – Ghent
+EBLC CHR de La Citadelle Hospital – Liege
+EBLS Centre Hospitalier Heliport – Liege
+EBMD Antwerp/Middelheim Hospital – Antwerp
+EBMS Centre Medical Heliport – Lierneux
+EBMT Centre Hospitalier Universitaire A. Vesale – Montigny-le-Tilleul
+EBSJ Bruges/Sint-Pieters Hospital – Sint-Pieters
+EBSS Sint-Lucas Hospital Heliport – Bruges
+EBUB Erasmus Hospital Heliport – Anderlecht
+EBUC Cliniques Universitaires Saint-Luc Hospital Woluwe-Saint-Lambert
+EBVS Veurne/Sint-Augustinus Heliport – Veurne
+EBYP Regionaal Ziekenhuis Jan Yperman VZW Hospital Heliport – Ypres
+EBAK Antwerp/Kiel Heliport – Antwerp
+EBAS Schilde/'s-Gravenwezel Heliport – Schilde
+EBBC Brecht/Luyckx Heliport – Brecht
+EBBH Brecht/Keysers Heliport – Brecht
+EBBM Brakel/Michelbeke Heliport – Michelbeke
+EBBV Brecht/Vochten Heliport – Brecht
+EBCH Shape Pad Heliport – Les Bruyeres
+EBDI Diksmuide Heliport – Diksmuide
+EBDL Dilsen-Stokkem/Lanklaar Heliport – Dilsen-Stokkem
+EBDR Antwerp/Commandant Fourcault – Antwerp
+EBDW Diest/Webbekom Heliport – Diest
+EBEB Evergem/Belzele Heliport – Evergem
+EBEN Ranst/Engles Heliport – Ranst
+EBFR Francorchamps Heliport – Francorchamps
+EBHA Ham Heliport – Ham
+EBHL Halen Heliport – Halen
+EBHM Hasselt/Maasland Heliport – Hasselt
+EBHO Holsbeek Heliport – Holsbeek
+EBHT Houthalen Heliport – Houthalen-Helchteren
+EBKR Kruishoutem/Sons Heliport – Kruishoutem
+EBKU Kuurne Heliport – Kuurne
+EBKW Knokke-Heist/Westkapelle Heliport – Knokke-Heist
+EBLM Meulebeke Heliport – Meulebeke
+EBLR Reninge Heliport – Reninge
+EBLT Lint Heliport – Lint
+EBLU Lummen Heliport – Lummen
+EBLY Ranst/Lymar Heliport – Ranst
+EBLZ Zaffelare Heliport – Lochristi
+EBME Meerbeek Heliport – Meerbeek
+EBMW Meise/Wolvertem Heliport – Meise
+EBNH Oostende Heliport – Ostend
+EBNK Nokere/Suys Heliport – Nokere
+EBNP Neerpelt/Tilburgs Heliport – Neerpelt
+EBOB Oud-Heverlee/Blanden Heliport – Oud-Heverlee
+EBOO Oostdijckbank Heliport –
+EBPW Pecq/Warcoing Heliport – Pecq
+EBRO Ranst/Van Den Bosch Heliport – Ranst
+EBRR Roeselare/Rumbeke Heliport – Rumbeke
+EBSW Sint-Pieters-Leeuw Heliport – Sint-Pieters-Leeuw
+EBTK Tielen/Kasterlee Heliport – Kasterlee
+EBVE Oeren Heliport – Veurne
+EBVU Rotselaar Heliport – Rotselaar
+EBWA Waasmunster Heliport – Waasmunster
+EBWI Wingene Heliport – Wingene
+EBWZ Wingene/Zwevezele Heliport – Wingene
+EBZI Zingem Heliport – Zingem
+EBZM Zomergem Heliport – Zomergem
+EBZO Zonnebeke/Zandvoorde Heliport – Zandvoorde
+EDAC Leipzig-Altenburg – Altenburg/Leipzig
+EDAD Dessau – Dessau
+EDAH Heringsdorf (Heringsdorf) – Heringsdorf
+EDAP Cottbus-Neuhausen – Cottbus
+EDAV Finow – Finow
+EDAX Rechlin-Larz – Rechlin
+EDAY Strausberg – Strausberg, Brandenburg
+EDAZ Schonhagen – Trebbin, Brandenburg
+EDBC Magdeburg–Cochstedt – Magdeburg
+EDBG Gatow – Berlin-Gatow (closed)
+EDBH Stralsund Barth – Barth, Mecklenburg-Vorpommern
+EDBM Magdeburg – Magdeburg
+EDBN Neubrandenburg – Neubrandenburg
+EDCA Anklam
+EDCD Cottbus-Drewitz – Cottbus
+EDCP Peenemunde
+EDCI Klix – Bautzen
+EDDB Berlin Brandenburg) – Berlin
+EDDC Dresden Klotzsche – Dresden
+EDDE Erfurt – Erfurt
+EDDF Frankfurt – Frankfurt am Main
+EDDG Munster Osnabruck – Greven
+EDDH Hamburg – Hamburg
+EDDI Tempelhof (closed) – Berlin
+EDDK Cologne Bonn – Cologne/Bonn
+EDDL Dusseldorf – Dusseldorf
+EDDM Munich (Franz Josef Strauß) – Munich
+EDDN Nuremberg – Nuremberg
+EDDP Leipzig/Halle – Leipzig/Halle
+EDDR Saarbrucken – Saarbrucken
+EDDS Stuttgart Echterdingen – Stuttgart
+EDDT Tegel – Berlin
+EDDV Hanover/Langenhagen – Hanover
+EDDW Bremen – Bremen
+EDEH Sonderlandeplatz Herrenteich – Herrenteich (Baden)
+EDER Wasserkuppe – Wasserkuppe
+EDFB Reichelsheim – Reichelsheim
+EDFC Aschaffenburg – Aschaffenburg
+EDFE Frankfurt Egelsbach – Frankfurt am Main
+EDFG Gelnhausen – Gelnhausen
+EDFH Frankfurt-Hahn – Rhineland-Palatinate
+EDFM Mannheim City – Mannheim
+EDFQ Allendorf – Allendorf, Waldeck-Frankenberg
+EDFT Lauterbach – Lauterbach
+EDFZ Mainz-Finthen – Mainz
+EDGE Eisenach-Kindel – Horselberg-Hainich
+EDGO Oedheim HEL – Oedheim
+EDGP Oppenheim – Oppenheim
+EDGS Siegerland – Burbach
+EDGX Sonderlandeplatz Walldorf – Walldorf (Baden)
+EDHE Uetersen – Heist
+EDHG Sonderlandeplatz Luneburg – Luneburg
+EDHI Hamburg Finkenwerder – Hamburg
+EDHK Kiel Holtenau – Kiel
+EDHL Lubeck – Lubeck
+EDHM Hartenholm – Hartenholm
+EDHS Sonderlandeplatz Stade – Stade
+EDIU Heidelberg – Heidelberg
+EDJA Allgau – Memmingen
+EDKA Aachen-Merzbruck – Aachen
+EDKB Bonn-Hangelar – Sankt Augustin
+EDKL Leverkusen – Leverkusen
+EDKU Attendorn-Finnentrop – Finnentrop
+EDKV Dahlemer Binz – Dahlem
+EDLC Kamp-Lintfort – Wesel
+EDLD Schwarze Heide – Dinslaken
+EDLF Grefrath-Niershorst – Grefrath
+EDLG Goch-Asperden – Goch
+EDLK Krefeld-Egelsberg – Krefeld
+EDLN Dusseldorf-Monchengladbach – Monchengladbach
+EDLP Paderborn Lippstadt – Paderborn / Lippstadt
+EDLR Paderborn Haxterberg – Paderborn
+EDLS Stadtlohn-Vreden – Stadtlohn
+EDLV Weeze (formerly Niederrhein) – Weeze
+EDLW Dortmund – Dortmund
+EDLX Wesel-Romerwardt – Wesel
+EDLZ Soest Bad Sassendorf – Soest / Bad Sassendorf
+EDME Eggenfelden – Pfarrkirchen
+EDMO Oberpfaffenhofen – Oberpfaffenhofen
+EDMA Augsburg – Augsburg
+EDMQ Donauworth – Genderkingen
+EDMS Straubing Wallmuhle – Straubing
+EDMT Tannheim
+EDMV Vilshofen – Vilshofen
+EDNR Regensburg-Oberhub – Regenstauf / Regensburg
+EDNY Bodensee – Friedrichshafen
+EDOJ Lusse – Lusse
+EDOP Schwerin-Parchim – Parchim
+EDOV Stendal-Borstel – Stendal
+EDQA Bamberg-Breitenau – Bamberg
+EDQC Coburg-Brandensteinsebene – Coburg
+EDQD Bindlacher Berg (Bayreuth) – Bayreuth
+EDQE Burg Feuerstein
+EDQG Giebelstadt
+EDQH Herzogenaurach
+EDQX Neunkirchen
+EDQM Hof-Plauen – Hof/Plauen
+EDRB Bitburg – Bitburg
+EDRI Linkenheim – Linkenheim-Hochstetten
+EDRK Koblenz Winningen – Winningen, Mosel
+EDRT Trier-Fohren – Trier
+EDRY Speyer – Speyer
+EDRZ Zweibrucken – Zweibrucken
+EDSB Baden – Baden-Baden / Karlsruhe
+EDTB Baden-Oos – Baden-Baden
+EDTD Donaueschingen-Villingen – Donaueschingen
+EDTE Eutingen – Eutingen im Gau
+EDTF Freiburg – Freiburg
+EDTG Bremgarten – Bremgarten
+EDTL Flughafen Lahr – Lahr
+EDTM Mengen-Hohentengen – Mengen
+EDTQ Pattonville – Pattonville
+EDTY Adolf Wurth – Schwabisch Hall
+EDTX Weckrieden – Schwabisch Hall
+EDVE Braunschweig-Wolfsburg – Braunschweig
+EDVI Hoxter-Holzminden – Hoxter / Holzminden
+EDVK Kassel Calden – Kassel
+EDWB Bremerhaven – Bremerhaven closed in 2016
+EDWC Damme – Damme
+EDWF Leer Papenburg – Leer
+EDWH Oldenburg-Hatten – Hatten
+EDWI JadeWeser – Wilhelmshaven-Mariensiel
+EDWJ Juist – Juist
+EDWR Borkum – Borkum
+EDWS Norden-Norddeich – Norden, Lower Saxony
+EDWY Norderney – Norderney
+EDXB Heide-Busum – Heide
+EDXH Heligoland – Heligoland
+EDXM St. Michaelisdonn – St. Michaelisdonn
+EDXW Sylt – Westerland, Sylt
+ETAD Spangdahlem – Spangdahlem
+ETAR Ramstein – Ramstein
+ETEJ Bamberg-Breitenau – Bamberg since 2012 in civilian use (EDQA)
+ETHA Altenstadt – Altenstadt
+ETHB Buckeburg – Buckeburg
+ETHC Celle – Celle
+ETHE Rheine-Bentlage – Rheine
+ETHF Fritzlar – Fritzlar
+ETHL Laupheim – Laupheim
+ETHM Mendig – Niedermendig
+ETHR Roth – Roth
+ETHS Faßberg – Faßberg
+ETHT Cottbus – Cottbus
+ETIN Kitzingen (closed in 2007) – Kitzingen, Bavaria
+ETMN Nordholz Naval Air Station – Nordholz
+ETND Diepholz – Diepholz
+ETNG NATO Geilenkirchen – Geilenkirchen
+ETNH Hohn – Hohn
+ETNJ Jever – Schortens
+ETNK Wahn military part of Cologne Bonn – Cologne/Bonn
+ETNL Rostock Laage – Rostock
+ETNN Norvenich – Norvenich
+ETNP Rheine-Hopsten – Rheine
+ETNS Schleswig – Schleswig
+ETNT Wittmundhafen – Wittmund
+ETNU Neubrandenburg – Neubrandenburg since 2013 in civilian use (EDBN)
+ETNW Wunstorf – Wunstorf
+ETOR Coleman Army – Mannheim
+ETOU Wiesbaden Army – Wiesbaden
+ETSA Landsberg-Lech – Landsberg am Lech
+ETSB Buchel – Buchel / Cochem
+ETSE Erding – Erding
+ETSF Furstenfeldbruck – Furstenfeldbruck
+ETSH Holzdorf – Jessen (Elster)
+ETSI Ingolstadt Manching – Ingolstadt
+ETSL Lechfeld – Lechfeld
+ETSN Neuburg - Neuburg
+ETUL RAF Laarbruch – Weeze (closed in 1999, now Weeze, NRN/EDLV)
+ETUO RAF Gutersloh – Gutersloh (closed in 1993)
+ETUR RAF Bruggen – Bruggen (closed in 2001)
+ETWM Meppen – Meppen
+EECL Linnahall Heliport – Tallinn
+EEEI Amari – Amari
+EEHU Haapsalu – Haapsalu
+EEJI Jõhvi – Jõhvi
+EEKA Kardla – Kardla
+EEKE Kuressaare – Kuressaare
+EEKU Kihnu – Kihnu
+EELU Lyckholm – Saare
+EENI Nurmsi – Nurmsi
+EENA Narva – Narva
+
+EE – Estonia
+EEPR Piirissaare – Piirissaar
+EEPU Parnu – Parnu
+EERA Rapla – Rapla
+EERI Ridali – Ridali
+EERU Ruhnu – Ruhnu
+EETA Tapa – Tapa
+EETN Lennart Meri Tallinn – Tallinn
+EETR Raadi – Tartu
+EETU Tartu – Tartu
+EEVI Viljandi – Viljandi
+
+EF   Finland
+EFAH Ahmosuo – Oulu
+EFAL Alavus – Alavus
+EFET Enontekio – Enontekio
+EFEU Eura – Eura
+EFFO Forssa – Forssa
+EFHA Halli – Kuorevesi
+EFHE Hernesaari Heliport – Helsinki
+EFHF Helsinki-Malmi – Helsinki
+EFHK Helsinki-Vantaa – Vantaa
+EFHM Hameenkyro – Hameenkyro
+EFHN Hanko (Hango) – Hanko (Hango)
+EFHV Hyvinkaa – Hyvinkaa
+EFIK Kiikala – Kiikala
+EFIM Immola – Imatra
+EFIT Kitee – Kitee
+EFIV Ivalo – Ivalo / Inari
+EFJM Jamijarvi – Jamijarvi
+EFJO Joensuu – Joensuu / Liperi
+EFJY Jyvaskyla – Jyvaskylan maalaiskunta
+EFKA Kauhava – Kauhava
+EFKE Kemi-Tornio – Kemi / Tornio
+EFKI Kajaani – Kajaani
+EFKJ Kauhajoki – Kauhajoki
+EFKK Kokkola-Pietarsaari – Kronoby
+EFKM Kemijarvi – Kemijarvi
+EFKO Kalajoki – Kalajoki
+EFKS Kuusamo – Kuusamo
+EFKT Kittila – Kittila
+EFKU Kuopio – Kuopio / Siilinjarvi
+EFKV Kivijarvi – Kivijarvi
+EFKY Kymi – Kymi
+EFLA Vesivehmaa – Lahti
+EFLP Lappeenranta – Lappeenranta
+EFMA Mariehamn – Mariehamn
+EFME Menkijarvi – Alajarvi
+EFMI Mikkeli – Mikkeli
+EFNU Nummela – Nummela
+EFOU Oulu – Oulunsalo
+EFPI Piikajarvi – Kokemaki
+EFPK Pieksamaki – Pieksamaki
+EFPO Pori – Pori
+EFPU Pudasjarvi – Pudasjarvi
+EFPY Pyhasalmi – Pyhasalmi
+EFRH Pattijoki – Raahe
+EFRN Rantasalmi – Rantasalmi
+EFRO Rovaniemi – Rovaniemi
+EFRU Ranua – Ranua
+EFRV Kiuruvesi – Kiuruvesi
+EFRY Rayskala – Loppi
+EFSA Savonlinna – Savonlinna
+EFSE Selanpaa – Kouvola
+EFSI Seinajoki – Seinajoki / Ilmajoki
+EFSO Sodankyla – Sodankyla
+EFTP Tampere-Pirkkala – Tampere / Pirkkala
+EFTS Teisko – Tampere
+EFTU Turku – Turku
+EFUT Utti – Utti / Valkeala
+EFVA Vaasa – Vaasa
+EFVR Varkaus – Varkaus / Joroinen
+EFYL Ylivieska – Ylivieska
+
+EG   United Kingdom
+EGAA Belfast – Belfast
+EGAB Enniskillen/St Angelo – Enniskillen
+EGAC George Best Belfast City – Belfast
+EGAD Newtownards – Newtownards
+EGAE City of Derry – Derry
+EGAH Halley Research Station – Brunt Ice Shelf, Antarctica
+EGAR Rothera Research Station – Adelaide Island, Antarctica
+EGBB Birmingham – Birmingham
+EGBC Cheltenham Racecourse Heliport – Cheltenham Racecourse
+EGBD Derby – Derby
+EGBE Coventry – Coventry
+EGBF Bedford – Thurleigh
+EGBG Leicester – Leicester
+EGBJ Gloucestershire – Staverton
+EGBK Sywell – Northampton
+EGBM Tatenhill – Tatenhill
+EGBN Nottingham – Nottingham
+EGBO Wolverhampton – Wolverhampton
+EGBP Cotswold – Kemble
+EGBS Shobdon – Leominster
+EGBT Turweston – Turweston
+EGBV Silverstone Heliport – Silverstone
+EGBW Wellesbourne Mountford – Wellesbourne
+EGCA Coal Aston – Coal Aston (airfield no longer has ICAO designation)
+EGCB City Manchester – Manchester
+EGCC Manchester – Manchester
+EGCD Woodford (closed 2012) – Stockport
+EGCF Sandtoft – Scunthorpe
+EGCG Strubby – Strubby
+EGCI Doncaster (closed 1992) – Doncaster
+EGCJ Sherburn-in-Elmet – Sherburn-in-Elmet
+EGCK Caernarfon – Caernarfon
+EGCL Fenland – Spalding
+EGCN Robin Hood Doncaster Sheffield – South Yorkshire
+EGCO Southport Birkdale Sands – Southport
+EGCR Ashcroft – Winsford
+EGCR Croydon (closed) – London
+EGCS Sturgate – Lincoln
+EGCV Sleap – Shrewsbury
+EGCW Welshpool – Welshpool
+EGDC Royal Marines Base Chivenor – Braunton
+EGDI RAF Merryfield – Ilminster
+EGDJ Upavon – Upavon
+EGDL RAF Lyneham – Wiltshire
+EGDM MoD Boscombe Down – Amesbury
+EGDN Netheravon – Netheravon
+EGDO RNAS Predannack satellite of RNAS Culdrose – Mullion
+EGDP RNAS/MCA Portland Heliport (closed) – Portland Harbour
+EGDR RNAS Culdrose – Helston
+EGDS Salisbury Plain – Bulford
+EGDT Wroughton – Wroughton
+EGDV Hullavington – Hullavington
+EGDW RNAS Merryfield – Yeovil
+EGDX MoD Saint Athan – St Athan
+EGDY RNAS Yeovilton – Yeovil
+EGEA Aberdeen (Culter Helipad) – Aberdeen
+EGEC Campbeltown – Campbeltown
+EGED Eday – Eday
+EGEF Fair Isle – Fair Isle
+EGEH Whalsay – Whalsay
+EGEL Coll – Isle of Coll
+EGEN North Ronaldsay – North Ronaldsay
+EGEO Oban – Oban
+EGEP Papa Westray – Papa Westray
+EGER Stronsay – Stronsay
+EGES Sanday – Sanday
+EGET Tingwall – Lerwick
+EGEW Westray – Westray
+EGEY Colonsay – Colonsay
+EGFA Aberporth – Cardigan
+EGFC Cardiff Heliport – Cardiff
+EGFE Haverfordwest – Haverfordwest
+EGFF Cardiff – Cardiff
+EGFH Swansea – Swansea
+EGFP Pembrey – Pembrey
+EGGD Bristol – Bristol
+EGGP Liverpool John Lennon – Liverpool
+EGGW London Luton – London
+EGHA Compton Abbas – Shaftesbury
+EGHB Maypole – Maypole, Kent
+EGHC Land's End – St Just in Penwith
+EGHD Plymouth City – Plymouth (closed 2011)
+EGHE St. Mary's – St. Mary's
+EGHF Lee on Solent
+EGHG Yeovil/Westland – Yeovil
+EGHH Bournemouth – Bournemouth
+EGHI Southampton – Southampton
+EGHJ Bembridge – Sandown
+EGHK Penzance Heliport – Penzance
+EGHL Lasham – Basingstoke
+EGHN Isle of Wight/Sandown – Sandown
+EGHO Thruxton – Andover
+EGHP Popham – Popham
+EGHQ Newquay Cornwall – St Mawgan, Cornwall
+EGHR Chichester (Goodwood) – Chichester, West Sussex
+EGHS Henstridge – Henstridge
+EGHT Tresco Heliport – Tresco
+EGHU Eaglescott – Great Torrington
+EGHY Truro – Truro
+EGJA Alderney – Alderney
+EGJB Guernsey – Guernsey
+EGJJ Jersey – Jersey
+EGKA Shoreham – Shoreham-by-Sea
+EGKB London Biggin Hill – London
+EGKE Challock – Challock
+EGKF RNAS Ford (closed 1958) – Ford
+EGKG Goodwood Racecourse Heliport – Goodwood Racecourse
+EGKH Lashenden/Headcorn – Maidstone
+EGKK London Gatwick – London
+EGKL Deanland – Lewes
+EGKR Redhill – Redhill
+EGLA Bodmin – Bodmin
+EGLC London City – London
+EGLD Denham – Gerrards Cross
+EGLF Farnborough – Farnborough
+EGLG Panshanger – (closed 2014; proposed reopening)
+EGLJ Chalgrove – Oxford
+EGLK Blackbushe – Camberley
+EGLL London Heathrow – London
+EGLM White Waltham – White Waltham
+EGLP Brimpton (Wasing Lower Farm) – Upper Bucklebury – England
+EGLS Old Sarum – Salisbury
+EGLT Ascot Racecourse Heliport – Ascot Racecourse
+EGLW London Heliport – London
+EGMA Fowlmere – Cambridge
+EGMC London Southend – Southend-on-Sea
+EGMD London Ashford – Lydd
+EGMF Farthing Corner – Rainham
+EGMH Kent – Ramsgate
+EGMJ Little Gransden – St Neots
+EGMK Lympne - Lympne, Kent
+EGML Damyns Hall – Upminster
+EGMT Thurrock – Thurrock
+EGNA Hucknall – Nottingham
+EGNB Brough – Brough
+EGNC Carlisle Lake District – Carlisle
+EGND Crosland Moor – Brough
+EGNE Gamston – Retford
+EGNF Netherthorpe – Worksop
+EGNG Bagby – Bagby
+EGNH Blackpool – Blackpool
+EGNJ Humberside – Kingston upon Hull
+EGNL Barrow/Walney Island – Barrow-in-Furness
+EGNM Leeds Bradford – West Yorkshire
+EGNO Warton – Warton, Lancashire
+EGNR Hawarden – Chester
+EGNS Isle of Man – Isle of Man
+EGNT Newcastle – Newcastle upon Tyne
+EGNU Full Sutton – York
+EGNV Durham Tees Valley – Tees Valley
+EGNW Wickenby – Lincoln
+EGNX East Midlands – East Midlands
+EGNY Beverley/Linley Hill – Beverley
+EGOD Llanbedr – Llanbedr
+EGOE RAF Ternhill – Ternhill
+EGOQ RAF Mona – Anglesey
+EGOS RAF Shawbury – Shawbury
+EGOV RAF Valley/Anglesey – Anglesey
+EGOW RAF Woodvale – Formby
+EGPA Kirkwall – Kirkwall
+EGPB Sumburgh – Shetland Islands
+EGPC Wick – Wick
+EGPD Aberdeen – Aberdeen
+EGPE Inverness – Inverness
+EGPF Glasgow – Glasgow
+EGPG Cumbernauld – Cumbernauld
+EGPH Edinburgh – Edinburgh
+EGPI Islay – Islay
+EGPJ Fife – Glenrothes
+EGPK Glasgow Prestwick – Glasgow
+EGPL Benbecula – Benbecula
+EGPM Scatsta – Lerwick
+EGPN Dundee – Dundee
+EGPO Stornoway – Stornoway
+EGPR Barra – Barra
+EGPT Perth – Perth
+EGPU Tiree – Tiree
+EGPY Dounreay – North Scotland
+EGQK RAF Kinloss – Kinloss
+EGQL RAF Leuchars – Leuchars
+EGQM RAF Boulmer – Alnwick
+EGQS RAF Lossiemouth – Lossiemouth
+EGSA Shipdham – Shipdham
+EGSB Bedford Castle Mill – Bedford
+EGSC Cambridge – Cambridge
+EGSD Great Yarmouth – North Denes – Great Yarmouth
+EGSE Ipswich (closed 1998) – Ipswich
+EGSF Peterborough Business – Peterborough
+EGSG Stapleford – Romford
+EGSH Norwich – Norwich
+EGSJ Seething – Norwich
+EGSK Hethel (closed 1948) – Hethel
+EGSL Andrewsfield – Braintree
+EGSM Beccles – Beccles
+EGSN Bourn – Cambridge
+EGSO Crowfield – Ipswich
+EGSP Peterborough/Sibson – Peterborough
+EGSQ Clacton – Clacton-on-Sea
+EGSR Earls Colne – Halstead
+EGSS London Stansted – London
+EGST Elmsett – Ipswich
+EGSU Duxford – Cambridge
+EGSV Old Buckenham – Norwich
+EGSX North Weald – North Weald
+EGSY Sheffield City (closed 2008) – Sheffield
+EGTA Aylesbury Thame – Aylesbury
+EGTB Wycombe Air Park/Booker – High Wycombe
+EGTC Cranfield – Cranfield
+EGTD Dunsfold – Dunsfold
+EGTE Exeter – Exeter
+EGTF Fairoaks – Chobham
+EGTG Bristol Filton (closed 2012) – Filton
+EGTH Hatfield (closed 1994) – Hatfield
+EGTH Old Warden – Old Warden, Bedfordshire
+EGTI Leavesden (closed 1990s) – Watford
+EGTK Oxford – Oxford
+EGTN Enstone – Enstone
+EGTO Rochester – Rochester
+EGTP Perranporth – Perranporth
+EGTR Elstree – Watford
+EGTU Dunkeswell – Honiton
+EGTW Oaksey Park – Oaksey
+EGUA RAF Upper Heyford (closed 1993) – Oxfordshire
+EGUB RAF Benson – Benson
+EGUD RAF Abingdon – Abingdon
+EGUL RAF Lakenheath – Lakenheath
+EGUN RAF Mildenhall – Mildenhall
+EGUO Colerne – Colerne
+EGUP RAF Sculthorpe (closed 1990s) – Fakenham
+EGUW RAF Wattisham – Stowmarket
+EGUY RAF Wyton – St Ives
+EGVA RAF Fairford – Fairford
+EGVL RAF Little Rissington – Upper Rissington
+EGVN RAF Brize Norton – Brize Norton
+EGVO RAF Odiham – Odiham
+EGVP AAC Middle Wallop – Andover
+EGWA RAF Andover (closed 2000s) – Andover
+EGWC RAF Cosford – Albrighton
+EGWE RAF Henlow – Henlow
+EGWN RAF Halton – Halton
+EGWU RAF Northolt – Ruislip
+EGXC RAF Coningsby – Coningsby
+EGXD RAF Dishforth – North Yorkshire
+EGXE RAF Leeming – Leeming Bar
+EGXG RAF Church Fenton – Church Fenton
+EGXH RAF Honington – Thetford
+EGXJ RAF Cottesmore (closed 2012) – Rutland
+EGXP RAF Scampton – Scampton
+EGXT RAF Wittering – Stamford
+EGXU RAF Linton-on-Ouse – Linton-on-Ouse
+EGXW RAF Waddington – Waddington
+EGXY RAF Syerston – Newark-on-Trent
+EGXZ RAF Topcliffe – Topcliffe
+EGYC RAF Coltishall (closed 2006) – Norwich
+EGYD RAF Cranwell – Cranwell
+EGYE RAF Barkston Heath – Grantham
+EGYM RAF Marham – Marham
+EGYP RAF Mount Pleasant – Falkland Islands
+
+EH   Holland
+EHAL Ameland – Ballum
+EHAM Amsterdam Schiphol – Haarlemmermeer, near Amsterdam
+EHBD Budel – Weert
+EHBK Maastricht Aachen – Beek
+EHDB KNMI – De Bilt
+EHDL Deelen – Deelen
+EHDP De Peel – Venray
+EHDR Drachten – Drachten
+EHEH Eindhoven – Eindhoven
+EHGG Groningen Eelde – Eelde
+EHGR Gilze-Rijen – Gilze and Rijen
+EHND Numansdorp – Numansdorp
+EHHO Hoogeveen – Hoogeveen
+EHHV Hilversum – Hilversum
+EHKD De Kooy – De Kooy
+EHVK Volkel – Uden
+EHLE Lelystad – Lelystad
+EHLW Leeuwarden – Leeuwarden
+EHMC Air Operations Control Station Nieuw-Milligen – Nieuw-Milligen
+EHMZ Midden-Zeeland – Middelburg, Zeeland
+EHOW Oostwold – Scheemda
+EHRD Rotterdam The Hague – Rotterdam
+EHSB Soesterberg – Soesterberg (closed in 2015)
+EHSE Seppe – Hoeven
+EHST Stadskanaal – Stadskanaal
+EHTE Teuge – Deventer
+EHTL Terlet – Terlet
+EHTW Enschede Twente – Enschede
+EHTX Texel – Texel
+EHVB Valkenburg – Valkenburg (closed +/- 2000)
+EHVE TrafficPort Venlo – Venlo
+EHWO Woensdrecht – Woensdrecht
+EHYB Ypenburg – The Hague (closed 1991)
+EHYP IJmuiden Heliport – IJmuiden
+
+EI   Southern Ireland
+EIAB Abbeyshrule – Abbeyshrule, County Longford
+EIBN Bantry – Bantry, County Cork
+EIBR Birr – Birr, County Offaly
+EICA Connemara Regional – Inverin, Connemara
+EICB Castlebar – Castlebar, County Mayo
+EICK Cork – Cork
+EICL Clonbullogue – Clonbullogue, County Offaly
+EICM Galway – Carnmore, County Galway
+EICN Coonagh – Limerick, County Limerick
+EIDL Donegal – Carrickfinn, County Donegal
+EIDW Dublin – Dublin
+EIIM Inishmore (Kilronan) – Kilronan, County Galway
+EIKL Kilkenny – Kilkenny, County Kilkenny
+EIKN Ireland West Knock – Knock, County Mayo
+EIKY Kerry – Farranfore, County Kerry
+EIME Casement – Baldonnel
+EIMG Moneygall – Moneygall, County Offaly
+EIMH Athboy – Athboy, County Meath
+EIMY Moyne – Thurles, County Tipperary
+EINN Shannon – Shannon, County Clare
+EIRT Rathcoole – Rathcoole (Rath Chuil), County Cork (Contae Chorcai)
+EISG Sligo – Strandhill, near Sligo
+EIWF Waterford – Waterford
+EIWT Weston – Leixlip, County Kildare
+
+EK – Denmark and the Faroe Islands
+EKAH Aarhus – Tirstrup near Aarhus
+EKBI Billund – Billund
+EKCH Copenhagen – Kastrup near Copenhagen
+EKEB Esbjerg – Esbjerg
+EKHG Herning – Herning
+EKKA Karup – Karup
+EKKS Kongsted Flyveplads – Near Faxe
+EKLV Lemvig – Lemvig
+EKMB Lolland – Maribo
+EKOD Odense – Odense
+EKRD Randers – Randers
+EKRK Roskilde – Tune near Roskilde
+EKRN Bornholm – Ronne
+EKSB Sonderborg – Sonderborg
+EKSL Slaglille Svaveflyvecenter – Midtsjalland
+EKSN Sindal – Sindal
+EKSP Skrydstrup – Vojens
+EKSV Skive – Skive
+EKTS Thisted – Thisted
+EKVH Vesthimmerland – Aars
+EKVJ Stauning Vestjylland – Skjern
+EKVL Varlose (closed 2004) – Fureso
+EKYT Aalborg – Aalborg
+EKVD Vamdrup – Kolding
+EKVG Vagar – Faroe Islands
+EKFA Frooba Heliport – Faroe Islands
+EKKV Klaksvík Heliport – Faroe Islands
+EKMS Mykines Heliport – Faroe Islands
+EKSY Skúvoy Heliport – Faroe Islands
+EKSR Stóra Dímun Heliport – Faroe Islands
+EKSO Svínoy Heliport – Faroe Islands
+EKTB Torshavn/Bodanes Heliport – Faroe Islands
+ELEA Centre Hospitalier Emile Mayrisch Heliport – Esch-sur-Alzette
+ELET Saint-Louis Hospital Heliport – Ettelbruck
+ELLC Centre Hospitalier de Luxembourg Heliport – Luxembourg City
+ELLK Kirchberg Hospital Heliport – Luxembourg City
+ELLX Luxembourg Findel – Luxembourg City
+ELLZ Clinique Sainte-Therese Heliport – Luxembourg City
+ELNT Noertrange (Wiltz-Noertrange) – Noertrange/Wiltz
+ELUS Useldange – Useldange
+
+ENAL Alesund, Vigra – Alesund, More og Romsdal
+ENAN Andoya, Andenes – Andenes, Nordland
+ENAS Ny-Alesund, Hamnerabben – Ny-Alesund, Svalbard
+ENAT Alta – Alta, Finnmark
+ENBJ Bear Island (Bjornoya), Arctic
+ENBL Forde, Bringeland – Forde, Sogn og Fjordane
+ENBM Voss, Bomoen – Voss, Hordaland
+ENBN Bronnoysund, Bronnoy – Bronnoysund, Nordland
+ENBO Bodo – Bodo, Nordland
+ENBR Bergen, Flesland – Bergen, Hordaland
+ENBS Batsfjord – Batsfjord, Finnmark
+ENBV Berlevag – Berlevag, Finnmark
+ENCN Kristiansand, Kjevik – Kristiansand, Vest-Agder
+ENDI Geilo, Dagali – Geilo, Buskerud
+ENDR Draugen – Draugen oil field, Norwegian Sea
+ENDU Bardufoss – Bardufoss, Troms
+ENEG Honefoss, Eggemoen – Honefoss, Buskerud
+ENEN Engeloy, Gradussan – Engeloy, Nordland
+ENEV Harstad/Narvik, Evenes – Evenes, Nordland / Troms
+ENFB Oslo, Fornebu (closed) – Oslo, Akershus
+ENFG Fagernes, Leirin – Fagernes, Oppland
+ENFL Floro – Floro, Sogn og Fjordane
+ENFR Frigg – North Sea
+ENGA Gullfaks A – Gullfaks oil field, North Sea
+ENGC Gullfaks C – Gullfaks oil field, North Sea
+ENGK Arendal Executive/Gullknapp, Arendal, Aust-Agder
+ENGM Oslo, Gardermoen – Gardermoen (near Oslo), Akershus
+ENHA Hamar, Stafsberg – Hamar, Hedmark
+ENHD Haugesund, Karmoy – Haugesund, Rogaland
+ENHE Heidrun – Heidrun oil field, North Sea
+ENHF Hammerfest – Hammerfest, Finnmark
+ENHK Hasvik – Hasvik, Finnmark
+ENHN Elverum, Starmoen – Elverum, Hedmark
+ENHS Hokksund – Hokksund, Buskerud
+ENHV Honningsvag, Valan – Honningsvag, Finnmark
+ENJA Jan Mayensfield – Jan Mayen
+ENJB Tonsberg, Jarlsberg – Tonsberg, Vestfold
+ENKB Kristiansund, Kvernberget – Kristiansund, More og Romsdal
+ENKJ Kjeller – Kjeller, Akershus
+ENKL Gol, Klanten – Gol, Buskerud
+ENKR Kirkenes, Hoybuktmoen – Kirkenes, Finnmark
+ENLI Farsund, Lista – Farsund, Vest-Agder
+ENLK Leknes – Leknes, Nordland
+ENMH Mehamn – Mehamn, Finnmark
+ENML Molde, Aro – Molde, More og Romsdal
+ENMS Mosjoen, Kjarstad – Mosjoen, Nordland
+ENNA Lakselv, Banak – Lakselv, Finnmark
+ENNK Narvik, Framnes – Narvik, Nordland
+ENNM Namsos – Namsos, Nord-Trondelag
+ENNO Notodden – Notodden, Telemark
+ENOA Oseberg A – Oseberg oil field, North Sea
+ENOL Orland Main Air Station – Sor-Trondelag
+ENOP Oppdal, Fagerhaug – Oppdal, Sor-Trondelag
+ENOV Orsta-Volda, Hovden – Orsta/Volda, More og Romsdal
+ENRA Mo i Rana, Rossvoll – Mo i Rana, Nordland
+ENRI Ringebu, Frya – Ringebu, Oppland
+ENRK Rakkestad – Rakkestad, Ostfold
+ENRM Rorvik, Ryum – Rorvik, Nord-Trondelag
+ENRO Roros – Roros, Sor-Trondelag
+ENRS Rost – Rost, Nordland
+ENRV Reinsvoll – Reinsvoll, Oppland
+ENRY Moss, Rygge – Rygge, Ostfold
+ENSA Svea – Sveagruva, Svalbard
+ENSB Svalbard, Longyear – Longyearbyen, Svalbard
+ENSD Sandane, Anda – Sandane, Sogn og Fjordane
+ENSG Sogndal, Haukasen – Sogndal, Sogn og Fjordane
+ENSH Svolvar, Helle – Svolvar, Nordland
+ENSK Stokmarknes, Skagen – Stokmarknes, Nordland
+ENSN Skien, Geiteryggen – Skien, Telemark
+ENSO Stord, Sorstokken – Leirvik, Hordaland
+ENSR Sorkjosen – Nordreisa, Troms
+ENSS Vardo, Svartnes – Vardo, Finnmark
+ENST Sandnessjoen, Stokka – Sandnessjoen, Nordland
+ENSU Sunndalsora, Vinnu – Sunndalsora, More og Romsdal
+ENTC Tromso – Tromso, Troms
+ENTO Sandefjord, Torp – Sandefjord, Vestfold
+ENUL Vaksinen – Ulven, Hordaland
+ENVA Trondheim, Varnes – Stjordal, Nord-Trondelag
+ENVD Vadso – Vadso, Finnmark
+ENVR Varoy Heliport – Varoy, Nordland
+ENZV Stavanger, Sola – Stavanger, Rogaland
+
+EPAR Heliport Arlamow - Arlamow
+EPBA Bielsko-Biala Aleksandrowice – Bielsko-Biala
+EPBC Warszawa-Babice – Warsaw
+EPBD Bydgoszcz-Biedaszkowo Bydgoszcz
+EPBK Bialystok-Krywlany – Bialystok
+EPBY Bydgoszcz Ignacy Jan Paderewski – Bydgoszcz
+EPEL Elblag – Elblag
+EPGD Gdansk Lech Walesa – Gdansk
+EPGI Grudziadz-Lisie Katy – Grudziadz
+EPGL Gliwice-Trynek – Gliwice
+EPIN Inowroclaw – Inowroclaw
+EPIR Inowroclaw-Latkowo – Inowroclaw
+EPIW Iwonicz – Pustyny
+EPJG Jelenia Gora – Jelenia Gora
+EPJS Jeżow Sudecki – Jeżow Sudecki
+EPKA Kielce-Maslow – Kielce
+EPKE Ketrzyn-Wilamowo – Ketrzyn
+EPKG Kolobrzeg-Bagicz – Kolobrzeg
+EPKK John Paul II Krakow-Balice – Krakow
+EPKM Katowice-Muchowiec – Katowice
+EPKP Krakow-Pobiednik Wielki – Krakow
+EPKR Krosno – Krosno
+EPKS Poznan-Krzesiny – Poznan
+EPKT Katowice in Pyrzowice – Katowice
+EPKZ Koszalin / Zegrze Pomorskie – Zegrze Pomorskie
+EPLB Lublin – Lublin
+EPLK Lask – Lask
+EPLL Lodz Wladyslaw Reymont – Lodz
+EPLR Lublin-Radawiec – Radawiec Duży
+EPLS Leszno – Leszno
+EPLU Lubin-Obora – Lubin
+EPMB Malbork – Krolewo Malborskie
+EPMI Miroslawiec – Miroslawiec
+EPML Mielec – Mielec
+EPMM Minsk Mazowiecki – Minsk Mazowiecki
+EPMO Modlin – Nowy Dwor Mazowiecki
+EPNL Nowy Sacz-Lososina Dolna – Nowy Sacz
+EPNT Nowy Targ – Nowy Targ
+EPOD Olsztyn-Dajtki – Olsztyn
+EPOK Gdynia-Kosakowo – Gdynia
+EPOM Ostrow Wielkopolski-Michalkow – Ostrow Wielkopolski
+EPOP Opole-Polska Nowa Wies – Opole
+EPPK Poznan-Kobylnica – Kobylica
+EPPL Plock – [Plock]
+EPPO Poznan-Lawica – Poznan
+EPPT Piotrkow Trybunalski – Piotrkow Trybunalski
+EPRA Radom - Radom
+EPRG Rybnik-Gotartowice – Rybnik
+EPRP Radom Piastow – Radom
+EPPR Pruszcz Gdanski – Pruszcz Gdanski
+EPRZ Rzeszow-Jasionka – Rzeszow
+EPSC Szczecin-Goleniow – Szczecin
+EPSD Szczecin-Dabie – Szczecin
+EPSR Slupsk-Krepa – Slupsk
+EPST Stalowa Wola-Turbia – Turbia
+EPSU Suwalki – Suwalki
+EPSY Olsztyn-Mazury Regional – Szczytno
+EPTM Tomaszow Mazowiecki – Tomaszow Mazowiecki
+EPTO Torun – Torun
+EPWA Warsaw Frederic Chopin – Warsaw
+EPWK Wloclawek-Kruszyn – Kruszyn
+EPWR Copernicus Wroclaw – Wroclaw
+EPZA Zamosc-Mokre – Zamosc
+EPZG Zielona Gora-Babimost – Zielona Gora
+EPZP Zielona Gora-Przylep – Zielona Gora
+EPZR Zar – Miedzybrodzie Zywieckie
+
+
+ESCF Malmen – Linkoping
+ESCK Bravalla (closed) – Norrkoping
+ESCM Arna (F 16) – Uppsala
+ESCN Tullinge (closed) – Stockholm
+ESDF Ronneby (F 17) – Ronneby
+ESFA Bokeberg – Hassleholm
+ESFH Hasslosa (closed) – Hasslosa
+ESFI Knislinge (closed) – Knislinge
+ESFJ Sjobo – Sjobo
+ESFM Moholm (closed) – Moholm
+ESFQ Kosta (closed) – Kosta
+ESFR Rada – Rada
+ESFS Sandvik – Sandvik
+ESFU Urasa (closed) – Vaxjo
+ESFY Byholma – Byholma
+ESGA Backamo – Uddevalla
+ESGC Alleberg – Alleberg
+ESGD Bammelshed – Tidaholm
+ESGE Viared – Boras
+ESGF Morup – Falkenberg
+ESGG Goteborg Landvetter – Goteborg
+ESGH Herrljunga – Herrljunga
+ESGI Alingsas – Alingsas
+ESGJ Jonkoping – Jonkoping
+ESGK Falkoping – Falkoping
+ESGL Lidkoping-Hovby – Lidkoping
+ESGM Oresten – Oresten
+ESGN Brannebrona – Gotene
+ESGP Goteborg City (Save) – Goteborg
+ESGR Skovde – Skovde
+ESGS Nasinge – Stromstad
+ESGT Trollhattan-Vanersborg – Trollhattan / Vanersborg
+ESGU Rorkarr – Uddevalla
+ESGV Varberg – Varberg
+ESGY Saffle – Saffle
+ESIA Karlsborg – Karlsborg
+ESIB Satenas – Satenas
+ESKA Gimo – Gimo
+ESKB Barkarby (closed) – Stockholm
+ESKC Sundbro – Sundbro
+ESKD Dala-Jarna – Dala-Jarna
+ESKG Gryttjom – Gryttjom
+ESKH Eksharad – Eksharad
+ESKK Karlskoga – Karlskoga
+ESKM Mora-Siljan – Mora
+ESKN Stockholm-Skavsta – Stockholm / Nykoping
+ESKO Munkfors – Munkfors
+ESKS Strangnas (closed) – Strangnas
+ESKT Tierp – Tierp
+ESKU Sunne – Sunne
+ESKV Arvika-Westlanda – Arvika
+ESKX Bjorkvik (closed) – Bjorkvik
+ESMA Emmaboda – Emmaboda
+ESMB Borglanda – Borglanda
+ESMC Ranneslatt – Eksjo
+ESMD Vankiva – Hassleholm
+ESME Eslov – Eslov
+ESMF Fagerhult – Fagerhult
+ESMG Feringe – Ljungby
+ESMH Hoganas – Hoganas
+ESMI Sovdeborg – Sovdeborg
+ESMJ Kagerod – Kagerod
+ESMK Kristianstad – Kristianstad
+ESML Landskrona – Landskrona
+ESMN Lund – Lund
+ESMO Oskarshamn – Oskarshamn
+ESMP Anderstorp – Anderstorp
+ESMQ Kalmar – Kalmar
+ESMR Trelleborg (Maglarp) – Trelleborg
+ESMS Malmo – Malmo
+ESMT Halmstad – Halmstad
+ESMU Mockeln – Almhult
+ESMV Hagshult – Hagshult
+ESMW Tingsryd (closed) – Tingsryd
+ESMX Vaxjo (Kronoberg) – Vaxjo
+ESMY Smalandsstenar – Smalandsstenar
+ESMZ Olanda – Olanda
+ESNA Hallviken – Hallviken
+ESNB Solleftea – Solleftea
+ESNC Hedlanda – Hede
+ESND Sveg – Sveg
+ESNE Overkalix – Overkalix
+ESNF Farila – Farila
+ESNG Gallivare – Gallivare
+ESNH Hudiksvall – Hudiksvall
+ESNI Kubbe (closed) – Kubbe
+ESNJ Jokkmokk – Jokkmokk
+ESNK Hoga Kusten – Kramfors / Solleftea
+ESNL Lycksele – Lycksele
+ESNM Optand – Optand
+ESNN Sundsvall-Harnosand – Sundsvall / Harnosand
+ESNO Ornskoldsvik – Ornskoldsvik
+ESNP Pitea – Pitea
+ESNQ Kiruna – Kiruna
+ESNR Orsa – Orsa
+ESNS Skelleftea – Skelleftea
+ESNT Sattna (closed) – Sattna
+ESNU Umea – Umea
+ESNV Vilhelmina – Vilhelmina
+ESNX Arvidsjaur – Arvidsjaur
+ESNY Soderhamn – Soderhamn
+ESNZ Ostersund (F4 Froson) – ostersund
+ESOE Orebro – orebro
+ESOH Hagfors – Hagfors
+ESOK Karlstad – Karlstad
+ESOL Lemstanas – Storvik
+ESOW Stockholm-Vasteras – Stockholm / Vasteras
+ESPA Lulea (Kallax) – Lulea
+ESPE Vidsel – Vidsel
+ESPG Boden Army (closed) – Boden
+ESPJ Heden (closed) – Heden
+ESQO Arboga – Arboga
+ESQP Berga (closed) – Berga
+ESSA Stockholm-Arlanda – Stockholm
+ESSB Stockholm-Bromma – Stockholm
+ESSC Ekeby – Eskilstuna
+ESSD Borlange – Borlange
+ESSE Ska-Edeby – Stockholm
+ESSF Hultsfred-Vimmerby – Hultsfred / Vimmerby
+ESSG Ludvika – Ludvika
+ESSH Laxa – Laxa
+ESSI Visingso – Visingso
+ESSK Gavle-Sandviken – Gavle / Sandviken
+ESSL Linkoping-Saab – Linkoping
+ESSM Brattforsheden – Brattforsheden
+ESSN Norrtalje – Norrtalje
+ESSP Kungsangen – Norrkoping
+ESST Torsby (Fryklanda) – Torsby
+ESSU Eskilstuna – Eskilstuna
+ESSV Visby – Visby
+ESSW Vastervik – Vastervik
+ESSX Johannisberg – Vasteras
+ESSZ Vangso – Vangso
+ESTA Angelholm-Helsingborg – Angelholm / Helsingborg
+ESTF Fjallbacka – Fjallbacka
+ESTG Gronhogen – Gronhogen
+ESTL Ljungbyhed – Ljungbyhed
+ESTO Tomelilla – Tomelilla
+ESTT Vellinge – Vellinge
+ESUA Amsele (closed) – Amsele
+ESUB Arbra – Arbra
+ESUD Storuman – Storuman
+ESUE Idre – Idre
+ESUF Fallfors (closed) – Fallfors
+ESUG Gargnas – Gargnas
+ESUH Myran – Harnosand
+ESUI Mellansel – Mellansel
+ESUJ Talje – Ange
+ESUK Kalixfors Army – Kalixfors
+ESUL Ljusdal – Ljusdal
+ESUM Mohed – Mohed
+ESUO Oviken – Oviken
+ESUP Pajala – Pajala
+ESUR Ramsele – Ramsele
+ESUS Asele – Asele
+ESUT Hemavan – Hemavan
+ESUV Alvsbyn – Alvsbyn
+ESUY Edsbyn – Edsbyn
+ESVA Avesta – Avesta
+ESVB Bunge – Bunge
+ESVG Gagnef – Gagnef
+ESVH Hallefors – Hallefors
+ESVK Katrineholm – Katrineholm
+ESVL Langtora flygfalt - Enkoping
+ESVM Skinnlanda – Malung
+ESVQ Koping – Koping
+ESVS Siljansnas – Siljansnas
+EVAA Aizpute – Aizpute
+EVAD Adazi – Ādazi
+EVAP AMO Plant Heliport – Jelgava
+EVBA Grīva – Daugavpils
+EVCA Cesis – Cesis
+EVDA Daugavpils – Daugavpils
+EVEA Jelgava – Jelgava
+EVFA Vaiņode – Vaiņode
+EVGA Lielvarde – Lielvarde
+EVHB Baltijas Helikopters heliport – Nakotne
+EVIA Cīrava – Cīrava
+EVJA Jurmala – Tukums
+EVJC Centra Jaunzemji Heliport – Nakotne
+EVKA Jekabpils – Jekabpils
+EVLA Liepaja – Liepaja
+EVLI Limbazi – Limbazi
+EVLU Ludza Heliport – Ludza
+EVMA Augstkalne – Augstkalne
+EVMP Malpils – Malpils
+EVNA Rezekne – Rezekne
+EVPA Iksķile – Iksķile
+EVRA Rīga – Rīga
+EVRC Rumbula – Riga
+EVRS Spilve – Riga
+
+EV   tvia
+EVSM M-Sola Heliport – Lielvarde
+EVTE Talsi – Talsi
+EVVA Ventspils – Ventspils
+EYAL Alytus – Alytus
+EYBI Birzai – Birzai
+EYJB Jurbarkas – Jurbarkas
+EYKA Kaunas – Kaunas
+EYKD Kedainiai – Kedainiai
+EYKG Kaunas/Gamykla – Kaunas
+EYKL Klaipeda – Klaipeda
+EYKR Kazlų Ruda (Military) – Kazlų Ruda
+EYKS S. Darius and S. Girenas – Kaunas
+EYKT Kartena – Kartena
+EYMA Tirksliai – Tirksliai
+EYMM Sasnava – Sasnava
+EYNA Akmene – Akmene
+EYND Nida – Nida
+EYNE Nemirseta – Nemirseta
+EYPA Palanga – Palanga
+EYPI Panevezys/Istra – Panevezys
+EYPK Pikeliskes – Pikeliskes
+EYPN Panevezys – Panevezys
+EYPP Pajuostis (Military) – Pajuostis
+EYPR Pociunai – Pociunai
+EYRK Rokiskis – Rokiskis
+EYRU Rukla – Jonava
+EYSA Siauliai– Siauliai
+EYSB Barysiai– Barysiai
+EYSE Seduva – Seduva
+EYSI Silute (Military) – Silute
+EYTR Taurage – Taurage
+EYTL Telsiai – Telsiai
+EYUT Utena – Utena
+EYVA Vilnius (MOT/CAD)
+EYVC Vilnius (ACC/FIC/COM/RCC)
+EYVI Vilnius – Vilnius
+EYVK Kyviskes (Military) – Kyviskes
+EYVL Vilnius (FIR)
+EYVN Vilnius (NOF/AIS)
+EYVP Paluknys – Paluknys
+EYZA Zarasai – Zarasai
+EYZE Zekiskes – Zekiskes

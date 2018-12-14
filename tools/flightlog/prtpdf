@@ -1,0 +1,8 @@
+#!/bin/bash
+#
+# 30/11/2018 vbc - This may need more changes for log book printing
+#                  Needs packages - enscript and ghostscript-common
+#
+enscript --quiet --no-header --font=Courier-Bold@8/8 --truncate-lines --landscape --margins=30:30:40:40 -M A4 --highlight-bars=1 -p - logbook.prt | ps2pdf14 - logbook.pdf
+#rm $i
+done

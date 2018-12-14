@@ -1,0 +1,1255 @@
+LA – Albania
+LAFK – Tirane Heliport – Tirana
+LAGJ – Gjader – Gjader
+LAKO – Korce Northwest – Korce
+LAKU – Shaikh Zayed Int'l (Kukes) – Kukes
+LAKV – Kucove – Kucove
+LASK – Shkoder – Shkoder (Shkodra)
+LASR – Sarande – Sarande (Saranda)
+LATI – Tirana Int'l Nene Tereza – Tirana
+LAVL – Vlore – Vlore (Vlora)
+
+LB – Bulgaria
+LBBG – Burgas Int'l (Sarafovo) – Burgas
+LBBR – Ravnets (military) – Ravnets, Burgas Province
+LBDB – Dolna Banya (private) – Dolna Bania
+LBGO – Gorna Oryahovitsa – Gorna Oryahovitsa
+LBHS – Haskovo Malevo – Haskovo
+LBIA – Bezmer (military) – Bezmer, Yambol Province
+LBKJ – Kainardzha – Kardzhali
+LBKL – Kazanlak – Ovoshtnik, Kazanlak
+LBLS – Lesnovo (private) – Lesnovo
+LBMG – Gabrovnitsa (military) – Gabrovnitsa (Gabrovnica)
+LBMO – Montana – Montana
+LBPD – Plovdiv Int'l – Plovdiv
+LBPG – Graf Ignatievo (military) – Graf Ignatievo / Plovdiv
+LBPK – Pernik
+LBPL – Dolna Mitropolia (military) – Dolna Mitropoliia / Pleven
+LBPR – Primorsko (private) – Primorsko
+LBPS – Cheshnigirovo – Sadovo
+LBRD – Erden (private) – Erden
+LBRS – Ruse – Rousse
+LBSD – Dobroslavtsi (military) – Dobroslavtsi (Dobroslavci)
+LBSF – Sofia Int'l (Vrazhdebna) – Sofia
+LBSL – Sliven (military) – Sliven
+LBSS – Silistra (military) – Silistra
+LBSZ – Stara Zagora Int'l – Stara Zagora
+LBTG – Bukhovtsi (military) – Targovishte
+LBTV – Voden
+LBVD – Vidin (military) – Vidin
+LBWB – Balchik (military) – Balchik
+LBWC – Chaika Heliport (military) – Varna
+LBWK – Kalimanci / Varna
+LBWN – Varna Int'l – Varna
+
+LC – Cyprus
+LCEN – Ercan Int'l – Lefkosa
+LCGK – Gecitkale – Gecitkale
+LCLK – Larnaca Int'l – Larnaca
+LCNC – Nicosia Int'l (abandoned) – Nicosia
+LCPH – Paphos Int'l – Paphos
+LCRA – RAF Akrotiri – Akrotiri
+
+LD – Croatia
+LDDA – Daruvar – Daruvar
+LDDD – Zagreb AFTN – Zagreb
+LDDP – Ploce – Ploce
+LDDU – Dubrovnik – Dubrovnik
+LDLO – Losinj – Losinj
+LDOB – Borovo – Borovo
+LDOC – Osijek Cepin – Cepin
+LDOR – Slavonski Brod – Slavonski Brod
+LDOS – Osijek – Osijek
+LDPL – Pula – Pula
+LDPM – Medulin – Medulin
+LDPN – Unije – Unije
+LDPV – Vrsar – Vrsar
+LDRG – Grobnicko Polje – Grobnik
+LDRI – Rijeka – Rijeka
+LDRO – Otocac – Otocac
+LDSB – Brac – Brac
+LDSH – Hvar – Hvar
+LDSP – Split – Split
+LDSS – Sinj – Sinj
+LDVA – Varazdin – Varazdin
+LDVC – Cakovec – Cakovec
+LDVK – Koprivnica – Koprivnica
+LDZA – Franjo Tudman – Zagreb
+LDZD – Zadar – Zadar
+LDZG – Zagreb City – Zagreb
+LDZL – Zagreb Lucko – Zagreb
+LDZO – Zagreb ACC – Zagreb
+LDZU – Udbina – Udbina
+
+LE – Spain
+LEAL – Alicante-Elche – Alicante
+LEAM – Almería – Almería
+LEAS – Asturias – Asturias
+LEBA – Cordoba – Cordoba
+LEBB – Bilbao – Bilbao
+LEBG – Burgos – Burgos
+LEBL – Barcelona-El Prat – Barcelona
+LEBZ – Badajoz – Badajoz
+LECD – La Cerdanya – Catalonia
+LECH – Castellon-Costa Azahar – Castellon
+LECN – Castellon – Castellon
+LECO – A Coruna – A Coruna
+LECU – Madrid-Cuatro Vientos – Madrid
+LEDA – Lleida–Alguaire – Lleida
+LEGE – Girona-Costa Brava – Girona
+LEGR – Federico García Lorca – Granada
+LEGT – Getafe – Madrid
+LEHC – Huesca-Pirineos – Huesca
+LEIB – Ibiza – Ibiza, Islas Baleares
+LEJR – Jerez – Cadiz
+LELC – Murcia-San Javier – Murcia
+LELL – Sabadell – Barcelona
+LELN – Leon – Leon
+LELO – Logrono-Agoncillo (military) – La Rioja
+LEMD – Adolfo Suarez Madrid-Barajas – Madrid
+LEMG – Malaga-Costa del Sol – Malaga
+LEMH – Menorca – Menorca, Islas Baleares
+LEPA – Palma de Mallorca – Mallorca, Islas Baleares
+LEPP – Pamplona – Navarra
+LERE – Requena – Requena / Valencia
+LERI – Alcantarilla Base Aerea – Murcia / Militar
+LERJ – Logrono (public) – La Rioja
+LERL – Ciudad Real Central - Ciudad Real
+LERS – Reus – Reus / Tarragona
+LERT – Naval Station Rota Spain - Cadiz
+LESA – Matacan – Salamanca
+LESB – Son Bonet – Mallorca, Islas Baleares
+LESL – San Luis – Menorca, Islas Baleares
+LESO – San Sebastian – Gipuzkoa
+LEST – Santiago de Compostela – A Coruna
+LETL - Teruel - Teruel
+LETO – Madrid-Torrejon – Madrid
+LEVC – Valencia – Valencia
+LEVD – Valladolid – Valladolid
+LEVT – Vitoria – Álava
+LEVX – Vigo-Peinador – Vigo, Pontevedra
+LEXJ – Santander – Cantabria
+LEZG – Zaragoza – Zaragoza
+LEZL – San Pablo – Sevilla
+LFAB – Dieppe - Saint-Aubin – Dieppe
+LFAC – Calais - Dunkerque – Calais, Dunkirk
+LFAD – Compiegne - Margny – Compiegne
+LFAE – Eu Mers - Le Treport – Eu, Le Treport
+LFAF – Laon - Chambry – Laon
+LFAG – Peronne Saint-Quentin – Peronne
+LFAI – Nangis - Les Loges – Nangis
+LFAJ – Argentan – Argentan
+LFAK – Dunkerque – Les Moeres – Dunkirk
+LFAL – La Fleche – Thoree Les Pins – La Fleche
+LFAM – Berck-sur-Mer – Berck
+LFAO – Bagnoles-de-l'Orne – Bagnoles-de-l'Orne
+LFAP – Rethel - Perthes – Rethel
+LFAQ – Albert – Picardie – Albert
+
+LF – France
+
+LFAR – Montdidier – Montdidier
+LFAS – Falaise - Monts d'Eraines – Falaise
+LFAT – Le Touquet-Paris-Plage – Le Touquet
+LFAU – Vauville – Vauville
+LFAV – Denain – Valenciennes
+LFAW – Villerupt – Villerupt
+LFAX – Mortagne-au-Perche – Mortagne-au-Perche
+LFAY – Amiens – Glisy – Amiens
+LFAZ – Saint-Brieuc – Saint-Brieuc
+LFBA – Agen – La Garenne – Agen
+LFBC – Cazaux [BA120] Cazaux, France
+LFBD – Bordeaux–Merignac – Bordeaux
+LFBE – Bergerac Dordogne Perigord – Bergerac
+LFBG – Cognac – Chateaubernard – Cognac
+LFBH – La Rochelle – Ile de Re – La Rochelle
+LFBI – Poitiers – Biard – Poitiers
+LFBJ – Saint-Junien – Saint-Junien
+LFBK – Montlucon – Gueret – Montlucon
+LFBL – Limoges – Bellegarde – Limoges
+LFBM – Mont-de-Marsan – Mont-de-Marsan
+LFBN – Niort - Souche – Niort
+LFBO – Toulouse - Blagnac – Toulouse
+LFBP – Pau - Pyrenees – Pau, Pyrenees
+LFBR – Muret - Lherm – Muret, Lherm
+LFBS – Biscarrosse - Parentis – Biscarrosse
+LFBT – Tarbes - Lourdes Pyrenees – Tarbes
+LFBU – Angouleme - Brie Champniers – Angouleme
+LFBV – Brive - La Roche – Brive-la-Gaillarde
+LFBX – Perigueux - Bassillac – Perigueux
+LFBY – Dax - Seyresse – Dax
+LFBZ – Biarritz-Bayonne - Anglet – Biarritz, Bayonne, Anglet
+LFCA – Chatellerault – Targe – Chatellerault
+LFCB – Bagneres-de-Luchon – Bagneres-de-Luchon
+LFCC – Cahors Lalbenque – Cahors
+LFCD – Andernos-les-Bains – Andernos-les-Bains
+LFCE – Gueret – Saint-Laurent – Gueret
+LFCF – Figeac Livernon – Figeac
+LFCG – Saint-Girons Antichan – Saint-Girons
+LFCH – Arcachon – La Teste-de-Buch – Arcachon
+LFCI – Albi – Le Sequestre – Albi
+LFCJ – Jonzac – Neulles – Jonzac
+LFCK – Castres – Mazamet – Castres, Mazamet
+LFCL – Toulouse – Lasbordes – Toulouse
+LFCM – Millau-Larzac – Millau
+LFCN – Nogaro – Nogaro
+LFCO – Oloron – Herrere – Oloron-Sainte-Marie
+LFCP – Pons – Avy – Pons
+LFCQ – Graulhet – Montdragon – Graulhet
+LFCR – Rodez Marcillac – Rodez
+LFCS – Bordeaux – Leognan – Saucats – Bordeaux
+LFCT – Thouars – Thouars
+LFCU – Ussel – Thalamy – Ussel, Thalamy
+LFCV – Villefranche-de-Rouergue – Villefranche-de-Rouergue
+LFCW – Villeneuve-sur-Lot – Villeneuve-sur-Lot
+LFCX – Castelsarrazin – Moissac – Castelsarrasin
+LFCY – Royan – Medis – Royan
+LFCZ – Mimizan – Mimizan
+LFDA – Aire-sur-l'Adour – Aire-sur-l'Adour
+LFDB – Montauban – Montauban
+LFDC – Montendre – Marcillac – Montendre
+LFDE – Egletons – Egletons
+LFDF – Sainte-Foy-la-Grande – Sainte-Foy-la-Grande
+LFDG – Gaillac – Lisle-sur-Tarn – Gaillac
+LFDH – Auch – Lamothe – Auch
+LFDI – Libourne – Artigues-de-Lussac – Libourne
+LFDJ – Pamiers – Les Pujols – Pamiers
+LFDK – Soulac-sur-Mer – Soulac-sur-Mer
+LFDL – Loudun – Loudun
+LFDM – Marmande – Virazeil – Marmande
+LFDN – Rochefort – Saint-Agnant – Rochefort
+LFDP – Saint-Pierre-d'Oleron – Saint-Pierre-d'Oleron
+LFDQ – Castelnau-Magnoac – Castelnau-Magnoac
+LFDR – La Reole – Floudes – La Reole
+LFDS – Sarlat – Domme – Sarlat-la-Caneda
+LFDT – Tarbes – Laloubere – Tarbes
+LFDU – Lesparre – Saint-Laurent-de-Medoc – Lesparre-Medoc
+LFDV – Couhe – Verac – Couhe
+LFDW – Chauvigny – Chauvigny
+LFDX – Fumel – Montayral – Fumel
+LFDY – Bordeaux – Yvrac – Bordeaux
+LFEA – Belle Ile – Belle Ile
+LFEB – Dinan Trelivan – Dinan
+LFEC – Ouessant – Ushant
+LFED – Pontivy – Pontivy
+LFEF – Amboise Dierre – Amboise
+LFEG – Argenton-sur-Creuse – Argenton-sur-Creuse
+LFEH – Aubigny-sur-Nere – Aubigny-sur-Nere
+LFEI – Briare Chatillon – Briare
+LFEJ – Chateauroux Villers – Chateauroux
+LFEK – Issoudun Le Fay – Issoudun
+LFEL – Le Blanc – Le Blanc
+LFEM – Montargis Vimory – Montargis
+LFEN – Tours Sorigny – Tours
+LFEO – Saint-Servan – Saint-Malo
+LFEP – Pouilly Maconge – Pouilly-en-Auxois
+LFEQ – Quiberon – Quiberon
+LFER – Redon Bains-sur-Oust – Redon
+LFES – Guiscriff Scaer – Guiscriff
+LFET – Til-Chatel – Til-Chatel
+LFEU – Bar-le-Duc – Bar-le-Duc
+LFEV – Gray Saint-Adrien – Gray
+LFEW – Saulieu Liernais – Saulieu
+LFEX – Nancy Azelot – Nancy
+LFEY – Ile d'Yeu – Ile d'Yeu
+LFEZ – Nancy Malzeville – Nancy
+LFFB – Buno Bonnevaux – Buno
+LFFC – Mantes Cherence – Mantes-la-Jolie
+LFFD – Saint-Andre-de-l'Eure – Saint-Andre-de-l'Eure
+LFFE – Enghien Moisselles – Enghien
+LFFG – La Ferte-Gaucher – La Ferte-Gaucher
+LFFH – Chateau-Thierry Belleau – Chateau-Thierry
+LFFI – Ancenis – Ancenis
+LFFJ – Joinville Mussey – Joinville
+LFFK – Fontenay-le-Comte – Fontenay-le-Comte
+LFFL – Bailleau-Armenonville – Bailleau-Armenonville
+LFFM – Lamotte-Beuvron – Lamotte-Beuvron
+LFFN – Brienne-le-Chateau – Brienne-le-Chateau
+LFFP – Pithiviers – Pithiviers
+LFFQ – La Ferte-Alais – La Ferte-Alais
+LFFR – Bar-sur-Seine – Bar-sur-Seine
+LFFT – Neufchateau – Neufchateau
+LFFU – Chateauneuf-sur-Cher – Chateauneuf-sur-Cher
+LFFV – Vierzon Mereau – Vierzon
+LFFW – Montaigu – Saint-Georges – Montaigu
+LFFX – Tournus Cruisery – Tournus
+LFFY – Etrepagny – Etrepagny
+LFFZ – Sezanne – Saint-Remy – Sezanne
+LFGA – Colmar Houssen – Colmar
+LFGB – Mulhouse Habsheim – Mulhouse
+LFGC – Strasbourg Neuhof – Strasbourg
+LFGD – Arbois – Arbois
+LFGE – Avallon – Avallon
+LFGF – Beaune Challanges – Beaune
+LFGG – Belfort Chaux – Belfort
+LFGH – Cosne-sur-Loire – Cosne-Cours-sur-Loire
+LFGI – Dijon Darois – Dijon
+LFGJ – Dole-Tavaux – Dole
+LFGK – Joigny – Joigny
+LFGL – Lons-le-Saunier Courlaoux – Lons-le-Saunier
+LFGM – Montceau-les-Mines Pouilloux – Montceau-les-Mines
+LFGN – Paray-le-Monial – Paray-le-Monial
+LFGO – Pont-sur-Yonne – Pont-sur-Yonne
+LFGP – Saint-Florentin Cheu – Saint-Florentin
+LFGQ – Semur-en-Auxois – Semur-en-Auxois
+LFGR – Doncourt-les-Conflans – Doncourt-les-Conflans
+LFGS – Longuyon Villette – Longuyon
+LFGT – Sarrebourg Buhl – Sarrebourg
+LFGU – Sarreguemines Neunkirch – Sarreguemines
+LFGV – Thionville Yutz – Thionville
+LFGW – Verdun-Le-Rozelier – Verdun
+LFGX – Champagnole Crotenay – Champagnole
+LFGY – Saint-Die Remomeix – Saint-Die
+LFGZ – Nuits-Saint-Georges – Nuits-Saint-Georges
+LFHA – Issoire Le Broc – Issoire
+LFHC – Perouges Meximieux – Perouges
+LFHD – Pierrelate – Pierrelatte
+LFHE – Romans Saint-Paul – Romans-sur-Isere
+LFHF – Ruoms – Ruoms
+LFHG – Saint-Chamond L'Horme – Saint-Chamond
+LFHH – Vienne Reventin – Vienne
+LFHI – Morestel – Morestel
+LFHJ – Lyon Corbas – Lyon
+LFHL – Langogne Lesperon – Langogne
+LFHM – Megeve – Megeve
+LFHN – Bellegarde - Vouvray – Bellegarde
+LFHO – Aubenas Ardeche Meridionale – Aubenas
+LFHP – Le Puy – Loudes – Le Puy-en-Velay
+LFHQ – Saint-Flour Coltines – Saint-Flour
+LFHR – Brioude Beaumont – Brioude
+LFHS – Bourg – Ceyzeriat – Bourg-en-Bresse
+LFHT – Ambert Le Poyet – Ambert
+LFHU – L'Alpe d'Huez – L'Alpe d'Huez
+LFHV – Villefranche Tarare – Tarare
+LFHW – Belleville Villie-Morgon – Belleville, Rhone
+LFHX – Lapalisse Perigny – Lapalisse
+LFHY – Moulins Montbeugny – Moulins
+LFHZ – Sallanches Mont-Blanc – Sallanches
+LFIB – Belves Saint-Pardoux – Belves
+LFID – Condom Valence-sur-Baïse – Condom
+LFIF – Saint-Affrique Belmont – Saint-Affrique
+LFIG – Cassagnes-Begonhes – Cassagnes-Begonhes
+LFIH – Chalais – Chalais
+LFIK – Riberac Saint-Aulaye – Riberac
+LFIL – Rion-des-Landes – Rion-des-Landes
+LFIM – Saint-Gaudens Montrejeau – Saint-Gaudens
+LFIO – Toulouse-Montaudran – Toulouse-Montaudran
+LFIP – Peyresourde Balestas – Peyresourde
+LFIR – Revel Montgey – Revel
+LFIS - Saint-Inglevert - Saint-Inglevert
+LFIT – Toulouse Bourg-Saint-Bernard – Toulouse
+LFIV – Vendays-Montalivet – Vendays-Montalivet
+LFIX – Itxassou – Itxassou
+LFIY – Saint-Jean-d'Angely – Saint-Jean-d'Angely
+LFJA – Chaumont Semoutiers – Chaumont
+LFJB – Mauleon – Mauleon
+LFJC – Clamecy – Clamecy
+LFJD – Corlier – Corlier
+LFJE – La Motte-Chalancon – La Motte-Chalancon
+LFJF – Aubenasson – Aubenasson
+LFJH – Cazeres Palaminy – Cazeres
+LFJI – Marennes – Marennes
+LFJL – Metz Nancy Lorraine – Metz
+LFJR – Angers - Loire – Angers
+LFJS – Soissons Courmelles – Soissons
+LFJT – Tours Le Louroux – Tours
+LFJU – Lurcy Levis – Lurcy
+LFKA – Albertville – Albertville
+LFKB – Bastia Poretta – Bastia
+LFKC – Calvi Sainte-Catherine – Calvi
+LFKD – Sollieres-Sardieres – Sollieres-Sardieres
+LFKE – Saint-Jean-en-Royans – Saint-Jean-en-Royans
+LFKF – Figari Sud Corse – Figari
+LFKG – Ghisonaccia Alzitone – Ghisonaccia
+LFKH – Saint-Jean-d'Avelanne – Saint-Jean-d'Avelanne
+LFKJ – Ajaccio Campo dell'Oro – Ajaccio
+LFKL – Lyon Brindas – Lyon
+LFKM – Saint-Galmier – Saint-Galmier
+LFKO – Propriano – Propriano
+LFKP – La Tour-du-Pin Cessieu – La Tour-du-Pin
+LFKR - Saint-Remy-de-Maurienne - Saint-Remy-de-Maurienne
+LFKS – Solenzara – Solenzara
+LFKT – Corte – Corte
+LFKX – Meribel Bois-des-Fraisses – Meribel
+LFKY – Belley Peyrieu – Belley
+LFKZ – Saint-Claude Pratz – Saint-Claude
+LFLA – Auxerre Branches – Auxerre
+LFLB – Chambery – Chambery, Aix-les-Bains
+LFLC – Clermont-Ferrand Auvergne – Clermont-Ferrand
+LFLD – Bourges – Bourges
+LFLE – Chambery - Challes-les-Eaux – Chambery
+LFLG – Grenoble - Le Versoud – Grenoble
+LFLH – Chalon Champforgeuil – Chalon-sur-Saone
+LFLI – Annemasse – Annemasse
+LFLJ – Courchevel – Courchevel
+LFLK – Oyonnax Arbent – Oyonnax
+LFLL – Lyon-Saint Exupery (formerly Satolas) – Lyon
+LFLM – Macon Charnay – Macon
+LFLN – Saint-Yan – Saint-Yan
+LFLO – Roanne Renaison – Roanne
+LFLP – Annecy Meythet – Annecy
+LFLQ – Montelimar Ancone – Montelimar
+LFLR – Saint-Rambert-d'Albon – Saint-Rambert-d'Albon
+LFLS – Grenoble Saint-Geoirs – Grenoble
+LFLT – Montlucon – Domerat – Montlucon
+LFLU – Valence-Chabeuil – Valence
+LFLV – Vichy Charmeil – Vichy
+LFLW – Aurillac – Tronquieres – Aurillac
+LFLX – Chateauroux-Deols – Chateauroux, Deols
+LFLY – Lyon Bron – Lyon
+LFLZ – Feurs – Chambeon – Feurs
+LFMA – Aix Les Milles – Les Milles/Aix-en-Provence
+LFMC – Le Luc - Le Cannet – Le Luc
+LFMD – Cannes Mandelieu – Cannes
+LFME – Nîmes Courbessac – Nîmes
+LFMF – Fayence-Tourrettes – Fayence
+LFMG – La Montagne Noire – Montagne Noire
+LFMH – Saint-Etienne Boutheon – Saint-Etienne
+LFMI – Istres Le Tube – Istres
+LFMK – Carcassonne Salvaza – Carcassonne
+LFML – Marseille Provence – Marseille
+LFMM – Marseille FIR – Aix-en-Provence
+LFMN – Nice Cote d'Azur – Nice
+LFMO – Orange Caritat – Orange
+LFMP – Perpignan Rivesaltes – Perpignan
+LFMQ – Le Castellet – Le Castellet
+LFMR – Barcelonnette – Saint-Pons – Barcelonnette
+LFMS – Ales Deaux – Ales
+LFMT – Montpellier-Mediterranee – Montpellier
+LFMU – Beziers-Agde-Vias – Beziers
+LFMV – Avignon Caumont – Avignon
+LFMW – Castelnaudary - Villeneuve – Castelnaudary
+LFMX – Chateau-Arnoux-Saint-Auban – Chateau-Arnoux-Saint-Auban
+LFMZ – Lezignan-Corbieres – Lezignan-Corbieres
+LFNA – Gap Tallard – Gap
+LFNB – Mende Brenoux – Mende
+LFNC – Mont-Dauphin - Saint-Crepin – Mont-Dauphin
+LFND – Pont-Saint-Esprit – Pont-Saint-Esprit
+LFNE – Salon Eyguieres – Salon
+LFNF – Vinon – Vinon
+LFNG – Montpellier Candillargues – Montpellier
+LFNH – Carpentras – Carpentras
+LFNJ – Aspres-sur-Buech – Aspres-sur-Buech
+LFNL – Saint-Martin-de-Londres – Saint-Martin-de-Londres
+LFNO – Florac Sainte-Enimie – Florac
+LFNP – Pezenas Nizas – Pezenas
+LFNQ – Mont-Louis La Quillane – Mont-Louis
+LFNR – Berre La Fare – Berre
+LFNS – Sisteron Theze – Sisteron
+LFNT – Avignon Pujaut – Avignon
+LFNU – Uzes – Uzes
+LFNV – Valreas Visan – Valreas
+LFNW – Puivert – Puivert
+LFNX – Bedarieux La Tour-sur-Orb – Bedarieux
+LFNZ – Le Mazet-de-Romanin – Le Mazet
+LFOA – Avord – Avord
+LFOB – Beauvais Tille – Beauvais
+LFOC – Chateaudun – Chateaudun
+LFOD – Saumur Saint-Florent – Saumur
+LFOE – Evreux Fauville – Evreux
+LFOF – Alencon Valframbert – Alencon
+LFOG – Flers Saint-Paul – Flers
+LFOH – Le Havre Octeville – Le Havre
+LFOI – Abbeville - Buigny-Saint-Maclou – Abbeville
+LFOJ – Orleans - Bricy – Orleans
+LFOK – Chalons Vatry – Chalons-en-Champagne
+LFOL – L'Aigle Saint-Michel – L'Aigle
+LFOM – Lessay – Lessay
+LFON – Vernouillet – Dreux
+LFOO – Les Sables-d'Olonne Talmont – Les Sables-d'Olonne
+LFOP – Rouen Vallee de Seine – Rouen
+LFOQ – Blois Le Breuil – Blois
+LFOR – Chartres – Champhol – Chartres
+LFOS – Saint-Valery Vittefleur – Saint-Valery
+LFOT – Tours Val de Loire – Tours
+LFOU – Cholet Le Pontreau – Cholet
+LFOV – Laval Entrammes – Laval
+LFOW – Saint-Quentin Roupy – Saint-Quentin
+LFOX – Etampes – Montdesir – Etampes
+LFOY – Le Havre Saint-Romain – Le Havre
+LFOZ – Orleans Saint-Denis-de-l'Hotel – Orleans
+LFPA – Persan-Beaumont – Persan, Beaumont
+LFPB – Paris Le Bourget – Paris
+LFPC – Creil – Creil
+LFPD – Bernay Saint-Martin – Bernay, Eure
+LFPE – Meaux Esbly – Meaux
+LFPF – Beynes Thiverval – Beynes
+LFPG – Paris-Charles de Gaulle (Roissy) – Paris
+LFPH – Chelles Le Pin – Chelles
+LFPI – Paris Issy-les-Moulineaux – Paris
+LFPK – Coulommiers-Voisins – Coulommiers
+LFPL – Lognes Emerainville aerodrome – Lognes
+LFPM – Melun-Villaroche – Melun
+LFPN – Toussus-le-Noble – Toussus-le-Noble
+LFPO – Paris Orly – Orly (near Paris)
+LFPP – Le Plessis-Belleville – Le Plessis-Belleville
+LFPQ – Fontenay Tresigny – Fontenay-Tresigny
+LFPT – Pontoise - Cormeilles-en-Vexin – Pontoise
+LFPU – Moret Episy – Moret-sur-Loing
+LFPV – Velizy - Villacoublay – Velizy-Villacoublay
+LFPX – Chavenay Villepreux – Chavenay
+LFPY – Bretigny-sur-Orge – Bretigny-sur-Orge
+LFPZ – Saint-Cyr-l'Ecole – Saint-Cyr-l'Ecole
+LFQA – Reims-Prunay – Reims
+LFQB – Troyes Barberey – Troyes
+LFQC – Luneville-Croismare – Luneville
+LFQD – Arras – Roclincourt – Arras
+LFQF – Autun Bellevue – Autun
+LFQG – Nevers Fourchambault – Nevers
+LFQH – Chatillon-sur-Seine – Chatillon-sur-Seine
+LFQI – Cambrai Epinoy – Cambrai
+LFQJ – Maubeuge Elesmes – Maubeuge
+LFQK – Chalons Ecury-sur-Coole – Chalons-en-Champagne
+LFQL – Lens Benifontaine – Lens
+LFQM – Besancon La Veze – Besancon
+LFQN – Saint-Omer Wizernes – Saint-Omer
+LFQO – Lille Marcq-en-Baroeul – Lille
+LFQQ – Lille Lesquin – Lille
+LFQR – Romilly-sur-Seine – Romilly-sur-Seine
+LFQS – Vitry-en-Artois – Vitry-en-Artois
+LFQT – Merville Calonne – Merville / Hazebrouck
+LFQU – Sarre-Union – Sarre-Union
+LFQV – Charleville-Mezieres – Charleville-Mezieres
+LFQW – Vesoul Frotey – Vesoul
+LFQX – Juvancourt – Juvancourt
+LFQY – Saverne Steinbourg – Saverne
+LFQZ – Dieuze Gueblange – Dieuze
+LFRA – Angers Avrille – Angers (closed in 2003)
+LFRB – Brest Bretagne – Brest
+LFRC – Cherbourg Maupertus – Cherbourg-Octeville
+LFRD – Dinard Pleurtuit Saint-Malo – Dinard
+LFRE – La Baule-Escoublac – La Baule-Escoublac
+LFRF – Granville-Mont-Saint-Michel – Granville
+LFRG – Deauville Saint-Gatien – Deauville
+LFRH – Lorient South Brittany – Lorient
+LFRI – La Roche-sur-Yon Les Ajoncs – La Roche-sur-Yon
+LFRJ – Landivisiau – Landivisiau
+LFRK – Caen Carpiquet – Caen
+LFRM – Le Mans Arnage – Le Mans
+LFRN – Rennes - Saint-Jacques – Rennes
+LFRO – Lannion – Lannion
+LFRP – Ploermel Loyat – Ploermel
+LFRQ – Quimper Pluguffan – Quimper
+LFRS – Nantes Atlantique (formerly Aeroport Chateau Bougon) –N antes
+LFRT – Saint-Brieuc – Armor – Saint-Brieuc
+LFRU – Morlaix Ploujean – Morlaix
+LFRV – Vannes-Meucon – Vannes
+LFRW – Avranches Le Val Saint-Pere – Avranches
+LFRZ – Saint-Nazaire Montoir – Saint-Nazaire
+LFSA – Besancon Thise – Besancon
+LFSB – EuroAirport Basel-Mulhouse-Freiburg – Mulhouse, France / Basel, Switzerland – also IATA Code MLH
+LFSD – Dijon Bourgogne - Longvic – Dijon
+LFSE – Epinal Dogneville – Epinal
+LFSF – Metz Frescaty – Metz Closed 2012
+LFSG – Epinal Mirecourt – Epinal
+LFSH – Haguenau – Haguenau
+LFSJ – Sedan Douzy – Sedan
+LFSK – Vitry-le-Francois Vauclerc – Vitry-le-Francois
+LFSM – Montbeliard Courcelles – Montbeliard
+LFSN – Nancy-Essey – Nancy
+LFSP – Pontarlier – Pontarlier
+LFSQ – Belfort Fontaine – Belfort
+LFSR – Reims – Champagne – Reims
+LFST – Strasbourg Entzheim – Strasbourg
+LFSU – Langres Rolampont – Langres
+LFSV – Pont-Saint-Vincent – Pont-Saint-Vincent
+LFSW – Epernay Plivot – Epernay
+LFSY – Cessey – Cessey
+LFSZ – Vittel Champ-de-Courses – Vittel
+LFTB – Marignane Berre – Marignane
+LFTF – Cuers Pierrefeu – Cuers
+LFTH – Toulon–Hyeres (Hyeres Le Palyvestre) – Toulon
+LFTM – Serres La Batie Montsaleon – Serres-la-Batie
+LFTN – La Grand'Combe – La Grand-Combe
+LFTP – Puimoisson – Puimoisson
+LFTQ – Chateaubriant Pouance – Chateaubriant
+LFTR – Toulon-St. Mandrier Heliport – Saint-Mandrier-sur-Mer
+LFTU – Frejus Saint-Raphael – Frejus
+LFTW – Nîmes-Ales-Camargue-Cevennes (Garons) – Nîmes
+LFTZ – La Mole – La Mole
+LFXA – Amberieu-en-Bugey – Amberieu-en-Bugey
+LFXB – Saintes Thenac – Saintes
+LFXM – Mourmelon – Mourmelon
+LFXN – Narbonne – Narbonne
+LFXU – Les Mureaux – Les Mureaux
+LFYG – Cambrai-Niergnies – Cambrai
+LFYR – Romorantin Pruniers – Romorantin
+LFYS – Sainte-Leocadie – Sainte-Leocadie
+LFVM – Miquelon – Miquelon
+LFVP – Saint Pierre – Saint-Pierre
+LGAD – Andravida – Andravida (military)
+
+LG – Greece
+LGAG – Agrinion - Agrinion
+LGAL – Alexandroupolis Int'l "Dimokritos" (Democritus) –A lexandroupolis
+LGAT – Ellinikon Int'l (closed in 2001) – Athens
+LGAV – Athens Int'l, "Eleftherios Venizelos" – Athens (Athina)
+LGAX – Alexandria (Greece) – Alexandreia, Greece
+LGBL – Int'l of Central Greece – Nea Anchialos/Volos
+LGEL - Elfesis - Elfesis/Eleusis(military)
+LGEP - Epitalio - Epitalio (closed)
+LGHI – Chios Island National, "Omiros" – Chios
+LGHL - Porto Cheli - Porto Cheli (closed in 2006, private), Argolis
+LGIK – Ikaria Island National, "Ikaros" – Ikaria
+LGIO – Ioannina National, "King Piros" – Ioannina
+LGIR – Heraklion Int'l, "Nikos Kazantzakis "– Heraklion (Iraklion), Crete
+LGKA – Kastoria National, "Aristotelis" – Kastoria
+LGKC – Kithira Island National ""Alexandros Aristotelous Onassis" –K ythira (Kithira)
+LGKF – Kefalonia Island Int'l "Pollatou" – Kefalonia (Kefallinia, Cephallonia)
+LGKJ – Kastelorizo Island Public, "Megisti" – Kastelorizo
+LGKL – Kalamata Int'l, "Captain Vassilis Constantakopoulos" – Kalamata
+LGKM – Amigdaleon – Kavala(military, Closed)
+LGKN - Kotroni - Marathon(military)
+LGKO – Kos Island Int'l, "Ippokratis" (Hippocrates) – Kos
+LGKP – Karpathos Island National – Karpathos
+LGKR – Ioannis Kapodistrias Int'l – Corfu (Kerkyra, Kerkira)
+LGKS – Kassos Island Public, "Agia Marina" – Kasos (Kassos)
+LGKV – Kavala Int'l, "Megas Alexandros" – Kavala
+LGKY – Kalymnos Island National, "Pothia" – Kalimnos
+LGKZ – Kozani National, "Filippos" – Kozani
+LGLE – Leros Municipal, "Dodekanisos" – Leros
+LGLM – Lemnos Int'l, "Ifaestos" – Lemnos (Limnos)
+LGLR – Larissa National, "Thessaly" – Larissa (military)
+LGMG – Megara – Megara (military and national general aviation only)
+LGMK – Mykonos Island National, "Dilos" – Mykonos (Mikonos)
+LGML – Milos Island National, "Afroditi" – Milos
+LGMT – Mytilene Int'l, "Odysseas Elytis" – Mytilene (Mitilini), Lesbos
+LGNX – Naxos Island National, "Apollon" – Naxos
+LGPA – Paros National, "Panteleou" – Paros
+LGPL – Astypalaia Island National, "Panagia" – Astypalaia
+LGPZ – Aktion National (Lefkada) – Preveza
+LGRD - Rhodes Maritsa - Maritsa, Rhodes (military)
+LGRP – Rhodes Int'l, "Diagoras" – Rhodes (Rhodos, Rodos)
+LGRX – Araxos, "Agamemnon" – Araxos
+LGSA – Chania Int'l, "Ioannis Daskalogiannis" – Chania, Crete
+LGSD – Sedes - Sedes, Greece (military)
+LGSK – Skiathos Island National, "Alexandros Papadiamantis" – Skiathos
+LGSM – Samos Int'l, "Aristarchos" – Samos
+LGSO – Syros Island National, "Dimitrios Vikelas" – Syros (Siros)
+LGSP - Sparti - Sparti, Laconia (closed, may be open again by the Municipality of Sparti)
+LGSR – Santorini (Thira) National, "Zefiros" – Santorini (Thira)
+LGST – Sitia Public – Sitia, "Vitsentzos Kornaros" Crete
+LGSV – Stefanovikio - Stefanovikeio(military)
+LGSY – Skyros Island National, "Aegeon" – Skyros (Skiros)
+LGTG - Tanagra - Tanagra(military)
+LGTL - Kasteli - Kastelli (closed)
+LGTP - Tripolis - Tripoli (military, may be open for public after 2015)
+LGTS – Thessaloniki Int'l, "Makedonia" – Thessaloniki
+LGTT - Tatoi - Tatoi (military)
+LGZA – Zakynthos Int'l, "Dionysios Solomos" – Zakynthos (Zakinthos)
+
+LH – Hungary
+LHBP – Liszt Ferenc Int'l – Budapest
+LHBS – Budaors – Budaors
+LHDC – Debrecen Int'l – Debrecen
+LHDK – Dunakeszi – Dunakeszi
+LHDV - Dunaujvaros - Dunaujvaros
+LHEC – Ersekcsanad – Ersekcsanad
+LHEM – Esztergom – Esztergom
+LHFH – Farkashegy – Budakeszi
+LHFM – Fertoszentmiklos – Fertoszentmiklos
+LHGD – Godollo – Godollo
+LHHH - Harmas-hatar-hegy - Budapest
+LHKD – Kecsked – Kecsked
+LHKE – Kecskemet – Kecskemet
+LHKK – Kiskunlachaza – Kiskunlachaza
+LHMC – Miskolc – Miskolc
+LHNY – Nyíregyhaza – Nyíregyhaza
+LHOY – Ocseny – Ocseny
+LHPA – Papa – Papa
+LHPP – Pecs-Pogany Int'l – Pecs
+LHPR – Gyor-Per Int'l – Gyor, Per
+LHPW – Pusztaszer West – Pusztaszer
+LHSA – Szentkiralyszabadja – Szentkiralyszabadja
+LHSM – Sarmellek Int'l – Sarmellek
+LHSN – Szolnok – Szolnok
+LHSK – Siofok-Kiliti – Sagvar
+LHSY - Szombathely - Szombathely
+LHTA – Taszar – Taszar
+LHTL – Tokol – Tokol
+LHUD - Szeged - Szeged
+
+LI – Italy
+LIAF – Foligno – Foligno
+LIAP – Preturo – L'Aquila
+LIAT – Pontedera – Pontedera, Pisa
+LIAU – Capua – Capua
+LIBA – Amendola Air Force Base – Foggia
+LIBC – Crotone (Sant'Anna) – Crotone
+LIBD – Bari Karol Wojtyla Int'l – Bari
+LIBF – Gino Lisa – Foggia
+LIBG – Grottaglie – Taranto
+LIBN – Lecce (military) – Lecce
+LIBP – Abruzzo Int'l – Pescara
+LIBR – Casale – Brindisi
+LIBV – Gioia del Colle – Gioia del Colle, Bari
+LIBX – Martina Franca Air Force Base – Martina Franca, Taranto
+LICA – Lamezia Terme Int'l – Lamezia Terme, Catanzaro
+LICB – Comiso – Comiso, Ragusa
+LICC – Catania-Fontanarossa – Catania
+LICD – Lampedusa – Lampedusa, Agrigento
+LICG – Pantelleria – Pantelleria, Trapani
+LICJ – Palermo (Punta Raisi) – Palermo / Punta Raisi
+LICP – Palermo-Boccadifalco – Palermo
+LICR – Reggio Calabria – Reggio Calabria
+LICT – Vincenzo Florio (Birgi) – Trapani
+LICZ – Naval Air Station Sigonella – Lentini, Syracuse
+LIDA – Asiago – Asiago, Vicenza
+LIDB – Belluno – Belluno
+LIDE – Reggio Emilia – Reggio Emilia
+LIDF – Fano – Fano, Pesaro & Urbino
+LIDG – Lugo di Romagna – Lugo di Romagna, Ravenna
+LIDR – Ravenna – Ravenna
+LIDT – G. Caproni (Mattarello) – Trento
+LIDU – Carpi Budrione – Carpi
+LIEA – Fertilia (Alghero) – Alghero, Sassari
+LIED – Decimomannu – Decimomannu, Cagliari
+LIEE – Cagliari - Elmas – Cagliari
+LIEO – Olbia - Costa Smeralda – Olbia
+LIER – Oristano-Fenosu – Oristano
+LIET – Tortolì – Tortolì
+LIKO – Aviosuperficie di Ozzano - Guglielmo Zamboni – Ozzano dell´Emilia
+LILA – Alessandria – Alessandria
+LILE – Cerrione – Biella
+LILG – Vergiate – Vergiate, Varese
+LILH – Rivanazzano – Voghera, Pavia
+LILM – Casale Monferrato – Casale Monferrato
+LILN – Venegono – Varese
+LILQ - Massa Cinquale – Massa
+LILR – Migliaro – Cremona
+LILY – Como Idroscalo (water aereodrome) – Como
+LIMA – Aeritalia – Turin (Torino)
+LIMB – Bresso – Milan
+LIMC – Malpensa Int'l – Milan
+LIME – Orio al Serio Int'l – Bergamo
+LIMF – Turin Int'l (Torino Caselle) – Turin (Torino)
+LIMG – Villanova d'Albenga Int'l (C. Panero) – Albenga, Savona
+LIMJ – Genoa Cristoforo Colombo (Sestri) – Genoa (Genova)
+LIML – Linate – Milan
+LIMN – Cameri Air Force Base – Cameri, Novara
+LIMP – Parma (G. Verdi) – Parma
+LIMS – San Damiano Air Force Base – Piacenza
+LIMW – Aosta (Corrado Gex) – Aosta
+LIMZ – Cuneo Levaldigi – Cuneo
+LIPA – Aviano – Aviano, Pordenone
+LIPB – Bolzano Dolomiti – Bolzano, South Tyrol
+LIPC – Cervia Air Force Base – Cervia, Ravenna
+LIPD – Campoformido – Udine
+LIPE – Bologna (Guglielmo Marconi) – Bologna
+LIPF – Ferrara – Ferrara
+LIPH – Treviso (Sant'Angelo) – Treviso
+LIPI – Rivolto Air Force Base – Rivolto / Udine
+LIPK – Forlì (L. Ridolfi) – Forlì
+LIPL – Ghedi (military) – Ghedi, Brescia
+LIPM – Modena Marzaglia – Modena
+LIPN – Boscomantico – Verona
+LIPO – Brescia – Brescia
+LIPQ – Friuli Venezia Giulia (Trieste Ronchi dei Legionari) – Ronchi dei Legionari / Trieste
+LIPR – Federico Fellini Int'l– Rimini
+LIPS – Istrana Air Force Base – Treviso
+LIPT – Vicenza – Vicenza
+LIPU – Padova (Gino Allegri) – Padua (Padova)
+LIPV – Venice-Lido (Giovanni Nicelli) – Venice (Venezia)
+LIPX - Verona - Verona
+LIPY – Falconara (Raffaello Sanzio) – Ancona
+LIPZ – Marco Polo Int'l (Marco Polo Venice) – Venice (Venezia)
+LIQB – Molin Bianco – Arezzo
+LIQL – Tassignano – Lucca
+LIQN – Rieti (G. Ciuffelli) – Rieti
+LIQQ - Serristori - Manciano la Misericordia - Castiglion Fiorentino - Province of Arezzo
+LIQS – Siena – Siena
+LIQW – Luni (military/Navy) – Sarzana, Genoa
+LIRA – Ciampino (Giovan Battista Pastine) – Rome
+LIRC – Centocelle Air Force Base – Centocelle, Rome
+LIRE – Pratica di Mare Air Force Base – Pomezia, Rome
+LIRF – Leonardo da Vinci Int'l (Fiumicino Int'l) – Rome
+LIRG – Guidonia Air Force Base – Guidonia Montecelio, Rome
+LIRI – Salerno Costa d'Amalfi – Salerno
+LIRJ – Marina di Campo – Marina di Campo, Elba
+LIRL – Latina (military) – Latina
+LIRM – Grazzanise (military) – Caserta
+LIRN – Naples Int'l (Capodichino) – Naples
+LIRP – Galileo Galilei (Pisa Int'l) – Pisa
+LIRQ – Amerigo Vespucci (Florence) – Florence (Firenze)
+LIRS – Grosseto – Grosseto
+LIRU – Rome Urbe – Rome
+LIRV – Viterbo Air Force Base / Rome Viterbo – Viterbo
+LIRZ – Perugia San Francesco d'Assisi - Umbria Int'l - Perugia
+
+LJ – Slovenia
+LJAJ – Ajdovscina – Ajdovscina
+LJBL – Lesce-Bled – Lesce
+LJBO – Bovec – Bovec
+LJCE – Cerklje ob Krki – Cerklje ob Krki, Brezice
+LJCL – Celje – Celje (Levec)
+LJDI – Divaca – Divaca
+LJLJ – Ljubljana Joze Pucnik (Brnik) – Ljubljana
+LJMB – Maribor Edvard Rusjan – Maribor
+LJMS – Murska Sobota – Murska Sobota (Rakican)
+LJNM – Novo Mesto-Precna – Novo Mesto (Precna)
+LJPO – Postojna – Postojna
+LJPT – Ptuj – Ptuj (Moskanjci)
+LJPZ – Portoroz – Portoroz
+LJSG – Slovenj Gradec – Slovenj Gradec
+LJSK – Slovenske Konjice – Slovenske Konjice (Senozet)
+LJSO – Velenje – Velenje (Lajse)
+
+LK – Czech Republic
+LKBA – Breclav – Breclav
+LKBE – Benesov – Benesov
+LKBR – Broumov – Broumov
+LKBU – Bubovice – Bubovice
+LKCB – Cheb – Cheb
+LKCE – Ceska Lípa – Ceska Lípa
+LKCH – Chomutov – Chomutov
+LKCM – Medlanky – Medlanky
+LKCR – Chrudim – Chrudim
+LKCS – Ceske Budejovice – Ceske Budejovice
+LKCT – Chotebor – Chotebor
+LKCV – Caslav – Caslav
+LKDK – Dvur Kralove nad Labem – Dvur Kralove nad Labem
+LKHB – Havlíckuv Brod – Havlíckuv Brod
+LKHC – Horice – Horice
+LKHD – Hodkovice nad Mohelkou – Hodkovice nad Mohelkou
+LKHK – Hradec Kralove – Hradec Kralove
+LKHN – Hranice – Hranice
+LKHO – Holesov – Holesov
+LKJA – Jaromer – Jaromer
+LKJC – Jicín – Jicín
+LKJH – Jindrichuv Hradec – Jindrichuv Hradec
+LKJI – Jihlava – Jihlava
+LKKA – Krizanov – Krizanov
+LKKB – Praha Kbely – Prague
+LKKL – Kladno – Kladno
+LKKO – Kolín – Kolín
+LKKR – Krnov – Krnov
+LKKT – Klatovy – Klatovy
+LKKU – Kunovice – Kunovice
+LKKV – Karlovy Vary – Karlovy Vary
+LKKY – Kyjov – Kyjov
+LKLT – Praha Letnany – Letnany
+LKMB – Mlada Boleslav – Mlada Boleslav
+LKMH – Mnichovo Hradiste – Mnichovo Hradiste
+LKMI – Mikulovice – Mikulovice
+LKMK – Moravska Trebova – Moravska Trebova
+LKMO – Most – Most
+LKMR – Marianske Lazne(closed) – Marianske Lazne
+LKMT – Ostrava-Mosnov Int'l – Ostrava
+LKNM – Nove Mesto – Nove Mesto nad Metují
+LKOL – Olomouc – Olomouc
+LKPA – Policka – Policka
+LKPC – Panensky Tynec – Panensky Tynec
+LKPD – Pardubice – Pardubice
+LKPI – Pribyslav – Pribyslav
+LKPL – Letkov – Letkov
+LKPM – Príbram – Príbram
+LKPN – Podhorany – Podhorany
+LKPO – Prerov – Prerov
+LKPR – Prague Vaclav Havel – Prague
+LKPS – Plasy – Plasy
+LKRA – Rana u Loun – Rana u Loun
+LKRK – Rakovník – Rakovník
+LKRO – Roudnice – Roudnice
+LKSA – Stankov – Stankov
+LKSK – Skutec – Skutec
+LKSN – Slany – Slany
+LKSO – Sobeslav – Sobeslav
+LKSR – Strunkovice – Strunkovice
+LKST – Strakonice – Strakonice
+LKSU – Sumperk – Sumperk
+LKSZ – Sazena – Sazena
+LKTA – Tabor – Tabor
+LKTB – Brno-Turany – Brno
+LKTC – Tocna – Tocna
+LKTO – Touzim – Touzim
+LKUO – Ustí nad Orlicí – Ustí nad Orlicí
+LKVL – Vlasim – Vlasim
+LKVM – Vysoke Myto – Vysoke Myto
+LKVO – Vodochody – Vodochody
+LKVP – Velke Porící – Velke Porící
+LKVR – Vrchlabí – Vrchlabí
+LKVY – Vyskov – Vyskov
+LKZA – Zabreh – Zabreh
+LKZB – Zbraslavice – Zbraslavice
+LKZL – Zlin Otrokovice – Otrokovice
+LKZM – Zamberk – Zamberk
+
+LL – Israel
+LLAZ – Gaza Airstrip (formerly Gush Katif) – Khan Yunis, Gaza Strip
+LLBG – Ben Gurion Int'l – Lod / Tel Aviv
+LLBS – Be'er Sheva (Teyman) – Beersheba (Be'er Sheva)
+LLEK – Tel Nof Israeli Air Force Base – Tel Nof (Tel Nov)
+LLER – Ramon – Timna / Eilat
+LLES – Ein Shemer – Ein Shemer (Eyn-Shemer)
+LLET – Eilat (J. Hozman) – Eilat
+LLEY – Ein Yahav – Ein Yahav (Eyn-Yahav)
+LLFK – Fiq – Fiq, Golan Heights
+LLHA – Haifa Int'l (U. Michaeli) – Haifa
+LLHB – Hatzerim Airbase (Hatzerim) – Beersheba (Be'er Sheva)
+LLHS – Hatzor Airbase – Hatzor
+LLHZ – Herzliya – Herzliya (Herzlia)
+LLIB – Rosh Pina (Ben Ya'aqov) – Rosh-Pina
+LLJR – Atarot (Jerusalem) – Jerusalem (closed after the Second Intifada)
+LLKS – Qiryat Shemona – Qiryat Shemona (Kiryat-Shmona)
+LLMG – Megiddo – Megiddo (Meggido)
+LLMR – Mitzpe Ramon – Mitzpe Ramon
+LLMZ – Bar Yehuda – Masada
+LLNV – Nevatim Israeli Air Force Base – Nevatim
+LLOV – Ovda Int'l – Negev
+LLRD – Ramat David Israeli Air Force Base – Megiddo
+LLRM – Ramon Airbase – Mitzpe Ramon
+LLSD – Sde Dov (Dov Hoz) – Tel Aviv
+LLYT – Yotvata – Yotvata
+
+LM – Malta
+LMMG - Xewkija Heliport (Gozo Heliport) - Gozo
+LMML – Malta Int'l (Luqa) – Luqa
+
+LN – Monaco
+LNMC – Monaco Heliport – Monte Carlo
+
+LO – Austria
+LOAD – Voltendorf – St. Polten, Lower Austria
+LOAG – Krems-Gneixendorf – Gneixendorf, Lower Austria
+LOAN – Wiener Neustadt East – Wiener Neustadt, Lower Austria
+LOAU – Stockerau – Stockerau, Lower Austria
+LOAV – Voslau – Bad Voslau, Lower Austria
+LOBI – Modling Krankenhaus Heliport – Landesklinikum_Modling, Modling, Lower Austria
+LOGG – Punitz – Gussing, Burgenland
+LOGT - Leoben/Timmersdorf - Timmersdorf, Styria
+LOIR – Reutte-Hofen – Reutte, Tyrol
+LOKF – Feldkirchen – Ossiacher See, Carinthia
+LOLG – St. Georgen – Leutzmannsdorf, Lower Austria
+LOLO – Linz Ost (Linz East) – Linz, Upper Austria
+LOLW – Wels – Wels, Upper Austria
+LOWG – Graz – Graz, Styria
+LOWI – Innsbruck – Innsbruck, Tyrol
+LOWK – Klagenfurt (Karnten) – Klagenfurt, Carinthia
+LOWL – Linz (blue danube linz) – Linz, Upper Austria
+LOWS – Salzburg (Salzburg W.A. Mozart) – Salzburg, Salzburg
+LOWW – Vienna Int'l (Wien-Schwechat) – Schwechat, Lower Austria
+LOXA – Aigen-Fiala Fernbrugg – Aigen im Ennstal, Styria
+LOXE – Allentsteig Military –
+LOXG – Graz-Nittner at Graz
+LOXL – Linz-Vogler at Linz
+LOXN – Wiener Neustadt West – Wiener Neustadt, Lower Austria
+LOXT – Langenlebarn – Tulln, Lower Austria
+LOXW – Vienna Int'l
+LOXZ – Zeltweg – Zeltweg, Styria
+
+LP – Portugal
+LPAR – Alverca – Alverca do Ribatejo, Vila Franca de Xira
+LPAV – Sao Jacinto (Aveiro) – Aveiro
+LPBG – Braganca – Braganca
+LPBJ – Beja/Beja – Beja
+LPBR – Braga – Palmeira, Braga
+LPCH – Chaves – Chaves
+LPCO – Coimbra (Bissaya Barreto) – Coimbra
+LPCS – Lisbon Cascais-Tejo Regional (Cascais Municipal) - Sao Domingos de Rana,
+LPCV – Covilha – Covilha (closed)
+LPEV – Evora – Evora / Alentejo Central
+LPFR – Faro – Faro / Algarve
+LPIN – Espinho – Paramos / Silvalde / Espinho
+LPLG – Brigadeiro Franco – Lagos
+LPMC – Macedo de Cavaleiros
+LPMF – Monfortinho – Monfortinho, Idanha-a-Nova
+LPMI – Mirandela – Mirandela
+LPMO – Montargil – Montargil, Ponte de Sor
+LPMR – Monte Real – Monte Real, Leiria
+LPMT – Montijo – Montijo
+LPMU – Mogadouro - Mogadouro
+LPOT – Ota – Ota, Alenquer
+LPOV – Ovar – Maceda, Ovar
+LPPM – Portimao – Portimao, Barlavento Algarvio
+LPPR – Francisco Sa Carneiro (Porto) – Porto
+LPPT – Lisbon (Humberto Delgado) – Portela / Lisbon
+LPPV – Praia Verde – Altura
+LPSC – Santa Cruz, Santa Cruz, Torres Vedras
+LPSI – Sines – Sines / Alentejo Litoral
+LPSR – Santarem – Santarem
+LPST – Sintra – Granja do Marques / Pero Pinheiro, Sintra
+LPTN – Tancos – Tancos, Vila Nova da Barquinha, Medio Tejo
+LPVL – Maia (Vilar da Luz) – Maia
+LPVM – Vilamoura – Vilamoura / Quarteira, Loule (closed)
+LPVR – Vila Real – Vila Real / Alto Douro
+LPVZ – Viseu (Goncalves Lobato) – Lordosa, Viseu
+LPAZ – Santa Maria – Vila do Porto / Santa Maria Island
+LPCR – Corvo – Vila do Corvo / Corvo Island
+LPFL – Flores – Santa Cruz das Flores / Flores Island
+LPGR – Graciosa – Santa Cruz da Graciosa / Graciosa Island
+LPHR – Horta – Horta / Faial Island
+LPLA – Lajes (Lajes Field) – Lajes / Terceira Island
+LPPD – Joao Paulo II (Ponta Delgada) – Ponta Delgada / Sao Miguel Island
+LPPI – Pico – Madalena / Pico Island
+LPSJ – Sao Jorge – Velas / Sao Jorge Island
+LPMA – Cristiano Ronaldo Int'l Airport (Madeira) (Funchal) – Madeira Island
+LPPS – Porto Santo – Vila Baleira / Porto Santo Island
+
+LQ – Bosnia and Herzegovina
+LQBI – Bihac – Bihac
+LQBK – Banja Luka Int'l – Banja Luka
+LQBU – Sarajevo Butmir – Butmir
+LQBZ – Banja Luka Zaluzani – Banja Luka
+LQCO – Coralici – Coralici
+LQGL – Glamoc – Glamoc
+LQJL – Tuzla Jegen Lug – Tuzla
+LQKU – Kupres Bajramovici – Kupres
+LQLV – Livno – Livno
+LQMJ – Mostar Jasenica – Mostar
+LQMO – Mostar Int'l – Mostar
+LQPD – Prijedor – Prijedor
+LQSA – Sarajevo Int'l – Sarajevo
+LQSV – Sarajevo Military – Sarajevo
+LQTG – Tomislavgrad – Tomislavgrad
+LQTR – Novi Travnik – Novi Travnik
+LQTZ – Tuzla Int'l – Tuzla
+LQVI – Visoko – Visoko
+
+LR – Romania
+LRAR – Arad Int'l – Arad
+LRBC – George Enescu Int'l – Bacau
+LRBG – IAR Gimbav Heliport – Brasov
+LRBM – Maramures – Baia Mare
+LRBN – Bistrita - Bistrita
+LRBS – Bucharest "Aurel Vlaicu" Int'l – Bucharest
+LRCK – Constanta "Mihail Kogalniceanu" Int'l - Constanta
+LRCL – Cluj Int'l – Cluj-Napoca
+LRCS – Caransebes – Resita
+LRCV – Craiova Int'l – Craiova
+LRFL – Floreni - Vatra Dornei
+LRIA – Iasi Int'l – Iasi
+LROD – Oradea Int'l – Oradea
+LROP – Bucharest "Henri Coanda" Int'l – Bucharest
+LRSB – Sibiu Int'l – Sibiu
+LRSM – Satu Mare Int'l – Satu Mare
+LRSV – Suceava Int'l – Suceava
+LRTC – Tulcea – Tulcea
+LRTM – Targu Mures Int'l – Targu-Mures
+LRTR – Timisoara "Traian Vuia" Int'l – Timisoara
+
+LS – Switzerland
+LSER – Raron Heliport – Raron
+LSEZ – Zermatt Heliport – Zermatt
+LSGB – Bex – Bex
+LSGC – Les Eplatures – La Chaux-de-Fonds
+LSGE – Fribourg-Ecuvillens – Fribourg
+LSGG – Geneva (Cointrin) – Geneva
+LSGK – Saanen – Saanen
+LSGL – Lausanne – Lausanne
+LSGN – Neuchatel – Neuchatel
+LSGP – La Cote – La Cote
+LSGR – Reichenbach – Reichenbach
+LSGS – Sion – Sion (ICAO Code applies to Civilian)
+LSGT – Gruyeres – Gruyeres
+LSGY – Yverdon-les-Bains – Yverdon-les-Bains
+LSHC – Collombey-Muraz Heliport – Collombey-Muraz
+LSHG – Gampel Heliport – Gampel
+LSMA – Alpnach – Alpnach (military)
+LSMD – Dubendorf – Dubendorf (military)
+LSME – Emmen – Emmen (military)
+LSMF – Mollis - Mollis
+LSMM – Meiringen – Meiringen (military)
+LSMP – Payerne – Payerne (military)
+LSMS – Sion – Sion (military)
+LSPA – Amlikon – Amlikon
+LSPD – Dittingen – Dittingen
+LSPF – Schaffhausen – Schaffhausen
+LSPG – Kagiswil – Kagiswil
+LSPH – Winterthur – Winterthur
+LSPK – Hasenstrick – Hasenstrick
+LSPL – Langenthal – Langenthal
+LSPM – Ambri – Ambri
+LSPN – Triengen – Triengen
+LSPO – Olten – Olten
+LSPV – Wangen-Lachen – Wangen
+LSTB – Bellechasse – Bellechasse
+LSTO – Motiers – Motiers
+LSTR – Montricher – Montricher
+LSTS – St. Stephan – St. Stephan
+LSXB – Balzers Heliport – Balzers
+LSXG – Gsteigwiler Heliport – Gsteigwiler
+LSXI – Interlaken Heliport – Interlaken
+LSXK – Benken Heliport – Benken
+LSXL – Lauterbrunnen Heliport – Lauterbrunnen
+LSXO – St. Gallen-Winkeln Heliport – St. Gallen
+LSXS – Schindellegi Heliport – Schindellegi
+LSXT – Trogen Heliport – Trogen
+LSXU – Untervaz Heliport – Untervaz
+LSXW – Wurenlingen Heliport – Wurenlingen
+LSXY – Leysin Heliport – Leysin
+LSZA – Lugano – Lugano / Agno
+LSZB – Berne – Berne / Belp
+LSZC – Buochs – Buochs
+LSZD – Ascona – Ascona
+LSZE – Bad Ragaz – Bad Ragaz
+LSZF – Birrfeld – Birrfeld
+LSZG – Grenchen – Grenchen
+LSZH – Zurich (Kloten) – Zurich / Kloten
+LSZI – Fricktal-Schupfart – Fricktal
+LSZJ – Courtelary – Courtelary
+LSZK – Speck-Fehraltorf – Speck
+LSZL – Locarno – Locarno
+LSZM – EuroAirport Basel Mulhouse Freiburg – Saint-Louis, France
+LSZN – Hausen am Albis – Hausen am Albis
+LSZO – Luzern-Beromunster – Luzern
+LSZP – Biel-Kappelen – Biel
+LSZR – St. Gallen-Altenrhein – St. Gallen / Altenrhein
+LSZS – Samedan (Engadin) – Samedan
+LSZT – Lommis – Lommis
+LSZU – Buttwil – Buttwil
+LSZV – Sitterdorf – Sitterdorf
+LSZW – Thun – Thun
+LSZX – Schanis – Schanis
+LSZY – Porrentruy – Porrentruy
+
+LT – Turkey
+LTAB - Ankara Guvercinlik Army – Guvercinlik / Ankara
+LTAC – Esenboga Int'l – Ankara
+LTAD – Etimesgut – Ankara
+LTAE – Murted – Ankara
+LTAF – Adana Sakirpasa – Adana
+LTAG – Incirlik – Adana
+LTAH – Afyon – Afyonkarahisar
+LTAI – Antalya – Antalya
+LTAJ – Oguzeli – Gaziantep
+LTAK – Iskenderun – Iskenderun, Hatay
+LTAL – Kastamonu – Kastamonu
+LTAM – Kayseri – Kayseri (closed)
+LTAN – Konya – Konya
+LTAO – Malatya Tulga – Malatya
+LTAP – Amasya Merzifon – Merzifon, Amasya
+LTAQ – Samsun Samair – Samsun
+LTAR – Sivas – Sivas
+LTAS – Zonguldak – Zonguldak
+LTAT – Malatya Erhac – Malatya
+LTAU – Erkilet Int'l (Kayseri Erkilet) – Kayseri
+LTAV – Sivrihisar – Sivrihisar, Eskisehir
+LTAW – Tokat – Tokat
+LTAX – Erdemir – Karadeniz Eregli, Zonguldak
+LTAY – Denizli Cardak – Denizli
+LTAZ – Nevsehir Kapadokya – Nevsehir
+LTBA – Ataturk Int'l – Istanbul
+LTBC – Alasehir – Alasehir, Manisa
+LTBD – Aydın – Aydın
+LTBE – Bursa – Bursa
+LTBF – Balıkesir – Balıkesir
+LTBG – Bandırma – Bandırma, Balıkesir
+LTBH – Canakkale – Canakkale
+LTBI - Eskisehir - Eskisehir
+LTBJ – Adnan Menderes – Izmir
+LTBK – Gaziemir – Izmir
+LTBL – Cigli – Izmir
+LTBM – Isparta – Isparta
+LTBN – Kutahya – Kutahya
+LTBO - Usak - Usak
+LTBP – Yalova – Yalova
+LTBQ – Cengiz Topel Naval Air Station – Kocaeli
+LTBR – Yenisehir – Bursa
+LTBS – Dalaman – Dalaman, Mugla
+LTBT – Akhisar – Akhisar, Manisa
+LTBU – Tekirdag Corlu – Corlu, Tekirdag
+LTBV – Bodrum-Imsik – Bodrum
+LTBW – Istanbul Hezarfen – Istanbul
+LTBX – Istanbul Samandıra Army – Istanbul
+LTBY – Anadolu – Eskisehir
+LTBZ – Zafer – Kutahya
+LTCA – Elazıg – Elazıg
+LTCB – Ordu-Giresun – Ordu
+LTCC – Diyarbakır – Diyarbakır
+LTCD – Erzincan – Erzincan
+LTCE – Erzurum – Erzurum
+LTCF – Kars – Kars
+LTCG – Trabzon – Trabzon
+LTCH – Sanlıurfa – Sanlıurfa
+LTCI – Van Ferit Melen – Van
+LTCJ – Batman – Batman
+LTCK – Mus – Mus
+LTCL – Siirt – Siirt
+LTCM – Sinop – Sinop
+LTCN – Kahramanmaras – Kahramanmaras
+LTCO – Agrı – Agrı
+LTCP – Adıyaman – Adıyaman
+LTCR – Mardin – Mardin
+LTCS – Sanlıurfa GAP – Sanlıurfa
+LTCU - Bingol – Bingol
+LTCV – Sırnak – Cizre
+LTDA – Hatay – Antakya, Hatay
+LTFA – Kaklıc – Izmir
+LTFB – Selcuk-Efes – Selcuk, Izmir
+LTFC – Isparta Suleyman Demirel – Isparta
+LTFD – Balıkesir Koca Seyit – Edremit, Balıkesir
+LTFE – Milas-Bodrum – Milas, Mugla
+LTFG – Antalya Gazipasa – Gazipasa, Antalya
+LTFH – Samsun-Carsamba – Samsun
+LTFJ – Sabiha Gokcen Int'l – Istanbul
+LTFK – Gokceada - Gokceada, Canakkale
+LTFL – Kesan – Kesan
+
+LU – Moldova
+LUBL – Balti Int'l – Balti
+LUBM – Marculesti Air Force Base – Marculesti
+LUCH – Cahul Int'l – Cahul
+LUCL – Ceadîr-Lunga – Ceadîr-Lunga
+LUCM – Camenca – Camenca
+LUKK – Chisinau Int'l – Chisinau
+LUSR – Soroca – Soroca
+LUTG – Tighina – Tighina
+LUTR – Tiraspol – Tiraspol
+
+LV – State of Palestine
+LVGZ – Yasser Arafat Int'l(formerly Gaza Int'l) – Rafah Gaza Airstrip Atarot
+
+LW – Macedonia, Republic of
+LWOH – Ohrid – Ohrid
+LWSK – Skopje – Skopje
+
+LX – Gibraltar
+LXGB – Gibraltar – Gibraltar
+
+LY – Serbia and Montenegro
+LYBE – Belgrade Nikola Tesla – Belgrade
+LYBT – Batajnica – Batajnica / Belgrade
+LYBJ – Lisicji Jarak – Padinska Skela / Belgrade
+LYKV – Morava – Kraljevo
+LYNI – Nis Constantine the Great – Nis
+LYNS – Novi Sad (Cenej) – Novi Sad
+LYTR – Trstenik – Trstenik
+LYUZ – Ponikve – Uzice
+LYVR – Vrsac – Vrsac
+LYZR – Zrenjanin – Zrenjanin
+LYBR – Dolac – Berane, Montenegro
+LYPJ – Golubovci Airbase – Golubovci, Montenegro
+LYNK – Kapino Polje – Niksic, Montenegro
+LYPG – Podgorica – Podgorica, Montenegro
+LYPO – Cemovsko Polje – Podgorica, Montenegro
+LYTV – Tivat – Tivat, Montenegro
+
+LZ – Slovakia
+LZDB – Slavnica – Dubnican/Vahom
+LZHL – Holíc – Holíc
+LZIB – Milan Rastislav Stefanik (Bratislava) – Bratislava
+LZJS – Jasna – Jasna
+LZKC – Kamenica nad Cirochou – Kamenica nad Cirochou
+LZKS – Kralova – Kralova pri Senci
+LZKZ – Kosice Int'l – Kosice
+LZLU – Bolkovce – Lucenec
+LZMA — Martin — Martin
+LZMC — Malacky - Malacky
+LZNI – Nitra – Nitra
+LZNZ – Nove Zamky – Nove Zamky
+LZOC – Ocova – Ocova
+LZPE – Prievidza – Prievidza
+LZPP – Piestany – Piestany
+LZPT – Male Bielice – Partizanske
+LZPW – Presov – Presov
+LZRU – Ruzomberok – Ruzomberok
+LZRY – Raznany – Raznany
+LZSE – Senica – Senica
+LZSK – Svidník – Svidník
+LZSL – Sliac – Sliac
+LZSV – Spisska Nova Ves – Spisska Nova Ves
+LZSY – Surany – Surany
+LZTN – Trencín - Trencín
+LZTR – Boleraz – Trnava
+LZTT – Poprad-Tatry – Poprad
+LZZI – Zilina – Zilina
