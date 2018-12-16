@@ -6,10 +6,12 @@
 *> Usage:      call GC26LISTVIEW using Listview-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2018 E.Di Lorenzo - GNU LGPL 3.0 (or greater)
-*> Version:    1.1 2018.03.31
+*> Version:    1.3 2018.12.16
 *> Changelog:  1.0 first release.
 *>             1.1 Lv-Beep added
 *>             1.2 Lv-Dis added
+*>             1.3 Lv-NoSelTxt added  (message "item non available" now is not fixed)
+*>                 Lv-PtrCursor added (cursor position at first call)
 *> ***********************************************************************************
 *> You can manage lists with max 999 rows, each one of max 999 cols.
 *> Each row has to be inserted in a table of 999 elements,
@@ -37,6 +39,7 @@
 *> Lv-r1/c1  row & col where the header of listview items starts on screen
 *> Lv-TabNumRows/Cols  Size of the table elements in the list at screen
 *> Lv-WinNumRows/Cols  Size of the window at screen in which the list is displayed
+*> Lv-PtrCursor        "cursor" position at first call
 *> Lv-RowHeader        header of columns of the list
 *> Lv-RowCmd           command diaplayed on the last window ros (the bottom box line)
 *>
@@ -55,6 +58,7 @@
     *> window size (must be < = than table size)
     05 Lv-WinNumRows pic 9(03) value 010. *> number of rows
     05 Lv-WinNumCols pic 9(03) value 040. *> number of cols
+    05 Lv-PtrCursor  pic s9999 value 1.   *> "Cursor" position at first call
 
     *> Normal row colors
     05 Lv-bcoN       pic 9(01) value white.  *> backcolor for listview items
@@ -68,6 +72,7 @@
     05 Lv-bcoH       pic 9(01) value red.    *> backcolor for "header" listview row
     05 Lv-fcoH       pic 9(01) value yellow. *> forecolor for "header" listview row
     05 Lv-fcoHH      pic X(01) Value 'Y'.    *> forecolor of header in Highlight ?
+
 
     05 Lv-Beep           pic x(01) value 'Y'.          *> Y= sound if scroll vert/horiz
     05 Lv-Box            pic x(01) value 'Y'.          *> Y= display a box around list items
@@ -101,7 +106,13 @@
     05 Lv-Tab       value space.                   *> table with list items
       07 Lv-Ele     occurs 999 indexed by Lv-Idx.
           09 Lv-Row pic x(999).
-
+   03 Lv-NoSelTxt   value
+                    '                                    ' &
+                    '                                    ' &
+                    ' This item cannot be selected !     ' &
+                    '                                    ' &
+                    '                                    '.
+      05 Lv-NoSelTxt-Ele occurs 5 pic x(36).
 
   *> ***********************************************************************************
   *> FIELDS RETURNED TO CALLER
