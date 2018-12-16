@@ -46,7 +46,8 @@ PROCEDURE DIVISION.
   set environment 'COB_SCREEN_ESC'        TO 'Y'
   display wDummy at 001001 with blank screen end-display
 
-  move "C:\GC-AWORK"  to Fip-Path
+  *> set a Directory or display files form curret Directory
+  *> move "C:\GC-AWORK"  to Fip-Path
 
   continue.
 
@@ -62,7 +63,7 @@ Loop1.
   *> display Fip-Key at 0101 accept omitted
 
   if Fip-Key = Key-Escape
-     go End-program
+     go to End-Program
   else
      go to Loop1
   end-if
