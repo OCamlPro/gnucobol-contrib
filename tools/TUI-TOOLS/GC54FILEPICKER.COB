@@ -21,7 +21,8 @@ program-id. GC54FILEPICKER is initial.
 *> Version:    1.1 2018.12.16  with GC54FILEPICKER.CPY version 1.1
 *> Changelog:  1.0 first release.
 *>             1.1 a different text message when slection is not on a file name
-*>                 a new parameter field Fip-Path
+*>                 a new parameter Fip-Path at initial call
+*>                 a new parameter Fip-PtrCursor added (cursor position at first call)
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 Configuration Section.
