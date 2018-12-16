@@ -47,6 +47,7 @@
 *> Fip-Dis              1= this row is displayed but not selectable
 *> Fip-Row              list items (move here your list elements (max 999 elemnts in the table)
 *> Fip-Path             starts from this Directory (or current DIR if te fiel is = space)
+*>                      sample value =   C:\AAAAA\BBBBBBBBB
 *> Fip-Selected         Number of element in the table selected by the user
 *> Fip-Key              ScanCode returned to caller at program exit, 0013=Enter,0027=ESACPE
 *> Fip-FileName         File Name (with extension) selected
@@ -117,7 +118,7 @@
                     '                                    ' &
                     '                                    '.
      05 Fip-NoSelTxt-Ele occurs 5 pic x(36).
-  03 Fip-Path       pic x(050) value space.
+  03 Fip-Path       pic x(050) value space.  *> es C:\AAAAAAA\BBBBBB
   *> ***********************************************************************************
   *> FIELDS RETURNED TO CALLER
   *> ***********************************************************************************
