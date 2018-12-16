@@ -18,8 +18,10 @@ program-id. GC54FILEPICKER is initial.
 *>             GC02BOXMEX     call to GC01BOX
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2018 E.Di Lorenzo - LGPL, 3.0 (or greater)
-*> Version:    1.0 2018.12.12  with GC54FILEPICKER.CPY version 1.0
+*> Version:    1.1 2018.12.16  with GC54FILEPICKER.CPY version 1.1
 *> Changelog:  1.0 first release.
+*>             1.1 a different text message when slection is not on a file name
+*>                 a new parameter field Fip-Path
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 Configuration Section.
@@ -65,7 +67,6 @@ WORKING-STORAGE SECTION.
 01  wCmdLine          pic x(0256) VALUE SPACE.
 01  wSTRING           pic x(0060) VALUE SPACE.
 01  ws-KEY            PIC 9(04) VALUE 9999.
-*> 01  ws-Item-Selected  PIC 9(04) VALUE 9999.
 01  wTitle            pic x(80) VALUE ALL '_'.
 01  wDummy            pic x(01) VALUE     ' '.
 
@@ -84,10 +85,23 @@ PROCEDURE DIVISION using FilePicker-Area.
   set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
   set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
-  move 'FILETEMP.TXT'  TO FILETEMP-FSPEC
+  move ' You can''t select this element !    ' to Fip-NoSelTxt-Ele(03)
+
+  move 'FILETEMP.TXT'       TO FILETEMP-FSPEC
   call 'CBL_DELETE_FILE' using FILETEMP-FSPEC
-  move ' DIR > FILETEMP.TXT ' & X'00' TO wCmdLine
-  call 'SYSTEM' using wCmdLine
+
+  if   Fip-Path = space
+       string ' DIR > FILETEMP.TXT ' X'00' INTO wCmdLine
+  else
+       string  ' DIR '            delimited by size
+               Fip-Path           delimited by space
+               ' > FILETEMP.TXT ' delimited by size
+               X'00'              delimited by size  INTO wCmdLine
+       end-string
+  end-if
+
+  *> FIST CALL TO SYSTEM
+  perform Call-System thru Call-SystemEx
   continue.
 
 Loop1.
@@ -141,35 +155,47 @@ Loop1.
   end-if
   move 060      to Fip-WinNumCols
 
-  *> string Fip-Row(4) (15:50)  X'00' into Fip-Box-titDes
   move Fip-Parameters  to Lv-Parameters
   move Fip-Parameters2 to Lv-Parameters2
+  move Fip-NoSelTxt    to Lv-NoSelTxt
   call GC26LISTVIEW using ListView-Area end-call
   move Lv-Selected to Fip-Selected
   move Lv-Key      to Fip-Key
 
-  *> memorizza l'intero percorso in una variabile
-  move Fip-Row(4) (15:100)  to wDIR
+  if Fip-Key = Key-Escape go End-Program end-if
 
-  if Fip-Row(Fip-Selected) (22:5) = '<DIR>'
-       if Fip-Row(Fip-Selected) (37:2) = '..'
+  *> store whole path in memory
+  move Fip-Row(4) (15:100)  to wDIR
+  move space                to wCmdLine
+
+  if Fip-Row(Fip-Selected) (22:5) = '<DIR>'               *> IF SELECTED A DIRECTORY ...
+       if Fip-Row(Fip-Selected) (37:2) = '..'             *> GO DIRECTORY UP
             perform DirectoryUp thru DirectoryUpEx
-            move space to wCmdLine
-            string ' DIR '  delimited by size
-                   wDIR (01:60) delimited by space
-                   ' > FILETEMP.TXT ' X'00'
-                   into wCmdLine
-            call 'SYSTEM' using wCmdLine
-       else
-            move space to wCmdLine
-            string ' DIR '  delimited by size
-                    wDIR (01:60) delimited by space
-                    '\'  delimited by size
+            string ' DIR '            delimited by size
+                   wDIR (01:60)       delimited by space
+                   '\*.*'             delimited by size
+                   ' > FILETEMP.TXT ' delimited by size
+                   X'00'              delimited by size into wCmdLine
+            end-string
+       else                                                *> GO DIRECTORY DOWN
+          if wDir = 'C:\'
+            string ' DIR '             delimited by size
+                    wDIR (01:60)       delimited by space
                     Fip-Row(Fip-Selected) (37:20) delimited by space
-                    ' > FILETEMP.TXT ' & X'00'
-                    inTO wCmdLine
-            call 'SYSTEM' using wCmdLine
+                    ' > FILETEMP.TXT ' delimited by size
+                    X'00'              delimited by size  inTO wCmdLine
+            end-string
+           else
+            string ' DIR '             delimited by size
+                    wDIR (01:60)       delimited by space
+                    '\'                delimited by size
+                    Fip-Row(Fip-Selected) (37:20) delimited by space
+                    ' > FILETEMP.TXT ' delimited by size
+                    X'00'              delimited by size  inTO wCmdLine
+            end-string
+          end-if
        end-if
+       perform Call-System thru Call-SystemEx
        go to Loop1
   end-if
 
@@ -196,3 +222,12 @@ DirectoryUpLoop.
     end-if
     continue.
 DirectoryUpEx. exit.
+
+Call-System.
+       *> display '                                                      ' at 0101
+       *> display wCmdLine at 0101
+       *> accept omitted
+       call 'SYSTEM' using wCmdLine
+       move space to wCmdLine
+       continue.
+Call-SystemEx.
