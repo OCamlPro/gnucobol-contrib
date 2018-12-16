@@ -11,11 +11,13 @@ program-id. GC26LISTVIEW is initial.
 *> Parameters: look at GC26LISTVIEW.CPY
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2018 E.Di Lorenzo - LGPL, 3.0 (or greater)
-*> Version:    1.3 2018.06.02  with GC26LISTVIEW.CPY version 1.2
+*> Version:    1.4 2018.12.16  with GC26LISTVIEW.CPY version 1.3
 *> Changelog:  1.0 first release.
 *>             1.1 Lv-beep added
 *>             1.2 HOME key management (go top of list)
 *>             1.3 added Lv-Dis management (itmes non selectable)
+*>             1.4 Lv-NoSelTxt added  (message "item non available" now is not fixed)
+*>                 Lv-PtrCursor added (cursor position at first call)
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 Configuration Section.
@@ -49,7 +51,7 @@ WORKING-STORAGE SECTION.
 01  wCount       pic  s9(04) value   0.
 01  wBase        pic  s9(04) value   0.
 
-01  wPtrCursor   pic s9999 value 1.
+*> 01  wPtrCursor   pic s9999 value 4.
 01  wPtrTableIni pic s9999 value 1.
 01  wPtrTableEnd pic s9999 value 1.
 
@@ -101,15 +103,15 @@ Loop-Wait-for-a-Key.
      *> CURSOR DOWN: shows next row at bottom of list (scroll up rows)
      *> *************************************************************
      when Key-Pressed = Key-CursDn
-          if wPtrCursor < Lv-WinNumRows
+          if Lv-PtrCursor < Lv-WinNumRows
               *> (RE)DISPLAY ACTUAL CURSOR LINE IN NORMAL COLORS
-              compute wLin = (Lv-r1 + wPtrCursor)
-              compute wInd = wBase + wPtrCursor
+              compute wLin = (Lv-r1 + Lv-PtrCursor)
+              compute wInd = wBase + Lv-PtrCursor
               display Lv-Row(wInd) (wColIni:Lv-WinNumCols) at line wLin col Lv-c1 :BCOL: Lv-bcoN :FCOL: Lv-fcoN
               *> (RE)DISPLAY NEW CURSOR LINE IN DIFFERENT COLORS
-              compute wPtrCursor = wPtrCursor + 1
-              compute wLin = (Lv-r1 + wPtrCursor)
-              compute wInd = wBase + wPtrCursor
+              compute Lv-PtrCursor = Lv-PtrCursor + 1
+              compute wLin = (Lv-r1 + Lv-PtrCursor)
+              compute wInd = wBase + Lv-PtrCursor
               if Lv-fcoSH = 'Y'
                  display Lv-Row(wInd)(wColIni:Lv-WinNumCols) at line wLin col Lv-c1 :BCOL: Lv-bcoS :FCOL: Lv-fcoS highlight
               else
@@ -129,15 +131,15 @@ Loop-Wait-for-a-Key.
      *> CURSOR UP: shows previous row at first line (sroll down rows)
      *> *************************************************************
      when Key-Pressed = Key-CursUp
-          if wPtrCursor > 1
+          if Lv-PtrCursor > 1
               *> (RE)DISPLAY ACTUAL CURSOR LINE IN NORMAL COLORS
-              compute wLin = (Lv-r1 + wPtrCursor)
-              compute wInd = wBase + wPtrCursor
+              compute wLin = (Lv-r1 + Lv-PtrCursor)
+              compute wInd = wBase + Lv-PtrCursor
               display Lv-Row(wInd) (wColIni:Lv-WinNumCols) at line wLin col Lv-c1 :BCOL: Lv-bcoN :FCOL: Lv-fcoN
               *> (RE)DISPLAY NEW CURSOR LINE IN DIFFERENT COLORS
-              compute wPtrCursor = wPtrCursor - 1
-              compute wLin = (Lv-r1 + wPtrCursor)
-              compute wInd = wBase + wPtrCursor
+              compute Lv-PtrCursor = Lv-PtrCursor - 1
+              compute wLin = (Lv-r1 + Lv-PtrCursor)
+              compute wInd = wBase + Lv-PtrCursor
               if Lv-fcoSH = 'Y'
                  display Lv-Row (wInd) (wColIni:Lv-WinNumCols) at line wLin col Lv-c1 :BCOL: Lv-bcoS :FCOL: Lv-fcoS highlight
               else
@@ -191,14 +193,14 @@ Loop-Wait-for-a-Key.
      *> HOME = GO TO TOP OF LIST
      *> *************************************************************
      when Key-Pressed = Key-Home
-          move 1 to wPtrCursor wColIni
+          move 1 to Lv-PtrCursor wColIni
           move 0 to wBase
           perform DisplayList thru DisplayListEx
      *> *************************************************************
      *> ALT-HOME = GO TO TOP OF LIST AND COL = 1
      *> *************************************************************
      *> when Key-Pressed = Key-Alt-Home
-          *> move 1 to wPtrCursor
+          *> move 1 to Lv-PtrCursor
           *> move 0 to wBase
      *> *************************************************************
      *> ENTER
@@ -210,7 +212,7 @@ Loop-Wait-for-a-Key.
              perform CursorHide  thru CursorHideEx
           else                    *> if this item is selectable
              move Key-Pressed    to Lv-Key
-             compute Lv-Selected = wBase + wPtrCursor
+             compute Lv-Selected = wBase + Lv-PtrCursor
              go End-Program
           end-if
      *> *************************************************************
@@ -218,7 +220,7 @@ Loop-Wait-for-a-Key.
      *> *************************************************************
      when Key-Pressed = Key-Escape
           move Key-Pressed    to Lv-Key
-          compute Lv-Selected = wBase + wPtrCursor
+          compute Lv-Selected = wBase + Lv-PtrCursor
           go End-program
      *> *************************************************************
      *> F1 = HELP
@@ -252,8 +254,8 @@ DisplayList.
       display Lv-Row(wInd) (wColIni:Lv-WinNumCols) at line wLin col Lv-c1 :BCOL: Lv-bcoN :FCOL: Lv-fcoN
   end-perform
   *> (RE)DISPLAY CURSOR LINE IN DIFFERENT COLORS
-  compute wLin = (Lv-r1 + wPtrCursor)
-  compute wInd = wBase + wPtrCursor
+  compute wLin = (Lv-r1 + Lv-PtrCursor)
+  compute wInd = wBase + Lv-PtrCursor
   if Lv-fcoSH = 'Y'
       display Lv-Row (wInd) (wColIni:Lv-WinNumCols) at line wLin col Lv-c1 :BCOL: Lv-bcoS :FCOL: Lv-fcoS highlight
   else
@@ -367,12 +369,12 @@ DisplayError.
     move 'N' to Bxm-OkButton Bxm-fcoMH Bxm-3D
     move 'Y' to Bxm-tit
     move ' ERROR ' & x'00' to Bxm-titDes
-    *> 4 rows of 36 cols
-    move '                                    ' & x'00' to bxm-mex(01)
-    move '                                    ' & x'00' to bxm-mex(02)
-    move ' This item cannot be selected !     ' & x'00' to bxm-mex(03)
-    move '                                    ' & x'00' to bxm-mex(04)
-    move '                                    ' & x'00' to bxm-mex(05)
+    *> 5 rows of 36 cols
+    string Lv-NoSeltxt-Ele(01) x'00' into bxm-mex(01)
+    string Lv-NoSeltxt-Ele(02) x'00' into bxm-mex(02)
+    string Lv-NoSeltxt-Ele(03) x'00' into bxm-mex(03)
+    string Lv-NoSeltxt-Ele(04) x'00' into bxm-mex(04)
+    string Lv-NoSeltxt-Ele(05) x'00' into bxm-mex(05)
     CALL GC02BOXMEX USING BY REFERENCE BOXMEX-AREA
     perform ScreenRestore thru ScreenRestoreEx
     continue.
