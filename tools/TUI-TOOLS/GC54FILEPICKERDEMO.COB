@@ -33,24 +33,6 @@ WORKING-STORAGE SECTION.
 01  wTitle            pic x(80) VALUE ALL '_'.
 01  wDummy            pic x(01) VALUE     ' '.
 
-*> Values that may be returned in CRT STATUS (or COB-CRT-STATUS)
-78  K-ENTER       VALUE 0000.
-78  K-UP          VALUE 2003.
-78  K-DOWN        VALUE 2004.
-78  K-LEFT        VALUE 2009.
-78  K-RIGHT       VALUE 2010.
-78  K-ESCAPE      VALUE 2005.
-78  K-TAB         VALUE 2007.
-78  K-BACKTAB     VALUE 2008.
-78  K-PAGEUP      VALUE 2001.
-78  K-PAGEDOWN    VALUE 2002.
-78  K-NO-DATA     VALUE 8000.
-78  K-TIMEOUT     VALUE 8001.
-78  K-F1          VALUE 1001.
-78  K-SHIFT-F1    VALUE 1013.
-78  K-F2          VALUE 1002.
-78  K-SHIFT-F2    VALUE 1014.
-
  COPY 'GC01BOX.CPY'.
  COPY 'GC54FILEPICKER.CPY'.
  COPY 'GC98KEYCODE.CPY'.
@@ -63,15 +45,21 @@ PROCEDURE DIVISION.
   set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'
   set environment 'COB_SCREEN_ESC'        TO 'Y'
   display wDummy at 001001 with blank screen end-display
+
+  move "C:\GC-AWORK"  to Fip-Path
+
   continue.
 
 Loop1.
   perform DisplayBox thru DisplayBoxEx
   perform DisplayParams thru DisplayParamsEx
 
+  move 6 to Fip-PtrCursor
   CALL GC54FILEPICKER using Filepicker-Area end-call
   perform DisplayMess thru DisplayMessEx
   ACCEPT OMITTED
+
+  *> display Fip-Key at 0101 accept omitted
 
   if Fip-Key = Key-Escape
      go End-program
@@ -92,18 +80,17 @@ DisplayMess.
   display " Return key = "               at 024024 :BCOL: 4 :FCOL: 7 highlight
   display     Fip-Key                    at 024038 :BCOL: 4 :FCOL: 7 highlight
   display " File = "                     at 024042 :BCOL: 4 :FCOL: 7 highlight
-  *> display Fip-Row(Fip-Selected) (37:25)  at 024055 :BCOL: 4 :FCOL: 7 highlight
   display Fip-FileName(01:30)            at 024050 :BCOL: 4 :FCOL: 7 highlight
 
       continue.
 DisplayMessEx. Exit.
 
 DisplayParams.
-  display " Position  = " at 002060 :BCOL: 4 :FCOL: 7 highlight
-  display " TabNumRows= " at 003060 :BCOL: 4 :FCOL: 7 highlight
-  display " TabNumCols= " at 004060 :BCOL: 4 :FCOL: 7 highlight
-  display " WinNumRows= " at 005060 :BCOL: 4 :FCOL: 7 highlight
-  display " WinNumCols= " at 006060 :BCOL: 4 :FCOL: 7 highlight
+  display " Position  = "  at 002060 :BCOL: 4 :FCOL: 7 highlight
+  display " TabNumRows= "  at 003060 :BCOL: 4 :FCOL: 7 highlight
+  display " TabNumCols= "  at 004060 :BCOL: 4 :FCOL: 7 highlight
+  display " WinNumRows= "  at 005060 :BCOL: 4 :FCOL: 7 highlight
+  display " WinNumCols= "  at 006060 :BCOL: 4 :FCOL: 7 highlight
   display Fip-r1c1         at 002073 :BCOL: 4 :FCOL: 7 highlight
   display Fip-TabNumRows   at 003073 :BCOL: 4 :FCOL: 7 highlight
   display Fip-TabNumCols   at 004073 :BCOL: 4 :FCOL: 7 highlight
