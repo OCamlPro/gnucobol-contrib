@@ -62,6 +62,10 @@ Let the user to browse on it and pick up a color pair
 GC53CALENDAR.COB - call it to display a calendar on screen. three months on each row 
 User can scroll months and years to display month / year calendar.
 
+GC54FILEPICKER.COB - call it to display a window with a File list on screen.  
+The user can browse vertical and horizontal the file list and select one of the items.
+The user can also select and navigate Up and Down on directories 
+
 GC56DATEPICKER.COB - call it to display a one month calendar (regular or small size)
 You can specify starting date, back/fore colors, size, position, single/double/custom 
 borders, 3D effect and so on. User can browse days, months and years to pick-up a date.
@@ -73,14 +77,14 @@ size, position, single/double/custom borders, 3D effect and so on.
 GC61CALC.COB - call it to display a simple pocket calculator on screen.
 The user can enter numbers and operators. Returns the result of calculation to the caller .
 
-GC71CRUDExxxx.COB - A "CRUDE" (Create, Read, Update, Delete) application. 
+GC71CRUDExxxx.COB - A complete "CRUDE" (Create, Read, Update, Delete) application. 
 It shows you how to create, read(browse), update, delete indexed file records. 
-It is a real application showing also:
-how to accept fields on screen, 
-how to accept numeric fileds with sign and decimals,
-how to pickup a date, 
-how to use indexed files with alternate keys, 
-how to display context sensitive help information (from GC74HELPxxx TOOL). 
+It is a real application (it manage a "master data" file) showing also:
+- how to accept and check alphanumeric fields on screen, 
+- how to accept and check numeric fields with sign and decimals,
+- how to pickup a date, 
+- how to use indexed files with alternate keys, 
+- how to display context sensitive help information (from GC74HELPxxx TOOL). 
 Copying and modifying this programs you can develop a lot of other type of applications. 
 
 GC74HELPxxxx.COB - A "HELP" system. You can write text help files , load it on indexed files.
