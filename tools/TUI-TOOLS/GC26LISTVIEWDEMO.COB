@@ -11,8 +11,9 @@ PROGRAM-ID. GC26LISTVIEWDEMO.
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2018 E.Di Lorenzo - GNU LGPL 3.0 (or greater)
-*> Version:    1.1 2018.03.31
+*> Version:    1.1 2018.12.16
 *> Changelog:  1.0 first release.
+*>             1.1 Lv-PtrCursor added (cursor position at first call)
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -128,6 +129,7 @@ Displaylist.
   move 81 to Lv-TabNumCols
   move 08 to Lv-WinNumRows
   move 50 to Lv-WinNumCols
+  move 03 to Lv-PtrCursor
   perform DisplayParams thru DisplayParamsEx
   CALL GC26LISTVIEW using ListView-Area end-call
   perform DisplayMess thru DisplayMessEx
@@ -162,6 +164,7 @@ Displaylist.
   move 81 to Lv-TabNumCols
   move 08 to Lv-WinNumRows
   move 50 to Lv-WinNumCols
+  move 01 to Lv-PtrCursor
   perform DisplayParams thru DisplayParamsEx
   CALL GC26LISTVIEW using ListView-Area end-call
   perform DisplayMess thru DisplayMessEx
