@@ -45,7 +45,7 @@
 
 // includes independent from OS
 //
-#include <string.h>
+#include <string>
 #include <set>
 #include <stdio.h>
 
