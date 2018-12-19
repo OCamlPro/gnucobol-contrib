@@ -1,3 +1,4 @@
+EB   Belgium
 EBAW Antwerp – Antwerp/Deurne
 EBBR Zaventem – Brussels
 EBCI Charleroi - Brussels
@@ -114,6 +115,8 @@ EBWZ Wingene/Zwevezele Heliport – Wingene
 EBZI Zingem Heliport – Zingem
 EBZM Zomergem Heliport – Zomergem
 EBZO Zonnebeke/Zandvoorde Heliport – Zandvoorde
+
+ED   Germany
 EDAC Leipzig-Altenburg – Altenburg/Leipzig
 EDAD Dessau – Dessau
 EDAH Heringsdorf (Heringsdorf) – Heringsdorf
@@ -244,6 +247,8 @@ EDXB Heide-Busum – Heide
 EDXH Heligoland – Heligoland
 EDXM St. Michaelisdonn – St. Michaelisdonn
 EDXW Sylt – Westerland, Sylt
+
+ET   Germany
 ETAD Spangdahlem – Spangdahlem
 ETAR Ramstein – Ramstein
 ETEJ Bamberg-Breitenau – Bamberg since 2012 in civilian use (EDQA)
@@ -263,7 +268,7 @@ ETND Diepholz – Diepholz
 ETNG NATO Geilenkirchen – Geilenkirchen
 ETNH Hohn – Hohn
 ETNJ Jever – Schortens
-ETNK Wahn military part of Cologne Bonn – Cologne/Bonn
+ETNK Wahn Mil part of Cologne Bonn – Cologne/Bonn
 ETNL Rostock Laage – Rostock
 ETNN Norvenich – Norvenich
 ETNP Rheine-Hopsten – Rheine
@@ -630,7 +635,7 @@ EGYE RAF Barkston Heath – Grantham
 EGYM RAF Marham – Marham
 EGYP RAF Mount Pleasant – Falkland Islands
 
-EH   Holland
+EH   Netherlands
 EHAL Ameland – Ballum
 EHAM Amsterdam Schiphol – Haarlemmermeer, near Amsterdam
 EHBD Budel – Weert
@@ -666,7 +671,7 @@ EHWO Woensdrecht – Woensdrecht
 EHYB Ypenburg – The Hague (closed 1991)
 EHYP IJmuiden Heliport – IJmuiden
 
-EI   Southern Ireland
+EI   Ireland
 EIAB Abbeyshrule – Abbeyshrule, County Longford
 EIBN Bantry – Bantry, County Cork
 EIBR Birr – Birr, County Offaly
@@ -725,6 +730,8 @@ EKSY Skúvoy Heliport – Faroe Islands
 EKSR Stóra Dímun Heliport – Faroe Islands
 EKSO Svínoy Heliport – Faroe Islands
 EKTB Torshavn/Bodanes Heliport – Faroe Islands
+
+EL   Luxembourg
 ELEA Centre Hospitalier Emile Mayrisch Heliport – Esch-sur-Alzette
 ELET Saint-Louis Hospital Heliport – Ettelbruck
 ELLC Centre Hospitalier de Luxembourg Heliport – Luxembourg City
@@ -734,6 +741,7 @@ ELLZ Clinique Sainte-Therese Heliport – Luxembourg City
 ELNT Noertrange (Wiltz-Noertrange) – Noertrange/Wiltz
 ELUS Useldange – Useldange
 
+EN   Norway
 ENAL Alesund, Vigra – Alesund, More og Romsdal
 ENAN Andoya, Andenes – Andenes, Nordland
 ENAS Ny-Alesund, Hamnerabben – Ny-Alesund, Svalbard
@@ -816,6 +824,7 @@ ENVD Vadso – Vadso, Finnmark
 ENVR Varoy Heliport – Varoy, Nordland
 ENZV Stavanger, Sola – Stavanger, Rogaland
 
+EP   Poland
 EPAR Heliport Arlamow - Arlamow
 EPBA Bielsko-Biala Aleksandrowice – Bielsko-Biala
 EPBC Warszawa-Babice – Warsaw
@@ -883,7 +892,7 @@ EPZG Zielona Gora-Babimost – Zielona Gora
 EPZP Zielona Gora-Przylep – Zielona Gora
 EPZR Zar – Miedzybrodzie Zywieckie
 
-
+ES   Sweden
 ESCF Malmen – Linkoping
 ESCK Bravalla (closed) – Norrkoping
 ESCM Arna (F 16) – Uppsala
@@ -985,8 +994,8 @@ ESNU Umea – Umea
 ESNV Vilhelmina – Vilhelmina
 ESNX Arvidsjaur – Arvidsjaur
 ESNY Soderhamn – Soderhamn
-ESNZ Ostersund (F4 Froson) – ostersund
-ESOE Orebro – orebro
+ESNZ Ostersund (F4 Froson) – Ostersund
+ESOE Orebro – Orebro
 ESOH Hagfors – Hagfors
 ESOK Karlstad – Karlstad
 ESOL Lemstanas – Storvik
@@ -1060,7 +1069,7 @@ EVDA Daugavpils – Daugavpils
 EVEA Jelgava – Jelgava
 EVFA Vaiņode – Vaiņode
 EVGA Lielvarde – Lielvarde
-EVHB Baltijas Helikopters heliport – Nakotne
+EVHB Baltijas Heliport – Nakotne
 EVIA Cīrava – Cīrava
 EVJA Jurmala – Tukums
 EVJC Centra Jaunzemji Heliport – Nakotne
@@ -1076,10 +1085,12 @@ EVRA Rīga – Rīga
 EVRC Rumbula – Riga
 EVRS Spilve – Riga
 
-EV   tvia
+EV   Latvia
 EVSM M-Sola Heliport – Lielvarde
 EVTE Talsi – Talsi
 EVVA Ventspils – Ventspils
+
+EY   Lithuania
 EYAL Alytus – Alytus
 EYBI Birzai – Birzai
 EYJB Jurbarkas – Jurbarkas
@@ -1087,7 +1098,7 @@ EYKA Kaunas – Kaunas
 EYKD Kedainiai – Kedainiai
 EYKG Kaunas/Gamykla – Kaunas
 EYKL Klaipeda – Klaipeda
-EYKR Kazlų Ruda (Military) – Kazlų Ruda
+EYKR Kazlų Ruda (Mil) – Kazlų Ruda
 EYKS S. Darius and S. Girenas – Kaunas
 EYKT Kartena – Kartena
 EYMA Tirksliai – Tirksliai
@@ -1099,21 +1110,21 @@ EYPA Palanga – Palanga
 EYPI Panevezys/Istra – Panevezys
 EYPK Pikeliskes – Pikeliskes
 EYPN Panevezys – Panevezys
-EYPP Pajuostis (Military) – Pajuostis
+EYPP Pajuostis (Mil) – Pajuostis
 EYPR Pociunai – Pociunai
 EYRK Rokiskis – Rokiskis
 EYRU Rukla – Jonava
 EYSA Siauliai– Siauliai
 EYSB Barysiai– Barysiai
 EYSE Seduva – Seduva
-EYSI Silute (Military) – Silute
+EYSI Silute (Mil) – Silute
 EYTR Taurage – Taurage
 EYTL Telsiai – Telsiai
 EYUT Utena – Utena
 EYVA Vilnius (MOT/CAD)
 EYVC Vilnius (ACC/FIC/COM/RCC)
 EYVI Vilnius – Vilnius
-EYVK Kyviskes (Military) – Kyviskes
+EYVK Kyviskes (Mil) – Kyviskes
 EYVL Vilnius (FIR)
 EYVN Vilnius (NOF/AIS)
 EYVP Paluknys – Paluknys

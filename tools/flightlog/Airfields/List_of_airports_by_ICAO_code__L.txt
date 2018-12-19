@@ -11,34 +11,34 @@ LAVL – Vlore – Vlore (Vlora)
 
 LB – Bulgaria
 LBBG – Burgas Int'l (Sarafovo) – Burgas
-LBBR – Ravnets (military) – Ravnets, Burgas Province
+LBBR – Ravnets (Mil) – Ravnets, Burgas Province
 LBDB – Dolna Banya (private) – Dolna Bania
 LBGO – Gorna Oryahovitsa – Gorna Oryahovitsa
 LBHS – Haskovo Malevo – Haskovo
-LBIA – Bezmer (military) – Bezmer, Yambol Province
+LBIA – Bezmer (Mil) – Bezmer, Yambol Province
 LBKJ – Kainardzha – Kardzhali
 LBKL – Kazanlak – Ovoshtnik, Kazanlak
 LBLS – Lesnovo (private) – Lesnovo
-LBMG – Gabrovnitsa (military) – Gabrovnitsa (Gabrovnica)
+LBMG – Gabrovnitsa (Mil) – Gabrovnitsa (Gabrovnica)
 LBMO – Montana – Montana
 LBPD – Plovdiv Int'l – Plovdiv
-LBPG – Graf Ignatievo (military) – Graf Ignatievo / Plovdiv
+LBPG – Graf Ignatievo (Mil) – Graf Ignatievo / Plovdiv
 LBPK – Pernik
-LBPL – Dolna Mitropolia (military) – Dolna Mitropoliia / Pleven
+LBPL – Dolna Mitropolia (Mil) – Dolna Mitropoliia / Pleven
 LBPR – Primorsko (private) – Primorsko
 LBPS – Cheshnigirovo – Sadovo
 LBRD – Erden (private) – Erden
 LBRS – Ruse – Rousse
-LBSD – Dobroslavtsi (military) – Dobroslavtsi (Dobroslavci)
+LBSD – Dobroslavtsi (Mil) – Dobroslavtsi (Dobroslavci)
 LBSF – Sofia Int'l (Vrazhdebna) – Sofia
-LBSL – Sliven (military) – Sliven
-LBSS – Silistra (military) – Silistra
+LBSL – Sliven (Mil) – Sliven
+LBSS – Silistra (Mil) – Silistra
 LBSZ – Stara Zagora Int'l – Stara Zagora
-LBTG – Bukhovtsi (military) – Targovishte
+LBTG – Bukhovtsi (Mil) – Targovishte
 LBTV – Voden
-LBVD – Vidin (military) – Vidin
-LBWB – Balchik (military) – Balchik
-LBWC – Chaika Heliport (military) – Varna
+LBVD – Vidin (Mil) – Vidin
+LBWB – Balchik (Mil) – Balchik
+LBWC – Chaika Heliport (Mil) – Varna
 LBWK – Kalimanci / Varna
 LBWN – Varna Int'l – Varna
 
@@ -105,7 +105,7 @@ LEJR – Jerez – Cadiz
 LELC – Murcia-San Javier – Murcia
 LELL – Sabadell – Barcelona
 LELN – Leon – Leon
-LELO – Logrono-Agoncillo (military) – La Rioja
+LELO – Logrono-Agoncillo (Mil) – La Rioja
 LEMD – Adolfo Suarez Madrid-Barajas – Madrid
 LEMG – Malaga-Costa del Sol – Malaga
 LEMH – Menorca – Menorca, Islas Baleares
@@ -147,7 +147,6 @@ LFAP – Rethel - Perthes – Rethel
 LFAQ – Albert – Picardie – Albert
 
 LF – France
-
 LFAR – Montdidier – Montdidier
 LFAS – Falaise - Monts d'Eraines – Falaise
 LFAT – Le Touquet-Paris-Plage – Le Touquet
@@ -577,7 +576,7 @@ LFYR – Romorantin Pruniers – Romorantin
 LFYS – Sainte-Leocadie – Sainte-Leocadie
 LFVM – Miquelon – Miquelon
 LFVP – Saint Pierre – Saint-Pierre
-LGAD – Andravida – Andravida (military)
+LGAD – Andravida – Andravida (Mil)
 
 LG – Greece
 LGAG – Agrinion - Agrinion
@@ -586,7 +585,7 @@ LGAT – Ellinikon Int'l (closed in 2001) – Athens
 LGAV – Athens Int'l, "Eleftherios Venizelos" – Athens (Athina)
 LGAX – Alexandria (Greece) – Alexandreia, Greece
 LGBL – Int'l of Central Greece – Nea Anchialos/Volos
-LGEL - Elfesis - Elfesis/Eleusis(military)
+LGEL - Elfesis - Elfesis/Eleusis(Mil)
 LGEP - Epitalio - Epitalio (closed)
 LGHI – Chios Island National, "Omiros" – Chios
 LGHL - Porto Cheli - Porto Cheli (closed in 2006, private), Argolis
@@ -598,8 +597,8 @@ LGKC – Kithira Island National ""Alexandros Aristotelous Onassis" –K ythira 
 LGKF – Kefalonia Island Int'l "Pollatou" – Kefalonia (Kefallinia, Cephallonia)
 LGKJ – Kastelorizo Island Public, "Megisti" – Kastelorizo
 LGKL – Kalamata Int'l, "Captain Vassilis Constantakopoulos" – Kalamata
-LGKM – Amigdaleon – Kavala(military, Closed)
-LGKN - Kotroni - Marathon(military)
+LGKM – Amigdaleon – Kavala(Mil, Closed)
+LGKN - Kotroni - Marathon(Mil)
 LGKO – Kos Island Int'l, "Ippokratis" (Hippocrates) – Kos
 LGKP – Karpathos Island National – Karpathos
 LGKR – Ioannis Kapodistrias Int'l – Corfu (Kerkyra, Kerkira)
@@ -609,8 +608,8 @@ LGKY – Kalymnos Island National, "Pothia" – Kalimnos
 LGKZ – Kozani National, "Filippos" – Kozani
 LGLE – Leros Municipal, "Dodekanisos" – Leros
 LGLM – Lemnos Int'l, "Ifaestos" – Lemnos (Limnos)
-LGLR – Larissa National, "Thessaly" – Larissa (military)
-LGMG – Megara – Megara (military and national general aviation only)
+LGLR – Larissa National, "Thessaly" – Larissa (Mil)
+LGMG – Megara – Megara (Mil and national general aviation only)
 LGMK – Mykonos Island National, "Dilos" – Mykonos (Mikonos)
 LGML – Milos Island National, "Afroditi" – Milos
 LGMT – Mytilene Int'l, "Odysseas Elytis" – Mytilene (Mitilini), Lesbos
@@ -618,24 +617,24 @@ LGNX – Naxos Island National, "Apollon" – Naxos
 LGPA – Paros National, "Panteleou" – Paros
 LGPL – Astypalaia Island National, "Panagia" – Astypalaia
 LGPZ – Aktion National (Lefkada) – Preveza
-LGRD - Rhodes Maritsa - Maritsa, Rhodes (military)
+LGRD - Rhodes Maritsa - Maritsa, Rhodes (Mil)
 LGRP – Rhodes Int'l, "Diagoras" – Rhodes (Rhodos, Rodos)
 LGRX – Araxos, "Agamemnon" – Araxos
 LGSA – Chania Int'l, "Ioannis Daskalogiannis" – Chania, Crete
-LGSD – Sedes - Sedes, Greece (military)
+LGSD – Sedes - Sedes, Greece (Mil)
 LGSK – Skiathos Island National, "Alexandros Papadiamantis" – Skiathos
 LGSM – Samos Int'l, "Aristarchos" – Samos
 LGSO – Syros Island National, "Dimitrios Vikelas" – Syros (Siros)
 LGSP - Sparti - Sparti, Laconia (closed, may be open again by the Municipality of Sparti)
 LGSR – Santorini (Thira) National, "Zefiros" – Santorini (Thira)
 LGST – Sitia Public – Sitia, "Vitsentzos Kornaros" Crete
-LGSV – Stefanovikio - Stefanovikeio(military)
+LGSV – Stefanovikio - Stefanovikeio(Mil)
 LGSY – Skyros Island National, "Aegeon" – Skyros (Skiros)
-LGTG - Tanagra - Tanagra(military)
+LGTG - Tanagra - Tanagra(Mil)
 LGTL - Kasteli - Kastelli (closed)
-LGTP - Tripolis - Tripoli (military, may be open for public after 2015)
+LGTP - Tripolis - Tripoli (Mil, may be open for public after 2015)
 LGTS – Thessaloniki Int'l, "Makedonia" – Thessaloniki
-LGTT - Tatoi - Tatoi (military)
+LGTT - Tatoi - Tatoi (Mil)
 LGZA – Zakynthos Int'l, "Dionysios Solomos" – Zakynthos (Zakinthos)
 
 LH – Hungary
@@ -679,7 +678,7 @@ LIBC – Crotone (Sant'Anna) – Crotone
 LIBD – Bari Karol Wojtyla Int'l – Bari
 LIBF – Gino Lisa – Foggia
 LIBG – Grottaglie – Taranto
-LIBN – Lecce (military) – Lecce
+LIBN – Lecce (Mil) – Lecce
 LIBP – Abruzzo Int'l – Pescara
 LIBR – Casale – Brindisi
 LIBV – Gioia del Colle – Gioia del Colle, Bari
@@ -740,7 +739,7 @@ LIPF – Ferrara – Ferrara
 LIPH – Treviso (Sant'Angelo) – Treviso
 LIPI – Rivolto Air Force Base – Rivolto / Udine
 LIPK – Forlì (L. Ridolfi) – Forlì
-LIPL – Ghedi (military) – Ghedi, Brescia
+LIPL – Ghedi (Mil) – Ghedi, Brescia
 LIPM – Modena Marzaglia – Modena
 LIPN – Boscomantico – Verona
 LIPO – Brescia – Brescia
@@ -758,7 +757,7 @@ LIQL – Tassignano – Lucca
 LIQN – Rieti (G. Ciuffelli) – Rieti
 LIQQ - Serristori - Manciano la Misericordia - Castiglion Fiorentino - Province of Arezzo
 LIQS – Siena – Siena
-LIQW – Luni (military/Navy) – Sarzana, Genoa
+LIQW – Luni (Mil/Navy) – Sarzana, Genoa
 LIRA – Ciampino (Giovan Battista Pastine) – Rome
 LIRC – Centocelle Air Force Base – Centocelle, Rome
 LIRE – Pratica di Mare Air Force Base – Pomezia, Rome
@@ -766,8 +765,8 @@ LIRF – Leonardo da Vinci Int'l (Fiumicino Int'l) – Rome
 LIRG – Guidonia Air Force Base – Guidonia Montecelio, Rome
 LIRI – Salerno Costa d'Amalfi – Salerno
 LIRJ – Marina di Campo – Marina di Campo, Elba
-LIRL – Latina (military) – Latina
-LIRM – Grazzanise (military) – Caserta
+LIRL – Latina (Mil) – Latina
+LIRM – Grazzanise (Mil) – Caserta
 LIRN – Naples Int'l (Capodichino) – Naples
 LIRP – Galileo Galilei (Pisa Int'l) – Pisa
 LIRQ – Amerigo Vespucci (Florence) – Florence (Firenze)
@@ -929,7 +928,7 @@ LOWL – Linz (blue danube linz) – Linz, Upper Austria
 LOWS – Salzburg (Salzburg W.A. Mozart) – Salzburg, Salzburg
 LOWW – Vienna Int'l (Wien-Schwechat) – Schwechat, Lower Austria
 LOXA – Aigen-Fiala Fernbrugg – Aigen im Ennstal, Styria
-LOXE – Allentsteig Military –
+LOXE – Allentsteig Mil –
 LOXG – Graz-Nittner at Graz
 LOXL – Linz-Vogler at Linz
 LOXN – Wiener Neustadt West – Wiener Neustadt, Lower Austria
@@ -999,7 +998,7 @@ LQMJ – Mostar Jasenica – Mostar
 LQMO – Mostar Int'l – Mostar
 LQPD – Prijedor – Prijedor
 LQSA – Sarajevo Int'l – Sarajevo
-LQSV – Sarajevo Military – Sarajevo
+LQSV – Sarajevo Mil – Sarajevo
 LQTG – Tomislavgrad – Tomislavgrad
 LQTR – Novi Travnik – Novi Travnik
 LQTZ – Tuzla Int'l – Tuzla
@@ -1044,13 +1043,13 @@ LSGT – Gruyeres – Gruyeres
 LSGY – Yverdon-les-Bains – Yverdon-les-Bains
 LSHC – Collombey-Muraz Heliport – Collombey-Muraz
 LSHG – Gampel Heliport – Gampel
-LSMA – Alpnach – Alpnach (military)
-LSMD – Dubendorf – Dubendorf (military)
-LSME – Emmen – Emmen (military)
+LSMA – Alpnach – Alpnach (Mil)
+LSMD – Dubendorf – Dubendorf (Mil)
+LSME – Emmen – Emmen (Mil)
 LSMF – Mollis - Mollis
-LSMM – Meiringen – Meiringen (military)
-LSMP – Payerne – Payerne (military)
-LSMS – Sion – Sion (military)
+LSMM – Meiringen – Meiringen (Mil)
+LSMP – Payerne – Payerne (Mil)
+LSMS – Sion – Sion (Mil)
 LSPA – Amlikon – Amlikon
 LSPD – Dittingen – Dittingen
 LSPF – Schaffhausen – Schaffhausen

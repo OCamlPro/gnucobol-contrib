@@ -164,6 +164,9 @@ GUSA – Sangaredi – Sangaredi, Guinea
 GUSB – Sambailo – Koundara
 GUSI – Siguiri – Siguiri
 GUXD – Kankan – Kankan
+
+
+GV - Cape Verde
 GVAC – Amílcar Cabral – Espargos, Sal
 GVAN – Agostinho Neto (closed) – Ponta do Sol, Santo Antao
 GVBA – Rabil – Rabil, Boa Vista

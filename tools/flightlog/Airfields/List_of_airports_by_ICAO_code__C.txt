@@ -1,409 +1,410 @@
-CYAB (YAB) Arctic Bay - Arctic Bay, Nunavut
-CYAC (YAC) Cat Lake - Cat Lake First Nation, Ontario
+CY - Canada
+CYAB Arctic Bay - Arctic Bay, Nunavut
+CYAC Cat Lake - Cat Lake First Nation, Ontario
 CYAD La Grande-3 - La Grande-3 generating station, Quebec
-CYAG (YAG) Fort Frances Municipal - Fort Frances, Ontario
-CYAH (YAH) La Grande-4 - La Grande-4 generating station, Quebec
-CYAL (YAL) Alert Bay - Alert Bay, British Columbia
-CYAM (YAM) Sault Ste. Marie - Sault Ste. Marie, Ontario
-CYAQ (XKS) Kasabonika - Kasabonika Lake First Nation, Ontario
-CYAS (YKG) Kangirsuk - Kangirsuk, Quebec
-CYAT (YAT) Attawapiskat - Attawapiskat First Nation, Ontario
+CYAG Fort Frances Municipal - Fort Frances, Ontario
+CYAH La Grande-4 - La Grande-4 generating station, Quebec
+CYAL Alert Bay - Alert Bay, British Columbia
+CYAM Sault Ste. Marie - Sault Ste. Marie, Ontario
+CYAQ Kasabonika - Kasabonika Lake First Nation, Ontario
+CYAS Kangirsuk - Kangirsuk, Quebec
+CYAT Attawapiskat - Attawapiskat First Nation, Ontario
 CYAU Liverpool/South Shore Regional - Liverpool, Nova Scotia
 CYAV St. Andrews (Winnipeg/St. Andrews) - Rural Municipality of St. Andrews, Manitoba
-CYAW (YAW) CFB Shearwater (Halifax/Shearwater Heliport) - Shearwater, Nova Scotia
+CYAW CFB Shearwater (Halifax/Shearwater Heliport) - Shearwater, Nova Scotia
 CYAX Lac du Bonnet - Lac du Bonnet, Manitoba
-CYAY (YAY) St. Anthony - St. Anthony, Newfoundland and Labrador
-CYAZ (YAZ) Tofino/Long Beach - Tofino, British Columbia
+CYAY St. Anthony - St. Anthony, Newfoundland and Labrador
+CYAZ Tofino/Long Beach - Tofino, British Columbia
 CYB3 Nelson/Baylock Estate Heliport - Nelson, British Columbia, British Columbia
 CYBA Banff - Banff, Alberta
-CYBB (YBB) Kugaaruk - Kugaaruk, Nunavut
-CYBC (YBC) Baie-Comeau - Baie-Comeau, Quebec
-CYBD (YBD) Bella Coola - Bella Coola, British Columbia
-CYBE (YBE) Uranium City - Uranium City, Saskatchewan
+CYBB Kugaaruk - Kugaaruk, Nunavut
+CYBC Baie-Comeau - Baie-Comeau, Quebec
+CYBD Bella Coola - Bella Coola, British Columbia
+CYBE Uranium City - Uranium City, Saskatchewan
 CYBF Bonnyville - Bonnyville, Alberta
-CYBG (YBG) CFB Bagotville (Bagotville) - La Baie, Quebec
-CYBK (YBK) Baker Lake - Baker Lake, Nunavut
-CYBL (YBL) - Campbell River - Campbell River, British Columbia
-CYBN - CFB Borden (Borden Heliport) - Ontario
-CYBP - Brooks Regional Aerodrome - Brooks, Alberta
-CYBQ (XTL) - Tadoule Lake - Tadoule Lake, Manitoba
-CYBR (YBR) - Brandon Municipal (McGill Field) - Brandon, Manitoba
-CYBT (YBT) - Brochet - Brochet, Manitoba
-CYBU (YBU) - Nipawin - Nipawin, Saskatchewan
-CYBV (YBV) - Berens River - Berens River, Manitoba
-CYBW (YBW) - Calgary/Springbank (Springbank) - Springbank, Alberta
-CYCC (YCC) - Cornwall Regional - Cornwall, Ontario
-CYCD (YCD) - Nanaimo - Nanaimo, British Columbia
-CYCE (YCE) - Centralia/James T. Field Memorial Aerodrome - Centralia, Ontario
-CYCG (YCG) - West Kootenay Regional - Castlegar, British Columbia
-CYCH (YCH) - Miramichi - Miramichi, New Brunswick
-CYCK (XCM) - Chatham-Kent - Chatham-Kent, Ontario
-CYCL (YCL) - Charlo - Charlo, New Brunswick
-CYCN (YCN) - Cochrane Aerodrome - Cochrane, Ontario
-CYCO (YCO) - Kugluktuk - Kugluktuk, Nunavut
-CYCP (YCP) - Blue River - Blue River, British Columbia
-CYCQ (YCQ) - Chetwynd - Chetwynd, British Columbia
-CYCR (YCR) - Cross Lake (Charlie Sinclair Memorial) - Cross Lake, Manitoba
-CYCS (YCS) - Chesterfield Inlet - Chesterfield Inlet, Nunavut
-CYCT - Coronation - Coronation, Alberta
-CYCW (YCW) - Chilliwack - Chilliwack, British Columbia
-CYCX (YCX) - CFB Gagetown (Gagetown Heliport) - Oromocto, New Brunswick
-CYCY (YCY) - Clyde River - Clyde River, Nunavut
-CYCZ (YCZ) - Fairmont Hot Springs - Fairmont Hot Springs, British Columbia
-CYDA (YDA) - Dawson City - Dawson City, Yukon
-CYDB (YDB) - Burwash - Burwash Landing, Yukon
-CYDC - Princeton Aerodrome - Princeton, British Columbia
-CYDF (YDF) - Deer Lake Regional - Deer Lake, Newfoundland and Labrador
-CYDH - Ottawa/Dwyer Hill Heliport - Ottawa, Ontario
-CYDL (YDL) - Dease Lake - Dease Lake, British Columbia
-CYDM (YDM) - Ross River - Ross River, Yukon
-CYDN (YDN) - Lt. Col W.G. (Billy) Barker VC - Dauphin, Manitoba
-CYDO (YDO) - Dolbeau-Saint-Félicien - Dolbeau-Mistassini, Quebec
-CYDP (YDP) - Nain - Nain, Newfoundland and Labrador
-CYDQ (YDQ) - Dawson Creek - Dawson Creek, British Columbia
-CYEA - Empress - Empress, Alberta
-CYED (YED) - CFB Edmonton (Edmonton/Namao Heliport) - Edmonton, Alberta
-CYEE (YEE) - Midland/Huronia - Midland, Ontario
-CYEG (YEG) - Edmonton Int'l - Nisku, Alberta
-CYEK (YEK) - Arviat - Arviat, Nunavut
-CYEL (YEL) - Elliot Lake Municipal - Elliot Lake, Ontario
-CYEM (YEM) - Manitowaning/Manitoulin East Municipal - Manitowaning, Ontario
-CYEN (YEN) - Estevan Regional Aerodrome - Estevan, Saskatchewan
-CYER (YER) - Fort Severn - Fort Severn First Nation, Ontario
-CYES - Edmundston - Edmundston, New Brunswick
-CYET (YET) - Edson - Edson, Alberta
-CYEU (YEU) - Eureka Aerodrome - Eureka, Nunavut
-CYEV (YEV) - Inuvik (Mike Zubko) - Inuvik, Northwest Territories
-CYEY (YEY) - Amos/Magny - Amos, Quebec
-CYFA (YFA) - Fort Albany - Fort Albany First Nation, Ontario
-CYFB (YFB) - Iqaluit - Iqaluit, Nunavut
-CYFC (YFC) - Fredericton Int'l - Fredericton, New Brunswick
-CYFD (YFD) - Brantford - Brantford, Ontario
-CYFE (YFE) - Forestville - Forestville, Quebec
-CYFH (YFH) - Fort Hope - Eabametoong First Nation, Ontario
-CYFI (YFI) - Fort MacKay/Firebag Aerodrome - Fort McKay, Alberta
-CYFJ - Mont Tremblant Int'l (La Mazaca) - Mont-Tremblant, Quebec
-CYFO (YFO) - Flin Flon - Flin Flon, Manitoba
-CYFR (YFR) - Fort Resolution - Fort Resolution, Northwest Territories
-CYFS (YFS) - Fort Simpson - Fort Simpson, Northwest Territories
-CYFT (YMN) - Makkovik - Makkovik, Newfoundland and Labrador
-CYG2 - Parkhill (Yellow Gold) Aerodrome - Parkhill, Ontario
-CYGB (YGB) - Texada/Gillies Bay - Texada Island, British Columbia
-CYGD (YGD) - Goderich - Goderich, Ontario
-CYGE (YGE) - Golden - Golden, British Columbia
-CYGH (YGH) - Fort Good Hope - Fort Good Hope, Northwest Territories
-CYGK (YGK) - Kingston/Norman Rogers (Kingston) - Kingston, Ontario
-CYGL (YGL) - La Grande Rivière - Radisson, Quebec
-CYGM (YGM) - Gimli Industrial Park - Gimli, Manitoba
-CYGO (YGO) - Gods Lake Narrows - Gods Lake Narrows, Manitoba
-CYGP (YGP) - Michel-Pouliot Gaspé (Gaspé (Michel-Pouliot)) - Gaspé, Quebec
-CYGQ (YGQ) - Geraldton (Greenstone Regional) - Greenstone, Ontario
-CYGR (YGR) - Îles-de-la-Madeleine - Magdalen Islands, Quebec
-CYGT (YGT) - Igloolik - Igloolik, Nunavut
-CYGV (YGV) - Havre Saint-Pierre - Havre-Saint-Pierre, Quebec
-CYGW (YGW) - Kuujjuarapik - Kuujjuarapik, Quebec
-CYGX (YGX) - Gillam - Gillam, Manitoba
-CYGZ (YGZ) - Grise Fiord - Grise Fiord, Nunavut
-CYHA (YQC) - Quaqtaq - Quaqtaq, Quebec
-CYHB (YHB) - Hudson Bay - Hudson Bay, Saskatchewan
-CYHC (CXH) - Vancouver Harbour Flight Centre (Vancouver Harbour Water , Vancouver Coal Harbour
-Seaplane Base) - Vancouver, British Columbia
-CYHD (YHD) - Dryden Regional - Dryden, Ontario
-CYHE (YHE) - Hope Aerodrome - Hope, British Columbia
-CYHF (YHF) - Hearst (René Fontaine) Municipal - Hearst, Ontario
-CYHH (YNS) - Nemiscau - Nemaska, Quebec
-CYHI (YHI) - Ulukhaktok/Holman - Ulukhaktok, Northwest Territories
-CYHK (YHK) - Gjoa Haven - Gjoa Haven, Nunavut
-CYHM (YHM) - John C. Munro Hamilton Int'l (Hamilton) - Hamilton, Ontario
-CYHN (YHN) - Hornepayne Municipal - Hornepayne, Ontario
-CYHO (YHO) - Hopedale - Hopedale, Newfoundland and Labrador
-CYHR (YHR) - Chevery - Chevery, Quebec
-CYHT (YHT) - Haines Junction - Haines Junction, Yukon
-CYHU (YHU) - Montreal Saint-Hubert Longueuil - Longueuil, Quebec
-CYHY (YHY) - Hay River/Merlyn Carter - Hay River, Northwest Territories
-CYHZ (YHZ) - Halifax Stanfield Int'l - Halifax, Nova Scotia
-CYIB (YIB) - Atikokan Municipal - Atikokan, Ontario
-CYID (YDG) - Digby/Annapolis Regional - Digby, Nova Scotia
-CYIF (YIF) - Saint-Augustin - Saint-Augustin, Quebec
-CYIK (YIK) - Ivujivik - Ivujivik, Quebec
-CYIO (YIO) - Pond Inlet - Pond Inlet, Nunavut
-CYIV (YIV) - Island Lake - Island Lake, Manitoba
-CYJA - Jasper - Jasper, Alberta
-CYJF (YJF) - Fort Liard - Fort Liard, Northwest Territories
-CYJM (YJM) - Fort St. James (Perison) - Fort St. James, British Columbia
-CYJN (YJN) - Saint-Jean (Saint-Jean-sur-Richelieu) -S aint-Jean-sur-Richelieu, Quebec
-CYJP - Fort Providence - Fort Providence, Northwest Territories
-CYJQ (ZEL) - Denny Island Aerodrome - Bella Bella, British Columbia
-CYJT (YJT) - Stephenville Int'l - Stephenville, Newfoundland and Labrador
-CYKA (YKA) - Kamloops - Kamloops, British Columbia
-CYKC - Collins Bay - Collins Bay, Saskatchewan
-CYKD (LAK) - Aklavik/Freddie Carmichael - Aklavik, Northwest Territories
-CYKF (YKF) - Kitchener/Waterloo Regional - Regional Municipality of Waterloo, Ontario
-CYKG - Kangiqsujuaq (Wakeham Bay) - Kangiqsujuaq, Quebec
-CYKJ (YKJ) - Key Lake - Key Lake mine, Saskatchewan
-CYKL (YKL) - Schefferville - Schefferville, Quebec
-CYKM (YKD) - Kincardine Municipal - Kincardine, Ontario
-CYKO (AKV) - Akulivik - Akulivik, Quebec
-CYKQ (YKQ) - Waskaganish - Waskaganish, Quebec
-CYKX (YKX) - Kirkland Lake - Kirkland Lake, Ontario
-CYKY (YKY) - Kindersley Regional - Kindersley, Saskatchewan
-CYKZ (YKZ) - Buttonville Municipal (Toronto/Buttonville Municipal) -B uttonville, Ontario
-CYLA (YPJ) - Aupaluk - Aupaluk, Quebec
-CYLB - Lac La Biche - Lac La Biche, Alberta
-CYLC (YLC) - Kimmirut - Kimmirut, Nunavut
-CYLD (YLD) - Chapleau - Chapleau, Ontario
-CYLH (YLH) - Lansdowne House - Neskantaga First Nation, Ontario
-CYLI - Lillooet - Lillooet, British Columbia
-CYLJ (YLJ) - Meadow Lake - Meadow Lake, Saskatchewan
-CYLK - Lutselk'e - Lutselk'e, Northwest Territories
-CYLL (YLL) - Lloydminster - Lloydminster, Alberta
-CYLQ (YLQ) - La Tuque - La Tuque, Quebec
-CYLR (YLR) - Leaf Rapids - Leaf Rapids, Manitoba
-CYLS - Lake Simcoe Regional (Barrie-Orillia (Lake Simcoe Regional)) -B arrie, Ontario
-CYLT (YLT) - Alert - Alert, Nunavut
-CYLU (XGR) - Kangiqsualujjuaq (Georges River) - Kangiqsualujjuaq, Quebec
-CYLW (YLW) - Kelowna Int'l - Kelowna, British Columbia
-CYMA (YMA) - Mayo - Mayo, Yukon
-CYME (YME) - Matane - Matane, Quebec
-CYMG (YMG) - Manitouwadge - Manitouwadge, Ontario
-CYMH (YMH) - Mary's Harbour - Mary's Harbour, Newfoundland and Labrador
-CYMJ (YMJ) - CFB Moose Jaw (Moose Jaw/Air Vice Marshal C.M. McEwen) - Moose Jaw, Saskatchewan
-CYML (YML) - Charlevoix - Charlevoix, Quebec
-CYMM (YMM) - Fort McMurray Int'l - Fort McMurray, Alberta
-CYMO (YMO) - Moosonee - Moosonee, Ontario
-CYMT (YMT) - Chibougamau/Chapais - Chibougamau, Quebec
-CYMU (YUD) - Umiujaq - Umiujaq, Quebec
-CYMW (YMW) - Maniwaki - Maniwaki, Quebec
-CYMX (YMX) - Montréal–Mirabel Int'l - Montreal, Quebec
-CYN6 - Gravenhurst/Muskoka Bay Water Aerodrome - Gravenhurst, Ontario
-CYNA (YNA) - Natashquan - Natashquan, Quebec
-CYNC (YNC) - Wemindji - Wemindji, Quebec
-CYND (YND) - Gatineau-Ottawa Executive (Ottawa/Gatineau) - Gatineau, Quebec
-CYNE (YNE) - Norway House - Norway House, Manitoba
-CYNH (YNH) - Hudson's Hope - Hudson's Hope, British Columbia
-CYNJ (YNJ) - Langley Regional - Langley, British Columbia
-CYNL (YNL) - Points North Landing - Points North Landing, Saskatchewan
-CYNM (YNM) - Matagami - Matagami, Quebec
-CYNN - Nejanilini Lake - Nejanilini Lake, Manitoba
-CYNR - Fort MacKay/Horizon - Fort McKay, Alberta
-CYOA (YOA) - Ekati - Ekati Diamond Mine, Northwest Territories
-CYOC (YOC) - Old Crow - Old Crow, Yukon
-CYOD (YOD) - CFB Cold Lake (Cold Lake/Group Captain R.W. McNair) - Cold Lake, Alberta
-CYOH (YOH) - Oxford House - Oxford House, Manitoba
-CYOJ (YOJ) - High Level - High Level, Alberta
-CYOO (YOO) - Oshawa Executive (Toronto/Oshawa Executive) - Oshawa, Ontario
-CYOP - Rainbow Lake - Rainbow Lake, Alberta
-CYOS (YOS) - Owen Sound Billy Bishop Regional - Owen Sound, Ontario
-CYOW (YOW) - Ottawa Macdonald–Cartier Int'l - Ottawa, Ontario
-CYOY (YOY) - CFB Valcartier (Valcartier (W/C J.H.L. (Joe) Lecomte) Heliport) - Saint-Gabriel-de-Valcartier, Quebec
-CYPA (YPA) - Prince Albert (Glass Field) - Prince Albert, Saskatchewan
-CYPC (YPC) - Paulatuk (Nora Aliqatchialuk Ruben) - Paulatuk, Northwest Territories
-CYPD (YPS) - Port Hawkesbury - Port Hawkesbury, Nova Scotia
-CYPE (YPE) - Peace River - Peace River, Alberta
-CYPG (YPG) - Portage la Prairie/Southport - Portage la Prairie, Manitoba
-CYPH (YPH) - Inukjuak - Inukjuak, Quebec
-CYPK (YPK) - Pitt Meadows - Pitt Meadows, British Columbia
-CYPL (YPL) - Pickle Lake - Pickle Lake, Ontario
-CYPM (YPM) - Pikangikum - Pikangikum First Nation, Ontario
-CYPN (YPN) - Port-Menier - Port-Menier, Quebec
-CYPO (YPO) - Peawanuck - Peawanuck, Ontario
-CYPP - Parent - Parent, Quebec
-CYPQ (YPQ) - Peterborough - Peterborough, Ontario
-CYPR (YPR) - Prince Rupert - Prince Rupert, British Columbia
-CYPS - Pemberton Regional - Pemberton, British Columbia
-CYPT - Pelee Island - Pelee, Ontario
-CYPU (YPU) - Puntzi Mountain - Puntzi Mountain, British Columbia
-CYPW (YPW) - Powell River - Powell River, British Columbia
-CYPX - Puvirnituq - Puvirnituq, Quebec
-CYPY (YPY) - Fort Chipewyan - Fort Chipewyan, Alberta
-CYPZ (YPZ) - Burns Lake - Burns Lake, British Columbia
-CYQA (YQA) - Muskoka - District Municipality of Muskoka, Ontario
-CYQB (YQB) - Québec City Jean Lesage Int'l - Quebec City, Quebec
-CYQD (YQD) - The Pas - The Pas, Manitoba
-CYQF (YQF) - Red Deer Regional - Red Deer, Alberta
-CYQG (YQG) - Windsor Int'l - Windsor, Ontario
-CYQH (YQH) - Watson Lake - Watson Lake, Yukon
-CYQI (YQI) - Yarmouth - Yarmouth, Nova Scotia
-CYQK (YQK) - Kenora - Kenora, Ontario
-CYQL (YQL) - Lethbridge - Lethbridge, Alberta
-CYQM (YQM) - Greater Moncton Roméo LeBlanc Int'l - Moncton, New Brunswick
-CYQN (YQN) - Nakina - Nakina, Ontario
-CYQQ (YQQ) - CFB Comox (Comox) - Comox, British Columbia
-CYQR (YQR) - Regina Int'l - Regina, Saskatchewan
-CYQS (YQS) - St. Thomas Municipal - St. Thomas, Ontario
-CYQT (YQT) - Thunder Bay Int'l - Thunder Bay, Ontario
-CYQU (YQU) - Grande Prairie - Grande Prairie, Alberta
-CYQV (YQV) - Yorkton Municipal - Yorkton, Saskatchewan
+CYBG CFB Bagotville (Bagotville) - La Baie, Quebec
+CYBK Baker Lake - Baker Lake, Nunavut
+CYBL Campbell River - Campbell River, British Columbia
+CYBN CFB Borden (Borden Heliport) - Ontario
+CYBP Brooks Regional Aerodrome - Brooks, Alberta
+CYBQ Tadoule Lake - Tadoule Lake, Manitoba
+CYBR Brandon Municipal (McGill Field) - Brandon, Manitoba
+CYBT Brochet - Brochet, Manitoba
+CYBU Nipawin - Nipawin, Saskatchewan
+CYBV Berens River - Berens River, Manitoba
+CYBW Calgary/Springbank (Springbank) - Springbank, Alberta
+CYCC Cornwall Regional - Cornwall, Ontario
+CYCD Nanaimo - Nanaimo, British Columbia
+CYCE Centralia/James T. Field Memorial Aerodrome - Centralia, Ontario
+CYCG West Kootenay Regional - Castlegar, British Columbia
+CYCH Miramichi - Miramichi, New Brunswick
+CYCK Chatham-Kent - Chatham-Kent, Ontario
+CYCL Charlo - Charlo, New Brunswick
+CYCN Cochrane Aerodrome - Cochrane, Ontario
+CYCO Kugluktuk - Kugluktuk, Nunavut
+CYCP Blue River - Blue River, British Columbia
+CYCQ Chetwynd - Chetwynd, British Columbia
+CYCR Cross Lake (Charlie Sinclair Memorial) - Cross Lake, Manitoba
+CYCS Chesterfield Inlet - Chesterfield Inlet, Nunavut
+CYCT Coronation - Coronation, Alberta
+CYCW Chilliwack - Chilliwack, British Columbia
+CYCX CFB Gagetown (Gagetown Heliport) - Oromocto, New Brunswick
+CYCY Clyde River - Clyde River, Nunavut
+CYCZ Fairmont Hot Springs - Fairmont Hot Springs, British Columbia
+CYDA Dawson City - Dawson City, Yukon
+CYDB Burwash - Burwash Landing, Yukon
+CYDC Princeton Aerodrome - Princeton, British Columbia
+CYDF Deer Lake Regional - Deer Lake, Newfoundland and Labrador
+CYDH Ottawa/Dwyer Hill Heliport - Ottawa, Ontario
+CYDL Dease Lake - Dease Lake, British Columbia
+CYDM Ross River - Ross River, Yukon
+CYDN Lt. Col W.G. (Billy) Barker VC - Dauphin, Manitoba
+CYDO Dolbeau-Saint-Félicien - Dolbeau-Mistassini, Quebec
+CYDP Nain - Nain, Newfoundland and Labrador
+CYDQ Dawson Creek - Dawson Creek, British Columbia
+CYEA Empress - Empress, Alberta
+CYED CFB Edmonton (Edmonton/Namao Heliport) - Edmonton, Alberta
+CYEE Midland/Huronia - Midland, Ontario
+CYEG Edmonton Int'l - Nisku, Alberta
+CYEK Arviat - Arviat, Nunavut
+CYEL Elliot Lake Municipal - Elliot Lake, Ontario
+CYEM Manitowaning/Manitoulin East Municipal - Manitowaning, Ontario
+CYEN Estevan Regional Aerodrome - Estevan, Saskatchewan
+CYER Fort Severn - Fort Severn First Nation, Ontario
+CYES Edmundston - Edmundston, New Brunswick
+CYET Edson - Edson, Alberta
+CYEU Eureka Aerodrome - Eureka, Nunavut
+CYEV Inuvik (Mike Zubko) - Inuvik, Northwest Territories
+CYEY Amos/Magny - Amos, Quebec
+CYFA Fort Albany - Fort Albany First Nation, Ontario
+CYFB Iqaluit - Iqaluit, Nunavut
+CYFC Fredericton Int'l - Fredericton, New Brunswick
+CYFD Brantford - Brantford, Ontario
+CYFE Forestville - Forestville, Quebec
+CYFH Fort Hope - Eabametoong First Nation, Ontario
+CYFI Fort MacKay/Firebag Aerodrome - Fort McKay, Alberta
+CYFJ Mont Tremblant Int'l (La Mazaca) - Mont-Tremblant, Quebec
+CYFO Flin Flon - Flin Flon, Manitoba
+CYFR Fort Resolution - Fort Resolution, Northwest Territories
+CYFS Fort Simpson - Fort Simpson, Northwest Territories
+CYFT Makkovik - Makkovik, Newfoundland and Labrador
+CYG2 Parkhill (Yellow Gold) Aerodrome - Parkhill, Ontario
+CYGB Texada/Gillies Bay - Texada Island, British Columbia
+CYGD Goderich - Goderich, Ontario
+CYGE Golden - Golden, British Columbia
+CYGH Fort Good Hope - Fort Good Hope, Northwest Territories
+CYGK Kingston/Norman Rogers (Kingston) - Kingston, Ontario
+CYGL La Grande Rivière - Radisson, Quebec
+CYGM Gimli Industrial Park - Gimli, Manitoba
+CYGO Gods Lake Narrows - Gods Lake Narrows, Manitoba
+CYGP Michel-Pouliot Gaspé (Gaspé (Michel-Pouliot)) - Gaspé, Quebec
+CYGQ Geraldton (Greenstone Regional) - Greenstone, Ontario
+CYGR Îles-de-la-Madeleine - Magdalen Islands, Quebec
+CYGT Igloolik - Igloolik, Nunavut
+CYGV Havre Saint-Pierre - Havre-Saint-Pierre, Quebec
+CYGW Kuujjuarapik - Kuujjuarapik, Quebec
+CYGX Gillam - Gillam, Manitoba
+CYGZ Grise Fiord - Grise Fiord, Nunavut
+CYHA Quaqtaq - Quaqtaq, Quebec
+CYHB Hudson Bay - Hudson Bay, Saskatchewan
+CYHC Vancouver Harbour Flight Centre (Vancouver Harbour Water , Vancouver Coal Harbour
 
-CYQW (YQW) - North Battleford - North Battleford, Saskatchewan
-CYQX (YQX) - Gander Int'l - Gander, Newfoundland and Labrador
-CYQY (YQY) - Sydney/J.A. Douglas McCurdy - Sydney, Nova Scotia
-CYQZ (YQZ) - Quesnel - Quesnel, British Columbia
-CYRA (YRA) - Gamètì/Rae Lakes - Gamèti, Northwest Territories
-CYRB (YRB) - Resolute Bay - Resolute, Nunavut
-CYRC - Chicoutimi/Saint-Honoré Aerodrome - Chicoutimi, Quebec
-CYRI (YRI) - Rivière-du-Loup - Rivière-du-Loup, Quebec
-CYRJ (YRJ) - Roberval - Roberval, Quebec
-CYRL (YRL) - Red Lake - Red Lake, Ontario
-CYRM (YRM) - Rocky Mountain House - Rocky Mountain House, Alberta
-CYRO (YRO) - Ottawa/Rockcliffe (Rockcliffe) - Ottawa, Ontario
-CYRP (YRP) - Carp (Ottawa/Carp) - Carp, Ontario
-CYRQ (YRQ) - Trois-Rivières - Trois-Rivières, Quebec
-CYRS (YRS) - Red Sucker Lake - Red Sucker Lake, Manitoba
-CYRT (YRT) - Rankin Inlet - Rankin Inlet, Nunavut
-CYRV (YRV) - Revelstoke - Revelstoke, British Columbia
-CYSA - Stratford Municipal - Stratford, Ontario
-CYSB (YSB) - Sudbury (Greater Sudbury) - Greater Sudbury, Ontario
-CYSC (YSC) - Sherbrooke - Sherbrooke, Quebec
-CYSD (YSD) - CFB Suffield (Suffield Heliport) - Suffield, Alberta
-CYSE (YSE) - Squamish - Squamish, British Columbia
-CYSF (YSF) - Stony Rapids - Stony Rapids, Saskatchewan
-CYSG - Saint-Georges Aerodrome - Saint-Georges, Quebec
-CYSH (YSH) - Smiths Falls-Montague (Russ Beach) -Smiths Falls, Ontario
-CYSJ (YSJ) - Saint John - Saint John, New Brunswick
-CYSK (YSK) - Sanikiluaq - Sanikiluaq, Nunavut
-CYSL (YSL) - Saint-Léonard Aerodrome - Saint-Léonard, New Brunswick
-CYSM (YSM) - Fort Smith - Fort Smith, Northwest Territories
-CYSN (YCM) - St. Catharines/Niagara District - St. Catharines, Ontario
-CYSP (YSP) - Marathon Aerodrome - Marathon, Ontario
-CYSQ - Atlin - Atlin, British Columbia
-CYST (YST) - St. Theresa Point - St. Theresa Point, Manitoba
-CYSU (YSU) - Summerside - Summerside, Prince Edward Island
-CYSW - Sparwood/Elk Valley - Sparwood, British Columbia
-CYSY (YSY) - Sachs Harbour (David Nasogaluak Jr Saaryuaq) - Sachs Harbour, Northwest Territories
-CYSZ - Sainte-Anne-des-Monts Aerodrome - Sainte-Anne-Des-Monts, Quebec
-CYTA (YTA) - Pembroke - Pembroke, Ontario
-CYTB - Tillsonburg - Tillsonburg, Ontario
-CYTE (YTE) - Cape Dorset - Cape Dorset, Nunavut
-CYTF (YTF) - Alma - Alma, Quebec
-CYTH (YTH) - Thompson - Thompson, Manitoba
-CYTL (YTL) - Big Trout Lake - Kitchenuhmaykoosib Inninuwug First Nation, Ontario
-CYTN - Trenton Aerodrome - Trenton, Nova Scotia
-CYTQ (YTQ) - Tasiujaq - Tasiujaq, Quebec
-CYTR (YTR) - CFB Trenton (Trenton) - Trenton, Ontario
-CYTS (YTS) - Timmins/Victor M. Power - Timmins, Ontario
-CYTZ (YTZ) - Billy Bishop Toronto City (Toronto City Centre , Toronto Island) - Toronto, Ontario
-CYUB (YUB) - Tuktoyaktuk/James Gruben - Tuktoyaktuk, Northwest Territories
-CYUL (YUL) - Montréal–Pierre Elliott Trudeau Int'l - Montreal, Quebec
-CYUT (YUT) - Naujaat - Naujaat, Nunavut
-CYUX (YUX) - Hall Beach - Hall Beach, Nunavut
-CYUY (YUY) - Rouyn-Noranda - Rouyn-Noranda, Quebec
-CYVB (YVB) - Bonaventure - Bonaventure, Quebec
-CYVC (YVC) - La Ronge (Barber Field) - La Ronge, Saskatchewan
-CYVD - Virden/R.J. (Bob) Andrew Field Regional Aeordrome - Virden, Manitoba
-CYVG - Vermilion - Vermilion, Alberta
-CYVK (YVE) - Vernon Regional - Vernon, British Columbia
-CYVL (YCK) - Colville Lake/Tommy Kochon Aerodrome - Colville Lake, Northwest Territories
-CYVM (YVM) - Qikiqtarjuaq - Qikiqtarjuaq, Nunavut
-CYVO (YVO) - Val-d'Or - Val-d'Or, Quebec
-CYVP (YVP) - Kuujjuaq - Kuujjuaq, Quebec
-CYVQ (YVQ) - Norman Wells - Norman Wells, Northwest Territories
-CYVR (YVR) - Vancouver Int'l - Vancouver, British Columbia
-CYVT (YVT) - Buffalo Narrows - Buffalo Narrows, Saskatchewan
-CYVV (YVV) - Wiarton - Wiarton, Ontario
-CYVZ (YVZ) - Deer Lake - Deer Lake First Nation, Ontario
-CYWA (YWA) - Petawawa Heliport - Garrison Petawawa, Petawawa, Ontario
-CYWE - Wekweètì - Wekweeti, Northwest Territories
-CYWG (YWG) - Winnipeg James Armstrong Richardson Int'l - Winnipeg, Manitoba
-CYWH (YWH) - Victoria Inner Harbour (Victoria Harbour Water) - Victoria, British Columbia
-CYWJ (YWJ) - Déline - Deline, Northwest Territories
-CYWK (YWK) - Wabush - Wabush, Newfoundland and Labrador
-CYWL (YWL) - Williams Lake - Williams Lake, British Columbia
-CYWM - Athabasca - Athabasca, Alberta
-CYWN - Wainwright/Wainwright (Field 21) (CFB Wainwright) - Wainwright, Alberta
-CYWP (YWP) - Webequie - Webequie First Nation, Ontario
-CYWV (YWV) - Wainwright Aerodrome - Wainwright, Alberta
-CYWY (YWY) - Wrigley - Wrigley, Northwest Territories
-CYXC (YXC) - Cranbrook/Canadian Rockies Int'l - Cranbrook, British Columbia
-CYXE (YXE) - Saskatoon John G. Diefenbaker Int'l Airpor (tSaskatoon Int'l) - Saskatoon, Saskatchewan
-CYXH (YXH) - Medicine Hat - Medicine Hat, Alberta
-CYXJ (YXJ) - Fort St. John (North Peace) - Fort St. John, British Columbia
-CYXK (YXK) - Rimouski - Rimouski, Quebec
-CYXL (YXL) - Sioux Lookout - Sioux Lookout, Ontario
-CYXN (YXN) - Whale Cove - Whale Cove, Nunavut
-CYXP (YXP) - Pangnirtung - Pangnirtung, Nunavut
-CYXQ (YXQ) - Beaver Creek - Beaver Creek, Yukon
-CYXR (YXR) - Earlton (Timiskaming Regional) - Earlton, Ontario
-CYXS (YXS) - Prince George - Prince George, British Columbia
-CYXT (YXT) - Northwest Regional Terrace-Kitimat (Terrace) - Terrace and Kitimat, British Columbia
-CYXU (YXU) - London Int'l - London, Ontario
-CYXX (YXX) - Abbotsford Int'l - Abbotsford, British Columbia
-CYXY (YXY) - Erik Nielsen Whitehorse Int'l - Whitehorse, Yukon
-CYXZ (YXZ) - Wawa - Wawa, Ontario
-CYYB (YYB) - North Bay/Jack Garland (North Bay) - North Bay, Ontario, Ontario
-CYYC (YYC) - Calgary Int'l - Calgary, Alberta
-CYYD (YYD) - Smithers - Smithers, British Columbia
-CYYE (YYE) - Fort Nelson - Fort Nelson, British Columbia
-CYYF (YYF) - Penticton Regional - Penticton, British Columbia
-CYYG (YYG) - Charlottetown - Charlottetown, Prince Edward Island
-CYYH (YYH) - Taloyoak - Taloyoak, Nunavut
-CYYJ (YYJ) - Victoria Int'l - Victoria, British Columbia
-CYYL (YYL) - Lynn Lake - Lynn Lake, Manitoba
-CYYM - Cowley - Cowley, Alberta
-CYYN (YYN) - Swift Current - Swift Current, Saskatchewan
-CYYO - Wynyard/W. B. Needham Field Aerodrome - Wynyard, Saskatchewan
-CYYQ (YYQ) - Churchill - Churchill, Manitoba
-CYYR (YYR) - CFB Goose Bay (Goose Bay) - Happy Valley-Goose Bay, Newfoundland and Labrador
-CYYT (YYT) - St. John's Int'l - St. John's, Newfoundland and Labrador
-CYYU (YYU) - Kapuskasing - Kapuskasing, Ontario
-CYYW (YYW) - Armstrong - Armstrong, Ontario
-CYYY (YYY) - Mont-Joli - Mont-Joli, Quebec
-CYYZ (YYZ) - Toronto Pearson Int'l - Toronto, Ontario
-CYZD (YZD) - Downsview (Toronto/Downsview) - Toronto, Ontario
-CYZE (YZE) - Gore Bay-Manitoulin - Gore Bay, Ontario
-CYZF (YZF) - Yellowknife - Yellowknife, Northwest Territories
-CYZG (YZG) - Salluit - Salluit, Quebec
-CYZH (YZH) - Slave Lake - Slave Lake, Alberta
-CYZP (YZP) - Sandspit - Sandspit, British Columbia
-CYZR (YZR) - Sarnia Chris Hadfield - Sarnia, Ontario
-CYZS (YZS) - Coral Harbour - Coral Harbour, Nunavut
-CYZT (YZT) - Port Hardy - Port Hardy, British Columbia
-CYZU (YZU) - Whitecourt - Whitecourt, Alberta
-CYZV (YZV) - Sept-Îles - Sept-Îles, Quebec
-CYZW (YZW) - Teslin - Teslin, Yukon
-CYZX (YZX) - CFB Greenwood (Greenwood) - Greenwood, Nova Scotia
-CYZY (YZY) - Mackenzie - Mackenzie, British Columbia
-CZAC (ZAC) - York Landing - York Factory First Nation, Manitoba
-CZAM (YSN) - Salmon Arm - Salmon Arm, British Columbia
-CZBA - Burlington Executive - Burlington, Ontario
-CZBB (YDT) - Boundary Bay (Vancouver/Boundary Bay) - Delta, British Columbia
-CZBD (ILF) - Ilford - Ilford, Manitoba
-CZBF (ZBF) - Bathurst - Bathurst, New Brunswick
-CZBM (ZBM) - Roland-Désourdy - Bromont, Quebec
-CZEE (KES) - Kelsey - Kelsey, Manitoba
-CZEM (ZEM) - Eastmain River - Eastmain, Quebec
-CZF2 = Zephyr/Dillon Field Aerodrome - Zephyr, Ontario
-CZFA (ZFA) - Faro - Faro, Yukon
-CZFD (ZFD) - Fond-du-Lac - Fond-du-Lac, Saskatchewan
-CZFG (XPK) - Pukatawagan - Pukatawagan, Manitoba
-CZFM (ZFM) - Fort McPherson - Fort McPherson, Northwest Territories
-CZFN (ZFN) - Tulita - Tulita, Northwest Territories
-CZGF (ZGF) - Grand Forks - Grand Forks, British Columbia
-CZGI (ZGI) - Gods River - Gods River, Manitoba
-CZGR (ZGR) - Little Grand Rapids - Little Grand Rapids, Manitoba
-CZHP - High Prairie - High Prairie, Alberta
-CZJG (ZJG) - Jenpeg - Jenpeg, Manitoba
-CZJN (ZJN) - Swan River - Swan River, Manitoba
-CZKE (ZKE) - Kashechewan - Kashechewan First Nation, Ontario
-CZLQ (YTD) - Thicket Portage - Thicket Portage, Manitoba
-CZMD (MSA) - Muskrat Dam - Muskrat Dam Lake First Nation, Ontario
-CZML (ZMH) - South Cariboo Regional (108 Mile Ranch) - 108 Mile Ranch, British Columbia
-CZMN (PIW) - Pikwitonei - Pikwitonei, Manitoba
-CZMT (ZMT) - Masset - Masset, British Columbia
-CZNG (XPP) - Poplar River - Poplar River First Nation, Manitoba
-CZNL - Nelson - Nelson, British Columbia
-CZPB (ZPB) - Sachigo Lake - Sachigo Lake First Nation, Ontario
-CZPC - Pincher Creek - Pincher Creek, Alberta
-CZPO - Pinehouse Lake - Pinehouse, Saskatchewan
-CZRJ (ZRJ) - Round Lake (Weagamow Lake) - North Caribou Lake First Nation, Ontario
-CZSJ (ZSJ) - Sandy Lake - Sandy Lake First Nation, Ontario
-CZSN (XSI) - South Indian Lake - South Indian Lake, Manitoba
-CZST (ZST) - Stewart Aerodrome - Stewart, British Columbia
-CZSW (ZSW) - Prince Rupert/Seal Cove Water Aerodrome - Prince Rupert, British Columbia
-CZTA (YDV) - Bloodvein River - Bloodvein First Nation, Manitoba
-CZTM (ZTM) - Shamattawa - Shamattawa, Manitoba
-CZUC (ZUC) - Ignace Municipal - Ignace, Ontario
-CZUM (ZUM) - Churchill Falls - Churchill Falls, Newfoundland and Labrador
-CZVL (ZVL) - Edmonton/Villeneuve (Villeneuve) - Villeneuve, Alberta
-CZWH (XLB) - Lac Brochet - Lac Brochet, Manitoba
-CZWL (ZWL) - Wollaston Lake - Wollaston Lake, Saskatchewan
+CYHD Dryden Regional - Dryden, Ontario
+CYHE Hope Aerodrome - Hope, British Columbia
+CYHF Hearst (René Fontaine) Municipal - Hearst, Ontario
+CYHH Nemiscau - Nemaska, Quebec
+CYHI Ulukhaktok/Holman - Ulukhaktok, Northwest Territories
+CYHK Gjoa Haven - Gjoa Haven, Nunavut
+CYHM John C. Munro Hamilton Int'l (Hamilton) - Hamilton, Ontario
+CYHN Hornepayne Municipal - Hornepayne, Ontario
+CYHO Hopedale - Hopedale, Newfoundland and Labrador
+CYHR Chevery - Chevery, Quebec
+CYHT Haines Junction - Haines Junction, Yukon
+CYHU Montreal Saint-Hubert Longueuil - Longueuil, Quebec
+CYHY Hay River/Merlyn Carter - Hay River, Northwest Territories
+CYHZ Halifax Stanfield Int'l - Halifax, Nova Scotia
+CYIB Atikokan Municipal - Atikokan, Ontario
+CYID Digby/Annapolis Regional - Digby, Nova Scotia
+CYIF Saint-Augustin - Saint-Augustin, Quebec
+CYIK Ivujivik - Ivujivik, Quebec
+CYIO Pond Inlet - Pond Inlet, Nunavut
+CYIV Island Lake - Island Lake, Manitoba
+CYJA Jasper - Jasper, Alberta
+CYJF Fort Liard - Fort Liard, Northwest Territories
+CYJM Fort St. James (Perison) - Fort St. James, British Columbia
+CYJN Saint-Jean (Saint-Jean-sur-Richelieu) -S aint-Jean-sur-Richelieu, Quebec
+CYJP Fort Providence - Fort Providence, Northwest Territories
+CYJQ Denny Island Aerodrome - Bella Bella, British Columbia
+CYJT Stephenville Int'l - Stephenville, Newfoundland and Labrador
+CYKA Kamloops - Kamloops, British Columbia
+CYKC Collins Bay - Collins Bay, Saskatchewan
+CYKD Aklavik/Freddie Carmichael - Aklavik, Northwest Territories
+CYKF Kitchener/Waterloo Regional - Regional Municipality of Waterloo, Ontario
+CYKG Kangiqsujuaq (Wakeham Bay) - Kangiqsujuaq, Quebec
+CYKJ Key Lake - Key Lake mine, Saskatchewan
+CYKL Schefferville - Schefferville, Quebec
+CYKM Kincardine Municipal - Kincardine, Ontario
+CYKO Akulivik - Akulivik, Quebec
+CYKQ Waskaganish - Waskaganish, Quebec
+CYKX Kirkland Lake - Kirkland Lake, Ontario
+CYKY Kindersley Regional - Kindersley, Saskatchewan
+CYKZ Buttonville Municipal (Toronto/Buttonville Municipal) -B uttonville, Ontario
+CYLA Aupaluk - Aupaluk, Quebec
+CYLB Lac La Biche - Lac La Biche, Alberta
+CYLC Kimmirut - Kimmirut, Nunavut
+CYLD Chapleau - Chapleau, Ontario
+CYLH Lansdowne House - Neskantaga First Nation, Ontario
+CYLI Lillooet - Lillooet, British Columbia
+CYLJ Meadow Lake - Meadow Lake, Saskatchewan
+CYLK Lutselk'e - Lutselk'e, Northwest Territories
+CYLL Lloydminster - Lloydminster, Alberta
+CYLQ La Tuque - La Tuque, Quebec
+CYLR Leaf Rapids - Leaf Rapids, Manitoba
+CYLS Lake Simcoe Regional (Barrie-Orillia (Lake Simcoe Regional)) -B arrie, Ontario
+CYLT Alert - Alert, Nunavut
+CYLU Kangiqsualujjuaq (Georges River) - Kangiqsualujjuaq, Quebec
+CYLW Kelowna Int'l - Kelowna, British Columbia
+CYMA Mayo - Mayo, Yukon
+CYME Matane - Matane, Quebec
+CYMG Manitouwadge - Manitouwadge, Ontario
+CYMH Mary's Harbour - Mary's Harbour, Newfoundland and Labrador
+CYMJ CFB Moose Jaw (Moose Jaw/Air Vice Marshal C.M. McEwen) - Moose Jaw, Saskatchewan
+CYML Charlevoix - Charlevoix, Quebec
+CYMM Fort McMurray Int'l - Fort McMurray, Alberta
+CYMO Moosonee - Moosonee, Ontario
+CYMT Chibougamau/Chapais - Chibougamau, Quebec
+CYMU Umiujaq - Umiujaq, Quebec
+CYMW Maniwaki - Maniwaki, Quebec
+CYMX Montréal–Mirabel Int'l - Montreal, Quebec
+CYN6 Gravenhurst/Muskoka Bay Water Aerodrome - Gravenhurst, Ontario
+CYNA Natashquan - Natashquan, Quebec
+CYNC Wemindji - Wemindji, Quebec
+CYND Gatineau-Ottawa Executive (Ottawa/Gatineau) - Gatineau, Quebec
+CYNE Norway House - Norway House, Manitoba
+CYNH Hudson's Hope - Hudson's Hope, British Columbia
+CYNJ Langley Regional - Langley, British Columbia
+CYNL Points North Landing - Points North Landing, Saskatchewan
+CYNM Matagami - Matagami, Quebec
+CYNN Nejanilini Lake - Nejanilini Lake, Manitoba
+CYNR Fort MacKay/Horizon - Fort McKay, Alberta
+CYOA Ekati - Ekati Diamond Mine, Northwest Territories
+CYOC Old Crow - Old Crow, Yukon
+CYOD CFB Cold Lake (Cold Lake/Group Captain R.W. McNair) - Cold Lake, Alberta
+CYOH Oxford House - Oxford House, Manitoba
+CYOJ High Level - High Level, Alberta
+CYOO Oshawa Executive (Toronto/Oshawa Executive) - Oshawa, Ontario
+CYOP Rainbow Lake - Rainbow Lake, Alberta
+CYOS Owen Sound Billy Bishop Regional - Owen Sound, Ontario
+CYOW Ottawa Macdonald–Cartier Int'l - Ottawa, Ontario
+CYOY CFB Valcartier (Valcartier (W/C J.H.L. (Joe) Lecomte) Heliport) - Saint-Gabriel-de-Valcartier, Quebec
+CYPA Prince Albert (Glass Field) - Prince Albert, Saskatchewan
+CYPC Paulatuk (Nora Aliqatchialuk Ruben) - Paulatuk, Northwest Territories
+CYPD Port Hawkesbury - Port Hawkesbury, Nova Scotia
+CYPE Peace River - Peace River, Alberta
+CYPG Portage la Prairie/Southport - Portage la Prairie, Manitoba
+CYPH Inukjuak - Inukjuak, Quebec
+CYPK Pitt Meadows - Pitt Meadows, British Columbia
+CYPL Pickle Lake - Pickle Lake, Ontario
+CYPM Pikangikum - Pikangikum First Nation, Ontario
+CYPN Port-Menier - Port-Menier, Quebec
+CYPO Peawanuck - Peawanuck, Ontario
+CYPP Parent - Parent, Quebec
+CYPQ Peterborough - Peterborough, Ontario
+CYPR Prince Rupert - Prince Rupert, British Columbia
+CYPS Pemberton Regional - Pemberton, British Columbia
+CYPT Pelee Island - Pelee, Ontario
+CYPU Puntzi Mountain - Puntzi Mountain, British Columbia
+CYPW Powell River - Powell River, British Columbia
+CYPX Puvirnituq - Puvirnituq, Quebec
+CYPY Fort Chipewyan - Fort Chipewyan, Alberta
+CYPZ Burns Lake - Burns Lake, British Columbia
+CYQA Muskoka - District Municipality of Muskoka, Ontario
+CYQB Québec City Jean Lesage Int'l - Quebec City, Quebec
+CYQD The Pas - The Pas, Manitoba
+CYQF Red Deer Regional - Red Deer, Alberta
+CYQG Windsor Int'l - Windsor, Ontario
+CYQH Watson Lake - Watson Lake, Yukon
+CYQI Yarmouth - Yarmouth, Nova Scotia
+CYQK Kenora - Kenora, Ontario
+CYQL Lethbridge - Lethbridge, Alberta
+CYQM Greater Moncton Roméo LeBlanc Int'l - Moncton, New Brunswick
+CYQN Nakina - Nakina, Ontario
+CYQQ CFB Comox (Comox) - Comox, British Columbia
+CYQR Regina Int'l - Regina, Saskatchewan
+CYQS St. Thomas Municipal - St. Thomas, Ontario
+CYQT Thunder Bay Int'l - Thunder Bay, Ontario
+CYQU Grande Prairie - Grande Prairie, Alberta
+CYQV Yorkton Municipal - Yorkton, Saskatchewan
+
+CYQW North Battleford - North Battleford, Saskatchewan
+CYQX Gander Int'l - Gander, Newfoundland and Labrador
+CYQY Sydney/J.A. Douglas McCurdy - Sydney, Nova Scotia
+CYQZ Quesnel - Quesnel, British Columbia
+CYRA Gamètì/Rae Lakes - Gamèti, Northwest Territories
+CYRB Resolute Bay - Resolute, Nunavut
+CYRC Chicoutimi/Saint-Honoré Aerodrome - Chicoutimi, Quebec
+CYRI Rivière-du-Loup - Rivière-du-Loup, Quebec
+CYRJ Roberval - Roberval, Quebec
+CYRL Red Lake - Red Lake, Ontario
+CYRM Rocky Mountain House - Rocky Mountain House, Alberta
+CYRO Ottawa/Rockcliffe (Rockcliffe) - Ottawa, Ontario
+CYRP Carp (Ottawa/Carp) - Carp, Ontario
+CYRQ Trois-Rivières - Trois-Rivières, Quebec
+CYRS Red Sucker Lake - Red Sucker Lake, Manitoba
+CYRT Rankin Inlet - Rankin Inlet, Nunavut
+CYRV Revelstoke - Revelstoke, British Columbia
+CYSA Stratford Municipal - Stratford, Ontario
+CYSB Sudbury (Greater Sudbury) - Greater Sudbury, Ontario
+CYSC Sherbrooke - Sherbrooke, Quebec
+CYSD CFB Suffield (Suffield Heliport) - Suffield, Alberta
+CYSE Squamish - Squamish, British Columbia
+CYSF Stony Rapids - Stony Rapids, Saskatchewan
+CYSG Saint-Georges Aerodrome - Saint-Georges, Quebec
+CYSH Smiths Falls-Montague (Russ Beach) -Smiths Falls, Ontario
+CYSJ Saint John - Saint John, New Brunswick
+CYSK Sanikiluaq - Sanikiluaq, Nunavut
+CYSL Saint-Léonard Aerodrome - Saint-Léonard, New Brunswick
+CYSM Fort Smith - Fort Smith, Northwest Territories
+CYSN St. Catharines/Niagara District - St. Catharines, Ontario
+CYSP Marathon Aerodrome - Marathon, Ontario
+CYSQ Atlin - Atlin, British Columbia
+CYST St. Theresa Point - St. Theresa Point, Manitoba
+CYSU Summerside - Summerside, Prince Edward Island
+CYSW Sparwood/Elk Valley - Sparwood, British Columbia
+CYSY Sachs Harbour (David Nasogaluak Jr Saaryuaq) - Sachs Harbour, Northwest Territories
+CYSZ Sainte-Anne-des-Monts Aerodrome - Sainte-Anne-Des-Monts, Quebec
+CYTA Pembroke - Pembroke, Ontario
+CYTB Tillsonburg - Tillsonburg, Ontario
+CYTE Cape Dorset - Cape Dorset, Nunavut
+CYTF Alma - Alma, Quebec
+CYTH Thompson - Thompson, Manitoba
+CYTL Big Trout Lake - Kitchenuhmaykoosib Inninuwug First Nation, Ontario
+CYTN Trenton Aerodrome - Trenton, Nova Scotia
+CYTQ Tasiujaq - Tasiujaq, Quebec
+CYTR CFB Trenton (Trenton) - Trenton, Ontario
+CYTS Timmins/Victor M. Power - Timmins, Ontario
+CYTZ Billy Bishop Toronto City (Toronto City Centre , Toronto Island) - Toronto, Ontario
+CYUB Tuktoyaktuk/James Gruben - Tuktoyaktuk, Northwest Territories
+CYUL Montréal–Pierre Elliott Trudeau Int'l - Montreal, Quebec
+CYUT Naujaat - Naujaat, Nunavut
+CYUX Hall Beach - Hall Beach, Nunavut
+CYUY Rouyn-Noranda - Rouyn-Noranda, Quebec
+CYVB Bonaventure - Bonaventure, Quebec
+CYVC La Ronge (Barber Field) - La Ronge, Saskatchewan
+CYVD Virden/R.J. (Bob) Andrew Field Regional Aeordrome - Virden, Manitoba
+CYVG Vermilion - Vermilion, Alberta
+CYVK Vernon Regional - Vernon, British Columbia
+CYVL Colville Lake/Tommy Kochon Aerodrome - Colville Lake, Northwest Territories
+CYVM Qikiqtarjuaq - Qikiqtarjuaq, Nunavut
+CYVO Val-d'Or - Val-d'Or, Quebec
+CYVP Kuujjuaq - Kuujjuaq, Quebec
+CYVQ Norman Wells - Norman Wells, Northwest Territories
+CYVR Vancouver Int'l - Vancouver, British Columbia
+CYVT Buffalo Narrows - Buffalo Narrows, Saskatchewan
+CYVV Wiarton - Wiarton, Ontario
+CYVZ Deer Lake - Deer Lake First Nation, Ontario
+CYWA Petawawa Heliport - Garrison Petawawa, Petawawa, Ontario
+CYWE Wekweètì - Wekweeti, Northwest Territories
+CYWG Winnipeg James Armstrong Richardson Int'l - Winnipeg, Manitoba
+CYWH Victoria Inner Harbour (Victoria Harbour Water) - Victoria, British Columbia
+CYWJ Déline - Deline, Northwest Territories
+CYWK Wabush - Wabush, Newfoundland and Labrador
+CYWL Williams Lake - Williams Lake, British Columbia
+CYWM Athabasca - Athabasca, Alberta
+CYWN Wainwright/Wainwright (Field 21) (CFB Wainwright) - Wainwright, Alberta
+CYWP Webequie - Webequie First Nation, Ontario
+CYWV Wainwright Aerodrome - Wainwright, Alberta
+CYWY Wrigley - Wrigley, Northwest Territories
+CYXC Cranbrook/Canadian Rockies Int'l - Cranbrook, British Columbia
+CYXE Saskatoon John G. Diefenbaker Int'l Airpor (tSaskatoon Int'l) - Saskatoon, Saskatchewan
+CYXH Medicine Hat - Medicine Hat, Alberta
+CYXJ Fort St. John (North Peace) - Fort St. John, British Columbia
+CYXK Rimouski - Rimouski, Quebec
+CYXL Sioux Lookout - Sioux Lookout, Ontario
+CYXN Whale Cove - Whale Cove, Nunavut
+CYXP Pangnirtung - Pangnirtung, Nunavut
+CYXQ Beaver Creek - Beaver Creek, Yukon
+CYXR Earlton (Timiskaming Regional) - Earlton, Ontario
+CYXS Prince George - Prince George, British Columbia
+CYXT Northwest Regional Terrace-Kitimat (Terrace) - Terrace and Kitimat, British Columbia
+CYXU London Int'l - London, Ontario
+CYXX Abbotsford Int'l - Abbotsford, British Columbia
+CYXY Erik Nielsen Whitehorse Int'l - Whitehorse, Yukon
+CYXZ Wawa - Wawa, Ontario
+CYYB North Bay/Jack Garland (North Bay) - North Bay, Ontario, Ontario
+CYYC Calgary Int'l - Calgary, Alberta
+CYYD Smithers - Smithers, British Columbia
+CYYE Fort Nelson - Fort Nelson, British Columbia
+CYYF Penticton Regional - Penticton, British Columbia
+CYYG Charlottetown - Charlottetown, Prince Edward Island
+CYYH Taloyoak - Taloyoak, Nunavut
+CYYJ Victoria Int'l - Victoria, British Columbia
+CYYL Lynn Lake - Lynn Lake, Manitoba
+CYYM  Cowley - Cowley, Alberta
+CYYN Swift Current - Swift Current, Saskatchewan
+CYYO Wynyard/W. B. Needham Field Aerodrome - Wynyard, Saskatchewan
+CYYQ Churchill - Churchill, Manitoba
+CYYR CFB Goose Bay (Goose Bay) - Happy Valley-Goose Bay, Newfoundland and Labrador
+CYYT St. John's Int'l - St. John's, Newfoundland and Labrador
+CYYU Kapuskasing - Kapuskasing, Ontario
+CYYW Armstrong - Armstrong, Ontario
+CYYY Mont-Joli - Mont-Joli, Quebec
+CYYZ Toronto Pearson Int'l - Toronto, Ontario
+CYZD Downsview (Toronto/Downsview) - Toronto, Ontario
+CYZE Gore Bay-Manitoulin - Gore Bay, Ontario
+CYZF Yellowknife - Yellowknife, Northwest Territories
+CYZG Salluit - Salluit, Quebec
+CYZH Slave Lake - Slave Lake, Alberta
+CYZP Sandspit - Sandspit, British Columbia
+CYZR Sarnia Chris Hadfield - Sarnia, Ontario
+CYZS Coral Harbour - Coral Harbour, Nunavut
+CYZT Port Hardy - Port Hardy, British Columbia
+CYZU Whitecourt - Whitecourt, Alberta
+CYZV Sept-Îles - Sept-Îles, Quebec
+CYZW Teslin - Teslin, Yukon
+CYZX CFB Greenwood (Greenwood) - Greenwood, Nova Scotia
+CYZY Mackenzie - Mackenzie, British Columbia
+CZAC York Landing - York Factory First Nation, Manitoba
+CZAM Salmon Arm - Salmon Arm, British Columbia
+CZBA Burlington Executive - Burlington, Ontario
+CZBB Boundary Bay (Vancouver/Boundary Bay) - Delta, British Columbia
+CZBD Ilford - Ilford, Manitoba
+CZBF Bathurst - Bathurst, New Brunswick
+CZBM Roland-Désourdy - Bromont, Quebec
+CZEE Kelsey - Kelsey, Manitoba
+CZEM Eastmain River - Eastmain, Quebec
+CZF2 Zephyr/Dillon Field Aerodrome - Zephyr, Ontario
+CZFA Faro - Faro, Yukon
+CZFD Fond-du-Lac - Fond-du-Lac, Saskatchewan
+CZFG Pukatawagan - Pukatawagan, Manitoba
+CZFM Fort McPherson - Fort McPherson, Northwest Territories
+CZFN Tulita - Tulita, Northwest Territories
+CZGF Grand Forks - Grand Forks, British Columbia
+CZGI Gods River - Gods River, Manitoba
+CZGR Little Grand Rapids - Little Grand Rapids, Manitoba
+CZHP High Prairie - High Prairie, Alberta
+CZJG Jenpeg - Jenpeg, Manitoba
+CZJN Swan River - Swan River, Manitoba
+CZKE Kashechewan - Kashechewan First Nation, Ontario
+CZLQ Thicket Portage - Thicket Portage, Manitoba
+CZMD Muskrat Dam - Muskrat Dam Lake First Nation, Ontario
+CZML South Cariboo Regional (108 Mile Ranch) - 108 Mile Ranch, British Columbia
+CZMN Pikwitonei - Pikwitonei, Manitoba
+CZMT Masset - Masset, British Columbia
+CZNG Poplar River - Poplar River First Nation, Manitoba
+CZNL Nelson - Nelson, British Columbia
+CZPB Sachigo Lake - Sachigo Lake First Nation, Ontario
+CZPC Pincher Creek - Pincher Creek, Alberta
+CZPO Pinehouse Lake - Pinehouse, Saskatchewan
+CZRJ Round Lake (Weagamow Lake) - North Caribou Lake First Nation, Ontario
+CZSJ Sandy Lake - Sandy Lake First Nation, Ontario
+CZSN South Indian Lake - South Indian Lake, Manitoba
+CZST Stewart Aerodrome - Stewart, British Columbia
+CZSW Prince Rupert/Seal Cove Water Aerodrome - Prince Rupert, British Columbia
+CZTA Bloodvein River - Bloodvein First Nation, Manitoba
+CZTM Shamattawa - Shamattawa, Manitoba
+CZUC Ignace Municipal - Ignace, Ontario
+CZUM Churchill Falls - Churchill Falls, Newfoundland and Labrador
+CZVL Edmonton/Villeneuve (Villeneuve) - Villeneuve, Alberta
+CZWH Lac Brochet - Lac Brochet, Manitoba
+CZWL Wollaston Lake - Wollaston Lake, Saskatchewan
