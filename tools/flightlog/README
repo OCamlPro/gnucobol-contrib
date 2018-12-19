@@ -18,7 +18,7 @@ Where the Pi has an attached USB 1Tb hard drive linked to / via
 Likewise testing for flightlog has been run on the Pi and works exactly
 the same as on Mageia v6 platform (an Redhat sourced version).
 
-B. Copy run-flightlog.sh-UK or run-flightlog.sh-USA or run-flightlog.sh-Unix
+B. Copy run-flightlog.sh-UK, run-flightlog.sh-USA or run-flightlog.sh-Unix
 to run-flightlog.sh depending on your date format, see manual for more
 information.
 
@@ -28,7 +28,7 @@ yyyy-mm-dd or yyyymmdd etc) to create the back up archive.
 If no argument is provided it will create as is a file called :
 backup-.zip.  The script could be changed to test for no argument and if
 so force date based on today or even not do a backup. If I remember and
-have time I will do this but assume I haven't.
+have time I will do this, but assume I haven't.
 
 
 2. The directory Airfields contains a list by 1st 2 chars of the ICAO code
@@ -55,7 +55,7 @@ country and therefore just update after flying to a new airfield.
 
 That said,  commercial crew may well want to do this when they get 
 on new routes and just add them in one hit - Your choice.
-
+Doing so does not require the full use of a CSV flight data file.
 
 Here is a list of TODO features for the Flightlog program that may or
 may not be added subject to user requests along with any reasons why:
@@ -104,7 +104,7 @@ There is no reason why it cannot be added to as a new Feature request.
 End of README
 
 30/11/2018 vbc - Initial creation.
-13/12/2018 vbc - Monor clean up / updates for scripts.
+13/12/2018 vbc - Minor clean up / updates for scripts.
 14/12/2018 vbc - More script updates and other content.
- 
+17/12/2018 vbc - Minor clean up.
 

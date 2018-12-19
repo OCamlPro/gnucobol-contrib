@@ -40,7 +40,8 @@
 *>                 producing a report.
 *>                 A script is provided called prtpdf.sh for Linux users
 *>                 to help do this but you might want or need to modify the
-*>                 settings within it if needed to suit paper used,
+*>                 settings within it if needed to suit paper used although
+*>                 there are two versions with one for A4 and other for Letter.
 *>                 To help automate using this script, you need to
 *>                 install some additional packages, enscript,
 *>                 Postscript-common & the other requested elements for
@@ -48,9 +49,10 @@
 *>
 *>                 Flightlog will also accept a comma delimited records file
 *>                 containing flights for the period (weekly, monthly etc)
-*>                 A minimum of three to four definition records must also be
+*>                 A minimum of three to four definition records in a
+*>                 configuration file must also be
 *>                 supplied for this to be used, and other than new aircraft
-*>                 type and new airport records, would be fixed information
+*>                 types and new airport records, would be fixed information
 *>                 that is always supplied to the program when it reads
 *>                 CSV data. Note that Airfield & aircraft only have to be used
 *>                 once but if used more than once, the airfield name will be
@@ -120,7 +122,10 @@
 *>                                 night time starts.
 *>                  E.g.,  flightlog NOLIGHT
 *>                      NIGHT | NITE     - To do night time calcs use when P2 is used.
-*>                 P2 - CSV configuration, path and file name.
+*>                      CSV-TEST         - Test displays (with pause) in csv processing after unstring
+*>                                         Useful to check for mistakes in CSV-config rec 1
+*>                                         problems. Otherwise do not use.
+*>                 P2 - CSV configuration, path and file name. starting with 'CSV='
 *>                 P3 - ACFT-DATE = Produces report by lsat Date used.
 *>                 P4 - EBCDIC - Translation reqquired on CSV data file
 *>                      THIS IS NOT IMPLEMENTED. subject to user requests.
@@ -172,6 +177,28 @@
 *>                        Allow CSV data to contain no quotes between commas (F500).
 *>                    .34 Forgot the code for New rec 6, Fld 6 but can it really be
 *>                        one move just before writing the record out ?
+*>                    .35 Created tables for converting EBCDIC to ASCII.
+*>                        There is NO coding for processing this - subject to requests
+*>                        but will need to use rec type 3 field 2 to specify the need to
+*>                        do so as "E". See TODO (7).
+*>                        Allow csv rec 2 fields 2 & 3 to also accept hh:mm.
+*>                    .36 Extra tests in F501 for not using fields in quotes.
+*>                    .37 Extra tests in ZL000-Create-Seq-Files for non zero status
+*>                        on reads in case empty file.
+*>                    .38 More chgs for csv data.
+*>                    .39 CSV-TEST for P1 to display field values on CSV import.
+*>                    .40 Removed very tmp test code but leaving the test (.39)
+*>                        as useful if needing to test CSV config
+*>                        Fault found on test for delimiter (quote or ') was 2 if's
+*>                        should have been if else. Only showed up on last rec 1 type.
+*> 18/12/18 vbc -     .41 Update to F520 to use quote an "'"
+*>                    .42 Change in CCB020-Create-Airfield default name to
+*>                        NAME MISSING to help make it stand out for any missing
+*>                        Airfields.
+*>                    .43 Was not testing CSV-Captain-Search against upper-case
+*>                        captains name in CSV field.
+*>                    .44 Changed program P2 parameter to start with 'CSV=' and sizes of
+*>                        all P's to 64 chars. GC gets upset at 128.
 *>
 *> TODO maybe ? (outstanding):
 *>
@@ -369,7 +396,7 @@
  01  AIRCRAFT-RECORD.
      03  Aircraft-Type       PIC X(8).
      03  AIRCRAFT-MS         PIC X.
-     03  Aircraft-Complex    pic x.     *> Y or space / N.
+     03  Aircraft-Complex    pic x.     *> Y or (space / N).
      03  Aircraft-Last-Reg   pic x(6).
      03  Aircraft-Last-Flt   pic 9(8).
  *>    03  Aircraft-Man        pic x(20).
@@ -483,12 +510,12 @@
      03  CSV-Src-Position    pic 99.             *> Field # starts with 1, leading zero as needed - Must
                                                  *>  always be 2 numeric digits and ALL CSV fields
                                                  *>   must be accounted for (No OMISSIONS).
-     03  filler              pic x.              *> '=' but dont care.
+     03  filler              pic x.              *> '=' but don't care.
      03  CSV-Target-Fld-No   pic 99.             *> As per field position in the flightlog file
                                                  *>  00 = ignore (OMIT) CSV field
                                                  *> I.e, FLT-Date = 1, FLT-Start = 2, FLT-End = 3,
                                                  *>  FLT-Capacity = 7, etc.
-     03  CSV-Src-No-Quotes   pic x.              *> Y = no quotes present.
+ *>    03  CSV-Src-No-Quotes   pic x.              *> Y = no quotes present. NOT USED.
 *>
  01  CSV-Logbook-Formats.                      *> This record MUST ALWAYS be present for data imports.
      03  filler              pic x.             *> '2' for field format definitions.
@@ -502,10 +529,10 @@
                                                  *> Note delimiter between HH and MM can be any .: etc
                                                  *> Time format applies to all times flight start & end
                                                  *> Use Time-2 for P1, P2 etc if included in data,
-                                                 *> otherwise P1,2,3 times will be computed.
+                                                 *> otherwise P1, 2, 3 times will be computed.
                                                  *> based on end and start times.
                                                  *> Aircraft registration data max of 6 characters
-                                                 *> MUST NOT be a flight number.
+                                                 *> (MUST NOT be a flight number.)
 *>
      03  CSV-Time-2          pic x(5).           *> Same as Time-1, used for P1/2/3, Inst flight time
                                                  *>   (Day and Night).
@@ -517,7 +544,7 @@
      03  CSV-Data-Format     pic x.              *> set to A or space but currently ignored.
                                                  *> we may process if EBCDIC data files are provided to users.
      03  CSV-Delimiter       pic x.              *> Delimiter used in data file = single or double quote
-     03  CSV-FName           pic x(64).          *> File name to be imported if not it is 'CSV Flitelog'.
+     03  CSV-FName           pic x(64).          *> File name to be imported if not it is 'csv-flitelog'.
 *>
 *> Rec types 4 & 5 can be input without and other data - i.e., just to load Airfields
 *>
@@ -531,7 +558,7 @@
      03  CSV-Airfield-Name   pic x(20).          *> Airport name up to 20 characters and trailing spaces.
 *>
 *>  ONLY needed ONCE if a NEW aircraft type used in log book data you can add them in advance of being used.
-*>   If aircraft type already present and if present record is updated with MS and complex flds.
+*>   If aircraft type already present and if present record is updated with MS and complex fields.
 *>
  01  CSV-Aircraft-Definitions.                     *> These only needed once for a NEW aircraft type.
      03  filler              pic X.              *> '5' for NEW aircraft type data.
@@ -539,9 +566,9 @@
      03  filler              pic x.              *> fixed data is comma ','.
      03  CSV-Acft-MS         pic x.              *> M for multi-engine or S for single engine.
      03  CSV-Acft-Complex    pic x.              *> 'Y' for (yes) for all multi-engine (Default)
-                                                 *>   'N' (or space) for simple single engine A/C with fixed gear and propellor.
+                                                 *>   'N' (or space) for simple single engine A/C with fixed gear and propeller.
 *>
-*> This record only needed if CSV file contains records for other pilots say when coming from A/C Tech. logs
+*> This record only needed if CSV file contains records for other pilots say when coming from A/C Technical. logs
 *>    and field 2 used to replacing a given name in CSV-Captain-Search with one in CSV-Replace-Captain.
 *>
 *> Here useful if CSV file contains the Pilots name but s/he wishes to change it to another such as
@@ -550,7 +577,7 @@
 *>   The CSV-Captain-Search field can be spaces in which case all instances of capacity P1 or P2
 *>     are changed to CSV-Replace-Captain. NOTE that for P3 no change is made.
 *>
-*>  WARNING:  You MUST use uppercase characters as needed i.e., field Search must exactly match
+*>  WARNING:  You MUST use upper-case characters as needed i.e., field Search must exactly match
 *>    name as on CSV file, e.g., 'COEN, V.B.' and field Replace must be as required
 *>      but usually upper-case e.g., SELF.  NOTE that Data Entry changes captain to upper case.
 *>
@@ -572,7 +599,7 @@
 *>
  WORKING-STORAGE SECTION.
 *>----------------------
- 77  PROG-NAME               PIC X(18) VALUE "LOG BOOK (2.01.34)".
+ 77  PROG-NAME               PIC X(18) VALUE "LOG BOOK (2.01.44)".
  77  WS-CSV-Rec-Size         pic 9999 comp  value 512. *> This is the maximum record size for CSV logbook
                                                        *> data records [see manual]. If unsure leave as is
                                                        *>  It is more likely to be smaller i.e., 256.
@@ -598,6 +625,7 @@
  77  A                       PIC 9999 COMP  VALUE ZERO.
  77  B                       PIC 9999 COMP  VALUE ZERO.
  77  C                       PIC 9999 COMP  VALUE ZERO.
+ 77  D                       PIC 9999 COMP  VALUE ZERO.
  77  Z                       PIC 99   COMP  VALUE ZERO.
  77  Y                       PIC 99   COMP  VALUE ZERO.  *> used to count FLT fields in CSV config.
  77  CSV-Recs-In             pic 9(4)       value zero.
@@ -643,6 +671,8 @@
  77  SW-ACFT-Date            pic 9           value zero.        *> via P3 or P4
  77  SW-EBCDIC-Conv          pic 9           value zero.        *> via P3 or P4 not yet coded.
  77  SW-AFLD-Used            pic 9           value zero.        *> Only print used Airfields.
+ 77  SW-Test                 pic 9           value zero.
+     88  SW-Testing                          value 1.
  77  WS-ICAO-CODE            PIC X(4)        VALUE SPACES.
  77  WS-AFLD-NAME            PIC X(20)       VALUE SPACES.
  77  WS-New-ICAO-CODE        PIC X(4)        VALUE SPACES.
@@ -656,8 +686,8 @@
  77  WS-TIME                 PIC X(8)        VALUE SPACES.
  77  WS-DISPLAY4             PIC 9999        VALUE ZERO.
  77  WS-USER                 PIC X(40)       value spaces.
- 77  CSV-File-Name           pic x(64)       value "csv-flitelog".
- 77  CSV-Config-Name         pic x(128)      value "csv-conf.txt".
+ 77  CSV-File-Name           pic x(64)       value "csv-flitelog".  *> name in config rec type 3.
+ 77  CSV-Config-Name         pic x(64)       value "csv-conf.txt".
  77  WS-Data-Delim           pic xx          value "',".
  77  WS-Data-Format          pic x           value "A".         *> Not used but for ASCII and maybe E for EBCDIC.
  77  WS-Scrn-BE-Start        pic 9(4)        value 0302.
@@ -671,10 +701,11 @@
 *>
  01  NO-NIGHT-Calcs          pic 9          value zero.
      88  NONIGHT                            value 1.
- 01  P1                      pic x(128)     value spaces.       *> P for NONIGHT|NONITE
- 01  P2                      pic x(128)     value spaces.       *> P for path/filename of CSV data file
- 01  P3                      pic x(128)     value spaces.       *> P for EBCDIC conversion MAYBE as not coded yet.
- 01  P4                      pic x(128)     value spaces.       *> P for AFLD-DATE
+ 01  P1                      pic x(64)     value spaces.       *> P for NONIGHT|NONITE
+ 01  P2                      pic x(64)     value spaces.       *> P for path/filename of CSV data file
+ 01  P3                      pic x(64)     value spaces.       *> P for EBCDIC conversion MAYBE as not coded yet.
+ 01  P4                      pic x(64)     value spaces.       *> P for AFLD-DATE
+ 01  P-Temp                  pic x(64)     value spaces.       *> temp for P2.
 *>
  01  WS-Locale               pic x(16)      value spaces.       *> Holds o/p from env var.
 *>                                                                 LC_TIME but only uses 1st 5 chars
@@ -858,6 +889,9 @@
      03  WS-Env-Columns pic 999               value zero. *> chks for > 95 & 105
      03  WS-Env-Lines   pic 999               value zero. *> chks for > 23
      03  ws-Lines        binary-char unsigned value zero.
+     03  ws-18-Lines     binary-char unsigned value zero.  *> 19/20 for testing only.
+     03  ws-19-Lines     binary-char unsigned value zero.  *> 19/20 for testing only.
+     03  ws-20-Lines     binary-char unsigned value zero.
      03  ws-21-Lines     binary-char unsigned value zero.
      03  ws-22-Lines     binary-char unsigned value zero.
      03  ws-23-Lines     binary-char unsigned value zero.
@@ -1042,15 +1076,19 @@
      03  WS-CSV-Work                            value spaces. *> FLT file is max of 32 (Remarks)
          05  WS-CSV-Work9     pic 9(8).                       *> max size of date or time
          05  filler           pic x(56).
+     03  WS-CSV-WorkX  redefines WS-CSV-Work
+                              pic x(64).
      03  WS-CSV-Tmp-Work9     pic 9(8).
+     03  WS-CSV-Work-Delim    pic xx.
      03  WS-CSV-Work-Count    pic 9(4)          value zero.   *> but will be less than 33
      03  WS-CSV-Test-Time-Format  pic 9.
+     03  WS-Tmp-Delim         pic xx.
 *>
      03  WS-Group.
        04  filler                             occurs 96.
          05  WS-CSV-Src-Position    pic 99.       *> Field # start with 1, leading zero as needed - Must always be 2 numeric digits.
          05  WS-CSV-Target-Fld-Pos  pic 99.       *> position from 1, for FLT file data record otherwise zeros.
-         05  WS-CSV-Src-No-Quotes   pic 9.        *>  1 = no quotes around field.
+ *>        05  WS-CSV-Src-No-Quotes   pic 9.        *>  1 = no quotes around field.  NOT USED.
 *>
  01  WS-CSV-Held-Date-Time-Formats                  value spaces. *> CSV Data table type 2 date/time formats
      03  WS-CSV-Held-Date-Format  pic x(10).
@@ -1118,6 +1156,33 @@
          05  SR2-MULTI       PIC Z(3)99BB.
          05  FILLER          PIC X(4)         VALUE "Mins".
 *>
+*> Tables for data conversion between EBCDIC and ASCII   -  NOT CURRENTLY USED.
+*>  for use within CSV format conversion.
+*>
+ 01  Table-ASCII.
+     03  filler.
+         05  filler          pic xxx        value
+          X"222727".                                *> " ' '
+         05  filler          pic x(63)      value
+         " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ".
+ 01  Table-EBCDIC.
+     03  filler              pic xxx        value
+         X"7F797D".                                *> " ' ' "79" in case mistyped but is a `
+     03  filler              pic x(11)      value
+         X"40F0F1F2F3F4F5F6F7F8F9".                 *> SPACE, 013456789
+     03  filler              pic x(9)      value
+         X"C1C2C3C4C5C6C7C8C9".                     *> ABCDEFGHI
+     03  filler              pic x(9)      value
+         X"D1D2D3D4D5D6D7D8D9".                     *> JKLMNOPQR
+     03  filler              pic x(8)      value
+         X"E2E3E4E5E6E7E8E9".                       *> STUVWXYZ
+     03  filler              pic x(9)      value
+         X"818283848586878889".                     *> abcdefghi
+     03  filler              pic x(9)      value
+         X"919293949596979899".                     *> jklmnopqr
+     03  filler              pic x(8)      value
+         X"A2A3A4A5A6A7A8A9".                       *> stuvwxyz
+*>
  PROCEDURE DIVISION chaining P1 P2 P3 P4.
 *>======================================
  A000-CONTROL       SECTION.
@@ -1162,35 +1227,32 @@
               display "Parameter Help for " at 0101 with erase eos
               display Prog-Name at 0120
               display "P1 = NONIGHT or NONITE for no night time calcs against table" at 0301
-              display "P2 = CSV path and file name for Config file if not default"   at 0401
+              display "P2 = 'CSV=' CSV path and file name for Config file if not default"   at 0401
               display "P3 = ACFT-DATE for report excludes unused Aircraft"           at 0501
               display "P4 = EBCDIC conversion of CSV data [NOT CURRENTLY IN USE]"    at 0601
               display FL006 at 0801
               accept ws-reply at 0831
               goback.
 *>
-     if       P1 = "NONIGHT" or "NONITE"
-              move 1 to NO-NIGHT-Calcs
-              if P2 not = spaces
-                    move P2 to CSV-Config-Name
-              end-if
-     else
-       if     P2 = "NONIGHT" or "NONITE"
-              move 1 to NO-NIGHT-Calcs
-              if P1 not = spaces
-                    move P1 to CSV-Config-Name
-              end-if
-       else
-        if    P1 = "NIGHT" or "NITE"
-              move zero to NO-NIGHT-Calcs
-              if P2 not = spaces
-                    move P2 to CSV-Config-Name
-              end-if
+     if       P1 (1:8) = "CSV-TEST"
+              set SW-Testing to true
      end-if.
-
-     if       "ACFT-DATE" = P3 or = P4 or = P2 or = P1
+     if       "NONIGHT" = P1 or = P2 or = P3 or = P4
+              move 1 to NO-NIGHT-Calcs.
+     if       "NONITE" = P1 or = P2 or = P3 or = P4
+     move     spaces to P-Temp.
+     if       P1 (1:4) = "CSV="  move P1 (5:60) to P-Temp.
+     if       P2 (1:4) = "CSV="  move P2 (5:60) to P-Temp.
+     if       P3 (1:4) = "CSV="  move P3 (5:60) to P-Temp.
+     if       P4 (1:4) = "CSV="  move P4 (5:60) to P-Temp.
+     if       P-Temp (1:8) not = spaces
+              move P-Temp to CSV-Config-Name.
+ *>    if       "NIGHT" or "NITE" = P1 or = P2 or = P3 or = P4
+ *>             move zero to NO-NIGHT-Calcs.
+*>
+     if       "ACFT-DATE" = P4 or = P3 or = P2 or = P1
               move 1 to SW-ACFT-Date.
-     if       "EBCDIC" = P3 or = P4  or = P2 or = P1       *> Not coded
+     if       "EBCDIC" = P4 or = P3  or = P2 or = P1       *> Not coded yet.
               move 1 to SW-EBCDIC-Conv.
 *>
 *>  Set WS-Locale-Time-Zone from LC_TIME - Default [3] to Intl (ccyymmdd)
@@ -1233,6 +1295,9 @@
      subtract 2 from ws-Lines giving ws-22-Lines.
      subtract 3 from ws-Lines giving ws-21-Lines.
      subtract 4 from ws-Lines giving WS-Data-Lines.
+     subtract 4 from ws-Lines giving WS-20-Lines.      *> TESTING ONLY and the next one.
+     subtract 5 from ws-Lines giving WS-19-Lines.
+     subtract 6 from ws-Lines giving WS-18-Lines.
 *>
 *> Set up afld display counts from ws-lines using WS-Dft-Scrn-BE-xxx
 *>
@@ -2190,6 +2255,8 @@
               GO TO CA150-ENTER-LOGBK-MULTI.
      IF       FLT-CAPACITY = "PUT"
               MOVE "P3 " TO FLT-CAPACITY.
+     if       FLT-Capacity = "U/S"
+              move "P1S" to FLT-Capacity
      IF       FLT-CAPACITY NOT = "P1 " AND "P1S" AND "P1I" AND "P1T" AND "P2 " AND "P3 "
                              and "E1 " and "E2 " and "N1 " and "N2 " and "R1 " and "R2 "
                              and "T1 " and "T2 "
@@ -3016,7 +3083,7 @@
      PERFORM  ZJ000-SEARCH-FOR-AIRCRAFT.               *> changed from ZH000 as THIS uses the table
      MOVE     C TO A.
      IF       C = ZERO                                 *> changed as excessive  - only doing the 1 aircraft.
-              display  FL013 at line ws-21-lines col 01 with erase eol    *> was 2001
+              display  FL013 at line ws-21-lines col 01 with erase eol
               perform  CCB010-Save-New-Aircraft          *> C updated by resorted table & size
               PERFORM  ZJ000-SEARCH-FOR-AIRCRAFT        *> so must search again, for new entry
               move C  to  A.                            *>  and not be zero
@@ -3079,8 +3146,8 @@
      sort     WST-ACFT-Groups on ascending key  WST-AIRCRAFT.
 *>
  CCB020-Create-Airfield.                   *> Shouldn't happen but user could have deleted record or file?
-     initialise Airfield-Record.           *>  such will appear of afld lists with missing names or code zzzz.
-     move     "Name missing" to AFLD-Name.
+     initialise Airfield-Record.           *>  such will appear of afld lists with missing names.
+     move     "NAME MISSING" to AFLD-Name.
      move     WS-ICAO-Code   to ICAO-Code.
      move     FLT-Date       to Afld-Last-Flt.
      write    Airfield-Record.                  *> ingnoring any invalid key - may be had another bad rec & now created.
@@ -3877,9 +3944,9 @@
 *>    as pilots name not in as Captain.
 *>
      if       CSV-Record-type = "6"
-              move function upper-case (CSV-Captain-Search) to WS-CSV-Held-Cap
+              move function upper-case (CSV-Captain-Search)  to WS-CSV-Held-Cap
               move function upper-case (CSV-Replace-Captain) to WS-CSV-Cap-Sub-Name
-              move function upper-case (CSV-New-Cap)         to WS-CSV-New-Cap.
+              move function upper-case (CSV-New-Cap)         to WS-CSV-New-Cap
               if       CSV-Rec-Pos4Search numeric
                  and   CSV-Rec-Pos4Search9 > zero and < 97
                        move  CSV-Rec-Pos4Search9 to WS-CSV-Rec-Pos4Search
@@ -3964,11 +4031,11 @@
 *>
      move     CSV-Src-Position    to WS-CSV-Src-Position    (WS-CSV-Table-Size).
      move     CSV-Target-Fld-No   to WS-CSV-Target-Fld-Pos  (WS-CSV-Table-Size).
-     if       CSV-Src-No-Quotes not = space
-              move 1              to WS-CSV-Src-No-Quotes   (WS-CSV-Table-Size).
+ *>    if       CSV-Src-No-Quotes not = space                   *> Not used yet.
+ *>             move 1              to WS-CSV-Src-No-Quotes   (WS-CSV-Table-Size).
      move     1 to SW-CSV-Data-Received.                 *> position data read
-     if       CSV-Src-Position not = zero
-              add 1 to Y.
+     if       CSV-Src-Position not = zero                *> count of fltlog records used in rec type 1
+              add 1 to Y.                                *>  as we need the minimum
      move     zero to Return-Code.
      go       to F199-exit.
 *>
@@ -4010,13 +4077,17 @@
      evaluate WS-CSV-Held-Time1-Format
               when "MMMM"       move  3 to WS-CSV-Time-1-Format
               when "HHMM"       move  1 to WS-CSV-Time-1-Format
-              when "HH.MM"      move  2 to WS-CSV-Time-1-Format
+              when "HH.MM"
+              when "HH:MM"
+                                move  2 to WS-CSV-Time-1-Format
               when other      go to F298-Param-Error
      end-evaluate.
      evaluate WS-CSV-Held-Time2-Format
               when "MMMM"       move  3 to WS-CSV-Time-2-Format
               when "HHMM"       move  1 to WS-CSV-Time-2-Format
-              when "HH.MM"      move  2 to WS-CSV-Time-2-Format
+              when "HH.MM"
+              when "HH:MM"
+                                move  2 to WS-CSV-Time-2-Format
               when other      go to F298-Param-Error
      end-evaluate.
 *>
@@ -4114,6 +4185,7 @@
 *>     (such as 'SELF' converted to upper case)
 *> but only when processing fld-pos (6) CAPTAIN
 *>
+     move     spaces to CSV-Data-Record.
      read     CSV-Data-File at end
               display  "CSV Records in  - "   at line ws-21-lines col 01 with erase eol
               display  CSV-Recs-In            at line ws-21-lines col 19
@@ -4127,43 +4199,64 @@
               display  space at line ws-21-lines col 01 with erase eos
               go to F599-Exit.
 *>
+     if       CSV-Data-Record (1:10) = spaces        *> JIC that a blank line is present.
+              go to F510-Read-CSV-File.
+*>
      add      1 to CSV-Recs-In.
-     move     zero to B C
-                      SAVE-FLT-Mth Save-FLT-HH Save-FLT-MM.
+     move     zero to  B C Return-Code
+                       SAVE-FLT-Mth Save-FLT-HH Save-FLT-MM.
      move     1 to A.
      initialise Flightlog-Record.
-     perform  varying B from 1 by 1 until B > WS-CSV-Table-Size
-              if      B > WS-CSV-Table-Size
-                  or  A not < WS-CSV-Rec-Size     *> Max length of CSV data record def'd in WS
-                      exit perform
+     perform  varying  B from 1 by 1 until B > WS-CSV-Table-Size
+              if       B > WS-CSV-Table-Size
+                  or   A not < WS-CSV-Rec-Size     *> Max length of CSV data record def'd in WS
+                       exit perform
               end-if
-              if      A = 1                    *> only done once
-                and   CSV-Data-Record (1:1) = quote or = "'"
-                and   WS-Data-Delim (1:1) not = CSV-Data-Record (1:1)
-                      move CSV-Data-Record (1:1) to WS-Data-Delim (1:1)
+              move     zero to Return-code
+              if       A = 1                    *> only done once
+                and    CSV-Data-Record (1:1) = quote or = "'"
+                and    WS-Data-Delim (1:1) not = CSV-Data-Record (1:1)
+                       move CSV-Data-Record (1:1) to WS-Data-Delim (1:1)
               end-if
-              add     1 to A
-              move    spaces to WS-CSV-Work
-              move    zeros  to WS-CSV-Work-Count
-              if      B = WS-CSV-Table-Size       *> test for the last CSV field without a comma
-                      unstring CSV-Data-Record
-                                 delimited by WS-Data-Delim (1:1) or space
-                                into WS-CSV-Work
-                                  count  WS-CSV-Work-Count
-                                  pointer A
-                      end-unstring
+              move     spaces to WS-CSV-Workx
+              move     zeros  to WS-CSV-Work-Count
+                 move CSV-Data-Record (A:1) to WS-Tmp-Delim
+              if       CSV-Data-Record (A:1) =   quote or = "'"
+                       add 1 to A
+                       perform F520-Unstring
               else
-                      unstring CSV-Data-Record
-                                delimited by WS-Data-Delim or ","
-                                into WS-CSV-Work
-                                  count  WS-CSV-Work-Count
-                                  pointer A
-                      end-unstring
+                       perform F530-Unstring
               end-if
+*> TESTING
+              if   SW-Testing
+                display  "Fld = " at line ws-19-lines col 01
+                move     B to WS-Display4
+                display  WS-Display4 at line ws-19-lines col 07
+                display  "Ptr="     at line ws-19-lines col 12
+                move     A  to WS-display4     *> pointer
+                display  ws-display4  at line ws-19-lines col 16
+                if       WS-CSV-Work-Count = zero
+                         move 1 to ws-csv-work-count
+                end-if
+                display  WS-CSV-Work (1:WS-CSV-Work-Count) at line ws-19-lines col 21 with erase eol
+                display  "Delim="  at line ws-19-lines col 41
+                display  WS-Tmp-Delim  at line ws-19-lines col 47
+                display  "Delim found=" at line ws-19-lines col 50
+                display  WS-CSV-Work-Delim  at line ws-19-lines col 62
+                display  "Cnt="  at line ws-19-lines col 66
+                move     WS-CSV-Work-Count to WS-Display4
+                display  ws-display4 at line ws-19-lines col 70
+                display  FL017  at line ws-20-lines col 01
+                accept   ws-reply at line ws-20-lines col 32
+              end-if
+*>
               if       WS-CSV-Rec-Pos4Search not = zero            *> test for P2/p3 pilot record if rec 6 present & set.
                  and   B = WS-CSV-Rec-Pos4Search                   *> have type 6 with src-pos matching current CSV pos
-                 and   WS-CSV-Work (1:30) not = WS-CSV-Held-Cap    *> searching for specific Name for P2/3 pilots in fld nn
-                       go to F510-Read-CSV-File
+                 and   function upper-case (WS-CSV-Work (1:30))
+                                      not = WS-CSV-Held-Cap        *> searching for specific Name for P2/3 pilots in fld nn
+                       move 2 to Return-Code
+                       exit perform
+                         *> go to F510-Read-CSV-File
               end-if
 *>
 *> So if rec 6 set for finding P2/3 record it will be current as else get next CSV record.
@@ -4247,8 +4340,9 @@
                                                                  WS-Tmp-Captain
                        if       WS-CSV-Held-Cap not = spaces
                          and    WS-CSV-Rec-Pos4Search = zeros    *> Not looking for P2/3 pilot
-                         and    WS-CSV-Held-Cap not = WS-CSV-Work (1:30)
-                                go to F510-Read-CSV-File
+                         and    WS-CSV-Held-Cap not = FLT-Captain     *>   WS-CSV-Work (1:30)
+                                move 2 to Return-Code
+                                exit perform                     *> go to F510-Read-CSV-File
                        end-if
                        if       WS-CSV-Cap-Sub-Name not = spaces
                                 move WS-CSV-Cap-Sub-Name to FLT-Captain
@@ -4327,6 +4421,8 @@
                        exit perform cycle
               end-if
      end-perform.
+     if       Return-Code = 2                *> type 6 rec not satisfied.
+              go       to  F510-Read-CSV-File.
 *>
 *> Update Aircraft type last-flt and same for airfield FROM and TO
 *>
@@ -4392,6 +4488,48 @@
      end-if
 *>
      go       to  F510-Read-CSV-File.
+*>
+ F520-Unstring.
+     move     spaces to WS-CSV-WorkX.
+     move     zero   to WS-CSV-Work-Count.
+     if       B not < WS-CSV-Table-Size       *> test for the last CSV field without a comma
+              unstring CSV-Data-Record
+                     delimited by quote or "'"  *>  '"' or "'"         *>    WS-Data-Delim (1:1)
+                       into WS-CSV-Work
+                       delimiter in WS-CSV-Work-Delim
+                       count  WS-CSV-Work-Count
+                       pointer A
+              end-unstring
+     else
+              unstring CSV-Data-Record
+                     delimited by '",' or "',"     *> WS-Data-Delim
+                       into WS-CSV-Work
+                       delimiter in WS-CSV-Work-Delim
+                       count  WS-CSV-Work-Count
+                       pointer A
+              end-unstring
+     end-if.
+*>
+ F530-Unstring.
+     move     spaces to WS-CSV-WorkX.
+     move     zero   to WS-CSV-Work-Count.
+     if       B not < WS-CSV-Table-Size       *> test for the last CSV field without a comma
+              unstring CSV-Data-Record
+                     delimited by "    "
+                       into WS-CSV-Work
+                       delimiter in WS-CSV-Work-Delim
+                       count  WS-CSV-Work-Count
+                       pointer A
+              end-unstring
+     else
+              unstring CSV-Data-Record
+                     delimited by ","
+                       into WS-CSV-Work
+                       delimiter in WS-CSV-Work-Delim
+                       count  WS-CSV-Work-Count
+                       pointer A
+              end-unstring
+     end-if.
 *>
  F550-Convert-Date.
      evaluate WS-CSV-Date-Format
@@ -4499,7 +4637,7 @@
                   else
                            move 8 to Return-Code
                   end-if
-              when  2     *> HH.MM
+              when  2     *> HH.MM or HH:MM
                   if       WS-CSV-Work (1:2) numeric
                       and  WS-CSV-Work (4:2) numeric
                            move     WS-CSV-Work9 (1:2) to WSF-HH
@@ -4789,6 +4927,8 @@
  ZL010-Process-Flightlog.
      read     Flightlog-File next at end
               go to ZL020-Process-Aircraft.
+     if       FS-Reply not = "00"
+              go to ZL020-Process-Aircraft.
      write    FlightlogBackup-Record from Flightlog-Record.
      if       FS-Reply not = "00"
               display FL029 at 1201 with erase eol
@@ -4799,6 +4939,8 @@
  ZL020-Process-Aircraft.
      read     Aircraft-File next at end
               go to ZL030-Process-Airfield.
+     if       FS-Reply not = "00"
+              go to ZL030-Process-Airfield.
      write    AircraftBackup-Record from Aircraft-Record.
      if       FS-Reply not = "00"
               display FL030 at 1201 with erase eol
@@ -4808,6 +4950,8 @@
 *>
  ZL030-Process-Airfield.
      read     Airfield-File next at end
+              go to ZL040-Finish.
+     if       FS-Reply not = "00"
               go to ZL040-Finish.
      IF       icao-code not alphabetic go to ZL030-Process-Airfield.
      write    AirfieldBackup-Record from Airfield-Record.
