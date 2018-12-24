@@ -59,10 +59,10 @@
        88 V-NO                         VALUE 0.
        88 V-YES                        VALUE 1.
    02 LNK-OUTPUT.
-     03 LNK-SESSION-ID-BIN             PIC X(32).
-     03 LNK-SESSION-ID-HEX             PIC X(64).
-     03 LNK-USER-AGENT-HASH-BIN        PIC X(32).
-     03 LNK-USER-AGENT-HASH-HEX        PIC X(64).
+     03 LNK-SESSION-ID-BIN             PIC X(64).
+     03 LNK-SESSION-ID-HEX             PIC X(128).
+     03 LNK-USER-AGENT-HASH-BIN        PIC X(64).
+     03 LNK-USER-AGENT-HASH-HEX        PIC X(128).
  
  PROCEDURE DIVISION.
 

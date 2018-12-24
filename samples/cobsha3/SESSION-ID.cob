@@ -19,18 +19,18 @@
 *>******************************************************************************
 *> Program:      SESSION-ID.cob
 *>
-*> Purpose:      This module computes a session ID with SHA3-256. 
+*> Purpose:      This module computes a session ID with SHA3-512. 
 *>
 *> Author:       Laszlo Erdos - https://www.facebook.com/wortfee
 *>
 *> Date-Written: 2018.05.10
 *>
-*> Tectonics:    cobc -m -free SESSION-ID.cob SHA3-256.o KECCAK.o
+*> Tectonics:    cobc -m -free SESSION-ID.cob SHA3-512.o KECCAK.o
 *>
 *> Usage:        Call this module in your web application. It creates a session
 *>               ID from the IP address of the visitor. This is the REMOTE_ADDR 
 *>               CGI Environment Variable. To the IP address will be append a
-*>               timestamp and a random number. After it will be SHA3-256 
+*>               timestamp and a random number. After it will be SHA3-512 
 *>               called to create a hash. The output hash is available in binary
 *>               and in hexadecimal format.
 *>               It creates also a USER-AGENT-HASH from the HTTP-USER-AGENT CGI
@@ -41,6 +41,8 @@
 *> ========== ==================================================================
 *> 2018.05.10 Laszlo Erdos: 
 *>            - First version created.
+*> 2018.12.24 Laszlo Erdos: 
+*>            - Changed from SHA3-256 to SHA3-512.
 *>------------------------------------------------------------------------------
 *> yyyy.mm.dd
 *>
@@ -53,9 +55,9 @@
 
  DATA DIVISION.
  WORKING-STORAGE SECTION.
- 01 WS-SHA3-256-INPUT                  PIC X(8000).
- 01 WS-SHA3-256-INPUT-BYTE-LEN         BINARY-DOUBLE UNSIGNED.
- 01 WS-SHA3-256-OUTPUT                 PIC X(32).
+ 01 WS-SHA3-512-INPUT                  PIC X(8000).
+ 01 WS-SHA3-512-INPUT-BYTE-LEN         BINARY-DOUBLE UNSIGNED.
+ 01 WS-SHA3-512-OUTPUT                 PIC X(64).
 
  01 WS-CURRENT-DATE-AND-TIME           PIC X(21). 
  01 WS-CDT REDEFINES WS-CURRENT-DATE-AND-TIME.
@@ -84,14 +86,15 @@
 
  01 WS-IND-1                           BINARY-INT.
  01 WS-IND-2                           BINARY-INT.
+ 01 WS-STR-POINTER                     PIC 9(4).
 
- 01 WS-NUM-DATA                        PIC X(32).
+ 01 WS-NUM-DATA                        PIC X(64).
  01 WS-NUM-TABLE REDEFINES WS-NUM-DATA.
-   02 WS-NUM                           PIC 9(2) COMP-5 OCCURS 32.
+   02 WS-NUM                           PIC S9(2) COMP-5 OCCURS 64.
  
- 01 WS-HEX-DATA                        PIC X(64).
+ 01 WS-HEX-DATA                        PIC X(128).
  01 WS-HEX-TABLE REDEFINES WS-HEX-DATA.
-   02 WS-HEX                           PIC X(2) OCCURS 32.
+   02 WS-HEX                           PIC X(2) OCCURS 64.
  
  LINKAGE SECTION.
  01 LNK-SESSION-ID.
@@ -105,10 +108,10 @@
        88 V-NO                         VALUE 0.
        88 V-YES                        VALUE 1.
    02 LNK-OUTPUT.
-     03 LNK-SESSION-ID-BIN             PIC X(32).
-     03 LNK-SESSION-ID-HEX             PIC X(64).
-     03 LNK-USER-AGENT-HASH-BIN        PIC X(32).
-     03 LNK-USER-AGENT-HASH-HEX        PIC X(64).
+     03 LNK-SESSION-ID-BIN             PIC X(64).
+     03 LNK-SESSION-ID-HEX             PIC X(128).
+     03 LNK-USER-AGENT-HASH-BIN        PIC X(64).
+     03 LNK-USER-AGENT-HASH-HEX        PIC X(128).
  
  PROCEDURE DIVISION USING LNK-SESSION-ID.          
 
@@ -136,8 +139,8 @@
 *>------------------------------------------------------------------------------
 
 *>  init fields
-    INITIALIZE WS-SHA3-256-INPUT
-    INITIALIZE WS-SHA3-256-OUTPUT
+    INITIALIZE WS-SHA3-512-INPUT
+    INITIALIZE WS-SHA3-512-OUTPUT
     INITIALIZE WS-CURRENT-DATE-AND-TIME
     INITIALIZE WS-RANDOM-NR
 
@@ -148,28 +151,45 @@
 *>  get random number with a seed of nano sec   
     MOVE FUNCTION RANDOM(WS-TV-NSEC) TO WS-RANDOM-NR
 
-*>  string all together    
+*>  init string pointer
+    MOVE 1 TO WS-STR-POINTER
+    
+*>  string all together 1. part   
     STRING LNK-REMOTE-ADDR OF LNK-SESSION-ID DELIMITED BY SPACE
            WS-CDT-DATE-AND-TIME              DELIMITED BY SIZE
            WS-RND-NR                         DELIMITED BY SPACE
            WS-TV-SEC                         DELIMITED BY SIZE
            WS-TV-NSEC                        DELIMITED BY SIZE
-      INTO WS-SHA3-256-INPUT
+      INTO WS-SHA3-512-INPUT
+      WITH POINTER WS-STR-POINTER
+    END-STRING  
+
+*>  get sec and nano sec  
+    PERFORM GETTIME
+*>  get random number with a seed of nano sec   
+    MOVE FUNCTION RANDOM(WS-TV-NSEC) TO WS-RANDOM-NR
+    
+*>  string all together 2. part   
+    STRING WS-RND-NR                         DELIMITED BY SPACE
+           WS-TV-SEC                         DELIMITED BY SIZE
+           WS-TV-NSEC                        DELIMITED BY SIZE
+      INTO WS-SHA3-512-INPUT
+      WITH POINTER WS-STR-POINTER
     END-STRING  
     
-    MOVE FUNCTION STORED-CHAR-LENGTH(WS-SHA3-256-INPUT) 
-      TO WS-SHA3-256-INPUT-BYTE-LEN    
+    MOVE FUNCTION STORED-CHAR-LENGTH(WS-SHA3-512-INPUT) 
+      TO WS-SHA3-512-INPUT-BYTE-LEN    
       
 *>  compute the hash      
-    CALL "SHA3-256" USING WS-SHA3-256-INPUT
-                          WS-SHA3-256-INPUT-BYTE-LEN
-                          WS-SHA3-256-OUTPUT
+    CALL "SHA3-512" USING WS-SHA3-512-INPUT
+                          WS-SHA3-512-INPUT-BYTE-LEN
+                          WS-SHA3-512-OUTPUT
     END-CALL
 
-    MOVE WS-SHA3-256-OUTPUT TO LNK-SESSION-ID-BIN OF LNK-SESSION-ID
+    MOVE WS-SHA3-512-OUTPUT TO LNK-SESSION-ID-BIN OF LNK-SESSION-ID
     
 *>  convert in hexa
-    MOVE WS-SHA3-256-OUTPUT TO WS-NUM-DATA
+    MOVE WS-SHA3-512-OUTPUT TO WS-NUM-DATA
     PERFORM DATA-BUFF-IN-HEXA
     MOVE WS-HEX-DATA        TO LNK-SESSION-ID-HEX OF LNK-SESSION-ID
     .
@@ -180,25 +200,25 @@
 *>------------------------------------------------------------------------------
 
 *>  init fields
-    INITIALIZE WS-SHA3-256-INPUT
-    INITIALIZE WS-SHA3-256-OUTPUT
+    INITIALIZE WS-SHA3-512-INPUT
+    INITIALIZE WS-SHA3-512-OUTPUT
 
     MOVE LNK-HTTP-USER-AGENT OF LNK-SESSION-ID
-      TO WS-SHA3-256-INPUT
+      TO WS-SHA3-512-INPUT
     
-    MOVE FUNCTION STORED-CHAR-LENGTH(WS-SHA3-256-INPUT) 
-      TO WS-SHA3-256-INPUT-BYTE-LEN    
+    MOVE FUNCTION STORED-CHAR-LENGTH(WS-SHA3-512-INPUT) 
+      TO WS-SHA3-512-INPUT-BYTE-LEN    
       
 *>  compute the hash      
-    CALL "SHA3-256" USING WS-SHA3-256-INPUT
-                          WS-SHA3-256-INPUT-BYTE-LEN
-                          WS-SHA3-256-OUTPUT
+    CALL "SHA3-512" USING WS-SHA3-512-INPUT
+                          WS-SHA3-512-INPUT-BYTE-LEN
+                          WS-SHA3-512-OUTPUT
     END-CALL
 
-    MOVE WS-SHA3-256-OUTPUT TO LNK-USER-AGENT-HASH-BIN OF LNK-SESSION-ID
+    MOVE WS-SHA3-512-OUTPUT TO LNK-USER-AGENT-HASH-BIN OF LNK-SESSION-ID
     
 *>  convert in hexa
-    MOVE WS-SHA3-256-OUTPUT TO WS-NUM-DATA
+    MOVE WS-SHA3-512-OUTPUT TO WS-NUM-DATA
     PERFORM DATA-BUFF-IN-HEXA
     MOVE WS-HEX-DATA        TO LNK-USER-AGENT-HASH-HEX OF LNK-SESSION-ID
     .
@@ -225,7 +245,7 @@
     INITIALIZE WS-HEX-DATA
     
     PERFORM VARYING WS-IND-1 FROM 1 BY 1
-            UNTIL   WS-IND-1 > 32
+            UNTIL   WS-IND-1 > 64
 
        MOVE WS-NUM(WS-IND-1) TO WS-NUM2HEX-IN
        PERFORM NUM2HEX
