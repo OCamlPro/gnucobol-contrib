@@ -1,0 +1,185 @@
+This flightlog update fixes some bugs and increases the size of the airfield
+name from 20 characters to 36 to help cover some of the European airfields
+that have longer than average names as well as
+for military use (Navy) aircraft carriers.
+
+If there is no ICAO code allocated to them or no hull code that can be
+abbreviated to 4 characters say such as CUL-87 to CL87 then
+create a code say starting from: Z000 or ZL00 onwards.
+Correct we do not know as cannot find out but if you know and
+where they are listed let us know via email.
+
+For private airfields that also have no ICAO coding use code starting from
+ZAAA for the first ZAAB 2nd etc.
+
+If an airfield has a ICAO coding in the future you can replace the Z coding
+with the correct one using menu option K for the odd one or two or
+Option H for more that will change the airfield file entry and all
+flights that use the old name changing to the new one, easy.
+
+Your choice though.
+
+--------------------------
+
+This is for the software version v2.02.nn that updates versions
+v2.01.
+If you are updating from a v2.02 version you have already
+updated the Airfield file - Well you should have done :)
+
+
+This version v2.02. requires a special program to be run
+before the new version of Flightlog can be used as the airfield
+file has been changed.
+
+It is important that you follow these procedures first in the given order
+before compiling the new version.
+
+READ IT THROUGH FIRST BEFORE DOING SO.
+
+IT MUST ONLY BE DONE, ONCE.
+
+These instructions are for Linux so modify them if using
+ Windows.
+
+A. Preparation for update.
+   Note where you have downloaded the new flightlog version to.
+
+   Make sure you do the following :
+
+ 1. Open the terminal program you use for flightlog
+    Now change to the working directory you use for flightlog.
+    E.g., cd flightlog
+
+ 2. Using your existing version of Flightlog select option S
+    to create sequentual files then exit.
+
+    Confirm that you now have six files in the working directory =
+    airfield.dat
+    airfield.seq
+    aircraft.dat
+    aircraft.seq
+    flitelog.seq
+    flitelog.seq
+
+    by using ls -la
+
+    and that the date and time of the .seq files are a minutes or so ago.
+     Just to make sure they are not old copies.
+
+ 3. Find where the flightlog program is and if not there already, copy it
+    to your working directory,  you can use the command :
+      whereis flightlog
+
+      which will show you where it is. If it does not return with a location
+      then you have it in the directory where you run flightlog from.
+
+ 4. Using your archiver of choice make a back up of the 6 data files AND
+    the flightlog program, replacing 'yyyymmdd' with todays date so:
+
+    Using zip do :
+      zip -9 backup-v2.01-pre-update-yyyymmdd.zip *.dat *.seq flightlog
+
+     Now test the archive
+       unzip -vt backup-v2.01-pre-update-yyyymmdd.zip
+
+   OR Using rar do :
+      rar a backup-v2.01-pre-update-yyyymmdd.rar *.dat *.seq flightlog
+
+     Now test the archive
+     rar tv backup-v2.01-pre-update-yyyymmdd.rar
+
+ 5.  You can now delete the flightlog file if you copied it in step 2 ONLY by
+     rm -f flightlog
+
+ 6.  copy the archive created to the backups directory by:
+     cp -vp backups
+
+     Change the name of 'backups' if different to the one you use.
+
+
+
+B.  You may want to save the current source file version of flightlog
+    if you have not got the downloaded archive of it, check this now.
+
+    You can save it in backups or create a directory in backups to
+    hold the directory holding the source file along with all other
+    files that came with it. Use your archiver of choice as in step 4.
+
+    Now to work on the updated source file that came with this file:
+
+ 1. Go to the directory containing the sub directory that hold the previous
+    version of flightlog and create a new directory called flightlog.2.02.00
+    [  mkdir flightlog.2.02.00 ]
+
+    Change to that directory [ cd flightlog-2.02.00 ]
+
+    Now un archive the updated flightlog archive using
+    unrar ~/Downloads/archivefilename
+
+    or rar e ~/Downloads/archivefilename
+
+    or unzip ~/Downloads/archiverfilename
+
+    or tar xfvz ~/Downloads/archiverfilename
+     You may have to exclude the 'z' param above if you get an error.
+
+ 2. The following assumes you installed the cobol compiler from last time so:
+    run :
+    cobc -x afldconv1.cbl
+    cobc -x flightlog.cbl
+
+    These should have completed with NO error or warning messages but if so find out
+    why and fix the issue/s and rerun.
+
+ 3. Copy flightlog to the same directory you found it in step 3 replacing
+    the old version. Shown here but may not be the correct location :
+      [ cp -f flightlog ~/bin ]
+     but it is the usual one for Linux based systems but yours could be different :)
+
+ 4. Next is running the convert program afldconv1, so now run:
+    afldconv1
+
+    The program needs file airfield.seq and creates a new airfield.dat.
+     THIS REPLACE THE ORIGINAL ONE.
+
+    The display should show each of these on their own lines near the bottonm of
+    screen as the number of:
+
+    records read
+    records written
+      with a message "File converted" to confirm all is well.
+
+     The values for read and written must be the same otherwise it
+       indicates problems that must be resolved before continuing but
+       report it as a bug / problem by email direct to vbcoen@gmail.com
+
+ 5. Assuming all is well and afldconv1 completed correctly
+    you can now delete the program afldconv1 by [ rm -f afldconv1 ].
+
+ 6. Update is now complete and you can use the updated version of flightlog.
+
+
+See the file README.1st if it exists, for any important last minute information.
+
+
+
+Changelog :
+
+ 19/12/18 vbc - 2.02.00 Coding to change afld name from 20 - 36 chars.
+                        Change Afld entry option K to support changed length.
+                        Change Afld entry during Flight data entry/amend.
+
+                        Tables for EBCDIC to ASCII updated for redefines.
+                        Just need to add in the inspect, converting code during the read
+                        of the data file. Now added - the problem will be to find
+                        data to test it with. USer running CSV import any one got a EBCDIC
+                        CSV data file for testing ?
+                        Removed the airfield sort but kept the 'not print unused aflds'
+                        facility. Sort by date just made it hard to read anyway.
+
+ 24/12/18 vbc - 2.02.01 Experiment for using airfield names in place of ICAO codes
+                        PR11, PH11 ?     from TODO (2).
+                        BUG - Using HIDDEN menu options 3 & 4 for C & D respectively.
+                        Carried totals not happening chg test for > 1 instd of > 0
+
+ 31/12/18 vbc - 2.02.03 Mostly typos and added some extra help.

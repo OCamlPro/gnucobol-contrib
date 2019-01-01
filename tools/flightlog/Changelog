@@ -1,26 +1,28 @@
  Changelog created from the Changes lists in Flightlog program sources
   where the latest is last: Note 'e' after version # is guessed.
-  This includes ALL changes to the source including bug fixes etc
-  found while testing as well as feature additions
-  since the start of programming including version for IBM & ICL m/f's
-   and yes there is a lot. That is what happens during testing :)
-   Note that many feature changes can themselves be changed further
-   down in this Changelog.
-   First two digits in version number represent the major and minor
-   number where minot changes within a major version.
-   The third number is the build number and is incremented by 1 for each
-   change done at the same time.
+  This includes ALL changes to the source including bug fixes etc found while
+  testing as well as feature additions since the start of programming including
+  version for IBM & ICL m/f's and yes there is a lot. That is what happens
+  during testing :)
+  Note that many feature changes can themselves be changed further down in this
+  Changelog.
+  First two digits in version number represent the major and minor number where
+  minot changes within a major version.
+  The third number is the build number and is incremented by 1 for each
+  change done at the same time.
 
-   When reporting bugs please always specify the full version of
-   the Flightlog program as displayed or printed.
+  When reporting bugs please always specify the full version of
+  the Flightlog program as displayed or printed.
 
-   Data compatability between versions will where ever possible, always be the
-   same but if a change HAS to be made, a data conversion program will be supplied
-   with a name starting with 'conv' and this will need to be built (if O/S version)
-   then run prior to running the latest Flightlog version having saved your data
-   files to a 'back up' directory in case of a problem
-       and this is vital that you do so before using such a program.
+  Data compatability between versions will, where ever possible, always be the
+  same but if a change HAS to be made, a data conversion program will be supplied
+  with a name starting with 'xxxxconv' and this will need to be built
+  (if O/S version) then run, prior to running the latest Flightlog version
+  having saved your data files to a 'back up' directory in case of a problem
+   and this is vital that you do so before using such a program.
 
+??/??/76 vbc - 0.nn    Original written in Basic.
+??/??/8? vbc - 0.nn    Rewritten in Cobol for m/f and msdos.
 17/11/86 VBC - 1.00    PROG CREATION for MF workbench v3 - OS/2, Windows & Cromix.
 18/01/87 VBC - 1.01e   SHORT PRINT
 21/04/87 VBC - 1.02e   TIDY UP PROG.
@@ -28,6 +30,7 @@
 07/06/88 vbc - 1.04e   Changes to run on cobol2 (MF workbench) removing CICS.
 02/12/89 vbc - 1.20e   Support for escape, function keys, see airfields on
                        log book data entry and see Aircraft & other tidyups.
+
 08/09/18 vbc - 1.26    Migration to GnuCOBOL and sources converted to
                        Free format.
                        Start to use Screen Section for data entry / display etc,
@@ -49,10 +52,12 @@
                        Aircraft table. Airfield file is ISAM so already done.
                        If sort fails then new deleted and backup file renamed back
                           to main file. At least the Anal. report will look cleaner.
+
 11/09/18 vbc - 1.26.06 Clean up anal heads and other stuff I have forgotten
                        Change format for all COMP fields in log file to display
                        as space saved is minor but will help in future data migration
                        if needed.
+
 13/09/18 vbc - 1.27.01 On error during sorts and file rebuild, restore original
                        data file by copying *.bak to *.dat. See note for build .05.
                    .02 Change top menu order with Enter log book as A and
@@ -96,9 +101,13 @@
                       Consider addding report option to use airfield names in place of ICAO
                       codes but will increase width of reports - 160+ col paper any one?
                       Now producing a listing of airfields near end of report instead.
+
                1.27.20 Updated the copyright notices
+
                1.28.00 Increased version number to 1.28 and resetting build number to 0.
+
                    .01 Set COB_EXIT_WAIT false to stop the End of Program msg.
+
                    .02 Moved error messages etc to literals with SY of FL prefixes.
                        A few left as may well cause confusion, when reading code.
                        Removed the option of creating data files as now
@@ -183,6 +192,7 @@
                        Added field WS-Elapsed-HHMM to compute estimated Pn time
                        in logbk entry but a bit of a guess. Added FL022 for
                        time compute problems after entry of P1, P2/3 & IFR.
+
 01/10/18 vbc - 1.30.00 Updated version as lots of changes.
                        Amend logbook merged into Logbook entry code - saves 800+ lines
                        of source code.
@@ -280,6 +290,7 @@
 16/10/18 vbc           Open all files at top menu ONLY and likewise close them
                        removing code doing same elsewhere.
                        Using the airfield and acft tables for statistical reporting.
+                       Update file records for each at end for dates & flights.
 18/10/18 vbc           Renumbering FL error/warning mesages to omit unused ones.
                        With files moving to ISAM, all sort code removed.
                        Backup files now used to create Sequential version of the ISAM
@@ -288,6 +299,7 @@
                        File defs done for csv flight data import file as received from
                        airline.  NORMALLY FOR COMMERCIAL PILOTS ONLY.
                        Removed unused messages and WS fields that are not required.
+
 19/10/18 vbc - 1.31.01 Fixed bug/s as afld and acft tables not loaded for reporting.
                        Added extra afld fields last-flt & cnt for aflds for reporting
                        and last flight for acft.
@@ -298,7 +310,7 @@
                    .04 A/C repos for date.
                    .05 Repo move for month test for B/C fwd sub totals.
                    .06 Not getting space in airfields on chg of 1st 2 letters.
-                   .07 FOr airfields was testing for Z & USA is K.
+                   .07 For airfields was testing for Z & USA is K.
 
  19/10/18 vbc - 1.32.00 Added new option Change Aircraft type for all log book entries and
                         the Aircraft file. Yes I did, PA28-235 should be PA28-236.
@@ -369,9 +381,10 @@
                           4 (Airfield).
                           3 (CDF data file name).
 
-                       Note that 'CSV' has been replaced with 'CDF'
+                       Note that 'CSV' has replaced 'CDF'
                             (Comma Delimited File) throughout program including
-                            these notes.
+                            these notes. CSV is the correct term even though CDF
+                            explains it better.
 
                     .21 Bug fix for saving airfield table at end of Afld Edit.
                     .22 Forgot to make FLT narrative other than remarks upper-case.
@@ -423,6 +436,7 @@
                     .02 Must try and find out where it is happening!
                     .03 Reports date is still uk for USA - Nope is OK bad data
                         in test data definitions. Passes all 21 tests.
+
  08/11/18 vbc - 2.01.04 Updated CDF type 6 tests src-pos (6) in F500 with conv to UC.
                         More CDF def data testing.
                     .05 Forgot to add display FL011 to 'FLT-TO2'.
@@ -511,3 +525,88 @@
                              Aircraft-Man    pic x(20)
                              Aircraft-Name   pic x(20) both 20 characters long.
                         Print report PR4 allows, again remarked out.
+ 07/12/18 vbc -     .28 Changed CA235-Save to update dates for Airfield and Aircraft if
+                        FLT-Date > stored date regardless od Entry or Amend mode.
+                        extra comments in Remarks (above) regarding prtpdf and extra
+                        packages required. Change goto  C000-EDIT-LOG-BOOK to a
+                        perform with it returning to, then a900.
+ 10/12/18 vbc -     .29 Change spelling and case in main menu options.
+ 11/12/18 vbc -     .30 Change CSV code for instance of only processing type 4 & 5
+                        records and if so CSV processing has finished correctly.
+                        Code was not complying with manual.
+                    .31 Extra coding for CSV without quotes around specific data
+                        fields that adds one new field to type 1 rec. Bug #001
+                        Bug #002 - non P1 crew cannot record capacity when importing
+                        CSV data - To be fixed.
+                        Change line-cnt-size-1 to 53 from 55 and
+                               line-cnt-size-2 to 47 from 49.
+ 13/12/18 vbc -     .32 Change add to Line_Cnt specific at point of WRITE in CCA.
+ 14/12/18 vbc -     .33 Change end of F510 on CSV rec o/p on getting dup key
+                        after the first one to display FL041 the next line '.'
+                        for every dup rec, up to rec 106. This in case user has
+                        re-input the same data.
+                        Added on CSV rec type 6 new field 6 moving existing to Field 7
+                        where new field is non P1 crew Capacity designation. For
+                        companies that do not include it in data record.
+                        Allow CSV data to contain no quotes between commas (F500).
+                    .34 Forgot the code for New rec 6, Fld 6 but can it really be
+                        one move just before writing the record out ?
+                    .35 Created tables for converting EBCDIC to ASCII.
+                        There is NO coding for processing this - subject to requests
+                        but will need to use rec type 3 field 2 to specify the need to
+                        do so as "E". See TODO (7).
+                        Allow csv rec 2 fields 2 & 3 to also accept hh:mm.
+                    .36 Extra tests in F501 for not using fields in quotes.
+                    .37 Extra tests in ZL000-Create-Seq-Files for non zero status
+                        on reads in case empty file.
+                    .38 More chgs for csv data.
+                    .39 CSV-TEST for P1 to display field values on CSV import.
+                    .40 Removed very tmp test code but leaving the test (.39)
+                        as useful if needing to test CSV config
+                        Fault found on test for delimiter (quote or ') was 2 if's
+                        should have been if else. Only showed up on last rec 1 type.
+ 18/12/18 vbc -     .41 Update to F520 to use quote an "'"
+                    .42 Change in CCB020-Create-Airfield default name to
+                        NAME MISSING to help make it stand out for any missing
+                        Airfields.
+                    .43 Was not testing CSV-Captain-Search against upper-case
+                        captains name in CSV field.
+                    .44 Changed program P2 parameter to start with 'CSV=' and sizes of
+                        all P's to 64 chars. GC gets upset at 128.
+
+ 19/12/18 vbc - 2.02.00 Coding to change afld name from 20 - 36 chars.
+                        Change Afld entry option K to support changed length.
+                        Change Afld entry during Flight data entry/amend.
+
+                        Tables for EBCDIC to ASCII updated for redefines.
+                        Just need to add in the inspect, converting code during the read
+                        of the data file. Now added - the problem will be to find
+                        data to test it with. TODO (7) done.
+                        Removed the airfield sort but kept the 'not print unused aflds'
+                        facility. Sort by date just made it hard to read anyway.
+
+ 22/12/18 vbc - 2.02.01 Experiment for using airfield names in place of ICAO codes
+                        PR11, PH11 ?     from TODO (2).
+                        BUG - Using HIDDEN menu options 3 & 4 for C & D respectively.
+                        Carried totals not happening chg test for > 1 instd of > 0
+                        also BF totals need extra blank line after.
+                        BUG - Loading airfields from file don't set last-flt so anal will
+                        valid data if a flight was amended changing the Afld
+                        BUG - In ZP000 on read invalid just goto reread table as any missing
+                        result of a delete in option K.
+                        Feature - Aircraft report for options C, D, 3 & 4. did not for C / 3.
+
+ 28/12/18 vbc - 2.02.02 Increased character set for converting between EBCDIC and ASCII
+                        more special characters. Need to access MVS to test it.
+
+ 29/12/18 vbc       .03 CSV - Missed comma period in EBCDIC and ASCII tables.
+                        EBCDIC tested using PDS VB .
+                    .04 Problem with end of line that is not there so data
+                        is one big block. This will not work less plan 2 can be
+                        created and no, no idea at the moment.
+                        AS this issue cannot be resolved when using a normal data
+                        processing for ASCII data records as Line Sequential this
+                        function is being removed (Data conversion EBCDIC to ACSII).
+                        Method of storing original data on m/f can vary and process
+                        to get around this problem will also vary so function removed.
+                        Remove this from manual.

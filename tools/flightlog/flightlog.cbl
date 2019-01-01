@@ -11,7 +11,7 @@
  AUTHOR.           V.B.COEN MBCS.
 *>**
  DATE-WRITTEN.     17th NOVEMBER 1986.
- *> DATE-UPDATED.    November 2018. Major update from MF version.
+ *> DATE-UPDATED.    September - December 2018. Major update from MF version.
 *>**
  DATE-COMPILED.    TO-DAY.   *> GC does NOT update.
 *>**
@@ -20,16 +20,21 @@
 *>                 v2.0. Only. See the file COPYING for details.
 *>**
  REMARKS.          Personal Flight Log Book Program.
+*>                 For all air crew including PPL, CPL, ATPL,
+*>                 military and other crew members including
+*>                 Engineers, Radio, Radar operators, GIBs etc.
 *>                 Reports only released AFTER closing program
 *>                 as all files only closed at end with all reports
 *>                 being cumulative.
 *>
 *>                 WARNING: The data files used for this version are NOT
-*>                 compatable with the original (version 1.0).
+*>                 compatible with the original (version 1.0 series that
+*>                 was issued between 1986 and 2012) nor prior versions
+*>                 dated from 1976 with versions before 1.00.
 *>
 *>                 NOTE this program creates a report file that
 *>                 you can pass through a word processing program
-*>                 such as LibreOffice or MF Word to change then
+*>                 such as LibreOffice or Microsoft Word to change
 *>                 page layout such as margins (1.5cm), Landscape
 *>                 and font size (9pt) and Duplex long edge before
 *>                 printing. the file name is logbook.rpt.
@@ -38,31 +43,19 @@
 *>                 as each word processor is different but only
 *>                 involves a minute or so to change settings for
 *>                 producing a report.
+*>
 *>                 A script is provided called prtpdf.sh for Linux users
-*>                 to help do this but you might want or need to modify the
+*>                 to do this but you might want or need to modify the
 *>                 settings within it if needed to suit paper used although
 *>                 there are two versions with one for A4 and other for Letter.
+*>
 *>                 To help automate using this script, you need to
 *>                 install some additional packages, enscript,
-*>                 Postscript-common & the other requested elements for
-*>                 postscript that your Linux software installer specifies.
-*>
-*>                 Flightlog will also accept a comma delimited records file
-*>                 containing flights for the period (weekly, monthly etc)
-*>                 A minimum of three to four definition records in a
-*>                 configuration file must also be
-*>                 supplied for this to be used, and other than new aircraft
-*>                 types and new airport records, would be fixed information
-*>                 that is always supplied to the program when it reads
-*>                 CSV data. Note that Airfield & aircraft only have to be used
-*>                 once but if used more than once, the airfield name will be
-*>                 updated if different. Aircraft already recorded will be
-*>                 ignored. Aircraft and airfields can be input by themselves.
-*>                 See manual for more information.
+*>                 Postscript.
 *>
 *>                 Many of the notes herein are to remind me to include them
 *>                 in the user manual for Flightlog and will be stripped out
-*>                 once done.
+*>                 once done - may be.
 *>**
 *>  VERSION.       See PROG-NAME in ws.
 *>**
@@ -73,7 +66,7 @@
 *>                 when compiling.
 *>
 *>  Environment Variables used:
-*>                 COB_SCREEN_EXCEPTIONS  -  Set in program.  Used for GnuCOBOL.
+*>                 COB_SCREEN_EXCEPTIONS  -  Set in program.  Used for GnuCOBOL for accepting F keys.
 *>                 COB_SCREEN_ESC         -  Set in program.   -  ditto  -
 *>                 COB_EXIT_WAIT          -  Set in program.   -  ditto  -
 *>                 LC_TIME                -  Program checks for 1st five chars of values :
@@ -81,7 +74,7 @@
 *>                                           en_US (mm/dd/ccyy),
 *>                                           or unset for *nix
 *>                                            which gives ccmm/mm/dd.
-*>                                        ALL other settings will be treated as UNIX.
+*>                                          as all other settings will be treated as UNIX.
 *>                 If needed, a callable script that runs flightlog should be
 *>                 used to set LC_TIME and then call the program.
 *>                 See sample script/s for this that also does a backup,
@@ -108,7 +101,8 @@
 *>                 scr_dump
 *>                 scr_restore  -  Used when Functions keys F1 and F3 used
 *>                                 for displaying F1=Airfields & F3=Aircraft.
-*>                 This works under Linux but NOT tested under any other
+*>                 This works under Linux and on a Raspberry Pi 3B+
+*>                  but NOT yet tested under any other
 *>                 operating systems such as OSX, Windows.
 *>**
 *>  Called Modules.
@@ -125,13 +119,12 @@
 *>                      CSV-TEST         - Test displays (with pause) in csv processing after unstring
 *>                                         Useful to check for mistakes in CSV-config rec 1
 *>                                         problems. Otherwise do not use.
-*>                 P2 - CSV configuration, path and file name. starting with 'CSV='
+*>                 P2 - CSV= path and file name of CSV configuration file- Note it starts with 'CSV='
 *>                 P3 - ACFT-DATE = Produces report by lsat Date used.
-*>                 P4 - EBCDIC - Translation reqquired on CSV data file
-*>                      THIS IS NOT IMPLEMENTED. subject to user requests.
+*>                 Above parameters can be entered in any order (other than HELP)
 *>                 P1 = HELP | help | -H | -h  - Produces a Help screen then
 *>                      exists (after return).
-*>                 Note that | means or = Choices for the same thing.
+*>                 Note that | means OR = Choices for the same thing.
 *>******
 *>  Program Error messages used:  Supplied in English.
 *>  -------------------------------------------------
@@ -146,97 +139,44 @@
 *>                 SY021 thru SY024.  Config Data or CSV data incorrect.
 *>=
 *>  Operational, Warning or Error Messages:
-*>                 FL001 thru FL050.  Flightlog usage issues. (FL001, FL016, FL018 not used)
+*>                 FL001 thru FL050.  Flightlog usage issues. (FL016, FL018 not used)
 *>**
 *>  CHANGES.       All old changes saved to file Changelog as list is getting long!
 *>                  last two digits (.nn) is build number.
 *>
-*> 07/12/18 vbc -     .28 Changed CA235-Save to update dates for Airfield and Aircraft if
-*>                        FLT-Date > stored date regardless od Entry or Amend mode.
-*>                        extra comments in Remarks (above) regarding prtpdf and extra
-*>                        packages required. Change goto  C000-EDIT-LOG-BOOK to a
-*>                        perform with it returning to, then a900.
-*> 10/12/18 vbc -     .29 Change spelling and case in main menu options.
-*> 11/12/18 vbc -     .30 Change CSV code for instance of only processing type 4 & 5
-*>                        records and if so CSV processing has finished correctly.
-*>                        Code was not complying with manual.
-*>                    .31 Extra coding for CSV without quotes around specific data
-*>                        fields that adds one new field to type 1 rec. Bug #001
-*>                        Bug #002 - non P1 crew cannot record capacity when importing
-*>                        CSV data - To be fixed.
-*>                        Change line-cnt-size-1 to 53 from 55 and
-*>                               line-cnt-size-2 to 47 from 49.
-*> 13/12/18 vbc -     .32 Change add to Line_Cnt specific at point of WRITE in CCA.
-*> 14/12/18 vbc -     .33 Change end of F510 on CSV rec o/p on getting dup key
-*>                        after the first one to display FL041 the next line '.'
-*>                        for every dup rec, up to rec 106. This in case user has
-*>                        re-input the same data.
-*>                        Added on CSV rec type 6 new field 6 moving existing to Field 7
-*>                        where new field is non P1 crew Capacity designation. For
-*>                        companies that do not include it in data record.
-*>                        Allow CSV data to contain no quotes between commas (F500).
-*>                    .34 Forgot the code for New rec 6, Fld 6 but can it really be
-*>                        one move just before writing the record out ?
-*>                    .35 Created tables for converting EBCDIC to ASCII.
-*>                        There is NO coding for processing this - subject to requests
-*>                        but will need to use rec type 3 field 2 to specify the need to
-*>                        do so as "E". See TODO (7).
-*>                        Allow csv rec 2 fields 2 & 3 to also accept hh:mm.
-*>                    .36 Extra tests in F501 for not using fields in quotes.
-*>                    .37 Extra tests in ZL000-Create-Seq-Files for non zero status
-*>                        on reads in case empty file.
-*>                    .38 More chgs for csv data.
-*>                    .39 CSV-TEST for P1 to display field values on CSV import.
-*>                    .40 Removed very tmp test code but leaving the test (.39)
-*>                        as useful if needing to test CSV config
-*>                        Fault found on test for delimiter (quote or ') was 2 if's
-*>                        should have been if else. Only showed up on last rec 1 type.
-*> 18/12/18 vbc -     .41 Update to F520 to use quote an "'"
-*>                    .42 Change in CCB020-Create-Airfield default name to
-*>                        NAME MISSING to help make it stand out for any missing
-*>                        Airfields.
-*>                    .43 Was not testing CSV-Captain-Search against upper-case
-*>                        captains name in CSV field.
-*>                    .44 Changed program P2 parameter to start with 'CSV=' and sizes of
-*>                        all P's to 64 chars. GC gets upset at 128.
+*> 29/12/18 vbc       .04 Problem with end of line that is not there so data
+*>                        is one big block. This will not work less plan 2 can be
+*>                        created and no, no idea at the moment.
+*>                        AS this issue cannot be resolved when using a normal data
+*>                        processing for ASCII data records as Line Sequential this
+*>                        function is being removed (Data conversion EBCDIC to ASCII).
+*>                        Likewise P4 usage so now only 3 parameters maximum used when
+*>                        starting program.
 *>
 *> TODO maybe ? (outstanding):
 *>
-*>  30/09/18            2. Consider a compressed logbk report giving full remarks but using:
-*>                     airfield NAME and flight times only one's flown so that the Pn time
-*>                     data would look instead of P1 P2 P3 for day and night etc, be like:
-*>                     dep time arr time Pn hh.mm (day and night) IFR hh.nn Mult hh.nn.
-*>                     If flight duty is split then next line/s would have spaces for
-*>                     date, A/C type, Reg, captain start and end times, from. to and
-*>                     Pn times for other duties, etc. where two entries for same flight
-*>                     should have a start time difference of one minute: you
-*>                     cannot have two or more entries using the same date and start time.
-*>                     Priority LOW. as likely to look like a mess or 'very' wide o/p
-*>                     that is too wide for A4 let alone US letter although printing
-*>                     to 160 cc continious stationery would work but who has a matrix
-*>                     printer these days. VERY LOW.
-*>
 *>  20/10/18            4. Consider using Mysql RDB for all data used on a per pilot
 *>                     basis. Worth doing ?.
-*>                     Would allow for extra stats using SQL queries but again is
+*>                     Would allow for extra statistics using SQL queries but again is
 *>                     this useful ?.
 *>                     If application used as a web based system allows for multi
 *>                     pilots by using one database per pilot by name via a login
 *>                     facility.    Priority LOW / MEDIUM as would require users
 *>                     to install Mysql package, bit ITT for low exp. users.
 *>                     Could consider using Sqlite but err, why ?
-*>
+*>**
 *>  07/11/18            6. Consider using a web browser interface for display
 *>                     and accepting data. Could be linked to (4).
 *>                     THIS IS A HIGH TIME work load though, so unlikely.
 *>                     Priority LOW.
-*>
-*>  20/11/18            7. Consider CSV data reformatting from EBCDIC to ASCII if
-*>                     users requests it. Just have to work out how to, so worry about
-*>                     it then.  Priority LOW as users could use x3270 type programs
-*>                     during transfer to PC to convert a file. Just depends on how
-*>                     user get the CSV data file.
-*>
+*>**
+*>  17/12/18            8. Consider re-introducing on data entry day and night landings
+*>                     for the T & G flights but there again it should be specified
+*>                     in Remarks so is it really needed for the 90 Day CoE ?.
+*>                     CAA / FAA requirement ?
+*>                     The problem with it is that it is not used for commercial or
+*>                     military aircrew.
+*>**
 *>****************************************************************************************
 *> Copyright Notice.
 *>*****************
@@ -266,8 +206,7 @@
 *> compiler go to the url listed above.
 *>
 *> For support for Flightlog go to the sourceforge url listed in the manual
-*> or at www.sourceforge.net/p/flightlog once it has been uploaded with
-*> complete documentation - before end of 2018. No presure then :)
+*> or at www.sourceforge.net/p/flightlogc
 *>
 *> Flightlog is distributed in the hope that it will be useful, but WITHOUT
 *> ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -275,12 +214,12 @@
 *> for more details. If it breaks, you own both pieces but I will endeavour
 *> to fix it, providing you tell me about the problem. When doing so please
 *> specify the version used which is displayed on the menu and reports.
-*> This only allows usage for personal use that means not commercially Nor
+*> This only allows usage for personal use, that means not commercially Nor
 *> can it be sold without permission of the author/programmer.
 *>  See manual inside front cover for contact information.
 *>
 *> You should have received a copy of the GNU General Public License along
-*> with FlightLog; see the file COPYING.  If not, write to the Free Software
+*> with FlightLog; see the file Copying.pdf.  If not, write to the Free Software
 *> Foundation, 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 *>*************************************************************************
 *>
@@ -293,6 +232,8 @@
  OBJECT-COMPUTER.        FX8350.
  SPECIAL-NAMES.
      CONSOLE IS CRT.
+*>       Alphabet Alpha is ASCII.    *> When this works can get rid of the table-ascii and table-ebcdic
+*>       Alphabet Beta  is EBCDIC.
 *>
  INPUT-OUTPUT        SECTION.
 *>--------------------------
@@ -383,14 +324,14 @@
  FD  FLIGHTLOGBACKUP-FILE.
  01  FLIGHTLOGBACKUP-RECORD PIC X(112).
 *>
- FD  AIRFIELD-FILE.
- 01  AIRFIELD-RECORD.
+ FD  AIRFIELD-FILE.                      *> Name changed 20 to 36 19/12/18. NEED To run proram afldconv1
+ 01  AIRFIELD-RECORD.                    *>  to update file using .seq file as input.
      03  ICAO-CODE           PIC X(4).
-     03  AFLD-NAME           PIC X(20).
+     03  AFLD-Name           pic x(36).
      03  AFLD-Last-Flt       pic 9(8).
 *>
  FD  AIRFIELDBackup-FILE.
- 01  AIRFIELDBackup-RECORD   pic x(32).
+ 01  AIRFIELDBackup-RECORD   pic x(48).
 *>
  FD  AIRCRAFT-FILE.
  01  AIRCRAFT-RECORD.
@@ -423,13 +364,25 @@
      03  FILLER              PIC X(11).
      03  PH2-LIT1            PIC X(14).
      03  FILLER              PIC X(17).
-     03  PH2-LIT2            PIC X(51).
+     03  PH2-LIT2            PIC X(51). *> 93
 *>
  01  filler.             *> Print-Head3.
      03  FILLER              PIC XX.
      03  PH3-LIT1            PIC X(32).
      03  FILLER              PIC X(7).
-     03  PH3-LIT2            PIC X(92).
+     03  PH3-LIT2            PIC X(92).   *> 133
+*>
+ 01  Print-Heads-Ext-Line2.             *> Print-Head2. NEEDS CHANGES
+     03  FILLER              PIC X(11).
+     03  PH12-LIT1           PIC X(14).    *> same lit. as PH2-lit1
+     03  FILLER              PIC X(17).
+     03  PH12-LIT2           PIC X(58).    *> 100
+*>
+ 01  Print-Heads-Ext-Line3.             *> Print-Head3.Longest print line 142
+     03  FILLER              PIC XX.
+     03  PH13-LIT1           PIC X(32).   *> Same lit. as PH3-Lit1
+     03  FILLER              PIC X(7).
+     03  PH13-LIT2           PIC X(102). *> increased by 10 - 143
 *>
  01  filler.
      03  PR1-DATE            PIC X(10)B.
@@ -447,6 +400,24 @@
      03  PR1-MULTI           PIC Z9.99B   BLANK WHEN ZERO.           *> 100 Multi engine
      03  PR1-REMARKS         PIC X(32).                              *> 132 138 -
 *>
+ 01  Print-Extended-Log.
+     03  PR11-DATE            PIC X(10)B.
+     03  PR11-AC-TYPE         PIC X(9).
+     03  PR11-AC-REG          PIC X(7).
+     03  PR11-CAPTAIN         PIC X(15).     *> 42
+     03  PR11-CAPACITY        PIC X(4).      *> 46
+     03  PR11-FROM            PIC X(15)b.        *> 51 +11 = 62   Using 1st 15 chars
+     03  PR11-TO              PIC X(15)b.        *> 57 +10 = 78   - - ditto - -
+     03  PR11-START           PIC 99.99B.    *> 63  84
+     03  PR11-END             PIC 99.99B.    *> 69  90
+     03  PR11-Day-P           PIC Z9.99    BLANK WHEN ZERO.           *> 74 =
+ *>    03  PR11-Day-TG          pic zz9      blank when zero.
+     03  PR11-Nite-P          PIC Z9.99    BLANK WHEN ZERO.           *> 79 = 100
+ *>    03  PR11-Nit-TG          pic zz9      blank when zero.     *> increase size by 6
+     03  PR11-IFR             PIC Z9.99    BLANK WHEN ZERO.           *> 94 = 105
+     03  PR11-MULTI           PIC Z9.99B   BLANK WHEN ZERO.           *> 100 Multi engine = 111
+     03  PR11-REMARKS         PIC X(32).                              *> 132   =  143
+*>
  01  PRINT-RECORD2.                    *> Used for displays
      03  PR2-AIRCRAFT        PIC X(9).                                *> 9
      03  PR2-P               PIC Z(4)9.99  BLANK WHEN ZERO OCCURS 6.  *> 17,25,33,41,49,57
@@ -462,14 +433,12 @@
      03  PR3-DATA2           PIC X(17).
 *>
  01  Print-Record4.      *> Airfields as ICAO and Name 4+20 from table + cnt and lst-flt.
-     03  PR4-AFld-Group                 occurs 3.
+     03  PR4-AFld-Group                 occurs 2.   *> from 3
          05  PR4-ICAO        pic x(5).
-         05  PR4-Afld-Name   pic x(20).
-         05  PR4-Afld-Cnt    pic zzz9BB.
+         05  PR4-Afld-Name   pic x(36).
+         05  PR4-Afld-Cnt    pic zzzzBB.
          05  PR4-Afld-Lt-Flt pic X(10).
          05  filler          pic x(4).
- *>    03  PR4-Aircraft-Man    pic x(21).
- *>    03  PR4-Aircraft-Name   pic x(21).
 *>
  01  CoE-Lines.
      03  PCoE-Type           pic x(8).
@@ -599,7 +568,7 @@
 *>
  WORKING-STORAGE SECTION.
 *>----------------------
- 77  PROG-NAME               PIC X(18) VALUE "LOG BOOK (2.01.44)".
+ 77  PROG-NAME               PIC X(18) VALUE "LOG BOOK (2.02.04)".
  77  WS-CSV-Rec-Size         pic 9999 comp  value 512. *> This is the maximum record size for CSV logbook
                                                        *> data records [see manual]. If unsure leave as is
                                                        *>  It is more likely to be smaller i.e., 256.
@@ -638,6 +607,8 @@
  77  SHORT-PRINT             PIC 9    COMP  VALUE ZERO.
  77  PRINT-FLAG              PIC 9    COMP  VALUE ZERO.
      88 NO-PRINT-YET                        VALUE 1.
+ 77  Print-Report-Type       pic 9    comp  value zero.    *> for 2.02.00
+     88  Extended-Report                    value 1.
  77  Aircraft-Rep-Flag       pic 9    comp  value zero.
  77  ERROR-CODE              PIC 9999 COMP  VALUE ZERO.
  77  LINE-CNT                PIC 99   COMP  VALUE ZERO.
@@ -674,7 +645,7 @@
  77  SW-Test                 pic 9           value zero.
      88  SW-Testing                          value 1.
  77  WS-ICAO-CODE            PIC X(4)        VALUE SPACES.
- 77  WS-AFLD-NAME            PIC X(20)       VALUE SPACES.
+ 77  WS-AFLD-NAME            PIC X(36)       VALUE SPACES.
  77  WS-New-ICAO-CODE        PIC X(4)        VALUE SPACES.
  77  WS-Old-AC-Type          pic x(8)        value spaces.
  77  WS-New-AC-Type          pic x(8)        value spaces.
@@ -703,8 +674,7 @@
      88  NONIGHT                            value 1.
  01  P1                      pic x(64)     value spaces.       *> P for NONIGHT|NONITE
  01  P2                      pic x(64)     value spaces.       *> P for path/filename of CSV data file
- 01  P3                      pic x(64)     value spaces.       *> P for EBCDIC conversion MAYBE as not coded yet.
- 01  P4                      pic x(64)     value spaces.       *> P for AFLD-DATE
+ 01  P3                      pic x(64)     value spaces.       *> P for AFLD-DATE
  01  P-Temp                  pic x(64)     value spaces.       *> temp for P2.
 *>
  01  WS-Locale               pic x(16)      value spaces.       *> Holds o/p from env var.
@@ -765,8 +735,6 @@
      03  WSA-DATE2  REDEFINES WSA-DATE        *> passed to flitelog data
                              PIC 9(8).
 *>
-     03  Active-CoE-Date     pic x(10).
-*>
      03  WSE-Date-Block.
          05  WSE-Date.
              07  WSE-Year        pic 9(4).
@@ -785,6 +753,7 @@
 *>  FLT date must be => than, for inclusion in the totals tables.
 *>    All computations are based on month periods only.
 *>
+     03  Active-CoE-Date     pic x(10).
      03  CoE-Earliest-Dates            value zeros.  *> All intl dates
          05  CoE-1-Mth       pic 9(8).
          05  CoE-Quarter     pic 9(8).
@@ -818,7 +787,7 @@
      03  SY008          pic x(19) value "Airfield Bkup = ".
      03  SY009          pic x(16) value "Aircraft bkup = ".
 *>
-*> THESE TWO IF TERMINAL PROGRAM SET UP TOO SMALL, MUST BE WIDTH => 106 (92 without aircraft display)
+*> THESE TWO IF TERMINAL PROGRAM SET UP TOO SMALL, MUST BE WIDTH => 106
 *>                                               , LENGTH =>24
 *>
      03  SY010          pic x(46) value "SY010 Terminal program not set to length => 24".
@@ -834,7 +803,7 @@
 *>
 *> PRIMARY PROGRAM ERROR AND WARNING MESSAGES.
 *>
- *>    03  FL001          pic x(46) value "FL001 Aircraft table empty so file not created".
+     03  FL001          pic x(39) value "FL001 Hit return when ready to continue".
      03  FL002          pic x(51) value "FL002 record does NOT exist. Hit return to continue".
      03  FL003          pic x(53) value "FL003 record error on rewrite. Hit return to continue".
      03  FL004          pic x(19) value "FL004 Record Exists".
@@ -1020,7 +989,7 @@
          05  WST-ICAO                    OCCURS 2000
                                              Ascending key WST-AIRFIELD INDEXED BY QQQ.
              07  WST-AIRFIELD      PIC X(4).
-             07  WST-AFLD-NAME     PIC X(20).
+             07  WST-AFLD-NAME     PIC X(36).
              07  WST-Afld-Last-Flt pic 9(8).                *> These two are for stat reporting.
              07  WST-Afld-Cnt      pic 9(4).
 *>
@@ -1071,8 +1040,8 @@
      03  SW-CSV-Data-Received pic 9             value zero.
          88  SW-CSV-Received-Data               value 1.
      03  WS-CSV-Date-Format   pic 99            value zero.   *> See value in WS-CSV-Held-Date-Time-Formats
-     03  WS-CSV-Time-1-Format pic 99            value zero.   *> See value in WS-CSV-Held-Time1-Format
-     03  WS-CSV-Time-2-Format pic 99            value zero.   *> See value in WS-CSV-Held-Time2-Format
+     03  WS-CSV-Time-1-Format pic 9             value zero.   *> See value in WS-CSV-Held-Time1-Format
+     03  WS-CSV-Time-2-Format pic 9             value zero.   *> See value in WS-CSV-Held-Time2-Format
      03  WS-CSV-Work                            value spaces. *> FLT file is max of 32 (Remarks)
          05  WS-CSV-Work9     pic 9(8).                       *> max size of date or time
          05  filler           pic x(56).
@@ -1108,7 +1077,7 @@
  01  D-Display1                                VALUE SPACES.
      03  D-ICAO-CODE         PIC X(4).
      03  FILLER              PIC X.
-     03  D-AFLD-NAME         PIC X(20).
+     03  D-AFLD-NAME         PIC X(36).
 *>
  01  D-Display2                                VALUE SPACES.
      03  D-Aircraft          PIC X(8).
@@ -1156,35 +1125,40 @@
          05  SR2-MULTI       PIC Z(3)99BB.
          05  FILLER          PIC X(4)         VALUE "Mins".
 *>
-*> Tables for data conversion between EBCDIC and ASCII   -  NOT CURRENTLY USED.
+*> Tables for data conversion between EBCDIC and ASCII
 *>  for use within CSV format conversion.
 *>
- 01  Table-ASCII.
-     03  filler.
-         05  filler          pic xxx        value
-          X"222727".                                *> " ' '
-         05  filler          pic x(63)      value
-         " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ".
- 01  Table-EBCDIC.
-     03  filler              pic xxx        value
-         X"7F797D".                                *> " ' ' "79" in case mistyped but is a `
-     03  filler              pic x(11)      value
-         X"40F0F1F2F3F4F5F6F7F8F9".                 *> SPACE, 013456789
-     03  filler              pic x(9)      value
-         X"C1C2C3C4C5C6C7C8C9".                     *> ABCDEFGHI
-     03  filler              pic x(9)      value
-         X"D1D2D3D4D5D6D7D8D9".                     *> JKLMNOPQR
-     03  filler              pic x(8)      value
-         X"E2E3E4E5E6E7E8E9".                       *> STUVWXYZ
-     03  filler              pic x(9)      value
-         X"818283848586878889".                     *> abcdefghi
-     03  filler              pic x(9)      value
-         X"919293949596979899".                     *> jklmnopqr
-     03  filler              pic x(8)      value
-         X"A2A3A4A5A6A7A8A9".                       *> stuvwxyz
+ *> 01  Table-ASCII.
+ *>    03  T-ACSII-Def.
+ *>        05  filler          pic x(16)         value
+ *>            X"2227272E2C2826293B2F3C3E3F3A3D5C".                                *> " ' ' . , ( & ) ; / < > ? : = \
+ *>        05  filler          pic x(63)         value
+ *>            " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ".
+ *>    03  T-ASCII-Itm redefines T-ACSII-Def
+ *>                            pic x         occurs 79.
+ *> 01  Table-EBCDIC.
+ *>    03  T-EBCDIC-Def.
+ *>        05  filler              pic x(16)     value
+ *>            X"7F797D4B6B4D505D5E614C6E6F7A7EE0".                             *> " ' ' . , ( & ) ; / < > ? : = \ "79" in case mistyped but is a `
+ *>        05  filler              pic x(11)     value
+ *>            X"40F0F1F2F3F4F5F6F7F8F9".                 *> SPACE, 0123456789
+ *>        05  filler              pic x(9)      value
+ *>            X"C1C2C3C4C5C6C7C8C9".                     *> ABCDEFGHI
+ *>        05  filler              pic x(9)      value
+ *>            X"D1D2D3D4D5D6D7D8D9".                     *> JKLMNOPQR
+ *>        05  filler              pic x(8)      value
+ *>            X"E2E3E4E5E6E7E8E9".                       *> STUVWXYZ
+ *>        05  filler              pic x(9)      value
+ *>            X"818283848586878889".                     *> abcdefghi
+ *>        05  filler              pic x(9)      value
+ *>            X"919293949596979899".                     *> jklmnopqr
+ *>        05  filler              pic x(8)      value
+ *>            X"A2A3A4A5A6A7A8A9".                       *> stuvwxyz
+ *>    03  T-EBCDIC-Itm     redefines T-EBCDIC-Def
+ *>                                pic x     occurs 79.
 *>
- PROCEDURE DIVISION chaining P1 P2 P3 P4.
-*>======================================
+ PROCEDURE DIVISION chaining P1 P2 P3.
+*>===================================
  A000-CONTROL       SECTION.
      move     function length (FLIGHTLOG-Record)       to WS-Rec-Length-1.
      move     function length (FLIGHTLOGBACKUP-RECORD) to WS-Rec-Length-2.
@@ -1237,23 +1211,20 @@
      if       P1 (1:8) = "CSV-TEST"
               set SW-Testing to true
      end-if.
-     if       "NONIGHT" = P1 or = P2 or = P3 or = P4
+     if       "NONIGHT" = P1 or = P2 or = P3
               move 1 to NO-NIGHT-Calcs.
-     if       "NONITE" = P1 or = P2 or = P3 or = P4
+     if       "NONITE" = P1 or = P2 or = P3
      move     spaces to P-Temp.
      if       P1 (1:4) = "CSV="  move P1 (5:60) to P-Temp.
      if       P2 (1:4) = "CSV="  move P2 (5:60) to P-Temp.
      if       P3 (1:4) = "CSV="  move P3 (5:60) to P-Temp.
-     if       P4 (1:4) = "CSV="  move P4 (5:60) to P-Temp.
      if       P-Temp (1:8) not = spaces
               move P-Temp to CSV-Config-Name.
- *>    if       "NIGHT" or "NITE" = P1 or = P2 or = P3 or = P4
+ *>    if       "NIGHT" or "NITE" = P1 or = P2 or = P3
  *>             move zero to NO-NIGHT-Calcs.
 *>
-     if       "ACFT-DATE" = P4 or = P3 or = P2 or = P1
+     if       "ACFT-DATE" = P3 or = P2 or = P1
               move 1 to SW-ACFT-Date.
-     if       "EBCDIC" = P4 or = P3  or = P2 or = P1       *> Not coded yet.
-              move 1 to SW-EBCDIC-Conv.
 *>
 *>  Set WS-Locale-Time-Zone from LC_TIME - Default [3] to Intl (ccyymmdd)
 *>
@@ -1262,7 +1233,7 @@
      if       WS-Locale (1:5) = "en_GB" or "EN_GB"
               move    1 to WS-Local-Time-Zone
      else
-      if      WS-Locale (1:5) = "en_US" or "EN_USA"
+      if      WS-Locale (1:6) = "en_US " or "EN_USA"
               move    2 to WS-Local-Time-Zone    *> others before the period
       else
               move    3 to WS-Local-Time-Zone.    *> Intl / Unix
@@ -1381,13 +1352,13 @@
      DISPLAY  "ICAO" AT 0641 WITH foreground-color COB-COLOR-Yellow.
      DISPLAY  "Action    Code    Airfield Name" AT 0731 WITH foreground-color COB-COLOR-Yellow.
      DISPLAY  " [ ]     [    ]   ["             AT 0831 WITH foreground-color COB-COLOR-Yellow.
-     display  "]"                               at 0870 WITH foreground-color COB-COLOR-Yellow.
+     display  "]"                               at 0886 WITH foreground-color COB-COLOR-Yellow.
      display  "ICAO code spaces for options V and L" at 1040 with foreground-color COB-Color-Yellow.
      DISPLAY  SPACE AT line ws-22-Lines col 01 with erase eol.
      DISPLAY  SPACE AT line ws-23-Lines col 01 with erase eol.
 *>
  B040-EDIT-AFLD-FUNCTION.
-     ACCEPT   MENU-REPLY AT 0833.
+     ACCEPT   MENU-REPLY AT 0833 auto.
      move     function upper-case (MENU-REPLY) to MENU-REPLY.
      IF       MENU-REPLY = "X"
        or     Cob-Crt-Status = Cob-Scr-Esc
@@ -1523,7 +1494,7 @@
      IF       LINE-CNT > WS-Scrn-BE-Cnt
               MOVE ZERO TO LINE-CNT
               add 1 to page-cnt
-              add 26 to curs
+              add 42 to curs
               subtract WS-Scrn-BE-Length from curs.
      GO       TO BE020-View-AFLD3.
 *>
@@ -1531,9 +1502,9 @@
      DISPLAY  SPACE at 0101 with erase eos.
      move     WS-Scrn-BE-Head to WS-Scrn-BE-Curs.
      DISPLAY  "ICAO AIRFIELD" AT WS-Scrn-BE-Curs WITH foreground-color COB-COLOR-GREEN.
-     add      26 to WS-Scrn-BE-Curs.
+     add      42 to WS-Scrn-BE-Curs.
      DISPLAY  "ICAO AIRFIELD" AT WS-Scrn-BE-Curs WITH foreground-color COB-COLOR-GREEN.
-     add      26 to WS-Scrn-BE-Curs.
+     add      42 to WS-Scrn-BE-Curs.
      DISPLAY  "ICAO AIRFIELD" AT WS-Scrn-BE-Curs WITH foreground-color COB-COLOR-GREEN.
      DISPLAY  WS-Scrn-Prompt3 line ws-Lines col 01 WITH foreground-color COB-COLOR-White.
 *>
@@ -1581,6 +1552,7 @@
      DISPLAY  "(X)  Quit Log Book System"           AT 2215 WITH foreground-color COB-COLOR-CYAN.
 *>
  C030-ACCEPT-LOGBOOK.
+     move     zero to Print-Report-Type.
      ACCEPT   MENU-REPLY AT 0444 with auto.
      move     function upper-case (MENU-REPLY) to MENU-REPLY  Menu-Option.
 *>
@@ -1597,7 +1569,18 @@
               PERFORM CC000-LOG-BOOK-REPORT
               GO TO C020-DISPLAY-LOG-MENU.
 *>
+     if       Menu-Reply = "3"
+              move 1 to Print-Report-Type
+              PERFORM CC000-LOG-BOOK-REPORT
+              GO TO C020-DISPLAY-LOG-MENU.
+*>
      IF       MENU-REPLY = "D"
+              MOVE 1 TO MONTHLY-ANAL-FLAG
+              PERFORM CC000-LOG-BOOK-REPORT
+              GO TO C020-DISPLAY-LOG-MENU.
+*>
+     if       Menu-Reply = "4"
+              move 1 to Print-Report-Type
               MOVE 1 TO MONTHLY-ANAL-FLAG
               PERFORM CC000-LOG-BOOK-REPORT
               GO TO C020-DISPLAY-LOG-MENU.
@@ -2015,8 +1998,8 @@
      DISPLAY  FLT-FROM AT 1201 with erase eol.
      DISPLAY  FL007 AT 1206.
      DISPLAY  "[" AT 1301 with erase eol.
-     DISPLAY  "]" AT 1322.
-     display  FL011 at 1331.
+     DISPLAY  "]" AT 1338.
+     display  FL011 at 1347.
 *>
      if       Menu-Option = "B"
               move     Spaces to Ws-afld-name.
@@ -2075,13 +2058,13 @@
      DISPLAY  FLT-TO AT 1201.
      DISPLAY  FL007 AT 1206.
      DISPLAY  "[" AT 1301.
-     DISPLAY  "]" AT 1322.
-     display  FL011 at 1331.
+     DISPLAY  "]" AT 1338.
+     display  FL011 at 1347.
 *>
      Move     spaces to Ws-afld-name.
      ACCEPT   WS-AFLD-NAME AT 1302 with update.
-     DISPLAY  SPACES AT 1201 with erase eol.
-     DISPLAY  SPACES AT 1301 with erase eol.
+     DISPLAY  SPACE AT 1201 with erase eol.
+     DISPLAY  SPACE AT 1301 with erase eol.
      IF       WS-AFLD-NAME = SPACES
           or  Cob-Crt-Status = Cob-Scr-Esc
           or  Cob-Crt-Status = Cob-Scr-F10
@@ -2725,6 +2708,10 @@
      If       Menu-Option = "E" or = "F" or = "G"      *> does not require start/end dating
               go to CC040-LBR-DDB.
 *>
+*>  Regular or extended report request disp and accept
+*>   extended select by menu options 3 (C) and 4 (D)
+*>----------------------------------------------------
+*>
 *> rem out display for 1st date field as gets overwritten by ws-test-date asit may contain
 *>    an old date from previously entered record
 *>
@@ -2820,16 +2807,17 @@
      PERFORM  CCA040-LBR-SUBS thru CCA050-Subs.
      if       Menu-Option not = "E" and not = "F" and not = "G"
               move 1 to SW-AFLD-Used
-              sort WST-ICAO on descending key WST-Afld-Last-Flt
+ *>             sort WST-ICAO on descending key WST-Afld-Last-Flt
               perform  CCD000-Airfield-Lists
-              sort WST-ICAO on ascending key WST-AIRFIELD.
-     if       Analysis-Only-flag = 1
-        or    Menu-Option = "D"
+ *>             sort WST-ICAO on ascending key WST-AIRFIELD
+     end-if
+ *>    if       Analysis-Only-flag = 1
+ *>       or    Menu-Option = "D" or "4"         *> Extended
               PERFORM  CCC000-LBR-AIRCRAFT-ANALYSIS.
 *>
      IF       DISPLAY-FLAG NOT = ZERO
-              DISPLAY "Hit return when ready to continue" line ws-Lines col 01
-              accept ws-reply line ws-Lines col 36.
+              DISPLAY FL001 line ws-Lines col 01
+              accept ws-reply line ws-Lines col 41.
 *>
      perform  ZP000-SAVE-AIRFIELDS.            *> save any updated last-flt dates
  *>
@@ -2838,14 +2826,14 @@
  CCA000-LBR-PRINT-DATA SECTION.
 *>============================
 *>
-     IF       SHORT-PRINT = 1                      *> with ISAM and start/end dates used shouldnt happen
+     IF       SHORT-PRINT = 1                  *> with ISAM and start/end dates used shouldnt happen
        IF     FLT-DATE NOT < PRINT-START
         AND   FLT-DATE NOT > PRINT-END
               MOVE ZERO TO PRINT-FLAG
        ELSE
               MOVE 1 TO PRINT-FLAG.
 *>
-     IF       LINE-CNT > WS-Line-Cnt-Size-2     *> 50
+     IF       LINE-CNT > WS-Line-Cnt-Size-2    *> 50
        AND    DISPLAY-FLAG = ZERO
         AND   ANALYSIS-ONLY-FLAG = ZERO
          AND  NOT NO-PRINT-YET
@@ -2875,57 +2863,104 @@
      IF       FLT-MS = "M"                   *> Multi eng totals
               ADD FLT-P1 (1) FLT-P1 (2) FLT-P23 (1) FLT-P23 (2) GIVING WS-WORK1
               ADD WS-WORK1 TO WS2-MULTI.
-*> changed to support other categories other than P ie, E, N, T and R
+*> changed to support other categories other than P ie, E, N, R and T
       IF      FLT-CAPACITY (2:2) = "1I" or "1T"  *> Instructor/trainer totals within P1 time.
               add flt-p1 (1) to ws2-ins (1)
               add flt-p1 (2) to ws2-ins (2)
               ADD FLT-P1 (1) FLT-P1 (2) TO WS2-INSX.
 *>
  CCA015-Setprint.
-     MOVE     SPACES TO PRINT-RECORD.
+     if       not Extended-Report
+              MOVE     SPACES TO PRINT-RECORD
+     else
+              move spaces to Print-Extended-Log
+     end-if
      MOVE     FLT-DATE TO WS-Test-Intl.
      perform  ZZ060-Convert-Date.
      MOVE     WS-Test-Date TO PR1-DATE.
      MOVE     FLT-AC-TYPE TO PR1-AC-TYPE.
      MOVE     FLT-AC-REG TO PR1-AC-REG.
-     if       flt-ac-reg1-2 numeric                          *> Have a Nth American registered A/C
-              move 1 to c
+     if       FLT-AC-Reg1-2 numeric                          *> Have a Nth American registered A/C
+              move 1 to c                                      *>  BUT IS THIS A PROBLEM FOR MIL A/Cs ??
               string "N" delimited by size
-              flt-ac-reg (1:5) delimited by size
-                      into pr1-ac-reg with pointer c.
+              FLT-AC-Reg (1:5) delimited by size
+                      into PR1-AC-Reg with pointer c.        *> Yes this does do a overlapping move
      MOVE     FLT-CAPTAIN TO PR1-CAPTAIN.
      MOVE     FLT-CAPACITY TO PR1-CAPACITY.
-     MOVE     FLT-FROM TO PR1-FROM.
-     MOVE     FLT-TO TO PR1-TO.
-     MOVE     FLT-REMARKS TO PR1-REMARKS.
+*>
+*> Common print to here for std and extended
+*>
+     if       not Extended-Report
+              MOVE     FLT-FROM TO PR1-FROM
+              MOVE     FLT-TO TO PR1-TO
+              MOVE     FLT-REMARKS TO PR1-REMARKS
+     else
+              MOVE     FLT-FROM TO WS-ICAO-CODE
+              perform  ZN000-SEARCH-FOR-ICAO
+              if       Error-Code not = zero
+                       move WST-Afld-Name (error-Code) to PR11-From
+              else
+                       move "NAME MISSING" to PR11-From
+              end-if
+              if       FLT-From = FLT-To
+                       move PR11-From to PR11-To
+              else
+                       MOVE     FLT-TO TO WS-ICAO-CODE
+                       perform  ZN000-SEARCH-FOR-ICAO
+                       if       Error-Code not = zero
+                                move WST-Afld-Name (error-Code) to PR11-TO
+                       else
+                                move "NAME MISSING" to PR11-TO
+                       end-if
+              end-if
+              MOVE     FLT-REMARKS TO PR11-REMARKS
+     end-if
 *>
      MOVE     FLT-START TO WS-WORK1.
      PERFORM  ZG000-RESTORE-LOGBK-TIME.
-     MOVE     WS-WORKA TO PR1-START.
-*>
+     if       not Extended-Report
+              MOVE     WS-WORKA TO PR1-START
+     else
+              MOVE     WS-WORKA TO PR11-START
+     end-if
      MOVE     FLT-END TO WS-WORK1.
      PERFORM  ZG000-RESTORE-LOGBK-TIME.
-     MOVE     WS-WORKA TO PR1-END.
-*>
+     if       not Extended-Report
+              MOVE     WS-WORKA TO PR1-END
+     else
+              MOVE     WS-WORKA TO PR11-END
+     end-if
      MOVE     FLT-INSTRUMENT TO WS-WORK1.
      PERFORM  ZG000-RESTORE-LOGBK-TIME.
-     MOVE     WS-WORKA TO PR1-IFR.
+     if       not Extended-Report
+              MOVE     WS-WORKA TO PR1-IFR
+     else
+              MOVE     WS-WORKA TO PR11-IFR
+     end-if
 *>
-     MOVE     FLT-P1 (1) TO WS-WORK1.
-     PERFORM  ZG000-RESTORE-LOGBK-TIME.
-     MOVE     WS-WORKA TO PR1-P1 (1).
-*>
-     MOVE     FLT-P23 (1) TO WS-WORK1.
-     PERFORM  ZG000-RESTORE-LOGBK-TIME.
-     MOVE     WS-WORKA TO PR1-P1 (2).
-*>
-     MOVE     FLT-P1 (2) TO WS-WORK1.
-     PERFORM  ZG000-RESTORE-LOGBK-TIME.
-     MOVE     WS-WORKA TO PR1-P2 (1).
-*>
-     MOVE     FLT-P23 (2) TO WS-WORK1.
-     PERFORM  ZG000-RESTORE-LOGBK-TIME.
-     MOVE     WS-WORKA TO PR1-P2 (2).
+     if       not Extended-Report
+              MOVE     FLT-P1 (1) TO WS-WORK1
+              PERFORM  ZG000-RESTORE-LOGBK-TIME
+              MOVE     WS-WORKA TO PR1-P1 (1)
+              MOVE     FLT-P23 (1) TO WS-WORK1
+              PERFORM  ZG000-RESTORE-LOGBK-TIME
+              MOVE     WS-WORKA TO PR1-P1 (2)
+              MOVE     FLT-P1 (2) TO WS-WORK1
+              PERFORM  ZG000-RESTORE-LOGBK-TIME
+              MOVE     WS-WORKA TO PR1-P2 (1)
+              MOVE     FLT-P23 (2) TO WS-WORK1
+              PERFORM  ZG000-RESTORE-LOGBK-TIME
+              MOVE     WS-WORKA TO PR1-P2 (2)
+     else
+              MOVE     FLT-P1 (1) TO WS-WORK1
+              add      FLT-P23 (1) to WS-Work1
+              PERFORM  ZG000-RESTORE-LOGBK-TIME
+              MOVE     WS-WORKA TO PR11-Day-P
+              MOVE     FLT-P1  (2) TO WS-WORK1
+              add      FLT-P23 (2) TO WS-WORK1
+              PERFORM  ZG000-RESTORE-LOGBK-TIME
+              MOVE     WS-WORKA TO PR11-Nite-P
+     end-if.
 *>
  CCA020-LBR-ACCUM1.
      ADD      FLT-INSTRUMENT TO WS-INSTRUMENT.
@@ -2938,8 +2973,18 @@
               ADD FLT-P1 (1) FLT-P1 (2) FLT-P23 (1) FLT-P23 (2) GIVING WS-WORK1
               ADD WS-WORK1 TO WS-MULTI
               PERFORM  ZG000-RESTORE-LOGBK-TIME
-              MOVE WS-WORKA TO PR1-MULTI
-     ELSE     MOVE ZEROS TO PR1-MULTI.
+              if       not Extended-Report
+                       MOVE WS-WORKA TO PR1-MULTI
+              else
+                       move WS-WorkA to PR11-Multi
+              end-if
+     ELSE
+              if       Not Extended-Report
+                       MOVE ZEROS TO PR1-MULTI
+              else
+                       move zeros to PR11-Multi
+              end-if
+     end-if
 *>
      IF       FLT-CAPACITY = "P1I" or "P1T"
               MOVE 1 TO INS-FLAG
@@ -2954,7 +2999,12 @@
         AND   ANALYSIS-ONLY-FLAG = ZERO
         AND   NOT NO-PRINT-YET
               ADD 1 TO LINE-CNT
-              WRITE  PRINT-RECORD AFTER 1.
+              if     not Extended-Report
+                     WRITE  PRINT-RECORD AFTER 1
+              else
+                     write  Print-Extended-Log after 1
+              end-if
+     end-if
 *>
      GO       TO CCA999-EXIT.
 *>
@@ -2980,20 +3030,36 @@
      if       Page-Cnt > 1
               WRITE    PRINT-RECORD AFTER PAGE
      else
-              write    Print-Record before 1.        *> after 1.
-     MOVE     SPACES TO PRINT-RECORD.
+              write    Print-Record before 1.
+     MOVE     SPACES TO Print-Heads-Ext-Line3.
      MOVE     "-- Aircraft--" TO PH2-LIT1.
-     MOVE     "OP   JOURNEY   DEPART ARR     - DAY -    NIGHT" TO PH2-LIT2.
-     if       Page-Cnt > 1
-              WRITE    PRINT-RECORD AFTER 2
+     if       not Extended-Report
+              MOVE     "OP   JOURNEY   DEPART ARR     - DAY -    NIGHT" TO PH2-LIT2
+              if       Page-Cnt > 1
+                       WRITE    PRINT-RECORD AFTER 2
+              else
+                       write    PRINT-RECORD AFTER 1
+              end-if
      else
-              write    PRINT-RECORD AFTER 1.
-     MOVE     SPACES TO PRINT-RECORD.
+              MOVE     "OP    - - - - - JOURNEY - - - - -   DEPART ARR" TO PH12-LIT2
+              if       Page-Cnt > 1
+                       WRITE    Print-Heads-Ext-Line2 AFTER 2
+              else
+                       write    Print-Heads-Ext-Line2 AFTER 1
+              end-if
+     end-if
+     MOVE     SPACES TO Print-Heads-Ext-Line3.
      MOVE     " DATE    TYPE     REG    CAPTAIN" TO PH3-LIT1.
-     MOVE     " CAP FROM  TO   TIME  TIME    P1  P2/3  P1  P2/3 IFR  MULT ------- REMARKS ---- - - - - - -"
-                   TO PH3-LIT2.
-     WRITE    PRINT-RECORD AFTER 1.
-     MOVE     SPACES TO PRINT-RECORD.
+     if       not Extended-Report
+              MOVE     " CAP FROM  TO   TIME  TIME    P1  P2/3  P1  P2/3 IFR  MULT ------- REMARKS ---- - - - - - -"
+                         TO PH3-LIT2
+              WRITE    PRINT-RECORD AFTER 1
+     else
+              MOVE     " CAP FROM            TO              TIME  TIME   DAY  NITE IFR  MULT ------- REMARKS ---- - - - - - -"
+                         TO PH13-LIT2
+              WRITE    Print-Heads-Ext-Line3 AFTER 1
+     end-if
+     MOVE     SPACES TO Print-Heads-Ext-Line3.
      PERFORM  CCA040-LBR-SUBS thru CCA050-Subs.
 *>
  CCA040-LBR-SUBS.
@@ -3002,7 +3068,7 @@
               add 1 to Line-Cnt
               WRITE PRINT-RECORD AFTER 1.
      MOVE     ZERO TO WS-WORK1.
-     IF       LINE-CNT > ZERO
+     IF       LINE-CNT > 1
               MOVE "Totals Carried Forward" TO SR2-LIT2
       ELSE
               MOVE "Totals Brought Forward" TO SR1-LIT2.
@@ -3031,7 +3097,13 @@
               WRITE PRINT-RECORD AFTER 1
               MOVE  SUB-REPORT2 TO Pr3-data1
               WRITE PRINT-RECORD AFTER 1
-              add  2  to Line-Cnt
+              move spaces to Print-Record
+              if   Line-Cnt < 2                     *> If printing BF add a line
+                   write Print-Record after 1
+                   add  3  to Line-Cnt
+              else
+                   add  2 to Line-Cnt
+              end-if
       ELSE
               DISPLAY SR1-DISP AT 0101
               DISPLAY SR2-DISP AT 0201.
@@ -3304,7 +3376,7 @@
      if       Error-Code > zero                       *> save last afld else use zero
               move WST-Airfield (Error-Code) to WS-Tmp-Afld2.
  *>
-     if       Z > 2
+     if       Z > 1
               write Print-Record4 after 1
               move  zero to Z
               add   1 to Line-Cnt
@@ -3324,31 +3396,20 @@
        and    WST-Afld-Last-Flt (Error-Code) = zero         *> Ignore airfields not used.
               go to CCD010-Start.                           *> JIC user added country/world wide fields
      move     WST-Airfield (error-code) to WS-Tmp-Afld.
-     if       WS-Tmp-Afld (1:1) not = "K"         *> USA
-         and  WS-Tmp-Afld2 not = zeros
-         and  WS-Tmp-Afld (1:2) not = WS-Tmp-Afld2 (1:2)
-              add 2 to Z
-     else
-              add 1 to Z
-     end-if.
+     add      1 to Z.
      if       Error-Code < 2            *> Ignore above test if error-code = 1 - 1st afld
               move 1 to Z.
-     if       Z > 3
+     if       Z > 2
               write Print-Record4 after 1
               add   1 to Line-Cnt
               move  spaces to Print-Record
               perform CCD040-List-Afld-Heads
-              if  Z > 4
-                  move  2 to Z      *> leave one position as space
-              else
-                  move  1 to Z
-              end-if
      end-if
      MOVE     WST-AIRFIELD  (ERROR-CODE) TO PR4-ICAO (Z).
      MOVE     WST-AFLD-NAME (ERROR-CODE) TO PR4-AFLD-NAME (Z).
      MOVE     WST-Afld-Last-Flt (ERROR-CODE) TO WS-Test-Intl.
      perform  ZZ060-Convert-Date.
-     MOVE     WS-Test-Date TO PR4-Afld-Lt-Flt (Z).
+     MOVE     WS-Test-Date               TO PR4-Afld-Lt-Flt (Z).
      move     WST-Afld-Cnt (ERROR-CODE)  to PR4-Afld-Cnt (Z).
 *>
      go       to CCD010-Start.
@@ -3372,9 +3433,8 @@
                        write    Print-Record after 1
               end-if
               move spaces to Print-Record
-              MOVE "ICAO      Airfield        Cnt   Last Flt " TO PR4-Afld-Group (1)
+              MOVE "ICAO      Airfield                        Cnt   Last Flt " TO PR4-Afld-Group (1)
                                                                   PR4-Afld-Group (2)
-                                                                  PR4-Afld-Group (3)
               WRITE PRINT-RECORD4 AFTER 2
               MOVE SPACES TO PRINT-RECORD
               WRITE PRINT-RECORD4 AFTER 1
@@ -3879,6 +3939,10 @@
 *>   reporting on screen such problems, subject to flag to ignore
 *>    such duplicates and in this mode dups will be just ignored.
 *>
+*>  Precoding for inspect converting in case EBCDIC need to be changed to ACSII
+*>  when reading the CSV data file but should use converting Beta to Alpha - dont work
+*>   due to compiler fault.
+*>
      initialise
               WS-CSV-Logbook-Data-Definitions
               WS-CSV-Held-Date-Time-Formats
@@ -4199,6 +4263,15 @@
               display  space at line ws-21-lines col 01 with erase eos
               go to F599-Exit.
 *>
+*> Check if conversion needed from EBCDIC to ASCII
+*>
+ *>    if       WS-Data-Format = "E"
+ *> *>             inspect CSV-Data-Record converting Beta  to Alpha
+ *>             inspect CSV-Data-Record converting Table-EBCDIC to Table-ASCII
+ *>             display "CSV data being converted from EBCDIC to ASCII" at line ws-20-lines col 01
+ *>             display CSV-Data-Record (1:80) at line ws-18-lines col 01
+ *>             display CSV-Data-Record (81:80) at line ws-19-lines col 01.
+*>
      if       CSV-Data-Record (1:10) = spaces        *> JIC that a blank line is present.
               go to F510-Read-CSV-File.
 *>
@@ -4256,7 +4329,6 @@
                                       not = WS-CSV-Held-Cap        *> searching for specific Name for P2/3 pilots in fld nn
                        move 2 to Return-Code
                        exit perform
-                         *> go to F510-Read-CSV-File
               end-if
 *>
 *> So if rec 6 set for finding P2/3 record it will be current as else get next CSV record.
@@ -4494,7 +4566,7 @@
      move     zero   to WS-CSV-Work-Count.
      if       B not < WS-CSV-Table-Size       *> test for the last CSV field without a comma
               unstring CSV-Data-Record
-                     delimited by quote or "'"  *>  '"' or "'"         *>    WS-Data-Delim (1:1)
+                     delimited by quote or "'"
                        into WS-CSV-Work
                        delimiter in WS-CSV-Work-Delim
                        count  WS-CSV-Work-Count
@@ -4502,7 +4574,7 @@
               end-unstring
      else
               unstring CSV-Data-Record
-                     delimited by '",' or "',"     *> WS-Data-Delim
+                     delimited by '",' or "',"
                        into WS-CSV-Work
                        delimiter in WS-CSV-Work-Delim
                        count  WS-CSV-Work-Count
@@ -4697,11 +4769,11 @@
      if       (NIM (SAVE-FLT-Mth) - 2) < Save-FLT-HH
               move 1 to SW-Its-Night.
 *>
-     if       FLT-Capacity (1:2)  = "P1" or "E1" or "R1"
+     if       (FLT-Capacity (1:2)  = "P1" or "E1" or "R1")
         and   SW-Its-Night = zero
               move     WS-Elapsed-Time to FLT-P1 (1)
      else
-      if      FLT-Capacity (1:2)  = "P1" or "E1" or "R1"
+      if      (FLT-Capacity (1:2)  = "P1" or "E1" or "R1")
          and  SW-Its-Night = 1
               move     WS-Elapsed-Time to FLT-P1 (2)
       else
@@ -4767,9 +4839,16 @@
  ZB000-LOAD-AIRFIELDS  SECTION.
 *>============================
 *>
-*> Now only used for statistic reporting.
+*> Now only used for statistic reporting and option K.
 *>   but init. with HV in key field in case sort puts junk occurs flds ahead of valids
-*>      this way the junk will be down from table tize count
+*>      this way the junk will be down from table size count
+*>
+*> DONT load last-flt so new anal will be accurate if Amend mode used.
+*>
+*>  FIRST Test if airfield table loaded - if anal done earlier then don't reload it.
+*>
+     if       WST-Airfield-Size > zero
+              go to ZB999-Exit.
 *>
      initialise WST-Airfield-TABLE.
      perform  varying WST-Airfield-Size from 1 by 1 until WST-Airfield-Size > WST-Afld-Max
@@ -4791,7 +4870,7 @@
      ADD      1 TO WST-AIRFIELD-SIZE.
      MOVE     ICAO-CODE     TO WST-AIRFIELD  (WST-AIRFIELD-SIZE).
      MOVE     AFLD-NAME     TO WST-AFLD-NAME (WST-AIRFIELD-SIZE).
-     move     AFLD-Last-Flt to WST-AFLD-Last-Flt (WST-AIRFIELD-SIZE).
+ *>     move     AFLD-Last-Flt to WST-AFLD-Last-Flt (WST-AIRFIELD-SIZE).
      GO       TO ZB020-LOAD-AFLD-READ.
 *>
  ZB999-EXIT.  exit section.
@@ -5043,15 +5122,9 @@
      if       WST-AIRFIELD  (Error-Code) = high-values             *> If sorted could have junk
               go to ZP020-Save-Afld.                               *> within active table size limit
 *>
-     read     Airfield-File invalid KEY            *> Should never happen
-              display "In ZP000 Cannot find Airfield = " at 1201
-              display ICAO-Code  at 1233
-              display FL017 at 1301
-              accept ws-reply at 1330
-              display space at 1201 with erase eol
-              display space at 1301 with erase eol
+     read     Airfield-File invalid KEY            *> Deleted in this run
               go to ZP020-Save-AFLD.
-     if       WST-AFLD-Last-Flt (Error-Code) > AFLD-Last-Flt
+     if       WST-AFLD-Last-Flt (Error-Code) > AFLD-Last-Flt or = zero
               move     WST-AFLD-Last-Flt (Error-Code) to AFLD-Last-Flt
               rewrite  Airfield-Record.
 *>
