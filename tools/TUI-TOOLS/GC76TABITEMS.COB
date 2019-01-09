@@ -281,7 +281,7 @@ Start-Program.
      go End-Program
   end-if
 
-  move    wFileName to TABEFSPEC
+  move    wTabeFileName to TABEFSPEC
   display ' ' at 0101 :BCOL: 07 :FCOL: 00
   perform HideCursor thru HideCursor-ex
 
@@ -317,7 +317,7 @@ DisplayBackground.
 
 *> Select-A-Table.
      move space to wString
-     string ' TABLE ITEMS MANAGEMENT - File: '  wFileName ' - SELECT A TABLE ' delimited by size into wString
+     string ' TABLE ITEMS MANAGEMENT - File: '  wTabeFileName ' - SELECT A TABLE ' delimited by size into wString
      display wString at 0101 :BCOL: green :FCOL: white highlight
      move space to wString
      string 'TAB TABLE HEADER (DESCRIPTION) ' delimited by size into wString
@@ -365,7 +365,7 @@ DisplayBackground.
 
 DisplayScreen.
      perform ShowCursor thru ShowCursor-ex     *> re-show the cursor
-     string ' TABLE ITEMS MANAGEMENT - File: '  wFileName  delimited by size into Testata
+     string ' TABLE ITEMS MANAGEMENT - File: '  wTabeFileName  delimited by size into Testata
      string ' Items of table...............: ' wDescrTable delimited by size into Testata2
      display Screen-Header
      display Screen-RulerTop
@@ -646,14 +646,14 @@ TableFileSelection.
    CALL GC09BUTTONS using Buttons-Area
 
    evaluate Bu-selected
-       when 1 move '001' to wFileName(6:3)
-       when 2 move '002' to wFileName(6:3)
-       when 3 move '003' to wFileName(6:3)
-       when 4 move '004' to wFileName(6:3)
-       when 5 move '005' to wFileName(6:3)
-       when 6 move '006' to wFileName(6:3)
-       when 7 move '007' to wFileName(6:3)
-       when 8 move '008' to wFileName(6:3)
+       when 1 move '001' to wTabeFileName(6:3)
+       when 2 move '002' to wTabeFileName(6:3)
+       when 3 move '003' to wTabeFileName(6:3)
+       when 4 move '004' to wTabeFileName(6:3)
+       when 5 move '005' to wTabeFileName(6:3)
+       when 6 move '006' to wTabeFileName(6:3)
+       when 7 move '007' to wTabeFileName(6:3)
+       when 8 move '008' to wTabeFileName(6:3)
    end-evaluate
    continue.
 TableFileSelectionEx. exit.
