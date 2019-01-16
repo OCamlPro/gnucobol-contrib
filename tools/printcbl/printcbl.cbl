@@ -1,8 +1,14 @@
        >>SOURCE FREE
  identification division.
  program-id.    printcbl.
-*> Author.      Vincent B Coen New verson v2.01.17+) See Changelog file
-*>                                                  for all changes.
+*> Author.      Vincent B Coen New verson v2.01.18+)
+*>                See Changelog file for all changes.
+*> Copyright.   Jim C. Currey 2009-2011 original programmer,
+*>              Vincent B Coen 2011-2019 Heavily changed.
+*>
+*>  Program may be used by all, without any payment of any kind
+*>   and without any form of warranty.
+*>
 *> Tesing Level 1/2
 *>*****************
 *>
@@ -15,10 +21,8 @@
 *> 02/06/12 vbc - 'EJECT' | '/'       working
 *>           add differing case for the above
 *>
-*>  WARNING: If you run OC v1.1 or CE then you may need to remove
-*> the 2nd printer line 'organisation line sequential' due to a bug
-*> in fileio.c. So far its working correctly in v2.0 as of
-*>  2016/07/16.
+*>  WARNING: Do not use OC v1.1 or CE, minimum compiler version
+*>         is v2.0.
 *>
 *>  Please read all of the notes before use!!!
 *>   Notes transferred to a manual in LibreOffice & PDF formats.
@@ -28,8 +32,8 @@
 *>   make checkall and that you get no errors what so ever
 *>    otherwise you get compiler induced errors when running.
 *>
-*>  Latest version at http://applewoodbbs.dtdns.net/files/Cobol-Dev/printcbl-latest.zip
-*>   or via (anonymous) ftp  applewoodbbs.dtdns.net/pub/Cobol-Dev/printcbl-latest.zip
+*>  Latest version at http://applewoodbbs.linkpc.net/files/Cobol-Dev/printcbl-latest.zip
+*>   or via (anonymous) ftp  applewoodbbs.linkpc.net/pub/Cobol-Dev/printcbl-latest.zip
 *>   also added to trunk/contrib/tools on GNU Cobol at sourceforge.
 *>
 *> Suggestions for updates to vbcoen at gmail.com
@@ -75,13 +79,14 @@
  working-storage section.
 *>======================
 *>
- 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.17".  *> ver.rel.build
+ 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.18".  *> ver.rel.build
 *>
 *>   **************************************
-*>   *     User changeable values here:   ****************************************************
+*>   *     User changeable values here:  **
 *>   **************************************
 *>
-*> Temporary for testing program args etc, (We-Are-Testing) will display prog arguments at start.
+*> Temporary for testing program args etc, (We-Are-Testing) will
+*>   display prog arguments at start.
 *>  Useful to have anyway!
 *>
  77  Testing                pic 9 value 0.
@@ -227,8 +232,8 @@
  01  Uns-Delimiter          pic x          value space.
  01  Cobcpy                 pic x(500)     value spaces.
  01  Cob_Copy_Dir           pic x(500)     value spaces.
- 01  Copy-Dirs-Block.                                          *> Could be larger but if you need it, you have
-*>                                                                some serious project control issues !!
+ 01  Copy-Dirs-Block.                                    *> Could be larger but if you need it, you have
+*>                                                          some serious project control issues !!
      03  No-Of-Copy-Dirs    pic s99  comp  value zero.
      03  Copy-Lib           pic x(500)                 occurs 10.
 *>
@@ -247,7 +252,7 @@
 *>
 *>   +==========================================================+
 *>   | NOTE that some data and code taken from Profiler (v0.01) |
-*>   |     and Cobxref (both under Alpha test)                  |
+*>   |     and Cobxref                                          |
 *>   | SO copy any bugs fixes here to them !!                   |
 *>   +==========================================================+
 *>
@@ -1589,7 +1594,7 @@
               display "  P4: PSN (Print Spool Name) or NOPRINT | noprint"  at 0801
               display "  P5: 'Temp-CopyLib-Path'" at 0901
               display " P1 thru P4 are Mandatory"  at 1101
-              display " Prtcbl also looks for Open Cobol Env. variables" at 1301
+              display " Prtcbl also looks for GnuCOBOL Env. variables" at 1301
               display "  COBCPY and COB_COPY_DIR for copy library search paths" at 1401
               display " Hit return to accept parameters manually"  at 1601
               display space a
@@ -1938,8 +1943,7 @@
 *>  filename is using Cbl-File-name
 *>
      move     zero to Return-Code.
-     add      1 to Fht-Table-Size.
-     if       Fht-Table-Size > Fht-Max-Table-Size                *> 10
+     if       Fht-Table-Size not < Fht-Max-Table-Size                *> 10
               move 24 to Return-Code                             *> RT 24 file table limit exceeded
               display Msg1
               go to zz300-Exit
@@ -1958,6 +1962,7 @@
 *>
 *> set up New entry in File Table
 *>
+     add      1 to Fht-Table-Size.
      move     Fht-Table-Size to e.
      initialize Fht-Var-Block (e).
      move     Fht-Buffer-Size  to   Fht-Byte-Count (e).
@@ -2080,8 +2085,8 @@
             end-string
             perform zz010-Write-Print-Line2
         end-if.
- zz400-Exit.
-     exit.
+*>
+ zz400-Exit.  exit.
 *>
  zz500-Close-File.
      call     "CBL_CLOSE_FILE" using Fht-File-Handle (Fht-Table-Size).
@@ -2096,8 +2101,7 @@
      move     zero to Return-Code.
      go       to zz500-Exit.
 *>
- zz500-Exit.
-     exit.
+ zz500-Exit.  exit.
 *>
  zz600-Read-File.
 *>**************
@@ -2218,8 +2222,7 @@
  zz600-Read-A-Block-Exit.
      exit.
 *>
- zz600-Exit.
-     exit.
+ zz600-Exit.  exit.
 *>
  zz900-Process-Replace  Section.
 *>*****************************

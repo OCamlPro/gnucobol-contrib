@@ -1,19 +1,26 @@
+2019-01-15 Vincent B Coen
+        *    v2.01.18
+                 1. Replaced website url from dtdns.net to linkpc.net
+                 2  Update copyright notices.
+                 3. Replace references of Open Cobol to GnuCobol.
+                 4. Documentation minor clean up.
+
 2018-02-27 Vincent B Coen
         *    v2.01.17
-                1. Clean up help screen add some extra comments in src.
-                2. Point out that default copy libs is from env. vars COBCPY.
+                 1. Clean up help screen add some extra comments in src.
+                 2. Point out that default copy libs is from env. vars COBCPY.
 
 2014-12-02 Vincent B Coen
         *    v2.01.16 Functional additions:
-                1. If P5 is unused then current directory is used for
-                   searching for copy books before COBCPY etc.
-                2. Added option NOPRINT|noprint to P4 to prevent output file
-                   containing headings - can be used as a updated source file
-                   Same as using >>NOPRINT|*>NOPRINT etc in line 1.
-                3. Possible overflow issues when examining file buffer during
-                   copy file name.
-                4. Issues when using copy books NOT in quotes, ongoing
-                   tracing for reasons etc.
+                 1. If P5 is unused then current directory is used for
+                    searching for copy books before COBCPY etc.
+                 2. Added option NOPRINT|noprint to P4 to prevent output file
+                    containing headings - can be used as a updated source file
+                    Same as using >>NOPRINT|*>NOPRINT etc in line 1.
+                 3. Possible overflow issues when examining file buffer during
+                    copy file name.
+                 4. Issues when using copy books NOT in quotes, ongoing
+                    tracing for reasons etc.
 
 2014-11-05 Vincent B Coen
         *    v2.01.15 Test for table size not done after table was
@@ -21,74 +28,74 @@
                    depth to go to 9 let alone higher! Clean this doc up.
 
 2014-11-01 Vincent B Coen
-	*    v2.01.14 Changed inspect statement from FOR LEADING "FREE"
-	         which does not work to FOR ALL "FREE" in the
-	         da000-Check-For-Source section.
-	         This now will reset the source format type as and when it
-	         finds a >>SOURCE directlve overriding fixed/free that is
-	         supplied when running program. Thanks Brian for finding it.
+        *    v2.01.14 Changed inspect statement from FOR LEADING "FREE"
+                    which does not work to FOR ALL "FREE" in the
+                    da000-Check-For-Source section.
+                    This now will reset the source format type as and when it
+                    finds a >>SOURCE directlve overriding fixed/free that is
+                    supplied when running program. Thanks Brian for finding it.
 
 2014-10-13 Vincent B Coen
-	*    v2.01.13 Removed not used comments where they are (I hope).
+        *    v2.01.13 Removed not used comments where they are (I hope).
 
 2013-10-11 Vincent B Coen
-	*    v2.01.12 Ensure that the NOPRINT statement does NOT get output.
+        *    v2.01.12 Ensure that the NOPRINT statement does NOT get output.
 
-	*    v2.01.11 Brought back 'access line sequential' for printer
-	        as double line are being caused by a patch to OC v1.1/CE
-	        in fileio.c  ??
-	        Works perfect for OC v2.0.
-	        This tool has how been placed on the GNU Cobol/Open Cobol
-	        sourceforge sites code at /trunk/contrib/tools/printcbl.
+        *    v2.01.11 Brought back 'access line sequential' for printer
+                    as double line are being caused by a patch to OC v1.1/CE
+                    in fileio.c  ??
+                    Works perfect for OC v2.0.
+                    This tool has how been placed on the GNU Cobol/Open Cobol
+                    sourceforge sites code at /trunk/contrib/tools/printcbl.
 
 2013-05-01 Vincent B Coen
-	*    v2.01.10 Cleaned up original code (pre-Alfred) to work on OC v1.1
-		As just needed to replace perform until exit with
-		perform forever.
-		This has brought back the screen control for the help screen.
+        *    v2.01.10 Cleaned up original code (pre-Alfred) to work on OC v1.1
+                    As just needed to replace perform until exit with
+                    perform forever.
+                    This has brought back the screen control for the help screen.
 
 2013-03-08 Vincent B Coen/Alfred Cleve
-	*    v2.01.08 Thanks to Alfred code modified to work with older
-	        versions of the OC compiler (v1.1) unpatched.
-	        This file is printcbl-4-OC-1.1-unpatched.cbl
-	         This includes marking out 'llcc background colour n' etc
-	         where ll = line number and cc = column number.
-	         so some displays may well look a bit odd.
-	     	This one I do not understand as I have programs written for
-		    v1.1 that this works with.
-		Will have another look when time is available.
-	*       Changed displayed and printed program name to printcbl.
-	        Silly error.
+	       *    v2.01.08 Thanks to Alfred code modified to work with older
+	                   versions of the OC compiler (v1.1) unpatched.
+	                   This file is printcbl-4-OC-1.1-unpatched.cbl
+	                   This includes marking out 'llcc background colour n' etc
+	                   where ll = line number and cc = column number.
+	                   so some displays may well look a bit odd.
+	                   This one I do not understand as I have programs written for
+		                  v1.1 that this works with.
+		                  Will have another look when time is available.
+	       *           Changed displayed and printed program name to printcbl.
+	                   Silly error.
 
 2012-06-12 Vincent B Coen
         *    v2.01.07 Fixed bug if free source starts in first column.
 
 2012-06-10 Vincent B Coen
         *    v2.01.06 Trace bugs on processing Fixed formats & other stuff
-        *       1. Found, Assuming again, COPY can start in cc8 fixed so
-                   checking for " COPY " from cc8 will not work, changed to
-                   start cc in fixed to 7 (free is cc 1).
-        *       2, Allow Replacing Leading and Trailing to work but is really
-                   ignored.
-        *       3. With 1. fixed change to check record size depending on type
-                   free from 255 and fixed from 72. Should speed it up a bit.
-        *       4. Cleared bug: COPY statement not commented if creating new
-                   source. This clears all bugs found during regression testing
-                   (test11 thru 19).
-        *       5. Cleared bug: Suppress stopped working, my own fault having
-                   removed code that processed it when removing excess code in
-                   para bb070 and forgot to replace it elsewhere !!
-        *       6. Changed some hard code values of tables/occurs etc to use
-                   vars in WS
+        *        1. Found, Assuming again, COPY can start in cc8 fixed so
+                    checking for " COPY " from cc8 will not work, changed to
+                    start cc in fixed to 7 (free is cc 1).
+        *        2, Allow Replacing Leading and Trailing to work but is really
+                    ignored.
+        *        3. With 1. fixed change to check record size depending on type
+                    free from 255 and fixed from 72. Should speed it up a bit.
+        *        4. Cleared bug: COPY statement not commented if creating new
+                    source. This clears all bugs found during regression testing
+                    (test11 thru 19).
+        *        5. Cleared bug: Suppress stopped working, my own fault having
+                    removed code that processed it when removing excess code in
+                    para bb070 and forgot to replace it elsewhere !!
+        *        6. Changed some hard code values of tables/occurs etc to use
+                    vars in WS
 
 2012-06-02 Vincent B Coen
         *    v2.01.03 Start coding for Replace processing
-        *       1. Code tested to build replace tables including size of
+        *        1. Code tested to build replace tables including size of
                     source and targets in replacing statements.
-        *       2. Attempt to use Function Substitute to replace fields in buffer!
-        *       3. That does'nt seem to work so use on record.
-        *       4. Clear out remaining bugs when using NOPRINT
-        *       5. and some others found during testing. and now for FIXED
+        *        2. Attempt to use Function Substitute to replace fields in buffer!
+        *        3. That does'nt seem to work so use on record.
+        *        4. Clear out remaining bugs when using NOPRINT
+        *        5. and some others found during testing. and now for FIXED
                    format testing
 
 2012-05-22 Vincent B Coen
