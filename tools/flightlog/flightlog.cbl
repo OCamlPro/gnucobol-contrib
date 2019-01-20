@@ -139,7 +139,7 @@
 *>                 SY021 thru SY024.  Config Data or CSV data incorrect.
 *>=
 *>  Operational, Warning or Error Messages:
-*>                 FL001 thru FL050.  Flightlog usage issues. (FL016, FL018 not used)
+*>                 FL001 thru FL050.  Flightlog usage issues. (FL018 not used)
 *>**
 *>  CHANGES.       All old changes saved to file Changelog as list is getting long!
 *>                  last two digits (.nn) is build number.
@@ -152,6 +152,8 @@
 *>                        function is being removed (Data conversion EBCDIC to ASCII).
 *>                        Likewise P4 usage so now only 3 parameters maximum used when
 *>                        starting program.
+*> 02/01/19 vbc       .05 No data test if trying to run options that expect data to be present. FL016.
+*>                        Silly omission but user could try it!
 *>
 *> TODO maybe ? (outstanding):
 *>
@@ -568,7 +570,7 @@
 *>
  WORKING-STORAGE SECTION.
 *>----------------------
- 77  PROG-NAME               PIC X(18) VALUE "LOG BOOK (2.02.04)".
+ 77  PROG-NAME               PIC X(18) VALUE "LOG BOOK (2.02.05)".
  77  WS-CSV-Rec-Size         pic 9999 comp  value 512. *> This is the maximum record size for CSV logbook
                                                        *> data records [see manual]. If unsure leave as is
                                                        *>  It is more likely to be smaller i.e., 256.
@@ -818,7 +820,7 @@
      03  FL013          pic x(68) value "FL013 Reading logbook, have found Aircraft type not on file, created".
      03  FL014          pic x(16) value "FL014 Date Error".
      03  FL015          pic x(38) value "FL015 Re-Adjust screen then hit return".
- *>    03  FL016          pic x(34) value "FL016 Error on write Aircraft File".
+     03  FL016          pic x(50) value "FL016 Flight Data not present yet - option aborted".
      03  FL017          pic x(28) value "FL017 Hit return to continue".
  *>    03  FL018          pic x(46) value "FL018 Correct problem & run fix it routine NOW".
      03  FL019          pic x(41) value "FL019 CSV delimiter used from data record".
@@ -1347,6 +1349,10 @@
      DISPLAY  "+-------------+"       AT 2164 WITH foreground-color COB-COLOR-GREEN.
      MOVE     SPACES TO MENU-REPLY.
      PERFORM  ZB000-LOAD-AIRFIELDS.
+     if       Return-code not = zero
+              display FL016 at line ws-23-lines col 10 with foreground-color COB-COLOR-RED with erase eol
+              accept WS-Reply at line ws-23-lines col 50
+              go to B999-Exit.
 *>
  B030-DISPLAY-AFLD-MENU2.
      DISPLAY  "ICAO" AT 0641 WITH foreground-color COB-COLOR-Yellow.
@@ -2697,10 +2703,14 @@
 *> Force Re/Load Airfield & aircraft tables for the stats.
 *>
      perform  ZC000-LOAD-AIRCRAFT
-     if       Return-Code = 4
+     if       Return-Code > 3
+              display FL016 at line ws-23-lines col 10 with foreground-color COB-COLOR-RED with erase eol
+              accept WS-Reply at line ws-23-lines col 50
               go to CC999-Exit.
      PERFORM  ZB000-LOAD-AIRFIELDS
-     if       Return-Code = 4
+     if       Return-Code > 3
+              display FL016 at line ws-23-lines col 10 with foreground-color COB-COLOR-RED with erase eol
+              accept WS-Reply at line ws-23-lines col 50
               go to CC999-Exit.
 *>
      IF       DISPLAY-FLAG NOT = ZERO
@@ -2790,6 +2800,10 @@
               start    Flightlog-File key not < FLT-Date-Time-Key
      else
               start    FLIGHTLOG-FILE FIRST.
+     if       FS-Reply not = "00"               *> no data, should have been found loading aflds & acft.
+              display FL016 at line ws-23-lines col 10 with foreground-color COB-COLOR-RED with erase eol
+              accept WS-Reply at line ws-23-lines col 50
+              go to CC999-Exit.
 *>
  CC050-LBR-READ.
      READ     FLIGHTLOG-FILE next record AT END
@@ -3456,6 +3470,10 @@
 *>    log book read in reversed order
 *>
      start    Flightlog-File LAST.      *> we are reading backwards (previous)
+     if       FS-Reply not = "00"
+              display FL016 at line ws-23-lines col 10 with foreground-color COB-COLOR-RED with erase eol
+              accept WS-Reply at line ws-23-lines col 50
+              go to CCE999-Exit.
      initialise WS4-Totals.
      move     spaces to CoE-Lines.
 *>
@@ -3757,6 +3775,10 @@
 *> Now go through the flightlog records and see if old airfield code is used.
 *>
      start    Flightlog-File FIRST.
+     if       FS-Reply not = "00"
+              display FL016 at line ws-23-lines col 10 with foreground-color COB-COLOR-RED with erase eol
+              accept WS-Reply at line ws-23-lines col 50
+              go to CD999-Exit.
 *>
  CD020-Read-Flitelog.
      read     Flightlog-File next record at end
@@ -3828,6 +3850,10 @@
               go to CE010-Get-Type.
      display  WS-New-AC-Type at 0513.
      start    Flightlog-File FIRST.
+     if       FS-Reply not = "00"
+              display FL016 at line ws-23-lines col 10 with foreground-color COB-COLOR-RED with erase eol
+              accept WS-Reply at line ws-23-lines col 50
+              go to CE999-Exit.
 *>
  CE020-Read-Flitelog.
      read     Flightlog-File next record at end
@@ -4856,6 +4882,9 @@
      end-perform
      move     zero to WST-Airfield-Size.
      START    AIRFIELD-FILE FIRST.
+     if       FS-Reply not = "00"
+              move 8 to Return-Code
+              go to ZB999-Exit.
 *>
  ZB020-LOAD-AFLD-READ.
      READ     AIRFIELD-FILE NEXT RECORD AT END
@@ -4887,6 +4916,9 @@
      end-perform
      MOVE     ZERO TO WST-AIRCRAFT-SIZE.
      START    AIRCRAFT-FILE FIRST.
+     if       FS-Reply not = "00"
+              move 8 to Return-Code
+              go to ZC999-Exit.
 *>
  ZC020-READ.
      READ     AIRCRAFT-FILE NEXT AT END
@@ -4999,8 +5031,20 @@
 *> Called when all dat files open
 *>
      start    Flightlog-File FIRST.
+     if       FS-Reply not = "00"
+              display FL016 at line ws-23-lines col 10 with foreground-color COB-COLOR-RED with erase eol
+              accept WS-Reply at line ws-23-lines col 50
+              go to ZL999-Exit.
      start    Aircraft-File  FIRST.
+     if       FS-Reply not = "00"
+              display FL016 at line ws-23-lines col 10 with foreground-color COB-COLOR-RED with erase eol
+              accept WS-Reply at line ws-23-lines col 50
+              go to ZL999-Exit.
      start    Airfield-File FIRST.
+     if       FS-Reply not = "00"
+              display FL016 at line ws-23-lines col 10 with foreground-color COB-COLOR-RED with erase eol
+              accept WS-Reply at line ws-23-lines col 50
+              go to ZL999-Exit.
      open     output FlightlogBackup-File AircraftBackup-File AirfieldBackup-File.
 *>
  ZL010-Process-Flightlog.
