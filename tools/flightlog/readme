@@ -1,0 +1,151 @@
+Readme for SF at 2.02.05
+
+There is a updated manual for Flightlog mostly typos, grammar and re-locating
+content to other sections and other updates.
+
+Improvement to the building instructions for the COBOL compiler
+GnuCOBOL and the Flight software.
+
+Appendix T has been removed..
+
+
+READ any file named UPDATE first and do any actions specified
+BEFORE doing any thing else.
+
+Now read any file called README.1st.
+
+READ any file named UPDATE first and do any actions specified BEFORE doing
+any thing else.
+
+Now read any file called README.1st.
+
+
+Yes done twice to make sure you read it.
+
+Failure to do so will make your data files un-usable with Flightlog.
+
+Finish off reading this file then read the manual.
+
+Yes, the manual may not be complete or contain errors on both layout
+and content.
+Please report any you find using the Tracker tool on the
+website or use the Forums if you cannot work out how to use it.
+
+Reminders for users to do:
+
+1. Script changes for your usage based on location or more importantly
+   preferred date format (dd/mm/yyyy or mm/dd/yyyy or yyyy/mm/dd)
+   See LC_TIME parameters when running Flightlog.
+
+A. Copy prtpdf-sh-A4 or prtpdf.sh-Letter to prtpdf.sh depending on
+the paper size you use.
+
+It has been tested using a HP8600 inkjet
+using Linux distro's Mageia v6 X64 and Raspberry Pi 3B+ Debian.
+Where the Pi has an attached USB 1Tb hard drive linked to / via
+/etc/fstab.
+
+The font sizing for A4 paper has not been copied over to that for US Letter
+because I do not have that size any more.
+
+Users of Letter should try both A4 then Letter and see if you get full
+coverage but without going outside the size of the paper and if so use it.
+If not try the Letter and see if that works better and if not adjust one or
+both saving the original files first. IT IS RECOMMENDED that you only change
+ONE SETTING AT A TIME. Then test it using the pdf reader of your choice.
+Above based on my own tampering. :)
+
+Likewise testing for flightlog has been run on the Pi and works exactly
+the same as on Mageia v6 platform (an Redhat sourced version). Also
+tested using Ubuntu.
+
+Must get around to doing the same with Windows.
+
+
+B. Copy run-flightlog.sh-UK, run-flightlog.sh-USA or run-flightlog.sh-Unix
+to run-flightlog.sh depending on your date format, see manual for more
+information.
+
+Now modify run-flightlog.sh to your requirements if needed.
+Note that this script uses an argument (date with suggested format of
+yyyy-mm-dd or yyyymmdd etc) to create the back up archive.
+If no argument is provided it will create as is a file called :
+backup-.zip.  The script could be changed to test for no argument and if
+so force date based on today or even not do a backup. If I remember and
+have time I will do this, but assume I haven't.
+
+
+2. The directory Airfields contains a list by the first 2 chars of the
+ICAO code for many countries but by no means all of them.
+
+There is also 2 files for each .PDF file obtained from the web and the
+txt file which has been edited removing accented character and unwanted
+(OK, by me) excessive text like 'Airfield', 'Airport' with international
+replaced by Int'l in some cases and other just removed.
+
+Note many of these include Public Heliports and at hospitals.
+
+Just got bored, trying to clean them up when I considered adding them
+to the airfield file. Went off that idea :)
+
+Now an option for those that have a need? Is to using their countries
+version of these or/and others is to create from them a csv record type
+4 (Airfields) and add them into the Airfield file but it is a fair amount
+of work when most pilots use but a fraction of the total in use for a
+country and therefore just update after flying to a new airfield.
+
+That said,  commercial crew may well want to do this when they get
+on new routes and just add them in one hit - Your choice.
+Doing so, does not require the full use of a CSV flight data file.
+
+Here is a list of TODO features for the Flightlog program that may or
+may not be added subject to user requests along with any reasons why:
+
+There is no reason why it cannot be added to as a new Feature request.
+
+For v2.02.00 - An attempt to work with TODO (2) in progress but using hidden
+menu options 3 for C and 4 for D. It may or may not be operational for any
+given build.  Very much a try and see what it looks like after using
+prtpdf.sh as it might be a real mess.
+
+TODO (2) DONE :Compressed flight report using airfield names instead of
+         icao codes completed as HIDDEN menu options 3 & 4 in place of
+         options C & D.
+
+TODO (7) Deleted as not possible due to too many variations of M/F data.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ TODO may be? (outstanding):
+
+  20/10/18            4. Consider using Mysql RDB for all data used on a per pilot
+                     basis. Worth doing ?.
+                     Would allow for extra statistics using SQL queries but again is
+                     this useful ?.
+                     If application used as a web based system allows for multi
+                     pilots by using one database per pilot by name via a login
+                     facility.    Priority LOW / MEDIUM as would require users
+                     to install Mysql package, bit ITT for low exp. users.
+                     Could consider using Sqlite but err, why ?
+
+  07/11/18            6. Consider using a web browser interface for display
+                     and accepting data. Could be linked to (4).
+                     THIS IS A HIGH TIME work load though, so unlikely.
+                     Priority LOW.
+
+  17/12/18            8. Consider re-introducing on data entry day and night landings
+                     for T & G flights but there again it should be specified
+                     in Remarks so is it really needed for the 90 Day CoE ?.
+                     CAA / FAA requirement ?
+                     The problem with it is that it is not used for commercial or
+                     military aircrew. Opions ?
+
+
+End of README
+
+30/11/2018 vbc - Initial creation.
+13/12/2018 vbc - Minor clean up / updates for scripts.
+14/12/2018 vbc - More script updates and other content.
+17/12/2018 vbc - Minor clean up.
+31/12/2018 vbc - Updated for v2.02.03.
+02/01/2019 vbc - Updated for SF readme at 02.02.05.
