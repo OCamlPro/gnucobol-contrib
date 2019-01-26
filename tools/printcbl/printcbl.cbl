@@ -1,4 +1,36 @@
        >>SOURCE FREE
+*>
+*> CONFIGURATION SETTINGS: Set these switches before compiling:
+*>  GnuCOBOL CONSTANTS section.
+*>
+*> Set  C-Print-Out to 1 if you want reports printed unless
+*>      changed by NOPRINT in line 1 of any source file.
+*>      See manual for information.
+
+>>DEFINE CONSTANT C-Print-Out AS 0
+*>
+*> Temporary for testing program args etc, (We-Are-Testing) will display prog arguments at start.
+*>  Useful to have anyway!  Set to 1 to be active
+*>
+
+>>DEFINE CONSTANT C-Testing-1   AS 0    *> Not testing (default), change to AS 1 if wanted.
+*>
+
+>>DEFINE CONSTANT C-PR-2      AS 0    *> Do NOT delete file after printing (default) or AS 1 if you do.
+*>
+*>  Set as is, to CUPS printer spool name Change to your if required otherwise will not print out.
+*>                        Note there is a trailing space that is NEEDED.
+*>
+
+>>DEFINE CONSTANT PSN-1       AS "Officejet-Pro-8600 "   *> Change to your printer spool name if needed.
+*>
+
+>>DEFINE CONSTANT PAGE-LINES  AS 48    *> Change here if you do not fill a page or go over to
+                                       *>  a new one without a heading line (see Docs)
+*>-
+*> END CONFIGURATION SETTINGS
+*>
+*>
  identification division.
  program-id.    printcbl.
 *> Author.      Vincent B Coen New verson v2.01.18+)
@@ -6,8 +38,9 @@
 *> Copyright.   Jim C. Currey 2009-2011 original programmer,
 *>              Vincent B Coen 2011-2019 Heavily changed.
 *>
-*>  Program may be used by all, without any payment of any kind
-*>   and without any form of warranty.
+*>  Program may be used by all, without any payment of any kind and without
+*>     any form of warranty but any reported problems will be fixed as time
+*>        is available.
 *>
 *> Tesing Level 1/2
 *>*****************
@@ -21,8 +54,9 @@
 *> 02/06/12 vbc - 'EJECT' | '/'       working
 *>           add differing case for the above
 *>
-*>  WARNING: Do not use OC v1.1 or CE, minimum compiler version
-*>         is v2.0.
+*>  WARNING: Do not use with OC v1.1 or CE,
+*>       minimum compiler version
+*>           is v2.0.
 *>
 *>  Please read all of the notes before use!!!
 *>   Notes transferred to a manual in LibreOffice & PDF formats.
@@ -30,7 +64,7 @@
 *>
 *>  Make sure that you have tested the GnuCobol compiler by running
 *>   make checkall and that you get no errors what so ever
-*>    otherwise you get compiler induced errors when running.
+*>    otherwise you might get compiler induced errors when running.
 *>
 *>  Latest version at http://applewoodbbs.linkpc.net/files/Cobol-Dev/printcbl-latest.zip
 *>   or via (anonymous) ftp  applewoodbbs.linkpc.net/pub/Cobol-Dev/printcbl-latest.zip
@@ -79,19 +113,19 @@
  working-storage section.
 *>======================
 *>
- 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.18".  *> ver.rel.build
+ 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.20".  *> ver.rel.build
 *>
 *>   **************************************
 *>   *     User changeable values here:  **
 *>   **************************************
 *>
 *> Temporary for testing program args etc, (We-Are-Testing) will
-*>   display prog arguments at start.
+*>   display prog arguments at start. SET via CDF at start of src.
 *>  Useful to have anyway!
 *>
- 77  Testing                pic 9 value 0.
-     88 We-Are-Testing            value 1
-                               False is 1.
+ 77  Testing                pic 9 value C-Testing-1.                 *> Taken from CDF value start of src
+     88 We-Are-Testing            value 1.
+*>
  77  Testing2               pic 9 value 0.   *> 0.
      88 We-Are-Testing2           value 1
                                False is 0.
@@ -101,24 +135,34 @@
  77  Testing4               pic 9 value 0.   *> 0.
      88 We-Are-Testing4           value 1
                                False is 0.
- 77  Print-It-Out           pic 9 value zero.    *>  Set this to 1 if you want reports printed unless
-*>                                                   changed by NOPRINT in line 1 of any source file.
-*>                                                   See manual for information. Set to 0 for testing
+>>IF    C-Print-Out = 0
+   77  Print-It-Out           pic 9 value zero.    *>  Set this to 1 if you want reports printed unless
+>>ELIF  C-Print-Out = 1
+   77  Print-It-Out           pic 9 value 1.
+>>END-IF
+*>
 *>   +-----------------------+
 *>   | Portrait lpr Settings |
 *>   +-----------------------+
 *>
  01  Print-Report.
-     03  filler             pic x(119)     value
-    "lpr " &
-*>    "-r " &                                 *> Uncomment if you want to delete file after printing
+     03  PR-1               pic x(4)    value  "lpr ".
+*>
+>>IF    C-PR-2  = 0                                     *> Set to 0 if you DO NOT want to delete file after printing
+     03  PR-2               pic xxx     value  "   ".
+>>ELIF  C-PR-2  = 1                                    *> otherwise set to 1 if you do
+     03  PR-2               pic xxx     value  "-r ".  *> Delete file after printing
+>>END-IF
+*>
+     03  filler             pic x(112)  value
     "-o 'orientation-requested=3 page-left=24 page-top=24 " &     *> 24 = 1/4 inch (6mm) edges
     "page-right=24 sides=two-sided-long-edge " &                  *>  and increase page-left to 48
                                                                   *>    for hole punching, etc.
     "cpi=16.6 " &                                                 *> Change if font size wrong
     "lpi=9' -P ".                                                 *> change if lines per inch wrong
-     03  PSN                pic x(48) value "Officejet-Pro-8600 ". *> Change to your Print Spool Name
-*> "
+     03  PSN                pic x(48) value PSN-1.                *> set in CDF at start of src.
+ *>    03  PSN                pic x(48) value "Officejet-Pro-8600 ". *> Change to your Print Spool Name
+*>
 *>>>>>>        Change To Your Spool Name for printer NOTE THAT THERE IS A TRAILING SPACE
 *> This is the Cups print spool, change it for yours,
 *>  if your printer can not handle Duplex (double sided) printing remove string
@@ -128,7 +172,7 @@
 *>
      03  PR-Name            pic x(32)     value spaces.     *> O/P filename goes here
 *>
- 01  WS-Page-Lines          pic 999       value 48.         *> Change if you do not fill a page or go over to
+ 01  WS-Page-Lines          pic 999       value PAGE-LINES. *> Change in CDF if you do not fill a page or go over to
 *>                                                              a new one without a heading line (see Docs)
  01  WS-PDF-Page-Lines      pic 999       value 57.         *> not yet used.
 *>
@@ -619,8 +663,10 @@
 *>
 *> Find size of source record (max = 255 as per specs) & start of source
 *>
-     perform  varying IR-Buffer-Data-Size from WS-End by -1 until IR-Buffer (IR-Buffer-Data-Size:1) not = " "
-                                                               or IR-Buffer-Data-Size < 2
+     perform  varying IR-Buffer-Data-Size from WS-End by -1 until
+                           IR-Buffer (IR-Buffer-Data-Size:1) not = " "
+                        or IR-Buffer-Data-Size < 2
+              continue
      end-perform
      if       IR-Buffer (IR-Buffer-Data-Size:1) = x"0D" or x"00"
               subtract 1 from IR-Buffer-Data-Size
@@ -735,6 +781,7 @@
               perform varying WS-P1 from WS-P1 by 1 until IR-Buffer (WS-P1:1) = quote
                                                        or "'"
                                                        or WS-P1 > IR-Buffer-Data-Size - 7
+                       continue
               end-perform                                           *> lose the literal or line
               if   WS-P1 > IR-Buffer-Data-Size - 7
                    go to ba000-Process
@@ -785,7 +832,7 @@
      inspect  WS-CRT-Copy-Filename tallying e for all ".".
      if       e > zero                                        *> its a .ext
               set WS-CRT-Copy-Fname-Ext to true
-*>            go to ba040-Open-CopyFile                       *> IS THIS RIGHT? Need to add in copy-lib if present ???
+*>            go to ba040-Open-CopyFile          *> IS THIS RIGHT? Need to add in copy-lib if present ???
      else
               set WS-CRT-Copy-Fname-Ext to false
      end-if                                                   *> Got space, now get 'IN' or 'OF'
@@ -1096,8 +1143,10 @@
 *>
 *> Find size of source record (max = 255 as per specs) & start of source
 *>
-     perform  varying IR-Buffer-Data-Size from WS-End by -1 until  IR-Buffer (IR-Buffer-Data-Size:1) not = " "
-                                                                or IR-Buffer-Data-Size < 2
+     perform  varying IR-Buffer-Data-Size from WS-End by -1
+                      until  IR-Buffer (IR-Buffer-Data-Size:1) not = " "
+                          or IR-Buffer-Data-Size < 2
+              continue
      end-perform
      if       IR-Buffer (IR-Buffer-Data-Size:1) = x"0D" or x"00"
               subtract 1 from IR-Buffer-Data-Size
@@ -1764,8 +1813,8 @@
               go to zz030-Exit.
      if       (WS-Fixed-Set and IR-Buffer (7:1) = "*")
          or   (WS-Fixed-Set and IR-Buffer (7:1) = "-")                  *> Literal
-         or   (WS-Fixed-Set and (IR-Buffer (7:1) = "D" or = "d"))       *> Debug with COPY  ????
-         or   (WS-Free-Set and IR-Buffer (1:2) = "*>")
+ *>        or   (WS-Fixed-Set and (IR-Buffer (7:1) = "D" or = "d"))     *> Debug with COPY  ????
+         or   (WS-Free-Set and IR-Buffer (1:2) = "*>")                  *> >>D (free) is processed.
          or   (WS-Free-Set and IR-Buffer (1:1) = "$")
          or   (WS-Free-Set and IR-Buffer (1:1) = "#")
               go to zz030-Exit
@@ -1793,6 +1842,7 @@
                        perform varying WS-P6 from WS-P6 by 1 until IR-Buffer (WS-P6:1) = quote
                                                                 or "'"
                                                                 or WS-P6 > IR-Buffer-Data-Size - 7
+                               continue
                        end-perform                     *> lose the literal or line
                        if   WS-P6 > IR-Buffer-Data-Size - 7
                             move zero to WS-P6

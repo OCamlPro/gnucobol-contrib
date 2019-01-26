@@ -16,10 +16,20 @@ REPLACING ==fred== BY
 
 does not.
 
+Mind you I am not so sure it is valid COBOL.
+
 Some of these errors are the result of code changes between versions and the
 later, is logic issues within the COPY tables and the way it is currently set
 up or not as the case may be.
 
+The manual discusing making changes to the programs source to suit your requirements but
+as of v2.01.19 most of these changes are done at the start of the source in the GnuCOBOL
+CDF section.
+Manual to be so changed.
+
+
 I will attempt to resolve these issues as soon as I have time.
+If you are having issues with this in production programs please advise.
+I will not how ever, if you are just experimenting with COBOL code.
 
 Vincent

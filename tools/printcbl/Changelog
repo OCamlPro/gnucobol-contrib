@@ -1,3 +1,10 @@
+2019-01-26 Vincent B Coen
+        *    v2.01.19 & .20
+                 1. Changed to allow COPY used within a debug line as
+                    Free format ignored it.
+                 2. Program now uses the GnuCOBOL CDF facilties to preset user
+                    site variables. SEE Start of source code.
+
 2019-01-15 Vincent B Coen
         *    v2.01.18
                  1. Replaced website url from dtdns.net to linkpc.net
