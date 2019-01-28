@@ -54,8 +54,11 @@ The delivered files:
 - TESTSHA3.cob - test program 
 - win_compile.bat - Windows batch compile file    
 
-- SESSION-ID.cob      - generates session ID and user agent hash, it uses SHA3-512
-- TEST-SESSION-ID.cob - test program
+- SESSION-ID.cob          - generates session ID and user agent hash, it uses SHA3-512
+- TEST-SESSION-ID.cob     - test program for SESSION-ID.cob
+
+- SESSION-ID-256.cob      - generates session ID and user agent hash, it uses SHA3-256
+- TEST-SESSION-ID-256.cob - test program SESSION-ID-256.cob
 
 Compiling with cygwin
 ---------------------
