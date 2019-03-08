@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2017 Sauro Menna
+    Copyright (C) 2016-2019 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -200,7 +200,7 @@ int job_RedefinesFileName( struct job_t *job);
 int job_NormalOperations(struct job_t *job);
 int job_CloneFileForOutfil( struct job_t *job);
 void job_CloneFileForOutfilSet(struct job_t *job, struct file_t* file);
-int job_set_area (struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen );
+int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen );
 int	job_scanCmdSpecialChar(char* bufnew);
 int	job_RescanCmdSpecialChar(char* bufnew);
 void job_SetRecLen(struct job_t *job, int recordsize, unsigned char* szHR);

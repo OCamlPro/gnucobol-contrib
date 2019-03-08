@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2017 Sauro Menna
+    Copyright (C) 2016-2019 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -19,7 +19,8 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
-#if	defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
+//-->>## aix #if	defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
+#if	(defined(__GNUC__) || defined(__xlc__))&& !defined(__MINGW32__) && !defined(__MINGW64__)
     #include <inttypes.h>
 #endif
 #include "gcsort.h"
@@ -42,7 +43,7 @@ void GCSORT_Config ( void )
 	/*
 	fprintf(stdout,"__________________________________________________________________________________________________________\n");
 	fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-	fprintf(stdout,"Copyright (C) 2009-2016 Cedric ISSALY / Sauro Menna\n");
+	fprintf(stdout,"Copyright (C) 2009-2019 Cedric ISSALY / Sauro Menna\n");
 	fprintf(stdout,"__________________________________________________________________________________________________________\n");
 	fprintf(stdout,"\n");
 	fprintf(stdout,"GCSORT_BYTEORDER  - 0 for NATIVE, 1 for BIGENDIAN                              : %ld\n", job->nByteOrder);
@@ -62,7 +63,7 @@ void GCSORT_Config ( void )
 //
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-	fprintf(stdout,"Copyright (C) 2009-2016 Cedric ISSALY / Sauro Menna\n");
+	fprintf(stdout,"Copyright (C) 2009-2019 Cedric ISSALY / Sauro Menna\n");
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"\n");
 //-->>	fprintf(stdout,"GCSORT_BYTEORDER             : %d", job->nByteOrder);
@@ -110,7 +111,7 @@ void GCSORT_Config ( void )
 void GCSORT_Version ( void ) 
 {
 	printf("gcsort Version %s\n", GCSORT_VERSION); 
-	printf("Copyright (C) 2009-2016 Cedric ISSALY / Sauro Menna\n");
+	printf("Copyright (C) 2009-2019 Cedric ISSALY / Sauro Menna\n");
 	printf("Packaged  %s\n", GCSORT_TAR_DATE);
 	return;
 } 

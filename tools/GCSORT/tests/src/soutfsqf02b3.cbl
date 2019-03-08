@@ -50,6 +50,7 @@
        01  save-record-sort              pic x(90).
       * ============================= *
        77 record-counter-in              pic 9(7) value zero.
+       77 record-counter-skip            pic 9(7) value zero.
        77 record-counter-out             pic 9(7) value zero.
        77 bIsFirstTime                   pic 9    value zero.       
        77 bIsPending                     pic 9    value zero.       
@@ -111,6 +112,7 @@
       ** filtering input record 
            if ((in-ch-field(1:2) = "EE")  AND                                 ## filtering data    
                (in-zd-field > -10))
+			   add 1 to record-counter-skip
            else
                     release sort-data from infile-record
            end-if

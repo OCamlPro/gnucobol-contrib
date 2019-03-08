@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2017 Sauro Menna
+    Copyright (C) 2016-2019 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -25,7 +25,6 @@
 #include <ctype.h>
 
 #include "libgcsort.h"
-
 //#ifdef	_WIN32
 #if defined(_MSC_VER) ||  defined(__MINGW32__) || defined(__MINGW64__)
 	#include <share.h>
@@ -256,7 +255,7 @@ struct job_t *job_constructor( void ) {
 				yyset_debug(0);	
 			}
 			if (job->ndeb == 2) {
-				yydebug=1; 
+// s.m. at 20190303				yydebug=1; 
 				yyset_debug(2);	
 			}
 		}
@@ -1935,7 +1934,7 @@ job_save_exit:
 	return retcode_func;
 }
 
-int job (struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen )
+int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen )
 {
 // 20180511 s.m. start
     int nLenRek = job->inputFile->stFileDef->record->size;

@@ -49,6 +49,7 @@
       * ============================= *
        01  save-record-sort              pic x(90).
       * ============================= *
+       77 record-counter-skip            pic 9(7) value zero.
        77 record-counter-in              pic 9(7) value zero.
        77 record-counter-out             pic 9(7) value zero.
        77 bIsFirstTime                   pic 9    value zero.       
@@ -114,6 +115,7 @@
               ((in-clo-field >   10)       AND
                (in-cst-field <= -30))      OR
               ((in-csl-field <=  10))
+			   add 1 to record-counter-skip
            else
                release sort-data from infile-record
            end-if

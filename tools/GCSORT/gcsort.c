@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2017 Sauro Menna
+    Copyright (C) 2016-2019 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 	if (argc < 2) {
 		fprintf(stdout,"________________________________________________________________________\n");
 		fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-		fprintf(stdout,"Copyright (C) 2009-2016 Cedric ISSALY / Sauro Menna\n");
+		fprintf(stdout,"Copyright (C) 2009-2019 Cedric ISSALY / Sauro Menna\n");
 		fprintf(stdout,"________________________________________________________________________\n");
 		fprintf(stdout,"gcsort. Nothing to do.\n");
 		fprintf(stdout,"Usage: gcsort <command>\n");

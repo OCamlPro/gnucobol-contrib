@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2017 Sauro Menna
+    Copyright (C) 2016-2019 Sauro Menna
  *
  *	This file is part of GCSORT.
  *

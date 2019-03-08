@@ -1,3 +1,14 @@
+2019-03-05  Sauro Menna  <smenna@users.sourceforge.net>
+    * job.c - job_set_area (Error in function name)
+    * test environment : .. gcsort -> tests -> src
+           somisqf12b.cbl, sfrmsqf18b.cbl soutfsqf02b2.cbl
+           soutfsqf02b1.cbl, somisqf13b.cbl, soutfsqf02b3.cbl
+           somisqf11b.cbl, somisqf09b.cbl
+    * Make file for MinGW/MSYS
+    * INSTALL File modified for MinGW/MSYS environment
+    * libgcsort.h : define MinGW environment    
+2017-05-11  Sauro Menna  <smenna@users.sourceforge.net>
+    * job.c - Padding text file
 2017-01-15  Sauro Menna  <smenna@users.sourceforge.net>
 
     * Review test environment (tests folder)

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2017 Sauro Menna
+    Copyright (C) 2016-2019 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -21,8 +21,11 @@
 #define LIBGCSORT_H_INCLUDED
 
 
-#ifdef	_WIN32
-	#ifdef	_MSC_VER
+// -- #ifdef	_WIN32
+#if defined(_WIN32) && ( !defined(__MINGW32__) && !defined(__MINGW64__))
+
+
+		#ifdef	_MSC_VER
 	#pragma warning(disable: 4800)
 	#endif
 

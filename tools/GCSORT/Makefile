@@ -4,12 +4,9 @@ INSTALL=cp
 BISON=bison
 FLEX=flex
 CC=gcc -std=gnu99 -D_FILE_OFFSET_BITS="64"  -c -o  
-## CCFLAGS=-W -I./ -I/opt/open-cobol-2.0/libcob
-LIBS=-L${exec_prefix}/lib  -L/usr/include/libcob  -L/usr/include
-
 LD=gcc -o 
 LDFLAGS= -O3
-LIBS=-L${exec_prefix}/lib -L/usr/local/lib/ -L/opt/open-cobol-2.0/libcob/.libs -lcob -lm -lgmp -lncurses -ldl
+LIBS=-L${exec_prefix}/lib -L/usr/local/lib/ -lcob -lm -lgmp
 
 ifeq ($(MAKECMDGOALS),Debug)
         DEBUG=YES
@@ -27,20 +24,20 @@ endif
 TARGET=gcsort
 OBJS=\
 	condfield.o \
-       gcsorthelp.o \
-       gcsort.o \
+    gcsorthelp.o \
+    gcsort.o \
 	fieldvalue.o \
 	file.o \
 	keyidxrel.o \
-       inrec.o \
-       job.o \
-       mmfioc.o \
-       outfil.o \
+    inrec.o \
+    job.o \
+    mmfioc.o \
+    outfil.o \
 	outrec.o \
 	parser.o \
 	scanner.o \
 	sortfield.o \
-       sumfield.o \
+    sumfield.o \
 	utils.o
  
 GENERATED=parser.h parser.c scanner.h scanner.c

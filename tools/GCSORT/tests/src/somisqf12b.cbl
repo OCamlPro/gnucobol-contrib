@@ -99,6 +99,7 @@
        01  save-record-sort              pic x(90).
       * ============================= *
        77 record-counter-in              pic 9(7) value zero.
+       77 record-counter-skip            pic 9(7) value zero.
        77 record-counter-out             pic 9(7) value zero.
        77 bIsFirstTime                   pic 9    value zero.       
        77 bIsPending                     pic 9    value zero.       
@@ -165,6 +166,7 @@
                (in-fl-field <=  40))       OR
               ((in-pd-field <=  10)        AND
                (in-zd-field >=  15))
+			   add 1 to record-counter-skip
            else
                     perform inrec-record
                     release sort-data 

@@ -4,15 +4,16 @@ GCSORT 1.0.0 (beta).
 INSTALL
 
  *Requirements
-	GNU C compiler  (version ???, work with 4.3.2)
-	GNU Make        (version ???, work with 3.81)
-	GNU Bison       (version ???, work with 2.4.1)
-	GNU Flex        (version ???, work with 2.5.35)
+	GNU C compiler  (version work with 4.3.2)
+	GNU Make        (version work with 3.81)
+	GNU Bison       (version work with 2.4.1)
+	GNU Flex        (version work with 2.5.35)
 
-    GNU Cobol (Version 1.1.0)  library and include file for : libcob - mpir
+    GNU Cobol (Version 1.1.0)  library and include file for : libcob - gmplib
     OR
-    GNU Cobol (Version 2.0.0)  library and include file for : libcob - mpir
-    
+    GNU Cobol (Version 2.0.0)  library and include file for : libcob - gmplib
+    OR     
+    GNU Cobol (Version 3.0.0)  library and include file for : libcob - gmplib  
     
  *Install
     Linux / Windows environment:    
@@ -23,7 +24,16 @@ INSTALL
     
     For linux   :     ./compile.sh 
 	For windows :     make
-
+ 
+	MinGW/MSYS environment:    
+	1) Use 'Build Guide for MinGW - Minimalist GNU for Windows' by Arnold J. Trembley
+	   to install components for GNUCobol.
+	2) Installing MinGW and the MSYS , use the GUI interface to add :
+		msys-bison.bin
+		msys-fles.bin
+	3) Makefile   
+	
+	
  *Usage
     GCSORT --help   for help from command line.
     Folder testcase for example of commands.
@@ -33,28 +43,32 @@ INSTALL
     Setting environment variable for best performance and view details of statistics.
     
  *Tests case
-    Folder tests: 
-        1) gcsort/tests/script_linux    for Linux   environment
-        2) gcsort\tests\script_windows  for Windows environment
-        Requirements:  GnuCOBOL installed
+    Requirements:  GnuCOBOL installed
+    Folder tests Linux/MinGW environment: 
+        1) cd gcsort/tests/script
+		2) chmod 777 compile.sh  #enable for execution only for linux
+		3) compile.sh
+		4) cd ../bin
+		5) check in ../bin  if gctestsetup is presents
+		6) cd ../bin
+		7) gctestsetup >../loggenerate.log 				# Generate files and compile cobol programs for test
+		8) Verify last message of log file (If correct last message is : 'setup  ok') 
+		9) gctestrun >../logexec.log  					# Execute all test case
+	   10) check bottom log file (if test is ok message is 'T E S T    P A S S E D'    
+		
+		
+    Folder tests Windows environment: 
+        1) cd gcsort\tests\script
+		3) compile.bat
+		4) cd ..\bin
+		5) check in ..\bin  if gctestsetup is presents
+		6) cd ..\bin
+		7) gctestsetup >..\loggenerate.log 				# Generate files and compile cobol programs for test
+		8) Verify last message of log file (If correct last message is : 'setup  ok') 
+		9) gctestrun >..\logexec.log  					# Execute all test case
+	   10) check bottom log file (if test is ok message is 'T E S T    P A S S E D'    
+		
         
-        Sequence to activate tests.
-        1) 00-1-CompilePrograms  ---> compile Cobol prgrams.
-        2) 00-2-CreateFiles      ---> create file input
-        3) 00-3-CopyFiles        ---> copy files from folder filesin to files
-        4) 00-4-ExecuteScripts   ---> execute tests
-        
-        There are two groups of tests:
-        a) GROUP1 - Take file param, only for check control statements
-        b) GROUP2 - Cobol program and GCSORT module
-        
-        If test is ok script print 
-                "* ======================== *"
-                " Group 1   TEST PASSED      "
-                " Group 2   TEST PASSED      "
-                "* ======================== *"
-
-        In log folder are presents log execution.                
         
         
         
