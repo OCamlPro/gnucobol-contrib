@@ -1,7 +1,24 @@
+2019-03-10 Vincent B Coen
+        *    v2.01.36
+                    Released. All found & reported bugs fixed.
+                    Code base merged with printcbl module in cobxref.
+                    Manual uupdated.
+
+2019-02-26 Vincent B Coen
+        *    v2.01.31
+                 1. Code brought in to line with printcbl code in Cobxref.
+                    This fixes various bugs regarding Free format and CB (copy
+                    book) processing with non lit CB's and ones without exts.
+
+2019-01-28 Vincent B Coen
+        *    v2.01.21
+                 1. Rename messages Msg1 through Msg11 to Msg21 through Msg31
+                    and provide the msg name. Applies to standalone and
+                    enbedded in xref.
+
 2019-01-26 Vincent B Coen
         *    v2.01.19 & .20
-                 1. Changed to allow COPY used within a debug line as
-                    Free format ignored it.
+                 1. Ignore COPY used within a debug line both formats.
                  2. Program now uses the GnuCOBOL CDF facilties to preset user
                     site variables. SEE Start of source code.
 

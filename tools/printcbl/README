@@ -1,35 +1,24 @@
-As of and possible before, bugs have created limitations in usage:
+The copy books limitations has been cleared.
 
-The copy books specified after COPY must be in quotes, double or single and
-it is recommended to include the extention as I am not sure of where the error
-is so use COPY "foo.bar".  instead of COPY foo.bar. where .bar is the extention
-name used.
-
-There is no working support for replacing multi lines of a single target, e.g.,
-
-REPLACING ==fred== BY ==joe==   works but
+Limitations regarding support for replacing multi lines of a single target, e.g.,
 
 REPLACING ==fred== BY
 ==joe
  albert
  henry ==
 
-does not.
-
-Mind you I am not so sure it is valid COBOL.
-
-Some of these errors are the result of code changes between versions and the
-later, is logic issues within the COPY tables and the way it is currently set
-up or not as the case may be.
+is now cleared and fully working. However note that embedded fixed comment lines
+are possibly omitted depending on where they are.
 
 The manual discusing making changes to the programs source to suit your requirements but
-as of v2.01.19 most of these changes are done at the start of the source in the GnuCOBOL
+as of v2.01.30, these changes are done at the start of the source in the GnuCOBOL
 CDF section.
-Manual to be so changed.
+Manual has been so changed.
+
+If you are having any issues with this version in production programs please advise.
+I will not however, if you are just experimenting with COBOL code.
+
+Vincent B. Coen
+10th March 2019.
 
 
-I will attempt to resolve these issues as soon as I have time.
-If you are having issues with this in production programs please advise.
-I will not how ever, if you are just experimenting with COBOL code.
-
-Vincent
