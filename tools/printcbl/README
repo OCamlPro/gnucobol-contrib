@@ -8,7 +8,10 @@ REPLACING ==fred== BY
  henry ==
 
 is now cleared and fully working. However note that embedded fixed comment lines
-are possibly omitted depending on where they are.
+are possibly omitted depending on where they are. There is also a limit on size
+if total replacing field of 248 characters. I need to define some size !
+
+Support for replacing LEADING and TRAILING pseudo text but must be same size.
 
 The manual discusing making changes to the programs source to suit your requirements but
 as of v2.01.30, these changes are done at the start of the source in the GnuCOBOL
@@ -19,6 +22,6 @@ If you are having any issues with this version in production programs please adv
 I will not however, if you are just experimenting with COBOL code.
 
 Vincent B. Coen
-10th March 2019.
+11th March 2019.
 
 

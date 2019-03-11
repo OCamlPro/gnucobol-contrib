@@ -1,3 +1,8 @@
+2019-03-11 Vincent B Coen
+        *    v2.01.37
+                    Support for replacing LEADING and TRAILING pseudo text but
+                    must be same size as inspect replacing is used.
+
 2019-03-10 Vincent B Coen
         *    v2.01.36
                     Released. All found & reported bugs fixed.
