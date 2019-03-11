@@ -4645,7 +4645,7 @@
  working-storage section.
 *>======================
 *>
- 01  WS-Name-Program        pic x(25) value "Prtcbl (in xref) v2.01.36".  *> ver.rel.build
+ 01  WS-Name-Program        pic x(25) value "Prtcbl (in xref) v2.01.37".  *> ver.rel.build
 *>
  01  PL-Text                pic x(160).       *> printcbl.cbl has 248
 *>
@@ -6712,11 +6712,6 @@
 *>
      perform  varying WS-P11 from 1 by 1 until WS-P11 > WS-CRT-Replacing-Count
                                             or WS-CRT-Replacing-Count > CRT-Replace-Arguments-Size
-*>              if       WS-CRT-Leading (WS-P11)
-*>                       go to zz900-Leading
-*>              if       WS-CRT-Trailing (WS-P11)
-*>                       go to zz900-Trailing
-*>              end-if
 *>
 *>   For non Psuedo and not lit add space before and after to ensure only processing whole word
 *>     and not text within text - should be ok for Psuedo & Lit
@@ -6792,40 +6787,54 @@
               end-if
               if    WS-CRT-RT-Pseudo (WS-P11)
                     move     zero to WS-P15
-                    inspect  function upper-case (Input-Record (1:WS-P14)) tallying WS-P15
-                                       for all function upper-case (Temp-Replacing-Source (1:WS-P12))
-                    perform  varying WS-P16 from 1 by 1 until WS-P16 > WS-P15
-                       if       WS-P15 not = zero
-                                move     function SUBSTITUTE-CASE (Input-Record (1:WS-P14)
-                                         Temp-Replacing-Source  (1:WS-P12)
-                                         Temp-Replacing-Target  (1:WS-P13)) to Temp-Record
-                                if       Input-Record not = Temp-Record (1:256)
-                                         set WS-We-Have-Replaced to true
-                                end-if
-                                move     Temp-Record to Input-Record
-                                if  We-Are-Testing3
-                                    move spaces to Formatted-Line
-                                    move  ws-p12 to ws-disp
-                                    move  ws-p13 to ws-disp2
-                                    move  ws-p15 to ws-disp3
-                                    string "*>>> Rep (Pseudo) Was ="
-                                            Temp-Replacing-Source (1:WS-P12)
-                                            " ("
-                                            ws-disp
-                                            ")"
-                                            " Now = "
-                                            Temp-Replacing-Target (1:WS-P13)
-                                            " ("
-                                            ws-disp2
-                                            ") "
-                                            ws-disp3
-                                            " Times"
-                                                  into Formatted-Line
-                                    end-string
-                                    write Formatted-Line
-                                end-if
-                       end-if
-                    end-perform
+                    if       WS-CRT-Leading (WS-P11)           *> Proces Leading but only if src & Tgt same size
+                      and    WS-P12 = WS-P13
+                             inspect  Input-Record
+                                      replacing LEADING Temp-Replacing-Source (1:WS-P12)
+                                                   by   Temp-Replacing-Target (1:WS-P13)
+                    else
+                      if     WS-CRT-Trailing (WS-P11)          *> Proces Trailing but only if src & Tgt same size
+                      and    WS-P12 = WS-P13
+                             inspect  Input-Record
+                                      replacing TRAILING Temp-Replacing-Source (1:WS-P12)
+                                                    by   Temp-Replacing-Target (1:WS-P13)
+                      else
+                             inspect  function upper-case (Input-Record (1:WS-P14)) tallying WS-P15
+                                                for all function upper-case (Temp-Replacing-Source (1:WS-P12))
+                             perform  varying WS-P16 from 1 by 1 until WS-P16 > WS-P15
+                                      if       WS-P15 not = zero
+                                               move     function SUBSTITUTE-CASE (Input-Record (1:WS-P14)
+                                                        Temp-Replacing-Source  (1:WS-P12)
+                                                        Temp-Replacing-Target  (1:WS-P13)) to Temp-Record
+                                               if       Input-Record not = Temp-Record (1:256)
+                                                        set WS-We-Have-Replaced to true
+                                               end-if
+                                               move     Temp-Record to Input-Record
+                                               if  We-Are-Testing3
+                                                   move spaces to Formatted-Line
+                                                   move  ws-p12 to ws-disp
+                                                   move  ws-p13 to ws-disp2
+                                                   move  ws-p15 to ws-disp3
+                                                   string "*>>> Rep (Pseudo) Was ="
+                                                           Temp-Replacing-Source (1:WS-P12)
+                                                           " ("
+                                                           ws-disp
+                                                           ")"
+                                                           " Now = "
+                                                           Temp-Replacing-Target (1:WS-P13)
+                                                           " ("
+                                                           ws-disp2
+                                                           ") "
+                                                           ws-disp3
+                                                           " Times"
+                                                                 into Formatted-Line
+                                                   end-string
+                                                   write Formatted-Line
+                                               end-if
+                                      end-if
+                             end-perform
+                      end-if
+                    end-if
               end-if
               if    WS-CRT-RT-Else (WS-P11)
                     add      1 to WS-P12                 *> add 2 for added space before and after texts
@@ -6867,15 +6876,6 @@
               add   WS-CRT-Found-Src (WS-P11) to CRT-Found-Src (Fht-Table-Size - 1, WS-P11)
      end-perform.
      go       to zz900-Exit.
-*>
- zz900-Leading.
-*>
-*> Supporting code here.
-*>
- zz900-Trailing.
-*>
-*> Supporting code here.
-*>
 *>
  zz900-Exit.  Exit section.
 *>*********   ************
