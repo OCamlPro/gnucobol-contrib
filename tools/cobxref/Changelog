@@ -1,6 +1,129 @@
+2019-03-10  Vincent B Coen <vbcoen@btconnect.com>
+       (v2.01.01)   Released.
+                    All reported and found bugs cleared. modules Codebase merged
+                    with printcbl. Manual updated.
+
+2019-02-26  Vincent B Coen <vbcoen@btconnect.com>
+       (v1.99.40)
+           BUGS: 1  cobxref producing ZZ110-GAWCH messages for fixed and free.
+                 2  cobxref in xref showing all CALLS are USER - case issue ?
+                    To find problems.
+                    Both found and fixed.
+
+                    Added support for:
+                 A. FUNCTION-ID in place of PROGRAM-ID but does the same thing.
+                 B. At start use base source file name for listings until
+                    Program / function ID found.
+                 C. Reporting multi programs by adding to sorting records the
+                    current active program name. Reporting is still the same.
+                    New parameter function to turn on block xrefs for nested
+                    program sources.
+                    activated by param -AX  ----- NOT YET ADDED.
+                 D. In place of testing mode support output of generated
+                    source file same as cobc -E but without comment or blank lines
+                    to stop using test mode when wishing to look at the actual
+                    source that cobxref processes - Useful during testing
+                    available with new program option parameter -E.
+
+                    Updated version number to v2.01.00.
+
+2019-02-26  Vincent B Coen <vbcoen@btconnect.com>
+        v1.99.38  * Lots of changes to modules printcbl (and the program version)
+       (v2.01.29)   For Printcbl module - Replacing clause
+                    Does NOT now change comments (In Cobc it does
+                    see the listings via the -T | -t option.)
+                    In fact comments are totally ignored.
+                    When replacing text without pseudo option it
+                    will only replacing text with space before and after
+                    and not any text within text as only pseudo can.
+                    Literals are changed if the are exactly the same
+                    so "abcde" by "efg" will not work if source is
+                    "Abcd" etc. Literals MUST be an exact match therefore
+                    a continuation literal must be separately specified for
+                    replacements.
+                    So far all testing with FREE format sources only.
+                    Various other small bugs fixed caused by comments.
+                    Improved test & checks to verify and report if not
+                    that all replacing sources are found in copy library
+                    with a warning line in listing and or new source file
+                    indicating if not (Msg29).
+                    Fixed bug on replace - forgot to convert search texts to
+                    upper-case before comparing like for like in inspect.
+                    Dumb error.  Now working. Not using leading/trailing
+                    as cannot work out how to support them.
+                    COPY using Psuedo text replace all instances within a line
+                    so replacing ==ABC== by ==DEF== does all instances of 'ABC'.
+                    The other two variations literals or words just does it once
+                    per line.
+                    NEXT - Sort out funnies with copy lib file names as only working
+                    if using quotes.
+                    return-code not set before entry to zz400-Check-File-Exists
+                    so it was not being processed.
+                    ReTesting for Fixed format now working as well as FREE.
+
+2019-02-14  Vincent B Coen <vbcoen@btconnect.com>
+
+
+  GRL    1.00.04  * New parameter -VT to turn OFF messages for updating
+  cobx        37    reserved word type tables in GRL (get-reserved-lists).
+
+              36  * Bugs fixes up to COPY verb processing
+                    within printcbl module and generating listings and xref.
+                    Issues with COPY replacing - a mess with poor to non existent
+                    replacing for free format.
+                    Replacing works using vars by var-2 in and out of order
+                    of source but ==xxx== etc is not working.
+                    Fixed not yet tested.
+
+              34  * Found-copy not set to zero in after o/p
+
+        v1.99.33  * Testing starting on COPY verb processing.
+                    FREE format 1st. - Broken producing *>>>A at and next COPY verb!!
+
+        v1.99.30  * More CALL coding no reporting yet. Testing.
+              32  * Testing completed for Free format only so far.
+
+ >>               * Testing for fixed format source still to do!
+ >>>              * Likewise testing for COPY verbs free and fixed.
+
+        v1.99.29  * Changed code to match up with o/p when using source file
+                    created by cobc --save-temps as proven with test flag on
+                    and creating file name.src post space, other waste removal.
+                    It might be faster but there again may well be slower!
+                    Handles nested programs better.
+                  * Renamed message names throughout with
+                    msg1 - 10, 18 - 19 for cobxref - updated.,
+                    msg11 - 16         for get-reserved - updated,
+                    msg21 - 31         for printcbl
+                  * Created new System table in cobxref
+                  * Started coding for CALL reporting. early days.
+                    Found reason for ba20: msg4 error sometimes
+                    Hopefully now fixed (Proc Div tested but retest skipped).
+
+2019-01-28  Vincent B Coen <vbcoen@btconnect.com>
+        v1.99.24  * New Parameter for FREE or FIXED
+                  * Inserted modified printcbl to handle COPY processing
+                    creating a new file used as i/p to xref with ext as .pro
+                    A Lot, Lot easier and any bugs found in copy
+                    processing can be copied over to the full printcbl
+                    program - therefore doing two sets of testing in
+                    one hit...
+                    When completed and tested version upgraded
+                    to v2.00.24.
+                  * Added module ID in Xref heading if not same as
+                    main program name - supports nested modules cleaner.
+                  * Reduced source record size from 1024 to 256.
+                  * Start support for fixed format sources.
+                  * Support for quoted literals starting with H,X,Z
+                    in zz110-Get-A-Word-Unstring and
+                    in zz110-Get-A-Word-Literal.
+                  * Ignore all CDF verbs starting with >> as next words
+                    not in reserved word lists. zz110-Get-A-Word-Unstring.
+                    also not done in the internal xref thing.
+
 2018-10-15  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.23  * Replace any reference to Open Cobol to GnuCOBOL.
-                    Renamed/Renumbered zz310 & zz400 routines to
+                  * Renamed/Renumbered zz310 & zz400 routines to
                      zz220 & zz240 so that the copybook routines
                      can go back in without changes - Right!
         v1.01.24  * Restore copy lib processing code from routines starting
@@ -12,9 +135,9 @@
 
 2017-03-23  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.21  * Removed XREF list code (01.20).
-                    Removed test code for printer error/s in (cobc).
-                    Removed (see 01.19) lines printed no longer needed.
-                    Added in heads year CC and changed format if
+                  * Removed test code for printer error/s in (cobc).
+                  * Removed (see 01.19) lines printed no longer needed.
+                  * Added in heads year CC and changed format if
                     LC-TIME = en_GB = Great Britain format,
                               en_US = U.S.A format,
                      else defaults to unix format (ccyy/mm/dd).
@@ -34,18 +157,18 @@
 2016-08-16  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.19  * Add extra display for total lines printed. Still tracing
                     for problem via cobc call with missing report.
-                    Moved code from get-reserved-lists into cobxref.
+                  * Moved code from get-reserved-lists into cobxref.
 
 2016-07-06  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.17  * Added test if listing file exists is it the same time or
                     within 1 minute if so treat as -A applied.
-                    Added display of input rec count to help test o/p of
+                  * Added display of input rec count to help test o/p of
                     cobc with -T | -t.
-                    Rem'd out the DELETE of the temp sort files to help
+                  * Rem'd out the DELETE of the temp sort files to help
                     in any error diagnostics - (around line 1612).
                     The records are only 40 bytes per variable.
-                    Clear bug where sort file receiving blank data names
-                     not sure why it is happening though ??
+                  * Clear bug where sort file receiving blank data names
+                    not sure why it is happening though ??
 
         v1.01.18  * Test for FS-Reply non zero when printing 1st two headings
                     to see if cobc not closing print file before calling
@@ -86,23 +209,23 @@
 	            previous line with a ^L (control L) char and users uses less
 	            or an editor to look at the output.
 
-	v1.01.10  * Clearing aa047 bug caused by bad 'if numeric' test against
-	            a pic 9 field changed to a test against pic x vales 0 - 9.
-	            Added/uncommented code for new headings every 60 lines.
+        v1.01.10  * Clearing aa047 bug caused by bad 'if numeric' test against
+                    a pic 9 field changed to a test against pic x vales 0 - 9.
+                  * Added/uncommented code for new headings every 60 lines.
 
 2014-07-13  Vincent B Coen <vbcoen@btconnect.com>
-	v1.01.09  * Added error msg # to error messages.
-	            Added GNU to compiler name for both modules in notices.
-	            Added message numbers Msg11 - Msg14 to get-reserved-lists
-	                   likewise added Msg17 to cobxref - missed it:(
-		    Now trying to trace msg16 aa047 bug that is happening
-	            on get-reserved and cobxref which may have started with
-		    v1.01.7.  More looking needed.
+        v1.01.09  * Added error msg # to error messages.
+                  * Added GNU to compiler name for both modules in notices.
+                  * Added message numbers Msg11 - Msg14 to get-reserved-lists
+                    likewise added Msg17 to cobxref - missed it:(
+                  * Now trying to trace msg16 aa047 bug that is happening
+                    on get-reserved and cobxref which may have started with
+        v1.01.07.   More looking needed.
 
 2011-10-02  Vincent B Coen <vbcoen@btconnect.com>
-        v1.01.08  * Global-Current-Level to use 99 instead of high-values for OC v2.0
-		    No I have no idea why I should need to as highest value on a
-		    numeric field is 99.
+        v1.01.08  * Global-Current-Level to use 99 instead of high-values for GC v2.0
+                    No I have no idea why I should need to as highest value on a
+                    numeric field is 99.
 
 2010-09-26  Vincent B Coen <vbcoen@btconnect.com>
         v1.01.07  * Changed zz170 to make it tighter with less processing steps
@@ -123,6 +246,13 @@
         v1.01.04  * Added support for .pre via cobc with other very minor
                     changes and upgraded version to v1 prior to incl into cobc.
                   * fixed bug with blogs(nocare) in Screen or Report Sec.
+
+        v1.00.03  * Created same table in get-reserved for
+                  * System functions with get-reserved updating them
+                  * Fix some bugs causing possible blank data in table/s.
+                  * Add extra reserved works from Obsolete words and
+                    internal registers.
+                  * Not using new table yet.
 
 2009-02-14  Vincent B Coen <vbcoen@btconnect.com>
         v0.95.75  * fixed bugs regarding Special-names and file-control

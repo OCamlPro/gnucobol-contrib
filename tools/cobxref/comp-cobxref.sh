@@ -1,7 +1,5 @@
 #!/bin/sh
-cobc -x -O2 cobxref.cbl
-#get-reserved-lists.cbl
+cobc -x -fmissing-statement=ok cobxref.cbl
 chmod +x cobxref
 exit
-
 
