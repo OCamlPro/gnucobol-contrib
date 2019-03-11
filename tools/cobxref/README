@@ -1,9 +1,21 @@
-This REAME is superceded by the PDF manual and this includes all changes for
-version v2.01.01.
+This README is superceded by the PDF manual and this includes all changes for
+version v2.01.01 that runs under *nix, Linux etc with the GnuCOBOL compiler.
 
 This version supports both fixed and free format Cobol source files.
 It has been tested against production sources - well in excess of
 1000 programs as well as various test source programs.
+
+
+This project area (cobxref) also has the current version for the IBM MVS Ansi Cobol
+at: https://sourceforge.net/projects/cobxref/IBM-MVS-38J-Ansi-Cobol/ cobxref-IBM-MVS-38J-Ansi-Cobol
+
+Please report all bugs found for the GnuCOBOL version to the GNUCobol contrib forum at
+https://sourceforge.net/p/open-cobol/discussion/contrib/ and send a copy to the
+author at vbcoen@gmail.com if urgent/showstopper.
+
+Bugs for the IBM version direct to author at vbcoen@gmail.com with a subject of MVS bug.
+
+
 
 Vincent B. Coen
 10th March 2019.
