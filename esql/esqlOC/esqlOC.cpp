@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Sergey Kashyrin <ska@kiska.net>
+ * Copyright (C) 2006-2019 Sergey Kashyrin <ska@kiska.net>
  *               2012 enhanced by Doug Vogel <dv11674@gmail.com>
  *               2013 fixes and enhancements by Atilla Akarsular <030ati@gmail.com>
  *
@@ -39,7 +39,7 @@
 
 #include "vcache.h"
 
-static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCobol Version 2 (2018.10.03) Build " __DATE__ "\n";
+static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCobol Version 2 (2019.02.26) Build " __DATE__ "\n";
 /**  Version is present in SQLCA. Current is 02 */
 
 static bool bAPOST = true;		// use apostroph instead of quote
@@ -83,7 +83,8 @@ static const char * workst[] = {
 	"       77 OCSQLIMM  PIC X(8) VALUE %cOCSQLIMM%c.",
 	"       77 OCSQLOCU  PIC X(8) VALUE %cOCSQLOCU%c.",
 	"       77 OCSQLCCU  PIC X(8) VALUE %cOCSQLCCU%c.",
-	"       77 OCSQLFTC  PIC X(8) VALUE %cOCSQLFTC%c."
+	"       77 OCSQLFTC  PIC X(8) VALUE %cOCSQLFTC%c.",
+	"       77 OCSQLCAL  PIC X(8) VALUE %cOCSQLCAL%c."
 };
 
 static const char * exts[] = {
@@ -459,9 +460,12 @@ private:
 			cl.sqlaction = 17;
 		} else if(sqlu.starts("INVOKE ")) {
 			cl.sqlaction = 12;
-		} else if(bForceUnknown) {
+		} else if(sqlu.starts("CALL ")) {
 			cl.sqlnum = sqlcmd.add(sql);
 			cl.sqlaction = 18;
+		} else if(bForceUnknown) {
+			cl.sqlnum = sqlcmd.add(sql);
+			cl.sqlaction = 19;
 		} else {
 			sprintf(buf, "line %d of %s: unsupported SQL: %s", cl.lineno, cl.fname, (const char *)sql);
 			throw buf;
@@ -701,6 +705,9 @@ private:
 					processWHENEVER(cl, n);
 					break;
 				case 18:
+					processCALL(cl, n);
+					break;
+				case 19:
 					processUNKNOWN(cl, n);
 					break;
 				default:
@@ -771,6 +778,7 @@ private:
 			}
 			// suppress values in constants to avoid ':'
 			sqlu = sql;
+			sqlu.toupper();
 			bool bQ = false;
 			for(int k = 0; k < sqlu.length(); ++k) {
 				if(sqlu[k] == '\'') {
@@ -790,6 +798,34 @@ private:
 				sqlu = sqlu.substr(0, ix) + '?' + sqlu.substr(ib);
 				++parmnum;
 				if(varn.indexof(':') > 0) ++parmnum;
+			}
+			if(sqlu.starts("CALL ")) {
+				if(sqlu[5] == '?') {
+					int ix = sqlu.indexof('=');
+					if(ix > 0) {
+						sqlu = '{' + sqlu.substr(5, ix - 4) + " CALL " + sqlu.substr(ix + 1) + '}';
+						sql = '{' + sql.substr(5, ix - 4) + " CALL " + sql.substr(ix + 1) + '}';
+					}
+				} else {
+					sqlu = '{' + sqlu + '}';
+					sql = '{' + sql + '}';
+				}
+				for(int ix = sqlu.indexof('?'); ix >= 0; ix = sqlu.indexof('?', ix + 1)) {
+					string s = sqlu.substr(ix + 1);
+					if(s.starts(" OUTPUT")) {
+						sqlu = sqlu.substr(0, ix + 1) + sqlu.substr(ix + 8);
+						sql = sql.substr(0, ix + 1) + sql.substr(ix + 8);
+					} else if(s.starts(" OUT")) {
+						sqlu = sqlu.substr(0, ix + 1) + sqlu.substr(ix + 5);
+						sql = sql.substr(0, ix + 1) + sql.substr(ix + 5);
+					} else if(s.starts(" INOUT")) {
+						sqlu = sqlu.substr(0, ix + 1) + sqlu.substr(ix + 7);
+						sql = sql.substr(0, ix + 1) + sql.substr(ix + 7);
+					} else if(s.starts(" IN")) {
+						sqlu = sqlu.substr(0, ix + 1) + sqlu.substr(ix + 4);
+						sql = sql.substr(0, ix + 1) + sql.substr(ix + 4);
+					}
+				}
 			}
 			sprintf(buf, "       01 SQL-STMT-%d.", i);
 			addln(lineno++, buf);
@@ -1564,21 +1600,19 @@ private:
 				moves.add(buf);
 				v = h;
 			}
-			// look for a . in the variable name, if one is found the we need to replace it with ' OF ' and that will
+			// look for a . in the variable name, if one is found the we need to replace it with ' OF ' and that
 			// will need to be put on two lines
 			iv = v->name.indexof('.');
 			if(iv > 0) {
-				sprintf(buf, "%s MOVE ADDRESS OF ", shift);
+				sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
 				addln(lineno++, buf);
 				sprintf(buf, "%s  %s", shift, (const char *)v->name.substr(iv + 1));
 				addln(lineno++, buf);
 				sprintf(buf, "%s   OF %s", shift, (const char *)v->name.substr(0,iv));
-				addln(lineno++, buf);
-				sprintf(buf, "%s  TO SQL-ADDR(%d)", shift, parmnum);
 			} else {
-				sprintf(buf, "%s MOVE ADDRESS OF %s", shift, (const char *)v->name);
+				sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
 				addln(lineno++, buf);
-				sprintf(buf, "%s   TO SQL-ADDR(%d)", shift, parmnum);
+				sprintf(buf, "%s   %s", shift, (const char *)v->name);
 			}
 			addln(lineno++, buf);
 			sprintf(buf, "%s MOVE %c%c%c TO SQL-TYPE(%d)", shift, Q, v->type, Q, parmnum);
@@ -1602,17 +1636,15 @@ private:
 				// will need to be put on two lines
 				iv = vi->name.indexof('.');
 				if(iv > 0) {
-					sprintf(buf, "%s MOVE ADDRESS OF ", shift);
+					sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
 					addln(lineno++, buf);
 					sprintf(buf, "%s  %s", shift, (const char *)vi->name.substr(iv + 1));
 					addln(lineno++, buf);
 					sprintf(buf, "%s   OF %s ", shift, (const char *)vi->name.substr(0,iv));
-					addln(lineno++, buf);
-					sprintf(buf, "%s  TO SQL-ADDR(%d)", shift, parmnum);
 				} else {
-					sprintf(buf, "%s MOVE ADDRESS OF %s", shift, (const char *)vi->name);
+					sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
 					addln(lineno++, buf);
-					sprintf(buf, "%s   TO SQL-ADDR(%d)", shift, parmnum);
+					sprintf(buf, "%s   %s", shift, (const char *)vi->name);
 				}
 				addln(lineno++, buf);
 				sprintf(buf, "%s MOVE %ci%c TO SQL-TYPE(%d)", shift, Q, Q, parmnum);
@@ -1637,6 +1669,206 @@ private:
 		sprintf(buf, "           CALL %sOCSQLEXE%s USING SQL-STMT-%d", sSQ, sSQ, cl.sqlnum);
 		addln(lineno++, buf);
 		addln(lineno++, "                               SQLCA");
+		doWHENEVER(lineno);
+	}
+
+	void processCALL(cobline & cl, int & lineno)
+	{
+		int iv = 0;
+		string sql;
+		removeInQ(sql, sqlcmd[cl.sqlnum]);
+		const char * shift = "          ";
+		string sqlu = sql;
+		sqlu.toupper();
+
+		sarray movesin;
+		sarray movesout;
+		int parmnum = 0;
+		bool b_ret = (sql[5] == ':');
+		for(int ix = sql.indexof(':'); ix >= 0; ix = sql.indexof(':')) {
+			int ib = indexEndVar(sql, ix);
+			string svar = sql.substr(ix + 1, ib - ix - 1);
+			svar.toupper();
+			sql = sql.substr(ib);
+			sqlu = sqlu.substr(ib);
+			bool b_inout = false;
+			bool b_out = false;
+			if(sqlu.starts(" OUTPUT")) {
+				b_out = true;
+			} else if(sqlu.starts(" OUT")) {
+				b_out = true;
+			} else if(sqlu.starts(" INOUT")) {
+				b_inout = true;
+			}
+			if(parmnum == 0 && b_ret) {
+				b_out = true;
+			}
+			varholder * vi = NULL;
+			ix = svar.indexof(':');
+			if(ix > 0) {
+				string ivar = svar.substr(ix+1);
+				svar = svar.substr(0, ix);
+				vi = sym[ivar];
+				if(vi == NULL) {
+					sprintf(buf, "line %d of %s: indicator variable not found: %s", cl.lineno, cl.fname, (const char *)ivar);
+					throw buf;
+				}
+				if(vi->type == 'O' && vi->over->type == 'I' && vi->over->size == 2) {
+					vi->inuse = true;
+					iv = vi->name.indexof('.');
+					if(iv > 0) {
+						if(!b_out) {
+							sprintf(buf, "           MOVE %s OF %s", (const char *)vi->name.substr(iv + 1), (const char *)vi->name.substr(0,iv) );
+							movesin.add(buf);
+							sprintf(buf, "             TO %s ", (const char *)vi->over->name);
+							movesin.add(buf);
+						}
+						if(b_out || b_inout) {
+							sprintf(buf, "           MOVE %s", (const char *)vi->over->name);
+							movesout.add(buf);
+							sprintf(buf, "             TO %s    ", (const char *)vi->name.substr(iv + 1));
+							movesout.add(buf);
+							sprintf(buf, "             OF %s", (const char *) vi->name.substr(0,iv));
+							movesout.add(buf);
+						}
+					} else {
+						if(!b_out) {
+							sprintf(buf, "           MOVE %s TO %s", (const char *)vi->name, (const char *)vi->over->name);
+							movesin.add(buf);
+						}
+						if(b_out || b_inout) {
+							sprintf(buf, "           MOVE %s", (const char *)vi->over->name);
+							movesout.add(buf);
+							sprintf(buf, "             TO %s", (const char *)vi->name);
+							movesout.add(buf);
+						}
+					}
+					vi = vi->over;
+				}
+				if(vi->type != 'I' || vi->size != 2) {
+					sprintf(buf, "line %d of %s: indicator variable %s must be S9(4) COMP-5", cl.lineno, cl.fname, (const char *)ivar);
+					throw buf;
+				}
+				vi->inuse = true;
+			}
+			varholder * v = sym[svar];
+			if(v == NULL) {
+				sprintf(buf, "line %d of %s: variable not found: %s", cl.lineno, cl.fname, (const char *)svar);
+				throw buf;
+			}
+			++parmnum;
+			v->inuse = true;
+			if(v->type == 'O') {
+				varholder * h = v->over;
+				h->inuse = true;
+				if(!b_out) {
+					// look for a . in the variable name, if one is found the we need to replace it with ' OF ' and that will
+					// will need to be put on two lines
+					iv = v->name.indexof('.');
+					if(iv > 0) {
+						sprintf(buf, "           MOVE %s OF %s", (const char *)v->name.substr(iv + 1), (const char *)v->name.substr(0,iv) );
+						movesin.add(buf);
+						sprintf(buf, "             TO %s ", (const char *)h->name);
+					} else {
+						sprintf(buf, "           MOVE %s TO %s", (const char *)v->name, (const char *)h->name);
+					}
+					movesin.add(buf);
+				}
+				if(b_out || b_inout) {
+					iv = v->name.indexof('.');
+					if(iv > 0) {
+						sprintf(buf, "           MOVE %s", (const char *)h->name);
+						movesout.add(buf);
+						sprintf(buf, "             TO %s OF %s", (const char *)v->name.substr(iv + 1), (const char *)v->name.substr(0,iv) );
+					} else {
+						sprintf(buf, "           MOVE %s TO %s", (const char *)h->name, (const char *)v->name);
+					}
+					movesout.add(buf);
+				}
+				v = h;
+			}
+			// look for a . in the variable name, if one is found the we need to replace it with ' OF ' and that will
+			// will need to be put on two lines
+			iv = v->name.indexof('.');
+			if(iv > 0) {
+				sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
+				addln(lineno++, buf);
+				sprintf(buf, "%s  %s", shift, (const char *)v->name.substr(iv + 1));
+				addln(lineno++, buf);
+				sprintf(buf, "%s   OF %s ", shift, (const char *)v->name.substr(0,iv));
+			} else {
+				sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
+				addln(lineno++, buf);
+				sprintf(buf, "%s   %s", shift, (const char *)v->name);
+			}
+			addln(lineno++, buf);
+			sprintf(buf, "%s MOVE %c%c%c TO SQL-TYPE(%d)", shift, Q, v->type, Q, parmnum);
+			addln(lineno++, buf);
+			sprintf(buf, "%s MOVE %d TO SQL-LEN(%d)", shift, v->size, parmnum);
+			addln(lineno++, buf);
+			if(v->type == '3') {
+				char i1 = (char)(v->precision/16);
+				char i2 = (char)(v->precision % 16);
+				// HACK for passing "out" 0x80 or "inout" 0xC0 in hight byte.
+				if(b_out) {
+					i1 |= (char) 0x80;
+				} else if(b_inout) {
+					i1 |= (char) 0xC0;
+				} else {
+					i1 |= (char) 0x40;
+				}
+				if(i1 < 10) i1 += '0';
+				else i1 = (char)(i1 + 'A' - 10);
+				if(i2 < 10) i2 += '0';
+				else i2 = (char)(i2 + 'A' - 10);
+				sprintf(buf, "%s MOVE X'%c%c' TO SQL-PREC(%d)", shift, i1, i2, parmnum);
+				addln(lineno++, buf);
+			} else {
+				// HACK for passing "out" 0x80 or "inout" 0xC0 in hight byte.
+				if(b_out) {
+					sprintf(buf, "%s MOVE X'80' TO SQL-PREC(%d)", shift, parmnum);
+				} else if(b_inout) {
+					sprintf(buf, "%s MOVE X'C0' TO SQL-PREC(%d)", shift, parmnum);
+				} else {
+					sprintf(buf, "%s MOVE X'40' TO SQL-PREC(%d)", shift, parmnum);
+				}
+				addln(lineno++, buf);
+			}
+			if(vi != NULL) {
+				++parmnum;
+				// look for a . in the variable name, if one is found the we need to replace it with ' OF ' and that will
+				// will need to be put on two lines
+				iv = vi->name.indexof('.');
+				if(iv > 0) {
+					sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
+					addln(lineno++, buf);
+					sprintf(buf, "%s  %s", shift, (const char *)vi->name.substr(iv + 1));
+					addln(lineno++, buf);
+					sprintf(buf, "%s   OF %s ", shift, (const char *)vi->name.substr(0,iv));
+				} else {
+					sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
+					addln(lineno++, buf);
+					sprintf(buf, "%s   %s", shift, (const char *)vi->name);
+				}
+				addln(lineno++, buf);
+				sprintf(buf, "%s MOVE %ci%c TO SQL-TYPE(%d)", shift, Q, Q, parmnum);
+				addln(lineno++, buf);
+			}
+		}
+		sprintf(buf, "%s MOVE %d TO SQL-COUNT", shift, parmnum);
+		addln(lineno++, buf);
+		for(int i = 0; i < movesin.size(); ++i) {
+			addln(lineno++, movesin[i]);
+		}
+		sprintf(buf, "%s CALL %sOCSQLCAL%s USING SQLV", shift, sSQ, sSQ);
+		addln(lineno++, buf);
+		sprintf(buf, "%s                     SQL-STMT-%d", shift, cl.sqlnum);
+		addln(lineno++, buf);
+		sprintf(buf, "%s                     SQLCA", shift);
+		addln(lineno++, buf);
+		for(int i = 0; i < movesout.size(); ++i) {
+			addln(lineno++, movesout[i]);
+		}
 		doWHENEVER(lineno);
 	}
 
@@ -1682,6 +1914,7 @@ private:
 			int ib = indexEndVar(sql, ix);
 			string svar = sql.substr(ix + 1, ib - ix - 1);
 			svar.toupper();
+			sql = sql.substr(ib);
 			varholder * vi = NULL;
 			ix = svar.indexof(':');
 			if(ix > 0) {
@@ -1693,20 +1926,34 @@ private:
 					throw buf;
 				}
 				if(vi->type == 'O' && vi->over->type == 'I' && vi->over->size == 2) {
+					bool in = (sql.indexof(" *SELECT ") >= 0);
 					vi->inuse = true;
 					iv = vi->name.indexof('.');
 					if(iv > 0) {
-						sprintf(buf, "           MOVE %s", (const char *)vi->over->name);
-						movesout.add(buf);
-						sprintf(buf, "             TO %s    ", (const char *)vi->name.substr(iv + 1));
-						movesout.add(buf);
-						sprintf(buf, "             OF %s", (const char *) vi->name.substr(0,iv));
+						if(in) {
+							sprintf(buf, "           MOVE %s OF %s", (const char *)vi->name.substr(iv + 1), (const char *)vi->name.substr(0,iv) );
+							movesin.add(buf);
+							sprintf(buf, "             TO %s ", (const char *)vi->over->name);
+							movesin.add(buf);
+						} else {
+							sprintf(buf, "           MOVE %s", (const char *)vi->over->name);
+							movesout.add(buf);
+							sprintf(buf, "             TO %s    ", (const char *)vi->name.substr(iv + 1));
+							movesout.add(buf);
+							sprintf(buf, "             OF %s", (const char *) vi->name.substr(0,iv));
+							movesout.add(buf);
+						}
 					} else {
-						sprintf(buf, "           MOVE %s", (const char *)vi->over->name);
-						movesout.add(buf);
-						sprintf(buf, "             TO %s", (const char *)vi->name);
+						if(in) {
+							sprintf(buf, "           MOVE %s TO %s", (const char *)vi->name, (const char *)vi->over->name);
+							movesin.add(buf);
+						} else {
+							sprintf(buf, "           MOVE %s", (const char *)vi->over->name);
+							movesout.add(buf);
+							sprintf(buf, "             TO %s", (const char *)vi->name);
+							movesout.add(buf);
+						}
 					}
-					movesout.add(buf);
 					vi = vi->over;
 				}
 				if(vi->type != 'I' || vi->size != 2) {
@@ -1720,7 +1967,6 @@ private:
 				sprintf(buf, "line %d of %s: variable not found: %s", cl.lineno, cl.fname, (const char *)svar);
 				throw buf;
 			}
-			sql = sql.substr(ib);
 			++parmnum;
 			v->inuse = true;
 			if(v->type == 'O') {
@@ -1758,17 +2004,15 @@ private:
 			// will need to be put on two lines
 			iv = v->name.indexof('.');
 			if(iv > 0) {
-				sprintf(buf, "%s MOVE ADDRESS OF ", shift);
+				sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
 				addln(lineno++, buf);
 				sprintf(buf, "%s  %s", shift, (const char *)v->name.substr(iv + 1));
 				addln(lineno++, buf);
 				sprintf(buf, "%s   OF %s ", shift, (const char *)v->name.substr(0,iv));
-				addln(lineno++, buf);
-				sprintf(buf, "%s  TO SQL-ADDR(%d)", shift, parmnum);
 			} else {
-				sprintf(buf, "%s MOVE ADDRESS OF %s", shift, (const char *)v->name);
+				sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
 				addln(lineno++, buf);
-				sprintf(buf, "%s   TO SQL-ADDR(%d)", shift, parmnum);
+				sprintf(buf, "%s   %s", shift, (const char *)v->name);
 			}
 			addln(lineno++, buf);
 			sprintf(buf, "%s MOVE %c%c%c TO SQL-TYPE(%d)", shift, Q, v->type, Q, parmnum);
@@ -1791,17 +2035,15 @@ private:
 				// will need to be put on two lines
 				iv = vi->name.indexof('.');
 				if(iv > 0) {
-					sprintf(buf, "%s MOVE ADDRESS OF ", shift);
+					sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
 					addln(lineno++, buf);
 					sprintf(buf, "%s  %s", shift, (const char *)vi->name.substr(iv + 1));
 					addln(lineno++, buf);
 					sprintf(buf, "%s   OF %s ", shift, (const char *)vi->name.substr(0,iv));
-					addln(lineno++, buf);
-					sprintf(buf, "%s  TO SQL-ADDR(%d)", shift, parmnum);
 				} else {
-					sprintf(buf, "%s MOVE ADDRESS OF %s", shift, (const char *)vi->name);
+					sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
 					addln(lineno++, buf);
-					sprintf(buf, "%s   TO SQL-ADDR(%d)", shift, parmnum);
+					sprintf(buf, "%s   %s", shift, (const char *)vi->name);
 				}
 				addln(lineno++, buf);
 				sprintf(buf, "%s MOVE %ci%c TO SQL-TYPE(%d)", shift, Q, Q, parmnum);
@@ -2099,17 +2341,15 @@ private:
 			// will need to be put on two lines
 			iv = v->name.indexof('.');
 			if(iv > 0) {
-				sprintf(buf, "%s MOVE ADDRESS OF ", shift);
+				sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
 				addln(lineno++, buf);
 				sprintf(buf, "%s  %s", shift, (const char *)v->name.substr(iv + 1));
 				addln(lineno++, buf);
 				sprintf(buf, "%s   OF %s ", shift, (const char *)v->name.substr(0,iv));
-				addln(lineno++, buf);
-				sprintf(buf, "%s  TO SQL-ADDR(%d)", shift, parmnum);
 			} else {
-				sprintf(buf, "%s MOVE ADDRESS OF %s", shift, (const char *)v->name);
+				sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
 				addln(lineno++, buf);
-				sprintf(buf, "%s   TO SQL-ADDR(%d)", shift, parmnum);
+				sprintf(buf, "%s   %s", shift, (const char *)v->name);
 			}
 			addln(lineno++, buf);
 			sprintf(buf, "%s MOVE %c%c%c TO SQL-TYPE(%d)", shift, Q, v->type, Q, parmnum);
@@ -2132,17 +2372,15 @@ private:
 				// will need to be put on two lines
 				iv = vi->name.indexof('.');
 				if(iv > 0) {
-					sprintf(buf, "%s MOVE ADDRESS OF ", shift);
+					sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
 					addln(lineno++, buf);
 					sprintf(buf, "%s  %s", shift, (const char *)vi->name.substr(iv + 1));
 					addln(lineno++, buf);
 					sprintf(buf, "%s   OF %s ", shift, (const char *)vi->name.substr(0,iv));
-					addln(lineno++, buf);
-					sprintf(buf, "%s  TO SQL-ADDR(%d)", shift, parmnum);
 				} else {
-					sprintf(buf, "%s MOVE ADDRESS OF %s", shift, (const char *)vi->name);
+					sprintf(buf, "%s SET SQL-ADDR(%d) TO ADDRESS OF", shift, parmnum);
 					addln(lineno++, buf);
-					sprintf(buf, "%s   TO SQL-ADDR(%d)", shift, parmnum);
+					sprintf(buf, "%s   %s", shift, (const char *)vi->name);
 				}
 				addln(lineno++, buf);
 				sprintf(buf, "%s MOVE %ci%c TO SQL-TYPE(%d)", shift, Q, Q, parmnum);
@@ -2262,17 +2500,15 @@ private:
 			// will need to be put on two lines
 			iv = v->name.indexof('.');
 			if(iv > 0) {
-				sprintf(buf, "           MOVE ADDRESS OF ");
+				sprintf(buf, "           SET SQL-ADDR(%d) TO ADDRESS OF", parmnum);
 				addln(lineno++, buf);
-				sprintf(buf, "           %s", (const char *)v->name.substr(iv + 1));
+				sprintf(buf, "             %s", (const char *)v->name.substr(iv + 1));
 				addln(lineno++, buf);
-				sprintf(buf, "            OF %s", (const char *)v->name.substr(0,iv));
-				addln(lineno++, buf);
-				sprintf(buf, "            TO SQL-ADDR(%d)", parmnum);
+				sprintf(buf, "             OF %s", (const char *)v->name.substr(0,iv));
 			} else {
-				sprintf(buf, "           MOVE ADDRESS OF %s", (const char *)v->name);
+				sprintf(buf, "           SET SQL-ADDR(%d) TO ADDRESS OF", parmnum);
 				addln(lineno++, buf);
-				sprintf(buf, "             TO SQL-ADDR(%d)", parmnum);
+				sprintf(buf, "             %s", (const char *)v->name);
 			}
 			addln(lineno++, buf);
 			sprintf(buf, "           MOVE %c%c%c TO SQL-TYPE(%d)", Q, v->type, Q, parmnum);
@@ -2295,17 +2531,15 @@ private:
 				//  will need to be put on two lines
 				iv = vi->name.indexof(".");
 				if(iv > 0) {
-					sprintf(buf, "           MOVE ADDRESS OF ");
+					sprintf(buf, "           SET SQL-ADDR(%d) TO ADDRESS OF", parmnum);
 					addln(lineno++, buf);
-					sprintf(buf, "           %s", (const char *)vi->name.substr(iv + 1));
+					sprintf(buf, "             %s", (const char *)vi->name.substr(iv + 1));
 					addln(lineno++, buf);
-					sprintf(buf, "            OF %s", (const char *)vi->name.substr(0,iv));
-					addln(lineno++, buf);
-					sprintf(buf, "            TO SQL-ADDR(%d)", parmnum);
+					sprintf(buf, "             OF %s", (const char *)vi->name.substr(0,iv));
 				} else {
-					sprintf(buf, "           MOVE ADDRESS OF %s", (const char *)vi->name);
+					sprintf(buf, "           SET SQL-ADDR(%d) TO ADDRESS OF", parmnum);
 					addln(lineno++, buf);
-					sprintf(buf, "             TO SQL-ADDR(%d)", parmnum);
+					sprintf(buf, "             %s", (const char *)vi->name);
 				}
 				addln(lineno++, buf);
 				sprintf(buf, "           MOVE %ci%c TO SQL-TYPE(%d)", Q, Q, parmnum);
@@ -2513,4 +2747,4 @@ int main(int argsLength, char ** args)
 	return rc;
 }
 
-static const char * copyr = "Copyright (C) 2006-2018 Sergey Kashyrin <ska@kiska.net>";
+static const char * copyr = "Copyright (C) 2006-2019 Sergey Kashyrin <ska@kiska.net>";

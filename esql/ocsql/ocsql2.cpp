@@ -1222,6 +1222,379 @@ extern "C" OCEXPORT int OCSQLEXE(STMT & S, OC_SQLCA & E)
 	return E.OC_SQLCODE;
 }
 
+extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
+{
+	if(closed) {
+		notconn(E);
+		return E.OC_SQLCODE;
+	}
+	logd(901, "OCSQL: CALL: %.*s", S.SQL_STMLEN, S.SQL_STMT);
+	void ** PARMADDR = & V.OC_SQL_ADDR[0];
+	int * PARMLEN  = (int *)(&PARMADDR[V.OC_SQL_ARRSZ]);
+	char * PARMTYPE  = (char *)(&PARMLEN[V.OC_SQL_ARRSZ]);
+	char * PARMPREC = (char *)(&PARMTYPE[V.OC_SQL_ARRSZ]);
+	int ct = 0;
+	int bufct = 0;
+	int n_in = 0;
+	int n_out = 0;
+	for(int i = 0; i < V.OC_SQL_COUNT; ++i) {
+		if((PARMPREC[i] & 0x40) != 0) ++n_in;
+		if((PARMPREC[i] & 0x80) != 0) ++n_out;
+		if(!bNTS && (PARMPREC[i] & 0x80) != 0 &&
+			(PARMTYPE[i] == 'X' || PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L'))
+		{
+			++ct;
+			++bufct;
+		}
+		if(PARMTYPE[i] == 'V' || PARMTYPE[i] == 'v' ||
+			PARMTYPE[i] == 'L' || PARMTYPE[i] == 'l' || PARMTYPE[i] == '3')
+		{
+			++ct;
+			if(PARMTYPE[i] == '3') ++bufct;
+		}
+	}
+	mysql msql(V.OC_SQL_COUNT, V.OC_SQL_COUNT, ct, bufct);
+	mov * smov = msql.moves;
+	// Allocate memory for the statement handle
+	SQLHANDLE stmt;
+	SQLRETURN rc = SQLAllocHandle(SQL_HANDLE_STMT , hDBC, &stmt);
+	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
+		prnerr(SQL_HANDLE_DBC, hDBC, &E);
+		return E.OC_SQLCODE;
+	}
+	// Bind parameters
+	SQLUSMALLINT ParmNum = 0;
+	for(int i = 0; i < V.OC_SQL_COUNT; ++i) {
+		bool b_in = ((PARMPREC[i] & 0x40) != 0);
+		bool b_out = ((PARMPREC[i] & 0x80) != 0);
+		++ParmNum;
+		SQLSMALLINT ValueType;
+		SQLSMALLINT ParmType;
+		SQLLEN ColumnSize = PARMLEN[i];
+		SQLSMALLINT DecimalDigits = 0;
+		SQLLEN BufferLength = PARMLEN[i];
+		msql.parmlen[i] = PARMLEN[i];
+		msql.hostlen[i] = PARMLEN[i];
+		msql.hosttype[i] = PARMTYPE[i];
+		// Correct possible moving values
+		if(b_in) {
+			if(PARMTYPE[i] == 'V' || PARMTYPE[i] == 'v') {
+				--ct;
+				smov[ct].movenumber = i;
+				smov[ct].movetype = -2;	// moving short to SQLLEN.
+				smov[ct].movelen = (int) PARMLEN[i];
+				smov[ct].moveto = PARMADDR[i];
+				char * a = (char *) PARMADDR[i];
+				PARMADDR[i] = a + 2;
+			} else if(PARMTYPE[i] == 'L' || PARMTYPE[i] == 'l') {
+				--ct;
+				smov[ct].movenumber = i;
+				smov[ct].movetype = -4;	// moving int to SQLLEN.
+				smov[ct].movelen = (int) PARMLEN[i];
+				smov[ct].moveto = PARMADDR[i];
+				char * a = (char *) PARMADDR[i];
+				PARMADDR[i] = a + 4;
+			} else if(PARMTYPE[i] == '3') {
+				--ct;
+				--bufct;
+				mydec * md;
+				if(msql.pbuf[bufct] == NULL) {
+					md = new mydec;
+					md->bytelen = (int) PARMLEN[i];
+					md->precision = PARMPREC[i] & 0x3F;
+					msql.pbuf[bufct] = (char *) md;
+				} else {
+					md = (mydec *) msql.pbuf[bufct];
+				}
+				smov[ct].movenumber = i;
+				smov[ct].movetype = -3;	// moving COMP-3 to DECIMAL.
+				smov[ct].movelen = bufct;
+				smov[ct].moveto = PARMADDR[i];
+				PARMADDR[i] = md->num;
+			}
+		}
+		if(b_out) {
+			if(PARMTYPE[i] == 'V' || PARMTYPE[i] == 'v') {
+				--ct;
+				smov[ct].movenumber = i;
+				smov[ct].movetype = 2;	// moving SQLLEN to short.
+				smov[ct].movelen = (int) PARMLEN[i];
+				smov[ct].moveto = PARMADDR[i];
+				char * a = (char *) PARMADDR[i];
+				PARMADDR[i] = a + 2;
+			} else if(PARMTYPE[i] == 'L' || PARMTYPE[i] == 'l') {
+				--ct;
+				smov[ct].movenumber = i;
+				smov[ct].movetype = 4;	// moving SQLLEN to int.
+				smov[ct].movelen = (int) PARMLEN[i];
+				smov[ct].moveto = PARMADDR[i];
+				char * a = (char *) PARMADDR[i];
+				PARMADDR[i] = a + 4;
+			} else if(PARMTYPE[i] == '3') {
+				--ct;
+				--bufct;
+				mydec * md;
+				if(msql.pbuf[bufct] == NULL) {
+					md = new mydec;
+					md->bytelen = (int) PARMLEN[i];
+					md->precision = PARMPREC[i] & 0x3F;
+					msql.pbuf[bufct] = (char *) md;
+				} else {
+					md = (mydec *) msql.pbuf[bufct];
+				}
+				smov[ct].movenumber = i;
+				smov[ct].movetype = 3;	// moving DECIMAL to COMP-3.
+				smov[ct].movelen = bufct;
+				smov[ct].moveto = PARMADDR[i];
+				PARMADDR[i] = & md->num;
+			}
+			if(!bNTS && (PARMTYPE[i] == 'X' || PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L')) {
+				--ct;
+				--bufct;
+				if(msql.pbuf[bufct] == NULL) {
+					msql.pbuf[bufct] = new char[PARMLEN[i] + 1];
+				}
+				smov[ct].movenumber = i;
+				smov[ct].movetype = 1;	// moving bytes.
+				smov[ct].movelen = (int) PARMLEN[i];
+				smov[ct].moveto = PARMADDR[i];
+				PARMADDR[i] = msql.pbuf[bufct];
+			}
+		}
+		switch(PARMTYPE[i]) {
+		case 'F':
+			ColumnSize = 53;
+			if(PARMLEN[i] == 4) {
+				ValueType = SQL_C_FLOAT;
+				ParmType = SQL_REAL;
+				break;
+			}
+			ValueType = SQL_C_DOUBLE;
+			ParmType = SQL_DOUBLE;
+			break;
+		case '3':
+			ValueType = SQL_C_CHAR;
+			ParmType = SQL_VARCHAR;
+			ColumnSize = BufferLength = 21;
+			msql.parmlen[i] = 21;
+			break;
+		case 'I':
+			switch(PARMLEN[i]) {
+			case 2:
+				ValueType = SQL_C_SSHORT;
+				ParmType = SQL_SMALLINT;
+				break;
+			case 4:
+				ValueType = SQL_C_SLONG;
+				ParmType = SQL_INTEGER;
+				break;
+			case 8:
+				ValueType = SQL_C_SBIGINT;
+				ParmType = SQL_BIGINT;
+				break;
+			default:
+				strcpy(E.OC_SQLSTATE, "07772");
+				E.OC_SQLCODE = -7772;
+				sprintf(E.OC_SQLERRMC, "CALL Internal Error. Unsupported INTEGER length %d.", PARMLEN[i]);
+				E.OC_SQLERRML = (short) strlen(E.OC_SQLERRMC);
+				SQLFreeStmt(stmt, SQL_CLOSE);
+				SQLFreeHandle(SQL_HANDLE_STMT, stmt);
+				return E.OC_SQLCODE;
+			}
+			break;
+		case 'X':
+		case 'V':
+		case 'L':
+			ValueType = SQL_C_CHAR;
+			if(PARMLEN[i] >= 8000) {
+				ParmType = SQL_LONGVARCHAR;
+			} else {
+				ParmType = SQL_VARCHAR;
+			}
+			break;
+		case 'B':
+		case 'v':
+		case 'l':
+			ValueType = SQL_C_BINARY;
+			if(PARMLEN[i] >= 8000) {
+				ParmType = SQL_LONGVARBINARY;
+			} else {
+				ParmType = SQL_VARBINARY;
+			}
+			break;
+		default:
+			strcpy(E.OC_SQLSTATE, "07771");
+			E.OC_SQLCODE = -7771;
+			sprintf(E.OC_SQLERRMC, "CALL Internal Error. Unsupported type '%c'.", PARMTYPE[i]);
+			E.OC_SQLERRML = (short) strlen(E.OC_SQLERRMC);
+			SQLFreeStmt(stmt, SQL_CLOSE);
+			SQLFreeHandle(SQL_HANDLE_STMT, stmt);
+			return E.OC_SQLCODE;
+		}
+		msql.hostaddr[i] = (char *) PARMADDR[i];
+		SQLSMALLINT parmtype;
+		if(b_in && b_out) parmtype = SQL_PARAM_INPUT_OUTPUT;
+		else if(b_out) parmtype = SQL_PARAM_OUTPUT;
+		else parmtype = SQL_PARAM_INPUT;
+		rc = SQLBindParameter(stmt, ParmNum, parmtype,
+			ValueType, ParmType, ColumnSize, DecimalDigits,
+			PARMADDR[i], BufferLength, &msql.parmlen[i]);
+		if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
+			prnerr(SQL_HANDLE_STMT, stmt, &E);
+			SQLFreeStmt(stmt, SQL_CLOSE);
+			SQLFreeHandle(SQL_HANDLE_STMT, stmt);
+			return E.OC_SQLCODE;
+		}
+		if(i + 1 < V.OC_SQL_COUNT && PARMTYPE[i+1] == 'i') {	// Indicator is present
+			msql.hosttype[i+1] = 'i';
+			msql.hostaddr[i+1] = (char *) PARMADDR[i+1];
+			if(b_in) {
+				if(*((short *)PARMADDR[i+1]) < 0) {	// NULL
+					msql.parmlen[i] = SQL_NULL_DATA;
+				}
+			}
+			++i;
+		}
+	}
+	for(int i = 0; i < msql.movect; ++i) {
+		switch(smov[i].movetype) {
+		case -4:
+			msql.parmlen[smov[i].movenumber] = *((int *) smov[i].moveto);
+			break;
+		case -2:
+			msql.parmlen[smov[i].movenumber] = *((short *) smov[i].moveto);
+			break;
+		case -3:
+			{
+				mydec * md = (mydec *) msql.pbuf[smov[i].movelen];
+				char * c3 = (char *) smov[i].moveto;
+				int iprec = md->precision;
+				int ctf = 2 * md->bytelen - iprec - 1;
+				int ctb = ctf/2;
+				char * b = md->num;
+				if((c3[md->bytelen-1] & 0x0F) == 0x0D) *b++ = '-';
+				else *b++ = '+';
+				while(ctb > 0) {
+					*b++ = '0' + ((*c3 >> 4) & 0x0F);
+					*b++ = '0' + (*c3 & 0x0F);
+					++c3;
+					--ctb;
+				}
+				if((ctf % 2) != 0) {
+					*b++ = '0' + ((*c3 >> 4) & 0x0F);
+					if(iprec != 0) {
+						*b++ = '.';
+						*b++ = '0' + (*c3 & 0x0F);
+						--iprec;
+					}
+					++c3;
+				} else {
+					if(iprec != 0) *b++ = '.';
+				}
+				while(iprec > 0) {
+					*b++ = '0' + ((*c3 >> 4) & 0x0F);
+					--iprec;
+					if(iprec == 0) break;
+					*b++ = '0' + (*c3 & 0x0F);
+					--iprec;
+					++c3;
+				}
+				while(b < md->num + 21) *b++ = ' ';
+				md->num[21] = 0;
+			}
+			break;
+		default:
+			msql.parmlen[smov[i].movenumber] = smov[i].movelen;
+			break;
+		}
+	}
+	strcpy(E.OC_SQLSTATE, "00000");
+	E.OC_SQLCODE = 0;
+	E.OC_SQLERRD[2] = 0;
+	rc = SQLExecDirect(stmt, (SQLCHAR *) S.SQL_STMT, S.SQL_STMLEN);
+	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
+		prnerr(SQL_HANDLE_STMT, stmt, &E);
+		SQLFreeStmt(stmt, SQL_CLOSE);
+		SQLFreeHandle(SQL_HANDLE_STMT, stmt);
+		return E.OC_SQLCODE;
+	}
+	SQLLEN rct = 0;
+	SQLRowCount(stmt, &rct);
+	E.OC_SQLERRD[2] = (int) rct;
+
+	if(msql.columnct == 0) {
+		SQLFreeStmt(stmt, SQL_CLOSE);
+		SQLFreeHandle(SQL_HANDLE_STMT, stmt);
+		return E.OC_SQLCODE;
+	}
+	while((rc = SQLMoreResults(stmt)) == SQL_SUCCESS) {
+		rc = SQLFetch(stmt);
+		if(rc == SQL_NO_DATA) {
+			break;
+		}
+		if(rc != SQL_SUCCESS) {
+			if(rc != SQL_SUCCESS_WITH_INFO) {
+				prnerr(SQL_HANDLE_STMT, stmt, &E);
+				SQLFreeStmt(stmt, SQL_CLOSE);
+				SQLFreeHandle(SQL_HANDLE_STMT, stmt);
+				return E.OC_SQLCODE;
+			} else {
+				prnerr(SQL_HANDLE_STMT, stmt, NULL);
+			}
+		}
+	}
+	// Padding Cobol fields with a spaces, setting indicators
+	for(int i = 0; i < V.OC_SQL_COUNT; ++i) {
+		if((PARMPREC[i] & 0x80) == 0) { // not output
+			if(i + 1 < msql.columnct && msql.hosttype[i+1] == 'i') {	// Indicator is present
+				++i;
+			}
+			continue;
+		}
+		int n = (int) msql.parmlen[i];
+		if(n < 0) {
+			if(n == SQL_NULL_DATA) {	// NULL !!!
+				if(msql.hosttype[i] == '3') {
+					strcpy(msql.hostaddr[i], "0");
+				}
+			}
+			n = 0;
+		}
+		if(n < msql.hostlen[i] && (msql.hosttype[i] == 'B' || msql.hosttype[i] == 'X')) {
+			while(n < msql.hostlen[i]) {
+				msql.hostaddr[i][n] = ((msql.hosttype[i] == 'B') ? 0 : ' ');
+				++n;
+			}
+		}
+		if(i + 1 < msql.columnct && msql.hosttype[i+1] == 'i') {	// Indicator is present
+			*((short *)msql.hostaddr[i+1]) = (msql.parmlen[i] == SQL_NULL_DATA) ? -1 : 0;
+			++i;
+		}
+	}
+	for(int i = 0; i < msql.movect; ++i) {
+		switch(smov[i].movetype) {
+		case 4:
+			*((int *) smov[i].moveto) = (int) msql.parmlen[smov[i].movenumber];
+			break;
+		case 2:
+			*((short *) smov[i].moveto) = (short) msql.parmlen[smov[i].movenumber];
+			break;
+		case 3:
+			{
+				mydec * md = (mydec *) msql.pbuf[smov[i].movelen];
+				movecomp3((char *) smov[i].moveto, md->bytelen, md->precision, md->num);
+			}
+			break;
+		case 1:
+			memcpy(smov[i].moveto, msql.hostaddr[smov[i].movenumber], smov[i].movelen);
+			break;
+		}
+	}
+	SQLFreeStmt(stmt, SQL_CLOSE);
+	SQLFreeHandle(SQL_HANDLE_STMT, stmt);
+	return E.OC_SQLCODE;
+}
+
 extern "C" OCEXPORT int OCSQLRBK(OC_SQLCA & E)
 {
 	if(closed) {
@@ -1887,4 +2260,4 @@ static bool movecomp3(char * comp3, int bytelen, int precision, char * unpacked)
 	return true;
 }
 
-static const char * copyr = "Copyright (C) 2006-2018 Sergey Kashyrin <ska@kiska.net>";
+static const char * copyr = "Copyright (C) 2006-2019 Sergey Kashyrin <ska@kiska.net>";

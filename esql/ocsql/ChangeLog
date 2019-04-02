@@ -1,3 +1,5 @@
+2019-02-26 Sergey Kashyrin <ska@kiska.net>
+	* Attempt to implement EXEC SQL CALL for stored procedures
 
 2018-08-08  Sergey Kashyrin <ska@kiska.net>
 	* Fixing SIGSEGV when trying to FETCH the cursor which was not open

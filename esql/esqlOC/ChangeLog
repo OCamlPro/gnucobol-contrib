@@ -1,3 +1,9 @@
+2019-02-26 Sergey Kashyrin <ska@kiska.net>
+	* Attempt to implement EXEC SQL CALL for stored procedures
+
+2019-01-10 Sergey Kashyrin <ska@kiska.net>
+	* Switching from MOVE ADDRESS to SET due to non-GNU COBOL limitations
+
 2018-10-03 Sergey Kashyrin <ska@kiska.net>
 	* Allowing COMP-X through temporary variables
 	* Relaxing indicator variable type a little bit if generated temp variable is S9(4) COMP-5.
