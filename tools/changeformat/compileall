@@ -1,10 +1,55 @@
-cobc -x changeformat.cbl
-chmod +x changeformat
-rm changeformat1.cbl
-./changeformat changeformat.cbl changeformat1.cbl tofixed > changeformat.txt
-cobc -x changeformat1.cbl
-chmod +x changeformat1
-rm changeformat2.cbl
-./changeformat1 changeformat1.cbl changeformat2.cbl tofree > changeformat1.txt
-cobc -x changeformat2.cbl
 
+echo '--- compiling changeformat and perform sanity checks ---'
+
+echo ''
+echo 'compiling changeformat tool...'
+cobc -x changeformat.cbl
+ret="$?"
+if test "$ret" -eq 0; then
+chmod +x changeformat	# should not be necessary...
+
+echo ''
+echo 'test 1a: converting changeformat as "changeformat1.cbl"'
+echo '         to fixed format...'
+rm -f changeformat1.cbl
+./changeformat changeformat.cbl   changeformat1.cbl tofixed
+
+echo ''
+echo 'test 1b: compiling the converted "changeformat1"'
+cobc -x changeformat1.cbl
+ret="$?"
+fi
+if test "$ret" -eq 0; then
+chmod +x changeformat1	# should not be necessary...
+
+echo ''
+echo 'test 2a: converting "changeformat1.cbl" as "changeformat2.cbl"'
+echo '         to free format...'
+rm -f changeformat2.cbl
+./changeformat1 changeformat1.cbl changeformat2.cbl tofree
+
+echo ''
+echo 'test 2b: compiling the converted "changeformat2"'
+cobc -x changeformat2.cbl
+ret="$?"
+fi
+if test "$ret" -eq 0; then
+chmod +x changeformat2	# should not be necessary...
+
+echo ''
+echo 'test 3a: converting "changeformat2.cbl" as "changeformat3.cbl"'
+echo '         to fixed format...'
+rm -f changeformat3.cbl
+./changeformat2 changeformat2.cbl changeformat3.cbl tofixed
+
+echo ''
+echo 'test 3b: verify that "changeformat1.cbl" and "changeformat3.cbl" are identical'
+echo '         no output means everything ok...'
+diff changeformat1.cbl changeformat3.cbl
+
+echo ''
+echo '--- compilation and sanity checks finished (check output above) ---'
+else
+echo ''
+echo '--- compilation and sanity checks failed ---'
+fi

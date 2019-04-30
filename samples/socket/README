@@ -54,28 +54,19 @@ As lagniappe for those of you who like fixed format
 uppercase cobol, I extracted changeformat.cbl from
 my preprocess1 example, cleaned it up and made some
 fixes.
+It was originally provided here and can now be found (updated) at
+https://svn.code.sf.net/p/open-cobol/contrib/trunk/tools/changeformat/
+
 
 There are three compile scripts: compileall, compilefixed
 and compilefree.
 
-These scripts do not generate dynamic (.so) objects
-and produce compiled programs which do not reference
+The compile script does not generate dynamic (.so) objects
+and produces compiled programs which do not reference
 dynamic (.so) objects.
 
-compileall compiles the original programs, written in
-free format. You may test them.
 
-compileallfixed converts the original free format
-programs to fixed format and compiles them. You
-may test them.  They have '1' in the name.
-
-compileallfree converts the fixed format programs
-created by compileallfixed back to free format
-and compiles them. You may test them.  They
-have '2' in the name.
-
-The changeformat.cbl program has been reviewed
-and modified to eliminate an obscure corner case.
+Changelog:
 
 connectoserver calling sequence modified
 

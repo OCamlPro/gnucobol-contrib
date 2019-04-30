@@ -3,6 +3,8 @@ identification division.
 program-id. changeformat.
 *>
 *> Copyright (C) 2014 Steve Williams <stevewilliams38@gmail.com>
+*> Copyright (C) 2014 Vincent Coen
+*> Copyright (C) 2019 Simon Sobisch
 *>
 *> This program is free software; you can redistribute it and/or
 *> modify it under the terms of the GNU General Public License
@@ -100,16 +102,23 @@ program-id. changeformat.
 *> 2014-10-29 v1.0.2
 *>            1) added ws-after pd-after and nocc1
 *>               command line optionss
+*>
 *> 2014-11-06 - .03 - Vincent Coen
-*>          * 1. Extra function to support path as 2nd arg to
+*>          * 1) Extra function to support path as 2nd arg to
 *>               allow for block format change/migrations.
 *>               using O/P arg to be path/ | path\
 *>               See sample bash script that would be needed.
 *>
-*> 2014-11-13 1. changed compute fixed-start = 65 - t + 1
+*> 2014-11-13 1) changed compute fixed-start = 65 - t + 1
 *>                    to compute fixed-start = 72 - t + 1
-*>            2. removed subtract 2 from break the
+*>            2) removed subtract 2 from break the
 *>               line before wordx
+*>
+*> 2019-04-30 - .04 - Simon Sobisch
+*>            1) don't change casing in comment lines
+*>            2) disabled 2014-10-20 2) as the indent must
+*>               stay in existing lines with area A
+*>               not un-indent lines without it
 *>=======================================================
 
 environment division.
@@ -138,14 +147,14 @@ fd  output-file.
 01  output-record-fixed  pic x(80).
 
 working-storage section.
- 01  Program-Version     pic x(15)     value "chgfmt v1.00.03".
+ 01  Program-Version     pic x(15)     value "chgfmt v1.00.04".
  01  Output-File-Name    pic x(512)    value spaces.
  01  output-file-status  pic xx.
 *>
  01  OS-Slash-Char       pic x         value space.
  01  XA                  pic 9999 comp value zero.
 *>
-01  area-a-indent pic 9.
+*> // 01  area-a-indent pic 9.
 01  fixed-start pic 999.
 01  fixed-length pic 999.
 01  fixed-end pic 999.
@@ -345,7 +354,7 @@ start-changeformat.
     end-evaluate
 
     move 0 to line-number
-    move 0 to area-a-indent
+*> // move 0 to area-a-indent
 
     open input input-file
     perform check-input-file
@@ -399,11 +408,12 @@ process-record.
     move 0 to coutx-max
 
 *>  apply the change
-    perform change-case
+
+    if record-type <> 'COMMENT'
+        perform change-case
+    end-if
     evaluate change also format-type
     when 'TOFIXED' also 'FIXED'
-        perform increment-woutx-max
-        move input-record to work-output(woutx-max)
     when 'TOFREE' also 'FREE'
         perform increment-woutx-max
         move input-record to work-output(woutx-max)
@@ -467,9 +477,6 @@ change-case.
 *>          don't convert this word
             move space to dont-convert
         when work-word = 'PROGRAM-ID'
-*>          don't convert the second word after this one
-            move '1' to dont-convert
-            perform change-word
         when work-word = 'END'
 *>          don't convert the second word after this one
             move '1' to dont-convert
@@ -481,16 +488,11 @@ change-case.
             end-if
             perform change-word
         when work-word = 'COPY'
-*>          don't convert the next word
-            move '2' to dont-convert
-            perform change-word
         when work-word = 'INCLUDE'
 *>          don't convert the next word
             move '2' to dont-convert
             perform change-word
         when scan-type = 3 *> leading alpha
-            perform change-word
-            move space to dont-convert
         when scan-type = 6 *> leading non-alpha
             perform change-word
             move space to dont-convert
@@ -559,20 +561,20 @@ convert-to-fixed.
 *> at this point we have removed comments, removed debug markers
 *> and put an empty input-record
 
-*>==============================================
-*>  area-a-indent is the indent found before an
-*>  area A word.  It may be 0. It is subtracted
-*>  from fixed-start for all free words in all free
-*>  records subordinate to the area A word
-*>
-*>  we assume the free text uses input-record(1:4)
-*>  as area A.  if not, then not
-*>===================================================
-*> check area A for an indent
-    if wordx-max > 0
-    and word-start(1) <= 4
-        compute area-a-indent = word-start(1) - 1 end-compute
-    end-if
+*> // *>==============================================
+*> // *>  area-a-indent is the indent found before an
+*> // *>  area A word.  It may be 0. It is subtracted
+*> // *>  from fixed-start for all free words in all free
+*> // *>  records subordinate to the area A word
+*> // *>
+*> // *>  we assume the free text uses input-record(1:4)
+*> // *>  as area A.  if not, then not
+*> // *>===================================================
+*> // *> check area A for an indent
+*> //     if wordx-max > 0
+*> //     and word-start(1) <= 4
+*> //         compute area-a-indent = word-start(1) - 1 end-compute
+*> //     end-if
 
 *> we now move free words until input-record is empty
     perform until input-record = spaces
@@ -581,7 +583,8 @@ convert-to-fixed.
 *>      check to see of we need to break the line
         perform varying wordx from 1 by 1
         until wordx > wordx-max
-           compute fixed-end = 7 - area-a-indent + word-end(wordx) end-compute
+*> //      compute fixed-end = 7 - area-a-indent + word-end(wordx) end-compute
+           compute fixed-end = 7 + word-end(wordx) end-compute
            if fixed-end > 71
                 exit perform
            end-if
@@ -595,7 +598,8 @@ convert-to-fixed.
                 move 'd' to work-output(woutx-max)(7:1)
             end-if
             move word-start(1) to scan-start
-            compute fixed-start = 7 - area-a-indent + scan-start end-compute
+*> //       compute fixed-start = 7 - area-a-indent + scan-start end-compute
+            compute fixed-start = 7 + scan-start end-compute
             compute fixed-length = recx-max - scan-start + 1 end-compute
             move input-record(scan-start:fixed-length)
                 to work-output(woutx-max)(fixed-start:fixed-length)
@@ -654,7 +658,8 @@ convert-to-fixed.
 *>          break the line before wordx
             subtract 1 from wordx
             move word-start(1) to scan-start
-            compute fixed-start = 7 - area-a-indent + scan-start end-compute
+*> //       compute fixed-start = 7 - area-a-indent + scan-start end-compute
+            compute fixed-start = 7 + scan-start end-compute
             compute fixed-length = word-end(wordx) - scan-start + 1
             perform increment-woutx-max
             if record-type = 'DEBUG'
@@ -975,9 +980,9 @@ identification division.
 program-id. parsepattern.
 
 *>=====================================================
-*> We're not  parsing COBOL here, we're just looking at
+*> We're not parsing COBOL here, but just look at
 *> input records and categorizing them with a simple
-*> pattern recognizer
+*> pattern recognizer.
 *>=====================================================
 
 environment division.
@@ -1118,9 +1123,6 @@ start-scancobol.
         when 0 also ')'
         when 0 also ',' *> isolated (leading) comma
         when 0 also '.' *> isolated (leading) period
-            move 7 to scan-state
-            move recx-max to recx-start
-            perform stop-word
         when 0 also '&' *> isolated (leading) ampersand
             move 7 to scan-state
             move recx-max to recx-start
@@ -1192,9 +1194,7 @@ start-scancobol.
             continue
 
         when any also space
-            perform stop-word
         when any also ';'
-            perform stop-word
         when any also x'09'
             perform stop-word
         when any also '('
