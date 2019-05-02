@@ -13,33 +13,33 @@ It includes programs to manage classical TUI objects like: dropdown menus,
 multiple-choice Buttons, buttons of YES NO type, calendar to pickup a date, 
 on-screen messages, boxes, checkboxes, radiobuttons, listview, calculator, and so on.
 All programs have been developed exclusively using GnuCOBOL 
-(Pure COBOL with also call to "C" funtions but without C wrappers).
-They are COBOL programs you can "CALL" from your source 
+(Pure COBOL with also direct calls to "C" funtions but without "C wrappers").
+They are GnuCOBOL programs you can "CALL" from your source 
 to manage dropdown menus, display box, buttons , radiobuttons, ... 
 You can choose: position, size, colors, borders, shadows, titles, 3D effect ...
 Source files are well commented. Documentation of parameters are inside the copybooks.
 Each TUI-TOOL have a corresponding demo programs to show how to use the TOOL.
-The sources have been compiled with GnuCOBOL 2.0.
+The sources have been compiled with GnuCOBOL 3.0.
 Let me know if you have any suggestion or idea to improve/extend the tools.
 Your suggestions will be very useful and welcome.
 
-The collection has folllowing programs (other modules will follow in the future)
+The collection has folllowing programs.
 
 GC01BOX.COB - call it to display boxes on screen, you can specify back/fore colors, 
 size, position, single/double/custom borders, 3D effect and so on. 
 This function is mainly developed to be used by other following tools.
 
 GC02BOXMEX.COB - call it to display messages on screen, you can specify back/fore 
-colors, size, position, single/double/custom borders, 3D effect and so on.
+colors, size, position, single/double/custom box borders, 3D effect and so on.
 
 GC03YESNO.COB - it display a BOX with a simple message and two big buttons 
-YES & NO on screen, you can specify back/fore colors, size, position, and so on.
+YES and NO on screen, you can specify back/fore colors, size, position, and so on.
 
 GC09BUTTONS.COB - call it to display buttons on screen, you can specify number of 
-buttons,back/fore colors, size, position, text of buttons and so on.
+buttons, back/fore colors, size, position, text of buttons, hotkey and so on.
 
 GC13CHEKBOX.COB - call it to display checkbox items (switches) on screen, you can 
-specify number of items, back/fore colors, size, position, symbol , brackets and so on.
+specify number of items, back/fore colors, size, position, symbol, brackets and so on.
 
 GC18RADIOBUTTON.COB - call it to display rediobutton items (options) on screen, you can 
 specify number of items, back/fore colors, size, position, symbol , brackets and so on.
@@ -51,12 +51,12 @@ GC22MENU.COB - the new version of GC21MENU implementing hot keys. It replaces GC
 It use "call getch" instead of ACCEPT OMITTED to detect letter keypress from user.
 
 GC26LISTVIEW.COB - call it to display a window with an item list on screen. 
-The user can browse vertical and horizontal the list and select one of the items.
+The user can scrolll/browse vertical and horizontal the list and select one of the items.
 
 GC51CALYEAR.COB - call it to display a one year calendar on screen.
 User can browse days, months and years to pick-up a date.
 
-GC52 COLORPICKER - Displays a colorpair map (back / foreground colors combination) 
+GC52COLORPICKER - Displays a colorpair map (back/foreground colors combination) 
 Let the user to browse on it and pick up a color pair 
 
 GC53CALENDAR.COB - call it to display a calendar on screen. three months on each row 
@@ -64,6 +64,10 @@ User can scroll months and years to display month / year calendar.
 
 GC54FILEPICKER.COB - call it to display a window with a File list on screen.  
 The user can browse vertical and horizontal the file list and select one of the items.
+The user can also select and navigate Up and Down on directories 
+
+GC55DIREPICKER.COB - call it to display a window with a Directory list on screen.  
+The user can browse vertical and horizontal the Directory list and select one of the items.
 The user can also select and navigate Up and Down on directories 
 
 GC56DATEPICKER.COB - call it to display a one month calendar (regular or small size)
@@ -89,6 +93,8 @@ Copying and modifying this programs you can develop a lot of other type of appli
 
 GC74HELPxxxx.COB - A "HELP" system. You can write text help files , load it on indexed files.
 List the indexde file , access to this HELP messages from any CRUDE application.
+
+GC76TABxxxxx.COB - A "TABLE" system. You can insert/write, edit, delete, list "TABLE" data.
 
 GC99BANNER.COB - accept a string and print that string in big character.
 Useful to print a banner page for your reports.
