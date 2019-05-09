@@ -1,3 +1,15 @@
-See manual in presql.pdf.
+PRESQL2
+-------
 
+A program to process SQL type syntax to be used with MySQL (or others
+via ODBC) for input to the GnuCOBOL compiler along with other support
+programs and files.
 
+This package does NOT use EXEC statements but a variation of the theme
+as extra commands are injected in to the source pack (see the manual
+about syntax for full details).
+It is planned to add in direct support for EXEC SQL syntax that will
+support both fixed and free source formats (upon request).
+
+The complete documentation about set up and usage can be found in
+presql2.pdf.
