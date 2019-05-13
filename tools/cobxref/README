@@ -1,8 +1,11 @@
 This README is superceded by the PDF manual and this includes all changes for
-version v2.01.01 that runs under *nix, Linux etc with the GnuCOBOL compiler.
+version v2.02.01 that runs under *nix, Linux etc with the GnuCOBOL compiler.
 
 This version supports both fixed and free format Cobol source files creating
 Cobol cross references listings.
+
+This version supports user supplied names for data, section, paragraph,
+program and modules to 63 characters if using the latest GnuCobol code base v3. 
 
 It has been tested against production sources - well in excess of
 1000 programs as well as various test source programs.
@@ -25,4 +28,4 @@ of MVS bug.
 
 
 Vincent B. Coen
-10th March 2019.
+13th May 2019.
