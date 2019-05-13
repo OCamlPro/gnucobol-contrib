@@ -13,7 +13,7 @@ IBM MVS Ansi Cobol at:
 https://sourceforge.net/projects/cobxref/IBM-MVS-38J-Ansi-Cobol/ cobxref-IBM-MVS-38J-Ansi-Cobol
 but it does not provide support for COPY libraries due to no demand.
 In any event such would require adding extra supporting modules into MVS to
-allow Cobol programs access to PDS file system.
+allow Cobol programs access to the PDS file system.
 
 Please report all bugs found for the GnuCOBOL version to the GNUCobol contrib
 forum at https://sourceforge.net/p/open-cobol/discussion/contrib/ and send a

@@ -1,3 +1,17 @@
+2019-05-13  Vincent B Coen <vbcoen@btconnect.com>
+       (v2.02.01)   Released.
+                    Bug fix for page number > 127 using bin-char instead of long
+                    Support for user supplied names for data, section, paragraph
+                    and called modules up to 63 chars.
+                    Technically names for program and modules can also be up to
+                    that size but most system cannot support it due to preset
+                    limitations within *nix.
+                    Usage of long program / module names will result in
+                    truncation of one or both in listing header lines,
+                    Blame size of A4 and Letter paper and ink jets, now if we
+                    were still using matrix or line printer the problem would
+                    not arise.
+
 2019-03-11  Vincent B Coen <vbcoen@btconnect.com>
        (v2.01.02)   Released.
                     Support for replacing LEADING and TRAILING pseudo text but

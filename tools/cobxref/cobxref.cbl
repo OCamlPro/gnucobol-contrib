@@ -115,8 +115,8 @@
  configuration section.
  source-computer.      linux.
  object-computer.      linux.
- special-names.                                   *> only here to help test cobxref
-     switch-1 is sn-Test-1 on snt1-on off snt1-off
+ special-names.                                     *> only here to help test cobxref
+     switch-1 is sn-Test-1 on snt1-on off snt1-off  *> against itself.
      currency sign is "£".
 *>
  input-Output section.
@@ -124,8 +124,8 @@
 *>
 *>  These 2 are needed as GC (& many others) does NOT support real
 *>    variable length tables and they can get very large
-*>            They are also very handy for debugging also during test
-*>            these two files are not deleted at EOJ but code is present
+*>            They are also very handy for debugging during testing.
+*>            These two files are not deleted at EOJ but code is present
 *>            currently remarked out to do so.
 *>            These files may well be created at /tmp or /home/username/tmp
 *>            depending on your system settings.
@@ -140,14 +140,14 @@
               organization   line sequential
               file status    FS-Reply.
 *>
-     select   SourceInput  assign SourceFileName           *> This is the o/p file from printcbl
-              organization line sequential
+     select   SourceInput  assign SourceFileName           *> This is the o/p file from
+              organization line sequential                 *> the called module printcbl
               file status  FS-Reply.
 *>
-*> Used to o/p source with copy includes currently only during testing
-*>  this file is free format a stripped of more than one space between words.
+*> Used to o/p source with copy includes, currently only during testing
+*>  this file is free format, stripped of more than one space between words.
 *>    Similar (ok the same as produced for a filename.i file via cobc
-*>      when using command / steering --save-temps, comments removed
+*>      when using command / steering --save-temps, with comments removed
 *>        and blank lines
 *>
      select CopySourceInput2 assign CopySourceFileName2
@@ -179,18 +179,21 @@
          05  filler        pic x.
      03  filler            pic x(62).
 *>
+ 01  Printline-Overflow.                 *> For long datanames > 32 chars
+     03  XrDataName-Long   pic x(63).    *> & xrdataname blank
+*>
  01  filler.
      03  filler            pic x(42).
-     03  PL-Prog-Name      pic x(32).
+     03  PL-Prog-Name      pic x(64).    *> 12/5/19 2.02
 *>
  01  PrintLine2.
      03  P-Conditions      pic x(32).
      03  P-Variables       pic x(32).
 *>
- 01  PrintLine3.                          *> for called procedures System or User
-     03  PL4-Name          pic x(30).
-     03  filler            pic xx.
-     03  PL4-Type          pic x(7).    *> can be SYSTEM or USER
+ 01  PrintLine3.                         *> for called procedures System or User
+     03  PL4-Name          pic x(30).    *> use PL-overflow for long names
+     03  filler            pic xx.       *> with PL4-Name blank.
+     03  PL4-Type          pic x(7).     *> Can be SYSTEM or USER
      03  filler     occurs 8.
          05  PL4-Reference pic 9(6).
          05  filler        pic x.
@@ -205,20 +208,21 @@
  fd  Supplemental-Part1-Out.
  01  SortRecord.
      03  SkaProgramName    pic x(32).   *> 27/2/19 added program name max 31+1 chars
-     03  SkaDataName       pic x(32).
-     03  SkaWSorPD         pic 9.
+     03  SkaDataName       pic x(64).   *> updated 12/5/19 for 63 chars (rounded to 64)
+     03  SkaWSorPD         pic 9.       *>  for word boundary.
      03  SkaWSorPD2        pic 9.
      03  SkaRefNo          pic 9(6).
 *>
  fd  Supplemental-Part2-In.
- 01  filler                pic x(72).
+ 01  filler                pic x(104).  *> updated 12/5/19.
 *>
  sd  SortFile.
  01  filler.
-     03  SdSortKey         pic x(72).   *> 27/2/19 added program name max 31+1 chars
+     03  SdSortKey         pic x(104).   *> 12/5/19 dataname chgd to 64.
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v2.01.01".
+ 77  Prog-Name             pic x(13) value "Xref v2.02.01".
+ 77  Page-No               Binary-long  value zero.
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
  77  S-Pointer             Binary-long  value zero.
@@ -226,7 +230,6 @@
  77  S-Pointer3            Binary-long  value zero.
  77  Line-Count            Binary-char  value 70.
  77  Compiler-Line-Cnt     Binary-char  value C-Compiler-Line-Cnt.
- 77  Page-No               Binary-char  value zero.
  77  ws-Return-Code        binary-char  value zero.
  77  Word-Length           Binary-long  value zero.
  77  Line-End              Binary-long  value zero.
@@ -274,18 +277,18 @@
  77  sw-6                  pic 9           value zero.
      88  Reports-In-Lower                  value 1.
 *> XREF reporting at end of all sources                      -  NOT YET IMPLEMENTED.
- 77  SW-7                  pic x           value "N".
+ 77  SW-7                  pic x           value "N".          *> Needed ???
      88  Xrefs-At-End                      value "Y".
 *>
- 77  SW-8                  pic x           value "N".            *> Y = free, N = Fixed
+ 77  SW-8                  pic x           value "N".          *> Y = free, N = Fixed
      88 SW-Free                            value "Y".
      88 SW-Fixed                           value "N".
 *>   set if free/fixed used as against defaulting
- 77  sw-8-usd                 pic x        value "N".
+ 77  sw-8-usd              pic x           value "N".
      88 sw-8-inuse                         value "Y".
- 77  sw-9                     pic x        value "N".
+ 77  sw-9                  pic x           value "N".
      88 No-Table-Update-displays           value "Y".
- 77  sw-11                    pic x        value "N".
+ 77  sw-11                 pic x           value "N".
      88 Verbose-Output                     value "Y".
 *>
 *> Switches used during processing
@@ -334,10 +337,10 @@
  77  OS-Delimiter          pic x           value space.
  77  GotASection           pic x           value space.
 *> section name + 8 chars
- 77  HoldFoundWord         pic x(40)       value spaces.
- 77  HoldFoundWord2        pic x(40)       value spaces.
- 77  SaveSkaDataName       pic x(32)       value spaces.
- 77  Saved-Variable        pic x(32)       value spaces.
+ 77  HoldFoundWord         pic x(72)       value spaces. *> this and next 3 increased by 32 char.
+ 77  HoldFoundWord2        pic x(72)       value spaces.
+ 77  SaveSkaDataName       pic x(64)       value spaces.
+ 77  Saved-Variable        pic x(64)       value spaces.
  77  SaveSkaWSorPD         pic 9           value zero.
  77  SaveSkaWSorPD2        pic 9           value zero.
  77  WS-Anal1              pic 9           value zero.
@@ -353,13 +356,13 @@
  77  Supp-File-1           pic x(1036)     value spaces.
  77  Supp-File-2           pic x(1036)     value spaces.
  77  Sort1tmp              pic x(1036)     value spaces.
- 77  Global-Current-Word   pic x(32)       value spaces.
+ 77  Global-Current-Word   pic x(64)       value spaces.  *> + 32 char
  77  Global-Current-Refno  pic 9(6)        value zero.
  77  Global-Current-Level  pic 99          value zero.
  77  FoundFunction         pic 9           value zero.
 *>
- 01  HoldID                pic x(32)       value spaces.
- 01  HoldID-Module         pic x(32)       value spaces.
+ 01  HoldID                pic x(64)       value spaces. *> +32 char & next.
+ 01  HoldID-Module         pic x(64)       value spaces.
 *>
  01  SourceInWS.
      03  Sv1what           pic x(16).
@@ -382,12 +385,12 @@
      03  wsf3-2            pic 9.                      *>   processing
      03  filler            pic x(254).
 *>
- 01  wsFoundNewWord        pic x(32).
- 01  wsFoundNewWord2       pic x(32).
+ 01  wsFoundNewWord        pic x(64).  *> this  & 2, 4, 6 increased by 32. 12/5/19
+ 01  wsFoundNewWord2       pic x(64).
  01  wsFoundNewWord3       pic x(256).  *> WAS 1024 max size quot lit 1 lin
- 01  wsFoundNewWord4       pic x(32).
+ 01  wsFoundNewWord4       pic x(64).
  01  wsFoundNewWord5       pic x(256).  *> WAS 1024 space removal source i/p
- 01  wsFoundNewWord6       pic x(32).
+ 01  wsFoundNewWord6       pic x(64).
 *>
  01  HDR1.
      03  filler            pic X(10) value "ACS Cobol ".
@@ -493,8 +496,8 @@
      03  WS-WC-YY          pic 9(4).
      03  filler            pic x(17).
 *>
- 01  WS-Locale              pic x(16)     value spaces.     *> Holds o/p from env var. LC_TIME but only uses 1st 5 chars
- 01  WS-Local-Time-Zone     pic 9         value 3.          *> Defaults to International, See comments below !
+ 01  WS-Locale             pic x(16) value spaces.     *> Holds o/p from env var. LC_TIME but only uses 1st 5 chars
+ 01  WS-Local-Time-Zone    pic 9     value 3.          *> Defaults International, See below !
 *>
 *> Sets WS-Local-Time-Zone ^~^ to one of these 88 values according to
 *>    your local requirements
@@ -567,12 +570,14 @@
          05  Sht-Section-Name  pic x(16).
 *>
 *> Here for cb_intrinsic_table in GC see :
-*>   cobc/reserved.c in the gnuCOBOL source directory but Totally ingoring the system_table as not needed/used by xref
+*>  cobc/reserved.c in the gnuCOBOL source directory but Totally ingoring
+*>   the system_table as not needed/used by xref
 *>
-*> Also note that the number 0 or 1 indicates if the function/reserved word is implemented in gnuCOBOL
-*>   but xref treats all as being reserved as they are still so, in someones compiler
+*> Also note that the number 0 or 1 indicates if the function/reserved word
+*>  is implemented in gnuCOBOL but xref treats all as being reserved as
+*>   they are still so, in someone's compiler
 *>
- 01  Function-Table.                                                 *> updated by Get-Reserved-Lists
+ 01  Function-Table.                                     *> updated by Get-Reserved-Lists
      03  filler pic x(31) value "1ABS                        ".
      03  filler pic x(31) value "1ACOS                       ".
      03  filler pic x(31) value "1ANNUITY                    ".
@@ -1348,7 +1353,7 @@
      03  Git-Elements  occurs 10 to 10001 depending on Git-Table-Size.
 *> +1 used, when testing for max table size
          05  Git-Word        pic x(32).
-         05  Git-Prog-Name   pic x(32).
+         05  Git-Prog-Name   pic x(64).   *> + 32  12/5/19
          05  Git-RefNo       pic 9(6).
          05  Git-HoldWSorPD  pic 9.
          05  Git-HoldWSorPD2 pic 9.
@@ -1382,7 +1387,7 @@
 *>  SECTION OR MAIN ENTRY
 *> Also
 *>  routines for source reads, get a word, parsers and tokeniser must be rewritten,
-*>   they are still a complete mess.
+*>   they are still a mess.
 *>
 *>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 *>
@@ -2417,7 +2422,7 @@
               sort  Git-Elements ascending Git-Word.
 *>
 *> Print order:
-*> Note that although some sections are not yet supported in GC they
+*> Note that although some sections are not supported in GC they
 *>       are, in cobxref.
 *>   Xrefd -
 *>     At bc090 = In order: File Section, Working-Storage, Local-Storage,
@@ -2433,6 +2438,12 @@
 *>
      if       not All-Reports
               go to bc090-Last-Pass2.
+*>
+*>*************************************************************
+*>    PROGRAMMING NOTE
+*>
+*>  Will use STORED-CHAR-LENGTH to check user names for size.
+*>
 *>
 *> produce group W-S xref & procedure used in testing
 *>  and taken from original code circa 1983.
@@ -2483,7 +2494,13 @@
 *>
  bc060-ConnectC.
      move     spaces to PrintLine.
-     move     SkaDataName to XrDataName.
+     if       function Stored-Char-Length (SkaDataName) > 32
+              move     SkaDataName to XrDataName-Long
+              add      1 to Line-Count
+              write    PrintLine-OverFlow after 1
+              move     spaces to PrintLine
+     else
+              move     SkaDataName to XrDataName.
      move     SkaRefNo to XrDefn.
      move     LSect (SkaWSorPD) to XrType.
      go       to bc080-Exit.
@@ -2579,7 +2596,13 @@
 *>
  bc150-ConnectC2.
      move     spaces to PrintLine.
-     move     SkaDataName to XrDataName.
+     if       function Stored-Char-Length (SkaDataName) > 32
+              move  SkaDataName to XrDataName-Long
+              add   1 to Line-Count
+              write Printline-Overflow after 1
+              move  spaces to PrintLine
+     else
+              move     SkaDataName to XrDataName.
      move     SkaRefNo to XrDefn.
      move     LSect (SkaWSorPD) to XrType.
      go       to bc170-Exit.
@@ -2715,7 +2738,13 @@
 *>
  bc250-ConnectC3.
      move     spaces to PrintLine.
-     move     SkaDataName to XrDataName.
+     if       function Stored-Char-Length (SkaDataName) > 32
+              move SkaDataName to XrDataName-Long
+              add  1 to Line-Count
+              write Printline-Overflow after 1
+              move  spaces to Printline
+     else
+              move     SkaDataName to XrDataName.
      move     SkaRefNo to XrDefn.
 *>
 *> process sections
@@ -2809,7 +2838,13 @@
 *>
  bc340-ConnectC4.
      move     spaces to PrintLine.
-     move     SkaDataName to XrDataName.
+     if       function Stored-Char-Length (SkaDataName) > 32
+              move SkaDataName to XrDataName-Long
+              add  1 to Line-Count
+              write Printline-Overflow after 1
+              move  spaces to Printline
+     else
+              move     SkaDataName to XrDataName.
      move     SkaRefNo to XrDefn.
      move     LSect (SkaWSorPD) to XrType.
      go       to bc360-Exit.
@@ -2884,7 +2919,13 @@
 *> first record for a given name
 *>
      move     spaces to PrintLine.
-     move     SkaDataName to XrDataName.
+     if       function Stored-Char-Length (SkaDataName) > 32
+              move SkaDataName to XrDataName-Long
+              add  1 to Line-Count
+              write Printline-Overflow after 1
+              move  spaces to Printline
+     else
+              move     SkaDataName to XrDataName.
      move     SkaRefNo to XrDefn.
      move     LSect (SkaWSorPD) to XrType.
      move     1 to q.
@@ -2954,7 +2995,13 @@
 *> first record for a given name
 *>
      move     spaces to PrintLine.
-     move     SkaDataName to XrDataName.
+     if       function Stored-Char-Length (SkaDataName) > 32
+              move SkaDataName to XrDataName-Long
+              add  1 to Line-Count
+              write Printline-Overflow after 1
+              move  spaces to Printline
+     else
+              move     SkaDataName to XrDataName.
      move     SkaRefNo to XrDefn.
      if       SkaWSorPD2 not = 1
               move LSect (SkaWSorPD) to XrType
@@ -3118,7 +3165,13 @@
 *>
  bc740-ConnectC4.
      move     spaces to PrintLine.
-     move     SkaDataName   to PL4-Name.
+     if       function Stored-Char-Length (SkaDataName) > 32
+              move SkaDataName to XrDataName-Long
+              add  1 to Line-Count
+              write Printline-Overflow after 1
+              move  spaces to Printline
+     else
+              move     SkaDataName   to PL4-Name.
      if       SkaWSorPD2 = 1
               move "SYSTEM" to PL4-Type.
      if       SkaWSorPD2 = 2
@@ -4565,7 +4618,7 @@
 *>
 *>  ===============================================================
 *>   WARNING ANY CHANGES TO printcbl.cbl should be also considered
-*>      Here as well.
+*>      Here as well, both ways.
 *>  ===============================================================
 *>
 *> CONFIGURATION SETTINGS: Set these switches before compiling:
