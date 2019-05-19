@@ -1,29 +1,31 @@
 *** GnuCOBOL TUI (TEXT USER INTERFACE) TOOLS AND UTILITIES COLLECTON ***
 
-In this folder you can find GnuCOBOL TUI TOOLS (GC01xxxxxx to GC98xxxxxx) 
-and GnuCOBOL Utilities (GC99xxxxxx) 
+In this folder you can find: 
+GnuCOBOL TUI TOOLS (GC01xxxxxx to GC98xxxxxx) and 
+GnuCOBOL Utilities (GC99xxxxxx) 
 
 Although the textual interfaces are often replaced by graphical interfaces, 
 a good compiler have to allow to develop complete applications in an easy way 
 even with textual user interfaces.
+
 GnuCOBOL have to generate applications with those objects that allow a classical and 
 friendly user interface like other programming languages on windows and unix platform.
-This is a collection of GnuCOBOL programs useful to this purpose.
-It includes programs to manage classical TUI objects like: dropdown menus, 
-multiple-choice Buttons, buttons of YES NO type, calendar to pickup a date, 
+here you will find a collection of GnuCOBOL programs useful to this purpose.
+The TUI Collection includes programs to manage classical TUI objects like: dropdown menus, 
+multiple-choice Buttons, YES-No buttons, calendar to pickup a date, 
 on-screen messages, boxes, checkboxes, radiobuttons, listview, calculator, and so on.
 All programs have been developed exclusively using GnuCOBOL 
-(Pure COBOL with also direct calls to "C" funtions but without "C wrappers").
+(pure COBOL with also direct calls to "C" funtions but without "C wrappers").
 They are GnuCOBOL programs you can "CALL" from your source 
-to manage dropdown menus, display box, buttons , radiobuttons, ... 
+to manage dropdown menus, display box, buttons , radiobuttons and so on ... 
 You can choose: position, size, colors, borders, shadows, titles, 3D effect ...
 Source files are well commented. Documentation of parameters are inside the copybooks.
 Each TUI-TOOL have a corresponding demo programs to show how to use the TOOL.
-The sources have been compiled with GnuCOBOL 3.0.
+The GnuCOBOL sources have been compiled with GnuCOBOL 3.0.
 Let me know if you have any suggestion or idea to improve/extend the tools.
 Your suggestions will be very useful and welcome.
 
-The collection has folllowing programs.
+The collection has folllowing TOOLS.
 
 GC01BOX.COB - call it to display boxes on screen, you can specify back/fore colors, 
 size, position, single/double/custom borders, 3D effect and so on. 
@@ -44,11 +46,12 @@ specify number of items, back/fore colors, size, position, symbol, brackets and 
 GC18RADIOBUTTON.COB - call it to display rediobutton items (options) on screen, you can 
 specify number of items, back/fore colors, size, position, symbol , brackets and so on.
 
+
+GC22MENU.COB - the new version of GC21MENU implementing hot keys. It replaces GC21MENU.COB.
+It use "call getch" instead of ACCEPT OMITTED to detect letter keypress from user.
 GC21MENU.COB - (obsolete) call it to display menus on screen, you can manage bar menu, 
 dropdown menu, specify number of items, text and length of items, back/fore colors, 
 position, messages associated to menu items, and so on.
-GC22MENU.COB - the new version of GC21MENU implementing hot keys. It replaces GC21MENU.COB.
-It use "call getch" instead of ACCEPT OMITTED to detect letter keypress from user.
 
 GC26LISTVIEW.COB - call it to display a window with an item list on screen. 
 The user can scrolll/browse vertical and horizontal the list and select one of the items.
@@ -115,3 +118,13 @@ to enhance the Copy COBOL example for a better the editing Picture
 of individual fields directly in the copy.
 See samples at 
 https://sourceforge.net/p/open-cobol/discussion/contrib/thread/e21eb9ba/#90fd
+
+GC99SCREENGEN.COB - Copy generator for cobol programs that use SCREEN SECTION. 
+How to use it:
+1. create a text file with the graphical layout of the SCREEN (25 rows x 80 cols). 
+Use the $ symbol when you want a PIC X field, use the # symbol when you want a PIC 9. 
+2. run the program GC99SCREENGEN to read the TXT file with the SCREEN layout 
+It will create the corresponding Copy COBOL in a .CPY text file. 
+3. the Copy COBOL obtained should be used directly in the COBOL program 
+that will display / accept the SCREEN, or you can change it before, 
+to enhance the Copy COBOL example for a better SCREEN display of individual fields.
