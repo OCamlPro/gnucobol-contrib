@@ -221,7 +221,7 @@
      03  SdSortKey         pic x(104).   *> 12/5/19 dataname chgd to 64.
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v2.02.01".
+ 77  Prog-Name             pic x(13) value "Xref v2.02.02".
  77  Page-No               Binary-long  value zero.
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
@@ -257,6 +257,10 @@
  77  z3                    Binary-Long  value zero.
  77  q                     Binary-Long  value zero.
  77  q2                    Binary-Long  value zero.
+*> Temp for testing
+ 77  TD                    pic 9(5)     value zero.
+ 77  Z2D                   pic 9(5)     value zero.
+ 77  Word-LengthD          pic 9(5)     value zero.
 *>
 *> System parameters control how xref works or reports
 *>  May be add extra func for default.conf ?
@@ -525,7 +529,8 @@
      03 Msg8      pic x(32) value "Msg8  Error: Eof on source again".
      03 Msg9      pic x(40) value "Msg9  Error: File not present Try Again!".
      03 Msg10     pic x(42) value "Msg10 Error: Git Table size exceeds 10,000".
-*> Msg11 - 16 in get-reserved-lists with Msg17 spare
+*> Msg11 - 16 in get-reserved-lists
+     03 Msg17     pic x(39) value "Msg17 Error: Cobol Syntax missing space".
      03 Msg18     pic x(71) value "Msg18 Error: Eof on source possible logic error at aa047 ASSUMING again".
      03 Msg19     pic x(79) value "Msg19 Possible prob. with cobc and therefore with no reserved word list updates".
 *> Msg21 - 31 in printcbl
@@ -2390,8 +2395,24 @@
 *> t now : +1
      unstring wsFoundWord2 (s:z2) delimited by " " into wsFoundNewWord2 count b pointer t.
      if     t not > z2 or not = Word-Length
-            display "bb100 Error: t=" t " word-len="
-            Word-Length " z2=" z2.
+            move spaces to SourceOutput
+            move t to TD
+            move Z2 to Z2D
+            move Word-Length to Word-LengthD
+            string Msg17
+                   " t="
+                   TD
+                   " word-len="
+                   Word-LengthD
+                   " z2="
+                   Z2D
+                   " fld="
+                   wsfoundword2 (1:60) into SourceOutput
+                   move zero to Gen-RefNo1
+                   write Source-List after 1
+                   move spaces to SourceOutput
+                   display SourceOutput (1:70)
+  *>          display "bb100 Error: t=" t " word-len=" Word-Length " z2=" z2.
 *> this numeric test may not work?
      if       wsFoundNewWord (1:q) not numeric
          and  wsFoundNewWord (1:1) not = "-" and not = "+"
