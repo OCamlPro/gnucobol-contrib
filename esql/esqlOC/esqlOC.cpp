@@ -454,7 +454,7 @@ private:
 			cl.sqlaction = 15;
 		} else if(sqlu.starts("CONNECT ")) {
 			cl.sqlaction = 16;
-		} else if(sqlu.starts("DISCONNECT ")) {
+		} else if(sqlu.starts("DISCONNECT ") || sqlu == "DISCONNECT") {
 			cl.sqlaction = 16;
 		} else if(sqlu.starts("WHENEVER ")) {
 			cl.sqlaction = 17;

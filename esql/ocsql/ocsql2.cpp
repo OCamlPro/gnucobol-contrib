@@ -430,6 +430,86 @@ struct STMT {
 	char    SQL_STMT[1];	// actually char[SQL_STMLEN]
 };
 
+
+class stmtholder {
+	friend class stmtcache;
+private:
+	stmtholder * next;
+	STMT *		 stmt;
+	stmtholder(STMT * s) {
+		stmt = s;
+		next = NULL;
+	}
+	~stmtholder() {
+		if(stmt->SQL_IPTR != NULL) {
+			delete stmt->SQL_IPTR;
+		}
+		stmt->SQL_IPTR = NULL;
+		stmt->SQL_PREP = 'N';
+	}
+};
+
+class stmtcache {
+
+private:
+	stmtholder ** data;
+	int			SZ;			// size of cache tables
+	int			count;
+
+public:
+	stmtcache(int sz = 1009) {
+		SZ = sz;
+		data = new stmtholder *[SZ];
+		for(int i = 0; i < SZ; ++i) data[i] = NULL;
+		count = 0;
+	}
+	~stmtcache() {
+		clear();
+		delete [] data;
+	}
+
+	int getCount() { return count;}
+
+	void clear()
+	{
+		for(int i = 0; i < SZ; ++i) {
+			for(stmtholder * h = data[i]; h != NULL;) {
+				stmtholder * h2 = h;
+				h = h->next;
+				delete h2;
+			}
+			data[i] = NULL;
+		}
+		count = 0;
+	}
+
+	void put(STMT * stmt)
+	{
+		int i = (int)(((long long)stmt) % SZ);
+		if(data[i] == NULL) {
+			stmtholder * v = new stmtholder(stmt);
+			data[i] = v;
+			++count;
+			return;
+		}
+		stmtholder ** h = &data[i];
+		for(;;) {
+			if((*h)->stmt == stmt) {
+				return;
+			}
+			if((*h)->next == NULL) {
+				stmtholder * v = new stmtholder(stmt);
+				(*h)->next = v;
+				++count;
+				return;
+			}
+			h = &((*h)->next);
+		}
+	}
+};
+
+static stmtcache CS;
+
 static int strim(char * buf);
 static void prnerr(SQLSMALLINT ht, SQLHANDLE h, OC_SQLCA * E = NULL);
 static bool getcurrdb(char * db, OC_SQLCA & E);
@@ -698,6 +778,7 @@ extern "C" OCEXPORT int OCSQLDIS(OC_SQLCA & E)
 		strcpy(E.OC_SQLSTATE, "00000");
 		E.OC_SQLCODE = 0;
 	}
+	CS.clear();
 	SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
 	SQLDisconnect(hDBC);
 	SQLFreeConnect(hDBC);
@@ -734,6 +815,7 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		}
 	}
 	logd(901, "OCSQL: PREPARE I/O %.*s", S.SQL_STMLEN, S.SQL_STMT);
+	CS.put(&S);
 	void ** PARMADDR = & V.OC_SQL_ADDR[0];
 	int * PARMLEN  = (int *)(&PARMADDR[V.OC_SQL_ARRSZ]);
 	char * PARMTYPE  = (char *)(&PARMLEN[V.OC_SQL_ARRSZ]);

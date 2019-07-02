@@ -1,3 +1,6 @@
+2019-07-02 Sergey Kashyrin <ska@kiska.net>
+	* Small fix for EXEC SQL DISCONNECT END-EXEC
+
 2019-02-26 Sergey Kashyrin <ska@kiska.net>
 	* Attempt to implement EXEC SQL CALL for stored procedures
 
