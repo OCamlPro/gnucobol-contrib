@@ -485,7 +485,7 @@ public:
 
 	void put(STMT * stmt)
 	{
-		int i = (int)(((long long)stmt) % SZ);
+		int i = (int)(((unsigned long long)stmt) % SZ);
 		if(data[i] == NULL) {
 			stmtholder * v = new stmtholder(stmt);
 			data[i] = v;
