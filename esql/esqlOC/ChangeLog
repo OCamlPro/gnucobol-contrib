@@ -1,3 +1,6 @@
+2019-07-18 Sergey Kashyrin <ska@kiska.net>
+	* Fixed extremely heavy bug for EXEC SQL CALL with COMP-3 parameters
+
 2019-07-02 Sergey Kashyrin <ska@kiska.net>
 	* Small fix for EXEC SQL DISCONNECT END-EXEC
 

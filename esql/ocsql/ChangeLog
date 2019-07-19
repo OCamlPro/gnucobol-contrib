@@ -1,3 +1,10 @@
+2019-07-18 Sergey Kashyrin <ska@kiska.net>
+	* Fixed extremely heavy bug for EXEC SQL CALL with COMP-3 parameters
+    * It's been implemented cordially wrong for DECIMAL
+    * It is still the issue for INOUT parameters at least for SQL Server 2012
+    * I hope Microsoft resolved that in the latest versions, but I can't confirm.
+    * Also fixed BufferSize issue for VARCHAR (both OUTPUT and INOUT).
+
 2019-07-03 Sergey Kashyrin <ska@kiska.net>
 	* Small fix for statements caching
 

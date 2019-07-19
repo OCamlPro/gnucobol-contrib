@@ -1320,19 +1320,32 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 	int n_in = 0;
 	int n_out = 0;
 	for(int i = 0; i < V.OC_SQL_COUNT; ++i) {
-		if((PARMPREC[i] & 0x40) != 0) ++n_in;
-		if((PARMPREC[i] & 0x80) != 0) ++n_out;
-		if(!bNTS && (PARMPREC[i] & 0x80) != 0 &&
+		bool b_in = (PARMPREC[i] & 0x40) != 0;
+		bool b_out = (PARMPREC[i] & 0x80) != 0;
+		if(b_in) ++n_in;
+		if(b_out) ++n_out;
+		if(!bNTS && b_out &&
 			(PARMTYPE[i] == 'X' || PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L'))
 		{
 			++ct;
 			++bufct;
+			if(b_in) ++ct;
 		}
-		if(PARMTYPE[i] == 'V' || PARMTYPE[i] == 'v' ||
-			PARMTYPE[i] == 'L' || PARMTYPE[i] == 'l' || PARMTYPE[i] == '3')
+		if(PARMTYPE[i] == '3')
 		{
 			++ct;
-			if(PARMTYPE[i] == '3') ++bufct;
+			++bufct;
+			if(b_in && b_out) ++ct;
+		}
+		if(PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L')
+		{
+			++ct;
+			if(b_in && b_out) ++ct;
+		}
+		if(PARMTYPE[i] == 'v' || PARMTYPE[i] == 'l')
+		{
+			++ct;
+			if(b_in && b_out) ++ct;
 		}
 	}
 	mysql msql(V.OC_SQL_COUNT, V.OC_SQL_COUNT, ct, bufct);
@@ -1359,23 +1372,50 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		msql.hostlen[i] = PARMLEN[i];
 		msql.hosttype[i] = PARMTYPE[i];
 		// Correct possible moving values
+		char * parm = (char *) PARMADDR[i];
 		if(b_in) {
 			if(PARMTYPE[i] == 'V' || PARMTYPE[i] == 'v') {
 				--ct;
 				smov[ct].movenumber = i;
 				smov[ct].movetype = -2;	// moving short to SQLLEN.
 				smov[ct].movelen = (int) PARMLEN[i];
-				smov[ct].moveto = PARMADDR[i];
-				char * a = (char *) PARMADDR[i];
-				PARMADDR[i] = a + 2;
+				smov[ct].moveto = parm;
+				if(!bNTS && b_out && PARMTYPE[i] == 'V') {
+					--ct;
+					--bufct;
+					if(msql.pbuf[bufct] == NULL) {
+						msql.pbuf[bufct] = new char[PARMLEN[i] + 1];
+					}
+					smov[ct].movenumber = i;
+					smov[ct].movetype = -1;	// moving bytes.
+					smov[ct].movelen = (int) PARMLEN[i];
+					smov[ct].moveto = parm + 2;
+					PARMADDR[i] = msql.pbuf[bufct];
+					++BufferLength;
+				} else {
+					PARMADDR[i] = parm + 2;
+				}
 			} else if(PARMTYPE[i] == 'L' || PARMTYPE[i] == 'l') {
 				--ct;
 				smov[ct].movenumber = i;
 				smov[ct].movetype = -4;	// moving int to SQLLEN.
 				smov[ct].movelen = (int) PARMLEN[i];
-				smov[ct].moveto = PARMADDR[i];
-				char * a = (char *) PARMADDR[i];
-				PARMADDR[i] = a + 4;
+				smov[ct].moveto = parm;
+				if(!bNTS && b_out && PARMTYPE[i] == 'L') {
+					--ct;
+					--bufct;
+					if(msql.pbuf[bufct] == NULL) {
+						msql.pbuf[bufct] = new char[PARMLEN[i] + 1];
+					}
+					smov[ct].movenumber = i;
+					smov[ct].movetype = -1;	// moving bytes.
+					smov[ct].movelen = (int) PARMLEN[i];
+					smov[ct].moveto = parm + 4;
+					PARMADDR[i] = msql.pbuf[bufct];
+					++BufferLength;
+				} else {
+					PARMADDR[i] = parm + 4;
+				}
 			} else if(PARMTYPE[i] == '3') {
 				--ct;
 				--bufct;
@@ -1391,8 +1431,20 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 				smov[ct].movenumber = i;
 				smov[ct].movetype = -3;	// moving COMP-3 to DECIMAL.
 				smov[ct].movelen = bufct;
-				smov[ct].moveto = PARMADDR[i];
+				smov[ct].moveto = parm;
 				PARMADDR[i] = md->num;
+			} else if(!bNTS && b_out && PARMTYPE[i] == 'X') {
+				--ct;
+				--bufct;
+				if(msql.pbuf[bufct] == NULL) {
+					msql.pbuf[bufct] = new char[PARMLEN[i] + 1];
+				}
+				smov[ct].movenumber = i;
+				smov[ct].movetype = -1;	// moving bytes.
+				smov[ct].movelen = (int) PARMLEN[i];
+				smov[ct].moveto = parm;
+				PARMADDR[i] = msql.pbuf[bufct];
+				++BufferLength;
 			}
 		}
 		if(b_out) {
@@ -1402,45 +1454,50 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 				smov[ct].movetype = 2;	// moving SQLLEN to short.
 				smov[ct].movelen = (int) PARMLEN[i];
 				smov[ct].moveto = PARMADDR[i];
-				char * a = (char *) PARMADDR[i];
-				PARMADDR[i] = a + 2;
+				if(!b_in) PARMADDR[i] = parm + 2;
 			} else if(PARMTYPE[i] == 'L' || PARMTYPE[i] == 'l') {
 				--ct;
 				smov[ct].movenumber = i;
 				smov[ct].movetype = 4;	// moving SQLLEN to int.
 				smov[ct].movelen = (int) PARMLEN[i];
 				smov[ct].moveto = PARMADDR[i];
-				char * a = (char *) PARMADDR[i];
-				PARMADDR[i] = a + 4;
+				if(!b_in) PARMADDR[i] = parm + 4;
 			} else if(PARMTYPE[i] == '3') {
-				--ct;
-				--bufct;
-				mydec * md;
-				if(msql.pbuf[bufct] == NULL) {
-					md = new mydec;
-					md->bytelen = (int) PARMLEN[i];
-					md->precision = PARMPREC[i] & 0x3F;
-					msql.pbuf[bufct] = (char *) md;
-				} else {
-					md = (mydec *) msql.pbuf[bufct];
+				if(!b_in) {
+					--bufct;
+					mydec * md;
+					if(msql.pbuf[bufct] == NULL) {
+						md = new mydec;
+						md->bytelen = (int) PARMLEN[i];
+						md->precision = PARMPREC[i] & 0x3F;
+						msql.pbuf[bufct] = (char *) md;
+					} else {
+						md = (mydec *) msql.pbuf[bufct];
+					}
+					PARMADDR[i] = & md->num;
 				}
+				--ct;
 				smov[ct].movenumber = i;
 				smov[ct].movetype = 3;	// moving DECIMAL to COMP-3.
 				smov[ct].movelen = bufct;
-				smov[ct].moveto = PARMADDR[i];
-				PARMADDR[i] = & md->num;
+				smov[ct].moveto = parm;
 			}
 			if(!bNTS && (PARMTYPE[i] == 'X' || PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L')) {
 				--ct;
-				--bufct;
-				if(msql.pbuf[bufct] == NULL) {
-					msql.pbuf[bufct] = new char[PARMLEN[i] + 1];
-				}
 				smov[ct].movenumber = i;
 				smov[ct].movetype = 1;	// moving bytes.
 				smov[ct].movelen = (int) PARMLEN[i];
-				smov[ct].moveto = PARMADDR[i];
-				PARMADDR[i] = msql.pbuf[bufct];
+				if(PARMTYPE[i] == 'X') smov[ct].moveto = parm;
+				else if(PARMTYPE[i] == 'V') smov[ct].moveto = parm + 2;
+				else smov[ct].moveto = parm + 4;
+				if(!b_in) {
+					--bufct;
+					if(msql.pbuf[bufct] == NULL) {
+						msql.pbuf[bufct] = new char[PARMLEN[i] + 1];
+					}
+					PARMADDR[i] = msql.pbuf[bufct];
+					++BufferLength;
+				}
 			}
 		}
 		switch(PARMTYPE[i]) {
@@ -1545,6 +1602,9 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 			break;
 		case -2:
 			msql.parmlen[smov[i].movenumber] = *((short *) smov[i].moveto);
+			break;
+		case -1:
+			memcpy(msql.hostaddr[smov[i].movenumber], smov[i].moveto, smov[i].movelen);
 			break;
 		case -3:
 			{

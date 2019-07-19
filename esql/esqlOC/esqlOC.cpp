@@ -1807,15 +1807,15 @@ private:
 			sprintf(buf, "%s MOVE %d TO SQL-LEN(%d)", shift, v->size, parmnum);
 			addln(lineno++, buf);
 			if(v->type == '3') {
-				char i1 = (char)(v->precision/16);
-				char i2 = (char)(v->precision % 16);
+				unsigned char i1 = (char)(v->precision/16);
+				unsigned char i2 = (char)(v->precision % 16);
 				// HACK for passing "out" 0x80 or "inout" 0xC0 in hight byte.
 				if(b_out) {
-					i1 |= (char) 0x80;
+					i1 |= (char) 0x8;
 				} else if(b_inout) {
-					i1 |= (char) 0xC0;
+					i1 |= (char) 0xC;
 				} else {
-					i1 |= (char) 0x40;
+					i1 |= (char) 0x4;
 				}
 				if(i1 < 10) i1 += '0';
 				else i1 = (char)(i1 + 'A' - 10);
