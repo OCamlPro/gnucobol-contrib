@@ -1,0 +1,19 @@
+pipEdit                                                               2019-07-29
+=======
+
+Compiling the editor 
+--------------------
+use the shell script "c" to compile
+
+
+Compiling the comp macro
+------------------------
+cd into the folder macros
+use the shell script "c" to compile
+
+
+Running the editor
+------------------
+pipedit.bin [filename] [-log]
+
+-log creates a logfile for debugging purposes of the editor

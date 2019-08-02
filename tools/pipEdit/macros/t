@@ -1,0 +1,5 @@
+cp hello.cob.4mac xxx.4mac
+cp hello.par xxx.par
+macro_comp.bin xxx.4mac xxx.par hello.cob $HOME/C/pipEdit/pipedit.cfg
+###echo xxx.4mac xxx.par hello.cob $HOME/C/pipEdit/pipedit.cfg
+###gdb macro_comp.bin 

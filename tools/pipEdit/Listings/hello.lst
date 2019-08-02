@@ -1,0 +1,57 @@
+GnuCOBOL 2.2.0          hello.cob                                           Mon Jul 29 03:38:54 2019  Page 0001
+
+LINE    PG/LN  A...B............................................................SEQUENCE
+
+000001  ----+-*--1----+----2----+----3----+----4----+----5----+----6----+----7----+----8
+000002           IDENTIFICATION DIVISION.
+000003           PROGRAM-ID.                        Hello.
+000004        *     abc def    ghi
+000005           DATA DIVISION.
+000006           WORKING-STORAGE SECTION.
+000007           01  FIELD                          PIC X(40).
+000008           01  FIELD1                         PIC X(10).
+000009           01  FIELD2                         PIC X(3).
+000010           01  FIELD3                         PIC 9(4).
+000011           01  field4                         PIC 9(4) comp-3.
+000012           01  FIELD                          PIC X(15).
+GnuCOBOL 2.2.0          hello.cob                                           Mon Jul 29 03:38:54 2019  Page 0002
+
+LINE    PG/LN  A...B............................................................SEQUENCE
+
+000013        /
+000014           PROCEDURE DIVISION.
+000015           HST-01.
+000016              DISPLAY 'Hello world!'
+000017              DISPLAY 'Hello world! 1'
+000018              DISPLAY 'Hello world! 2'
+000019              DISPLAY 'Hello world! 3'
+000020              DISPLAY 'Hello world! 4'
+000021              DISPLAY 'Hello world! 5'
+000022              DISPLAY 'Hello world! 6'
+000023              DISPLAY 'Hello world! 7'
+000024              DISPLAY 'Hello world! 8'
+000025              display 'hello world! 8.1'
+000026              DISPLAY 'Hello world! 9'
+000027              DISPLAY 'Hello world! 10'
+000028              MOVE 'abc123'               TO FIELD
+Fehler: »FIELD« ist mehrdeutig; erfordert Eingrenzung
+000029              DISPLAY 'Content of field=' FIELD
+000030        D     DISPLAY 'And debugging code!!!'
+000031              NEXT SENTENCE
+000032        *     bullshit
+000033        *     bullshit1
+000034        *     bullshit2
+000035              .
+000036           HST-99.
+000037              STOP RUN
+000038              .
+
+
+GnuCOBOL 2.2.0          hello.cob                                           Mon Jul 29 03:38:54 2019  Page 0003
+
+Error/Warning summary:
+
+hello.cob: 28: Fehler: »FIELD« ist mehrdeutig; erfordert Eingrenzung
+
+0 warnings in compilation group
+1 error in compilation group

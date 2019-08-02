@@ -1,0 +1,2 @@
+gcc macro_comp.c -omacro_comp.bin -Wall -ggdb
+strip macro_comp.bin

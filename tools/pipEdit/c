@@ -1,0 +1,3 @@
+###gcc pipedit.c -opipedit.bin -O -ggdb -lcurses
+gcc pipedit.c -opipedit.bin -O -D__USE_PIPCURSES__=1 -ggdb
+###gcc pipedit.c -opipedit.bin -O -D__USE_PIPCURSES__=1

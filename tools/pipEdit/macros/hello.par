@@ -1,0 +1,29 @@
+################################################################################
+### M i c r o f o c u s ########################################################
+################################################################################
+@target=microfocus
+pre=#!/bin/bash
+pre=. /adm/config/basis.prof
+pre=export COBCPY=$HOME/Projects/cpy:/usr/dev2/bhw/cpy:/usr/prod/bhw/cpy
+###----------------------------------
+compiler=cob
+options=-x -P
+binary=hello.bin
+listing=hello.lst
+movebinto=$HOME/Local_bin/
+movelstto=$HOME/Listings/
+###post=rm *.idy *.int *.cs9
+################################################################################
+### G n u C o b o l ############################################################
+################################################################################
+@target=gnucobol
+pre=#!/bin/bash
+compiler=cobc
+options=-x -Thello.lst
+binary=hello.bin
+listing=hello.lst
+movebinto=/home/joerg/C/pipEdit/Binaries/
+movelstto=/home/joerg/C/pipEdit/Listings/
+###----------------------------------
+post=exit
+post=# Das war's

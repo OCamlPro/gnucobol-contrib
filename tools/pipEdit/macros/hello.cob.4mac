@@ -1,0 +1,43 @@
+000001N      ----+-*--1----+----2----+----3----+----4----+----5----+----6----+----7----+----8
+000002N               IDENTIFICATION DIVISION.
+000003N               PROGRAM-ID.                        Hello.
+000004N            *     abc def    ghi
+000005N               DATA DIVISION.
+000006I
+000007I
+000008I
+000009I
+000010I
+000011N               WORKING-STORAGE SECTION.
+000012N               01  FIELD                          PIC X(40).
+000013N               01  FIELD1                         PIC X(10).
+000014N               01  FIELD2                         PIC X(3).
+000015N               01  FIELD3                         PIC 9(4).
+000016N               01  field4                         PIC 9(4) comp-3.
+000017N               01  FIELD                          PIC X(15).
+000018N            /
+000019N               PROCEDURE DIVISION.
+000020N               HST-01.
+000021N                  DISPLAY 'Hello world!'
+000022N                  DISPLAY 'Hello world! 1'
+000023N                  DISPLAY 'Hello world! 2'
+000024N                  DISPLAY 'Hello world! 3'
+000025N                  DISPLAY 'Hello world! 4'
+000026N                  DISPLAY 'Hello world! 5'
+000027N                  DISPLAY 'Hello world! 6'
+000028N                  DISPLAY 'Hello world! 7'
+000029N                  DISPLAY 'Hello world! 8'
+000030N                  display 'hello world! 8.1'
+000031N                  DISPLAY 'Hello world! 9'
+000032N                  DISPLAY 'Hello world! 10'
+000033N                  MOVE 'abc123'               TO FIELD
+000034N                  DISPLAY 'Content of field=' FIELD
+000035N            D     DISPLAY 'And debugging code!!!'
+000036N                  NEXT SENTENCE
+000037N            *     bullshit
+000038N            *     bullshit1
+000039N            *     bullshit2
+000040N                  .
+000041N               HST-99.
+000042N                  STOP RUN
+000043N                  .

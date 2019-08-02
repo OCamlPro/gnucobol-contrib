@@ -1,0 +1,110 @@
+   2019-08-01
+
+
+
+
+
+
+                                 pipEdit V.0.1
+
+
+                           (C) 2019- the_piper@web.de
+
+
+
+
+
+
+
+
+
+   Table of contents
+   =================
+   1        Introduction
+   2        Keys
+   3        Line commands
+   4        Commands
+   5        Macros
+   6        Copyright
+
+
+
+Chapter 1         Introduction
+==============================
+   pipEdit is an ISPF lookalike editor meant for COBOL source code.
+
+   It   will   support  a  subset  of the  features  and   commands   of  the
+   original IBM ISPF editor.
+
+
+Chapter 2         Keys
+======================
+   1. Enter - In the line commands it jumps to the next line command,
+      column 1. In the text area it jumps to the next line of text to
+      the first character found in this line. At the bottom of the
+      screen Enter scrolls down one line, if possible.
+   2. F3 - Saves the current file and terminates the editor.
+   3. F7/Page up - Scroll up the screen, depending on the position of
+      the cursor on the screen.
+   4. F8/Page down - Scroll down the screen, depending on the position
+      of the cursor on the screen.
+   5. INS - Inserts one blank character at the curent cursor position.
+   6. DEL - Deletes one character at the curent cursor position.
+   7. Pos1 - Moves the cursor to the top left position in the command
+      line.
+
+
+
+Chapter 3         Line commands
+===============================
+   Line  commands  are   entered  in the  left area of the  screen where  the
+   line numbers are displayed.
+
+   1. d / del - deletes a given amount of lines, e.g. d3 deletes 3
+      lines.
+   2. i / ins - inserts a given amount of blank lines, e.g. i3 inserts 3
+      lines.
+   3. r / rep - repeats a line a given amount, e.g. r3 repeats the
+      current line 3 times
+
+
+
+Chapter 4         Commands
+==========================
+   Commands   are entered in  the  command  line at  the   top  part  of  the
+   screen.
+
+   1. res / reset - removes all info, error, message lines.
+   2. can / cancel - terminates the editor without saving changes. You
+      will be asked if you really want to abandon all changes.
+   3. f / find - searches for the first occurrence of a given string.
+   4. save - saves the content of the current file.
+
+
+
+Chapter 5         Macros
+========================
+
+
+Chapter 6         Copyright
+===========================
+   This  is  free  software  under the Gnu Public  License (gpl).  Read  the
+   file COPYING for details.
+
+   A short extract of the gpl:
+
+                                  NO WARRANTY
+   11.  BECAUSE   THE  PROGRAM  IS  LICENSED  FREE  OF  CHARGE,  THERE IS  NO
+   WARRANTY  FOR  THE  PROGRAM,  TO   THE EXTENT  PERMITTED   BY  APPLICABLE
+   LAW.   EXCEPT WHEN OTHERWISE STATED  IN  WRITING  THE  COPYRIGHT   HOLDERS
+   AND/OR  OTHER  PARTIES   PROVIDE THE  PROGRAM "AS   IS"  WITHOUT  WARRANTY
+   OF  ANY  KIND,  EITHER   EXPRESSED  OR IMPLIED, INCLUDING, BUT NOT LIMITED
+   TO,  THE  IMPLIED  WARRANTIES   OF  MERCHANTABILITY   AND FITNESS   FOR  A
+   PARTICULAR    PURPOSE.   THE   ENTIRE  RISK  AS   TO   THE  QUALITY    AND
+   PERFORMANCE   OF  THE  PROGRAM IS  WITH  YOU. SHOULD  THE PROGRAM   PROVE
+   DEFECTIVE,   YOU ASSUME THE COST  OF  ALL  NECESSARY SERVICING, REPAIR OR
+   CORRECTION.
+
+
+
+

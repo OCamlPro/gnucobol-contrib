@@ -1,0 +1,4 @@
+rm logfile.txt
+###./pipedit.bin sample.txt -log
+./pipedit.bin hello.cob -log
+###gdb ./pipedit.bin
