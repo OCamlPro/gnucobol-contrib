@@ -50,6 +50,7 @@
 # define KEY_F12       1152
 # define KEY_PPAGE     1153
 # define KEY_NPAGE     1154
+# define KEY_SEND      386
 
 # define COLOR_BLACK   0
 # define COLOR_RED     1
@@ -229,6 +230,11 @@ void wrefresh(int *win)
 /******************************************************************************/
 void keypad(int *win, int opt)
 {
+	if(opt==TRUE){
+		printf("%c[23B", 27);
+	}
+	else{
+	}
 	return;
 }
 /******************************************************************************/
@@ -267,16 +273,23 @@ void endwin(void)
 	return;
 }
 /******************************************************************************/
+void move(int row, int col)
+{
+	// move_to(row, col+1); 
+	move_to(row+1, col); 
+	return;
+}
+/******************************************************************************/
 void wmove(int *scr, int row, int col)
 {
 	// move_to(row, col);
-	move_to(row, col+1); // ###JG###
+	move_to(row, col+1);
 	return;
 }
 /******************************************************************************/
 void mvaddstr(int row, int col, unsigned char *s)
 {
-	print_at(row, col, s);
+	print_at(row+1, col+1, s);
 	return;
 }
 /******************************************************************************/
@@ -375,7 +388,7 @@ void print_at(int row, int column, unsigned char *s)
 
 	f=0;
 	if(strncmp(terminaltype, "xterm", 5)==0){
-		printf("%c[%d;%dH%s", 27, row+1, column, s);
+		printf("%c[%d;%dH%s", 27, row, column, s);
 		f=1;
 	}
 
@@ -397,7 +410,7 @@ void move_to(int row, int column)
 
 	f=0;
 	if(strncmp(terminaltype, "xterm", 5)==0){
-		printf("%c[%d;%dH", 27, row+1, column);
+		printf("%c[%d;%dH", 27, row, column);
 		f=1;
 	}
 

@@ -1,9 +1,7 @@
 /***************************************************************************
 Errors:
 
-cols command - y-position is borked when on (solved??)
-
-X - excluded lines - scrolling is borked
+X - excluded lines - editing is borked
 
 ****************************************************************************/
 
@@ -20,10 +18,23 @@ X - excluded lines - scrolling is borked
 # else
 	# include <ncurses.h>
 	# undef KEY_ENTER
-	# define KEY_ENTER 13 // overwrite the curses #define with the real value
+	# define KEY_ENTER 10 // overwrite the curses #define with the real value
 	# undef KEY_STAB
 	# define KEY_STAB 9   // overwrite the curses #define with the real value
 	# define KEY_ESCAPE 27
+	# define KEY_F1 KEY_F(1)
+	# define KEY_F2 KEY_F(2)
+	# define KEY_F3 KEY_F(3)
+	# define KEY_F4 KEY_F(4)
+	# define KEY_F5 KEY_F(5)
+	# define KEY_F6 KEY_F(6)
+	# define KEY_F7 KEY_F(7)
+	# define KEY_F8 KEY_F(8)
+	# define KEY_F9 KEY_F(9)
+	# define KEY_F10 KEY_F(10)
+	# define KEY_F11 KEY_F(11)
+	# define KEY_F12 KEY_F(12)
+	# define KEY_SEND 386
 # endif
 
 # ifndef TRUE
@@ -53,9 +64,9 @@ int cursor_area=CUR_CMDLINE;
 int current_screen=SCREEN_EDITOR;
 char question[80]="";
 
-char screen_commandline[80];
-char screen_errormsg[25]="";
-char screen_errormessage[85]="";
+unsigned char screen_commandline[80];
+char screen_errormsg[256]="";
+char screen_errormessage[256]="";
 int screen_errform=0; // 0 = short errormsg  1 = long errormessage
 int screen_topline=4;
 int screen_lines=20;
@@ -67,7 +78,7 @@ int screen_x=0;
 int screen_y=0;
 int col_start=1;
 int col_end=72;
-
+int restart_from_top=FALSE;
 int write_logfile=FALSE;
 char filename[256]="";
 
@@ -87,9 +98,24 @@ unsigned char glo_buff[32768];
 # define COLPAIR_FRAME  7
 # define COLPAIR_YESNO  8
 # define COLPAIR_XCLUD  9
+# define COLPAIR_CURLIN 10
 
 char config_file[256];
+char conf_langfiles[256]=""; // where are language files stored at?
+char conf_language[256]="";  // use which language?
 
+char lang_file[32]="File";
+char lang_edit[32]="Edit";
+char lang_edit_settings[32]="Edit_settings";
+char lang_menu[32]="Menu";
+char lang_utilities[32]="Utilities";
+char lang_compilers[32]="Compilers";
+char lang_test[32]="Test";
+char lang_help[32]="Help";
+char lang_columns[32]="Columns";
+char lang_command[32]="Command";
+char lang_top_of_data[32]="Top of Data";
+char lang_bottom_of_data[32]="Bottom of data";
 /******************************************************************************/
 void set_signals(void);
 void signal_handler(int signal)
@@ -386,7 +412,7 @@ int do_save(void)
 	return(TRUE);
 }
 /******************************************************************************/
-void set_to_space(char *s, int amount)
+void set_to_space(unsigned char *s, int amount)
 {
 	int t;
 
@@ -436,7 +462,7 @@ void ucase(char *s)
 /******************************************************************************/
 char read_line(FILE *fp, char *s, int len)
 {
-	int c;
+	int c=0;
 	int z;
 
 	for(z=0;;){
@@ -480,10 +506,122 @@ void terminate_program(char *s)
 	exit(0);
 }
 /******************************************************************************/
+void read_config_file(void)
+{
+	FILE *fp;
+	char zwi[256];
+	int t;
+
+	fp=fopen(config_file, "rb");
+	if(fp==NULL){
+		sprintf(zwi, "Could not open config file >%s<, aborting..", config_file);
+		write_to_log(zwi);
+		fprintf(stderr, "%s\n", zwi);
+		exit(5);
+	}
+	for(;;){
+		if(read_line(fp, zwi, sizeof(zwi))==EOF) break;
+		if(strncmp(zwi, "language=", 9)==0){
+			strcpy(conf_language, zwi+9);
+		}
+		if(strncmp(zwi, "langfiles=", 10)==0){
+			strcpy(conf_langfiles, zwi+10);
+		}
+		// no error handling of unknown entries, they might be for
+		// macros, who might read this cfg file too
+	}
+	fclose(fp);
+	if(strlen(conf_language)==0){
+		if(getenv("LANG")==0){
+			strcpy(conf_language, "en");
+		}
+		else{
+			strcpy(conf_language, getenv("LANG"));
+			for(t=0;;t++){
+				if(conf_language[t]==0) break;
+				if(conf_language[t]=='_'){
+					conf_language[t]=0;
+					break;
+				}
+			}
+		}
+	}
+	// printf("langfiles=>%s<\n", conf_langfiles);
+	// printf("language=>%s<\n", conf_language);
+	// exit(99);
+}
+/******************************************************************************/
+void read_language_stuff(void)
+{
+	FILE *fp;
+	char zwi[256];
+	char zwi2[256];
+	int t;
+
+	if(strcmp(conf_language, "default")==0){ // okay, use the default values
+		return;
+	}
+
+	sprintf(zwi, "%s/pipedit.%s", conf_langfiles, conf_language);
+	// printf("zwi=>%s<\n", zwi);
+	// exit(99);
+
+	fp=fopen(zwi, "rb");
+	if(fp==NULL){
+		sprintf(zwi2, "Could not open language file >%s<, aborting..", zwi);
+		write_to_log(zwi2);
+		fprintf(stderr, "%s\n", zwi2);
+		exit(5);
+	}
+	for(;;){
+		if(read_line(fp, zwi, sizeof(zwi))==EOF) break;
+		if(strncmp(zwi, "FILE=", 5)==0){
+			strcpy(lang_file, zwi+5);
+		}
+		if(strncmp(zwi, "EDIT=", 5)==0){
+			strcpy(lang_edit, zwi+5);
+		}
+		if(strncmp(zwi, "EDIT_SETTINGS=", 14)==0){
+			strcpy(lang_edit_settings, zwi+14);
+		}
+		if(strncmp(zwi, "MENU=", 5)==0){
+			strcpy(lang_menu, zwi+5);
+		}
+		if(strncmp(zwi, "UTILITIES=", 10)==0){
+			strcpy(lang_utilities, zwi+10);
+		}
+		if(strncmp(zwi, "COMPILERS=", 10)==0){
+			strcpy(lang_compilers, zwi+10);
+		}
+		if(strncmp(zwi, "TEST=", 5)==0){
+			strcpy(lang_test, zwi+5);
+		}
+		if(strncmp(zwi, "HELP=", 5)==0){
+			strcpy(lang_help, zwi+5);
+		}
+		if(strncmp(zwi, "COLUMNS=", 8)==0){
+			strcpy(lang_columns, zwi+8);
+		}
+		if(strncmp(zwi, "COMMAND=", 8)==0){
+			strcpy(lang_command, zwi+8);
+		}
+		if(strncmp(zwi, "TOP_OF_DATA=", 12)==0){
+			strcpy(lang_top_of_data, zwi+12);
+		}
+		if(strncmp(zwi, "BOTTOM_OF_DATA=", 15)==0){
+			strcpy(lang_bottom_of_data, zwi+15);
+		}
+		// no error handling of unknown entries, they might be for
+		// macros, who might read this cfg file too
+	}
+	fclose(fp);
+}
+/******************************************************************************/
 void draw_screen_editor(void)
 {
 	char zwi[1024];
 	char zwi2[256];
+	int colpairline=-1; // different color for line nbr and line text
 	int t, i;
 	int ypos;
 	int a;
@@ -493,43 +631,44 @@ void draw_screen_editor(void)
 
 	clear();
 
-	attron(COLPAIR_MENU);
+	attron(COLOR_PAIR(COLPAIR_MENU));
 
-	mvaddstr(0, 2, "File");
-	mvaddstr(0, 9, "Edit");
-	mvaddstr(0, 16, "Edit_Settings");
-	mvaddstr(0, 31, "Menu");
-	mvaddstr(0, 37, "Utilities");
-	mvaddstr(0, 48, "Compilers");
-	mvaddstr(0, 59, "Test");
-	mvaddstr(0, 65, "Help");
+	mvaddstr(0, 1, lang_file);
+	mvaddstr(0, 8, lang_edit);
+	mvaddstr(0, 15, lang_edit_settings);
+	mvaddstr(0, 30, lang_menu);
+	mvaddstr(0, 36, lang_utilities);
+	mvaddstr(0, 47, lang_compilers);
+	mvaddstr(0, 58, lang_test);
+	mvaddstr(0, 64, lang_help);
 
-	attron(COLPAIR_BLUE);
+	attron(COLOR_PAIR(COLPAIR_BLUE));
 
 	mvaddstr(1, 0, "--------------------------------------------------------------------------------");
 
 
-	mvaddstr(2, 2, "Edit");
-	mvaddstr(2, 13, filename);
-	mvaddstr(2, 61, "Columns");
+	mvaddstr(2, 1, "Edit");
+	mvaddstr(2, 12, filename);
+	mvaddstr(2, 60, lang_columns);
 	sprintf(zwi, "%05d", col_start);
-	mvaddstr(2, 69, zwi);
+	mvaddstr(2, 68, zwi);
 	sprintf(zwi, "%05d", col_end);
-	mvaddstr(2, 75, zwi);
+	mvaddstr(2, 74, zwi);
 
-	attron(COLPAIR_NORMAL);
+	attron(COLOR_PAIR(COLPAIR_NORMAL));
 
-	mvaddstr(3, 2, "Command ===>");
-	mvaddstr(3, 15, screen_commandline);
-	mvaddstr(3, 64, "Scroll  ===>");
-	mvaddstr(3, 76, "CSR");
+	sprintf(zwi, "%s ===>", lang_command);
+	mvaddstr(3, 1, zwi);
+	mvaddstr(3, 14, screen_commandline);
+	mvaddstr(3, 63, "Scroll  ===>");
+	mvaddstr(3, 75, "CSR");
 
 	if(screen_cols==1){
-		attron(COLPAIR_YELLOW);
-		mvaddstr(4, 2, "=COLS>");
+		attron(COLOR_PAIR(COLPAIR_YELLOW));
+		mvaddstr(4, 1, "=COLS>");
 		strncpy(zwi, columns+screen_offset_x, 71);
-		mvaddstr(4, 9, zwi);
-		attron(COLPAIR_NORMAL);
+		mvaddstr(4, 8, zwi);
+		attron(COLOR_PAIR(COLPAIR_NORMAL));
 	}
 	/***********************************************************************
 	write_to_log("--------------------------------------------------------");
@@ -547,28 +686,29 @@ void draw_screen_editor(void)
 	ypos=0;
 	a=current_line+screen_offset_y;
 	for(t=0; t<screen_lines; t++){
-		// sprintf(zwi, "a=%d linecnt=%d", (a-screen_offset_y), (linecnt-1));
+		// sprintf(zwi, "t=%d a=%d linecnt=%d cursor_y=%d screen_offset_y=%d screen_topline=%d", t, a, linecnt, cursor_y, screen_offset_y, screen_topline);
 		// write_to_log(zwi);
-		attron(COLPAIR_NORMAL);
+		attron(COLOR_PAIR(COLPAIR_NORMAL));
 		if(a<linecnt){
+			colpairline=-1;
 			strcpy(zwi2, lineptr[a]);
 			expand_to_256_bytes(zwi2);
 			if(strcmp(linecmd[a], "      ")==0){
 				switch(linetype[a]){
 					case 'I':               // inserted line
-						attron(COLPAIR_INSERT);
+						attron(COLOR_PAIR(COLPAIR_INSERT));
 						sprintf(zwi, " '''''' %s", zwi2);
 						break;
 					case 'M':               // message line
-						attron(COLPAIR_INSERT);
+						attron(COLOR_PAIR(COLPAIR_INSERT));
 						sprintf(zwi, " %s %s", linecmd[a], zwi2);
 						break;
 					case 'T':               // top/bottom line
-						attron(COLPAIR_BLUE);
+						attron(COLOR_PAIR(COLPAIR_BLUE));
 						sprintf(zwi, " %s %s", linecmd[a], zwi2);
 						break;
 					case 'E':               // error line
-						attron(COLPAIR_ERRMSG);
+						attron(COLOR_PAIR(COLPAIR_ERRMSG));
 						sprintf(zwi, " %s %s", linecmd[a], zwi2);
 						break;
 					case 'X':               // eXcluded lines
@@ -579,12 +719,19 @@ void draw_screen_editor(void)
 							cnt++;
 							end++;
 						}
-						attron(COLPAIR_XCLUD);
+						a--; // we had already at least one line!
+						attron(COLOR_PAIR(COLPAIR_XCLUD));
 						sprintf(zwi2, "%d lines excluded - - - - - - - - - - - ",cnt);
 						sprintf(zwi, " %s %s", linecmd[a], zwi2);
 						break;
 				default:
-					attron(COLPAIR_NORMAL);
+				   if(t==(cursor_y-screen_topline)){
+					 	attron(COLOR_PAIR(COLPAIR_CURLIN)); // current line nbr RED
+						colpairline=COLPAIR_NORMAL;         // current text normal
+					}
+					else{
+						attron(COLOR_PAIR(COLPAIR_NORMAL));
+					}
 					sprintf(zwi, " %06d %s", a, zwi2);
 				}
 				zwi[80]=0;
@@ -614,37 +761,52 @@ void draw_screen_editor(void)
 				zwi[i]='*';
 			}
 		}
-		mvaddstr(screen_topline+ypos, 0, zwi);
+		if(colpairline==-1){
+			mvaddstr(screen_topline+ypos, 0, zwi);
+		}
+		else{
+			strcpy(zwi2, zwi);
+			zwi2[7]=0;
+			mvaddstr(screen_topline+ypos, 0, zwi2);
+		 	attron(COLOR_PAIR(colpairline));
+			mvaddstr(screen_topline+ypos, 7, zwi+7);
+		}
 		ypos++;
-		attron(COLPAIR_NORMAL);
+		attron(COLOR_PAIR(COLPAIR_NORMAL));
 		a++;
 	}
 	sprintf(zwi, "%02d/%02d", cursor_y+1, cursor_x+1);
-	mvaddstr(0, 75, zwi);
+	mvaddstr(0, 74, zwi);
 
 	if(strlen(screen_errormsg)>0){
 		if(screen_errform==0){
 			for(;;){
-				if(strlen(screen_errormsg)>19) break;
+				// if(strlen(screen_errormsg)>19) break;
+				if(strlen(screen_errormsg)>24) break;
 				strcat(screen_errormsg, " ");
 			}
-			attron(COLPAIR_ERRMSG);
+			attron(COLOR_PAIR(COLPAIR_ERRMSG));
 			sprintf(zwi, " %s", screen_errormsg);
-			mvaddstr(2, 60, zwi);
-			attron(COLPAIR_NORMAL);
+			mvaddstr(2, 54, zwi);
+			attron(COLOR_PAIR(COLPAIR_NORMAL));
 		}
 		else{
 			for(;;){
 				if(strlen(screen_errormessage)>79) break;
 				strcat(screen_errormessage, " ");
 			}
-			attron(COLPAIR_ERRMSG);
-			mvaddstr(2, 1, screen_errormessage);
-			attron(COLPAIR_NORMAL);
+			attron(COLOR_PAIR(COLPAIR_ERRMSG));
+			mvaddstr(2, 0, screen_errormessage);
+			attron(COLOR_PAIR(COLPAIR_NORMAL));
 		}
 	}
 
-	wmove(0, cursor_y, cursor_x);
+	// wmove(0, cursor_y, cursor_x);
+	# ifdef __USE_PIPCURSES__
+		move(cursor_y, cursor_x+1);
+	# else
+		move(cursor_y, cursor_x);
+	# endif
 	refresh();
 }
 /******************************************************************************/
@@ -669,21 +831,21 @@ void draw_screen_question(void)
 	clear();
 
 
-	attron(COLPAIR_YELLOW);
+	attron(COLOR_PAIR(COLPAIR_YELLOW));
 	mvaddstr(7, b+2, "=>");
-	attron(COLPAIR_BLUE);
+	attron(COLOR_PAIR(COLPAIR_BLUE));
 	mvaddstr(7, b+4, filename);
-	attron(COLPAIR_YELLOW);
+	attron(COLOR_PAIR(COLPAIR_YELLOW));
 	mvaddstr(7, b+lenb, "<=");
 
-	attron(COLPAIR_BLUE);
+	attron(COLOR_PAIR(COLPAIR_BLUE));
 	mvaddstr(8, a+2, question);
 
-	attron(COLPAIR_YESNO);
+	attron(COLOR_PAIR(COLPAIR_YESNO));
 	mvaddstr(10, a+5, " F1 = Yes ");
 	mvaddstr(10, a+20," F12 = No ");
 
-	attron(COLPAIR_FRAME);
+	attron(COLOR_PAIR(COLPAIR_FRAME));
 	mvaddstr(5, a, "+");
 	mvaddstr(12, a, "+");
 	for(t=1; t<(len+1);t++){
@@ -698,7 +860,8 @@ void draw_screen_question(void)
 		mvaddstr(6+t, a+len+1, "|");
 	}
 
-	wmove(0, cursor_y, cursor_x);
+	// wmove(0, cursor_y, cursor_x);
+	move(cursor_y, cursor_x+1);
 	refresh();
 }
 /******************************************************************************/
@@ -772,7 +935,7 @@ int load_file(char *fname)
 	}
 	linecnt=0;
 
-	strcpy(zwi, "**************************** Top of Data *******************************");
+	sprintf(zwi, "**************************** %s *******************************", lang_top_of_data);
 	lineptr[0]=malloc(strlen(zwi)+1);
 	strcpy(lineptr[0], zwi);
 	linetype[0]='T';
@@ -785,7 +948,7 @@ int load_file(char *fname)
 	if(fp==NULL){
 		strcpy(screen_errormsg, "File not found.");
 		sprintf(screen_errormessage, "File %s not found, not loaded.", filename);
-		strcpy(zwi, "************************** Bottom of Data ******************************");
+		sprintf(zwi, "************************** %s ******************************", lang_bottom_of_data);
 		lineptr[1]=malloc(strlen(zwi)+1);
 		strcpy(lineptr[1], zwi);
 		linetype[1]='T';
@@ -821,7 +984,7 @@ int load_file(char *fname)
 		strcpy(linecmd[t], "      ");
 		linetype[t]='N';
 	}
-	strcpy(zwi, "************************** Bottom of Data ******************************");
+	sprintf(zwi, "************************** %s ******************************", lang_bottom_of_data);
 	lineptr[t]=malloc(strlen(zwi)+1);
 	strcpy(lineptr[t], zwi);
 	linetype[t]='T';
@@ -838,6 +1001,7 @@ int load_file(char *fname)
 	return(TRUE);
 }
 /******************************************************************************/
+# ifdef __USE_PIPCURSES__
 int get_keypress(void)
 {
 	int a;
@@ -845,8 +1009,8 @@ int get_keypress(void)
 	char zwi[1024];
 
 	c=getch();
-	// sprintf(zwi, ":1: c=%d", c);
-	// write_to_log(zwi);
+
+	// sprintf(zwi, ":1: c=%d", c); write_to_log(zwi);
 
 	if(c==KEY_END){
 		return(KEY_END);
@@ -854,12 +1018,10 @@ int get_keypress(void)
 
 	if(c==KEY_ESCAPE){
 		c=getch();
-		// sprintf(zwi, ":2: c=%d", c);
-		// write_to_log(zwi);
+		// sprintf(zwi, ":2: c=%d", c); write_to_log(zwi);
 		if(c==79){
 			c=getch();
-			// sprintf(zwi, ":3: c=%d", c);
-			// write_to_log(zwi);
+			// sprintf(zwi, ":3: c=%d", c); write_to_log(zwi);
 			switch(c){
 				case 80: return(KEY_F1);
 				case 81: return(KEY_F2);
@@ -877,8 +1039,8 @@ int get_keypress(void)
 		}
 		if(c==91){
 			c=getch();
-			// sprintf(zwi, ":3:91: c=%d", c);
-			// write_to_log(zwi);
+			sprintf(zwi, ":3:91: c=%d", c);
+			write_to_log(zwi);
 			if(c==49){
 				c=getch();
 				// sprintf(zwi, ":3:91:49: c=%d", c);
@@ -903,10 +1065,8 @@ int get_keypress(void)
 					return(KEY_IC);
 				}
 				a=getch(); // skip the following 126
-				// sprintf(zwi, ":4:91: c=%d", c);
-				// write_to_log(zwi);
-				// sprintf(zwi, "ESC:50: c=%d", c);
-				// write_to_log(zwi);
+				// sprintf(zwi, ":4:91: c=%d", c); write_to_log(zwi);
+				// sprintf(zwi, "ESC:50: c=%d", c); write_to_log(zwi);
 				return(1100+c);
 			}
 			if(c==51){
@@ -915,7 +1075,12 @@ int get_keypress(void)
 			}
 			if(c==52){
 				a=getch(); // skip the following 126
-				return(KEY_END);
+				if(a==52){
+					return(KEY_SEND);  // shit + end
+				}
+				else{
+					return(KEY_END);
+				}
 			}
 			if(c==53){
 				a=getch(); // skip the following 126
@@ -940,6 +1105,74 @@ int get_keypress(void)
 
 	return(c);
 }
+#else
+int get_keypress(void)
+{
+	int a;
+	int c;
+	char zwi[1024];
+
+	c=getch();
+
+	if(c==13){
+		c=10;
+	}
+
+	sprintf(zwi, ":1: c=%d", c);
+	write_to_log(zwi);
+
+	if(c==KEY_END){
+		return(KEY_END);
+	}
+
+	if(c==KEY_ESCAPE){
+		c=getch();
+		sprintf(zwi, ":2: c=%d", c);
+		write_to_log(zwi);
+		if(c==91){
+			c=getch();
+			sprintf(zwi, ":3: c=%d", c);
+			write_to_log(zwi);
+			if(c==53){
+				c=KEY_PPAGE;
+				sprintf(zwi, ":4: c=%d", c);
+				write_to_log(zwi);
+				// c=getch(); // get the extra bytes
+			}
+			if(c==54){
+				c=KEY_NPAGE;
+				sprintf(zwi, ":4: c=%d", c);
+				write_to_log(zwi);
+				// c=getch(); // get the extra bytes
+			}
+			if(c==65){
+				c=KEY_UP;
+			}
+			if(c==66){
+				c=KEY_DOWN;
+			}
+			if(c==67){
+				c=KEY_RIGHT;
+			}
+			if(c==68){
+				c=KEY_LEFT;
+			}
+			if(c==72){
+				c=KEY_HOME;
+			}
+		}
+	}
+
+	// if(c==6){
+	// 	return(KEY_HOME);
+	// }
+	if(c==127){
+		return(KEY_BACKSPACE);
+	}
+
+	return(c);
+}
+#endif
 /******************************************************************************/
 void delete_one_line(int pos)
 {
@@ -993,7 +1226,7 @@ void remove_empty_insert_lines(int *curpos)
 	int t, i;
 	int f, ff;
 	int c;
-	char zwi[1024];
+	// char zwi[1024];
 
 	for(t=0; t<linecnt; t++){
 		ff=0;
@@ -1053,10 +1286,7 @@ void remove_empty_insert_lines(int *curpos)
 /******************************************************************************/
 void remove_message_lines(void)
 {
-	int t, i;
-	int f;
-	int c;
-	char zwi[1024];
+	int t;
 
 	for(t=0; t<linecnt; t++){
 		if(linetype[t]=='M'){
@@ -1068,10 +1298,7 @@ void remove_message_lines(void)
 /******************************************************************************/
 void remove_error_lines(void)
 {
-	int t, i;
-	int f;
-	int c;
-	char zwi[1024];
+	int t;
 
 	for(t=0; t<linecnt; t++){
 		if(linetype[t]=='E'){
@@ -1083,10 +1310,7 @@ void remove_error_lines(void)
 /******************************************************************************/
 void unexclude_lines(void)
 {
-	int t, i;
-	int f;
-	int c;
-	char zwi[1024];
+	int t;
 
 	for(t=0; t<linecnt; t++){
 		if(linetype[t]=='X'){
@@ -1100,11 +1324,14 @@ void do_find(char *s)
 	char needle[256];
 	char orineedle[256];
 	char zwi[1024];
+	char zwi2[1024];
 	char parm[256];
 	int t;
 	int pos;
 	int f;
 	int start;
+	int searchit=0;
+
 
 	word(s, needle, 2);
 	strcpy(orineedle, needle);
@@ -1119,6 +1346,10 @@ void do_find(char *s)
 	if(strcmp(parm, "FIRST")==0){
 		start=0;
 	}
+	if(restart_from_top==TRUE){
+		start=0;
+		restart_from_top=FALSE;
+	}
 	sprintf(zwi, "start = %d parm=%s", start, parm);
 	write_to_log(zwi);
 
@@ -1126,17 +1357,27 @@ void do_find(char *s)
 	for(t=start; t<linecnt; t++){
 		sprintf(zwi, "t = %d", t);
 		write_to_log(zwi);
-		if(lineptr[t]!=NULL){
-			strcpy(zwi, lineptr[t]);
+		searchit=0;
+		if(lineptr[t]!=NULL){    // we have dataB?
+			if(linetype[t]!='T'){ // it's not a title line?
+				searchit=1;        // then search in it
+			}
+		}
+		if(searchit==1){
+			// sprintf(zwi2, "t=%d lineptr[t]=%p", t, lineptr[t]);
+			// write_to_log(zwi2);
+			strcpy(zwi, (char*)lineptr[t]);
 			ucase(zwi);
 			if(strstr(zwi, needle)!=NULL){
 				pos=(int)(strstr(zwi, needle)-zwi);
-				sprintf(zwi, "pos = %d", pos);
-				write_to_log(zwi);
+				sprintf(zwi2, "pos = %d", pos);
+				write_to_log(zwi2);
+				// sprintf(zwi2, "zwi=>%s< needle=>%s<", zwi, needle);
+				// write_to_log(zwi2);
 				screen_offset_y=t-1;
 				if(screen_offset_y<0){
 					screen_offset_y=0;
-					cursor_y=6;
+					cursor_y=4;
 				}
 				else{
 					cursor_y=5;
@@ -1150,12 +1391,16 @@ void do_find(char *s)
 	}
 
 	if(f==0){
-		strcpy(screen_errormsg, "Not found!");
-		sprintf(screen_errormessage, "Text %s not found in file!", orineedle);
+		// strcpy(screen_errormsg, "Not found!");
+		strcpy(screen_errormsg, "*Bottom of data reached*");
+		sprintf(screen_errormessage, "Chars '%s' not found. Press RFIND key to continue from top.", orineedle);
+		restart_from_top=TRUE;
 	}
 	else{
-		strcpy(screen_errormsg, "");
-		strcpy(screen_errormessage, "");
+		sprintf(screen_errormsg, "CHARS '%s' found", orineedle);
+		sprintf(screen_errormessage, "Search for CHARS '%s' in columns 1 to 80 was successful.", orineedle);
+		// sprintf(zwi, "cursor_y=%d cursor_x=%d", cursor_y, cursor_x);
+		// write_to_log(zwi);
 	}
 
 }
@@ -1192,7 +1437,7 @@ int handle_macro(char *s)
 	int pos;
 	char zwi[256];
 	char line[512];
-	char zwi2[256];
+	// char zwi2[256];
 	char macfile[256];
 	char macname[256];
 	char maccmd[256];
@@ -1292,12 +1537,12 @@ int handle_macro(char *s)
 		write_to_log("Could not open infile for macro");
 		return(-1);
 	}
-	strcpy(zwi, "**************************** Top of Data *******************************");
+	sprintf(zwi, "**************************** %s *******************************", lang_top_of_data);
 	lineptr[0]=malloc(strlen(zwi)+1);
-	strcpy(lineptr[0], zwi);
+	strcpy((char*)lineptr[0], zwi);
 	linetype[0]='T';
 	linecmd[0]=malloc(7);
-	strcpy(linecmd[0], "      ");
+	strcpy((char*)linecmd[0], "      ");
 	for(t=1;;t++){
 		rc=read_line(fp, line, sizeof(line));
 		if(rc==EOF) break;
@@ -1306,19 +1551,19 @@ int handle_macro(char *s)
 		// sprintf(zwi, "l=%d", l);
 		// write_to_log(zwi);
 		lineptr[t]=malloc(l+1);
-		strcpy(lineptr[t], line+13);
+		strcpy((char*)lineptr[t], line+13);
 		linecmd[t]=malloc(7);
 		strcpy(zwi, line+7);
 		zwi[6]=0;
-		strcpy(linecmd[t], zwi);
+		strcpy((char*)linecmd[t], zwi);
 	}
 	fclose(fp);
 	strcpy(zwi, "************************** Bottom of Data ******************************");
 	lineptr[t]=malloc(strlen(zwi)+1);
-	strcpy(lineptr[t], zwi);
+	strcpy((char*)lineptr[t], zwi);
 	linetype[t]='T';
 	linecmd[t]=malloc(7);
-	strcpy(linecmd[t], "      ");
+	strcpy((char*)linecmd[t], "      ");
 	linecnt=t+1;
 	if(linecnt<0){
 		linecnt=0;
@@ -1347,10 +1592,10 @@ int process_commandline(void)
 	int curpos; // needed for remove_empty_insert_lines
 
 
-	strcpy(zwi, screen_commandline);
+	strcpy(zwi, (char*)screen_commandline);
 	trim(zwi); 
 	strcpy(orizwi, zwi); 
-	word(screen_commandline, zwi, 1);
+	word((char*)screen_commandline, zwi, 1);
 	ucase(zwi); 
 	// sprintf(zwi2, "zwi=>%s< %d", zwi, zwi[0]);
 	// write_to_log(zwi2);
@@ -1456,14 +1701,16 @@ int process_commandline(void)
 	// don't ignore the parameters!
 	strcpy(zwi, orizwi);
 	ucase(zwi);
-	if(f==0 && strncmp(zwi, "FIND ", 5)==0 || strncmp(zwi, "F ", 2)==0){
-		do_find(orizwi);
-		set_to_space(screen_commandline, 80);
+	if(f==0 && (strncmp(zwi, "FIND ", 5)==0 || strncmp(zwi, "F ", 2)==0)){
 		cursor_x=14;
 		cursor_area=CUR_TEXTAREA; 
+		do_find(orizwi);
+		set_to_space(screen_commandline, 80);
 		// return(1); // cursor at beginning of command line
 		// return(0); // process RETURN key                
-		return(0); // leave cursor where it is
+		sprintf(zwi, "2:cursor_y=%d cursor_x=%d", cursor_y, cursor_x);
+		write_to_log(zwi);
+		return(2); // leave cursor where it is
 	}
 	if(strlen(zwi)==0){ // empty command line, no error...
 		f=1;
@@ -1475,7 +1722,7 @@ int process_commandline(void)
 	}
 	if(rc==-1){
 		strcpy(screen_errormsg, "Invalid command");
-		strcpy(zwi2, screen_commandline);
+		strcpy(zwi2, (char*)screen_commandline);
 		trim(zwi2);
 		sprintf(screen_errormessage, "%s is not an editor command.", zwi2);
 		return(1); // cursor at beginning of command line
@@ -1484,8 +1731,8 @@ int process_commandline(void)
 	// now process line commands
 
 	for(t=0; t<linecnt; t++){
-		if(strcmp(linecmd[t], "      ")!=0){
-			strcpy(zwi, linecmd[t]);
+		if(strcmp((char*)linecmd[t], "      ")!=0){
+			strcpy(zwi, (char*)linecmd[t]);
 			trim(zwi);
 			c=toupper(zwi[0]);
 			f=0;
@@ -1502,7 +1749,7 @@ int process_commandline(void)
 				}
 				cursor_x=8;
 				cursor_area=CUR_TEXTAREA; 
-				strcpy(linecmd[t], "      ");
+				strcpy((char*)linecmd[t], "      ");
 				f=1;
 			}
 			if(c=='D'){
@@ -1513,7 +1760,7 @@ int process_commandline(void)
 				for(i=0; i<a; i++){
 					delete_one_line(t);
 				}
-				strcpy(linecmd[t], "      ");
+				strcpy((char*)linecmd[t], "      ");
 				cursor_y--;
 				source_changed=TRUE;
 				f=1;
@@ -1526,9 +1773,9 @@ int process_commandline(void)
 				for(i=0; i<a; i++){
 					insert_one_empty_line(t+1);
 					linetype[t+1]='N';
-					strcpy(lineptr[t+1], lineptr[t]);
+					strcpy((char*)lineptr[t+1], (char*)lineptr[t]);
 				}
-				strcpy(linecmd[t], "      ");
+				strcpy((char*)linecmd[t], "      ");
 				source_changed=TRUE;
 				f=1;
 			}
@@ -1541,7 +1788,7 @@ int process_commandline(void)
 					if((t+i)>linecnt) break;
 					linetype[t+i]='X';
 				}
-				strcpy(linecmd[t], "      ");
+				strcpy((char*)linecmd[t], "      ");
 				source_changed=FALSE;
 				f=1;
 			}
@@ -1551,8 +1798,9 @@ int process_commandline(void)
 			}
 		}
 	}
-	return(rc); // 0 = leave cursor where it is
+	return(rc); // 0 = process ENTER key
 	            // 1 = beginning of command line
+	            // 2 = leave cursor where it is
 }
 /******************************************************************************/
 #define RETURN_NOTHING 0
@@ -1566,7 +1814,6 @@ int process_commandline(void)
 int process_input_field(int c, unsigned char *s, int startx, int len)
 {
 	int t;
-	int i;
 	int a;
 	int rc;
 	char zwi[1024];
@@ -1577,8 +1824,8 @@ int process_input_field(int c, unsigned char *s, int startx, int len)
 
 	endx=startx+len;
 
-		// sprintf(zwi, "c=%d screen_offset_y=%d", c, screen_offset_y);
-		// write_to_log(zwi);
+	// sprintf(zwi, "1:process_input_field: c=%d screen_offset_y=%d KEY_ENTER=%d", c, screen_offset_y, KEY_ENTER);
+	// write_to_log(zwi);
 
 		switch(c){
 		case KEY_ENTER: 
@@ -1592,11 +1839,13 @@ int process_input_field(int c, unsigned char *s, int startx, int len)
 							if(rc==2){
 								return(0);
 							}
+							sprintf(zwi, "2:process RETURN_ENTER=%d", RETURN_ENTER);
+							write_to_log(zwi);
 							return(RETURN_ENTER);
 		               break;
 		case KEY_NPAGE: 
 		case KEY_F8: 
-							strcpy(zwi, screen_commandline);
+							strcpy(zwi, (char*)screen_commandline);
 							trim(zwi);
 							ucase(zwi);
 							if(strcmp(zwi, "M")==0 ||
@@ -1635,7 +1884,7 @@ int process_input_field(int c, unsigned char *s, int startx, int len)
 		               break;
 		case KEY_PPAGE: 
 		case KEY_F7: 
-							strcpy(zwi, screen_commandline);
+							strcpy(zwi, (char*)screen_commandline);
 							trim(zwi);
 							ucase(zwi);
 							if(strcmp(zwi, "M")==0 ||
@@ -1754,17 +2003,48 @@ int now_handle_input_key_question(int c)
 	return(0);
 }
 /******************************************************************************/
+int calc_linenbr(int nbr)
+{
+	int rc;
+	int t;
+	int cnt;
+	char zwi[256];
+
+	rc=0;
+	cnt=0;
+	for(t=0; t<nbr; t++){
+		if(linetype[t]=='X'){
+			cnt++;
+		}
+		else{
+			if(cnt>0){ // there were excluded lines, count only one!
+				rc++;
+				cnt=0;
+			}
+			rc++;
+		}
+
+	}
+	if(cnt>0){ // last line was excluded?
+		rc++;   // count it!
+	}
+
+	sprintf(zwi, "calc_linenbr: nbr=%d rc=%d", nbr, rc);
+	write_to_log(zwi);
+	return(rc);
+}
+/******************************************************************************/
 int now_handle_input_key_editor(int c)
 {
 	char zwi[1024];
 	char zwi2[1024];
 	int a;
 	int rc;
-	int pos;
+	int pos=0;
 	int curpos;
-	int t, i;
+	int t;
 
-	// sprintf(zwi, "now_handle_input_key_editor: cursor_area=%d c=%d cursor_x=%d", cursor_area, c, cursor_x);
+	// sprintf(zwi, "1:now_handle_input_key_editor: cursor_area=%d c=%d cursor_x=%d", cursor_area, c, cursor_x);
 	// write_to_log(zwi);
 
 	if(c==KEY_F1){
@@ -1795,22 +2075,25 @@ int now_handle_input_key_editor(int c)
 		exit(0);
 	}
 
-	if(c==KEY_F1){
-		if(screen_errform==0){
-			screen_errform=1;
-		}
-		else{
-			screen_errform=0;
-		}
-		return(0);
-	}
-
+	// sprintf(zwi, "2:now_handle_input_key_editor: cursor_area=%d c=%d cursor_x=%d", cursor_area, c, cursor_x);
+	// write_to_log(zwi);
 	if(cursor_area==CUR_CMDLINE){
 		rc=process_input_field(c, screen_commandline, 14, 48);
+		// sprintf(zwi, "3:now rc=%d", rc);
+		// write_to_log(zwi);
 		switch(rc){
-			case RETURN_ENTER: cursor_area=CUR_LINENBR; 
-			            cursor_x=1;
+			case RETURN_ENTER: cursor_area=CUR_TEXTAREA;
 							cursor_y=screen_topline;
+							curpos=pos+screen_offset_y;
+							// jump to first non space character in line
+							strcpy(zwi, (char*)lineptr[curpos+1]);
+							// sprintf(zwi2, "zwi=>%s<", zwi);
+							// write_to_log(zwi2);
+							for(t=0;;t++){
+								if(zwi[t]==0) break;
+								if(zwi[t]!=' ') break;
+							}
+							cursor_x=8+t;
 						   break;
 			case RETURN_HOME: cursor_area=CUR_CMDLINE; 
 			            cursor_x=14;
@@ -1845,22 +2128,76 @@ int now_handle_input_key_editor(int c)
 		pos=cursor_y-screen_topline;
 	   //sprintf(zwi, "LINENBR:pos=%d:cursor_y=%d cursor_x=%d screen_offset_y=%d", pos, cursor_y, cursor_x, screen_offset_y);
 	   //write_to_log(zwi);
-		rc=process_input_field(c, linecmd[pos+screen_offset_y], 1, 6);
+		rc=process_input_field(c,linecmd[calc_linenbr(pos+screen_offset_y)],1,6);
 
 	   // sprintf(zwi, "LINENBR:rc=%d:cursor_x=%d", rc, cursor_x);
 	   // write_to_log(zwi);
 
 		switch(rc){
-			case RETURN_ENTER: cursor_area=CUR_LINENBR; 
+			case RETURN_ENTER: cursor_area=CUR_TEXTAREA; 
+							// cursor_area=CUR_LINENBR; // No, stay in textarea!!
 							// now we can remove empty lines, finally!
-							// remove_empty_insert_lines(); 
-			            cursor_x=1;
+							pos=cursor_y-screen_topline;
+							curpos=pos+screen_offset_y;
+							// remove_empty_insert_lines(&curpos); 
+			            cursor_x=8;
 							cursor_y++;
-							if((cursor_y-4)>(linecnt-screen_offset_y-1)){
-								cursor_y=3;
-								if(cursor_x<14) cursor_x=14;
-								if(cursor_x>64) cursor_x=64;
-							 	cursor_area=CUR_CMDLINE; 
+							if(cursor_y>23){
+								if(screen_cols==0){
+									a=screen_offset_y+23-2;
+								}
+								else{
+									a=screen_offset_y+23-3;
+								}
+								if(a<linecnt){
+									cursor_y--;
+									screen_offset_y++;
+									// jump to first non space character in line
+									strcpy(zwi, (char*)lineptr[curpos+1]);
+									sprintf(zwi2, "zwi=>%s<", zwi);
+									write_to_log(zwi2);
+									for(t=0;;t++){
+										if(zwi[t]==0) break;
+										if(zwi[t]!=' ') break;
+									}
+									cursor_x=8+t;
+								}
+								else{
+									cursor_y=3;
+									if(cursor_x<14) cursor_x=14;
+									if(cursor_x>64) cursor_x=64;
+							 		cursor_area=CUR_CMDLINE; 
+								}
+							}
+							else{
+								// jump to first non space character in line
+								sprintf(zwi2, "curpos=%d linetype=>%c<", 
+											curpos, linetype[curpos]);
+								write_to_log(zwi2);
+								sprintf(zwi2, "curpos+1=%d linetype=>%c<", 
+											curpos+1, linetype[curpos+1]);
+								write_to_log(zwi2);
+		   					if(linetype[curpos+1]=='I'){
+									// check the line before the inserted one
+									strcpy(zwi, (char*)lineptr[curpos]);
+									write_to_log("Inserted line found.");
+								}
+								else{
+									// check the actual line
+									strcpy(zwi, (char*)lineptr[curpos+1]);
+									sprintf(zwi2, "linetype=>%c< found.", linetype[curpos+1]);
+									write_to_log("Inserted line found before.");
+								}
+								// strcpy(zwi, (char*)lineptr[curpos+1]);
+								sprintf(zwi2, "zwi=>%s<", zwi);
+								write_to_log(zwi2);
+								for(t=0;;t++){
+									if(zwi[t]==0) break;
+									if(zwi[t]!=' ') break;
+								}
+								// sprintf(zwi2, "first non blank char at %d", t);
+								// write_to_log(zwi2);
+								cursor_x=8+t;
 							}
 						   break;
 			case RETURN_HOME: cursor_area=CUR_CMDLINE; 
@@ -1901,8 +2238,8 @@ int now_handle_input_key_editor(int c)
 	}
 
 	if(cursor_area==CUR_TEXTAREA){
-		sprintf(zwi, "screen_offset_y=%d linecnt=%d", screen_offset_y, linecnt);
-		write_to_log(zwi);
+		// sprintf(zwi,"screen_offset_y=%d linecnt=%d", screen_offset_y, linecnt);
+		// write_to_log(zwi);
 		if(screen_cols==0){
 			a=screen_offset_y+cursor_y-2;
 		}
@@ -1925,19 +2262,19 @@ int now_handle_input_key_editor(int c)
 		if(linetype[curpos]=='N' ||
 		   linetype[curpos]=='E' ||
 		   linetype[curpos]=='I'){
-			strcpy(zwi, lineptr[curpos]);
+			strcpy(zwi, (char*)lineptr[curpos]);
 			expand_to_256_bytes(zwi);
 			free(lineptr[curpos]);
 			lineptr[curpos]=malloc(strlen(zwi)+1);
-			strcpy(lineptr[curpos], zwi);
-			rc=process_input_field(c, lineptr[curpos], 8, 72);
-			strcpy(zwi, lineptr[curpos]);
+			strcpy((char*)lineptr[curpos], zwi);
+			rc=process_input_field(c, lineptr[calc_linenbr(curpos)], 8, 72);
+			strcpy(zwi, (char*)lineptr[curpos]);
 			rtrim(zwi);
 			// sprintf(zwi2, "nach process_input_field: zwi=>%s<", zwi);
 			// write_to_log(zwi2);
 			free(lineptr[curpos]);
 			lineptr[curpos]=malloc(strlen(zwi)+1);
-			strcpy(lineptr[curpos], zwi);
+			strcpy((char*)lineptr[curpos], zwi);
 		}
 		else{
 			rc=c;
@@ -1951,7 +2288,6 @@ int now_handle_input_key_editor(int c)
 				case KEY_HOME  :   rc=RETURN_HOME; break;
 			}
 		}
-
 	   // sprintf(zwi, "TEXTAREA:rc=%d:cursor_x=%d", rc, cursor_x);
 	   // write_to_log(zwi);
 		switch(rc){
@@ -1961,7 +2297,6 @@ int now_handle_input_key_editor(int c)
 							remove_empty_insert_lines(&curpos); 
 			            cursor_x=8;
 							cursor_y++;
-							// if((cursor_y-4)>(linecnt-screen_offset_y-1)){
 							if(cursor_y>23){
 								if(screen_cols==0){
 									a=screen_offset_y+23-2;
@@ -1973,7 +2308,7 @@ int now_handle_input_key_editor(int c)
 									cursor_y--;
 									screen_offset_y++;
 									// jump to first non space character in line
-									strcpy(zwi, lineptr[curpos+1]);
+									strcpy(zwi, (char*)lineptr[curpos+1]);
 									sprintf(zwi2, "zwi=>%s<", zwi);
 									write_to_log(zwi2);
 									for(t=0;;t++){
@@ -1991,7 +2326,7 @@ int now_handle_input_key_editor(int c)
 							}
 							else{
 								// jump to first non space character in line
-								strcpy(zwi, lineptr[curpos+1]);
+								strcpy(zwi, (char*)lineptr[curpos+1]);
 								sprintf(zwi2, "zwi=>%s<", zwi);
 								write_to_log(zwi2);
 								for(t=0;;t++){
@@ -2013,7 +2348,6 @@ int now_handle_input_key_editor(int c)
 							}
 						   break;
 			case RETURN_DOWN: cursor_y++;
-							// if(cursor_y>screen_lastline){
 							if(cursor_y>23){
 								cursor_y=3;
 								if(cursor_x<14) cursor_x=14;
@@ -2054,8 +2388,7 @@ int now_handle_input_key_editor(int c)
 int handle_keypress(void)
 {
 	int c;
-	int i;
-	char zwi[1024];
+	// char zwi[1024];
 
 	c=get_keypress();
 		/*********************************************************************
@@ -2106,31 +2439,30 @@ int handle_keypress(void)
 /*****************************************************************************/
 int main(int argc, char **argv)
 {
-	int c=0;
+	// int c=0;
 	int rc=0;
 	int f;
 	int t;
-	int forecolor=COLOR_GREEN;
-	int backcolor=COLOR_BLACK;
+	// int forecolor=COLOR_GREEN;
+	// int backcolor=COLOR_BLACK;
 	char zwi[1024];
 	FILE *fp;
 
 	// find out which config file we have
-	sprintf(config_file, "%s/pipedit.cfg", getenv("PWD"));
+	sprintf(config_file, "%s", getenv("PIPEDITCFG"));
 	fp=fopen(config_file, "rb");
 	if(fp==NULL){
-		sprintf(config_file, "%s/.pipedit/pipedit.cfg", getenv("HOME"));
-		fp=fopen(config_file, "rb");
-		if(fp==NULL){
-			strcpy(config_file, "<<<NONE>>>");
-		}
-		else{
-			fclose(fp);
-		}
+		fprintf(stderr, "pipedit: Could not open config file >%s<, aborting..\n",
+			config_file);
+		exit(7);
 	}
 	else{
 		fclose(fp);
 	}
+
+	read_config_file();
+
+	read_language_stuff();
 
 	set_signals();
 
@@ -2164,16 +2496,6 @@ int main(int argc, char **argv)
 		exit(1); 
 	} 
 
-	/*************************************
-	ptr=getenv("PIPMENSCRIPT");
-	if(ptr==NULL){
-		strcpy(scriptfile, "pipmenue.men");
-	}
-	else{
-		strcpy(scriptfile, ptr);
-	}
-	**************************************/
-
 	/************************************
 	strcpy(zwi, "                                       ");
 	cursor_x=1;
@@ -2189,6 +2511,8 @@ int main(int argc, char **argv)
 
    initscr();
 	cbreak();
+	// raw();
+	keypad(stdscr, TRUE); // needed to get the correct keys
 	noecho();
 
 	start_color();
@@ -2201,8 +2525,9 @@ int main(int argc, char **argv)
 	init_pair(COLPAIR_FRAME, COLOR_BLUE, COLOR_YELLOW);
 	init_pair(COLPAIR_YESNO, COLOR_BLUE, COLOR_WHITE);
 	init_pair(COLPAIR_XCLUD, COLOR_BLACK, COLOR_WHITE);
+	init_pair(COLPAIR_CURLIN, COLOR_RED, COLOR_BLACK);
 
-	attron(COLPAIR_NORMAL);
+	attron(COLOR_PAIR(COLPAIR_NORMAL));
 
   	clear();
 
