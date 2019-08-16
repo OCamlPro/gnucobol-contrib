@@ -16,7 +16,13 @@ X - excluded lines - editing is borked
 # ifdef __USE_PIPCURSES__
 	# include "pipcurses.c"
 # else
+	#if defined (HAVE_CURSES_H)
+	# include <curses.h>
+	#elif defined (HAVE_PDCURSES_H)
+	# include <pdcurses.h>
+	#else
 	# include <ncurses.h>
+	#endif
 	# undef KEY_ENTER
 	# define KEY_ENTER 10 // overwrite the curses #define with the real value
 	# undef KEY_STAB
@@ -34,6 +40,7 @@ X - excluded lines - editing is borked
 	# define KEY_F10 KEY_F(10)
 	# define KEY_F11 KEY_F(11)
 	# define KEY_F12 KEY_F(12)
+	# undef KEY_SEND
 	# define KEY_SEND 386
 # endif
 
@@ -120,26 +127,34 @@ char lang_bottom_of_data[32]="Bottom of data";
 void set_signals(void);
 void signal_handler(int signal)
 {
+	#ifdef SIGINT
 	if(signal==SIGINT){
 		puts("SIGINT -> ignored...");
 		set_signals();
 		return;
 	}
+	#endif
+	#ifdef SIGUSR1
 	if(signal==SIGUSR1){
 		puts("SIGUSR1 -> ignored...");
 		set_signals();
 		return;
 	}
+	#endif
+	#ifdef SIGUSR2
 	if(signal==SIGUSR2){
 		puts("SIGUSR2 -> ignored...");
 		set_signals();
 		return;
 	}
+	#endif
+	#ifdef SIGCHLD
 	if(signal==SIGCHLD){
 		/* puts("SIGCHLD -> ignored..."); */
 		set_signals();
 		return;
 	}
+	#endif
 	fprintf(stderr, "exiting with signal %d.\n", signal);
 	exit(signal);
 }
@@ -532,7 +547,7 @@ void read_config_file(void)
 	}
 	fclose(fp);
 	if(strlen(conf_language)==0){
-		if(getenv("LANG")==0){
+		if(getenv("LANG")==NULL){
 			strcpy(conf_language, "en");
 		}
 		else{
@@ -1500,9 +1515,10 @@ int handle_macro(char *s)
 		write_to_log("Could not find macro in macros.lst");
 		return(-1);
 	}
-	strcpy(temp, "/tmp");
 	if(getenv("TMP")!=NULL){
 		strcpy(temp, getenv("TMP"));
+	} else {
+		strcpy(temp, "/tmp");
 	}
 	sprintf(fname, "%s/%s.tmp", temp, filename);
 	remove(fname);
@@ -2447,9 +2463,15 @@ int main(int argc, char **argv)
 	// int backcolor=COLOR_BLACK;
 	char zwi[1024];
 	FILE *fp;
+	
+	char *config_path;
 
 	// find out which config file we have
-	sprintf(config_file, "%s", getenv("PIPEDITCFG"));
+	config_path = getenv("PIPEDITCFG");
+	if (config_path==NULL) {
+		config_path = "./pipedit.cfg";
+	}
+	sprintf(config_file, "%s", config_path);
 	fp=fopen(config_file, "rb");
 	if(fp==NULL){
 		fprintf(stderr, "pipedit: Could not open config file >%s<, aborting..\n",
