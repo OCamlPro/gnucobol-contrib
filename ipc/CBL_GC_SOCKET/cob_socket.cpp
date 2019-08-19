@@ -38,7 +38,9 @@
 	#include <unistd.h>
 	#include <arpa/inet.h>
 	#include <errno.h>
-//    #include <string.h>
+#endif
+#ifdef HAVE_STRING_H
+	#include <string.h>
 #endif
 
 // includes independent from OS
