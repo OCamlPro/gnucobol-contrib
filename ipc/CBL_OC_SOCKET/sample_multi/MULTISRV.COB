@@ -32,7 +32,7 @@
       * Create Socket
               display "creating server-socket..."
               end-display
-              call "CBL_OC_SOCKET" 
+              call "CBL_GC_SOCKET" 
                    using "00" PORT LISTEN giving RESULT
               end-call
               perform handle-CRITICAL-error.
@@ -42,7 +42,7 @@
 
               display 'waiting for incoming connection / data ...'
               end-display
-              call 'CBL_OC_SOCKET'
+              call 'CBL_GC_SOCKET'
                    using "10" LISTEN HNDL TOUT giving RESULT
               end-call.
               evaluate RESULT
@@ -62,7 +62,7 @@
               end-display
               move 10 to RECV.
               move SPACES to BUFF.
-              call 'CBL_OC_SOCKET'
+              call 'CBL_GC_SOCKET'
                      using "04" HNDL RECV BUFF giving RESULT
               end-call.
               if result = 2
@@ -71,7 +71,7 @@
                  end-display
                  display 'closing client connection ...'
                  end-display
-                 call "CBL_OC_SOCKET"
+                 call "CBL_GC_SOCKET"
                         using "06" HNDL giving RESULT
                  end-call
                  perform handle-error
@@ -86,7 +86,7 @@
                     end-display
                     display 'closing client connection ...'
                     end-display
-                    call "CBL_OC_SOCKET"
+                    call "CBL_GC_SOCKET"
                            using "06" HNDL giving RESULT
                     end-call
                     perform handle-error
@@ -104,7 +104,7 @@
               then
                    display 'Return-Code: ' RESULT
                    end-display
-                   call 'CBL_OC_SOCKET' using '98' ERRMSG giving RESULT
+                   call 'CBL_GC_SOCKET' using '98' ERRMSG giving RESULT
                    end-call
                    display 'OS-Error: ' RESULT ': ' ERRMSG
                    end-display
@@ -120,7 +120,7 @@
               then
                    display 'Return-Code: ' RESULT
                    end-display
-                   call 'CBL_OC_SOCKET' using '98' ERRMSG giving RESULT
+                   call 'CBL_GC_SOCKET' using '98' ERRMSG giving RESULT
                    end-call
                    display 'OS-Error: ' RESULT ': ' ERRMSG
                    end-display

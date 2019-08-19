@@ -24,18 +24,18 @@
        MAIN-PARAGRAPH.
 
               DISPLAY "Opening socket for incoming connections ...".
-              CALL "CBL_OC_SOCKET" 
+              CALL "CBL_GC_SOCKET" 
                    USING "00" PORT LISTEN GIVING RESULT
               END-CALL.
               perform handle-error.
       
-      *        CALL "CBL_OC_SOCKET" 
+      *        CALL "CBL_GC_SOCKET" 
       *             USING "98" GIVING RESULT.
               
        ACCEPT-CONN.
               
               DISPLAY "Listening for incomming connections ...".
-              CALL "CBL_OC_SOCKET" 
+              CALL "CBL_GC_SOCKET" 
                    USING "07" LISTEN HNDL GIVING RESULT
               END-CALL.
               perform handle-error.
@@ -43,7 +43,7 @@
               DISPLAY "Getting data from client ...".
               MOVE 14 TO RECV.
               MOVE SPACES TO BUFF.
-              CALL "CBL_OC_SOCKET"
+              CALL "CBL_GC_SOCKET"
                      USING "04" HNDL RECV BUFF GIVING RESULT
               END-CALL.
               perform handle-error.
@@ -57,7 +57,7 @@
               MOVE 14 TO BYTES.
               MOVE 17 TO RECV.
 
-              CALL "CBL_OC_SOCKET"
+              CALL "CBL_GC_SOCKET"
                      USING "05" HNDL BYTES RECV BUFF GIVING RESULT
               END-CALL.
               perform handle-error.
@@ -70,13 +70,13 @@
               MOVE 13 TO BYTES.
               MOVE "Hasta la vista" TO BUFF.
 
-              CALL "CBL_OC_SOCKET"
+              CALL "CBL_GC_SOCKET"
                    USING "03" HNDL BYTES BUFF GIVING RESULT
               END-CALL.
               perform handle-error.
 
               DISPLAY "Closing connection ...".
-              CALL "CBL_OC_SOCKET"
+              CALL "CBL_GC_SOCKET"
                      USING "06" HNDL GIVING RESULT
               END-CALL.
               perform handle-error.
@@ -91,7 +91,7 @@
               DISPLAY "Result is: " RESULT.
               IF RESULT NOT = 0 
               THEN
-                   CALL "CBL_OC_SOCKET" USING "99" GIVING RESULT
+                   CALL "CBL_GC_SOCKET" USING "99" GIVING RESULT
                    DISPLAY "OS-ERROR: " RESULT
                    accept dummy
                    STOP RUN

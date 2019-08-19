@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2010-2014,2016 Free Software Foundation, Inc.
+   Copyright (C) 2010-2014,2016,2019 Free Software Foundation, Inc.
 
    cob_socket including this file is in preparation to be a part of GnuCOBOL.
 
@@ -21,9 +21,7 @@
 
 // our own headers
 //
-#ifdef WIN32
-	#define COB_SOCKET_EXPORTS
-#endif
+#define COB_SOCKET_EXPORTS
 #include "cob_socket.h"
 
 // includes for sockets
@@ -52,7 +50,7 @@
 // main DLL function, only Windows
 //
 #ifdef WIN32
-	BOOL APIENTRY DllMain(HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
+	BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 	{
 		switch (ul_reason_for_call)
 		{
@@ -1064,11 +1062,8 @@ int _cobsocket_close(char* p_socket) // close socket
 /***********************************************************************************/
 // generic wrapper function for access from COBOL
 //
-#ifdef WIN32
-	extern "C" COB_SOCKET_API int CBL_OC_SOCKET(char* p_code, char* p1, char* p2, char* p3, char* p4, char* p5, char* p6, char *pdummy)
-#else
-	extern "C" int CBL_OC_SOCKET(char* p_code, char* p1, char* p2, char* p3, char* p4, char* p5, char* p6, char* pdummy)
-#endif
+COB_SOCKET_API
+int CBL_GC_SOCKET (char *p_code, char *p1, char *p2, char *p3, char *p4, char *p5, char *p6, char *pdummy)
 {
 	int l_code, l_ret; 
 	int l_i;
@@ -1268,3 +1263,9 @@ int _cobsocket_close(char* p_socket) // close socket
 
 }
 
+// entry point under old name for delagation
+COB_SOCKET_API
+int CBL_OC_SOCKET (char *p_code, char *p1, char *p2, char *p3, char *p4, char *p5, char *p6, char *pdummy)
+{
+	return CBL_GC_SOCKET (p_code, p1, p2, p3, p4, p5, p6, pdummy);
+}

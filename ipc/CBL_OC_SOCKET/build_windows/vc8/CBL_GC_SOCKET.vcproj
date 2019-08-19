@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="CBL_OC_SOCKET"
+	Name="CBL_GC_SOCKET"
 	ProjectGUID="{C272C648-4353-4F3B-A982-45614BC0099A}"
-	RootNamespace="CBL_OC_SOCKET"
+	RootNamespace="CBL_GC_SOCKET"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="0"
 	>
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;CBL_OC_SOCKET_EXPORTS;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;CBL_GC_SOCKET_EXPORTS;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -112,7 +112,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;CBL_OC_SOCKET_EXPORTS;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;CBL_GC_SOCKET_EXPORTS;"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"

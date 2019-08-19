@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2010-2014,2016 Free Software Foundation, Inc.
+   Copyright (C) 2010-2014,2016,2019 Free Software Foundation, Inc.
 
    cob_socket including this file is in preparation to be a part of GnuCOBOL.
 
@@ -20,14 +20,20 @@
 
 // macros for DLL export
 //
+#ifdef __cplusplus
+#define EXTERN_DECL extern "C"
+#else
+#define EXTERN_DECL extern
+#endif
+
 #ifdef WIN32
 	#ifdef COB_SOCKET_EXPORTS
-	#define COB_SOCKET_API __declspec(dllexport)
+	#define COB_SOCKET_API EXTERN_DECL __declspec(dllexport)
 	#else
-	#define COB_SOCKET_API __declspec(dllimport)
+	#define COB_SOCKET_API EXTERN_DECL __declspec(dllimport)
 	#endif
 #else
-	#define COB_SOCKET_API
+	#define COB_SOCKET_API EXTERN_DECL
 #endif
 
 // data types
@@ -81,13 +87,9 @@
 
 // function header for external call
 //
-#ifdef __cplusplus
-extern "C" {
-#endif
+COB_SOCKET_API int CBL_GC_SOCKET (char* p_code, char* p1, char* p2, char* p3, char* p4, char* p5, char* p6, char* pdummy);
 COB_SOCKET_API int CBL_OC_SOCKET (char* p_code, char* p1, char* p2, char* p3, char* p4, char* p5, char* p6, char* pdummy);
-#ifdef __cplusplus
-}
-#endif
+
 // Some pragmas
 //
 #ifdef _MSC_VER

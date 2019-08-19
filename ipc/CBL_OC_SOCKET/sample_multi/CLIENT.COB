@@ -59,7 +59,7 @@
               end-display
               display 'contacting server ...'
               end-display
-              call "CBL_OC_SOCKET" 
+              call "CBL_GC_SOCKET" 
                    using "02" IP PORT HNDL giving RESULT
               end-call.
               perform handle-error.
@@ -72,7 +72,7 @@
                      move spaces to BUFF
                      string 'client' CLID into BUFF
                      move 10 to BYTES
-                     call "CBL_OC_SOCKET" 
+                     call "CBL_GC_SOCKET" 
                           using "03" HNDL BYTES BUFF giving RESULT
                      end-call
                      perform handle-error
@@ -88,7 +88,7 @@
               end-display
               move 'close' to BUFF.
               move 10 to BYTES.
-              call "CBL_OC_SOCKET" 
+              call "CBL_GC_SOCKET" 
                    using "03" HNDL BYTES BUFF giving RESULT
               end-call.
               perform handle-error.
@@ -96,7 +96,7 @@
       * Close connection
               display 'Closing connection ...'
               end-display
-              call "CBL_OC_SOCKET"
+              call "CBL_GC_SOCKET"
                   using "06" HNDL giving RESULT
               end-call.
               perform handle-error.
@@ -110,7 +110,7 @@
               then
                    display 'Return-Code: ' RESULT
                    end-display
-                   call 'CBL_OC_SOCKET' using '98' ERRMSG giving RESULT
+                   call 'CBL_GC_SOCKET' using '98' ERRMSG giving RESULT
                    end-call
                    display 'OS-Error: ' RESULT ': ' ERRMSG
                    end-display
