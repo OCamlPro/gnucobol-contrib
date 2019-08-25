@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Image upload and scale</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+
+<h2>Image upload and scale</h2>
+<p> 
+<form action="/cgi-bin/0014_img_upload_scale" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+  <table border="0" cellpadding="0" cellspacing="4">
+    <tr>
+      <td align="right">Image description:</td>
+      <td><input name="filedesc" type="text" size="30" maxlength="30"></td>
+    </tr>
+    <tr>
+      <td align="right">PNG upload (max. 750 Kb):</td>
+      <td><input type="file" name="upload" /></td>
+    </tr>
+  </table>
+  <br>
+  <input type="submit" value="Send"> <input type="reset">
+</form>
+</p>
+</body>
+</html>

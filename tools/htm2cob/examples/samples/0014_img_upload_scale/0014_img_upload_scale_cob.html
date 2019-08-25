@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Image upload and scale</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+ 
+<?cob PERFORM GET-VALUES 
+      PERFORM CREATE-OUT-NAME
+      PERFORM IMGSCALE-AND-COPY
+?>
+
+<h2>Image upload and scale</h2>
+<p>
+Image description: <?cob display trim(htm-filedesc) end-display ?><br>
+Image upload: <?cob display trim(htm-upload) end-display ?><br>
+<br>
+Scaled Image: <?cob display trim(WS-OUT-NAME) end-display ?><br>
+<?cob display "<img src='../img/"trim(WS-OUT-NAME)"'>" end-display ?><br>
+</p>
+
+</body>
+</html>
+
+<?cob-ws
+ 01 filedesc                 pic x(100).
+ 01 htm-filedesc             pic x(100).
+ 01 upload                   pic x(100).
+ 01 htm-upload               pic x(100).
+ 
+ 01 WS-IMG-IN                PIC X(256). 
+ 01 WS-IMG-IN-TYPE           BINARY-LONG. 
+    88 V-BMP                 VALUE 0. 
+    88 V-GIF                 VALUE 1. 
+    88 V-JPG                 VALUE 2. 
+    88 V-PNG                 VALUE 3. 
+    88 V-TIF                 VALUE 4. 
+
+ 01 WS-IMG-OUT               PIC X(256). 
+ 01 WS-IMG-OUT-TYPE          BINARY-LONG. 
+    88 V-BMP                 VALUE 0. 
+    88 V-GIF                 VALUE 1. 
+    88 V-JPG                 VALUE 2. 
+    88 V-PNG                 VALUE 3. 
+    88 V-TIF                 VALUE 4. 
+ 01 WS-WIDTH-OUT             BINARY-LONG. 
+
+ 01 WS-RETVAL                BINARY-LONG.
+
+ 01 WS-HTDOCS-PATH           PIC X(20) VALUE "/srv/www/htdocs/img/". 
+ 01 WS-OUT-NAME              PIC X(100).
+?>
+
+<?cob 
+*>------------------------------------------------------------------------------
+ GET-VALUES SECTION.
+*>------------------------------------------------------------------------------
+
+    call "HTM2COB-POST" using "filedesc", filedesc end-call
+    call "HTM2COB-SPEC-CHARS" using filedesc, htm-filedesc end-call
+    call "HTM2COB-POST" using "upload", upload end-call
+    call "HTM2COB-SPEC-CHARS" using upload, htm-upload end-call
+    
+    EXIT SECTION .
+
+*>------------------------------------------------------------------------------
+ CREATE-OUT-NAME SECTION.
+*>------------------------------------------------------------------------------
+
+    MOVE FUNCTION SUBSTITUTE-CASE(htm-upload, ".png", ".jpg") TO WS-OUT-NAME
+    
+    EXIT SECTION .
+    
+*>------------------------------------------------------------------------------
+ IMGSCALE-AND-COPY SECTION.
+*>------------------------------------------------------------------------------
+
+    MOVE SPACES TO WS-IMG-IN
+    STRING HTM2COB-UPLOAD-FILE-PATH DELIMITED BY SPACE
+           trim(htm-upload) X"00"   DELIMITED BY SIZE
+      INTO WS-IMG-IN 
+    END-STRING
+    SET V-PNG OF WS-IMG-IN-TYPE TO TRUE
+
+*>  scale width    
+    MOVE 200 TO WS-WIDTH-OUT
+
+*>  convert in JPG    
+    MOVE SPACES TO WS-IMG-OUT
+    STRING WS-HTDOCS-PATH          DELIMITED BY SPACE
+           trim(WS-OUT-NAME) X"00" DELIMITED BY SIZE
+      INTO WS-IMG-OUT 
+    END-STRING
+    SET V-JPG OF WS-IMG-OUT-TYPE TO TRUE
+
+    PERFORM CONVERT-AND-SCALE-IMG
+    
+    EXIT SECTION
+    .
+    
+*>------------------------------------------------------------------------------
+ CONVERT-AND-SCALE-IMG SECTION.
+*>------------------------------------------------------------------------------
+
+    CALL "imgscale" USING BY REFERENCE WS-IMG-IN
+                        , BY REFERENCE WS-IMG-IN-TYPE
+                        , BY REFERENCE WS-IMG-OUT
+                        , BY REFERENCE WS-IMG-OUT-TYPE
+                        , BY REFERENCE WS-WIDTH-OUT
+         RETURNING WS-RETVAL
+    END-CALL
+    
+    EXIT SECTION
+    .
+?>

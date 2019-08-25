@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>More button test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<script type="text/javascript" src="/js/0017_more_button.js"></script>
+</head>
+<body>
+
+<h2>More button test</h2>
+<p> 
+<form name="formname" onSubmit="guest_login();" action="/cgi-bin/0017_more_button" method="post" accept-charset="utf-8">
+  <p><input type="hidden" name="user"/></p>
+  <table border="1" cellpadding="0" cellspacing="4">
+    <tr>
+      <td align="left"><b>Name</b></td>
+      <td align="left"><b>Password</b></td>
+      <td align="left"><b>Registered users</b></td>
+    </tr>
+    <tr>
+      <td align="left">Editor</td>
+      <td><input name="pw_editor" type="password" size="20" maxlength="20"></td>
+      <td><input type="button" value="Login" onClick="user_login('Editor')"></td>
+    </tr>
+    <tr>
+      <td align="left">Admin</td>
+      <td><input name="pw_admin" type="password" size="20" maxlength="20"></td>
+      <td><input type="button" value="Login" onClick="user_login('Admin')"></td>
+    </tr>
+    <tr>
+      <td align="left">SuperAdmin</td>
+      <td><input name="pw_super_admin" type="password" size="20" maxlength="20"></td>
+      <td><input type="button" value="Login" onClick="user_login('SuperAdmin')"></td>
+    </tr>
+  </table>
+  <br>(Passwords: Editor/qwerty1, Admin/qwerty2, SuperAdmin/qwerty3)
+  <br>
+  <br>
+  <input type="submit" value="Login as guest"> <input type="reset">
+</form>
+</p>

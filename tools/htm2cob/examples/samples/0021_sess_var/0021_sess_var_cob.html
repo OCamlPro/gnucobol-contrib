@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Session var test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+
+<p><h3>Step 1: start session</h3></p> 
+<?cob
+*>  start or resume session
+    PERFORM HTM2COB-SESS-START
+    IF NOT V-OK OF LNK-HTM2COB-SESSION
+    THEN
+       DISPLAY "session start error"
+    END-IF
+?>
+
+<p><h3>Step 2: set session var</h3></p> 
+HTM2COB-SESS-VAR-NAME: mydog<BR>
+HTM2COB-SESS-VAR-VALUE: Morgo<BR>
+<?cob 
+    MOVE "mydog" TO HTM2COB-SESS-VAR-NAME
+    MOVE "Morgo" TO HTM2COB-SESS-VAR-VALUE
+    
+    PERFORM HTM2COB-SESS-SET
+    IF NOT V-OK OF LNK-HTM2COB-SESSION
+    THEN
+       DISPLAY "session set error"
+    END-IF
+?>
+
+<p><h3>Step 3: get session var</h3></p> 
+HTM2COB-SESS-VAR-NAME: mydog<BR>
+<?cob 
+    MOVE "mydog" TO HTM2COB-SESS-VAR-NAME
+    
+    PERFORM HTM2COB-SESS-GET
+    IF NOT V-OK OF LNK-HTM2COB-SESSION
+    THEN
+       DISPLAY "session get error"
+    END-IF
+    
+    DISPLAY "HTM2COB-SESS-VAR-VALUE: " HTM2COB-SESS-VAR-VALUE
+?>
+
+<p><h3>Step 4: del session var</h3></p> 
+HTM2COB-SESS-VAR-NAME: mydog<BR>
+<?cob 
+    MOVE "mydog" TO HTM2COB-SESS-VAR-NAME
+    
+    PERFORM HTM2COB-SESS-DEL
+    IF NOT V-OK OF LNK-HTM2COB-SESSION
+    THEN
+       DISPLAY "session del error"
+    END-IF
+?>
+
+</body>
+</html>

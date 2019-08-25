@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Cookie save data test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+<h2>Cookie save data test</h2>
+ 
+<?cob DISPLAY "Hello " TRIM(HTM-FNAME) " " TRIM(HTM-LNAME)"!" END-DISPLAY ?>
+
+<p>
+First name: <?cob DISPLAY TRIM(HTM-FNAME) END-DISPLAY ?><br>
+Last name : <?cob DISPLAY TRIM(HTM-LNAME) END-DISPLAY ?><br>
+</p>
+
+</body>
+</html>
+
+<?cob-ws
+ 01 FNAME                     PIC X(100).
+ 01 LNAME                     PIC X(100).
+ 01 HTM-FNAME                 PIC X(100).
+ 01 HTM-LNAME                 PIC X(100).
+?>
+
+<?cob 
+*> Implement this section, if you want to set a cookie.
+*>------------------------------------------------------------------------------
+ HTM2COB-SET-COOKIE SECTION.
+*>------------------------------------------------------------------------------
+
+*>  write first-name cookie
+    CALL "HTM2COB-POST" USING "firstname", FNAME END-CALL
+    CALL "HTM2COB-SPEC-CHARS" USING FNAME, HTM-FNAME END-CALL
+
+*>  always replace Line-Feed and Carriage-Return in cookie string
+    INSPECT HTM-FNAME REPLACING ALL X"0A" BY '_'
+    INSPECT HTM-FNAME REPLACING ALL X"0D" BY '_'
+    
+    INITIALIZE LNK-HTM2COB-SET-COOKIE
+    SET V-SET OF LNK-COOKIE-FUNC OF LNK-HTM2COB-SET-COOKIE TO TRUE
+    MOVE "first-name"    TO LNK-COOKIE-NAME  OF LNK-HTM2COB-SET-COOKIE
+    MOVE HTM-FNAME       TO LNK-COOKIE-VALUE OF LNK-HTM2COB-SET-COOKIE
+    MOVE 1800            TO LNK-MAX-AGE-SEC  OF LNK-HTM2COB-SET-COOKIE
+    SET V-YES OF LNK-HTTPONLY-FLAG OF LNK-HTM2COB-SET-COOKIE TO TRUE
+    CALL "HTM2COB-SET-COOKIE" USING LNK-HTM2COB-SET-COOKIE END-CALL
+    DISPLAY FUNCTION TRIM(LNK-COOKIE-STR OF LNK-HTM2COB-SET-COOKIE) END-DISPLAY
+
+*>  write last-name cookie
+    CALL "HTM2COB-POST" USING "lastname", LNAME END-CALL
+    CALL "HTM2COB-SPEC-CHARS" USING LNAME, HTM-LNAME END-CALL
+
+*>  always replace Line-Feed and Carriage-Return in cookie string
+    INSPECT HTM-LNAME REPLACING ALL X"0A" BY '_'
+    INSPECT HTM-LNAME REPLACING ALL X"0D" BY '_'
+    
+    INITIALIZE LNK-HTM2COB-SET-COOKIE
+    SET V-SET OF LNK-COOKIE-FUNC OF LNK-HTM2COB-SET-COOKIE TO TRUE
+    MOVE "last-name"     TO LNK-COOKIE-NAME  OF LNK-HTM2COB-SET-COOKIE
+    MOVE HTM-LNAME       TO LNK-COOKIE-VALUE OF LNK-HTM2COB-SET-COOKIE
+    MOVE 1800            TO LNK-MAX-AGE-SEC  OF LNK-HTM2COB-SET-COOKIE
+    SET V-YES OF LNK-HTTPONLY-FLAG OF LNK-HTM2COB-SET-COOKIE TO TRUE
+    CALL "HTM2COB-SET-COOKIE" USING LNK-HTM2COB-SET-COOKIE END-CALL
+    *> The last DISPLAY in this section is always with "WITH NO ADVANCING"
+    DISPLAY FUNCTION TRIM(LNK-COOKIE-STR OF LNK-HTM2COB-SET-COOKIE) WITH NO ADVANCING END-DISPLAY
+    
+    .
+    EXIT SECTION .
+?>

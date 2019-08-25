@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Image upload</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+ 
+<?cob PERFORM GET-VALUES ?>
+
+<h2>Image upload</h2>
+<p>
+Image description1: <?cob display trim(htm-filedesc1) end-display ?><br>
+Image upload1: <?cob display trim(htm-upload1) end-display ?><br>
+</p>
+<p>
+Image description2: <?cob display trim(htm-filedesc2) end-display ?><br>
+Image upload2: <?cob display trim(htm-upload2) end-display ?><br>
+</p>
+
+</body>
+</html>
+
+<?cob-ws
+ 01 filedesc1                pic x(100).
+ 01 htm-filedesc1            pic x(100).
+ 01 upload1                  pic x(100).
+ 01 htm-upload1              pic x(100).
+ 01 filedesc2                pic x(100).
+ 01 htm-filedesc2            pic x(100).
+ 01 upload2                  pic x(100).
+ 01 htm-upload2              pic x(100).
+?>
+
+<?cob 
+ GET-VALUES SECTION.
+
+    call "HTM2COB-POST" using "filedesc1", filedesc1 end-call
+    call "HTM2COB-SPEC-CHARS" using filedesc1, htm-filedesc1 end-call
+    call "HTM2COB-POST" using "upload1", upload1 end-call
+    call "HTM2COB-SPEC-CHARS" using upload1, htm-upload1 end-call
+
+    call "HTM2COB-POST" using "filedesc2", filedesc2 end-call
+    call "HTM2COB-SPEC-CHARS" using filedesc2, htm-filedesc2 end-call
+    call "HTM2COB-POST" using "upload2", upload2 end-call
+    call "HTM2COB-SPEC-CHARS" using upload2, htm-upload2 end-call
+
+    EXIT SECTION .
+?>

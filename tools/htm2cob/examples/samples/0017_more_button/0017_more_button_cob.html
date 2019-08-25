@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>More button test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+ 
+<h2>More button test</h2>
+
+<p>
+<?cob PERFORM LOGIN-INFO?><br>
+</p>
+
+</body>
+</html>
+
+<?cob-ws
+*> You can define variables in body or outside of body also.
+ 01 ws-user                   pic x(20).
+ 01 ws-pw-editor              pic x(20).
+ 01 ws-pw-admin               pic x(20).
+ 01 ws-pw-super-admin         pic x(20).
+?>
+
+<?cob 
+*>------------------------------------------------------------------------------
+ LOGIN-INFO SECTION.
+*>------------------------------------------------------------------------------
+
+    call "HTM2COB-POST" using "user", ws-user end-call
+
+    evaluate ws-user
+        when "Editor"
+           call "HTM2COB-POST" using "pw_editor", ws-pw-editor end-call
+           if ws-pw-editor = "qwerty1"
+           then
+              display "Display information for Editor...<br>"
+           else
+              display "No access<br>"
+           end-if
+           
+        when "Admin"
+           call "HTM2COB-POST" using "pw_admin", ws-pw-admin end-call
+           if ws-pw-admin = "qwerty2"
+           then
+              display "Display information for Admin...<br>"
+           else
+              display "No access<br>"
+           end-if
+    
+        when "SuperAdmin"
+           call "HTM2COB-POST" using "pw_super_admin", ws-pw-super-admin end-call
+           if ws-pw-super-admin = "qwerty3"
+           then
+              display "Display information for SuperAdmin...<br>"
+           else
+              display "No access<br>"
+           end-if
+    end-evaluate    
+
+    display "Display information for Guest...<br>"
+    
+    EXIT SECTION .
+?>
+
+

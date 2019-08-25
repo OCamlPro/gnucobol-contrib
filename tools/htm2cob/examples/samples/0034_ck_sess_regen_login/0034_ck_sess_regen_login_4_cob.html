@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Any page 2</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+
+<?cob 
+*>  start or resume session
+    PERFORM HTM2COB-SESS-START
+    DISPLAY "<br><pre>HTM2COB-HIDDEN-SESSION-ID: " HTM2COB-HIDDEN-SESSION-ID"</pre>"
+
+*>  check whether within the session 
+    MOVE "name" TO HTM2COB-SESS-VAR-NAME
+    PERFORM HTM2COB-SESS-GET
+    IF NOT V-OK OF LNK-RESULT OF LNK-HTM2COB-SESSION
+    THEN
+       DISPLAY "<p>No access</p>"
+*>     you can use a sample link also       
+*>     DISPLAY "<a href=""0034_ck_sess_regen_login_1"">Login page</a><br>"
+
+       DISPLAY '<p>'
+       DISPLAY '<form action="/cgi-bin/0034_ck_sess_regen_login_1" method="post" accept-charset="utf-8">'
+       DISPLAY '<input type="submit" value="Login page">'
+       DISPLAY '</form>'
+       DISPLAY '</p>'
+
+*>     slash with concatenate, because of the htm2cob preprocessor
+       DISPLAY "</" "body>" "</" "html>"
+       GOBACK
+    END-IF
+?>
+
+<h3>Any page 2</h3>
+<?cob 
+*>  read name from session
+    MOVE "name" TO HTM2COB-SESS-VAR-NAME
+    PERFORM HTM2COB-SESS-GET
+    MOVE HTM2COB-SESS-VAR-VALUE TO WS-NAME
+
+*>  filter special chars, before display text
+    CALL "HTM2COB-SPEC-CHARS" USING WS-NAME, HTM-NAME END-CALL
+
+*>  welcome user
+    DISPLAY "Hello " TRIM(HTM-NAME) "<br><br>"
+?>
+
+<p> 
+<form action="/cgi-bin/0034_ck_sess_regen_login_3" method="post" accept-charset="utf-8">
+  <input type="submit" value="Any page 1">
+</form>
+</p>
+
+<br>
+<p> 
+<form action="/cgi-bin/0034_ck_sess_regen_login_2" method="post" accept-charset="utf-8">
+  <input type="submit" value="Intro page">
+</form>
+</p>
+
+<br>
+<p> 
+<form action="/cgi-bin/0034_ck_sess_regen_login_1" method="post" accept-charset="utf-8">
+  <input type="submit" value="Logoff">
+</form>
+</p>
+
+<p> 
+<a href="http://localhost/0034_ck_sess_regen_login_test.html">Cookie session regenerate login start page</a>
+</p>
+
+</body>
+</html>
+
+<?cob-ws
+*> COBOL variables
+ 01 ws-name               pic x(20).
+ 01 htm-name              pic x(20).
+?>
+
+<?cob 
+*> Implement this section, if you want to set a cookie.
+*>------------------------------------------------------------------------------
+ HTM2COB-SET-COOKIE SECTION.
+*>------------------------------------------------------------------------------
+
+*>  get remote address and http user agent of the visitor
+    PERFORM HTM2COB-GET-SESS-ENV-PARAMS
+
+*>  get session-id from cookie
+    INITIALIZE LNK-HTM2COB-GET-COOKIE
+    MOVE "SESSIONID" TO LNK-COOKIE-NAME OF LNK-HTM2COB-GET-COOKIE
+    CALL "HTM2COB-GET-COOKIE" USING LNK-HTM2COB-GET-COOKIE END-CALL
+    MOVE FUNCTION TRIM(LNK-COOKIE-VALUE OF LNK-HTM2COB-GET-COOKIE)
+      TO HTM2COB-HIDDEN-SESSION-ID
+
+*>  regenerate session
+    PERFORM HTM2COB-SESS-REGENERATE
+*>  update session-id in cookie string
+    MOVE HTM2COB-HIDDEN-SESSION-ID 
+      TO LNK-SESSION-ID-HEX OF LNK-HTM2COB-UPD-SESS-STR
+    CALL "HTM2COB-UPD-SESS-STR" USING LNK-HTM2COB-UPD-SESS-STR END-CALL
+
+*>  save session-id in cookie
+    INITIALIZE LNK-HTM2COB-SET-COOKIE
+    SET V-SET OF LNK-COOKIE-FUNC OF LNK-HTM2COB-SET-COOKIE TO TRUE
+    MOVE "SESSIONID"               TO LNK-COOKIE-NAME  OF LNK-HTM2COB-SET-COOKIE
+    MOVE HTM2COB-HIDDEN-SESSION-ID TO LNK-COOKIE-VALUE OF LNK-HTM2COB-SET-COOKIE
+    MOVE 1800                      TO LNK-MAX-AGE-SEC  OF LNK-HTM2COB-SET-COOKIE
+    MOVE "localhost"               TO LNK-DOMAIN-VALUE OF LNK-HTM2COB-SET-COOKIE
+    MOVE "/"                       TO LNK-PATH-VALUE   OF LNK-HTM2COB-SET-COOKIE
+    SET V-YES OF LNK-HTTPONLY-FLAG OF LNK-HTM2COB-SET-COOKIE TO TRUE
+    SET V-YES-LAX OF LNK-SAMESITE-FLAG OF LNK-HTM2COB-SET-COOKIE TO TRUE
+    CALL "HTM2COB-SET-COOKIE" USING LNK-HTM2COB-SET-COOKIE END-CALL
+    *> The last DISPLAY in this section is always with "WITH NO ADVANCING"
+    DISPLAY FUNCTION TRIM(LNK-COOKIE-STR OF LNK-HTM2COB-SET-COOKIE) WITH NO ADVANCING END-DISPLAY
+
+    EXIT SECTION .
+?>

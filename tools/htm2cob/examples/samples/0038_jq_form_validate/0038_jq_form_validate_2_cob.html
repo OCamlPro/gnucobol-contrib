@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Form validation test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+<h2>Form validation test</h2>
+
+<?cob
+    PERFORM MOVE-FORM-DATA  
+?>
+
+<p>
+First name : <?cob display trim(htm-fname) ?><br>
+Surname    : <?cob display trim(htm-surname) ?><br>
+Gender     : <?cob display trim(htm-gender) ?><br>
+Skill-1    : <?cob display trim(htm-skill-1) ?><br>
+Skill-2    : <?cob display trim(htm-skill-2) ?><br>
+Skill-3    : <?cob display trim(htm-skill-3) ?><br>
+Skill-4    : <?cob display trim(htm-skill-4) ?><br>
+Your city  : <?cob display trim(htm-your-city) ?><br>
+Comment    : <?cob display trim(htm-comment) ?><br>
+E-mail     : <?cob display trim(htm-email) ?><br>
+URL        : <?cob display trim(htm-url) ?><br>
+Hidden data: <?cob display trim(htm-hidden-data) ?><br>
+</p>
+
+</body>
+</html>
+
+<?cob-ws
+*> COBOL variables
+ 01 fname                     pic x(100).
+ 01 surname                   pic x(100).
+ 01 gender                    pic x(100).
+ 01 skill-1                   pic x(100).
+ 01 skill-2                   pic x(100).
+ 01 skill-3                   pic x(100).
+ 01 skill-4                   pic x(100).
+ 01 your-city                 pic x(100).
+ 01 comment                   pic x(100).
+ 01 email                     pic x(100).
+ 01 url                       pic x(100).
+ 01 hidden-data               pic x(100).
+
+ 01 htm-fname                 pic x(100).
+ 01 htm-surname               pic x(100).
+ 01 htm-gender                pic x(100).
+ 01 htm-skill-1               pic x(100).
+ 01 htm-skill-2               pic x(100).
+ 01 htm-skill-3               pic x(100).
+ 01 htm-skill-4               pic x(100).
+ 01 htm-your-city             pic x(100).
+ 01 htm-comment               pic x(100).
+ 01 htm-email                 pic x(100).
+ 01 htm-url                   pic x(100).
+ 01 htm-hidden-data           pic x(100).
+?>
+
+<?cob 
+ MOVE-FORM-DATA SECTION.
+
+    call "HTM2COB-POST" using "first_name"  , fname       end-call
+    call "HTM2COB-POST" using "surname"     , surname     end-call
+    call "HTM2COB-POST" using "gender"      , gender      end-call
+    call "HTM2COB-POST" using "skill_1"     , skill-1     end-call
+    call "HTM2COB-POST" using "skill_2"     , skill-2     end-call
+    call "HTM2COB-POST" using "skill_3"     , skill-3     end-call
+    call "HTM2COB-POST" using "skill_4"     , skill-4     end-call
+    call "HTM2COB-POST" using "your_city"   , your-city   end-call
+    call "HTM2COB-POST" using "comment"     , comment     end-call
+    call "HTM2COB-POST" using "email"       , email       end-call
+    call "HTM2COB-POST" using "url"         , url         end-call
+    call "HTM2COB-POST" using "hidden_data" , hidden-data end-call
+
+    call "HTM2COB-SPEC-CHARS" using fname       , htm-fname       end-call
+    call "HTM2COB-SPEC-CHARS" using surname     , htm-surname     end-call
+    call "HTM2COB-SPEC-CHARS" using gender      , htm-gender      end-call
+    call "HTM2COB-SPEC-CHARS" using skill-1     , htm-skill-1     end-call
+    call "HTM2COB-SPEC-CHARS" using skill-2     , htm-skill-2     end-call
+    call "HTM2COB-SPEC-CHARS" using skill-3     , htm-skill-3     end-call
+    call "HTM2COB-SPEC-CHARS" using skill-4     , htm-skill-4     end-call
+    call "HTM2COB-SPEC-CHARS" using your-city   , htm-your-city   end-call
+    call "HTM2COB-SPEC-CHARS" using comment     , htm-comment     end-call
+    call "HTM2COB-SPEC-CHARS" using email       , htm-email       end-call
+    call "HTM2COB-SPEC-CHARS" using url         , htm-url         end-call
+    call "HTM2COB-SPEC-CHARS" using hidden-data , htm-hidden-data end-call
+	
+    EXIT SECTION .
+?>

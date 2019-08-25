@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Copyfile test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body> 
+ 
+<?cob-ws 
+*> you can use copy files also
+   copy "cobcopy.cpy".
+?>
+
+<?cob compute price = room + breakfast 
+      move price to price-disp ?>
+
+<h1><font color=#"FF0000"><?cob display text-1 ?></font></h1>
+<p><h2>
+Price with breakfast: <?cob display price-disp ?> Euro
+</h2></p>
+<hr color=#"00FF00">
+
+</body>
+</html>

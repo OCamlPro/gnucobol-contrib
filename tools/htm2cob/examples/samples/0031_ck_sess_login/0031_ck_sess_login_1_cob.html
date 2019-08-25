@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Login page</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+
+<?cob 
+*>  start or resume session
+    PERFORM HTM2COB-SESS-START
+    DISPLAY "<br><pre>HTM2COB-HIDDEN-SESSION-ID: " HTM2COB-HIDDEN-SESSION-ID"</pre>"
+    
+*>  if we come back here from other pages, then it is important to destroy the session
+    PERFORM HTM2COB-SESS-DESTROY
+?>
+
+<h3>Login page</h3>
+<p> 
+<font color=#"FF0000">The session id is written on this page in the cookie.</font>
+<form action="/cgi-bin/0031_ck_sess_login_2" method="post" accept-charset="utf-8">
+  <table border="0" cellpadding="0" cellspacing="4">
+    <tr>
+      <td align="right">Name:</td>
+      <td><input name="name" type="text" size="20" maxlength="20"></td>
+    </tr>
+    <tr>
+      <td align="right">Password:</td>
+      <td><input name="pw" type="password" size="20" maxlength="20"></td>
+    </tr>
+  </table>
+  <br>
+  <p>Valid names and passwords: "admin/qwerty" or "user1/pw123".</p>
+  <br>
+  <input type="submit" value="Submit"> <input type="reset">
+</form>
+</p>
+
+<p> 
+<a href="http://localhost/0031_ck_sess_login_test.html">Cookie session login start page</a>
+</p>
+
+</body>
+</html>
+
+<?cob 
+*> Implement this section, if you want to set a cookie.
+*>------------------------------------------------------------------------------
+ HTM2COB-SET-COOKIE SECTION.
+*>------------------------------------------------------------------------------
+
+*>  create session-id
+    PERFORM HTM2COB-GET-SESS-ENV-PARAMS
+    PERFORM HTM2COB-CREATE-SESSION-ID
+
+*>  save session-id in cookie
+    INITIALIZE LNK-HTM2COB-SET-COOKIE
+    SET V-SET OF LNK-COOKIE-FUNC OF LNK-HTM2COB-SET-COOKIE TO TRUE
+    MOVE "SESSIONID"               TO LNK-COOKIE-NAME  OF LNK-HTM2COB-SET-COOKIE
+    MOVE HTM2COB-HIDDEN-SESSION-ID TO LNK-COOKIE-VALUE OF LNK-HTM2COB-SET-COOKIE
+    MOVE 1800                      TO LNK-MAX-AGE-SEC  OF LNK-HTM2COB-SET-COOKIE
+    MOVE "localhost"               TO LNK-DOMAIN-VALUE OF LNK-HTM2COB-SET-COOKIE
+    MOVE "/"                       TO LNK-PATH-VALUE   OF LNK-HTM2COB-SET-COOKIE
+    SET V-YES OF LNK-HTTPONLY-FLAG OF LNK-HTM2COB-SET-COOKIE TO TRUE
+    SET V-YES-LAX OF LNK-SAMESITE-FLAG OF LNK-HTM2COB-SET-COOKIE TO TRUE
+    CALL "HTM2COB-SET-COOKIE" USING LNK-HTM2COB-SET-COOKIE END-CALL
+    *> The last DISPLAY in this section is always with "WITH NO ADVANCING"
+    DISPLAY FUNCTION TRIM(LNK-COOKIE-STR OF LNK-HTM2COB-SET-COOKIE) WITH NO ADVANCING END-DISPLAY
+
+    EXIT SECTION .
+?>

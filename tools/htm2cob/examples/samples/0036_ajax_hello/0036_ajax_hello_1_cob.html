@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>Ajax hello test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+
+<script language="Javascript">
+// this java script is from Brian's GnuCOBOL FAQ and HOWTO
+function xmlhttpPost(strURL) {
+    var xmlHttpReq = false;
+    var self = this;
+    // Mozilla/Safari
+    if (window.XMLHttpRequest) {
+        self.xmlHttpReq = new XMLHttpRequest();
+    }
+    // IE
+    else if (window.ActiveXObject) {
+        self.xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    self.xmlHttpReq.open('POST', strURL, true);
+    self.xmlHttpReq.setRequestHeader('Content-Type',
+        'application/x-www-form-urlencoded');
+    self.xmlHttpReq.onreadystatechange = function() {
+        if (self.xmlHttpReq.readyState == 4) {
+            updatepage(self.xmlHttpReq.responseText);
+        }
+    }
+    self.xmlHttpReq.send();
+}
+
+function updatepage(str){
+    document.getElementById("result").innerHTML = str;
+}
+</script>
+</head>
+<body>
+<p>
+Pressing <b>Say Hello</b> will cause an AJAX call to the server, the result will appear below.
+</p>
+
+<p>
+<form name="ajaxform">
+  <input value="Say Hello" type="button" onclick='javascript:xmlhttpPost("/cgi-bin/0036_ajax_hello_2")'></p>
+  <div id="result"></div>
+</form>
+</p>
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>Ajax query string test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+
+<?cob 
+    call "HTM2COB-POST" using "firstname", fname end-call
+    call "HTM2COB-SPEC-CHARS" using fname, htm-fname end-call
+    call "HTM2COB-POST" using "lastname", lname end-call
+    call "HTM2COB-SPEC-CHARS" using lname, htm-lname end-call
+?>
+
+<br>
+<h3>
+<?cob display "Hello " trim(htm-fname) " " trim(htm-lname) "!" end-display ?>
+</h3>
+
+</body>
+</html>
+
+<?cob-ws
+ 01 fname                     pic x(100).
+ 01 lname                     pic x(100).
+ 01 htm-fname                 pic x(100).
+ 01 htm-lname                 pic x(100).
+?>

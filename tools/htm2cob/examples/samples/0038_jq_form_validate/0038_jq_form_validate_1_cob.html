@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Form validation test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+$('#contactForm').validate();
+
+});
+</script>
+</head>
+<body>
+
+<h2>Form validation test</h2>
+<p> 
+<form id="contactForm" action="/cgi-bin/0038_jq_form_validate_2" method="post" accept-charset="utf-8">
+
+  <table border="0" cellpadding="3" cellspacing="0">
+    <tr>
+      <td align="right">first name:</td>
+      <td><input name="first_name" type="text" size="30" maxlength="30" class="required" minlength="2"></td>
+    </tr>
+    <tr>
+      <td align="right">surname:</td>
+      <td><input name="surname" type="text" size="30" maxlength="40" class="required" minlength="2"></td>
+    </tr>
+    <tr>
+      <td align="right" valign="top">gender:</td>
+      <td>
+        <input type="radio" name="gender" value="m"> male<br>
+        <input type="radio" name="gender" value="f"> female
+      </td>
+    </tr>
+    <tr>
+      <td align="right" valign="top">skills:</td>
+      <td>
+        <input type="checkbox" name="skill_1" value="cobol">COBOL<br>
+        <input type="checkbox" name="skill_2" value="cpp">C/C++<br>
+        <input type="checkbox" name="skill_3" value="java">java<br>
+        <input type="checkbox" name="skill_4" value="asm">ASM
+      </td>
+    </tr>
+    <tr>
+      <td align="right" valign="top">your city:</td>
+      <td>
+      <select name="your_city" size="1">
+        <option value="new_york">New York</option>
+        <option value="Berlin">Berlin</option>
+        <option value="Paris">Paris</option>
+        <option value="Budapest">Budapest</option>
+      </select>
+      </td>
+    </tr>
+    <tr>
+      <td align="right" valign="top">comment:</td>
+      <td><textarea name="comment" rows="10" cols="50" class="required" minlength="2"></textarea></td>
+    </tr>
+    <tr>
+      <td align="right" valign="top">E-mail:</td>
+      <td><input name="email" type="text" size="30" maxlength="40" class="required email"></td>
+    </tr>
+    <tr>
+      <td align="right" valign="top">URL:</td>
+      <td><input name="url" type="text" size="30" maxlength="40" class="url" value=""></td>
+    </tr>
+    <tr>
+      <td align="right">hidden data:</td>
+      <td><input type="hidden" name="hidden_data" value="1234567890"/></td>
+    </tr>
+    <tr>
+      <td align="right"></td>
+      <td>
+        <input type="submit" value="Send data">
+        <input type="reset" value="Reset form">
+      </td>
+    </tr>
+  </table>
+
+</form>
+</p>
+</body>
+</html>

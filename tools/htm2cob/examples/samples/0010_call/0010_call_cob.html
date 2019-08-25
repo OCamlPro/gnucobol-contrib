@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Call test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+<?cob-ws 
+ 01 SUB-PROG-NAME                      PIC X(9).
+    88 SUB-PROG-1                      VALUE "0010_sub1".
+    88 SUB-PROG-2                      VALUE "0010_sub2".
+	
+ 01 TEST-DATA                          PIC X(10) VALUE "abcde12345".
+ 01 TEST-DATA-LEN                      PIC S9(9) COMP-5 VALUE 10.
+?>
+ 
+<h1><font color=#"FF0000">Dynamic CALL test</font></h1>
+<p>
+<?cob
+	DISPLAY "<h2>Start main</h2>"
+
+	SET SUB-PROG-1 TO TRUE
+	CALL SUB-PROG-NAME END-CALL
+
+	SET SUB-PROG-2 TO TRUE
+	CALL SUB-PROG-NAME USING TEST-DATA
+	                         TEST-DATA-LEN 
+	END-CALL
+?>
+</p>
+
+<hr color=#"00FF00">
+  
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Session Id test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+ 
+<?cob PERFORM TEST-SESSION-ID ?>
+
+</body>
+</html>
+
+<?cob-ws 
+ 01 WS-IND-1                           BINARY-LONG.
+?>
+
+<?cob
+*>------------------------------------------------------------------------------
+ TEST-SESSION-ID SECTION.
+*>------------------------------------------------------------------------------
+
+    INITIALIZE LNK-HTM2COB-SESSION-ID
+
+*>  get remote address of the visitor   
+    MOVE "REMOTE_ADDR" TO LNK-ENV-NAME OF LNK-HTM2COB-ENV         
+    CALL "HTM2COB-ENV" USING LNK-HTM2COB-ENV END-CALL         
+    MOVE FUNCTION TRIM(LNK-ENV-VALUE OF LNK-HTM2COB-ENV) TO LNK-REMOTE-ADDR OF LNK-HTM2COB-SESSION-ID
+    SET V-YES OF LNK-REMOTE-ADDR-FLAG OF LNK-HTM2COB-SESSION-ID TO TRUE
+    
+    DISPLAY " " END-DISPLAY
+    DISPLAY "<PRE>" "Input IP addr.: " LNK-REMOTE-ADDR OF LNK-HTM2COB-SESSION-ID "<BR>" "<BR>" "</PRE>" END-DISPLAY
+    DISPLAY " " END-DISPLAY
+
+*>  get http user agent of the visitor    
+    MOVE "HTTP_USER_AGENT" TO LNK-ENV-NAME OF LNK-HTM2COB-ENV         
+    CALL "HTM2COB-ENV" USING LNK-HTM2COB-ENV END-CALL         
+    MOVE FUNCTION TRIM(LNK-ENV-VALUE OF LNK-HTM2COB-ENV) TO LNK-HTTP-USER-AGENT OF LNK-HTM2COB-SESSION-ID
+    SET V-YES OF LNK-HTTP-USER-AGENT-FLAG OF LNK-HTM2COB-SESSION-ID TO TRUE
+    
+    DISPLAY " " END-DISPLAY
+    DISPLAY "<PRE>" "Input user agent: " LNK-HTTP-USER-AGENT OF LNK-HTM2COB-SESSION-ID "<BR>" "<BR>" "</PRE>" END-DISPLAY
+    DISPLAY " " END-DISPLAY
+    
+    PERFORM VARYING WS-IND-1 FROM 1 BY 1
+            UNTIL   WS-IND-1 > 5
+       PERFORM TEST-CALL
+    END-PERFORM
+    .
+    EXIT SECTION .
+
+*>------------------------------------------------------------------------------
+ TEST-CALL SECTION.
+*>------------------------------------------------------------------------------
+    
+    CALL "HTM2COB-SESSION-ID" USING LNK-HTM2COB-SESSION-ID
+    END-CALL
+
+    DISPLAY "Call: " WS-IND-1 "<BR>" END-DISPLAY
+    DISPLAY "SESSION-ID-HEX     : " TRIM(LNK-SESSION-ID-HEX      OF LNK-HTM2COB-SESSION-ID) "<BR>" END-DISPLAY
+    DISPLAY "USER-AGENT-HASH-HEX: " TRIM(LNK-USER-AGENT-HASH-HEX OF LNK-HTM2COB-SESSION-ID) "<BR>" "<BR>" END-DISPLAY 
+    .
+    EXIT SECTION .
+?>
+     
+     

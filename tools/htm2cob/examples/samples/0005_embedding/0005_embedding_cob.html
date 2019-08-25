@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Embedding COBOL in HTML</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+The first line in HTML<br/>
+<?cob display "The second line in COBOL<br/>" ?>
+The third line in HTML<br/>
+<?cob 
+   display "The fourth line in COBOL<br/>" 
+   display "The fifth line in COBOL" 
+?>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Variables in COBOL</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body> 
+
+<?cob-ws 
+*> You can define your variables everywhere,
+*> they will be copied in WORKING-STORAGE SECTION.         
+  01 text-1 pic x(30) value "Welcome in Hotel Triton!". 
+  01 price  pic 9(3). 
+  01 price-disp pic ZZ9. 
+?>
+
+<?cob compute price = room + breakfast 
+      move price to price-disp ?>
+
+<?cob-ws 01 room pic 9(3) value 50. ?>
+	  
+<h1><font color=#"FF0000"><?cob display text-1 ?></font></h1>
+<p><h2>
+Price with breakfast: <?cob display price-disp ?> Euro
+</h2></p>
+<hr color=#"00FF00">
+
+<?cob-ws 01 breakfast pic 9(3) value 8. ?>
+
+</body>
+</html>

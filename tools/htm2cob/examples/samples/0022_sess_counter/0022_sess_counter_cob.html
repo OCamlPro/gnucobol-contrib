@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Session counter test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+
+<pre>
+<?cob 
+    PERFORM UPDATE-COUNTER 
+    DISPLAY "Session counter: " WS-COUNTER "<BR>" END-DISPLAY
+    DISPLAY "Hidden Session-Id: " HTM2COB-HIDDEN-SESSION-ID END-DISPLAY
+?>
+</pre>
+
+<p> 
+<form action="/cgi-bin/0022_sess_counter" method="post" accept-charset="utf-8">
+  <input type="hidden" name="SESSIONID" value=<?cob DISPLAY '"'HTM2COB-HIDDEN-SESSION-ID'"' END-DISPLAY?>"/>
+  <input type="submit" value="Update counter">
+</form>
+</p>
+
+<p> 
+<a href="http://localhost/0022_sess_counter_test.html">Session counter Start page</a>
+</p>
+
+</body>
+</html>
+
+<?cob-ws 
+ 01 WS-COUNTER                     PIC 9(10).
+ 01 WS-COUNTER-X                   PIC X(10).
+?>
+
+<?cob
+*>------------------------------------------------------------------------------
+ UPDATE-COUNTER SECTION.
+*>------------------------------------------------------------------------------
+
+*>  start or resume session
+    PERFORM HTM2COB-SESS-START
+    IF NOT V-OK OF LNK-HTM2COB-SESSION
+    THEN
+       DISPLAY "session start error"
+    END-IF
+
+*>  check counter in session
+    MOVE "sess-counter" TO HTM2COB-SESS-VAR-NAME
+    PERFORM HTM2COB-SESS-GET
+
+    IF V-OK OF LNK-RESULT OF LNK-HTM2COB-SESSION
+    THEN
+       MOVE TRIM(HTM2COB-SESS-VAR-VALUE) TO WS-COUNTER-X
+       MOVE NUMVAL(WS-COUNTER-X) TO WS-COUNTER
+       ADD 1 TO WS-COUNTER
+    ELSE
+       MOVE 1 TO WS-COUNTER
+    END-IF   
+   
+*>  write counter in session
+    MOVE "sess-counter" TO HTM2COB-SESS-VAR-NAME
+    MOVE WS-COUNTER     TO HTM2COB-SESS-VAR-VALUE
+    
+    PERFORM HTM2COB-SESS-SET
+    IF NOT V-OK OF LNK-HTM2COB-SESSION
+    THEN
+       DISPLAY "session set error"
+    END-IF
+   
+    .
+    EXIT SECTION .
+?>

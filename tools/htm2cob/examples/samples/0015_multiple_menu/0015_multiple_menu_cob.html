@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Multiple menu test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+ 
+<?cob 
+*>  use ; as a separator char
+    call "HTM2COB-POST-MULTI" using "pizza", ";", ws-pizza end-call
+    call "HTM2COB-SPEC-CHARS" using ws-pizza, htm-pizza end-call
+?>
+
+<p>
+Your selected pizzas: <?cob display trim(htm-pizza) end-display ?><br>
+(separator char: ";" )<br>
+</p>
+
+</body>
+</html>
+
+<?cob-ws
+*> you must reserve enough space for it, even if all strings are selected 
+ 01 ws-pizza                  pic x(500).
+ 01 htm-pizza                 pic x(500).
+?>

@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Session captcha test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+
+<?cob 
+*>  start or resume session
+    PERFORM HTM2COB-SESS-START
+
+    CALL "HTM2COB-POST" USING "name"   , WS-NAME END-CALL
+    CALL "HTM2COB-POST" USING "comment", WS-COMMENT END-CALL
+    CALL "HTM2COB-POST" USING "captchatext", WS-CAPTCHATEXT END-CALL
+
+*>  check saved captcha text in session 
+    MOVE "captchatext" TO HTM2COB-SESS-VAR-NAME
+    PERFORM HTM2COB-SESS-GET
+    IF NOT V-OK OF LNK-RESULT OF LNK-HTM2COB-SESSION
+    OR HTM2COB-SESS-VAR-VALUE NOT = WS-CAPTCHATEXT
+    THEN
+       DISPLAY "<p>Captcha verification failed, please try again.</p>"
+       DISPLAY '<p>'
+       DISPLAY '<form action="/cgi-bin/0024_sess_captcha_1" method="post" accept-charset="utf-8">'
+       DISPLAY '<input type="hidden" name="SESSIONID" value='HTM2COB-HIDDEN-SESSION-ID'/>'
+       DISPLAY '<input type="submit" value="Session captcha test page">'
+       DISPLAY '</form>'
+       DISPLAY '</p>'
+
+*>     slash with concatenate, because of the htm2cob preprocessor
+       DISPLAY "</" "body>" "</" "html>"
+       GOBACK
+    END-IF
+?>
+
+<h3>Your comment was accepted!</h3>
+<?cob 
+*>  filter special chars, before display text
+    CALL "HTM2COB-SPEC-CHARS" USING WS-NAME, HTM-NAME END-CALL
+
+*>  first replace LF and CR    
+    INSPECT WS-COMMENT REPLACING ALL X"0A" BY " "
+    INSPECT WS-COMMENT REPLACING ALL X"0D" BY " "
+    CALL "HTM2COB-SPEC-CHARS" USING WS-COMMENT, HTM-COMMENT END-CALL
+
+    DISPLAY "Hello " TRIM(HTM-NAME) "<br><br>"
+    DISPLAY "Your comment: " TRIM(HTM-COMMENT) "<br><br>"
+?>
+
+<br>
+<p> 
+<form action="/cgi-bin/0024_sess_captcha_1" method="post" accept-charset="utf-8">
+  <input type="hidden" name="SESSIONID" value=<?cob DISPLAY '"'HTM2COB-HIDDEN-SESSION-ID'"' END-DISPLAY?>"/>
+  <input type="submit" value="Session captcha test page">
+</form>
+</p>
+
+<p> 
+<a href="http://localhost/0024_sess_captcha_test.html">Session captcha test start page</a>
+</p>
+
+</body>
+</html>
+
+<?cob-ws
+*> COBOL variables
+ 01 WS-NAME               PIC X(20).
+ 01 WS-COMMENT            PIC X(10000).
+ 01 WS-CAPTCHATEXT        PIC X(10).
+
+ 01 HTM-NAME              PIC X(20).
+ 01 HTM-COMMENT           PIC X(10000).
+?>

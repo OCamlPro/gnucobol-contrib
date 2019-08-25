@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Mars Planet Webshop</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+<?cob 
+*>  start or resume session
+    PERFORM HTM2COB-SESS-START
+    DISPLAY "<br><pre>HTM2COB-HIDDEN-SESSION-ID: " HTM2COB-HIDDEN-SESSION-ID"</pre>"
+?>
+
+<h2>Mars Planet Webshop</h2>
+<h5>Sorry, there is no return ticket back to Earth...</h5>
+
+<h3>Enter quantities for items</h3>
+<p>
+<form name="selitemform" action="/cgi-bin/0033_ck_sess_cart_4" method="post" accept-charset="utf-8">
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Nr.</th>
+        <th>Item</th>
+        <th>Price ($)</th>
+        <th>Quantity</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?cob PERFORM LIST-CAT-ITEMS ?>
+    </tbody>
+  </table>
+  <br>
+  <input type="submit" value="Add to Cart"> <input type="reset">
+</form>
+</p>
+
+<br>
+<p> 
+<form action="/cgi-bin/0033_ck_sess_cart_2" method="post" accept-charset="utf-8">
+  <input type="submit" value="Mars Planet Webshop Categories">
+</form>
+</p>
+
+<p> 
+<a href="http://localhost/0033_ck_sess_cart_test.html">Mars Planet Webshop start page</a>
+</p>
+
+</body>
+</html>
+
+<?cob-ws 
+ COPY "shopdata.cpy".
+
+ 01 WS-IND                       PIC 9(4). 
+ 01 WS-PRICE-DISP                PIC ZZ,ZZZ,ZZ9.99.
+ 
+ 01 WS-SEL-CAT-ITEM.
+  02 FILLER                      PIC X(3) VALUE "cat".
+  02 WS-SEL-CAT-NR               PIC 9(1).
+  02 FILLER                      PIC X(5) VALUE "_item".
+  02 WS-SEL-ITEM-NR              PIC 9(1).
+  
+ 01 WS-QTY                       PIC 9(4). 
+ 01 WS-QTY-TMP                   PIC 9(4). 
+?>
+
+<?cob
+*>------------------------------------------------------------------------------
+ LIST-CAT-ITEMS SECTION.
+*>------------------------------------------------------------------------------
+    
+    CALL "HTM2COB-POST" USING "selcatnr", WS-SEL-CAT-NR END-CALL
+    
+    PERFORM VARYING WS-IND FROM 1 BY 1
+            UNTIL WS-IND > CAT-ITEM-MAX-IND
+       IF WS-CAT-NR OF WS-CAT-ITEM-TAB(WS-IND) = WS-SEL-CAT-NR  
+       THEN
+          MOVE WS-CAT-ITEM-NR OF WS-CAT-ITEM-TAB(WS-IND) TO WS-SEL-ITEM-NR
+          PERFORM READ-ITEMS-FROM-SESS
+          
+          MOVE WS-CAT-ITEM-PRICE OF WS-CAT-ITEM-TAB(WS-IND) TO WS-PRICE-DISP     
+          DISPLAY 
+             "<tr>"
+             "<td>"WS-CAT-ITEM-NR    OF WS-CAT-ITEM-TAB(WS-IND)"</td>"
+             "<td>"FUNCTION TRIM(WS-CAT-ITEM-NAME  OF WS-CAT-ITEM-TAB(WS-IND))"</td>"
+             "<td align='right'>"WS-PRICE-DISP"</td>"
+             "<td><input name='"WS-SEL-CAT-ITEM"'" " value='"WS-QTY"' type='text' size='4' maxlength='4'></td>"
+             "</tr>"
+          END-DISPLAY
+       END-IF
+    END-PERFORM
+
+    EXIT SECTION .
+    
+*>------------------------------------------------------------------------------
+ READ-ITEMS-FROM-SESS SECTION.
+*>------------------------------------------------------------------------------
+    
+    MOVE ZEROES TO WS-QTY
+
+    MOVE WS-SEL-CAT-ITEM TO HTM2COB-SESS-VAR-NAME
+    PERFORM HTM2COB-SESS-GET
+
+    IF V-OK OF LNK-RESULT OF LNK-HTM2COB-SESSION
+    THEN
+       MOVE HTM2COB-SESS-VAR-VALUE TO WS-QTY-TMP
+     
+       IF  FUNCTION TEST-NUMVAL(WS-QTY-TMP) = ZEROES
+       AND FUNCTION NUMVAL(WS-QTY-TMP) > ZEROES
+       THEN
+          MOVE FUNCTION NUMVAL(WS-QTY-TMP) TO WS-QTY
+       END-IF
+    END-IF   
+    
+    EXIT SECTION .
+?>
+
+

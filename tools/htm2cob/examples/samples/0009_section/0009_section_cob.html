@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Section test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+ 
+<h1><font color=#"FF0000">Top 10 Most Read Books In The World</font></h1>
+<p>
+<table border="1">
+  <thead>
+    <tr>
+      <th>Nr.</th>
+      <th>Approximate sales</th>
+      <th>Title</th>
+      <th>Author</th>
+    </tr>
+  </thead>
+  <tbody>
+  <?cob PERFORM LIST-BOOK ?>
+  </tbody>
+</table>
+</p>
+
+<hr color=#"00FF00">
+  
+</body>
+</html>
+
+<?cob-ws 
+
+ 01 WS-TAB-FIELDS.
+  02 WS-SALES                          PIC X(80).
+  02 WS-TITLE                          PIC X(80).
+  02 WS-AUTHOR                         PIC X(80).
+
+ 01 WS-IND                             PIC 9(2). 
+ 01 C-MAX-IND                          CONSTANT AS 10.
+ 01 WS-BOOKS.
+  02 FILLER                            PIC X(80) 
+     VALUE "3.9 Billion Copies;The Bible;---".
+  02 FILLER                            PIC X(80) 
+     VALUE "820 Million Copies;Quotations from the Works of Mao Tse-tung;By Mao Tse-tung".
+  02 FILLER                            PIC X(80) 
+     VALUE "400 Million Copies;Harry Potter;By J. K. Rowling".
+  02 FILLER                            PIC X(80) 
+     VALUE "103 Million Copies;Lord of the Rings;By J. R. R. Tolkien".
+  02 FILLER                            PIC X(80) 
+     VALUE "65 Million Copies;The Alchemist;By Paulo Coelho".
+  02 FILLER                            PIC X(80) 
+     VALUE "57 Million Copies;The Da Vinci Code;By Dan Brown".
+  02 FILLER                            PIC X(80) 
+     VALUE "43 Million Copies;Twilight - The Saga;By Stephenie Meyer".
+  02 FILLER                            PIC X(80) 
+     VALUE "33 Million Copies;Gone With the Wind;By Margaret Mitchell".
+  02 FILLER                            PIC X(80) 
+     VALUE "30 Million Copies;Think and Grow Rich;By Napoleon Hill".
+  02 FILLER                            PIC X(80) 
+     VALUE "27 Million Copies;Diary of Anne Frank;By Anne Frank".
+ 01 WS-BOOKS-R REDEFINES WS-BOOKS.
+  02 WS-BOOKS-LINES OCCURS C-MAX-IND TIMES.
+   03 WS-BOOKS-LINE                    PIC X(80).
+?>
+
+<?cob 
+*> COBOL sections after html body will be copied after the HTM2COB-MAIN
+*> section in the generated COBOL code.
+ LIST-BOOK SECTION.
+ 
+    PERFORM VARYING WS-IND FROM 1 BY 1
+            UNTIL WS-IND > C-MAX-IND
+	
+       INITIALIZE WS-TAB-FIELDS
+       UNSTRING WS-BOOKS-LINE(WS-IND) DELIMITED BY ";"
+	       INTO WS-SALES
+		        WS-TITLE
+				WS-AUTHOR
+			
+       DISPLAY   
+          "<tr>"
+          "<td>"WS-IND"</td>"
+          "<td>"WS-SALES"</td>"
+          "<td>"WS-TITLE"</td>"
+          "<td>"WS-AUTHOR"</td>"
+          "</tr>"
+	  END-DISPLAY
+	END-PERFORM
+	
+    EXIT SECTION .
+?>

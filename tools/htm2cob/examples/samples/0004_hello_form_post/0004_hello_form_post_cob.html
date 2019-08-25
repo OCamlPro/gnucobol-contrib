@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Hello GnuCOBOL world!</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+ 
+<?cob 
+    call "HTM2COB-POST" using "firstname", fname end-call
+    call "HTM2COB-SPEC-CHARS" using fname, htm-fname end-call
+    call "HTM2COB-POST" using "lastname", lname end-call
+    call "HTM2COB-SPEC-CHARS" using lname, htm-lname end-call
+?>
+This is a POST with values.<br><br>
+ 
+<?cob display "Hello GnuCOBOL world!" end-display ?>
+
+<p>
+First name: <?cob display trim(htm-fname) end-display ?><br>
+Last name : <?cob display trim(htm-lname) end-display ?><br>
+</p>
+
+</body>
+</html>
+
+<?cob-ws
+*> You can define variables in body or outside of body also.
+ 01 fname                     pic x(100).
+ 01 lname                     pic x(100).
+ 01 htm-fname                 pic x(100).
+ 01 htm-lname                 pic x(100).
+?>

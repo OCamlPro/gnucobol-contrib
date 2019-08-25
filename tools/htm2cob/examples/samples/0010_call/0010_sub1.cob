@@ -1,0 +1,21 @@
+*> 0010_sub1.COB
+*> 
+*> Dynamic CALL test. 
+*>
+ IDENTIFICATION DIVISION.
+ PROGRAM-ID. 0010_sub1.
+   AUTHOR. Laszlo Erdos
+
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ PROCEDURE DIVISION.
+
+ MAIN-SUB1 SECTION.
+
+	DISPLAY "<p><h3>Start 0010_sub1</h3></p>"
+
+    EXIT PROGRAM
+	.
+ MAIN-SUB1-EXIT.
+     EXIT.

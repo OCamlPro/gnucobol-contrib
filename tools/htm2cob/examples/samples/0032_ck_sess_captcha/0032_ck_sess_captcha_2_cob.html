@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Cookie session captcha test</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+</head>
+<body>
+
+<?cob 
+*>  start or resume session
+    PERFORM HTM2COB-SESS-START
+    PERFORM CREATE-IMG-CAPTCHA
+    PERFORM SAVE-CAPTCHA-TEXT-IN-SESSION
+?>
+
+<h3>Write your comment</h3>
+<p> 
+<form action="/cgi-bin/0032_ck_sess_captcha_3" method="post" accept-charset="utf-8">
+  <table border="0" cellpadding="0" cellspacing="4">
+    <tr>
+      <td align="right">Your name:</td>
+      <td><input name="name" type="text" size="20" maxlength="20"></td>
+    </tr>
+    <tr>
+      <td align="right" valign="top">Comment:</td>
+      <td><textarea name="comment" rows="10" cols="50"></textarea></td>
+    </tr>
+  </table>
+  <br>
+    <?cob display "<img src='../img/"trim(WS-CAPTCHA-FILE-NAME-SHORT)"'>" end-display ?>
+    CAPTCHA number: <input name="captchatext" type="text" size="10" maxlength="10">
+  <br>
+  <br>
+  <input type="submit" value="Submit"> <input type="reset">
+</form>
+</p>
+
+<p> 
+<a href="http://localhost/0032_ck_sess_captcha_test.html">Cookie session captcha test start page</a>
+</p>
+
+</body>
+</html>
+
+<?cob-ws 
+ 01 WS-CAPTCHA-FILE-NAME-SHORT         PIC X(256).
+ 01 WS-CAPTCHA-FILE-NAME               PIC X(256).
+ 01 WS-CAPTCHA-CHAR-TYPE               BINARY-LONG.
+    88 V-NUMBERS                       VALUE 0. 
+    88 V-UPPERCASE-LETTERS             VALUE 1. 
+    88 V-LOWERCASE-LETTERS             VALUE 2. 
+    88 V-LETTERS                       VALUE 3. 
+    88 V-LETTERS-NUMBERS               VALUE 4. 
+    88 V-UPPERCASE-LETTERS-NUMBERS     VALUE 5. 
+    88 V-LOWERCASE-LETTERS-NUMBERS     VALUE 6. 
+ 01 WS-CAPTCHA-TEXT                    PIC X(6). 
+
+ 01 WS-RETVAL                          BINARY-LONG. 
+  
+?>
+
+<?cob
+*>------------------------------------------------------------------------------
+ CREATE-IMG-CAPTCHA SECTION.
+*>------------------------------------------------------------------------------
+
+    SET V-NUMBERS OF WS-CAPTCHA-CHAR-TYPE TO TRUE
+    MOVE SPACES TO WS-CAPTCHA-FILE-NAME
+    STRING "/srv/www/htdocs/img/" 
+           "0032_captcha_" HTM2COB-HIDDEN-SESSION-ID ".png" X"00" DELIMITED BY SIZE
+      INTO WS-CAPTCHA-FILE-NAME 
+    END-STRING
+    MOVE SPACES TO WS-CAPTCHA-FILE-NAME-SHORT
+    STRING "0032_captcha_" HTM2COB-HIDDEN-SESSION-ID ".png" DELIMITED BY SIZE
+      INTO WS-CAPTCHA-FILE-NAME-SHORT 
+    END-STRING
+    MOVE ALL X"00" TO WS-CAPTCHA-TEXT
+    
+    CALL "imgcaptcha" USING BY REFERENCE WS-CAPTCHA-FILE-NAME
+                          , BY REFERENCE WS-CAPTCHA-CHAR-TYPE  
+                          , BY REFERENCE WS-CAPTCHA-TEXT
+         RETURNING WS-RETVAL
+    END-CALL
+    
+    EXIT SECTION .
+    
+*>------------------------------------------------------------------------------
+ SAVE-CAPTCHA-TEXT-IN-SESSION SECTION.
+*>------------------------------------------------------------------------------
+
+*>  write name in session
+    MOVE "captchatext"  TO HTM2COB-SESS-VAR-NAME
+    MOVE WS-CAPTCHA-TEXT TO HTM2COB-SESS-VAR-VALUE
+    PERFORM HTM2COB-SESS-SET
+    
+    EXIT SECTION .
+?>
+
+
