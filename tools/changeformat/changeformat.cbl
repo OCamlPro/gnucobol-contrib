@@ -302,6 +302,7 @@ start-changeformat.
     perform  varying XA from 512 by -1
               until Output-File-Name (XA:1) not = space
                 or  XA < 2
+       continue
     end-perform
     if       XA < 2
              move "ERROR: O/P path too short" to run-line
