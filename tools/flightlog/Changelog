@@ -610,3 +610,5 @@
                         Method of storing original data on m/f can vary and process
                         to get around this problem will also vary so function removed.
                         Remove this from manual.
+ 12/09/19 vbc           Error in script comp-flightlog.sh as compiling program  mistyped.
+

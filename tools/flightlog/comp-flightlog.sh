@@ -12,7 +12,7 @@ fi
 #    but not the scripts - lets not clutter up the ~/bin dir.
 #    User can copy if required.
 #
-cobc -x flight.cbl
+cobc -x flightlog.cbl
 #
 #    Could do a test that compile return no error before the mv
 #
