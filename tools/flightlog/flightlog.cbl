@@ -154,6 +154,10 @@
 *>                        starting program.
 *> 02/01/19 vbc       .05 No data test if trying to run options that expect data to be present. FL016.
 *>                        Silly omission but user could try it!
+*> 07/09/19 vbc       .06 Added extra displays for fs-reply to see if start first is broken
+*>                        with latest compiler code (v3.2 dev-0).
+*> 14/09/19 vbc       .07 In CCB000-LBR-ANALYSIS changed if statements adding end-if's
+*>                        to remove bug #005 duplicate adding airfield visit count.
 *>
 *> TODO maybe ? (outstanding):
 *>
@@ -570,7 +574,7 @@
 *>
  WORKING-STORAGE SECTION.
 *>----------------------
- 77  PROG-NAME               PIC X(18) VALUE "LOG BOOK (2.02.05)".
+ 77  PROG-NAME               PIC X(18) VALUE "LOG BOOK (2.02.07)".
  77  WS-CSV-Rec-Size         pic 9999 comp  value 512. *> This is the maximum record size for CSV logbook
                                                        *> data records [see manual]. If unsure leave as is
                                                        *>  It is more likely to be smaller i.e., 256.
@@ -806,8 +810,8 @@
 *> PRIMARY PROGRAM ERROR AND WARNING MESSAGES.
 *>
      03  FL001          pic x(39) value "FL001 Hit return when ready to continue".
-     03  FL002          pic x(51) value "FL002 record does NOT exist. Hit return to continue".
-     03  FL003          pic x(53) value "FL003 record error on rewrite. Hit return to continue".
+     03  FL002          pic x(51) value "FL002 Record does NOT exist. Hit return to continue".
+     03  FL003          pic x(53) value "FL003 Record error on rewrite. Hit return to continue".
      03  FL004          pic x(19) value "FL004 Record Exists".
      03  FL005          pic x(49) value "is a new entry. Enter Y if ok, else N to re-enter".
      03  FL006          pic x(29) value "Hit return to abort Correctly".
@@ -945,7 +949,7 @@
 *>
  01  CURS                    PIC 9(4).   *> Hold cursor position
 *>
- 01  SYS-MESSAGE             PIC X(38).  *> for File I/O errors
+ 01  Sys-Message             PIC X(38).  *> for File I/O errors
 *>
 *>  TABLES SECTION
 *>  ==============
@@ -1283,6 +1287,7 @@
 *>
      move     zeros to Save-Flt-Date  Save-FLT-Start.
      open     Input Flightlog-File.
+     initialise Flightlog-Record.
      if       FS-Reply = "00"
               start    Flightlog-File last
               read     Flightlog-File next record  *> if no data then next two will be zeros
@@ -3164,7 +3169,7 @@
  CCB000-LBR-ANALYSIS   SECTION.
 *>============================
 *>
-*> Accumulate Aircraft Stats
+*> Accumulate Aircraft Stats  for each logbook record read
 *>
      PERFORM  ZJ000-SEARCH-FOR-AIRCRAFT.               *> changed from ZH000 as THIS uses the table
      MOVE     C TO A.
@@ -3203,7 +3208,8 @@
 *>
      if       A not = zero
               move FLT-Date to WST-Afld-Last-Flt (A)
-              add  1        to WST-Afld-Cnt (A).
+              add  1        to WST-Afld-Cnt (A)
+     end-if
      if       FLT-From not = FLT-To
               move FLT-To to WS-ICAO-Code
               perform  ZN000-SEARCH-FOR-ICAO
@@ -3213,7 +3219,9 @@
               end-if
               if       A not = zero
                        move FLT-Date to WST-Afld-Last-Flt (A)
-                       add  1        to WST-Afld-Cnt (A).
+                       add  1        to WST-Afld-Cnt (A)
+              end-if
+     end-if
 *>
      GO       TO CCB999-EXIT.
 *>
@@ -4883,6 +4891,9 @@
      move     zero to WST-Airfield-Size.
      START    AIRFIELD-FILE FIRST.
      if       FS-Reply not = "00"
+                 perform ZZA-FILE-STATUS
+                 display "On A/C load ret = " at 2201
+                 display FS-Reply at 2218
               move 8 to Return-Code
               go to ZB999-Exit.
 *>
@@ -4917,6 +4928,9 @@
      MOVE     ZERO TO WST-AIRCRAFT-SIZE.
      START    AIRCRAFT-FILE FIRST.
      if       FS-Reply not = "00"
+                 perform ZZA-FILE-STATUS
+                 display "On A/C load ret = " at 2201
+                 display FS-Reply at 2218
               move 8 to Return-Code
               go to ZC999-Exit.
 *>
@@ -5030,21 +5044,26 @@
 *>
 *> Called when all dat files open
 *>
-     start    Flightlog-File FIRST.
-     if       FS-Reply not = "00"
-              display FL016 at line ws-23-lines col 10 with foreground-color COB-COLOR-RED with erase eol
-              accept WS-Reply at line ws-23-lines col 50
-              go to ZL999-Exit.
-     start    Aircraft-File  FIRST.
-     if       FS-Reply not = "00"
-              display FL016 at line ws-23-lines col 10 with foreground-color COB-COLOR-RED with erase eol
-              accept WS-Reply at line ws-23-lines col 50
-              go to ZL999-Exit.
-     start    Airfield-File FIRST.
-     if       FS-Reply not = "00"
-              display FL016 at line ws-23-lines col 10 with foreground-color COB-COLOR-RED with erase eol
-              accept WS-Reply at line ws-23-lines col 50
-              go to ZL999-Exit.
+     close  Flightlog-File Aircraft-File Airfield-File.
+     open   I-O Flightlog-File Aircraft-File Airfield-File.
+ *>    start    Flightlog-File FIRST.
+ *>    if       FS-Reply not = "00"
+ *>             display FL016 at line ws-22-lines col 10 with foreground-color COB-COLOR-RED with erase eol
+ *>             accept WS-Reply at line ws-22-lines col 60
+ *>               perform ZZA-File-Status
+ *>             go to ZL999-Exit.
+ *>    start    Aircraft-File  FIRST.
+ *>    if       FS-Reply not = "00"
+ *>             display FL016 at line ws-22-lines col 10 with foreground-color COB-COLOR-RED with erase eol
+ *>             accept WS-Reply at line ws-22-lines col 60
+ *>               perform ZZA-File-Status
+ *>             go to ZL999-Exit.
+ *>    start    Airfield-File FIRST.
+ *>    if       FS-Reply not = "00"
+ *>             display FL016 at line ws-22-lines col 10 with foreground-color COB-COLOR-RED with erase eol
+ *>             accept WS-Reply at line ws-22-lines col 60
+ *>               perform ZZA-File-Status
+ *>             go to ZL999-Exit.
      open     output FlightlogBackup-File AircraftBackup-File AirfieldBackup-File.
 *>
  ZL010-Process-Flightlog.
@@ -5293,7 +5312,7 @@
 *>
 *>  File Status Checking Routines using standard Cobol file status values only.
 *>
-     move     spaces to sys-message.
+     move     spaces to Sys-Message.
      evaluate s1
               when "0" go to ZZA999-exit
               when "1" go to zza999-exit
@@ -5308,20 +5327,20 @@
 *>
  zza020-check-inv-key-status.
      evaluate s2
-              when "1" move "Invalid key"           to sys-Message
-              when "2" move "Writing dup key"       to sys-message
-              when "3" move "No record found"       to sys-message
+              when "1" move "Invalid key"           to Sys-Message
+              when "2" move "Writing dup key"       to Sys-Message
+              when "3" move "No record found"       to Sys-Message
      end-evaluate.
 *>
  zza030-check-perm-err-status.
      evaluate s2
-              when "0" move "Permanent I/O error"   to sys-Message
-              when "1" move "Inconsistent filename" to sys-Message
-              when "4" move "Boundary violation"    to sys-Message
-              when "5" move "File not found"        to sys-message
-              when "7" move "Permission denied"     to sys-Message
-              when "8" move "Closed with lock"      to sys-Message
-              when "9" move "Conflicting attribute" to sys-Message
+              when "0" move "Permanent I/O error"   to Sys-Message
+              when "1" move "Inconsistent filename" to Sys-Message
+              when "4" move "Boundary violation"    to Sys-Message
+              when "5" move "File not found"        to Sys-Message
+              when "7" move "Permission denied"     to Sys-Message
+              when "8" move "Closed with lock"      to Sys-Message
+              when "9" move "Conflicting attribute" to Sys-Message
      end-evaluate.
 *>
  zza040-look-up-error.
@@ -5332,36 +5351,36 @@
 *>     move     spaces to disply-stat.
 *>     move     stat-bin to s2-displ.
      evaluate s2
-              when "1" move "File already open"     to sys-message
-              when "2" move "File not open"         to sys-message
-              when "3" move "Read not done"         to sys-message
-              when "4" move "Record overflow"       to sys-message
-              when "6" move "Read error"            to sys-message
-              when "7" move "Open Input Denied"     to sys-message
-              when "8" move "Open Output Denied"    to sys-message
-              when "9" move "Open I-O Denied"       to sys-message
+              when "1" move "File already open"     to Sys-Message
+              when "2" move "File not open"         to Sys-Message
+              when "3" move "Read not done"         to Sys-Message
+              when "4" move "Record overflow"       to Sys-Message
+              when "6" move "Read error"            to Sys-Message
+              when "7" move "Open Input Denied"     to Sys-Message
+              when "8" move "Open Output Denied"    to Sys-Message
+              when "9" move "Open I-O Denied"       to Sys-Message
      end-evaluate.
 *>
  zza050-look-up-error.
      evaluate s2
-              when "1" move "Record locked"         to sys-message
-              when "2" move "End of page"           to sys-message
-              when "7" move "Linage spec Invalid"   to sys-message
+              when "1" move "Record locked"         to Sys-Message
+              when "2" move "End of page"           to Sys-Message
+              when "7" move "Linage spec Invalid"   to Sys-Message
      end-evaluate.
 *>
  zza060-look-up-error.
      evaluate s2
-              when "1" move "File sharing failure"  to sys-message
+              when "1" move "File sharing failure"  to Sys-Message
      end-evaluate.
 *>
  zza090-look-up-error.
      evaluate s2
-              when "1" move "File not available"    to sys-message
+              when "1" move "File not available"    to Sys-Message
      end-evaluate.
 *>
  zza998-display-message.
-     if       sys-message not = spaces
-              display  sys-message at line ws-23-Lines col 41 with foreground-color COB-COLOR-RED
+     if       Sys-Message not = spaces
+              display  Sys-Message at line ws-23-Lines col 41 with foreground-color COB-COLOR-RED
               display FL017 at line ws-Lines col 01
               accept ws-reply at line ws-Lines col 30
               display space at line ws-23-Lines col 01 with erase eos.
