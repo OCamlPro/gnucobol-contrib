@@ -610,7 +610,9 @@
                         Method of storing original data on m/f can vary and process
                         to get around this problem will also vary so function removed.
                         Remove this from manual.
- 12/09/19 vbc           Error in script comp-flightlog.sh as compiling program  mistyped.
- 
+ 12/09/19 vbc           Error in script comp-flightlog.sh as compiling program name mistyped.
+
  14/09/19 vbc       .07 Bug #5 fix for dup counting on airfield anal.
 
+ 19/09/19 vbc       .08 Tail end of previous printed flight Remarks shows in next line if sub totals
+                        when using options 3 & 4 as overflow.

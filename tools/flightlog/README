@@ -91,14 +91,25 @@ may not be added subject to user requests along with any reasons why:
 
 There is no reason why it cannot be added to as a new Feature request.
 
-For v2.02.00 - An attempt to work with TODO (2) in progress but using hidden
-menu options 3 for C and 4 for D. It may or may not be operational for any
-given build.  Very much a try and see what it looks like after using
-prtpdf.sh as it might be a real mess.
+For v2.02.00 - An change to work with TODO (2) completed but using hidden
+menu options 3 for C and 4 for D.
+Very much a try and see what it looks like after using prtpdf.sh as it 
+might look a bit messy, does depend on settings in prtpdf.sh. 
+
+Note that sub and monthly totals still show the full total breakdowns
+so the printed output look off center - I have left this on purpose to
+highlight them.  If users request it I will re-position them but note
+that the flight totals are abbreviated for these options (3 & 4) and only
+show times for day, night, IFR, Multi (engine) values where as the totals
+provide a more detailed breakdown - see the manual for more information
+on totalling for month and page brought forward and carried forward.
 
 TODO (2) Compressed flight report using airfield names instead of icao codes
          completed as HIDDEN menu options 3 & 4 in place of options C & D.
 TODO (7) Deleted as not possible due to too many variations of data.
+
+Don't forget to look at the current Changelog file for up to date changes 
+with the latest at the end.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

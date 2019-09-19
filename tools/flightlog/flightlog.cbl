@@ -158,6 +158,8 @@
 *>                        with latest compiler code (v3.2 dev-0).
 *> 14/09/19 vbc       .07 In CCB000-LBR-ANALYSIS changed if statements adding end-if's
 *>                        to remove bug #005 duplicate adding airfield visit count.
+*> 19/09/19 vbc       .08 Tail end of previous printed flight Remarks shows in next line if sub totals
+*>                        when using options 3 & 4 as overflow.
 *>
 *> TODO maybe ? (outstanding):
 *>
@@ -3130,7 +3132,7 @@
      MOVE     SPACES TO PRINT-RECORD.
 *>
  cca100-Print-Subs.
-     MOVE     SPACES TO SR2-LIT2 pr3-data2.
+     MOVE     SPACES TO Print-Record SR2-LIT2 pr3-data2.
      move     all "-" to pr3-data1.
      WRITE    PRINT-RECORD AFTER 1.
      MOVE     ZERO TO WS-WORK1.
