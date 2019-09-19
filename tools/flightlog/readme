@@ -1,28 +1,17 @@
-Readme for SF at 2.02.05
-
-There is a updated manual for Flightlog mostly typos, grammar and re-locating
-content to other sections and other updates.
-
-Improvement to the building instructions for the COBOL compiler
-GnuCOBOL and the Flight software.
-
-Appendix T has been removed..
-
+READ any file named UPDATE first and do any actions specified
+BEFORE doing any thing else.
 
 READ any file named UPDATE first and do any actions specified
 BEFORE doing any thing else.
 
 Now read any file called README.1st.
 
-READ any file named UPDATE first and do any actions specified BEFORE doing
-any thing else.
-
 Now read any file called README.1st.
 
 
 Yes done twice to make sure you read it.
-
-Failure to do so will make your data files un-usable with Flightlog.
+Failure to do so will make your data files un-usable with
+Flightlog.
 
 Finish off reading this file then read the manual.
 
@@ -32,7 +21,6 @@ Please report any you find using the Tracker tool on the
 website or use the Forums if you cannot work out how to use it.
 
 Reminders for users to do:
-
 1. Script changes for your usage based on location or more importantly
    preferred date format (dd/mm/yyyy or mm/dd/yyyy or yyyy/mm/dd)
    See LC_TIME parameters when running Flightlog.
@@ -103,16 +91,25 @@ may not be added subject to user requests along with any reasons why:
 
 There is no reason why it cannot be added to as a new Feature request.
 
-For v2.02.00 - An attempt to work with TODO (2) in progress but using hidden
-menu options 3 for C and 4 for D. It may or may not be operational for any
-given build.  Very much a try and see what it looks like after using
-prtpdf.sh as it might be a real mess.
+For v2.02.00 - An change to work with TODO (2) completed but using hidden
+menu options 3 for C and 4 for D.
+Very much a try and see what it looks like after using prtpdf.sh as it 
+might look a bit messy, does depend on settings in prtpdf.sh. 
 
-TODO (2) DONE :Compressed flight report using airfield names instead of
-         icao codes completed as HIDDEN menu options 3 & 4 in place of
-         options C & D.
+Note that sub and monthly totals still show the full total breakdowns
+so the printed output look off center - I have left this on purpose to
+highlight them.  If users request it I will re-position them but note
+that the flight totals are abbreviated for these options (3 & 4) and only
+show times for day, night, IFR, Multi (engine) values where as the totals
+provide a more detailed breakdown - see the manual for more information
+on totalling for month and page brought forward and carried forward.
 
-TODO (7) Deleted as not possible due to too many variations of M/F data.
+TODO (2) Compressed flight report using airfield names instead of icao codes
+         completed as HIDDEN menu options 3 & 4 in place of options C & D.
+TODO (7) Deleted as not possible due to too many variations of data.
+
+Don't forget to look at the current Changelog file for up to date changes 
+with the latest at the end.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -148,4 +145,3 @@ End of README
 14/12/2018 vbc - More script updates and other content.
 17/12/2018 vbc - Minor clean up.
 31/12/2018 vbc - Updated for v2.02.03.
-02/01/2019 vbc - Updated for SF readme at 02.02.05.
