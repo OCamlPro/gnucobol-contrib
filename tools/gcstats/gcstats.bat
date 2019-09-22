@@ -123,95 +123,95 @@
             03  COLUMN 2   PIC X(60) 
                 VALUE "GnuCOBOL I/O Summary by Program/File".
             03  COLUMN 70  PIC X(4) VALUE "Page".
-            03  COLUMN +1  PIC ZZZ9 SOURCE PAGE-COUNTER.
+            03  COLUMN +2  PIC ZZZ9 SOURCE PAGE-COUNTER.
          02  LINE 2.
             03  COLUMN 6   PIC X(4) VALUE "From".
-            03  COLUMN +1  PIC X(19) SOURCE BGN-TOD.
-            03  COLUMN +1  PIC X(4) VALUE "thru".
-            03  COLUMN +1  PIC X(19) SOURCE END-TOD.
+            03  COLUMN +2  PIC X(19) SOURCE BGN-TOD.
+            03  COLUMN +2  PIC X(4) VALUE "thru".
+            03  COLUMN +2  PIC X(19) SOURCE END-TOD.
             03  COLUMN 103 PIC X(17) VALUE "  --- Totals ---".
          02  LINE PLUS 1.
             03  COLUMN 33  PIC X(10) VALUE "      Read".
-            03  COLUMN +1  PIC X(10) VALUE "     Write".
-            03  COLUMN +1  PIC X(10) VALUE "   ReWrite".
-            03  COLUMN +1  PIC X(10) VALUE "    Delete".
-            03  COLUMN +1  PIC X(10) VALUE "     Start".
-            03  COLUMN +1  PIC X(10) VALUE "  Read-Seq".
-            03  COLUMN +2  PIC X(11) VALUE "        I/O".
-            03  COLUMN +1  PIC X(9)  VALUE "   Errors".
+            03  COLUMN +2  PIC X(10) VALUE "     Write".
+            03  COLUMN +2  PIC X(10) VALUE "   ReWrite".
+            03  COLUMN +2  PIC X(10) VALUE "    Delete".
+            03  COLUMN +2  PIC X(10) VALUE "     Start".
+            03  COLUMN +2  PIC X(10) VALUE "  Read-Seq".
+            03  COLUMN +3  PIC X(11) VALUE "        I/O".
+            03  COLUMN +2  PIC X(9)  VALUE "   Errors".
 
        01  PROG-HEAD TYPE CONTROL HEADING ST-SOURCE.
          02  LINE PLUS 1.
             03  COLUMN 1   PIC X(8) VALUE " Source:".
-            03  COLUMN +1  PIC X(20) SOURCE ST-SOURCE.
+            03  COLUMN +2  PIC X(20) SOURCE ST-SOURCE.
 
        01  PROG-FOOT TYPE CONTROL FOOTING ST-SOURCE
            NEXT GROUP +1.
          02  LINE PLUS 1.
             03  COLUMN 33  PIC X(10) VALUE "   -------".
-            03  COLUMN +1  PIC X(10) VALUE "   -------".
-            03  COLUMN +1  PIC X(10) VALUE "   -------".
-            03  COLUMN +1  PIC X(10) VALUE "   -------".
-            03  COLUMN +1  PIC X(10) VALUE "   -------".
-            03  COLUMN +1  PIC X(10) VALUE "   -------".
-            03  COLUMN +2  PIC X(11) VALUE "    -------".
-            03  COLUMN +1  PIC X(9)  VALUE "  -------".
+            03  COLUMN +2  PIC X(10) VALUE "   -------".
+            03  COLUMN +2  PIC X(10) VALUE "   -------".
+            03  COLUMN +2  PIC X(10) VALUE "   -------".
+            03  COLUMN +2  PIC X(10) VALUE "   -------".
+            03  COLUMN +2  PIC X(10) VALUE "   -------".
+            03  COLUMN +3  PIC X(11) VALUE "    -------".
+            03  COLUMN +2  PIC X(9)  VALUE "  -------".
 
          02  LINE PLUS 1.
             03  COLUMN 1   PIC X(8) VALUE " Totals:".
-            03  COLUMN +1  PIC X(18) SOURCE ST-SOURCE.
+            03  COLUMN +2  PIC X(18) SOURCE ST-SOURCE.
             03  COLUMN 33  PIC ZZZZZZZZZ9 SUM ST-READ.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-WRITE.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-REWRITE.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-DELETE.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-START.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-READ-SEQ.
-            03  COLUMN +2  PIC ZZZZZZZZZZ9 
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-WRITE.
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-REWRITE.
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-DELETE.
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-START.
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-READ-SEQ.
+            03  COLUMN +3  PIC ZZZZZZZZZZ9 
                  SUM ST-START ST-READ-SEQ ST-READ    
                      ST-WRITE ST-REWRITE  ST-DELETE.
-            03  COLUMN +1  PIC ZZZZZZZZ9 
+            03  COLUMN +2  PIC ZZZZZZZZ9 
                  SUM ST-X-START ST-X-READ-SEQ ST-X-READ    
                      ST-X-WRITE ST-X-REWRITE  ST-X-DELETE.
 
        01  FILE-FOOT TYPE CONTROL FOOTING ST-FILE.
          02  LINE PLUS 1.
             03  COLUMN 2   PIC X(8) VALUE "   File:".
-            03  COLUMN +2  PIC X(18) SOURCE ST-FILE.
+            03  COLUMN +3  PIC X(18) SOURCE ST-FILE.
             03  COLUMN 33  PIC ZZZZZZZZZ9 SUM ST-READ.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-WRITE.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-REWRITE.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-DELETE.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-START.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-READ-SEQ.
-            03  COLUMN +2  PIC ZZZZZZZZZZ9 
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-WRITE.
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-REWRITE.
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-DELETE.
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-START.
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-READ-SEQ.
+            03  COLUMN +3  PIC ZZZZZZZZZZ9 
                  SUM ST-START ST-READ-SEQ ST-READ    
                      ST-WRITE ST-REWRITE  ST-DELETE.
-            03  COLUMN +1  PIC ZZZZZZZZ9 
+            03  COLUMN +2  PIC ZZZZZZZZ9 
                  SUM ST-X-START ST-X-READ-SEQ ST-X-READ    
                      ST-X-WRITE ST-X-REWRITE  ST-X-DELETE.
 
        01  FINAL-FOOT TYPE CONTROL FOOTING FINAL.
          02  LINE PLUS 2.
             03  COLUMN 33  PIC X(10) VALUE "  ========".
-            03  COLUMN +1  PIC X(10) VALUE "  ========".
-            03  COLUMN +1  PIC X(10) VALUE "  ========".
-            03  COLUMN +1  PIC X(10) VALUE "  ========".
-            03  COLUMN +1  PIC X(10) VALUE "  ========".
-            03  COLUMN +1  PIC X(10) VALUE "  ========".
-            03  COLUMN +2  PIC X(11) VALUE "   ========".
-            03  COLUMN +1  PIC X(9)  VALUE "   ======".
+            03  COLUMN +2  PIC X(10) VALUE "  ========".
+            03  COLUMN +2  PIC X(10) VALUE "  ========".
+            03  COLUMN +2  PIC X(10) VALUE "  ========".
+            03  COLUMN +2  PIC X(10) VALUE "  ========".
+            03  COLUMN +2  PIC X(10) VALUE "  ========".
+            03  COLUMN +3  PIC X(11) VALUE "   ========".
+            03  COLUMN +2  PIC X(9)  VALUE "   ======".
          02  LINE PLUS 1.
             03  COLUMN 1   PIC X(13) VALUE "Grand Total:".
             03  COLUMN 33  PIC ZZZZZZZZZ9 SUM ST-READ.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-WRITE.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-REWRITE.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-DELETE.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-START.
-            03  COLUMN +1  PIC ZZZZZZZZZ9 SUM ST-READ-SEQ.
-            03  COLUMN +2  PIC ZZZZZZZZZZ9 
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-WRITE.
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-REWRITE.
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-DELETE.
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-START.
+            03  COLUMN +2  PIC ZZZZZZZZZ9 SUM ST-READ-SEQ.
+            03  COLUMN +3  PIC ZZZZZZZZZZ9 
                  SUM ST-START ST-READ-SEQ ST-READ    
                      ST-WRITE ST-REWRITE  ST-DELETE.
-            03  COLUMN +1  PIC ZZZZZZZZ9 
+            03  COLUMN +2  PIC ZZZZZZZZ9 
                  SUM ST-X-START ST-X-READ-SEQ ST-X-READ    
                      ST-X-WRITE ST-X-REWRITE  ST-X-DELETE.
 
@@ -226,68 +226,68 @@
             03  COLUMN 2   PIC X(60) 
                 VALUE "GnuCOBOL I/O Summary by Hour of the Day".
             03  COLUMN 70  PIC X(4) VALUE "Page".
-            03  COLUMN +1  PIC ZZZ9 SOURCE PAGE-COUNTER.
+            03  COLUMN +2  PIC ZZZ9 SOURCE PAGE-COUNTER.
          02  LINE 2.
             03  COLUMN 6   PIC X(4) VALUE "From".
-            03  COLUMN +1  PIC X(19) SOURCE BGN-TOD.
-            03  COLUMN +1  PIC X(4) VALUE "thru".
-            03  COLUMN +1  PIC X(19) SOURCE END-TOD.
+            03  COLUMN +2  PIC X(19) SOURCE BGN-TOD.
+            03  COLUMN +2  PIC X(4) VALUE "thru".
+            03  COLUMN +2  PIC X(19) SOURCE END-TOD.
          02  LINE PLUS 1.
             03  COLUMN 25  PIC X(11) VALUE "      Reads".
-            03  COLUMN +1  PIC X(11) VALUE "    Updates".
-            03  COLUMN +1  PIC X(9)  VALUE "   Errors".
-            03  COLUMN +4  PIC X(20) VALUE "Most I/O in Hour".
-            03  COLUMN +1  PIC X(10) VALUE "      I/O".
+            03  COLUMN +2  PIC X(11) VALUE "    Updates".
+            03  COLUMN +2  PIC X(9)  VALUE "   Errors".
+            03  COLUMN +5  PIC X(20) VALUE "Most I/O in Hour".
+            03  COLUMN +2  PIC X(10) VALUE "      I/O".
 
        01  DATE-HEAD TYPE CONTROL HEADING ST-DATE.
          02  LINE PLUS 1.
             03  COLUMN 1   PIC X(8) VALUE "   Date:".
-            03  COLUMN +1  PIC X(12) SOURCE ST-DATE.
+            03  COLUMN +2  PIC X(12) SOURCE ST-DATE.
 
        01  DATE-FOOT TYPE CONTROL FOOTING ST-DATE
            NEXT GROUP +1.
          02  LINE PLUS 1.
             03  COLUMN 25  PIC X(11) VALUE "    -------".
-            03  COLUMN +1  PIC X(11) VALUE "    -------".
-            03  COLUMN +1  PIC X(9)  VALUE "  -------".
+            03  COLUMN +2  PIC X(11) VALUE "    -------".
+            03  COLUMN +2  PIC X(9)  VALUE "  -------".
 
          02  LINE PLUS 1.
             03  COLUMN 1   PIC X(8) VALUE " Totals:".
-            03  COLUMN +1  PIC X(18) SOURCE ST-DATE.
+            03  COLUMN +2  PIC X(18) SOURCE ST-DATE.
             03  COLUMN 25  PIC ZZZZZZZZZZ9 
                  SUM ST-START ST-READ-SEQ ST-READ.
-            03  COLUMN +1  PIC ZZZZZZZZZZ9 
+            03  COLUMN +2  PIC ZZZZZZZZZZ9 
                  SUM ST-WRITE ST-REWRITE  ST-DELETE.
-            03  COLUMN +1  PIC ZZZZZZZZ9 
+            03  COLUMN +2  PIC ZZZZZZZZ9 
                  SUM ST-X-START ST-X-READ-SEQ ST-X-READ    
                      ST-X-WRITE ST-X-REWRITE  ST-X-DELETE.
 
        01  HOUR-FOOT TYPE CONTROL FOOTING ST-HOUR.
          02  LINE PLUS 1.
             03  COLUMN 2   PIC X(8) VALUE "   Hour:".
-            03  COLUMN +2  PIC X(5) SOURCE ST-HOUR.
+            03  COLUMN +3  PIC X(5) SOURCE ST-HOUR.
             03  COLUMN 25  PIC ZZZZZZZZZZ9 
                  SUM ST-START ST-READ-SEQ ST-READ.
-            03  COLUMN +1  PIC ZZZZZZZZZZ9 
+            03  COLUMN +2  PIC ZZZZZZZZZZ9 
                  SUM ST-WRITE ST-REWRITE  ST-DELETE.
-            03  COLUMN +1  PIC ZZZZZZZZ9 
+            03  COLUMN +2  PIC ZZZZZZZZ9 
                  SUM ST-X-START ST-X-READ-SEQ ST-X-READ    
                      ST-X-WRITE ST-X-REWRITE  ST-X-DELETE.
-            03  COLUMN +4  PIC X(20) SOURCE MAX-SOURCE.
-            03  COLUMN +1  PIC ZZZZZZZZ9 SOURCE MAX-IO.
+            03  COLUMN +5  PIC X(20) SOURCE MAX-SOURCE.
+            03  COLUMN +2  PIC ZZZZZZZZ9 SOURCE MAX-IO.
 
        01  TYPE CONTROL FOOTING FINAL.
          02  LINE PLUS 2.
             03  COLUMN 25  PIC X(11) VALUE "   ========".
-            03  COLUMN +1  PIC X(11) VALUE "   ========".
-            03  COLUMN +1  PIC X(9)  VALUE "   ======".
+            03  COLUMN +2  PIC X(11) VALUE "   ========".
+            03  COLUMN +2  PIC X(9)  VALUE "   ======".
          02  LINE PLUS 1.
             03  COLUMN 1   PIC X(13) VALUE "Grand Total:".
             03  COLUMN 25  PIC ZZZZZZZZZZ9 
                  SUM ST-START ST-READ-SEQ ST-READ.
-            03  COLUMN +1  PIC ZZZZZZZZZZ9 
+            03  COLUMN +2  PIC ZZZZZZZZZZ9 
                  SUM ST-WRITE ST-REWRITE  ST-DELETE.
-            03  COLUMN +1  PIC ZZZZZZZZ9 
+            03  COLUMN +2  PIC ZZZZZZZZ9 
                  SUM ST-X-START ST-X-READ-SEQ ST-X-READ    
                      ST-X-WRITE ST-X-REWRITE  ST-X-DELETE.
 

@@ -17,7 +17,7 @@ Debug:all
 Release:all
 
 $(TARGET): 
-	cobc -Wall -std=mf -fstatic-call -fimplicit-init -fnotrunc -fmf-files -fdump=all -debug -x -o gcstats gcstats.bat 
+	cobc -Wall -std=default -fstatic-call -fimplicit-init -fnotrunc -fmf-files -fdump=all -debug -x -o gcstats gcstats.bat 
 
 
 %.o: %.c
