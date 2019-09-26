@@ -2251,6 +2251,7 @@
      move     zero to a c d q y s s2 z2 z3.
      move     1 to s.                   *> Working Word start point
      move     Word-Length to z z2.      *> Working Word Length
+*>
  bb051-Clear-Left-Brace.
      if       z2 < 1                    *>  Should never happen but!
               go to bb020-GetAWord.
@@ -2386,7 +2387,7 @@
 *>
  bb100-scan4-colon.
 *>
-*> now we can have num:num DataName:DN num:DN DN:num
+*> now we can have num:num DataName:DN num:DN DN:num  AND EVEN DN:
 *> z2 = current WL, s = leftmost char & z= rightmost char in wsFW2
 *>
      move     spaces to wsFoundNewWord wsFoundNewWord2.
