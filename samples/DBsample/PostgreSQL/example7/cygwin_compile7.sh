@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # SQLCA: SQL Communications Area for Ocesql
-COPY=/home/$USER/Open-COBOL-ESQL-1.1/copy
+COPY=/home/$USER/Open-COBOL-ESQL-1.2/copy
 SCR=/usr/local/share/gnucobol/copy
-OC_OBJ=/home/$USER/Open-COBOL-ESQL-1.1/dblib
+OC_OBJ=/home/$USER/Open-COBOL-ESQL-1.2/dblib
 
 # clean
 rm PGTEST7
