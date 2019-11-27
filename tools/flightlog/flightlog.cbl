@@ -141,25 +141,9 @@
 *>  Operational, Warning or Error Messages:
 *>                 FL001 thru FL050.  Flightlog usage issues. (FL018 not used)
 *>**
-*>  CHANGES.       All old changes saved to file Changelog as list is getting long!
-*>                  last two digits (.nn) is build number.
+*>  CHANGES.       See Changelog file  with latest at the end.
+*>                 Note last two digits of version (.nn) is build number.
 *>
-*> 29/12/18 vbc       .04 Problem with end of line that is not there so data
-*>                        is one big block. This will not work less plan 2 can be
-*>                        created and no, no idea at the moment.
-*>                        AS this issue cannot be resolved when using a normal data
-*>                        processing for ASCII data records as Line Sequential this
-*>                        function is being removed (Data conversion EBCDIC to ASCII).
-*>                        Likewise P4 usage so now only 3 parameters maximum used when
-*>                        starting program.
-*> 02/01/19 vbc       .05 No data test if trying to run options that expect data to be present. FL016.
-*>                        Silly omission but user could try it!
-*> 07/09/19 vbc       .06 Added extra displays for fs-reply to see if start first is broken
-*>                        with latest compiler code (v3.2 dev-0).
-*> 14/09/19 vbc       .07 In CCB000-LBR-ANALYSIS changed if statements adding end-if's
-*>                        to remove bug #005 duplicate adding airfield visit count.
-*> 19/09/19 vbc       .08 Tail end of previous printed flight Remarks shows in next line if sub totals
-*>                        when using options 3 & 4 as overflow.
 *>
 *> TODO maybe ? (outstanding):
 *>
@@ -191,7 +175,7 @@
 *>
 *> This program is time recording software for air crew as private,
 *> commercial (i.e., holding a CPL or ATPL) and military, World wide and is
-*> Copyright (c) Vincent B Coen. 1986-2019 and later. The supplied copyright
+*> Copyright (c) Vincent B Coen. 1986-2020 and later. The supplied copyright
 *> notices that are displayed and printed MUST be maintained at all times.
 *>
 *> This program as OS (Open Source) is free software; you can redistribute
@@ -241,8 +225,8 @@
  SPECIAL-NAMES.
      CONSOLE IS CRT.
 *>       Alphabet Alpha is ASCII.    *> When this works can get rid of the table-ascii and table-ebcdic
-*>       Alphabet Beta  is EBCDIC.
-*>
+*>       Alphabet Beta  is EBCDIC.   *> THIS IS NOT AVAILBLE to users as cannot work due to M/F methods
+*>                                      of end of record in PDS/E cannot be transferred to a PC.
  INPUT-OUTPUT        SECTION.
 *>--------------------------
 *>
@@ -310,7 +294,7 @@
      03  FLT-END             PIC 9(4).  *>  ditto
      03  FLT-AC-TYPE         PIC X(8).  *> 24
      03  FLT-AC-REG.                       *>      *> Using 1st 5 digits for Nth American a/c ignore 1st char 'N'
-         05  flt-ac-reg1-2   pic xx.               *>   but include 'N' for printing.
+         05  Flt-AC-Reg1-2   pic xx.               *>   but include 'N' for printing.
          05  filler          pic xxxx.     *> last digit not used see above.
      03  FLT-CAPTAIN         PIC X(15). *> 45
      03  FLT-CAPACITY        PIC XXX.
@@ -532,7 +516,7 @@
      03  filler              pic X.              *> '4' for NEW airport data.
      03  CSV-Airfield-Code   pic x(4).           *> ICAO code for NEW airport.
      03  filler              pic x.              *> Fixed value is comma ','.
-     03  CSV-Airfield-Name   pic x(20).          *> Airport name up to 20 characters and trailing spaces.
+     03  CSV-Airfield-Name   pic x(32).          *> Airport name up to 32 characters and trailing spaces.
 *>
 *>  ONLY needed ONCE if a NEW aircraft type used in log book data you can add them in advance of being used.
 *>   If aircraft type already present and if present record is updated with MS and complex fields.
@@ -545,7 +529,8 @@
      03  CSV-Acft-Complex    pic x.              *> 'Y' for (yes) for all multi-engine (Default)
                                                  *>   'N' (or space) for simple single engine A/C with fixed gear and propeller.
 *>
-*> This record only needed if CSV file contains records for other pilots say when coming from A/C Technical. logs
+*> This record only needed if CSV file contains records for other pilots say when coming from A/C
+*>   Technical. logs
 *>    and field 2 used to replacing a given name in CSV-Captain-Search with one in CSV-Replace-Captain.
 *>
 *> Here useful if CSV file contains the Pilots name but s/he wishes to change it to another such as
@@ -576,7 +561,7 @@
 *>
  WORKING-STORAGE SECTION.
 *>----------------------
- 77  PROG-NAME               PIC X(18) VALUE "LOG BOOK (2.02.07)".
+ 77  PROG-NAME               PIC X(18) VALUE "LOG BOOK (2.02.11)".
  77  WS-CSV-Rec-Size         pic 9999 comp  value 512. *> This is the maximum record size for CSV logbook
                                                        *> data records [see manual]. If unsure leave as is
                                                        *>  It is more likely to be smaller i.e., 256.
@@ -627,6 +612,14 @@
  77  WS-ELAPSED-TIME         PIC 9(4) COMP  VALUE ZERO.
  77  WS-CALC-TIME            PIC 9(4) COMP  VALUE ZERO.
  77  WS-Time-Remaining       pic 9(4) comp  value zero.
+ 77  WS-Acft-Cnt-In          pic 9(4) comp  value zero.
+ 77  WS-Acft-Cnt-Out         pic 9(4) comp  value zero.
+ 77  WS-Afld-Cnt-In          pic 9(4) comp  value zero.
+ 77  WS-Afld-Cnt-Out         pic 9(4) comp  value zero.
+ 77  WS-Flt-Cnt-In           pic 9(6) comp  value zero.
+ 77  WS-Flt-Cnt-Out          pic 9(6) comp  value zero.
+ 77  WS-Disp6A               pic z(5)9.
+ 77  WS-Disp6B               pic z(5)9.
  77  PRINT-START             PIC 9(8) COMP  VALUE ZERO.
  77  Print-Start-Time        pic 9(4).
  77  PRINT-END               PIC 9(8) COMP  VALUE ZERO.
@@ -799,7 +792,6 @@
 *>                                               , LENGTH =>24
 *>
      03  SY010          pic x(46) value "SY010 Terminal program not set to length => 24".
- *>    03  SY011          pic x(47) value "SY011 Terminal program not set to Columns => 92".
      03  SY012          pic x(43) value "SY012 Cannot display menu option F as < 106".
 *>
 *>  THESE ARE ONLY FOR CSV DEFINITION OR DATA ERRORS
@@ -828,7 +820,6 @@
      03  FL015          pic x(38) value "FL015 Re-Adjust screen then hit return".
      03  FL016          pic x(50) value "FL016 Flight Data not present yet - option aborted".
      03  FL017          pic x(28) value "FL017 Hit return to continue".
- *>    03  FL018          pic x(46) value "FL018 Correct problem & run fix it routine NOW".
      03  FL019          pic x(41) value "FL019 CSV delimiter used from data record".
      03  FL020          pic x(23) value "FL020 Enter Y or N only".
      03  FL021          pic x(23) value "FL021 Enter M or S only".
@@ -1168,6 +1159,9 @@
  PROCEDURE DIVISION chaining P1 P2 P3.
 *>===================================
  A000-CONTROL       SECTION.
+*>
+*>  First check that main files sizes are the same as the back up files.
+*>
      move     function length (FLIGHTLOG-Record)       to WS-Rec-Length-1.
      move     function length (FLIGHTLOGBACKUP-RECORD) to WS-Rec-Length-2.
      if       WS-Rec-Length-1 not = WS-Rec-Length-2
@@ -1211,7 +1205,7 @@
               display "P1 = NONIGHT or NONITE for no night time calcs against table" at 0301
               display "P2 = 'CSV=' CSV path and file name for Config file if not default"   at 0401
               display "P3 = ACFT-DATE for report excludes unused Aircraft"           at 0501
-              display "P4 = EBCDIC conversion of CSV data [NOT CURRENTLY IN USE]"    at 0601
+ *>             display "P4 = EBCDIC conversion of CSV data [NOT CURRENTLY IN USE]"    at 0601
               display FL006 at 0801
               accept ws-reply at 0831
               goback.
@@ -1288,15 +1282,15 @@
 *>   Date will be used initially for log book date entry.
 *>
      move     zeros to Save-Flt-Date  Save-FLT-Start.
-     open     Input Flightlog-File.
      initialise Flightlog-Record.
+     open     Input Flightlog-File.
      if       FS-Reply = "00"
               start    Flightlog-File last
               read     Flightlog-File next record  *> if no data then next two will be zeros
               move     FLT-Date   to Save-FLT-Date
               move     FLT-Start  to Save-FLT-Start
-              close    Flightlog-File
      end-if.
+     close    Flightlog-File.
 *>
      perform  D000-Setup-Datafiles.    *> created if not exist then left closed
      open     output Print-File.       *> Note that printed o/p will be released only after CLOSE at EOJ.
@@ -1426,7 +1420,8 @@
 *>============================
 *>
      MOVE     WS-ICAO-CODE TO ICAO-CODE.
-     READ     AIRFIELD-FILE INVALID KEY   MOVE HIGH-VALUES TO FS-REPLY.
+     READ     AIRFIELD-FILE INVALID KEY
+              MOVE HIGH-VALUES TO FS-REPLY.
 *>
      IF       FS-REPLY NOT = "00"
               DISPLAY FL002 at line ws-22-Lines col 01
@@ -1434,7 +1429,8 @@
               GO TO BB999-EXIT.
 *>
      ACCEPT   AFLD-NAME AT 0850 with update.
-     REWRITE  AIRFIELD-RECORD INVALID KEY   MOVE HIGH-VALUES TO FS-REPLY.
+     REWRITE  AIRFIELD-RECORD INVALID KEY
+              MOVE HIGH-VALUES TO FS-REPLY.
 *>
      IF       FS-REPLY NOT = "00"
               DISPLAY FL003 at line ws-22-Lines col 01
@@ -1484,7 +1480,8 @@
               START    AIRFIELD-FILE FIRST
      else
               Move     WS-ICAO-Code to ICAO-Code
-              START    AIRFIELD-FILE KEY not < ICAO-CODE Invalid key  MOVE HIGH-VALUES TO FS-REPLY.
+              START    AIRFIELD-FILE KEY not < ICAO-CODE Invalid key
+                       MOVE HIGH-VALUES TO FS-REPLY.
 *>
      Inspect  WS-ICAO-Code replacing all spaces by "Z".
 *>
@@ -1501,7 +1498,7 @@
      ADD      1 TO LINE-CNT.
 *>
      If       line-cnt > WS-Scrn-BE-Cnt
-        and   page-cnt > 1
+        and   page-cnt > zero
               go to BE050-View-Afld5.
 *>
      IF       LINE-CNT > WS-Scrn-BE-Cnt
@@ -1517,8 +1514,8 @@
      DISPLAY  "ICAO AIRFIELD" AT WS-Scrn-BE-Curs WITH foreground-color COB-COLOR-GREEN.
      add      42 to WS-Scrn-BE-Curs.
      DISPLAY  "ICAO AIRFIELD" AT WS-Scrn-BE-Curs WITH foreground-color COB-COLOR-GREEN.
-     add      42 to WS-Scrn-BE-Curs.
-     DISPLAY  "ICAO AIRFIELD" AT WS-Scrn-BE-Curs WITH foreground-color COB-COLOR-GREEN.
+ *>    add      42 to WS-Scrn-BE-Curs.
+ *>    DISPLAY  "ICAO AIRFIELD" AT WS-Scrn-BE-Curs WITH foreground-color COB-COLOR-GREEN.
      DISPLAY  WS-Scrn-Prompt3 line ws-Lines col 01 WITH foreground-color COB-COLOR-White.
 *>
  BE050-VIEW-AFLD5.
@@ -3246,7 +3243,7 @@
      move     "NAME MISSING" to AFLD-Name.
      move     WS-ICAO-Code   to ICAO-Code.
      move     FLT-Date       to Afld-Last-Flt.
-     write    Airfield-Record.                  *> ingnoring any invalid key - may be had another bad rec & now created.
+     write    Airfield-Record.                  *> ignoring any invalid key - may be had another bad rec & now created.
 *>
      add      1 to WST-AIRFIELD-SIZE.           *> update table then sort it.
      MOVE     WS-ICAO-CODE  TO WST-AIRFIELD  (WST-AIRFIELD-SIZE).
@@ -3840,6 +3837,8 @@
  CE000-Amend-Aircraft-Type section.
 *>================================
 *>
+*>  Re-Load aircraft Table at end
+*>
      PERFORM  A020-DISPLAY-MENU.
      DISPLAY  "Change Aircraft type" AT 0128 WITH foreground-color COB-COLOR-GREEN.   *> 'Entry" at cc42
      display  "- - - - Type - - - -" at 0301
@@ -3852,7 +3851,7 @@
      accept   WS-Old-AC-Type at 0502.
      move     function upper-case (WS-Old-AC-Type) to WS-Old-AC-Type Aircraft-Type.
      if       WS-Old-AC-Type (1:1) = space
-              go to CE999-Exit.
+              go to CE040-Deal-With-Acft-Table.
      display  WS-Old-AC-Type at 0502.
      accept   WS-New-AC-Type at 0513.
      move     function upper-case (WS-New-AC-Type) to WS-New-AC-Type.
@@ -3863,7 +3862,7 @@
      if       FS-Reply not = "00"
               display FL016 at line ws-23-lines col 10 with foreground-color COB-COLOR-RED with erase eol
               accept WS-Reply at line ws-23-lines col 50
-              go to CE999-Exit.
+              go to CE040-Deal-With-Acft-Table.
 *>
  CE020-Read-Flitelog.
      read     Flightlog-File next record at end
@@ -3875,32 +3874,42 @@
                          display FL003 at 0801  foreground-color COB-COLOR-RED
                          accept  WS-Reply at 0855
                          display  space at 0801 with erase eol
-                         go to CE999-Exit.                        *> serious problem somewhere, no disk space ?
+                         go to CE040-Deal-With-Acft-Table.   *> Serious problem somewhere, no disk space ?
      go       to CE020-Read-Flitelog.
 *>
  CE030-Proc-Acft-File.
      move     WS-Old-AC-Type to Aircraft-Type.
-     Read     Aircraft-File key Aircraft-Type      INVALID KEY
-              display    FL035 at 0901 with foreground-color COB-COLOR-RED
-              display    FS-Reply at 0960
-              display    space at 0901 with erase eol
-              initialize Aircraft-Record.
+     Read     Aircraft-File key Aircraft-Type.   *>      INVALID KEY
 *>
      if       FS-Reply = "00"                         *> only do if rec found
-              delete     Airfield-File record.
+              delete     Airfield-File record
+     else
+              display    FL035 at 0901 with foreground-color COB-COLOR-RED erase eol
+              display    FS-Reply at 0927
+              display    FL017    at 1001 erase eol
+              accept     WS-Reply at 1030
+              display    space at 0901 with erase eol
+              display    space at 1001 with erase eol
+              initialize Aircraft-Record
+     end-if
      move     WS-New-AC-Type to Aircraft-Type.
      write    Airfield-Record.
      go       to CE010-Get-Type.
+*>
+ CE040-Deal-With-Acft-Table.
+     if       WST-Aircraft-Size = zero
+              go to CE999-Exit.
+     perform  ZC000-Load-Aircraft.              *> Less effort, just reloading the table
 *>
  CE999-Exit.  exit section.
 *>
  D000-SETUP-DATAFILES  SECTION.
 *>============================
 *>
-*> First test for existance of ISAM files then SEQ files and process or setup accordingly
+*> First test for existence of ISAM files then SEQ files and process or setup accordingly
 *>
      move     zeros to File-Status-Flags.
-     CALL     "CBL_CHECK_FILE_EXIST" USING "flightlog.dat" Cbl-File-Details.
+     CALL     "CBL_CHECK_FILE_EXIST" USING "flitelog.dat" Cbl-File-Details.
      if       Return-Code = zero
               move 1 to Flightlog-dat-Exists.
      CALL     "CBL_CHECK_FILE_EXIST" USING "airfield.dat" Cbl-File-Details.
@@ -3909,7 +3918,7 @@
      CALL     "CBL_CHECK_FILE_EXIST" USING "aircraft.dat" Cbl-File-Details.
      if       Return-Code = zero
               move 1 to Aircraft-dat-Exists.
-     CALL     "CBL_CHECK_FILE_EXIST" USING "flightlog.seq" Cbl-File-Details.
+     CALL     "CBL_CHECK_FILE_EXIST" USING "flitelog.seq" Cbl-File-Details.
      if       Return-Code = zero
               move 1 to Flightlog-Seq-Exists.
      CALL     "CBL_CHECK_FILE_EXIST" USING "airfield.seq" Cbl-File-Details.
@@ -4891,13 +4900,15 @@
               move high-values to WST-Airfield (WST-Airfield-Size)
      end-perform
      move     zero to WST-Airfield-Size.
-     START    AIRFIELD-FILE FIRST.
-     if       FS-Reply not = "00"
-                 perform ZZA-FILE-STATUS
-                 display "On A/C load ret = " at 2201
-                 display FS-Reply at 2218
-              move 8 to Return-Code
-              go to ZB999-Exit.
+     close    Airfield-File.
+     open     i-o Airfield-file.
+ *>    START    AIRFIELD-FILE FIRST.
+ *>    if       FS-Reply not = "00"
+ *>                perform ZZA-FILE-STATUS
+ *>                display "On Afld load ret = " at 2201
+ *>                display FS-Reply at 2220
+ *>             move 8 to Return-Code
+ *>             go to ZB999-Exit.
 *>
  ZB020-LOAD-AFLD-READ.
      READ     AIRFIELD-FILE NEXT RECORD AT END
@@ -4920,21 +4931,24 @@
  ZC000-LOAD-AIRCRAFT   SECTION.
 *>============================
 *>
-*>  Init table but set acft field to HV so that sorting will bit give junk data
+*>  Init table but set acft field to HV so that sorting will give junk data
 *>    as such recs will be further back in table beyond current size
 *>
      initialise WST-Aircraft-Table.
      perform  varying WST-AIRCRAFT-SIZE from 1 by 1 until WST-AIRCRAFT-SIZE > WST-AC-Max
-              move high-values to WST-Aircraft (WST-AIRCRAFT-SIZE)
-     end-perform
+              move all "Z" to WST-Aircraft (WST-AIRCRAFT-SIZE)
+     end-perform.
+     move     zero to Return-Code.
      MOVE     ZERO TO WST-AIRCRAFT-SIZE.
-     START    AIRCRAFT-FILE FIRST.
-     if       FS-Reply not = "00"
-                 perform ZZA-FILE-STATUS
-                 display "On A/C load ret = " at 2201
-                 display FS-Reply at 2218
-              move 8 to Return-Code
-              go to ZC999-Exit.
+     close    Aircraft-File.
+     open     i-o Aircraft-File.
+  *>   START    AIRCRAFT-FILE FIRST.
+  *>   if       FS-Reply not = "00"
+  *>               perform ZZA-FILE-STATUS
+  *>               display "On A/C load ret = " at 2201
+  *>               display FS-Reply at 2219
+  *>            move 8 to Return-Code
+  *>            go to ZC999-Exit.
 *>
  ZC020-READ.
      READ     AIRCRAFT-FILE NEXT AT END
@@ -4952,8 +4966,8 @@
               GO TO ZC999-EXIT.
 *>
      ADD      1 TO WST-AIRCRAFT-SIZE.
-     MOVE     Aircraft-Type     TO WST-AIRCRAFT (WST-AIRCRAFT-SIZE).
-     MOVE     AIRCRAFT-MS       TO WST-AC-MS (WST-AIRCRAFT-SIZE).
+     MOVE     Aircraft-Type     TO WST-AIRCRAFT     (WST-AIRCRAFT-SIZE).
+     MOVE     AIRCRAFT-MS       TO WST-AC-MS        (WST-AIRCRAFT-SIZE).
      move     Aircraft-Complex  to WST-AC-Complex   (WST-AIRCRAFT-SIZE).
      move     AIRCRAFT-Last-Reg to WST-AC-Last-Reg  (WST-AIRCRAFT-SIZE).
      move     Aircraft-Last-Flt to WST-AC-Last-Flt  (WST-AIRCRAFT-SIZE).
@@ -5046,8 +5060,8 @@
 *>
 *> Called when all dat files open
 *>
-     close  Flightlog-File Aircraft-File Airfield-File.
-     open   I-O Flightlog-File Aircraft-File Airfield-File.
+     close    Flightlog-File     Aircraft-File   Airfield-File.
+     open     I-O Flightlog-File Aircraft-File   Airfield-File.
  *>    start    Flightlog-File FIRST.
  *>    if       FS-Reply not = "00"
  *>             display FL016 at line ws-22-lines col 10 with foreground-color COB-COLOR-RED with erase eol
@@ -5067,46 +5081,89 @@
  *>               perform ZZA-File-Status
  *>             go to ZL999-Exit.
      open     output FlightlogBackup-File AircraftBackup-File AirfieldBackup-File.
+     move     zeros to WS-Acft-Cnt-In
+                       WS-Acft-Cnt-Out
+                       WS-Afld-Cnt-In
+                       WS-Acft-Cnt-Out
+                       WS-Flt-Cnt-In
+                       WS-Flt-Cnt-Out.
 *>
  ZL010-Process-Flightlog.
      read     Flightlog-File next at end
+              move  WS-Flt-Cnt-In  to WS-Disp6A
+              move  WS-Flt-Cnt-Out to WS-Disp6B
+              display "Flights  " at line WS-22-Lines col 1
+              perform ZL035-Display-Counts
               go to ZL020-Process-Aircraft.
      if       FS-Reply not = "00"
               go to ZL020-Process-Aircraft.
+     add      1 to WS-Flt-Cnt-In.
      write    FlightlogBackup-Record from Flightlog-Record.
      if       FS-Reply not = "00"
-              display FL029 at 1201 with erase eol
-              display FL006 at 1301 with erase eol
+              display FL029    at line ws-22-lines col 1 with erase eol
+              display FS-Reply at line ws-22-lines col 45
+              display FL006 at line ws-23-lines col 1 with erase eol
+         accept ws-reply at line ws-23-lines col 31
               go to ZL040-Finish.
+     add      1 to WS-Flt-Cnt-Out.
      go       to ZL010-Process-Flightlog.
 *>
  ZL020-Process-Aircraft.
      read     Aircraft-File next at end
+              move  WS-Acft-Cnt-In  to WS-Disp6A
+              move  WS-Acft-Cnt-Out to WS-Disp6B
+              display "Aircraft " at line WS-22-Lines col 1
+              perform ZL035-Display-Counts
               go to ZL030-Process-Airfield.
      if       FS-Reply not = "00"
               go to ZL030-Process-Airfield.
+     add      1 to WS-Acft-Cnt-In.
      write    AircraftBackup-Record from Aircraft-Record.
      if       FS-Reply not = "00"
-              display FL030 at 1201 with erase eol
-              display FL006 at 1301 with erase eol
+              display FL030 at line ws-22-lines col 1 with erase eol
+              display FS-Reply at line ws-22-lines col 45
+              display FL006 at line ws-23-lines col 1 with erase eol
+         accept ws-reply at line ws-23-lines col 31
               go to ZL040-Finish.
+     add      1 to WS-Acft-Cnt-Out.
      go       to ZL020-Process-Aircraft.
 *>
  ZL030-Process-Airfield.
      read     Airfield-File next at end
+              move  WS-Afld-Cnt-In  to WS-Disp6A
+              move  WS-Afld-Cnt-Out to WS-Disp6B
+              display "Airfield " at line WS-22-Lines col 1
+              perform ZL035-Display-Counts
               go to ZL040-Finish.
      if       FS-Reply not = "00"
+        display "Airfield end data" at 1201 with erase eol
+         display FL001 at 1301 with erase eol
+         accept ws-reply at 1340
               go to ZL040-Finish.
+     add      1 to WS-Afld-Cnt-In.
      IF       icao-code not alphabetic go to ZL030-Process-Airfield.
      write    AirfieldBackup-Record from Airfield-Record.
      if       FS-Reply not = "00"
-              display FL031 at 1201 with erase eol
-              display FL006 at 1301 with erase eol
+              display FL031 at line ws-20-lines col 1 with erase eol
+              display FS-Reply at line ws-20-lines col 45
+              display AirfieldBackup-Record at line ws-21-lines col 1 with erase eos
+              display Airfield-Record at line ws-21-lines col 1 with erase eos
+              display FL006 at line ws-23-lines col 1 with erase eol
+         accept ws-reply at line ws-23-lines col 31
               go to ZL040-Finish.
+     add      1 to WS-Afld-Cnt-Out.
      go       to ZL030-Process-Airfield.
 *>
+ ZL035-Display-Counts.
+     display  "In  = "  at line ws-22-lines col 10 with erase eos.
+     display  WS-Disp6A at line ws-22-lines col 16.
+     display  "Out = "  at line ws-22-lines col 30.
+     display  WS-Disp6B at line ws-22-lines col 35.
+     display  FL001     at line ws-23-lines col 1.
+     accept   WS-Reply at  line ws-23-lines col 41.
+*>
  ZL040-Finish.
-     close     FlightlogBackup-File AircraftBackup-File AirfieldBackup-File.
+     close    FlightlogBackup-File AircraftBackup-File AirfieldBackup-File.
 *>
  ZL999-Exit.  exit section.
 *>
@@ -5126,7 +5183,7 @@
      if       FS-Reply not = "00"
               display FL032 at 1201 with erase eol
               display FL006 at 1301 with erase eol
-              go to ZM040-Finish.
+              go to  ZM020-Process-Aircraft.
      go       to ZM010-Process-Flightlog.
 *>
  ZM020-Process-Aircraft.
@@ -5136,14 +5193,16 @@
      if       FS-Reply not = "00"
               display FL033 at 1201 with erase eol
               display FL006 at 1301 with erase eol
-              go to ZM040-Finish.
+              go to ZM030-Process-Airfield.
      go       to ZM020-Process-Aircraft.
 *>
  ZM030-Process-Airfield.
      read     AirfieldBackup-File next at end
               go to ZM040-Finish.
-     IF       icao-code not alphabetic go to ZM030-Process-Airfield.
-     write    Airfield-Record from AirfieldBackup-Record.
+     move     AirfieldBackup-Record to Airfield-Record.
+     IF       icao-code not alphabetic
+              go to ZM030-Process-Airfield.
+     write    Airfield-Record.
      if       FS-Reply not = "00"
               display FL034 at 1201 with erase eol
               display FL006 at 1301 with erase eol
@@ -5152,7 +5211,7 @@
 *>
  ZM040-Finish.
      close     FlightlogBackup-File AircraftBackup-File AirfieldBackup-File.
-     close     Flightlog-File Aircraft-File Airfield-File.
+     close     Flightlog-File       Aircraft-File       Airfield-File.
 *>
  ZM999-Exit.  exit section.
 *>
@@ -5383,7 +5442,8 @@
  zza998-display-message.
      if       Sys-Message not = spaces
               display  Sys-Message at line ws-23-Lines col 41 with foreground-color COB-COLOR-RED
-              display FL017 at line ws-Lines col 01
+                                                                   erase eol
+              display FL017 at line ws-Lines col 01 with erase eol
               accept ws-reply at line ws-Lines col 30
               display space at line ws-23-Lines col 01 with erase eos.
 *>

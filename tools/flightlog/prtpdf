@@ -3,7 +3,7 @@
 # 30/11/2018 vbc - This may need more changes for log book printing
 #                  Needs packages - enscript and ghostscript-common
 # 12/12/2018 vbc - Changes made for A4 and letter. There is versions 
-#                  of this for bot A4 and Letter called:
+#                  of this for both A4 and Letter called:
 #                  prtpdf.sh-A4 and prtpdf.sh-Letter
 #                  copy to prtpdf.sh the one for your location.
 #                  This works for me but you might want to make font size

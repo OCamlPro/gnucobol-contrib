@@ -1,25 +1,30 @@
+  This list is more for the use of the programmer than any thing else but might
+  prove useful to users.
+
  Changelog created from the Changes lists in Flightlog program sources
-  where the latest is last: Note 'e' after version # is guessed.
+  where the latest is last in this list: Note 'e' after version # is guessed.
   This includes ALL changes to the source including bug fixes etc found while
   testing as well as feature additions since the start of programming including
   version for IBM & ICL m/f's and yes there is a lot. That is what happens
   during testing :)
+
   Note that many feature changes can themselves be changed further down in this
   Changelog.
+
   First two digits in version number represent the major and minor number where
-  minot changes within a major version.
+  minor changes within a major version.
   The third number is the build number and is incremented by 1 for each
   change done at the same time.
 
   When reporting bugs please always specify the full version of
   the Flightlog program as displayed or printed.
 
-  Data compatability between versions will, where ever possible, always be the
+  Data compatibility between versions will, where ever possible, always be the
   same but if a change HAS to be made, a data conversion program will be supplied
   with a name starting with 'xxxxconv' and this will need to be built
   (if O/S version) then run, prior to running the latest Flightlog version
   having saved your data files to a 'back up' directory in case of a problem
-   and this is vital that you do so before using such a program.
+   and this is vital that you do so before using such programs.
 
 ??/??/76 vbc - 0.nn    Original written in Basic.
 ??/??/8? vbc - 0.nn    Rewritten in Cobol for m/f and msdos.
@@ -29,7 +34,7 @@
 22/05/87 VBC - 1.03e   SUPPORT FOR 'NEXT' IN AMEND/DELETE LOGBOOK.
 07/06/88 vbc - 1.04e   Changes to run on cobol2 (MF workbench) removing CICS.
 02/12/89 vbc - 1.20e   Support for escape, function keys, see airfields on
-                       log book data entry and see Aircraft & other tidyups.
+                       log book data entry and see Aircraft & other tidy ups.
 
 08/09/18 vbc - 1.26    Migration to GnuCOBOL and sources converted to
                        Free format.
@@ -68,9 +73,9 @@
                        Entry sequ to use line 6 as gets overwritten with
                        Single/Twin etc.
                    .05 On afld From take last TO as a starter if not spaces.
-                   .06 Increased size of reg to 6, remarks to 32 JIC, chgd analysis
-                       for more space for P1 / P2 night, added Multi and
-                       'Inst' and this was not coded let alone correctly.
+                   .06 Increased size of reg to 6, remarks to 32 JIC (Just in Case),
+                       changed analysis for more space for P1 / P2 night, added Multi
+                       and 'Inst' and this was not coded let alone correctly.
                        Must remember to change the LATEST sources - assuming I
                        could have found it.
                    .07 Removed coding for reports when 1st 2 digits of AC-Reg is
@@ -83,7 +88,7 @@
                    .12 Only using 1st 5 digits of AC-REG but for Nth American A/C
                        ignore the 'N' as it is inserted for printing.
                    .13 initialise WST-AIRCRAFT-TABLE in fix up routine and else were.
-                   .14 Bad fix for .13 wrong to do 01 table, der.
+                   .14 Bad fix for .13 wrong to do 01 table, Der.
                    .15 Added reporting of Airfields with ICAO codes after flight
                        times and before Aircraft analysis. Removes currently TODO
                        as doing it within report is too wide for any paper width
@@ -92,15 +97,16 @@
                        Moved ws-user to a 77 level from within space-38 as looks
                        wrong when using spaces-38. Changed A B C Error-code from
                        3 to 4 digits JIC.
-                   .16 Bug in above prt airfields.
+                   .16 Bug in above report airfields.
                    .18 With acft anal after airfield reporting doing
                        CCA040-LBR-Subs thru CCA050 not needed as done before airfield.
                    .19 Moved all open and close Print-File to start menu so just then
-                       one set of reporting that means that running a Afirfield list then
+                       one set of reporting that means that running a Airfield list then
                        doing the same for logbook will all go to the same file/report.
-                      Consider addding report option to use airfield names in place of ICAO
+                    Consider addding report option to use airfield names in place of ICAO
                       codes but will increase width of reports - 160+ col paper any one?
                       Now producing a listing of airfields near end of report instead.
+                      This is now done as hidden options 3 & 4 replacing C & D in v2.02.
 
                1.27.20 Updated the copyright notices
 
@@ -155,6 +161,7 @@
                    .17  display, Added chk for Analysis-Only-Flag set for options E F.
                    .18 On data entry for date at CA030-ENTER-LOGBK-DATE on subsequent
                        data entry u-date is spaces rebuild from FLT-Date if not zero.
+
 27/09/18 vbc -     .19 At end of logbk entry go to CA30 not CA20.
                        Chg rec totals from flightlog file sort with clean up.
                    .20 Test for date when Deleting Option C as well as amend Option B
@@ -170,6 +177,7 @@
                    .25 Period inside F4 test in CA039-AMEND-LOGBK-DATE breaks new date
                        testing during amend.
                    .26 removed test for analysis-only-flag in CCC020-LBR-HH-HEADS.
+
 30/09/18 vbc -     .27 On Amend logbk if date or time changed do REWRITE as sometimes
                        not done. Removed dead (not called) first para in sections.
                        From TODO added WST-AC-Last-Reg to record last ac reg for that type
@@ -287,10 +295,12 @@
                        instead by updating the performed routines in Zxx to used
                        file processing. SY msgs changed and test for wrong rec
                        sizes. Chg name to 1st acft rec field.
+
 16/10/18 vbc           Open all files at top menu ONLY and likewise close them
                        removing code doing same elsewhere.
                        Using the airfield and acft tables for statistical reporting.
                        Update file records for each at end for dates & flights.
+
 18/10/18 vbc           Renumbering FL error/warning mesages to omit unused ones.
                        With files moving to ISAM, all sort code removed.
                        Backup files now used to create Sequential version of the ISAM
@@ -314,6 +324,7 @@
 
  19/10/18 vbc - 1.32.00 Added new option Change Aircraft type for all log book entries and
                         the Aircraft file. Yes I did, PA28-235 should be PA28-236.
+
  20/10/18 vbc       .02 Junk in headings for airfields? moving to wrong print area.
                     .03 Still junk at 3rd line airfield listings use Print-Report area.
                         Blasted thing worked before changes - nuts also changes to days
@@ -323,6 +334,7 @@
                     .04 Added features - if Z or z entered char 1 for time on P!/P23 days
                         or nite make zeros, ALSO if escaped from P1/23 IFR don't do nite test.
                     .05 Bug when rewrite and delete amended (date-time) flightlog rec.
+
  21/10/18           .06 When updated aircraft and airfield could be writing junk data in
                         Remarks processing as using wrong field for key (ws- ICAO-CODE)
                         This hopefully will get rid of possibly creating bad data in both
@@ -336,6 +348,7 @@
                         coding for processing such yet.
                         On log book data entry check date/time rec does NOT exist after
                         entry of start time - key is Date/start time. Not in Amend mode.
+
  22/10/18           .11 On list afld load the table.
                     .12 Ensure airfield last flt data is saved after reports C D etc.
                     .13 Remove F2 after date and start time as some WS fields not setup
@@ -393,6 +406,7 @@
                     .24 added extra data for error FL045,48.
                     .25 Change unstring add from 2 to 1.
                     .26 CDF tests for ICAO-Code used FL045 should be FL023.
+
  02/11/18 vbc       .27 For CDF processing, write was in the perform & should
                         be just after it.
                     .28 Use end-if on test for .seq files. Now find the CDF date "
@@ -427,6 +441,7 @@
                         Lots of testing to check it all works as bound to have made
                         some mistakes. This removes TODO (5). All dates now support
                         UK, USA and Unix /Intl date formats for in/output and printing.
+
  07/11/18 vbc       .01 Support for Capacity of E1 (E2/3), R1 (R2/3) in addition to
                         P1,2,3 for Engineers and Radar operators (GIB) for military
                         flights. Some countries may use other designators in which
@@ -459,11 +474,13 @@
                     .13 Extra fields added to CDF defintition record 6 to support searching
                         for another CDF source field other than as defined as Captain for
                         when processing data for P2 or P3 pilots.
+
  18/11/18 vbc       .14 SY012 incorrectly shown as SY011. FL019 in use. Also accept
                         as parameter 1 (P1), NONITE which is the same as NONIGHT.
                         Also parameter 2 (P2) for a change in the name of the CDF
                         configuration file from the default of "cdf-conf.txt".
                         This is long enough to allow a path to be included (128 chars).
+
  20/11/18 vbc       .15 Added new field 2 to CDF layout rec 3 for data internal format
                         type, A or space for ASCII and E for EBCDIC if ever needed
                         moving old field 2 to 3. Prcessing for EBCDIC will involve a
@@ -482,6 +499,7 @@
                         test done - good. Extra capacity groups added so now:
                         P, E, N, R, T. Should now cover all crew.
                     .18 Added FL049 & 50 from display info literals.
+
  22/11/18 vbc       .19 Removed usage of the E000 Aircraft fixup routine to rebuild the file
                         reading each flight log record.
                         Now it will update the aircraft file with the acft data and
@@ -518,6 +536,7 @@
                         Slightly changed FL013 (near end).
                         Removed ZD000 code as no longer used (.19 & 25).
                         Added program name and version to the help screen.
+
  27/11/18 vbc -     .27 Backup files changed to Line sequential from just sequential to
                         minimise any possible issues with a new platform but may require
                         a text conversion between *nix based platforms and Windows.
@@ -525,12 +544,15 @@
                              Aircraft-Man    pic x(20)
                              Aircraft-Name   pic x(20) both 20 characters long.
                         Print report PR4 allows, again remarked out.
+
  07/12/18 vbc -     .28 Changed CA235-Save to update dates for Airfield and Aircraft if
                         FLT-Date > stored date regardless od Entry or Amend mode.
                         extra comments in Remarks (above) regarding prtpdf and extra
                         packages required. Change goto  C000-EDIT-LOG-BOOK to a
                         perform with it returning to, then a900.
+
  10/12/18 vbc -     .29 Change spelling and case in main menu options.
+
  11/12/18 vbc -     .30 Change CSV code for instance of only processing type 4 & 5
                         records and if so CSV processing has finished correctly.
                         Code was not complying with manual.
@@ -540,7 +562,9 @@
                         CSV data - To be fixed.
                         Change line-cnt-size-1 to 53 from 55 and
                                line-cnt-size-2 to 47 from 49.
+
  13/12/18 vbc -     .32 Change add to Line_Cnt specific at point of WRITE in CCA.
+
  14/12/18 vbc -     .33 Change end of F510 on CSV rec o/p on getting dup key
                         after the first one to display FL041 the next line '.'
                         for every dup rec, up to rec 106. This in case user has
@@ -565,6 +589,7 @@
                         as useful if needing to test CSV config
                         Fault found on test for delimiter (quote or ') was 2 if's
                         should have been if else. Only showed up on last rec 1 type.
+
  18/12/18 vbc -     .41 Update to F520 to use quote an "'"
                     .42 Change in CCB020-Create-Airfield default name to
                         NAME MISSING to help make it stand out for any missing
@@ -609,10 +634,37 @@
                         function is being removed (Data conversion EBCDIC to ACSII).
                         Method of storing original data on m/f can vary and process
                         to get around this problem will also vary so function removed.
-                        Remove this from manual.
+                        Removed this from manual.
+                        Likewise parameter P4 usage so now only 3 parameters maximum
+                        used when starting program.
+
+ 02/01/19 vbc       .05 No data test if trying to run options that expect data to be present. FL016.
+                        Silly omission but user could try it!
+ 07/09/19 vbc       .06 Added extra displays for fs-reply to see if start first is broken
+                        with latest compiler code (v3.2 dev-0).
+
  12/09/19 vbc           Error in script comp-flightlog.sh as compiling program name mistyped.
 
- 14/09/19 vbc       .07 Bug #5 fix for dup counting on airfield anal.
+ 14/09/19 vbc       .07 Bug #5 fix for duplicate counting on airfield analysis
+                        caused by fix for another bug or feature.
+                         In CCB000-LBR-ANALYSIS changed if statements adding end-if's
+                         to remove bug #005 duplicate adding airfield visit count.
 
- 19/09/19 vbc       .08 Tail end of previous printed flight Remarks shows in next line if sub totals
-                        when using options 3 & 4 as overflow.
+ 19/09/19 vbc       .08 Tail end of a previous printed flight Remarks then shows in next
+                        line as overflow if sub totals when using options 3 & 4.
+
+ 19/11/19 vbc       .09 Minor typos both in manual and program.
+                        In saving the sequential (text) files found some problems
+                        using the latest version of the Cobol compiler i.e., v3.2,
+                        including a bug that was missed.
+                        The airfield display under Edit Airfield menu option K then V for
+                        view was using three across but is wider than the maximum screen
+                        size of 106 characters so reduced it to two across as left over
+                        when screen size was 126 chars.
+                        Missing display & accept in CE030-Proc-Acft-File when no rec found.
+
+                    .10 CE030-Proc-Acft-File of at end or delete reload acft table.
+                    .11 CSV record type 4 (Airfield) name increased to 32 characters to match
+                        updated airfield file layouts. Any chars beyond will be ignored.
+
+

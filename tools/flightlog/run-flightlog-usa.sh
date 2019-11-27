@@ -4,6 +4,8 @@
 # 18/12/2018 vbc - v1.01 Added backup directory if not exists.
 #                        do backup at end.
 #
+# This script requires one parameter = date/time
+#
 if [ ! -d backups ]; then
    mkdir backups
 fi

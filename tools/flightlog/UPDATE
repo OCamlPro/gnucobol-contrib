@@ -21,25 +21,22 @@ Your choice though.
 
 --------------------------
 
-This is for the software version v2.02.nn that updates versions
-v2.01.
-If you are updating from a v2.02 version you have already
-updated the Airfield file - Well you should have done :)
+This is for the software version v2.02.nn series that updates versions v2.01.
+If you are updating from a v2.02 version you have already updated the Airfield
+file so can ignore all this.
 
 
-This version v2.02. requires a special program to be run
-before the new version of Flightlog can be used as the airfield
-file has been changed.
+This version v2.02. requires a special program to be run before the new version
+of Flightlog can be used as the airfield file has been changed.
 
 It is important that you follow these procedures first in the given order
 before compiling the new version.
 
-READ IT THROUGH FIRST BEFORE DOING SO.
+READ IT ALL THROUGH FIRST, BEFORE DOING SO.
 
 IT MUST ONLY BE DONE, ONCE.
 
-These instructions are for Linux so modify them if using
- Windows.
+These instructions are for Linux so modify them if using Windows.
 
 A. Preparation for update.
    Note where you have downloaded the new flightlog version to.
@@ -51,14 +48,14 @@ A. Preparation for update.
     E.g., cd flightlog
 
  2. Using your existing version of Flightlog select option S
-    to create sequentual files then exit.
+    to create the three sequential files then exit.
 
     Confirm that you now have six files in the working directory =
     airfield.dat
     airfield.seq
     aircraft.dat
     aircraft.seq
-    flitelog.seq
+    flitelog.dat
     flitelog.seq
 
     by using ls -la
@@ -88,14 +85,13 @@ A. Preparation for update.
      Now test the archive
      rar tv backup-v2.01-pre-update-yyyymmdd.rar
 
- 5.  You can now delete the flightlog file if you copied it in step 2 ONLY by
+ 5.  You can now delete the flightlog file if you copied it in step 3 ONLY by
      rm -f flightlog
 
  6.  copy the archive created to the backups directory by:
      cp -vp backups
 
      Change the name of 'backups' if different to the one you use.
-
 
 
 B.  You may want to save the current source file version of flightlog
@@ -131,8 +127,8 @@ B.  You may want to save the current source file version of flightlog
     These should have completed with NO error or warning messages but if so find out
     why and fix the issue/s and rerun.
 
- 3. Copy flightlog to the same directory you found it in step 3 replacing
-    the old version. Shown here but may not be the correct location :
+ 3. Copy the flightlog executable to the same directory you found it in step 3
+    replacing the old version. Shown here but may not be the correct location :
       [ cp -f flightlog ~/bin ]
      but it is the usual one for Linux based systems but yours could be different :)
 
@@ -140,7 +136,7 @@ B.  You may want to save the current source file version of flightlog
     afldconv1
 
     The program needs file airfield.seq and creates a new airfield.dat.
-     THIS REPLACE THE ORIGINAL ONE.
+     THIS REPLACES THE ORIGINAL ONE.
 
     The display should show each of these on their own lines near the bottonm of
     screen as the number of:
@@ -183,3 +179,5 @@ Changelog :
                         Carried totals not happening chg test for > 1 instd of > 0
 
  31/12/18 vbc - 2.02.03 Mostly typos and added some extra help.
+ 19/11/19 vbc - 2.02.08 Minor typos, i.e., missing space between words in this document.
+ 26/11/19 vbc - 2.02-10 Minor typos and alignment in this document.
