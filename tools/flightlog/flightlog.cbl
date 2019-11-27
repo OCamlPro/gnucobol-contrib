@@ -15,7 +15,7 @@
 *>**
  DATE-COMPILED.    TO-DAY.   *> GC does NOT update.
 *>**
-*> Security.       Copyright (C) 1986-2019, Vincent Bryan Coen.
+*> Security.       Copyright (C) 1986-2020, Vincent Bryan Coen.
 *>                 Distributed under the GNU General Public License
 *>                 v2.0. Only. See the file COPYING for details.
 *>**
@@ -114,13 +114,13 @@
 *>  Called parameters:
 *>                 P1 - NONIGHT | NONITE - To stop program from calculating when
 *>                                 night time starts.
-*>                  E.g.,  flightlog NOLIGHT
+*>                  E.g.,  flightlog NONIGHT
 *>                      NIGHT | NITE     - To do night time calcs use when P2 is used.
 *>                      CSV-TEST         - Test displays (with pause) in csv processing after unstring
 *>                                         Useful to check for mistakes in CSV-config rec 1
 *>                                         problems. Otherwise do not use.
 *>                 P2 - CSV= path and file name of CSV configuration file- Note it starts with 'CSV='
-*>                 P3 - ACFT-DATE = Produces report by lsat Date used.
+*>                 P3 - ACFT-DATE = Produces report by last Date used.
 *>                 Above parameters can be entered in any order (other than HELP)
 *>                 P1 = HELP | help | -H | -h  - Produces a Help screen then
 *>                      exists (after return).
@@ -173,7 +173,7 @@
 *> Copyright Notice.
 *>*****************
 *>
-*> This program is time recording software for air crew as private,
+*> This program is time recording software for air crews as private,
 *> commercial (i.e., holding a CPL or ATPL) and military, World wide and is
 *> Copyright (c) Vincent B Coen. 1986-2020 and later. The supplied copyright
 *> notices that are displayed and printed MUST be maintained at all times.
@@ -225,7 +225,7 @@
  SPECIAL-NAMES.
      CONSOLE IS CRT.
 *>       Alphabet Alpha is ASCII.    *> When this works can get rid of the table-ascii and table-ebcdic
-*>       Alphabet Beta  is EBCDIC.   *> THIS IS NOT AVAILBLE to users as cannot work due to M/F methods
+*>       Alphabet Beta  is EBCDIC.   *> THIS IS NOT AVAILABLE to users as cannot work due to M/F methods
 *>                                      of end of record in PDS/E cannot be transferred to a PC.
  INPUT-OUTPUT        SECTION.
 *>--------------------------
@@ -293,8 +293,8 @@
          05  FLT-START       PIC 9(4).  *> In minutes
      03  FLT-END             PIC 9(4).  *>  ditto
      03  FLT-AC-TYPE         PIC X(8).  *> 24
-     03  FLT-AC-REG.                       *>      *> Using 1st 5 digits for Nth American a/c ignore 1st char 'N'
-         05  Flt-AC-Reg1-2   pic xx.               *>   but include 'N' for printing.
+     03  FLT-AC-REG.                    *>  Using 1st 5 digits for Nth American a/c ignore 1st char 'N'
+         05  Flt-AC-Reg1-2   pic xx.       *> but include 'N' for printing.
          05  filler          pic xxxx.     *> last digit not used see above.
      03  FLT-CAPTAIN         PIC X(15). *> 45
      03  FLT-CAPACITY        PIC XXX.
@@ -316,7 +316,7 @@
  FD  FLIGHTLOGBACKUP-FILE.
  01  FLIGHTLOGBACKUP-RECORD PIC X(112).
 *>
- FD  AIRFIELD-FILE.                      *> Name changed 20 to 36 19/12/18. NEED To run proram afldconv1
+ FD  AIRFIELD-FILE.                      *> Name changed 20 to 36 19/12/18. NEED To run program afldconv1
  01  AIRFIELD-RECORD.                    *>  to update file using .seq file as input.
      03  ICAO-CODE           PIC X(4).
      03  AFLD-Name           pic x(36).
@@ -1105,7 +1105,7 @@
          05  SR1-MULTI       PIC Z(4)9BB.
          05  FILLER          PIC X(4)         VALUE "Hrs".
 *>
-  01  SUB-REPORT2.
+ 01  SUB-REPORT2.
      03  SR2-ZAP-INS                          value spaces.
          05  sr2-lit1a       pic x(4).
          05  sr2-ins1        pic zzz99B.
@@ -1541,7 +1541,7 @@
 *>
  C020-DISPLAY-LOG-MENU.
      MOVE     ZERO TO DISPLAY-FLAG        MONTHLY-ANAL-FLAG
-                      ANALYSIS-ONLY-FLAG  INS-FLAG.
+                      ANALYSIS-ONLY-FLAG  Print-Report-Type INS-FLAG.
      MOVE     SPACE TO MENU-REPLY.
      PERFORM  A020-DISPLAY-MENU.
      DISPLAY  "Flight Log Book Program" AT 0130 WITH foreground-color COB-COLOR-Green.
@@ -3006,8 +3006,8 @@
 *>
      IF       FLT-CAPACITY = "P1I" or "P1T"
               MOVE 1 TO INS-FLAG
-              add flt-p1 (1) to ws-ins (1)
-              add flt-p1 (2) to ws-ins (2)
+              add Flt-P1 (1) to ws-ins (1)
+              add Flt-P1 (2) to ws-ins (2)
               ADD FLT-P1 (1) FLT-P1 (2) TO WS-INSX.
 *>
      MOVE     FLT-DATE  TO SAVE-FLT-DATE.
@@ -3109,7 +3109,7 @@
               DIVIDE WS-INS (1) BY 60 GIVING SR1-INS1 REMAINDER SR2-INS1
               DIVIDE WS-INS (2) BY 60 GIVING SR1-INS2 REMAINDER SR2-INS2.
 *>
- cca050-Subs.
+ CCA050-Subs.
      IF       DISPLAY-FLAG = ZERO
               MOVE  SUB-REPORT1 TO Pr3-data1
               WRITE PRINT-RECORD AFTER 1
