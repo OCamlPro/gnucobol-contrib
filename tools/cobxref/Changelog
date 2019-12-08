@@ -1,3 +1,11 @@
+2019-12-08  Vincent B Coen <vbcoen@btconnect.com>
+       (v2.02.03)   Added extra tests for line starting with >>SOURCE as a sample
+                    program this started in cc9 by using TRIM to strip out
+                    leading spaces in zz100-Get-A-Source-Record as previous
+                    version was missing the '>>SOURCE' and failing with msg2.
+                    Needless to say cobc accepts this incorrectly placed
+                    >>SOURCE error.
+
 2019-06-24  Vincent B Coen <vbcoen@btconnect.com>
        (v2.02.02)   Added print line o/p for display in bb100-scan4-colon
                     for testing a suspected error. Also one for XTERNAL processing

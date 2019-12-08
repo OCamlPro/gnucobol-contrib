@@ -18,6 +18,8 @@
 *>
 >>DEFINE CONSTANT C-OS-Delimiter  AS "/"           *> *nix and Win 10 others ?
 *>
+*> These are for printcbl
+*>
 >>DEFINE CONSTANT C-Testing-1   AS 0    *> Not testing (default), change to AS 1 if wanted.
 >>DEFINE CONSTANT C-Testing-2   AS 0    *> Not testing (default), change to AS 1 if wanted.
 >>DEFINE CONSTANT C-Testing-3   AS 0    *> Not testing (default), change to AS 1 if wanted.
@@ -42,7 +44,7 @@
  Date-Written.          28 July 1983 with code going back to 1967.
 *> Date-Rewriten.       10 March 2007 with code going back to 1983.
  Date-Compiled.         Today & Dont forget to update prog-name for builds.
-*> Security.            Copyright (C) 1967-2019, Vincent Bryan Coen.
+*> Security.            Copyright (C) 1967-2020, Vincent Bryan Coen.
 *>                      Distributed under the GNU General Public License
 *>                      v2.0. Only. See the file COPYING for details but
 *>                      for use with GnuCOBOL ONLY.
@@ -221,7 +223,7 @@
      03  SdSortKey         pic x(104).   *> 12/5/19 dataname chgd to 64.
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v2.02.02".
+ 77  Prog-Name             pic x(13) value "Xref v2.02.03".
  77  Page-No               Binary-long  value zero.
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
@@ -3305,7 +3307,7 @@
 *>     test
 *>
     move      zero to T2 T3.
-    if        SourceInWS (8:9) = ">>SOURCE "
+    if        function trim (SourceInWS) (1:9) = ">>SOURCE "
               inspect SourceInWS tallying T2 for all "FIXED"
               inspect SourceInWS tallying T3 for all "FREE"
               if      T2 > zero
