@@ -1,7 +1,12 @@
 /***************************************************************************
 Errors:
 
-X - excluded lines - editing is borked
+X - excluded lines - editing is borked, when scrolled one page down (crash)
+
+process_commandline() - using a wrong delimiter does not cause an error
+
+moving with cursor keys is borked, looks like xcluded lines are not counted
+when counting not editable lines.
 
 ****************************************************************************/
 
@@ -12,6 +17,8 @@ X - excluded lines - editing is borked
 # include <ctype.h>
 # include <time.h>
 # include <signal.h>
+
+# define VERSION "pipEdit 0.8.1 - scroll left and right"
 
 # ifdef __USE_PIPCURSES__
 	# include "pipcurses.c"
@@ -49,16 +56,36 @@ X - excluded lines - editing is borked
    # define FALSE (0!=0)
 # endif
 
+// function keys, assigned in *.cfg file
+char fkey1[128]="";
+char fkey2[128]="";
+char fkey3[128]="";
+char fkey4[128]="";
+char fkey5[128]="";
+char fkey6[128]="";
+char fkey7[128]="";
+char fkey8[128]="";
+char fkey9[128]="";
+char fkey10[128]="";
+char fkey11[128]="";
+char fkey12[128]="";
+char fkeypgup[128]="";
+char fkeypgdown[128]="";
+
 # define MAXLINES 256000
 unsigned char *lineptr[MAXLINES];
 unsigned char *linecmd[MAXLINES];
 unsigned char linetype[MAXLINES];
+int real_linenbr[MAXLINES];
 int linecnt=0;
 int current_line=0;
 int cursor_x=14;
 int cursor_y=3;
 
 int source_changed=FALSE;
+
+# define MAX_COMMAND_STACK 32
+char *command_stack[MAX_COMMAND_STACK];
 
 # define CUR_CMDLINE   1
 # define CUR_MENU      2
@@ -110,6 +137,8 @@ unsigned char glo_buff[32768];
 char config_file[256];
 char conf_langfiles[256]=""; // where are language files stored at?
 char conf_language[256]="";  // use which language?
+char conf_delimiter=',';     // delimiter for command line
+char conf_macros[256]="";    // where are macros located
 
 char lang_file[32]="File";
 char lang_edit[32]="Edit";
@@ -172,15 +201,16 @@ void set_signals(void)
 	}
 }
 /******************************************************************************/
-void expand_to_256_bytes(char *s)
+void expand_to_nnn_bytes(int nnn, char *s)
 {
 	int l;
 
 	l=strlen(s);
 	for(;;){
-		if(l>255) break;
-		strcat(s, " ");
-		l++;
+		if(l>nnn) break;
+		// if(l>256) break;
+		strcat(s, "                                        ");
+		l+=40;
 	}
 }
 /******************************************************************************/
@@ -511,6 +541,21 @@ void error_exit(char *s)
 	exit(99);
 }
 /******************************************************************************/
+void add_to_command_stack(char *s)
+{
+	int t;
+
+	if(command_stack[0]!=NULL){
+		free(command_stack[0]);
+	}
+
+	for(t=0; t<(MAX_COMMAND_STACK-1); t++){
+		command_stack[t]=command_stack[t+1];
+	}
+	command_stack[MAX_COMMAND_STACK-1]=malloc(strlen(s)+1);
+	strcpy(command_stack[MAX_COMMAND_STACK-1], s);
+}
+/******************************************************************************/
 void terminate_program(char *s)
 {
 	char zwi[1024];
@@ -542,6 +587,26 @@ void read_config_file(void)
 		if(strncmp(zwi, "langfiles=", 10)==0){
 			strcpy(conf_langfiles, zwi+10);
 		}
+		if(strncmp(zwi, "macros=", 7)==0){
+			strcpy(conf_macros, zwi+7);
+		}
+		if(strncmp(zwi, "delimiter=", 10)==0){
+			conf_delimiter=zwi[10];
+		}
+		if(strncmp(zwi, "F1=", 3)==0){ strcpy(fkey1, zwi+3); }
+		if(strncmp(zwi, "F2=", 3)==0){ strcpy(fkey2, zwi+3); }
+		if(strncmp(zwi, "F3=", 3)==0){ strcpy(fkey3, zwi+3); }
+		if(strncmp(zwi, "F4=", 3)==0){ strcpy(fkey4, zwi+3); }
+		if(strncmp(zwi, "F5=", 3)==0){ strcpy(fkey5, zwi+3); }
+		if(strncmp(zwi, "F6=", 3)==0){ strcpy(fkey6, zwi+3); }
+		if(strncmp(zwi, "F7=", 3)==0){ strcpy(fkey7, zwi+3); }
+		if(strncmp(zwi, "F8=", 3)==0){ strcpy(fkey8, zwi+3); }
+		if(strncmp(zwi, "F9=", 3)==0){ strcpy(fkey9, zwi+3); }
+		if(strncmp(zwi, "F10=", 4)==0){ strcpy(fkey10, zwi+4); }
+		if(strncmp(zwi, "F11=", 4)==0){ strcpy(fkey11, zwi+4); }
+		if(strncmp(zwi, "F12=", 4)==0){ strcpy(fkey12, zwi+4); }
+		if(strncmp(zwi, "PGUP=", 5)==0){ strcpy(fkeypgup, zwi+5); }
+		if(strncmp(zwi, "PGDOWN=", 7)==0){ strcpy(fkeypgdown, zwi+7); }
 		// no error handling of unknown entries, they might be for
 		// macros, who might read this cfg file too
 	}
@@ -578,7 +643,7 @@ void read_language_stuff(void)
 	}
 
 	sprintf(zwi, "%s/pipedit.%s", conf_langfiles, conf_language);
-	// printf("zwi=>%s<\n", zwi);
+	// printf("zwi=>%s< conf_langfiles=>%s<\n", zwi, conf_langfiles);
 	// exit(99);
 
 	fp=fopen(zwi, "rb");
@@ -634,15 +699,47 @@ void read_language_stuff(void)
 /******************************************************************************/
 void draw_screen_editor(void)
 {
-	char zwi[1024];
-	char zwi2[256];
+	int a;
+	char zwi[4096+80];
+	char zwi2[4096+80];
 	int colpairline=-1; // different color for line nbr and line text
 	int t, i;
 	int ypos;
-	int a;
 	int cnt;
 	int end;
-	char columns[257]="----+-A--1-B--+----2----+----3----+----4----+----5----+----6----+----7--C-+----8----+----9----+----10---+----11---+----12---+----13---+----14---+----15---+----16---+----17---+----18---+----19---+----20---+----21---+----22---+----23---+----24---+----25---+-";
+	int z;
+	int zz;
+	char columns[4097]="----+-A--1-B--+----2----+----3----+----4----+----5----+----6----+----7--C-+----8----+----9----+----10---+----11---+----12---+----13---+----14---+----15---+----16---+----17---+----18---+----19---+----20---+----21---+----22---+----23---+----24---+----25---+----26---+----27---+----28---+----29---+----30---+----31---+----32---+----33---+----34---+----35---+----36---+----37---+----38---+----39---+----40---+----41---+----42---+----43---+----44---+----45---+----46---+----47---+----48---+----49---+----50";
+
+	for(t=0; t<4096; t++){
+		columns[t]=' ';
+	}
+	for(t=0, z=5, zz=0; t<4096; t++){
+		if(columns[t]==' '){
+			columns[t]='-';
+		}
+		z++;
+		if(z==10){
+			z=0;
+			columns[t]='+';
+		}
+		zz++;
+		if(zz==10){
+			zz=0;
+			columns[t]='*';
+			a=t+1;
+			a/=10;
+			sprintf(zwi, "%d", a);
+			for(i=0;;i++){
+				if(zwi[i]==0) break;
+				columns[t+i]=zwi[i];
+			}
+		}
+	}
+	columns[4096]=0;
+	columns[6]='A';
+	columns[11]='B';
+	columns[72]='C';
 
 	clear();
 
@@ -665,9 +762,9 @@ void draw_screen_editor(void)
 	mvaddstr(2, 1, "Edit");
 	mvaddstr(2, 12, filename);
 	mvaddstr(2, 60, lang_columns);
-	sprintf(zwi, "%05d", col_start);
+	sprintf(zwi, "%05d", col_start+screen_offset_x);
 	mvaddstr(2, 68, zwi);
-	sprintf(zwi, "%05d", col_end);
+	sprintf(zwi, "%05d", col_end+screen_offset_x);
 	mvaddstr(2, 74, zwi);
 
 	attron(COLOR_PAIR(COLPAIR_NORMAL));
@@ -681,7 +778,7 @@ void draw_screen_editor(void)
 	if(screen_cols==1){
 		attron(COLOR_PAIR(COLPAIR_YELLOW));
 		mvaddstr(4, 1, "=COLS>");
-		strncpy(zwi, columns+screen_offset_x, 71);
+		strncpy(zwi, columns+screen_offset_x, 72);
 		mvaddstr(4, 8, zwi);
 		attron(COLOR_PAIR(COLPAIR_NORMAL));
 	}
@@ -699,6 +796,8 @@ void draw_screen_editor(void)
 	*************************************************************************/
 	end=screen_lines;
 	ypos=0;
+	// sprintf(zwi, "current_line=%d screen_offset_y=%d", current_line, screen_offset_y);
+	// write_to_log(zwi);
 	a=current_line+screen_offset_y;
 	for(t=0; t<screen_lines; t++){
 		// sprintf(zwi, "t=%d a=%d linecnt=%d cursor_y=%d screen_offset_y=%d screen_topline=%d", t, a, linecnt, cursor_y, screen_offset_y, screen_topline);
@@ -707,7 +806,7 @@ void draw_screen_editor(void)
 		if(a<linecnt){
 			colpairline=-1;
 			strcpy(zwi2, lineptr[a]);
-			expand_to_256_bytes(zwi2);
+			expand_to_nnn_bytes(screen_offset_x+80, zwi2);
 			if(strcmp(linecmd[a], "      ")==0){
 				switch(linetype[a]){
 					case 'I':               // inserted line
@@ -737,6 +836,7 @@ void draw_screen_editor(void)
 						a--; // we had already at least one line!
 						attron(COLOR_PAIR(COLPAIR_XCLUD));
 						sprintf(zwi2, "%d lines excluded - - - - - - - - - - - ",cnt);
+						write_to_log(zwi2);
 						sprintf(zwi, " %s %s", linecmd[a], zwi2);
 						break;
 				default:
@@ -747,7 +847,7 @@ void draw_screen_editor(void)
 					else{
 						attron(COLOR_PAIR(COLPAIR_NORMAL));
 					}
-					sprintf(zwi, " %06d %s", a, zwi2);
+					sprintf(zwi, " %06d %s", a, zwi2+screen_offset_x);
 				}
 				zwi[80]=0;
 			}
@@ -757,7 +857,7 @@ void draw_screen_editor(void)
 				strcat(glo_buff, "      ");
 				glo_buff[6]=0;
 				strcpy(linecmd[a], glo_buff);
-				sprintf(zwi, " %s %s", linecmd[a], zwi2);
+				sprintf(zwi, " %s %s", linecmd[a], zwi2+screen_offset_x);
 				for(i=1; i<7; i++){
 					if(zwi[i]==' '){
 						zwi[i]='\'';
@@ -1012,6 +1112,7 @@ int load_file(char *fname)
 	fclose(fp);
 
 	for(t=0; t<linecnt; t++){
+		real_linenbr[t]=t;
 	}
 	return(TRUE);
 }
@@ -1054,8 +1155,8 @@ int get_keypress(void)
 		}
 		if(c==91){
 			c=getch();
-			sprintf(zwi, ":3:91: c=%d", c);
-			write_to_log(zwi);
+			// sprintf(zwi, ":3:91: c=%d", c);
+			// write_to_log(zwi);
 			if(c==49){
 				c=getch();
 				// sprintf(zwi, ":3:91:49: c=%d", c);
@@ -1334,6 +1435,173 @@ void unexclude_lines(void)
 	}
 }
 /******************************************************************************/
+void exclude_all_lines(void)
+{
+	int t;
+
+	for(t=0; t<linecnt; t++){
+		if(linetype[t]=='N'){
+			linetype[t]='X';
+		}
+	}
+}
+/******************************************************************************/
+void do_right(void)
+{
+	char zwi[256];
+	char zwi2[256];
+	int a;
+
+	strcpy(zwi, (char*)screen_commandline);
+	trim(zwi);
+	ucase(zwi);
+	if(strcmp(zwi, "M")==0 ||
+	   strcmp(zwi, "MAX")==0){
+		strcpy(zwi, "4096");
+	}
+
+	sprintf(zwi2, "do_right: zwi=>%s<", zwi);
+	write_to_log(zwi2);
+
+  	if(isdigit(zwi[0])==0 &&
+		zwi[0]!=0 &&
+	   zwi[0]!=' '){
+		strcpy(screen_errormsg, "Invalid amount");
+		strcpy(screen_errormessage, "Invalid scroll amount, not numeric.");
+		return;
+  	}
+	else{
+		a=atoi(zwi);
+		set_to_space(screen_commandline, 80);
+		if(a==0){
+			a=70;
+		}
+	}
+   screen_offset_x+=a;
+   if(screen_offset_x>4096-72){
+		screen_offset_x=4096-72;
+	}
+	sprintf(zwi, "screen_offset_x=%d", screen_offset_x);
+	write_to_log(zwi);
+
+	cursor_x=14;
+}
+/******************************************************************************/
+void do_left(void)
+{
+	char zwi[256];
+	int a;
+
+	strcpy(zwi, (char*)screen_commandline);
+	trim(zwi);
+	ucase(zwi);
+	if(strcmp(zwi, "M")==0 ||
+	   strcmp(zwi, "MAX")==0){
+		strcpy(zwi, "4096");
+	}
+  	if(isdigit(zwi[0])==0 &&
+		zwi[0]!=0 &&
+	   zwi[0]!=' '){
+		strcpy(screen_errormsg, "Invalid amount");
+		strcpy(screen_errormessage, "Invalid scroll amount, not numeric.");
+		return;
+  	}
+	else{
+		a=atoi(zwi);
+		set_to_space(screen_commandline, 80);
+		if(a==0){
+			a=70;
+		}
+	}
+   screen_offset_x-=a;
+   if(screen_offset_x<0){
+		screen_offset_x=0;
+	}
+	cursor_x=14;
+}
+/******************************************************************************/
+void do_page_up(void)
+{
+	char zwi[256];
+	int a;
+
+	strcpy(zwi, (char*)screen_commandline);
+	trim(zwi);
+	ucase(zwi);
+	if(strcmp(zwi, "M")==0 ||
+	   strcmp(zwi, "MAX")==0){
+		strcpy(zwi, "999999");
+	}
+  	if(isdigit(zwi[0])==0 &&
+		zwi[0]!=0 &&
+	   zwi[0]!=' '){
+		strcpy(screen_errormsg, "Invalid amount");
+		strcpy(screen_errormessage, "Invalid scroll amount, not numeric.");
+		return;
+  	}
+	else{
+		a=atoi(zwi);
+		set_to_space(screen_commandline, 80);
+		if(a==0){
+			if(cursor_y>4){
+				a=cursor_y-4;
+				if(screen_cols==1) a--;
+				cursor_y-=a;
+			}
+			else{
+				a=20;
+			}
+		}
+	}
+   screen_offset_y-=a;
+   if(screen_offset_y<0){
+		screen_offset_y=0;
+	}
+}
+/******************************************************************************/
+void do_page_down(void)
+{
+	char zwi[256];
+	int a;
+
+	strcpy(zwi, (char*)screen_commandline);
+	trim(zwi);
+	ucase(zwi);
+	if(strcmp(zwi, "M")==0 ||
+	   strcmp(zwi, "MAX")==0){
+		strcpy(zwi, "999999");
+	}
+   if(isdigit(zwi[0])==0 && 
+		zwi[0]!=0 &&
+	   zwi[0]!=' '){
+		strcpy(screen_errormsg, "Invalid amount");
+		sprintf(screen_errormessage, "Invalid scroll amount %s, not numeric.", screen_commandline);
+		return(0);
+	}
+	else{
+		a=atoi(zwi);
+		set_to_space(screen_commandline, 80);
+		if(a==0){
+			if(cursor_y>4){
+				a=cursor_y-4;
+				if(screen_cols==1) a--;
+				cursor_y-=a;
+			}
+			else{
+				a=20;
+			}
+		}
+	}
+   screen_offset_y+=a;
+   if(screen_offset_y>=linecnt){
+      screen_offset_y=linecnt-19;
+		if(screen_offset_y<0){
+			screen_offset_y=0;
+		}
+	}
+	cursor_x=14;
+}
+/******************************************************************************/
 void do_find(char *s)
 {
 	char needle[256];
@@ -1346,6 +1614,7 @@ void do_find(char *s)
 	int f;
 	int start;
 	int searchit=0;
+	int findall=FALSE;
 
 
 	word(s, needle, 2);
@@ -1354,7 +1623,9 @@ void do_find(char *s)
 
 	word(s, parm, 3);
 	ucase(parm);
-
+	if(strcmp(parm, "ALL")==0){
+		findall=TRUE;
+	}
 
 	start=screen_offset_y+cursor_y-screen_topline+1;
 
@@ -1368,45 +1639,54 @@ void do_find(char *s)
 	sprintf(zwi, "start = %d parm=%s", start, parm);
 	write_to_log(zwi);
 
+	sprintf(zwi2, "findall=%d TRUE=%d", findall, TRUE);
+	write_to_log(zwi2);
 	f=0;
+	pos=-1;
 	for(t=start; t<linecnt; t++){
-		sprintf(zwi, "t = %d", t);
-		write_to_log(zwi);
 		searchit=0;
 		if(lineptr[t]!=NULL){    // we have dataB?
 			if(linetype[t]!='T'){ // it's not a title line?
 				searchit=1;        // then search in it
 			}
 		}
+		sprintf(zwi, "t = %d searchit=%d", t, searchit);
+		write_to_log(zwi);
 		if(searchit==1){
 			// sprintf(zwi2, "t=%d lineptr[t]=%p", t, lineptr[t]);
 			// write_to_log(zwi2);
 			strcpy(zwi, (char*)lineptr[t]);
 			ucase(zwi);
 			if(strstr(zwi, needle)!=NULL){
-				pos=(int)(strstr(zwi, needle)-zwi);
-				sprintf(zwi2, "pos = %d", pos);
-				write_to_log(zwi2);
-				// sprintf(zwi2, "zwi=>%s< needle=>%s<", zwi, needle);
-				// write_to_log(zwi2);
-				screen_offset_y=t-1;
-				if(screen_offset_y<0){
-					screen_offset_y=0;
-					cursor_y=4;
+				if(pos==-1){
+					pos=(int)(strstr(zwi, needle)-zwi);
+					// sprintf(zwi2, "pos = %d", pos);
+					// write_to_log(zwi2);
+					// sprintf(zwi2, "zwi=>%s< needle=>%s<", zwi, needle);
+					// write_to_log(zwi2);
+					screen_offset_y=t-1;
+					if(screen_offset_y<0){
+						screen_offset_y=0;
+						cursor_y=4;
+					}
+					else{
+						cursor_y=5;
+					}
+					cursor_x=8+pos;
 				}
-				else{
-					cursor_y=5;
-				}
-				cursor_x=8+pos;
+				linetype[t]='N';
 				strcpy(rfind_needle, needle);
 				f=1;
-				break;
+				if(findall==FALSE){
+					strcpy(zwi2, "findall==FALSE, break");
+					write_to_log(zwi2);
+					break;
+				}
 			}
 		}
 	}
 
 	if(f==0){
-		// strcpy(screen_errormsg, "Not found!");
 		strcpy(screen_errormsg, "*Bottom of data reached*");
 		sprintf(screen_errormessage, "Chars '%s' not found. Press RFIND key to continue from top.", orineedle);
 		restart_from_top=TRUE;
@@ -1446,7 +1726,7 @@ int handle_macro(char *s)
 // check if this string is a macro, and, if yes, call it.
 
 	int t;
-	int rc;
+	int rc=0;
 	int f;
 	int l;
 	int pos;
@@ -1464,7 +1744,7 @@ int handle_macro(char *s)
 	FILE *fp;
 
 	write_to_log("in handle_macro()");
-	strcpy(macpath, "macros");
+	strcpy(macpath, conf_macros);
 	// sprintf(macpath, "%s/.pipedit/macros", getenv("HOME"));
 	sprintf(zwi, "%s/macros.lst", macpath);
 	write_to_log(zwi);
@@ -1532,7 +1812,7 @@ int handle_macro(char *s)
 	write_to_log(zwi);
 	write_to_log("Before call macro");
 
-	system(zwi);
+	rc=system(zwi);
 	write_to_log("After call macro");
 
 	// finally load the file again....
@@ -1548,6 +1828,7 @@ int handle_macro(char *s)
 		linetype[t]='N';
 	}
 
+	write_to_log("Before reading result");
 	fp=fopen(fname, "rb+");
 	if(fp==NULL){
 		write_to_log("Could not open infile for macro");
@@ -1559,21 +1840,38 @@ int handle_macro(char *s)
 	linetype[0]='T';
 	linecmd[0]=malloc(7);
 	strcpy((char*)linecmd[0], "      ");
+	write_to_log("Before reading first line");
 	for(t=1;;t++){
 		rc=read_line(fp, line, sizeof(line));
 		if(rc==EOF) break;
+		write_to_log("After reading one line");
 		linetype[t]=line[6];
 		l=strlen(line+7);
-		// sprintf(zwi, "l=%d", l);
-		// write_to_log(zwi);
+		sprintf(zwi, "l=%d", l);
+		write_to_log(zwi);
 		lineptr[t]=malloc(l+1);
-		strcpy((char*)lineptr[t], line+13);
+	write_to_log("After reading one line:1");
+		if(l>12){
+			strcpy((char*)lineptr[t], line+13);
+		}
+		else{
+			strcpy((char*)lineptr[t], "");
+		}
+	write_to_log("After reading one line:2");
 		linecmd[t]=malloc(7);
-		strcpy(zwi, line+7);
+	write_to_log("After reading one line:3");
+		if(l>6){
+		   strcpy(zwi, line+7);
+		}
+		else{
+			strcpy(zwi, "      ");
+		}
+	write_to_log("After reading one line:4");
 		zwi[6]=0;
 		strcpy((char*)linecmd[t], zwi);
 	}
 	fclose(fp);
+	write_to_log("After fclose()");
 	strcpy(zwi, "************************** Bottom of Data ******************************");
 	lineptr[t]=malloc(strlen(zwi)+1);
 	strcpy((char*)lineptr[t], zwi);
@@ -1584,6 +1882,7 @@ int handle_macro(char *s)
 	if(linecnt<0){
 		linecnt=0;
 	}
+	write_to_log("After reading result");
 
 	set_to_space(screen_commandline, 80);
 
@@ -1592,14 +1891,15 @@ int handle_macro(char *s)
 	return(1); // cursor at beginning of command line
 }
 /******************************************************************************/
-int process_commandline(void)
+int now_really_process_commandline(unsigned char *s)
 {
 // process the command line and line commands
 
-	char zwi[1024];
-	char orizwi[1024];
-	char zwi2[1024];
-	char macroname[1024];
+	char zwi[256];
+	char orizwi[256];
+	char zwi2[256];
+	char zwi3[256];
+	char macroname[256];
 	int a;
 	int c;
 	int f;
@@ -1608,15 +1908,51 @@ int process_commandline(void)
 	int curpos; // needed for remove_empty_insert_lines
 
 
-	strcpy(zwi, (char*)screen_commandline);
+	sprintf(zwi2, "now_really_process_commandline: delimiter=>%c< s=>%s< ", 
+		conf_delimiter, s);
+	write_to_log(zwi2);
+	strcpy(zwi, (char*)s);
+	add_to_command_stack(zwi);
 	trim(zwi); 
 	strcpy(orizwi, zwi); 
-	word((char*)screen_commandline, zwi, 1);
+	word((char*)s, zwi, 1);
 	ucase(zwi); 
 	// sprintf(zwi2, "zwi=>%s< %d", zwi, zwi[0]);
 	// write_to_log(zwi2);
 
 	f=0;
+	if(strcmp(zwi, "UP")==0){
+		// get the parameter, the scroll amount, if exists
+		word((char*)screen_commandline, zwi2, 2);
+		strcpy((char*)screen_commandline, zwi2);
+		do_page_up();
+		return(1); // cursor at beginning of command line
+	}
+	if(strcmp(zwi, "DOWN")==0){
+		// get the parameter, the scroll amount, if exists
+		word((char*)screen_commandline, zwi2, 2);
+		strcpy((char*)screen_commandline, zwi2);
+		do_page_down();
+		return(1); // cursor at beginning of command line
+	}
+	if(strcmp(zwi, "LEFT")==0){
+		// get the parameter, the scroll amount, if exists
+		word((char*)screen_commandline, zwi2, 2);
+		strcpy((char*)screen_commandline, zwi2);
+		do_left();
+		return(1); // cursor at beginning of command line
+	}
+	if(strcmp(zwi, "RIGHT")==0){
+		// get the parameter, the scroll amount, if exists
+		word((char*)screen_commandline, zwi2, 2);
+		strcpy((char*)screen_commandline, zwi2);
+		do_right();
+		return(1); // cursor at beginning of command line
+	}
+	if(strcmp(zwi, "RETRIEVE")==0){
+		do_retrieve();
+		return(1); // cursor at beginning of command line
+	}
 	if(strcmp(zwi, "RES")==0 || strcmp(zwi, "RESET")==0){
 		strcpy(screen_errormsg, "");
 		strcpy(screen_errormessage, "");
@@ -1628,6 +1964,36 @@ int process_commandline(void)
 		remove_message_lines();
 		remove_error_lines();
 		unexclude_lines();
+		return(1); // cursor at beginning of command line
+	}
+	if(strcmp(zwi, "X")==0 || strcmp(zwi, "EXCLUDE")==0){
+		word(orizwi, zwi2, 2);
+		ucase(zwi2);
+		word(orizwi, zwi3, 3);
+		if(strcmp(zwi2, "ALL")==0 && zwi3[0]==0){
+			strcpy(screen_errormsg, "");
+			strcpy(screen_errormessage, "");
+			set_to_space(screen_commandline, 80);
+			remove_empty_insert_lines(&curpos);
+			remove_message_lines();
+			remove_error_lines();
+			unexclude_lines();
+			exclude_all_lines();
+			screen_offset_y=0;
+			return(1); // cursor at beginning of command line
+		}
+		if(zwi3[0]!=0){
+			strcpy(screen_errormsg, "Invalid operand");
+			strcpy(screen_errormessage, "An invalid operand was found.");
+			return(1); // cursor at beginning of command line
+		}
+		if(zwi2[0]!=0 && zwi3[0]==0){
+			strcpy(screen_errormsg, "Missing operand:1");
+			strcpy(screen_errormessage, "A valid operand is missing.");
+			return(1); // cursor at beginning of command line
+		}
+		strcpy(screen_errormsg, "Missing operand:2");
+		strcpy(screen_errormessage, "A valid operand is missing.");
 		return(1); // cursor at beginning of command line
 	}
 	if(strcmp(zwi, "L")==0 || strcmp(zwi, "LOC")==0){
@@ -1819,6 +2185,67 @@ int process_commandline(void)
 	            // 2 = leave cursor where it is
 }
 /******************************************************************************/
+int process_commandline(void)
+{
+	unsigned char zwi[256];
+	unsigned char cmdline[256];
+	int t, i;
+	int z;
+	int start;
+	int rc=0;
+
+	strcpy(cmdline, screen_commandline);
+	start=0;
+
+	for(t=0;;t++){
+		if(cmdline[t]==0) break;
+		if(cmdline[t]==conf_delimiter){
+			for(z=0, i=start; i<t; i++){
+				zwi[z++]=cmdline[i];
+			}
+			zwi[z]=0;
+			rc=now_really_process_commandline(zwi);
+			start=t+1;
+			if(rc!=0) break;
+		}
+	}
+	sprintf(zwi, "start=%d, t=%d", start, t);
+	write_to_log(zwi);
+	if(start<strlen(cmdline)){
+		strcpy(zwi, cmdline+start);
+		rc=now_really_process_commandline(zwi);
+	}
+	return(rc);	
+}
+/******************************************************************************/
+int retrievepos=MAX_COMMAND_STACK;
+void do_retrieve(void)
+{
+	// char zwi[256];
+
+	retrievepos--;
+	if(retrievepos<0){
+		return;
+	}
+	// sprintf(zwi, "retrievepos=%d", retrievepos);
+	// write_to_log(zwi);
+	if(command_stack[retrievepos]!=NULL){
+		strncpy((char*)screen_commandline, command_stack[retrievepos], 
+			sizeof(screen_commandline));
+	}
+
+	strcpy(screen_errormsg, "");
+	strcpy(screen_errormessage, "");
+}
+/******************************************************************************/
+void do_rfind(void)
+{
+	char zwi[256];
+
+	sprintf(zwi, "find %s", rfind_needle);
+	do_find(zwi);
+}
+/******************************************************************************/
 #define RETURN_NOTHING 0
 #define RETURN_UP    1 
 #define RETURN_DOWN  2 
@@ -1827,12 +2254,12 @@ int process_commandline(void)
 #define RETURN_HOME  5 
 #define RETURN_TAB   6 
 #define RETURN_ENTER 7 
-int process_input_field(int c, unsigned char *s, int startx, int len)
+int process_input_field(int c, unsigned char *s, int startx, int len, int offx)
 {
 	int t;
-	int a;
 	int rc;
 	char zwi[1024];
+	char cmd[256];
 	int endx;
 
 	// sprintf(zwi, "process_input_field: c=%d", c);
@@ -1843,7 +2270,37 @@ int process_input_field(int c, unsigned char *s, int startx, int len)
 	// sprintf(zwi, "1:process_input_field: c=%d screen_offset_y=%d KEY_ENTER=%d", c, screen_offset_y, KEY_ENTER);
 	// write_to_log(zwi);
 
-		switch(c){
+	strcpy(cmd, "");	
+	switch(c){
+		case KEY_F1:  strcpy(cmd, fkey1); c=0; break;
+		case KEY_F2:  strcpy(cmd, fkey2); c=0; break;
+		case KEY_F3:  strcpy(cmd, fkey3); c=0; break;
+		case KEY_F4:  strcpy(cmd, fkey4); c=0; break;
+		case KEY_F5:  strcpy(cmd, fkey5); c=0; break;
+		case KEY_F6:  strcpy(cmd, fkey6); c=0; break;
+		case KEY_F7:  strcpy(cmd, fkey7); c=0; break;
+		case KEY_F8:  strcpy(cmd, fkey8); c=0; break;
+		case KEY_F9:  strcpy(cmd, fkey9); c=0; break;
+		case KEY_F10:  strcpy(cmd, fkey10); c=0; break;
+		case KEY_F11:  strcpy(cmd, fkey11); c=0; break;
+		case KEY_F12:  strcpy(cmd, fkey12); c=0; break;
+		case KEY_PPAGE:  strcpy(cmd, fkeypgup); c=0; break;
+		case KEY_NPAGE:  strcpy(cmd, fkeypgdown); c=0; break;
+	}
+	if(cmd[0]!=0){
+		sprintf(zwi, "cmd=>%s<", cmd);
+		write_to_log(zwi);
+		ucase(cmd);
+		if(strcmp(cmd, "RETRIEVE")==0){ do_retrieve();     return(0); }
+		retrievepos=MAX_COMMAND_STACK; // jump back to the top of stack
+		if(strcmp(cmd, "UP")==0){       do_page_up();      return(0); }
+		if(strcmp(cmd, "DOWN")==0){     do_page_down();    return(0); }
+		if(strcmp(cmd, "LEFT")==0){     do_left();         return(0); }
+		if(strcmp(cmd, "RIGHT")==0){    do_right();        return(0); }
+		if(strcmp(cmd, "RFIND")==0){ 	  do_rfind();        return(0); }
+	}
+	retrievepos=MAX_COMMAND_STACK; // jump back to the top of stack
+	switch(c){
 		case KEY_ENTER: 
 							// remove_empty_insert_lines();
 							rc=process_commandline();
@@ -1858,81 +2315,6 @@ int process_input_field(int c, unsigned char *s, int startx, int len)
 							sprintf(zwi, "2:process RETURN_ENTER=%d", RETURN_ENTER);
 							write_to_log(zwi);
 							return(RETURN_ENTER);
-		               break;
-		case KEY_NPAGE: 
-		case KEY_F8: 
-							strcpy(zwi, (char*)screen_commandline);
-							trim(zwi);
-							ucase(zwi);
-							if(strcmp(zwi, "M")==0 ||
-							   strcmp(zwi, "MAX")==0){
-								strcpy(zwi, "999999");
-							}
-		               if(isdigit(zwi[0])==0 && 
-								zwi[0]!=0 &&
-							   zwi[0]!=' '){
-								strcpy(screen_errormsg, "Invalid amount");
-								sprintf(screen_errormessage, "Invalid scroll amount %s, not numeric.", screen_commandline);
-								return(0);
-		               }
-							else{
-								a=atoi(zwi);
-								set_to_space(screen_commandline, 80);
-								if(a==0){
-									if(cursor_y>4){
-										a=cursor_y-4;
-										if(screen_cols==1) a--;
-										cursor_y-=a;
-									}
-									else{
-										a=20;
-									}
-								}
-							}
-		               screen_offset_y+=a;
-		               if(screen_offset_y>=linecnt){
-								screen_offset_y=linecnt-19;
-								if(screen_offset_y<0){
-									screen_offset_y=0;
-								}
-							}
-							cursor_x=14;
-		               break;
-		case KEY_PPAGE: 
-		case KEY_F7: 
-							strcpy(zwi, (char*)screen_commandline);
-							trim(zwi);
-							ucase(zwi);
-							if(strcmp(zwi, "M")==0 ||
-							   strcmp(zwi, "MAX")==0){
-								strcpy(zwi, "999999");
-							}
-	               	if(isdigit(zwi[0])==0 &&
-								zwi[0]!=0 &&
-							   zwi[0]!=' '){
-								strcpy(screen_errormsg, "Invalid amount");
-								strcpy(screen_errormessage, "Invalid scroll amount, not numeric.");
-								return(0);
-	               	}
-							else{
-								a=atoi(zwi);
-								set_to_space(screen_commandline, 80);
-								if(a==0){
-									if(cursor_y>4){
-										a=cursor_y-4;
-										if(screen_cols==1) a--;
-										cursor_y-=a;
-									}
-									else{
-										a=20;
-									}
-								}
-							}
-		               screen_offset_y-=a;
-		               if(screen_offset_y<0){
-								screen_offset_y=0;
-							}
-							cursor_x=14;
 		               break;
 		case KEY_HOME: c=RETURN_HOME; 
 		               break;
@@ -1985,7 +2367,7 @@ int process_input_field(int c, unsigned char *s, int startx, int len)
 			if(isprint(c)){
 				// sprintf(zwi, "cursor_x=%d startx=%d", cursor_x, startx);
 				// write_to_log(zwi);
-				s[cursor_x-startx]=c;
+				s[cursor_x-startx+offx]=c;
 				cursor_x++;
 				if(cursor_area==CUR_TEXTAREA){
 					source_changed=TRUE;
@@ -1994,8 +2376,8 @@ int process_input_field(int c, unsigned char *s, int startx, int len)
 					c=RETURN_RIGHT;
 				}
 			}
-		}
-		return(c);
+	}
+	return(c);
 }
 /******************************************************************************/
 int now_handle_input_key_question(int c)
@@ -2019,41 +2401,46 @@ int now_handle_input_key_question(int c)
 	return(0);
 }
 /******************************************************************************/
-int calc_linenbr(int nbr)
+/* topnbr - line which is displayed on top of screen
+ * nbr    - line which is edited on the displayed screen
+ */
+int calc_linenbr(int topnbr, int nbr)
 {
-	int rc;
 	int t;
 	int cnt;
 	char zwi[256];
+	int z;
 
-	rc=0;
+	sprintf(zwi, "calc_linenbr: nbr=%d screen_offset_y=%d", nbr,screen_offset_y);
+	write_to_log(zwi);
 	cnt=0;
-	for(t=0; t<nbr; t++){
-		if(linetype[t]=='X'){
-			cnt++;
+	z=0;
+	for(t=topnbr;;t++){
+		if(linetype[t]=='X'){ // excluded? don't count it, must mark that
+			cnt++;             // we have excluded lines
 		}
 		else{
 			if(cnt>0){ // there were excluded lines, count only one!
-				rc++;
+				z++; // count the "nnn lines excluded" line
 				cnt=0;
 			}
-			rc++;
+			z++; // normal line, count it
 		}
-
+		if(z>nbr) break;
 	}
 	if(cnt>0){ // last line was excluded?
-		rc++;   // count it!
+		t++;    // count it!
 	}
 
-	sprintf(zwi, "calc_linenbr: nbr=%d rc=%d", nbr, rc);
+	sprintf(zwi, "calc_linenbr: nbr=%d t=%d", nbr, t);
 	write_to_log(zwi);
-	return(rc);
+	return(t);
 }
 /******************************************************************************/
 int now_handle_input_key_editor(int c)
 {
-	char zwi[1024];
-	char zwi2[1024];
+	char zwi[5000];
+	char zwi2[5000];
 	int a;
 	int rc;
 	int pos=0;
@@ -2075,11 +2462,11 @@ int now_handle_input_key_editor(int c)
 		return(0);
 	}
 
-	if(c==KEY_F5){
-		sprintf(zwi, "find %s", rfind_needle);
-		do_find(zwi);
-		return(0);
-	}
+	// if(c==KEY_F5){
+	// 	sprintf(zwi, "find %s", rfind_needle);
+	// 	do_find(zwi);
+	// 	return(0);
+	// }
 
 	if(c==KEY_F3){
 		rc=do_save();
@@ -2094,7 +2481,7 @@ int now_handle_input_key_editor(int c)
 	// sprintf(zwi, "2:now_handle_input_key_editor: cursor_area=%d c=%d cursor_x=%d", cursor_area, c, cursor_x);
 	// write_to_log(zwi);
 	if(cursor_area==CUR_CMDLINE){
-		rc=process_input_field(c, screen_commandline, 14, 48);
+		rc=process_input_field(c, screen_commandline, 14, 48, 0);
 		// sprintf(zwi, "3:now rc=%d", rc);
 		// write_to_log(zwi);
 		switch(rc){
@@ -2144,17 +2531,19 @@ int now_handle_input_key_editor(int c)
 		pos=cursor_y-screen_topline;
 	   //sprintf(zwi, "LINENBR:pos=%d:cursor_y=%d cursor_x=%d screen_offset_y=%d", pos, cursor_y, cursor_x, screen_offset_y);
 	   //write_to_log(zwi);
-		rc=process_input_field(c,linecmd[calc_linenbr(pos+screen_offset_y)],1,6);
+		rc=process_input_field(c,linecmd[calc_linenbr(screen_offset_y, pos)],
+			1, 6, 0);
 
-	   // sprintf(zwi, "LINENBR:rc=%d:cursor_x=%d", rc, cursor_x);
-	   // write_to_log(zwi);
+	   sprintf(zwi, "LINENBR:rc=%d:cursor_x=%d", rc, cursor_x);
+	   write_to_log(zwi);
 
 		switch(rc){
 			case RETURN_ENTER: cursor_area=CUR_TEXTAREA; 
 							// cursor_area=CUR_LINENBR; // No, stay in textarea!!
 							// now we can remove empty lines, finally!
 							pos=cursor_y-screen_topline;
-							curpos=pos+screen_offset_y;
+							// curpos=pos+screen_offset_y;
+							curpos=calc_linenbr(screen_offset_y, pos);
 							// remove_empty_insert_lines(&curpos); 
 			            cursor_x=8;
 							cursor_y++;
@@ -2247,7 +2636,7 @@ int now_handle_input_key_editor(int c)
 							}
 			            break;
 			case RETURN_TAB: cursor_area=CUR_TEXTAREA;
-								cursor_x=8;
+							cursor_x=8;
 			            break;
 		}
 		return(0);
@@ -2274,16 +2663,18 @@ int now_handle_input_key_editor(int c)
 		pos=cursor_y-screen_topline;
 		// sprintf(zwi2, "pos=%d screen_offset_y=%d", pos, screen_offset_y);
 		// write_to_log(zwi2);
-		curpos=pos+screen_offset_y;
+		// curpos=pos+screen_offset_y; // ###JG###
+		curpos=calc_linenbr(screen_offset_y, pos);
 		if(linetype[curpos]=='N' ||
 		   linetype[curpos]=='E' ||
 		   linetype[curpos]=='I'){
 			strcpy(zwi, (char*)lineptr[curpos]);
-			expand_to_256_bytes(zwi);
+			expand_to_nnn_bytes(screen_offset_x+80, zwi);
 			free(lineptr[curpos]);
 			lineptr[curpos]=malloc(strlen(zwi)+1);
 			strcpy((char*)lineptr[curpos], zwi);
-			rc=process_input_field(c, lineptr[calc_linenbr(curpos)], 8, 72);
+			rc=process_input_field(c, 
+			lineptr[calc_linenbr(screen_offset_y, pos)], 8, 72, screen_offset_x);
 			strcpy(zwi, (char*)lineptr[curpos]);
 			rtrim(zwi);
 			// sprintf(zwi2, "nach process_input_field: zwi=>%s<", zwi);
@@ -2324,17 +2715,27 @@ int now_handle_input_key_editor(int c)
 									cursor_y--;
 									screen_offset_y++;
 									// jump to first non space character in line
-									strcpy(zwi, (char*)lineptr[curpos+1]);
-									sprintf(zwi2, "zwi=>%s<", zwi);
+									sprintf(zwi2, "curpos=%d linecnt=%d", curpos, linecnt);
 									write_to_log(zwi2);
-									for(t=0;;t++){
-										if(zwi[t]==0) break;
-										if(zwi[t]!=' ') break;
+									if((curpos+1)<linecnt){
+										strcpy(zwi, (char*)lineptr[curpos+1]);
+										sprintf(zwi2, "zwi=>%s<", zwi);
+										write_to_log(zwi2);
+										for(t=0;;t++){
+											if(zwi[t]==0) break;
+											if(zwi[t]!=' ') break;
+										}
+										cursor_x=8+t;
 									}
-									cursor_x=8+t;
+									else{
+										cursor_y=3; // to commandline
+										if(cursor_x<14) cursor_x=14;
+										if(cursor_x>64) cursor_x=64;
+								 		cursor_area=CUR_CMDLINE; 
+									}
 								}
 								else{
-									cursor_y=3;
+									cursor_y=3; // to commandline
 									if(cursor_x<14) cursor_x=14;
 									if(cursor_x>64) cursor_x=64;
 							 		cursor_area=CUR_CMDLINE; 
@@ -2342,16 +2743,22 @@ int now_handle_input_key_editor(int c)
 							}
 							else{
 								// jump to first non space character in line
-								strcpy(zwi, (char*)lineptr[curpos+1]);
-								sprintf(zwi2, "zwi=>%s<", zwi);
-								write_to_log(zwi2);
-								for(t=0;;t++){
-									if(zwi[t]==0) break;
-									if(zwi[t]!=' ') break;
+								if((curpos+1)<linecnt){
+									strcpy(zwi, (char*)lineptr[curpos+1]);
+									sprintf(zwi2, "zwi=>%s<", zwi);
+									write_to_log(zwi2);
+									for(t=0;;t++){
+										if(zwi[t]==0) break;
+										if(zwi[t]!=' ') break;
+									}
+									// sprintf(zwi2, "first non blank char at %d", t);
+									// write_to_log(zwi2);
+									cursor_x=8+t;
 								}
-								// sprintf(zwi2, "first non blank char at %d", t);
-								// write_to_log(zwi2);
-								cursor_x=8+t;
+								else{
+			            		cursor_x=14; // go to commandline
+									cursor_y=3;
+								}
 							}
 						   break;
 			case RETURN_HOME: cursor_area=CUR_CMDLINE; 
@@ -2466,11 +2873,36 @@ int main(int argc, char **argv)
 	
 	char *config_path;
 
+	for(t=1;t<argc;t++){
+		f=0;
+		strcpy(zwi, argv[t]);
+		if(strcmp(zwi, "-v")==0 || strcmp(zwi, "--version")==0){
+			puts(VERSION);
+			exit(0);
+		}
+		if(strcmp(zwi, "-log")==0){
+			write_logfile=TRUE;
+			f=1;
+		}
+		if(f==0){
+			if(filename[0]==0){
+				strcpy(filename, zwi);
+			}
+			else{
+				fprintf(stderr, 
+				"pipedit: invalid argument >%s<, aborting...\n", argv[t]);
+				exit(1);
+			}
+		}
+	}
+
 	// find out which config file we have
 	config_path = getenv("PIPEDITCFG");
-	if (config_path==NULL) {
-		config_path = "./pipedit.cfg";
+	if(config_path==NULL) {
+		config_path=malloc(32);
+		strcpy(config_path, "./pipedit.cfg");
 	}
+	printf("config_path=>%s<\n", config_path);
 	sprintf(config_file, "%s", config_path);
 	fp=fopen(config_file, "rb");
 	if(fp==NULL){
@@ -2494,23 +2926,8 @@ int main(int argc, char **argv)
 		linetype[t]=' ';
 	}
 
-	for(t=1;t<argc;t++){
-		f=0;
-		strcpy(zwi, argv[t]);
-		if(strcmp(zwi, "-log")==0){
-			write_logfile=TRUE;
-			f=1;
-		}
-		if(f==0){
-			if(filename[0]==0){
-				strcpy(filename, zwi);
-			}
-			else{
-				fprintf(stderr, 
-				"pipedit: invalid argument >%s<, aborting...\n", argv[t]);
-				exit(1);
-			}
-		}
+	for(t=0; t<MAX_COMMAND_STACK; t++){
+		command_stack[t]=NULL;
 	}
 
 	if(strlen(filename)==0){

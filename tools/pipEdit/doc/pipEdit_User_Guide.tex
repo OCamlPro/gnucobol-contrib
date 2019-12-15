@@ -1,0 +1,456 @@
+%%%\documentclass{book}
+\documentclass{report}
+%%%\usepackage{graphicx}
+\usepackage{url}
+\title{\huge \textbf{pipEdit} 
+\break \break \small Version 0.8.1 \huge 
+\break \break Users Guide \break \break \break}
+\author{The\_Piper \\ the\_piper@web.de}
+\date{December 2019}
+\begin{document}
+\maketitle
+\tableofcontents
+%%%\listoffigures
+%%%\includegraphics[height=\baselineskip]{The_Pied_Piper_Logo.jpg}
+\chapter{License}
+This program is under the Gnu Public License, GPL.  \\ \break
+
+Read the file \texttt{COPYING} or here:  \\ \break
+
+\url{https://www.gnu.org/licenses/gpl-3.0.en.html}   \\ \break
+
+for it‘s content. \\ \break
+
+Excerpt: \\ \break
+
+\textbf{    There is no warranty for the program, to the extent permitted by
+	 applicable law.  Except when otherwise stated in writing the copyright
+	 holders and/or other parties provide the program "as is" without warranty
+	 of any kind, either expressed or implied, including, but not limited to,
+	 the implied warranties of merchantability and fitness for a particular
+	 purpose.  
+	 \huge The entire risk as to the quality and performance of the program is with you. \normalsize
+	 Should the program prove defective, you assume the cost of
+	 all necessary servicing, repair or correction.
+}
+
+\chapter{Introduction}
+
+pipEdit is meant to be a lookalike editor of the ISPF editor IBM offers on their mainframes, it is not meant to be a 100\% clone of it or of the whole ISPF environment. 
+
+
+The plan is to create (and have) an editor which has a similar feeling like the IBM one, but some things might be different. 
+
+
+For example, I haven‘t found out right now how to make a difference between the ENTER key and the ENTER key on the number pad, so one can be the XMIT/SEND key and the other won‘t.
+
+
+That, and some other stuff, are some minor differences.
+
+
+It can be compiled with ncurses and, if not available, with my tiny ncurses replacement, pipcurses, which should work with all vt52, vt100, ansi, xterm terminals.
+
+
+
+\chapter{Compiling pipEdit}
+
+pipEdit ist developed with gcc, the Gnu C compiler under Linux.
+
+To compile it with ncurses type: \\
+
+\texttt{gcc pipedit.c -opipedit.bin -O -lcurses} \break
+
+Without ncurses, using my ncurses replacement, pipcurses, type this: \\
+
+\texttt{gcc pipedit.c -opipedit.bin -O -D\_\_USE\_PIPCURSES\_\_=1} \\
+
+Or use the Makefile, edit it to your needs and type \texttt{make} \\
+
+Of course you can try to compile it for Windows, Dev-Cpp, for example, is a free compiler which should be able to compile source code for gcc.
+
+\url{https://www.bloodshed.net/devcpp.html}
+
+
+\chapter{Configuring pipEdit}
+
+pipEdit uses a configuration file to store/read it‘s configuration data, named \texttt{pipedit.cfg}.
+
+\section{Environment variable}
+
+To know where \texttt{pipedit.cfg} is located, the editor reads an environment 
+variable named \texttt{\$PIPEDITCFG} which holds the complete path 
+to the config file. \\ \break
+
+Example:
+
+\texttt{PIPEDITCFG="/home/myname/pipEdit/pipedit.cfg" ; export PIPEDITCFG} \break
+
+Define this variable in \texttt{.bashrc}, \texttt{.kshrc} 
+or whereever it suits you.
+
+\section{Configuration file}
+
+The configuration file itself looks like this:
+
+\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+
+\# Global configuration for pipEdit \#
+
+\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+
+\# target is used in *.par files to have multiple configurations  
+
+\# for multiple compilers
+
+\#
+
+target=GNUCOBOL
+
+\#\#\#target=MICROFOCUS
+
+\#
+
+\# Where are the macros located the edtior can use?
+
+\#
+
+macros=/home/myname/pipEdit/macros
+
+\#
+
+\# language overwrites the environment variable \$LANG
+
+\# This can be used for language files for the editor, macros and 
+
+\# so on.
+
+\# If left blank, \$LANG is used, if \$LANG isn't defined "en" is
+
+\# used.
+
+\# default means, no file is read, the default values of the editor
+
+\# are used.
+
+\#
+
+\#\#\#language=default
+
+language=
+
+\#
+
+\# various translations of texts and messages
+
+\#
+
+langfiles=/home/myname/pipEdit/langfiles
+
+\#
+
+\# Function keys
+
+\#
+
+F1=HELP
+
+F2=
+
+F3=END
+
+F4=
+
+F5=RFIND
+
+F6=
+
+F7=UP
+
+F8=DOWN
+
+F9=
+
+F10=LEFT
+
+F11=RIGHT
+
+F12=RETRIEVE
+
+PGUP=UP
+
+PGDOWN=DOWN
+
+\chapter{Installing pipEdit}
+To install pipEdit on a Linux system, follow these 3 easy steps: \\
+\break
+
+\textbf{One} \\
+Copy the compiled program, \texttt{pipedit.bin}, to a directory which is 
+specified in your \texttt{\$PATH}, like \texttt{/usr/local/bin}.
+
+You might rename it to a shorter name, or create a shell script to call pipedit.bin, like \texttt{pe} or such. \\
+\break
+
+\textbf{Two} \\
+Copy the config file \texttt{pipedit.cfg} to a location where you like it to be.
+For example, create a directorey named \texttt{.pipedit} in your 
+\texttt{\$HOME} directory and move \texttt{pipedit.cfg} into it.
+
+Edit the config file to your needs, language, PF-keys and such.
+\\
+\break
+
+\textbf{Three} \\
+Edit the profile of your shell, \texttt{.kshrc}, \texttt{.bashrc}, or whatever, 
+and define
+the environment variable \texttt{\$PIPEDITCFG} and set it to the location of
+\texttt{pipedit.cfg} like:
+
+\texttt{PIPEDITCFG=\"/home/myname/.pipedit/pipedit.cfg\" ; export PIPEDITCFG}
+\\
+\break
+And thats it. Log off and log on and try to start pipEdit.
+
+\chapter{Backups}
+
+pipEdit creates backups of the file being edited. Just to be safe…..
+
+The backups are stored in the \texttt{/tmp}
+folder and are named, for example, we are editing the file 
+\texttt{hello.cob}: \\
+\break
+\begin{tabular}{l l}
+\texttt{hello.cob.grandfather}  & the oldest backup \\
+\texttt{hello.cob.father} & the 2nd oldest backup \\
+\texttt{hello.cob.son} & the current backup \\
+\end{tabular} \\
+\break
+As you might guess, every editing session, the grandfather is overwritten with the father, the father with the son and the son with the current file before being edited.
+
+
+\chapter{Keys / Function keys}
+
+\section{Editor}
+
+\begin{tabular}{l l}
+F1 & Toggle between short and long (error) message \\
+F3 & Quit and save \\
+F5 & Repeat find (RFIND) \\
+F7 / PgUp & Scroll one page up \\
+F8 / PgDown & Scroll one page down \\
+F10 & Scroll left \\
+F11 & Scroll right \\
+F12 & Retrieve \\
+\end{tabular}
+\\
+
+\textit{The function keys are defined in the config file. If you want or must
+use other function keys for those actions, edit the config file.}
+
+\textit{For example, the terminal emulation I
+use, uses F11 to toggle full screen mode. So scroll right on F11 doesn't work 
+very well.}  \\
+
+\begin{tabular}{l l}
+Arrow up & Cursor up \\
+Arrow down & Cursor down \\
+Arrow left & Cursor left \\
+Arrow right & Cursor right \\
+INS & Insert one blank at current position \\
+DEL & Deletes one character at current position \\
+\end{tabular}
+
+\section{Cancel window}
+
+\begin{tabular}{l l}
+F1 & Yes, discard all changes and leave the editor \\
+F12 & No, do not discard, stay in editor \\
+\end{tabular}
+
+\chapter{Commands}
+
+\begin{tabular}{l l}
+Save & Save the current file \\
+save4macro & Save the current file in a format macros use \\
+res / reset & Remove all message lines \\
+can / cancel & Cancel editing, must be confirmed again \\
+cols & Toggles the display of columns above code \\
+l / loc & Locate a line number \\
+f / find & Find string in text \\
+\end{tabular}
+
+
+
+\chapter{Line commands}
+
+Line commands are typed at the line number of a text line. \\ 
+
+\begin{tabular}{l l}
+d & Delete line \\
+i & Insert blank line \\
+r & Repeat line \\
+\end{tabular} \\
+
+Every command takes a number as a parameter.
+So \texttt{d3} deletes 3 lines, \texttt{i5} inserts 5 blank lines and
+\texttt{r2} repeats the current line two times.
+
+
+
+
+
+\chapter{Macros}
+
+pipEdit supports macros.
+
+A macro is just a program, script, whatever, which is called by pipEdit, 
+getting a defined number of parameters and reads and modifies a text file.
+
+\section{Parameters for macros}
+\subsection{File name}
+This is the name of the temporary file pipEdit writes before calling the macro and reads after the macro is done.
+
+The macro changes this file, like the comp macro, which inserts message lines of the error messages of the compile into the source code.
+
+The format of this file is this (and the result pipEdit reads, must be the same format):
+
+\begin{tabular}{l l l}
+\textbf{Bytes} & \textbf{Type}        & \textbf{Content} \\
+0-5            & Line number          & 6 digits line number \\
+6              & Line type            & I=inserted line \\
+               &                      & M=message\\
+               &                      & E=Error \\
+               &                      & N=normal text line \\
+               &                      & X=eXcluded line \\
+7-nnn          & Text                 & The content of the line \\
+\end{tabular}
+
+
+The line number itself is ignored when pipEdit reads the result of the macro again. The line number is used by the comp macro to find the right line in the source code where the error messages are displayed.
+
+\pagebreak
+\subsection{Parameter file}
+A parameter file, \texttt{filename.par}, looks like this (this is a file for the comp macro):
+
+\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+
+\#\#\# M i c r o f o c u s \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+
+@target=MICROFOCUS
+
+pre=\#!/bin/bash
+
+pre=. /adm/config/basis.prof
+
+pre=export COBCPY=\$HOME/Projects/cpy
+
+\#\#\#----------------------------------
+
+compiler=cob
+
+options=-x -P
+
+binary=hello.bin
+
+listing=hello.lst
+
+movebinto=/home/yourname/yourlocation/Local\_bin/
+
+movelstto=/home/yourname/yourlocation/Listings/
+
+removetmp=.idy .int .cs9Filename
+
+\#\#\#post=rm *.idy *.int *.cs9
+
+\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+
+\#\#\# G n u C o b o l 
+
+\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+
+@target=GNUCOBOL
+
+pre=\#!/bin/bash
+
+compiler=cobc
+
+options=-x -Thello.lst
+
+binary=hello.bin
+
+listing=hello.lst
+
+movebinto=/home/yourname/yourlocation/Binaries/
+
+movelstto=/home/yourname/yourlocation/Listings/
+
+\#\#\#----------------------------------
+
+post=exit
+
+post=\# And thats it
+
+
+Macros can read this file, in this case the comp macro.
+
+This file specifies how to compile COBOL programs for Microfocus or GnuCobol.
+
+Which compiler is used is specified with the @target= tag.
+@target=MICROFOCUS 		or
+@target=GNUCOBOL
+
+All lines following the right @target= tag will be used by the comp macro to compile the current source code.
+
+The @target= itself is specified in the pipedit.cfg file.
+
+The pre= lines are written at the beginning of the compile shell script.
+
+The post= lines are written at the end of that script.
+
+Between those lines the comp macro generates code for the compile from the tags
+
+compiler=
+name of the COBOL compiler
+options=
+options for the compiler
+binary=
+name of the output, the binary
+listing=
+name of the listing file
+movebinto=
+Where the result of the compile, the binary, is moved to
+movelstto=
+where the listing file should be moved to
+
+
+This is an example of a *.par file for the comp macro.
+When you write your own macros, you will create your own parameter files, fitting to the needs of the macros.
+
+\subsection{Filename}
+The original name of the file currently being edited.
+
+\subsection{Config file}
+This is pipedit.cfg, or however you name it in the environment variable, the macro can read that config file too and use it‘s values.
+
+
+Those parameters are given to the macro, the macro can use them to read configuration values from the *.par file or from the config file, process and modify the termporary file, and thats it right now.
+
+That is how macros work with pipEdit.
+
+Further plans: Return something like error messages displayed where pipEdit 
+displays it‘s own error messages, relocating the cursor and such.
+
+\chapter{comp Macro}
+The comp macro is a macro which compiles the (COBOL) source code loaded into pipEdit and displays error messages as message lines right into the source code.
+
+
+
+\chapter{hex Macro}
+
+The hex macro inserts message lines of the hex code of every line of the source code into the source code itself.
+
+Type hex to show the hex codes, type res or reset to get rid of them.
+
+
+
+\end{document}
