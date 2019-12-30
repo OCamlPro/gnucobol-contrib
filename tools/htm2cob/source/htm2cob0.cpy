@@ -1,7 +1,7 @@
 *> Main program template
- 01 C-CGI-PROG-MAIN-LINE               CONSTANT AS 390.
- 01 C-CGI-PROG-MAIN-END-LINE           CONSTANT AS 474.
- 01 C-CGI-PROG-MAX-LINE                CONSTANT AS 484.
+ 01 C-CGI-PROG-MAIN-LINE               CONSTANT AS 393.
+ 01 C-CGI-PROG-MAIN-END-LINE           CONSTANT AS 484.
+ 01 C-CGI-PROG-MAX-LINE                CONSTANT AS 494.
 
  01 WS-CGI-PROG.
 *> program prefix
@@ -117,6 +117,9 @@
    02 FILLER PIC X(80) VALUE "*> 01 HTM2COB-USE-SESS-COOKIE-FLAG       PIC 9(1) VALUE 0.                      ".
    02 FILLER PIC X(80) VALUE "*>    88 V-HTM2COB-USE-SESS-COOKIE-NO    VALUE 0.                               ".
    02 FILLER PIC X(80) VALUE "*>    88 V-HTM2COB-USE-SESS-COOKIE-YES   VALUE 1.                               ".
+   02 FILLER PIC X(80) VALUE "*> If you are using GnuCOBOL with BDB (Berkeley DB) you have to set the         ".
+   02 FILLER PIC X(80) VALUE "*> environment variable DB_HOME to where your session files are saved.          ".
+   02 FILLER PIC X(80) VALUE "*> 01 HTM2COB-DB-HOME             GLOBAL PIC X(1024) VALUE ""/tmp"".            ".
    02 FILLER PIC X(80) VALUE "*> File path for the session file.                                              ".
    02 FILLER PIC X(80) VALUE "*> 01 HTM2COB-SESSION-FILE        GLOBAL PIC X(1024) VALUE ""/tmp/sess.dat"".   ".
    02 FILLER PIC X(80) VALUE "*> File path for the session variable file.                                     ".
@@ -405,6 +408,13 @@
    02 FILLER PIC X(80) VALUE "*>------------------------------------------------------------------------------".
    02 FILLER PIC X(80) VALUE " HTM2COB-MAIN SECTION.                                                          ".
    02 FILLER PIC X(80) VALUE "*>------------------------------------------------------------------------------".
+   02 FILLER PIC X(80) VALUE "                                                                                ".
+   02 FILLER PIC X(80) VALUE "*>  If you are using GnuCOBOL with BDB (Berkeley DB) you have to set the        ".
+   02 FILLER PIC X(80) VALUE "*>  environment variable DB_HOME to where your session files are saved.         ".
+   02 FILLER PIC X(80) VALUE "    IF HTM2COB-DB-HOME NOT = SPACES                                             ".
+   02 FILLER PIC X(80) VALUE "    THEN                                                                        ".
+   02 FILLER PIC X(80) VALUE "       SET ENVIRONMENT ""DB_HOME"" TO TRIM(HTM2COB-DB-HOME)                     ".
+   02 FILLER PIC X(80) VALUE "    END-IF                                                                      ".
    02 FILLER PIC X(80) VALUE "                                                                                ".
    02 FILLER PIC X(80) VALUE "    SET V-HTM2COB-DISP-CONT-TYPE-NO OF HTM2COB-DISP-CONT-TYPE-FLAG TO TRUE      ".
    02 FILLER PIC X(80) VALUE "                                                                                ".

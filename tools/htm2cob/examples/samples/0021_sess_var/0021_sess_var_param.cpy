@@ -98,6 +98,9 @@
  01 HTM2COB-USE-SESS-COOKIE-FLAG       PIC 9(1) VALUE 0.
     88 V-HTM2COB-USE-SESS-COOKIE-NO    VALUE 0.
     88 V-HTM2COB-USE-SESS-COOKIE-YES   VALUE 1.
+*> If you are using GnuCOBOL with BDB (Berkeley DB) you have to set the
+*> environment variable DB_HOME to where your session files are saved.
+ 01 HTM2COB-DB-HOME             GLOBAL PIC X(1024) VALUE "/tmp".
 *> File path for the session file. 
  01 HTM2COB-SESSION-FILE        GLOBAL PIC X(1024) VALUE "/tmp/0021_session.dat".
 *> File path for the session variable file. 
