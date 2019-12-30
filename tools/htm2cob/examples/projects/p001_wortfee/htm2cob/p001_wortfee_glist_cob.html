@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Wortfee.net Guest List page</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/css/w3.css">
+<script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/js/herbyCookie.min.js"></script>
+<script>
+$(document).ready(function(){
+            $(document).herbyCookie({
+                link: "http://www.jqueryscript.net/privacy/",
+            });
+        });
+</script>
+</head>
+<body>
+
+<?cob 
+    PERFORM PROCESS-REQUEST
+?>
+
+<!-- Navigation -->
+<nav class="w3-bar w3-black">
+  <a href="#" onclick="history.back();return false"class="w3-button w3-bar-item">Go Back</a>
+</nav>
+
+<!-- Wortfee Description -->
+<section class="w3-container w3-center w3-content" style="max-width:600px">
+  <h2 class="w3-wide">Wortfee.net</h2>
+  <p class="w3-opacity"><i>This is a free tool to build your foreign language vocabulary.</i></p>
+  <p class="w3-justify">
+    On this page you can see a list of users who have successfully completed a level. 
+    You can be the next one!
+  </p>
+
+<?cob 
+    IF V-OK OF LN-RESULT-FLAG
+    THEN
+       PERFORM DISP-GUEST-LIST
+    END-IF
+?>
+</section>
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-small w3-center w3-black w3-medium">
+  <p class="w3-medium">
+  <a href="/p001_wortfee_impressum.html">Impressum</a>
+  ,
+  <a href="/p001_wortfee_datenschutzerklaerung.html">Datenschutz</a>
+  ,
+  <a href="https://www.jqueryscript.net/privacy" target="_blank">Privacy</a>
+  </p>
+</footer>
+
+</body>
+</html>
+
+<?cob-ws
+ 01 WS-HTM-LANGUAGE-OUT          PIC X(100).
+
+ 01 WS-MAX-USER-WORD             PIC 9(4).
+ 01 WS-MAX-USER-WORD-Z           PIC Z(3)9(1).
+ 01 WS-HTM-MAX-USER-WORD         PIC X(4).
+
+ 01 WS-QUESTION-COUNT            PIC 9(6).
+ 01 WS-QUESTION-COUNT-Z          PIC Z(5)9(1).
+ 01 WS-HTM-QUESTION-COUNT        PIC X(6).
+
+ 01 WS-ANSWER-OK-COUNT           PIC 9(6).
+ 01 WS-ANSWER-OK-COUNT-Z         PIC Z(5)9(1).
+ 01 WS-HTM-ANSWER-OK-COUNT       PIC X(6).
+
+ 01 WS-IND-1                     PIC 9(3).
+
+ 01 LN-MOD4.
+   02 LN-OUTPUT.
+     03 LN-RESULT-FLAG           PIC 9(1).
+        88 V-OK                  VALUE 0.
+        88 V-NOT-OK              VALUE 1.
+*>   saved number of lines in the table
+     03 LN-GUEST-TAB-LINE-NR     PIC 9(3).
+     03 LN-GUEST-TABLE.
+       04 LN-GUEST-TAB OCCURS 100 TIMES.
+         05 LN-GUEST-TAB-LINE.
+           06 LN-START-TIME      PIC X(19).
+           06 LN-END-TIME        PIC X(19).
+           06 LN-NICKNAME        PIC X(15).
+           06 LN-LANGUAGES       PIC X(5).
+           06 LN-LEVEL           PIC 9(1).
+           06 LN-QUESTION-COUNT  PIC 9(6).
+           06 LN-ANSWER-OK-COUNT PIC 9(6).
+           06 LN-MAX-USER-WORD   PIC 9(4).
+?>
+
+<?cob 
+*>------------------------------------------------------------------------------
+ PROCESS-REQUEST SECTION.
+*>------------------------------------------------------------------------------
+
+*>  write WF_SESSION table
+    INITIALIZE LN-MOD4
+    CALL "PGMOD4" USING LN-MOD4
+
+    EXIT SECTION .
+
+*>------------------------------------------------------------------------------
+ DISP-GUEST-LIST SECTION.
+*>------------------------------------------------------------------------------
+
+    PERFORM VARYING WS-IND-1 FROM 1 BY 1
+      UNTIL WS-IND-1 > LN-GUEST-TAB-LINE-NR
+         OR WS-IND-1 > 100   
+
+       DISPLAY '<div class="w3-panel w3-border w3-round-xlarge">' END-DISPLAY    
+       DISPLAY "<p>" END-DISPLAY
+       DISPLAY "Nickname: " trim(LN-NICKNAME(WS-IND-1)) "<br>" END-DISPLAY
+    
+       EVALUATE LN-LANGUAGES(WS-IND-1)
+           WHEN "EN-DE"
+              MOVE "English - German"    TO WS-HTM-LANGUAGE-OUT
+           WHEN "DE-EN"
+              MOVE "German - English"    TO WS-HTM-LANGUAGE-OUT
+           WHEN "EN-HU"
+              MOVE "English - Hungarian" TO WS-HTM-LANGUAGE-OUT
+           WHEN "HU-EN"
+              MOVE "Hungarian - English" TO WS-HTM-LANGUAGE-OUT
+           WHEN "DE-HU"
+              MOVE "German - Hungarian"  TO WS-HTM-LANGUAGE-OUT
+           WHEN "HU-DE"
+              MOVE "Hungarian - German"  TO WS-HTM-LANGUAGE-OUT
+       END-EVALUATE
+
+       DISPLAY "Languages: " trim(WS-HTM-LANGUAGE-OUT) "<br>" END-DISPLAY
+       
+       MOVE LN-MAX-USER-WORD(WS-IND-1) TO WS-MAX-USER-WORD
+       MOVE WS-MAX-USER-WORD    TO WS-MAX-USER-WORD-Z
+       MOVE WS-MAX-USER-WORD-Z  TO WS-HTM-MAX-USER-WORD
+       DISPLAY "Level: " trim(LN-LEVEL(WS-IND-1)) "  (" WS-HTM-MAX-USER-WORD " words)" "<br>" END-DISPLAY
+
+       MOVE LN-QUESTION-COUNT(WS-IND-1) TO WS-QUESTION-COUNT
+       MOVE WS-QUESTION-COUNT           TO WS-QUESTION-COUNT-Z
+       MOVE WS-QUESTION-COUNT-Z         TO WS-HTM-QUESTION-COUNT
+       DISPLAY "Questions: " trim(WS-HTM-QUESTION-COUNT) "<br>" END-DISPLAY
+   
+       MOVE LN-ANSWER-OK-COUNT(WS-IND-1) TO WS-ANSWER-OK-COUNT
+       MOVE WS-ANSWER-OK-COUNT           TO WS-ANSWER-OK-COUNT-Z
+       MOVE WS-ANSWER-OK-COUNT-Z         TO WS-HTM-ANSWER-OK-COUNT
+       DISPLAY "OK Answers: " trim(WS-HTM-ANSWER-OK-COUNT) "<br>" END-DISPLAY
+
+       DISPLAY "Start Time: " trim(LN-START-TIME(WS-IND-1)) "<br>" END-DISPLAY
+       DISPLAY "End Time: "   trim(LN-END-TIME(WS-IND-1)) "<br>" END-DISPLAY
+
+       DISPLAY "</p>" END-DISPLAY
+       DISPLAY "</div>" END-DISPLAY
+    END-PERFORM
+
+    EXIT SECTION .
+?>

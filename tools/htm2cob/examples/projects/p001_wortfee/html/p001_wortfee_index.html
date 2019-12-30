@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Wortfee.net Home</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/css/w3.css">
+<script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/js/herbyCookie.min.js"></script>
+<script>
+$(document).ready(function(){
+            $(document).herbyCookie({
+                link: "http://www.jqueryscript.net/privacy/",
+            });
+        });
+</script>
+<script>
+function openLang(langName) {
+  var i;
+  var x = document.getElementsByClassName("lang");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";  
+  }
+  document.getElementById(langName).style.display = "block";  
+}
+</script>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="w3-bar w3-black">
+  <a href="index.html" class="w3-button w3-bar-item">Home</a>
+  <a href="/cgi-bin/p001_wortfee_login" class="w3-button w3-bar-item">Guest Login</a>
+  <a href="/cgi-bin/p001_wortfee_glist" class="w3-button w3-bar-item">Guest List</a>
+</nav>
+
+<!-- Slide Show -->
+<section>
+  <img class="mySlides" src="img/p001_wortfee_slide1.jpg" style="width:100%">
+  <img class="mySlides" src="img/p001_wortfee_slide2.jpg" style="width:100%">
+</section>
+
+<!-- Wortfee Description -->
+<section class="w3-container w3-center w3-content" style="max-width:600px">
+  <h2 class="w3-wide">Wortfee.net</h2>
+  <p class="w3-opacity"><i>This is a free tool to build your foreign language vocabulary.</i></p>
+
+  <div class="w3-bar w3-black">
+    <button class="w3-bar-item w3-button" onclick="openLang('English')">English</button>
+    <button class="w3-bar-item w3-button" onclick="openLang('German')">German</button>
+    <button class="w3-bar-item w3-button" onclick="openLang('Hungarian')">Hungarian</button>
+  </div>
+  <div id="English" class="w3-container lang">
+    <p class="w3-justify">
+    <b>English <img src="img/p001_wortfee_lang_EN.png" class="w3-round" alt="EN"></b> 
+    </p>
+    <p class="w3-justify">
+    Wort-Fee (in English Word-Fairy) helps you learn the most commonly used words in English,
+    German and Hungarian. This service is free of charge and you can use it as a "guest"
+    without registration with "Guest Login".<br>
+    
+    After selecting the language and level (number of words), you will be asked a question
+    in the first selected language and six possible answers in the second selected language.
+    One of the six answers is correct. The Word-Fairy shows you immediately whether your 
+    answer was correct or not. The correct answers are counted and you must answer each word
+    correctly at least five times to complete a level.<br>
+    
+    The first language you choose should be the one you are learning. The words are 
+    queried in this language. The second language chosen must be a known language, the possible
+    answers are given in this language. For some words there are pictures that will help you
+    answer.<br>
+
+    If there is no response for more than 15 minutes, you have to log in again. In this case 
+    you lose the previous result. When you have successfully completed a level, you will be
+    added to the guest list.
+    </p>
+  </div>
+
+  <div id="German" class="w3-container lang" style="display:none">
+    <p class="w3-justify">
+    <b>German <img src="img/p001_wortfee_lang_DE.png" class="w3-round" alt="DE"></b> 
+    </p>
+    <p class="w3-justify">
+    Wort-Fee hilft dir, die am häufigsten verwendeten Wörter in Englisch, Deutsch und 
+    Ungarisch zu lernen. Dieser Service ist kostenlos und du kannst ihn ohne Registration mit 
+    "Guest Login" als "Gast" nutzen.<br>
+    
+    Nach Auswahl der Sprache und Stufe (Anzahl der Wörter) werden dir eine Frage in der ersten 
+    ausgewählten Sprache und sechs mögliche Antworten in der zweiten ausgewählten Sprache gestellt.
+    Eine der sechs Antworten ist richtig. Die Wort-Fee zeigt dir sofort, ob deine Antwort richtig
+    war oder nicht. Die richtigen Antworten werden gezählt und du muss jedes Wort mindestens fünf
+    Mal richtig beantworten, um eine Stufe zu absolvieren.<br>
+    
+    Die erste Sprache die du auswählst sollte die Sprache sein, die du gerade lernst. In dieser 
+    Sprache werden die Wörter abgefragt. Die zweite gewählte Sprache muss eine bekannte Sprache sein,
+    auf dieser Sprache werden die möglichen Antworten gestellt. Für einige Wörter gibt es Bilder,
+    die dir helfen.<br>
+
+    Wenn länger als 15 Minuten keine Antwort gibst, musst du dich erneut anmelden. In diesem 
+    Fall verlierst du das vorherige Ergebnis. Wenn du eine Stufe erfolgreich abgeschlossen hast,
+    wirst du zur Gästeliste hinzugefügt.
+    </p>
+  </div>
+
+  <div id="Hungarian" class="w3-container lang" style="display:none">
+    <p class="w3-justify">
+    <b>Hungarian <img src="img/p001_wortfee_lang_HU.png" class="w3-round" alt="HU"></b>
+    </p>
+    <p class="w3-justify">
+    A Wort-Fee (magyarul Szó-Tündér) segít megtanulni a leggyakrabban használt szavakat angol,
+    német és magyar nyelven. Ez a szolgáltatás ingyenes, és regisztráció nélkül a "Guest Login"-nal
+    mint "vendég" használhatod.<br>
+    
+    A nyelvek és a szint (a szavak száma) kiválasztása után egy kérdést kapsz az első választott
+    nyelven és hat lehetséges választ a második választott nyelven. A hat válasz közül egy helyes. 
+    A Szó-Tündér azonnal megmutatja, hogy a válaszod helyes volt-e vagy sem. A helyes válaszok meg
+    lesznek számolva, és egy szint teljesítéséhez minden szót legalább öt alkalommal helyesen kell
+    megválaszolnod.<br> 
+    
+    Az első választott nyelv az éppen tanult nyelv kell legyen, ezen a nyelven lesznek
+    a szavak kérdezve. A második választott nyelv pedig egy ismert nyelv kell legyen, ezen a nyelven
+    lesznek a lehetséges válaszok megadva. Bizonyos szavaknál képek is segítik a válaszadást.<br>
+    
+    Ha több mint 15 percig nincs válasz, akkor újra be kell jelentkezned. Ebben az esetben elveszíted az 
+    előző eredményt. Amennyiben sikeresen teljesítesz egy szintet, akkor felkerülsz a Vendég-Listára.
+    </p>
+  </div>
+
+  <p class="w3-justify w3-center">
+    <a href="cgi-bin/p001_wortfee_login" class="w3-button w3-blue w3-round-large">Guest Login</a>
+  </p>
+</section>
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-small w3-center w3-black w3-medium">
+  <p class="w3-medium">
+  <a href="p001_wortfee_impressum.html">Impressum</a>
+  ,
+  <a href="p001_wortfee_datenschutzerklaerung.html">Datenschutz</a>
+  ,
+  <a href="https://www.jqueryscript.net/privacy" target="_blank">Privacy</a>
+  </p>
+</footer>
+
+<script>
+// Automatic Slideshow - change image every 5 seconds
+var myIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  myIndex++;
+  if (myIndex > x.length) {myIndex = 1}
+  x[myIndex-1].style.display = "block";
+  setTimeout(carousel, 5000);
+}
+</script>
+
+</body>
+</html>
+

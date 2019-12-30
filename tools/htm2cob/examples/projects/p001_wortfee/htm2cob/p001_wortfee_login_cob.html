@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Wortfee.net Login page</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/css/w3.css">
+<script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/js/herbyCookie.min.js"></script>
+<script>
+$(document).ready(function(){
+            $(document).herbyCookie({
+                link: "http://www.jqueryscript.net/privacy/",
+            });
+        });
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+$('#loginForm').validate();
+
+});
+</script>
+</head>
+<body>
+
+<?cob 
+    PERFORM PROCESS-REQUEST
+?>
+
+<!-- Navigation -->
+<nav class="w3-bar w3-black">
+  <a href="/index.html" class="w3-button w3-bar-item">Home</a>
+  <a href="/cgi-bin/p001_wortfee_glist" class="w3-button w3-bar-item">Guest List</a>
+</nav>
+
+
+<!-- Wortfee Description -->
+<section class="w3-container w3-center w3-content" style="max-width:600px">
+  <h2 class="w3-wide">Wortfee.net</h2>
+  <p class="w3-opacity"><i>This is a free tool to build your foreign language vocabulary.</i></p>
+  <p class="w3-justify">
+    A higher level also contains all words from the levels below it. 
+  </p>
+</section>
+
+<section class="w3-container w3-center w3-content" style="max-width:600px">
+<div class="w3-container w3-cell w3-cell-middle">
+  <div class="w3-panel w3-light-grey w3-round-xlarge">
+  <h2>Login as guest</h2>
+    <form id="loginForm" action="/cgi-bin/p001_wortfee_intro" method="post" accept-charset="utf-8">
+        <table class="w3-table">
+        <tr> 
+            <td><label class="w3-text-blue"><b>Nickname</b></label>
+                <input name="nickname" class="w3-input w3-border required" type="text" size="15" maxlength="15" minlength="2">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <select class="w3-select required" name="language">
+                    <option value="" disabled selected>Choose your languages</option>
+                    <option value="EN-DE">English   - German</option>
+                    <option value="DE-EN">German    - English</option>
+                    <option value="EN-HU">English   - Hungarian</option>
+                    <option value="HU-EN">Hungarian - English</option>
+                    <option value="DE-HU">German    - Hungarian</option>
+                    <option value="HU-DE">Hungarian - German</option>
+                </select>        
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <select class="w3-select required" name="level">
+                    <option value="" disabled selected>Choose your level</option>
+                    <option value="1">Level 1 <?cob display "  (" WS-HTM-LEVEL(1) " words)" end-display ?></option>
+                    <option value="2">Level 2 <?cob display "  (" WS-HTM-LEVEL(2) " words)" end-display ?></option>
+                    <option value="3">Level 3 <?cob display "  (" WS-HTM-LEVEL(3) " words)" end-display ?></option>
+                    <option value="4">Level 4 <?cob display "  (" WS-HTM-LEVEL(4) " words)" end-display ?></option>
+                    <option value="5">Level 5 <?cob display "  (" WS-HTM-LEVEL(5) " words)" end-display ?></option>
+                    <option value="6">Level 6 <?cob display "  (" WS-HTM-LEVEL(6) " words)" end-display ?></option>
+                    <option value="7">Level 7 <?cob display "  (" WS-HTM-LEVEL(7) " words)" end-display ?></option>
+                    <option value="8">Level 8 <?cob display "  (" WS-HTM-LEVEL(8) " words)" end-display ?></option>
+                </select>        
+            </td>
+        </tr>        
+        <tr>
+            <td><input type="submit" class="w3-button w3-blue w3-round-large" value="Login"></td>
+        </tr>
+        </table>
+    </form>
+  </div>
+</div>
+</section>
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-small w3-center w3-black w3-medium">
+  <p class="w3-medium">
+  <a href="/p001_wortfee_impressum.html">Impressum</a>
+  ,
+  <a href="/p001_wortfee_datenschutzerklaerung.html">Datenschutz</a>
+  ,
+  <a href="https://www.jqueryscript.net/privacy" target="_blank">Privacy</a>
+  </p>
+</footer>
+
+</body>
+</html>
+
+<?cob-ws
+ 01 LN-MOD1.
+   02 LN-OUTPUT.
+     03 LN-RESULT-FLAG                 PIC 9(1).
+        88 V-OK                        VALUE 0.
+        88 V-NOT-OK                    VALUE 1.
+     03 LN-LEVEL-TABLE.
+       04 LN-LEVEL-TAB OCCURS 8 TIMES.
+         05 LN-LEVEL-TAB-LINE.
+           06 LN-LEVEL                 PIC 9(4).
+           
+ 01 WS-HTM-LEVEL-TABLE.
+   02 WS-HTM-LEVEL-TAB OCCURS 8 TIMES.
+     03 WS-HTM-LEVEL-TAB-LINE.
+       04 WS-HTM-LEVEL                 PIC Z(3)9(1).
+       
+?>
+
+<?cob 
+*> Implement this section, if you want to set a cookie.
+*>------------------------------------------------------------------------------
+ HTM2COB-SET-COOKIE SECTION.
+*>------------------------------------------------------------------------------
+
+*>  create session-id
+    PERFORM HTM2COB-GET-SESS-ENV-PARAMS
+    PERFORM HTM2COB-CREATE-SESSION-ID
+
+*>  save session-id in cookie
+    INITIALIZE LNK-HTM2COB-SET-COOKIE
+    SET V-SET OF LNK-COOKIE-FUNC OF LNK-HTM2COB-SET-COOKIE TO TRUE
+    MOVE "SESSIONID"               TO LNK-COOKIE-NAME  OF LNK-HTM2COB-SET-COOKIE
+    MOVE HTM2COB-HIDDEN-SESSION-ID TO LNK-COOKIE-VALUE OF LNK-HTM2COB-SET-COOKIE
+*>  86400 sec = 24 hour
+    MOVE 86400                     TO LNK-MAX-AGE-SEC  OF LNK-HTM2COB-SET-COOKIE
+    MOVE "wortfee.net"             TO LNK-DOMAIN-VALUE OF LNK-HTM2COB-SET-COOKIE
+    MOVE "/"                       TO LNK-PATH-VALUE   OF LNK-HTM2COB-SET-COOKIE
+    SET V-YES        OF LNK-HTTPONLY-FLAG OF LNK-HTM2COB-SET-COOKIE TO TRUE
+*>  SET V-YES-LAX    OF LNK-SAMESITE-FLAG OF LNK-HTM2COB-SET-COOKIE TO TRUE
+*>  SET V-YES-STRICT OF LNK-SAMESITE-FLAG OF LNK-HTM2COB-SET-COOKIE TO TRUE
+*>  SET V-YES        OF LNK-SECURE-FLAG   OF LNK-HTM2COB-SET-COOKIE TO TRUE
+    CALL "HTM2COB-SET-COOKIE" USING LNK-HTM2COB-SET-COOKIE END-CALL
+    *> The last DISPLAY in this section is always with "WITH NO ADVANCING"
+    DISPLAY FUNCTION TRIM(LNK-COOKIE-STR OF LNK-HTM2COB-SET-COOKIE) WITH NO ADVANCING END-DISPLAY
+
+    EXIT SECTION .
+    
+*>------------------------------------------------------------------------------
+ PROCESS-REQUEST SECTION.
+*>------------------------------------------------------------------------------
+
+*>  start or resume session
+    PERFORM HTM2COB-SESS-START
+    
+*>  if we come back here from other pages, then it is important to destroy the session
+    PERFORM HTM2COB-SESS-DESTROY
+
+    INITIALIZE WS-HTM-LEVEL-TABLE
+    CALL "PGMOD1" USING LN-MOD1
+    IF V-OK OF LN-RESULT-FLAG
+    THEN
+       MOVE LN-LEVEL-TABLE TO WS-HTM-LEVEL-TABLE
+    END-IF
+
+    EXIT SECTION .
+?>

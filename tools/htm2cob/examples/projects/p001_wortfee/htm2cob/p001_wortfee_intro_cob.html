@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Wortfee.net Intro page</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/css/w3.css">
+<script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/js/herbyCookie.min.js"></script>
+<script>
+$(document).ready(function(){
+            $(document).herbyCookie({
+                link: "http://www.jqueryscript.net/privacy/",
+            });
+        });
+</script>
+</head>
+<body>
+
+<?cob 
+    PERFORM PROCESS-REQUEST
+?>
+
+<!-- Navigation -->
+<nav class="w3-bar w3-black">
+  <a href="/cgi-bin/p001_wortfee_login" class="w3-button w3-bar-item">Logout</a>
+  <a href="/cgi-bin/p001_wortfee_glist" class="w3-button w3-bar-item">Guest List</a>
+</nav>
+
+
+<!-- Wortfee Description -->
+<section class="w3-container w3-center w3-content" style="max-width:600px">
+  <h2 class="w3-wide">Wortfee.net</h2>
+  <p class="w3-opacity"><i>This is a free tool to build your foreign language vocabulary.</i></p>
+  Welcome <?cob display trim(WS-HTM-NICKNAME) "!" end-display ?><br>
+  Languages: <?cob display trim(WS-HTM-LANGUAGE-OUT) end-display ?><br>
+  Level: <?cob display trim(WS-HTM-LEVEL) "  (" WS-HTM-LEVEL-COUNT " words)" end-display ?><br>
+  
+  <div class="w3-container w3-cell w3-cell-middle">
+    <div class="w3-panel w3-light-grey w3-round-xlarge">
+    <h2>Start your learning session now!</h2>
+      <form id="startLearnForm" action="/cgi-bin/p001_wortfee_learn" method="post" accept-charset="utf-8">
+         <input type="submit" class="w3-button w3-blue w3-round-large" value="Start Learning">
+      </form>
+    </div>
+  </div>
+  
+</section>
+
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-small w3-center w3-black w3-medium">
+  <p class="w3-medium">
+  <a href="/p001_wortfee_impressum.html">Impressum</a>
+  ,
+  <a href="/p001_wortfee_datenschutzerklaerung.html">Datenschutz</a>
+  ,
+  <a href="https://www.jqueryscript.net/privacy" target="_blank">Privacy</a>
+  </p>
+</footer>
+
+</body>
+</html>
+
+<?cob-ws
+ 01 WS-NICKNAME                  PIC X(100).
+ 01 WS-HTM-NICKNAME              PIC X(100).
+ 01 WS-LANGUAGE                  PIC X(100).
+ 01 WS-HTM-LANGUAGE              PIC X(100).
+ 01 WS-HTM-LANGUAGE-OUT          PIC X(100).
+ 01 WS-LEVEL                     PIC X(100).
+ 01 WS-HTM-LEVEL                 PIC X(100).
+ 01 WS-HTM-LEVEL-COUNT           PIC 9(4).
+ 
+ 01 WS-INPUT-OK                  PIC 9(1).
+    88 V-NO                      VALUE 0.
+    88 V-YES                     VALUE 1.
+ 01 WS-LANGUAGE-CHECK            PIC X(5).    
+    88 V-OK VALUE "EN-DE", "DE-EN", "EN-HU", "HU-EN", "DE-HU", "HU-DE".
+ 01 WS-LEVEL-CHECK               PIC X(1).    
+    88 V-OK VALUE "1", "2", "3", "4", "5", "6", "7", "8".
+
+ 01 LN-MOD2.
+   02 LN-INPUT.
+     03 LN-SESSION-ID-HEX        PIC X(128).
+     03 LN-NICKNAME              PIC X(15).
+     03 LN-LANGUAGES             PIC X(5).
+     03 LN-LEVEL                 PIC 9(1).
+   02 LN-OUTPUT.
+     03 LN-RESULT-FLAG           PIC 9(1).
+        88 V-OK                  VALUE 0.
+        88 V-NOT-OK              VALUE 1.
+     03 LN-LEVEL-COUNT           PIC 9(4).
+?>
+
+<?cob 
+*>------------------------------------------------------------------------------
+ PROCESS-REQUEST SECTION.
+*>------------------------------------------------------------------------------
+
+*>  start or resume session
+    PERFORM HTM2COB-SESS-START
+
+    PERFORM CHECK-INPUT-FIELDS
+    IF V-NO OF WS-INPUT-OK
+    THEN
+       PERFORM NO-ACCESS
+    END-IF
+    
+*>  write nickname in session
+    MOVE "nickname"      TO HTM2COB-SESS-VAR-NAME
+    MOVE WS-HTM-NICKNAME TO HTM2COB-SESS-VAR-VALUE
+    PERFORM HTM2COB-SESS-SET
+
+*>  check whether within the session 
+    MOVE "nickname" TO HTM2COB-SESS-VAR-NAME
+    PERFORM HTM2COB-SESS-GET
+    IF NOT V-OK OF LNK-RESULT OF LNK-HTM2COB-SESSION
+    THEN
+       PERFORM NO-ACCESS
+    END-IF
+
+*>  write WF_SESSION table
+    INITIALIZE WS-HTM-LEVEL-COUNT
+    INITIALIZE LN-MOD2
+    MOVE HTM2COB-HIDDEN-SESSION-ID     TO LN-SESSION-ID-HEX
+    MOVE WS-HTM-NICKNAME               TO LN-NICKNAME
+    MOVE WS-HTM-LANGUAGE               TO LN-LANGUAGES
+    MOVE FUNCTION NUMVAL(WS-HTM-LEVEL) TO LN-LEVEL
+    CALL "PGMOD2" USING LN-MOD2
+    IF V-OK OF LN-RESULT-FLAG
+    THEN
+       MOVE LN-LEVEL-COUNT TO WS-HTM-LEVEL-COUNT
+    ELSE   
+       PERFORM NO-ACCESS
+    END-IF
+
+    EXIT SECTION .
+
+*>------------------------------------------------------------------------------
+ CHECK-INPUT-FIELDS SECTION.
+*>------------------------------------------------------------------------------
+
+    SET V-YES OF WS-INPUT-OK TO TRUE
+
+    CALL "HTM2COB-POST" USING "nickname", WS-NICKNAME END-CALL
+    CALL "HTM2COB-SPEC-CHARS" USING WS-NICKNAME, WS-HTM-NICKNAME END-CALL
+    CALL "HTM2COB-POST" USING "language", WS-LANGUAGE END-CALL
+    CALL "HTM2COB-SPEC-CHARS" USING WS-LANGUAGE, WS-HTM-LANGUAGE END-CALL
+    CALL "HTM2COB-POST" USING "level", WS-LEVEL END-CALL
+    CALL "HTM2COB-SPEC-CHARS" USING WS-LEVEL, WS-HTM-LEVEL END-CALL
+
+*>  check nickname    
+    IF WS-HTM-NICKNAME = SPACES
+    OR STORED-CHAR-LENGTH(WS-HTM-NICKNAME) = ZEROES
+    OR STORED-CHAR-LENGTH(WS-HTM-NICKNAME) > 30
+    THEN
+       SET V-NO OF WS-INPUT-OK TO TRUE
+       EXIT SECTION
+    END-IF
+
+*>  check language
+    MOVE WS-HTM-LANGUAGE TO WS-LANGUAGE-CHECK
+    IF NOT V-OK OF WS-LANGUAGE-CHECK
+    OR STORED-CHAR-LENGTH(WS-HTM-LANGUAGE) NOT = 5
+    THEN
+       SET V-NO OF WS-INPUT-OK TO TRUE
+       EXIT SECTION
+    END-IF
+
+*>  check level
+    MOVE WS-HTM-LEVEL TO WS-LEVEL-CHECK
+    IF NOT V-OK OF WS-LEVEL-CHECK
+    OR STORED-CHAR-LENGTH(WS-HTM-LEVEL) NOT = 1
+    THEN
+       SET V-NO OF WS-INPUT-OK TO TRUE
+       EXIT SECTION
+    END-IF
+    
+    EVALUATE WS-LANGUAGE-CHECK
+        WHEN "EN-DE"
+           MOVE "English - German"    TO WS-HTM-LANGUAGE-OUT
+        WHEN "DE-EN"
+           MOVE "German - English"    TO WS-HTM-LANGUAGE-OUT
+        WHEN "EN-HU"
+           MOVE "English - Hungarian" TO WS-HTM-LANGUAGE-OUT
+        WHEN "HU-EN"
+           MOVE "Hungarian - English" TO WS-HTM-LANGUAGE-OUT
+        WHEN "DE-HU"
+           MOVE "German - Hungarian"  TO WS-HTM-LANGUAGE-OUT
+        WHEN "HU-DE"
+           MOVE "Hungarian - German"  TO WS-HTM-LANGUAGE-OUT
+    END-EVALUATE
+
+    EXIT SECTION .
+    
+*>------------------------------------------------------------------------------
+ NO-ACCESS SECTION.
+*>------------------------------------------------------------------------------
+
+    DISPLAY "<p>No access</p>"
+    DISPLAY '<p>'
+    DISPLAY '<form action="/cgi-bin/p001_wortfee_login" method="get" accept-charset="utf-8">'
+    DISPLAY '<input type="submit" value="Login page">'
+    DISPLAY '</form>'
+    DISPLAY '</p>'
+*>  slash with concatenate, because of the htm2cob preprocessor
+    DISPLAY "</" "body>" "</" "html>"
+    
+    GOBACK
+    
+    EXIT SECTION .
+    
+?>
+

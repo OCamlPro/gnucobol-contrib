@@ -1,0 +1,23 @@
+.countdown-normal{
+    color: #3c763d;
+    background-color: #dff0d8;
+    border: 1px normal #d6e9c6;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.countdown-warning{
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border: 1px normal #faebcc;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.countdown-stop{
+    color: #a94442;
+    background-color: #f2dede;
+    border: 1px normal #ebccd1;
+    padding: 15px;
+    border-radius: 5px;
+}

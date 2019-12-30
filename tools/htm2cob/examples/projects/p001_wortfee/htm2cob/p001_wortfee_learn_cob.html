@@ -1,0 +1,380 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Wortfee.net Learning page</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/css/w3.css">
+<link rel="stylesheet" href="/css/jquery.countdown.css" media="screen">
+<script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/js/herbyCookie.min.js"></script>
+<script type="text/javascript" src="/js/jquery.countdown.js"></script>
+
+<script>
+$(document).ready(function(){
+            $(document).herbyCookie({
+                link: "http://www.jqueryscript.net/privacy/",
+            });
+            $("#timeoutcounter").countdown({
+                "seconds": 900,
+                "warning-time": 60,
+                "ongoing": true,
+                "normal-class": "countdown-normal",
+                "warning-class": "countdown-warning",
+                "stop-class": "countdown-stop",
+                "prefix-text": "Time left: ",
+                "stop-text": "Time's up!"
+            });
+        });
+</script>
+<script type="text/javascript" src="/js/p001_wortfee.js"></script>
+
+</head>
+<body>
+
+<?cob 
+    PERFORM PROCESS-REQUEST
+?>
+
+<!-- Navigation -->
+<nav class="w3-bar w3-black">
+  <a href="/cgi-bin/p001_wortfee_login" class="w3-button w3-bar-item">Logout</a>
+  <a href="/cgi-bin/p001_wortfee_glist" class="w3-button w3-bar-item">Guest List</a>
+</nav>
+
+
+<!-- Wortfee Description -->
+<div class="w3-main w3-content w3-padding" style="max-width:1080px">
+ <div class="w3-justify w3-center w3-border w3-round w3-padding">
+ <p><h3><b>Question:</b><?cob display trim(LN-QUESTION-WORD) end-display ?></h3></p>
+ <form id="learnForm" onSubmit="return next_question()" action="/cgi-bin/p001_wortfee_learn" method="post" accept-charset="utf-8">
+   <p><input type="hidden" id="selected_img" name="selected_img"/></p>
+   <input type="submit" class="w3-button w3-blue w3-round-large" value="Next Question">
+ </form>
+ </div>
+</div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main w3-content w3-padding" style="max-width:1080px">
+ <div class="w3-row-padding w3-padding w3-center">
+
+ <div class="w3-row w3-border">
+   <div id="img1" class="w3-third w3-container w3-btn w3-padding-16" onclick="click_img('img1', <?cob display "'img" LN-QUESTION-IMG-NR "'" end-display ?>)">
+      <?cob
+        if  trim(LN-IMAGE(1)) not = "aaa.jpg"      
+        and trim(LN-IMAGE(1)) not = "aaa.JPG"      
+          display '<img src="/img_wortfee/' trim(LN-IMAGE(1)) '"' ' style="width:100%">'
+        end-if  
+      ?>
+      <h3 class="w3-border"><p style="white-space: normal;"><?cob display trim(LN-WORD(1)) end-display ?></p></h3>
+   </div>
+   <div id="img2" class="w3-third w3-container w3-btn w3-padding-16" onclick="click_img('img2', <?cob display "'img" LN-QUESTION-IMG-NR "'" end-display ?>)">
+      <?cob
+        if  trim(LN-IMAGE(2)) not = "aaa.jpg"      
+        and trim(LN-IMAGE(2)) not = "aaa.JPG"      
+          display '<img src="/img_wortfee/' trim(LN-IMAGE(2)) '"' ' style="width:100%">'
+        end-if  
+      ?>
+      <h3 class="w3-border"><p style="white-space: normal;"><?cob display trim(LN-WORD(2)) end-display ?></p></h3>
+   </div>
+   <div id="img3" class="w3-third w3-container w3-btn w3-padding-16" onclick="click_img('img3', <?cob display "'img" LN-QUESTION-IMG-NR "'" end-display ?>)">
+      <?cob
+        if  trim(LN-IMAGE(3)) not = "aaa.jpg"      
+        and trim(LN-IMAGE(3)) not = "aaa.JPG"      
+          display '<img src="/img_wortfee/' trim(LN-IMAGE(3)) '"' ' style="width:100%">'
+        end-if  
+      ?>
+      <h3 class="w3-border"><p style="white-space: normal;"><?cob display trim(LN-WORD(3)) end-display ?></p></h3>
+   </div>
+ </div>
+
+ <div class="w3-row w3-border">
+   <div id="img4" class="w3-third w3-container w3-btn w3-padding-16" onclick="click_img('img4', <?cob display "'img" LN-QUESTION-IMG-NR "'" end-display ?>)">
+      <?cob
+        if  trim(LN-IMAGE(4)) not = "aaa.jpg"      
+        and trim(LN-IMAGE(4)) not = "aaa.JPG"      
+          display '<img src="/img_wortfee/' trim(LN-IMAGE(4)) '"' ' style="width:100%">'
+        end-if  
+      ?>
+      <h3 class="w3-border"><p style="white-space: normal;"><?cob display trim(LN-WORD(4)) end-display ?></p></h3>
+   </div>
+   <div id="img5" class="w3-third w3-container w3-btn w3-padding-16" onclick="click_img('img5', <?cob display "'img" LN-QUESTION-IMG-NR "'" end-display ?>)">
+      <?cob
+        if  trim(LN-IMAGE(5)) not = "aaa.jpg"      
+        and trim(LN-IMAGE(5)) not = "aaa.JPG"      
+          display '<img src="/img_wortfee/' trim(LN-IMAGE(5)) '"' ' style="width:100%">'
+        end-if  
+      ?>
+      <h3 class="w3-border"><p style="white-space: normal;"><?cob display trim(LN-WORD(5)) end-display ?></p></h3>
+   </div>
+   <div id="img6" class="w3-third w3-container w3-btn w3-padding-16" onclick="click_img('img6', <?cob display "'img" LN-QUESTION-IMG-NR "'" end-display ?>)">
+      <?cob
+        if  trim(LN-IMAGE(6)) not = "aaa.jpg"      
+        and trim(LN-IMAGE(6)) not = "aaa.JPG"      
+          display '<img src="/img_wortfee/' trim(LN-IMAGE(6)) '"' ' style="width:100%">'
+        end-if  
+      ?>
+      <h3 class="w3-border"><p style="white-space: normal;"><?cob display trim(LN-WORD(6)) end-display ?></p></h3>
+   </div>
+ </div>
+
+ <p>
+   <div class="alert example" id="timeoutcounter">15:00</div>
+ </p>  
+ <p style="color:red"><b>
+   Progress: <?cob display trim(WS-HTM-PROGRESS) end-display ?> %<br>
+ </b></p>  
+ <p>
+   Start Time: <?cob display trim(LN-START-TIME) end-display ?><br>
+   Nickname: <?cob display trim(LN-NICKNAME) end-display ?><br>
+   Languages: <?cob display trim(WS-HTM-LANGUAGE-OUT) end-display ?><br>
+   Level: <?cob display trim(LN-LEVEL) "  (" LN-MAX-USER-WORD " words)" end-display ?><br>
+   Questions: <?cob display trim(WS-HTM-QUESTION-COUNT) end-display ?><br>
+   OK Answers: <?cob display trim(WS-HTM-ANSWER-OK-COUNT) end-display ?><br>
+   Success-0: <?cob display trim(LN-SUCCESS-0) end-display ?><br>
+   Success-1: <?cob display trim(LN-SUCCESS-1) end-display ?><br>
+   Success-2: <?cob display trim(LN-SUCCESS-2) end-display ?><br>
+   Success-3: <?cob display trim(LN-SUCCESS-3) end-display ?><br>
+   Success-4: <?cob display trim(LN-SUCCESS-4) end-display ?><br>
+   Success-5: <?cob display trim(LN-SUCCESS-5) end-display ?><br>
+ </p>  
+ <p style="color:blue"><b>
+   Users online: <?cob display trim(WS-HTM-GUEST-COUNT) end-display ?><br>
+ </b></p>  
+ </div>
+</div>
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-small w3-center w3-black w3-medium">
+  <p class="w3-medium">
+  <a href="/p001_wortfee_impressum.html">Impressum</a>
+  ,
+  <a href="/p001_wortfee_datenschutzerklaerung.html">Datenschutz</a>
+  ,
+  <a href="https://www.jqueryscript.net/privacy" target="_blank">Privacy</a>
+  </p>
+</footer>
+
+</body>
+</html>
+
+<?cob-ws
+ 01 WS-SELECTED-IMG              PIC X(100).
+ 01 WS-HTM-SELECTED-IMG          PIC X(100).
+ 01 WS-HTM-LANGUAGE-OUT          PIC X(100).
+
+ 01 WS-PROGRESS                  PIC 9(3).
+ 01 WS-PROGRESS-Z                PIC ZZ9(1).
+ 01 WS-HTM-PROGRESS              PIC X(3).
+ 
+ 01 WS-GUEST-COUNT               PIC 9(6).
+ 01 WS-GUEST-COUNT-Z             PIC Z(5)9(1).
+ 01 WS-HTM-GUEST-COUNT           PIC X(6).
+
+ 01 WS-QUESTION-COUNT            PIC 9(6).
+ 01 WS-QUESTION-COUNT-Z          PIC Z(5)9(1).
+ 01 WS-HTM-QUESTION-COUNT        PIC X(6).
+
+ 01 WS-ANSWER-OK-COUNT           PIC 9(6).
+ 01 WS-ANSWER-OK-COUNT-Z         PIC Z(5)9(1).
+ 01 WS-HTM-ANSWER-OK-COUNT       PIC X(6).
+
+ 01 WS-INPUT-OK                  PIC 9(1).
+    88 V-NO                      VALUE 0.
+    88 V-YES                     VALUE 1.
+ 01 WS-SELECTED-IMG-CHECK        PIC X(4).    
+    88 V-OK VALUE "    ", "img0", "img1", "img2", 
+                  "img3", "img4", "img5", "img6".
+
+ 01 LN-MOD3.
+   02 LN-INPUT.
+     03 LN-SESSION-ID-HEX        PIC X(128).
+     03 LN-SELECTED-IMG-NR       PIC 9(1).
+   02 LN-OUTPUT.
+     03 LN-RESULT-FLAG           PIC 9(1).
+        88 V-OK                  VALUE 0.
+        88 V-NOT-OK              VALUE 1.
+     03 LN-COMPLETED-FLAG        PIC 9(1).
+        88 V-NO                  VALUE 0.
+        88 V-YES                 VALUE 1.
+     03 LN-NICKNAME              PIC X(15).    
+     03 LN-LANGUAGES             PIC X(5).     
+     03 LN-LEVEL                 PIC 9(1).     
+     03 LN-START-TIME            PIC X(19).     
+     03 LN-GUEST-COUNT           PIC 9(6).     
+     03 LN-QUESTION-COUNT        PIC 9(6).     
+     03 LN-ANSWER-OK-COUNT       PIC 9(6).     
+     03 LN-SUCCESS-0             PIC 9(4).     
+     03 LN-SUCCESS-1             PIC 9(4).     
+     03 LN-SUCCESS-2             PIC 9(4).     
+     03 LN-SUCCESS-3             PIC 9(4).     
+     03 LN-SUCCESS-4             PIC 9(4).     
+     03 LN-SUCCESS-5             PIC 9(4).     
+     03 LN-MAX-USER-WORD         PIC 9(4).
+     03 LN-QUESTION-WORD         PIC X(80).     
+     03 LN-QUESTION-IMG-NR       PIC 9(1).     
+     03 LN-WORD-TABLE.
+       04 LN-WORD-TAB OCCURS 6 TIMES.
+         05 LN-WORD-TAB-LINE.
+           06 LN-WORD-NR         PIC 9(4).
+           06 LN-IMAGE           PIC X(80).
+           06 LN-WORD            PIC X(80).
+?>
+
+<?cob 
+*>------------------------------------------------------------------------------
+ PROCESS-REQUEST SECTION.
+*>------------------------------------------------------------------------------
+
+*>  start or resume session
+    PERFORM HTM2COB-SESS-START
+
+    PERFORM CHECK-INPUT-FIELDS
+    IF V-NO OF WS-INPUT-OK
+    THEN
+       PERFORM NO-ACCESS
+    END-IF
+
+*>  check whether within the session 
+    MOVE "nickname" TO HTM2COB-SESS-VAR-NAME
+    PERFORM HTM2COB-SESS-GET
+    IF NOT V-OK OF LNK-RESULT OF LNK-HTM2COB-SESSION
+    THEN
+       PERFORM NO-ACCESS
+    END-IF
+
+    INITIALIZE LN-MOD3
+    MOVE HTM2COB-HIDDEN-SESSION-ID TO LN-SESSION-ID-HEX
+    IF  WS-HTM-SELECTED-IMG(4:1) NOT = SPACES
+    AND WS-HTM-SELECTED-IMG(4:1) IS NUMERIC
+    THEN
+       MOVE FUNCTION NUMVAL(WS-HTM-SELECTED-IMG(4:1))
+         TO LN-SELECTED-IMG-NR
+    END-IF
+    CALL "PGMOD3" USING LN-MOD3
+    IF V-OK OF LN-RESULT-FLAG
+    THEN
+       IF V-YES OF LN-COMPLETED-FLAG
+       THEN
+          PERFORM LEVEL-COMPLETED
+       ELSE
+          CONTINUE
+       END-IF
+    ELSE   
+       PERFORM NO-ACCESS
+    END-IF
+
+    EVALUATE LN-LANGUAGES
+        WHEN "EN-DE"
+           MOVE "English - German"    TO WS-HTM-LANGUAGE-OUT
+        WHEN "DE-EN"
+           MOVE "German - English"    TO WS-HTM-LANGUAGE-OUT
+        WHEN "EN-HU"
+           MOVE "English - Hungarian" TO WS-HTM-LANGUAGE-OUT
+        WHEN "HU-EN"
+           MOVE "Hungarian - English" TO WS-HTM-LANGUAGE-OUT
+        WHEN "DE-HU"
+           MOVE "German - Hungarian"  TO WS-HTM-LANGUAGE-OUT
+        WHEN "HU-DE"
+           MOVE "Hungarian - German"  TO WS-HTM-LANGUAGE-OUT
+    END-EVALUATE
+
+    COMPUTE WS-PROGRESS = (LN-SUCCESS-5 / LN-MAX-USER-WORD) * 100
+    END-COMPUTE
+    MOVE WS-PROGRESS          TO WS-PROGRESS-Z
+    MOVE WS-PROGRESS-Z        TO WS-HTM-PROGRESS
+                              
+    MOVE LN-GUEST-COUNT       TO WS-GUEST-COUNT
+    MOVE WS-GUEST-COUNT       TO WS-GUEST-COUNT-Z
+    MOVE WS-GUEST-COUNT-Z     TO WS-HTM-GUEST-COUNT
+                              
+    MOVE LN-QUESTION-COUNT    TO WS-QUESTION-COUNT
+    MOVE WS-QUESTION-COUNT    TO WS-QUESTION-COUNT-Z
+    MOVE WS-QUESTION-COUNT-Z  TO WS-HTM-QUESTION-COUNT
+
+    MOVE LN-ANSWER-OK-COUNT   TO WS-ANSWER-OK-COUNT
+    MOVE WS-ANSWER-OK-COUNT   TO WS-ANSWER-OK-COUNT-Z
+    MOVE WS-ANSWER-OK-COUNT-Z TO WS-HTM-ANSWER-OK-COUNT
+
+    EXIT SECTION .
+
+*>------------------------------------------------------------------------------
+ CHECK-INPUT-FIELDS SECTION.
+*>------------------------------------------------------------------------------
+
+    SET V-YES OF WS-INPUT-OK TO TRUE
+
+    CALL "HTM2COB-POST" USING "selected_img", 
+                              WS-SELECTED-IMG 
+    END-CALL
+    CALL "HTM2COB-SPEC-CHARS" USING WS-SELECTED-IMG, 
+                              WS-HTM-SELECTED-IMG 
+    END-CALL
+
+*>  check selected_img
+    MOVE WS-HTM-SELECTED-IMG TO WS-SELECTED-IMG-CHECK
+    IF NOT V-OK OF WS-SELECTED-IMG-CHECK
+    THEN
+       SET V-NO OF WS-INPUT-OK TO TRUE
+       EXIT SECTION
+    END-IF
+
+    EXIT SECTION .
+
+*>------------------------------------------------------------------------------
+ LEVEL-COMPLETED SECTION.
+*>------------------------------------------------------------------------------
+
+    DISPLAY '<!-- Navigation -->' END-DISPLAY
+    DISPLAY '<nav class="w3-bar w3-black">' END-DISPLAY
+    DISPLAY '  <a href="/cgi-bin/p001_wortfee_login" class="w3-button w3-bar-item">Logout</a>' END-DISPLAY
+    DISPLAY '</nav>' END-DISPLAY
+    
+    DISPLAY '<div class="w3-main w3-content w3-padding" style="max-width:1080px">' END-DISPLAY
+    DISPLAY ' <div class="w3-justify w3-center w3-border w3-round w3-padding">' END-DISPLAY
+    DISPLAY ' <h3><p style="color:red"><b>Congratulations!!!</b></p></h3>' END-DISPLAY
+    DISPLAY ' <h3><p style="color:red"><b>Level ' LN-LEVEL ' with ' LN-MAX-USER-WORD ' words Completed.</b></p></h3>' END-DISPLAY
+    DISPLAY ' <form action="/cgi-bin/p001_wortfee_login" method="get" accept-charset="utf-8">' END-DISPLAY
+    DISPLAY '   <input type="submit" class="w3-button w3-blue w3-round-large" value="Logout">' END-DISPLAY
+    DISPLAY ' </form>' END-DISPLAY
+    DISPLAY ' </div>' END-DISPLAY
+    DISPLAY '</div>' END-DISPLAY
+
+    DISPLAY '<!-- Footer -->' END-DISPLAY
+    DISPLAY '<footer class="w3-container w3-padding-small w3-center w3-black w3-medium">' END-DISPLAY
+    DISPLAY '  <p class="w3-medium">' END-DISPLAY
+    DISPLAY '  <a href="/p001_wortfee_impressum.html">Impressum</a>' END-DISPLAY
+    DISPLAY '  ,' END-DISPLAY
+    DISPLAY '  <a href="/p001_wortfee_datenschutzerklaerung.html">Datenschutz</a>' END-DISPLAY
+    DISPLAY '  ,' END-DISPLAY
+    DISPLAY '  <a href="https://www.jqueryscript.net/privacy" target="_blank">Privacy</a>' END-DISPLAY
+    DISPLAY '  </p>' END-DISPLAY
+    DISPLAY '</footer>' END-DISPLAY
+
+*>  slash with concatenate, because of the htm2cob preprocessor
+    DISPLAY "</" "body>" "</" "html>" END-DISPLAY
+    
+    GOBACK
+    
+    EXIT SECTION .
+    
+*>------------------------------------------------------------------------------
+ NO-ACCESS SECTION.
+*>------------------------------------------------------------------------------
+
+    DISPLAY '<p>No access</p>' END-DISPLAY
+    DISPLAY '<p>' END-DISPLAY
+    DISPLAY '<form action="/cgi-bin/p001_wortfee_login" method="get" accept-charset="utf-8">' END-DISPLAY
+    DISPLAY '<input type="submit" value="Login page">' END-DISPLAY
+    DISPLAY '</form>' END-DISPLAY
+    DISPLAY '</p>' END-DISPLAY
+*>  slash with concatenate, because of the htm2cob preprocessor
+    DISPLAY "</" "body>" "</" "html>" END-DISPLAY
+    
+    GOBACK
+    
+    EXIT SECTION .
+    
+?>
