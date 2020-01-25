@@ -40,6 +40,7 @@ extern int optind;
 static int  incrErr = 0;
 static int  bShareMod = 0;
 static int	bVerbose = 0;
+static int	bNeedsIsam = 0;
 static char progexe[100] = " ? $ ";
 static char progname[100] = " ";
 static char diffProg[32] = "gcdiff";
@@ -586,6 +587,10 @@ main(
 			sprintf(&libs[strlen(libs)]," -l%s",optarg);
 			break;
 		case 'f':
+			if (strcasecmp(optarg,"isam") == 0) {
+				bNeedsIsam = 1;
+				break;
+			}
 			sprintf(&flags[strlen(flags)]," -f%s",optarg);
 			break;
 		case 'F':
@@ -654,6 +659,8 @@ main(
 		fprintf(at,"AT_SETUP([%s])\n",setup);
 		fprintf(at,"AT_KEYWORDS([%s])\n",keywords);
 		fprintf(at,"\n");
+		if (bNeedsIsam)
+			fprintf(at,"AT_SKIP_IF([test \"$COB_HAS_ISAM\" = \"no\"])\n\n");
 	}
 
 	if(inptestfile[0] > ' ') {
