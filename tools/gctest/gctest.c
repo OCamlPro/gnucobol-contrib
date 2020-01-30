@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2014-2017,  Free Software Foundation, Inc.
+   Copyright (C) 2014-2020,  Free Software Foundation, Inc.
    Written by Ron Norman
 
    This file is part of GnuCOBOL.
@@ -64,14 +64,16 @@ usage(char *binname)
 	printf("  -a              Append to program.at; Default is write\n");
 	printf("  -b              Make test code start with blank line\n");
 	printf("  -e              test compile only; Expecting errors\n");
-	printf("  -E              compile only; both std=mf & std=2002; Expecting errors\n");
+	printf("  -E              compile only; ... Expecting errors\n");
+	printf("  -fisam          Requires a COBOL compiler with INDEXED file support\n");
 	printf("  -f opt          Add '-f opt' to compile command\n");
 	printf("  -F opt          Add '-opt' to compile command\n");
 	printf("  -g              compile as shared module\n");
-	printf("  -m              use -std=mf instead of -std=cobol2002\n");
 	printf("  -M name         use 'name.at' for autotest file name\n");
-	printf("  -I              use -std=ibm instead of -std=cobol2002\n");
-	printf("  -t std          use -std=std; (mf,ibm,2002,2014,85,ibm,mvs,acu,bs2000)\n");
+	printf("  -m              use -std=mf  \n");
+	printf("  -I              use -std=ibm \n");
+	printf("  -t std          use -std=std; (mf,ibm,2002,2014,85,ibm,mvs,\n");
+	printf("                                  acu,bs2000,realia,xopen)\n");
 	printf("  -w              Compile with no warnings\n");
 	printf("  -S name=value   Environment variable to be set for test\n");
 	printf("  -D name=value   Compiler Directing variable is set to value\n");
@@ -396,7 +398,7 @@ main(
 	int		bWall = 1;
 	int		bStdMf = 0;
 	int		bStdIBM = 0;
-	int		bStd2002 = 1;
+	int		bStd2002 = 0;
 	int		bStd2014 = 0;
 	int		bStd85 = 0;
 	int		bStdDefault = 0;
@@ -404,7 +406,7 @@ main(
 	int		bDoSetup = 0;
 	int		preln;
 	char	inpdd[48],outdd[48],*p,setdd[48],settestfile[200];
-	char	tmp[300],wrk[200],progout[200],cmod[80], cobstd[12], autoname[48];
+	char	tmp[300],wrk[200],progout[200],cmod[80], cobstd[16], autoname[48];
 	char	setup[200],keywords[200],callfh[48];
 	char	inptestfile[200],outtestfile[200],compilecmd[256];
 	char	outlst[80],errlst[80],compprefx[64];
@@ -434,8 +436,13 @@ main(
 	memset(flags,0,sizeof(flags));
 	memset(autoname,0,sizeof(autoname));
 	putenv("SHELL=/bin/sh");
+	putenv("COMPILE_MODULE=cobc");
+	putenv("COMPILE_ONLY=cobc");
+	putenv("COMPILE=cobc");
+	putenv("COBC=cobc");
 	strcpy(exshr,"-x");
-	strcpy(cobstd,"cobol2002");
+	strcpy(cobstd,"default");
+	bStdDefault = 1;
 	while ((opt=getopt(argc, argv, "ai:o:O:c:d:hp:B:C:D:X:s:S:k:x:eEgbImwvVM:t:L:l:f:F:")) != EOF) {
 		switch(opt) {
 		case 'a':
@@ -479,6 +486,10 @@ main(
 				strcpy(cobstd,"bs2000");
 			} else if (strstr(optarg,"acu")) {
 				strcpy(cobstd,"acu");
+			} else if (strstr(optarg,"realia")) {
+				strcpy(cobstd,"realia");
+			} else if (strstr(optarg,"xopen")) {
+				strcpy(cobstd,"xopen");
 			} else {
 				bStdDefault = 1;
 				strcpy(cobstd,"default");
@@ -613,12 +624,14 @@ main(
 			break;
 		}
 	}
-	sprintf(compprefx,"cobc %s -std=%s",exshr,cobstd);
 
-	if(bWall)
-		strcat(compprefx," -debug -Wall");
-	else
-		strcat(compprefx," -w");
+	if(bWall) {
+		sprintf(compprefx,"$%s %s -std=%s -debug -Wall",
+					bCompileModule?"COMPILE_MODULE":"COMPILE",
+					exshr,cobstd);
+	} else {
+		sprintf(compprefx,"$COBC %s -std=%s -w",exshr,cobstd);
+	}
 	if(callfh[0] > ' ')
 		sprintf(&compprefx[strlen(compprefx)]," -use-extfh=%s",callfh);
 	preln = strlen(compprefx);
@@ -788,11 +801,14 @@ ReDoCompile:
 	&& bStdMf
 	&& bStd2002) {
 		bStdMf = 0;
-		sprintf(compprefx,"cobc %s -std=%s",exshr,"cobol2002");
-		if(bWall)
-			strcat(compprefx," -debug -Wall");
-		else
-			strcat(compprefx," -w");
+		if(bWall) {
+			sprintf(compprefx,"$%s %s -std=%s -debug -Wall",
+							bCompileModule?"COMPILE_MODULE":"COMPILE",
+							exshr,"cobol2002");
+		} else {
+			putenv("COBC=cobc");
+			sprintf(compprefx,"$COBC %s -std=%s -w",exshr,"cobol2002");
+		}
 		preln = strlen(compprefx);
 		sprintf(compilecmd,"%s -o @f @F @c",compprefx);	/* Collect warnings */
 		makeCommand(tmp,compilecmd,progout,progname,cmod);
@@ -832,7 +848,7 @@ ReDoCompile:
 				fprintf(at,"export %s\n",setEnv[i]);
 			}
 		}
-		fprintf(at,"./prog], [%d], ",WEXITSTATUS(runsts));
+		fprintf(at,"$COBCRUN_DIRECT ./prog], [%d], ",WEXITSTATUS(runsts));
 		fi = fopen(outlst,"r");
 		if(fi) {
 			fprintf(at,"[");

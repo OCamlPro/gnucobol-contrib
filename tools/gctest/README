@@ -26,14 +26,16 @@ Where [options] are:
   -a              Append to program.at; Default is write
   -b              Make test code start with blank line
   -e              test compile only; Expecting errors
-  -E              compile only; both std=mf & std=2002; Expecting errors
+  -E              compile only; ... Expecting errors
+  -fisam          Requires a COBOL compiler with INDEXED file support
   -f opt          Add '-f opt' to compile command
   -F opt          Add '-opt' to compile command
   -g              compile as shared module
-  -m              use -std=mf instead of -std=cobol2002
   -M name         use 'name.at' for autotest file name
-  -I              use -std=ibm instead of -std=cobol2002
-  -t std          use -std=std; (mf,ibm,2002,2014,85,ibm,mvs,acu,bs2000)
+  -m              use -std=mf  
+  -I              use -std=ibm 
+  -t std          use -std=std; (mf,ibm,2002,2014,85,ibm,mvs,
+                                  acu,bs2000,realia,xopen)
   -w              Compile with no warnings
   -S name=value   Environment variable to be set for test
   -D name=value   Compiler Directing variable is set to value
@@ -45,4 +47,3 @@ Where [options] are:
 Example command:
  gctest -m -b -k report -s "Sample REPORT" -i STUDENT=./student0.inp \
            -o REPORT1=./REPORT0.txt -p rwtst0.bat
-
