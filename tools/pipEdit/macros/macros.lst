@@ -1,1 +1,3 @@
 comp macro_comp.bin
+hex  macro_hex.bin
+cs   macro_cs.bin

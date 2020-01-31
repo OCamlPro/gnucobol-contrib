@@ -1,12 +1,9 @@
 /***************************************************************************
 Errors:
 
-X - excluded lines - editing is borked, when scrolled one page down (crash)
+***process_commandline() - using a wrong delimiter does not cause an error
 
-process_commandline() - using a wrong delimiter does not cause an error
-
-moving with cursor keys is borked, looks like xcluded lines are not counted
-when counting not editable lines.
+implement block commands, cc, dd, rr, xx ###JG###
 
 ****************************************************************************/
 
@@ -18,7 +15,7 @@ when counting not editable lines.
 # include <time.h>
 # include <signal.h>
 
-# define VERSION "pipEdit 0.8.1 - scroll left and right"
+# define VERSION "pipEdit 0.8.2 - Block commands RR DD XX CC A B"
 
 # ifdef __USE_PIPCURSES__
 	# include "pipcurses.c"
@@ -760,7 +757,13 @@ void draw_screen_editor(void)
 
 
 	mvaddstr(2, 1, "Edit");
+	strcpy(zwi, filename);
 	mvaddstr(2, 12, filename);
+	if(source_changed==TRUE){
+		attron(COLOR_PAIR(COLPAIR_YELLOW));
+		mvaddstr(2, 12+strlen(filename)+1, "(changed)");
+		attron(COLOR_PAIR(COLPAIR_BLUE));
+	}
 	mvaddstr(2, 60, lang_columns);
 	sprintf(zwi, "%05d", col_start+screen_offset_x);
 	mvaddstr(2, 68, zwi);
@@ -1029,6 +1032,7 @@ int load_file(char *fname)
 	FILE *fp;
 	char zwi[1024];
 	char zwi2[1024];
+	int end;
 
 	// sprintf(zwi, "load file %s", fname);
 	// write_to_log(zwi);
@@ -1061,8 +1065,8 @@ int load_file(char *fname)
 
 	fp=fopen(fname, "rb");
 	if(fp==NULL){
-		strcpy(screen_errormsg, "File not found.");
-		sprintf(screen_errormessage, "File %s not found, not loaded.", filename);
+		// strcpy(screen_errormsg, "File not found.");
+		// sprintf(screen_errormessage,"File %s not found, not loaded.",filename);
 		sprintf(zwi, "************************** %s ******************************", lang_bottom_of_data);
 		lineptr[1]=malloc(strlen(zwi)+1);
 		strcpy(lineptr[1], zwi);
@@ -1070,6 +1074,11 @@ int load_file(char *fname)
 		linecnt=2;
 		linecmd[1]=malloc(7);
 		strcpy(linecmd[1], "      ");
+		end=18;
+		if(screen_cols==1) end--;
+		for(t=0; t<end; t++){
+			insert_one_empty_line(1);
+		}
 		return(FALSE);
 	}
 
@@ -1712,6 +1721,11 @@ int do_save_for_macro(char *fname)
 		return(-1);
 	}
 
+	fprintf(fp, "msg=\n"); // short message the macro can set
+	fprintf(fp, "message=\n"); // long message the macro can set
+	fprintf(fp, "cursor_x=0\n"); // cursor X position the macro can set
+	fprintf(fp, "cursor_y=0\n"); // cursor Y position the macro can set
+	fprintf(fp, "modified=0\n"); // source code modiefied (1) or not (0)
 	for(t=1; t<(linecnt-1); t++){
 		sprintf(zwi, "%06d%c%s%s", t, linetype[t], linecmd[t], lineptr[t]);
 		rtrim(zwi);
@@ -1730,6 +1744,7 @@ int handle_macro(char *s)
 	int f;
 	int l;
 	int pos;
+	int modified;
 	char zwi[256];
 	char line[512];
 	// char zwi2[256];
@@ -1782,8 +1797,8 @@ int handle_macro(char *s)
 			word(line, maccmd, 1);
 			ucase(maccmd);
 			word(line, maccall, 2);
-			sprintf(zwi, "compare >%s<->%s<", macname, maccmd);
-			write_to_log(zwi);
+			// sprintf(zwi, "compare >%s<->%s<", macname, maccmd);
+			// write_to_log(zwi);
 			if(strcmp(macname, maccmd)==0){
 				f=1;
 				break;
@@ -1809,11 +1824,11 @@ int handle_macro(char *s)
 	write_to_log(zwi);
 	sprintf(zwi, "%s/%s %s %s %s %s >/tmp/macro.out 2>/tmp/macro.err", 
 			macpath, maccall, fname, parfile, filename, config_file);
-	write_to_log(zwi);
-	write_to_log("Before call macro");
+	// write_to_log(zwi);
+	// write_to_log("Before call macro");
 
 	rc=system(zwi);
-	write_to_log("After call macro");
+	// write_to_log("After call macro");
 
 	// finally load the file again....
 	for(t=0; t<linecnt; t++){
@@ -1828,12 +1843,43 @@ int handle_macro(char *s)
 		linetype[t]='N';
 	}
 
-	write_to_log("Before reading result");
+	sprintf(zwi, "Before reading result >%s<", fname);
+	write_to_log(zwi);
 	fp=fopen(fname, "rb+");
 	if(fp==NULL){
 		write_to_log("Could not open infile for macro");
 		return(-1);
 	}
+	rc=read_line(fp, line, sizeof(line)); // ###JG###
+	fprintf(stderr, "line(msg)=>%s<\n",line);
+	strcpy(screen_errormsg, line+4);
+	rc=read_line(fp, line, sizeof(line)); 
+	strcpy(screen_errormessage, line+8);
+	rc=read_line(fp, line, sizeof(line)); 
+	screen_x=atoi(line+9);
+	rc=read_line(fp, line, sizeof(line)); 
+	screen_y=atoi(line+9);
+	rc=read_line(fp, line, sizeof(line)); 
+
+	// now set the correct cursor_area
+	cursor_area=CUR_TEXTAREA; 
+	if(screen_y=3 && screen_x>=14){
+	 	cursor_area=CUR_CMDLINE; 
+	}
+	if(screen_y>3 && screen_x<8){
+	 	cursor_area=CUR_LINENBR; 
+	}
+
+	if(source_changed==FALSE){
+		modified=atoi(line+9);
+		if(modified==0){
+			source_changed=FALSE;
+		}
+		else{
+			source_changed=TRUE;
+		}
+	}
+
 	sprintf(zwi, "**************************** %s *******************************", lang_top_of_data);
 	lineptr[0]=malloc(strlen(zwi)+1);
 	strcpy((char*)lineptr[0], zwi);
@@ -1844,34 +1890,34 @@ int handle_macro(char *s)
 	for(t=1;;t++){
 		rc=read_line(fp, line, sizeof(line));
 		if(rc==EOF) break;
-		write_to_log("After reading one line");
+		// write_to_log("After reading one line");
 		linetype[t]=line[6];
 		l=strlen(line+7);
-		sprintf(zwi, "l=%d", l);
-		write_to_log(zwi);
+		// sprintf(zwi, "l=%d", l);
+		// write_to_log(zwi);
 		lineptr[t]=malloc(l+1);
-	write_to_log("After reading one line:1");
+		// write_to_log("After reading one line:1");
 		if(l>12){
 			strcpy((char*)lineptr[t], line+13);
 		}
 		else{
 			strcpy((char*)lineptr[t], "");
 		}
-	write_to_log("After reading one line:2");
+		// write_to_log("After reading one line:2");
 		linecmd[t]=malloc(7);
-	write_to_log("After reading one line:3");
+		// write_to_log("After reading one line:3");
 		if(l>6){
 		   strcpy(zwi, line+7);
 		}
 		else{
 			strcpy(zwi, "      ");
 		}
-	write_to_log("After reading one line:4");
+		// write_to_log("After reading one line:4");
 		zwi[6]=0;
 		strcpy((char*)linecmd[t], zwi);
 	}
 	fclose(fp);
-	write_to_log("After fclose()");
+	// write_to_log("After fclose()");
 	strcpy(zwi, "************************** Bottom of Data ******************************");
 	lineptr[t]=malloc(strlen(zwi)+1);
 	strcpy((char*)lineptr[t], zwi);
@@ -1897,28 +1943,41 @@ int now_really_process_commandline(unsigned char *s)
 
 	char zwi[256];
 	char orizwi[256];
-	char zwi2[256];
-	char zwi3[256];
+	char zwi2[1024];
+	char zwi3[1024];
 	char macroname[256];
 	int a;
-	int c;
+	int c, c1;
 	int f;
 	int t, i;
 	int rc;
+	int z;
+	int afterbefore, afterbeforeline;
+	int startblockcc, endblockcc;
+	int startblockrr, endblockrr;
+	int startblockdd, endblockdd;
+	int startblockxx, endblockxx;
 	int curpos; // needed for remove_empty_insert_lines
 
 
 	sprintf(zwi2, "now_really_process_commandline: delimiter=>%c< s=>%s< ", 
 		conf_delimiter, s);
 	write_to_log(zwi2);
+	write_to_log("===0====");
 	strcpy(zwi, (char*)s);
+	write_to_log("===1====");
 	add_to_command_stack(zwi);
+	write_to_log("===2====");
 	trim(zwi); 
+	write_to_log("===3====");
 	strcpy(orizwi, zwi); 
+	write_to_log("===4====");
 	word((char*)s, zwi, 1);
+	write_to_log("===5====");
 	ucase(zwi); 
-	// sprintf(zwi2, "zwi=>%s< %d", zwi, zwi[0]);
-	// write_to_log(zwi2);
+	write_to_log("===6====");
+	sprintf(zwi2, "now_really_process_commandline: zwi=>%s< %d", zwi, zwi[0]);
+	write_to_log(zwi2);
 
 	f=0;
 	if(strcmp(zwi, "UP")==0){
@@ -1926,6 +1985,7 @@ int now_really_process_commandline(unsigned char *s)
 		word((char*)screen_commandline, zwi2, 2);
 		strcpy((char*)screen_commandline, zwi2);
 		do_page_up();
+		write_to_log("===return 1====");
 		return(1); // cursor at beginning of command line
 	}
 	if(strcmp(zwi, "DOWN")==0){
@@ -1933,6 +1993,7 @@ int now_really_process_commandline(unsigned char *s)
 		word((char*)screen_commandline, zwi2, 2);
 		strcpy((char*)screen_commandline, zwi2);
 		do_page_down();
+		write_to_log("===return 2====");
 		return(1); // cursor at beginning of command line
 	}
 	if(strcmp(zwi, "LEFT")==0){
@@ -1940,6 +2001,7 @@ int now_really_process_commandline(unsigned char *s)
 		word((char*)screen_commandline, zwi2, 2);
 		strcpy((char*)screen_commandline, zwi2);
 		do_left();
+		write_to_log("===return 3====");
 		return(1); // cursor at beginning of command line
 	}
 	if(strcmp(zwi, "RIGHT")==0){
@@ -1947,10 +2009,12 @@ int now_really_process_commandline(unsigned char *s)
 		word((char*)screen_commandline, zwi2, 2);
 		strcpy((char*)screen_commandline, zwi2);
 		do_right();
+		write_to_log("===return 4====");
 		return(1); // cursor at beginning of command line
 	}
 	if(strcmp(zwi, "RETRIEVE")==0){
 		do_retrieve();
+		write_to_log("===return 5====");
 		return(1); // cursor at beginning of command line
 	}
 	if(strcmp(zwi, "RES")==0 || strcmp(zwi, "RESET")==0){
@@ -1964,6 +2028,7 @@ int now_really_process_commandline(unsigned char *s)
 		remove_message_lines();
 		remove_error_lines();
 		unexclude_lines();
+		write_to_log("===return 6====");
 		return(1); // cursor at beginning of command line
 	}
 	if(strcmp(zwi, "X")==0 || strcmp(zwi, "EXCLUDE")==0){
@@ -1980,20 +2045,24 @@ int now_really_process_commandline(unsigned char *s)
 			unexclude_lines();
 			exclude_all_lines();
 			screen_offset_y=0;
+		write_to_log("===return 7====");
 			return(1); // cursor at beginning of command line
 		}
 		if(zwi3[0]!=0){
 			strcpy(screen_errormsg, "Invalid operand");
 			strcpy(screen_errormessage, "An invalid operand was found.");
+		write_to_log("===return 8====");
 			return(1); // cursor at beginning of command line
 		}
 		if(zwi2[0]!=0 && zwi3[0]==0){
 			strcpy(screen_errormsg, "Missing operand:1");
 			strcpy(screen_errormessage, "A valid operand is missing.");
+		write_to_log("===return 9====");
 			return(1); // cursor at beginning of command line
 		}
 		strcpy(screen_errormsg, "Missing operand:2");
 		strcpy(screen_errormessage, "A valid operand is missing.");
+		write_to_log("===return 10====");
 		return(1); // cursor at beginning of command line
 	}
 	if(strcmp(zwi, "L")==0 || strcmp(zwi, "LOC")==0){
@@ -2002,6 +2071,7 @@ int now_really_process_commandline(unsigned char *s)
 		if(a<1){
 			strcpy(screen_errormsg, "Invalid parameter");
 			strcpy(screen_errormessage, "Invalid line number for LOC command.");
+		write_to_log("===return 11====");
 			return(1); // cursor at beginning of command line
 		}
 		if(a>(linecnt+1)){
@@ -2014,6 +2084,7 @@ int now_really_process_commandline(unsigned char *s)
 		cursor_y=3;
 		screen_errform=0;
       screen_offset_y=a;
+		write_to_log("===return 12====");
 		return(1); // cursor at beginning of command line
 	}
 	if(f==0 && strcmp(zwi, "COLS")==0){
@@ -2030,6 +2101,7 @@ int now_really_process_commandline(unsigned char *s)
 		}
 		cursor_x=14;
 		cursor_y=3;
+		write_to_log("===return 13====");
 		return(1); // cursor at beginning of command line
 	}
 	if(f==0 && (strcmp(zwi, "CANCEL")==0 || strcmp(zwi, "CAN")==0)){
@@ -2054,6 +2126,7 @@ int now_really_process_commandline(unsigned char *s)
 		cursor_x=14;
 		cursor_y=3;
 		do_save();
+		write_to_log("===return 14====");
 		return(1); // cursor at beginning of command line
 		f=1;
 	}
@@ -2065,6 +2138,7 @@ int now_really_process_commandline(unsigned char *s)
 		cursor_y=3;
 		sprintf(zwi, "%s.4mac", filename);
 		do_save_for_macro(zwi);
+		write_to_log("===return 15====");
 		return(1); // cursor at beginning of command line
 		f=1;
 	}
@@ -2077,6 +2151,7 @@ int now_really_process_commandline(unsigned char *s)
 		cursor_y=3;
 		load_file(filename);
 		set_to_space(screen_commandline, 80);
+		write_to_log("===return 16====");
 		return(1); // cursor at beginning of command line
 		f=1;
 	}
@@ -2088,10 +2163,12 @@ int now_really_process_commandline(unsigned char *s)
 		cursor_area=CUR_TEXTAREA; 
 		do_find(orizwi);
 		set_to_space(screen_commandline, 80);
+		write_to_log("===return 17====");
 		// return(1); // cursor at beginning of command line
 		// return(0); // process RETURN key                
 		sprintf(zwi, "2:cursor_y=%d cursor_x=%d", cursor_y, cursor_x);
 		write_to_log(zwi);
+		write_to_log("===return 18====");
 		return(2); // leave cursor where it is
 	}
 	if(strlen(zwi)==0){ // empty command line, no error...
@@ -2107,8 +2184,247 @@ int now_really_process_commandline(unsigned char *s)
 		strcpy(zwi2, (char*)screen_commandline);
 		trim(zwi2);
 		sprintf(screen_errormessage, "%s is not an editor command.", zwi2);
+		write_to_log("===return 19====");
 		return(1); // cursor at beginning of command line
 	}
+
+	// now process block commands
+
+	
+	write_to_log("Processing block commands  !!!!!!!!!!!!!!!!!!!!!!!!!!");
+	afterbefore=-1; // ###JG###
+	for(t=0; t<linecnt; t++){
+		strcpy(zwi, (char*)linecmd[t]);
+		trim(zwi);
+		if(zwi[0]=='a' && zwi[1]==0){
+			afterbefore=1;
+			afterbeforeline=t;
+		}
+		if(zwi[0]=='b' && zwi[1]==0){
+			afterbefore=2;
+			afterbeforeline=t;
+		}
+	}
+
+	// copy block
+	write_to_log("Looking for CC !!!!!!!!!!!!!!!!!!!!!!!!!!");
+	startblockcc=-1;
+	endblockcc=-1;
+	startblockrr=-1;
+	endblockrr=-1;
+	startblockdd=-1;
+	endblockdd=-1;
+	startblockxx=-1;
+	endblockxx=-1;
+	for(t=0; t<linecnt; t++){
+		strcpy(zwi, (char*)linecmd[t]);
+		trim(zwi);
+		// sprintf(zwi2, "zwi=>%s<", zwi);
+		// write_to_log(zwi2);
+		if(zwi[0]=='c' && zwi[1]=='c' && zwi[2]==0){
+			// write_to_log("CC found!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			if(startblockcc==-1){
+				startblockcc=t;
+			}
+			else{
+				if(endblockcc==-1){
+					endblockcc=t;
+				}
+				else{
+					strcpy(screen_errormsg, "1:copy/move pending");
+					strcpy(zwi2, (char*)screen_commandline);
+					trim(zwi2);
+					sprintf(screen_errormessage, "copy/move is pending");
+		write_to_log("===return 20====");
+					return(1); // cursor at beginning of command line
+				}
+			}
+		}
+		if(zwi[0]=='r' && zwi[1]=='r' && zwi[2]==0){
+			if(startblockrr==-1){
+				startblockrr=t;
+			}
+			else{
+				if(endblockrr==-1){
+					endblockrr=t;
+				}
+				else{
+					strcpy(screen_errormsg, "Block command imcomplete");
+					strcpy(zwi2, (char*)screen_commandline);
+					trim(zwi2);
+					sprintf(screen_errormessage, "Block command imcomplete");
+					write_to_log("===return 20.1====");
+					return(1); // cursor at beginning of command line
+				}
+			}
+		}
+		if(zwi[0]=='d' && zwi[1]=='d' && zwi[2]==0){
+			if(startblockdd==-1){
+				startblockdd=t;
+			}
+			else{
+				if(endblockdd==-1){
+					endblockdd=t;
+				}
+				else{
+					strcpy(screen_errormsg, "Block command imcomplete");
+					strcpy(zwi2, (char*)screen_commandline);
+					trim(zwi2);
+					sprintf(screen_errormessage, "Block command imcomplete");
+					write_to_log("===return 20.1====");
+					return(1); // cursor at beginning of command line
+				}
+			}
+		}
+		if(zwi[0]=='x' && zwi[1]=='x' && zwi[2]==0){
+			if(startblockxx==-1){
+				startblockxx=t;
+			}
+			else{
+				if(endblockxx==-1){
+					endblockxx=t;
+				}
+				else{
+					strcpy(screen_errormsg, "Block command imcomplete");
+					strcpy(zwi2, (char*)screen_commandline);
+					trim(zwi2);
+					sprintf(screen_errormessage, "Block command imcomplete");
+					write_to_log("===return 20.1====");
+					return(1); // cursor at beginning of command line
+				}
+			}
+		}
+	}
+	//sprintf(zwi, ">>>startblockcc=%d endblockcc=%d afterbefore=%d", 
+	//	   startblockcc, endblockcc, afterbefore);
+	//write_to_log(zwi);
+	if(startblockcc>-1 && endblockcc>-1 && afterbefore>-1){
+		z=0;
+		for(i=startblockcc; i<=endblockcc; i++, z++){
+			if(afterbefore==1){
+				insert_one_empty_line(afterbeforeline+1+z);
+				linetype[afterbeforeline+1+z]='N';
+				free(lineptr[afterbeforeline+1+z]);
+				lineptr[afterbeforeline+1+z]=malloc(strlen((char*)lineptr[i])+1);
+				strcpy((char*)lineptr[afterbeforeline+1+z], (char*)lineptr[i]);
+			}
+			else{
+				insert_one_empty_line(afterbeforeline+z);
+				linetype[afterbeforeline+z]='N';
+				free(lineptr[afterbeforeline+z]);
+				lineptr[afterbeforeline+z]=malloc(strlen((char*)lineptr[i])+1);
+				strcpy((char*)lineptr[afterbeforeline+z], (char*)lineptr[i]);
+			}
+		}
+		strcpy((char*)linecmd[startblockcc], "      ");
+		strcpy((char*)linecmd[endblockcc], "      ");
+		if(afterbefore==1){
+			strcpy((char*)linecmd[afterbeforeline], "      ");
+		}
+		else{
+			strcpy((char*)linecmd[afterbeforeline+z], "      ");
+		}
+		source_changed=TRUE;
+		f=1;
+		write_to_log("===return 21====");
+		return(0); // process ENTER key
+	}
+	else{
+		if(startblockcc>-1 || endblockcc>-1 || afterbefore>-1){
+			strcpy(screen_errormsg, "2:copy/move pending");
+			strcpy(zwi2, (char*)screen_commandline);
+			trim(zwi2);
+			sprintf(screen_errormessage, "copy/move is pending");
+		write_to_log("===return 22====");
+			return(1); // cursor at beginning of command line
+		}
+	}
+	if(startblockrr>-1 && endblockrr>-1){
+		z=0;
+		for(i=startblockrr; i<=endblockrr; i++, z++){
+			insert_one_empty_line(endblockrr+1+z);
+			linetype[endblockrr+1+z]='N';
+			free(lineptr[endblockrr+1+z]);
+			lineptr[endblockrr+1+z]=malloc(strlen((char*)lineptr[i])+1);
+			strcpy((char*)lineptr[endblockrr+1+z], (char*)lineptr[i]);
+		}
+		strcpy((char*)linecmd[startblockrr], "      ");
+		strcpy((char*)linecmd[endblockrr], "      ");
+		source_changed=TRUE;
+		f=1;
+		strcpy(screen_errormsg, "");
+		strcpy(screen_errormessage, "");
+		write_to_log("===return 22.1====");
+		return(0); // process ENTER key
+	}
+	else{
+		if(startblockrr>-1 || endblockrr>-1){
+			strcpy(screen_errormsg, "Block command incomplete");
+			strcpy(zwi2, (char*)screen_commandline);
+			trim(zwi2);
+			sprintf(screen_errormessage, "Block command incomplete");
+			write_to_log("===return 22.2====");
+			return(1); // cursor at beginning of command line
+		}
+	}
+	if(startblockdd>-1 && endblockdd>-1){
+		for(i=startblockdd; i<=endblockdd; i++){
+			delete_one_line(startblockdd);
+			if(cursor_y<4){
+				cursor_y=4;
+				screen_offset_y--;
+			}
+		}
+		strcpy((char*)linecmd[startblockdd], "      ");
+		source_changed=TRUE;
+		f=1;
+		strcpy(screen_errormsg, "");
+		strcpy(screen_errormessage, "");
+		write_to_log("===return 22.3====");
+		return(0); // process ENTER key
+	}
+	else{
+		if(startblockdd>-1 || endblockdd>-1){
+			strcpy(screen_errormsg, "Block command incomplete");
+			strcpy(zwi2, (char*)screen_commandline);
+			trim(zwi2);
+			sprintf(screen_errormessage, "Block command incomplete");
+			write_to_log("===return 22.2====");
+			return(1); // cursor at beginning of command line
+		}
+	}
+	if(startblockxx>-1 && endblockxx>-1){
+		for(i=startblockxx; i<=endblockxx; i++){
+			cursor_y--;
+			if(cursor_y<4){
+				cursor_y=4;
+				screen_offset_y--;
+			}
+			linetype[i]='X';
+		}
+		if(cursor_y<24){
+			cursor_y++;
+		}
+		strcpy((char*)linecmd[startblockxx], "      ");
+		strcpy((char*)linecmd[endblockxx], "      ");
+		strcpy(screen_errormsg, "");
+		strcpy(screen_errormessage, "");
+		// source_changed=TRUE; // NOT, its only eXcluded....
+		f=1;
+		write_to_log("===return 22.4====");
+		return(0); // process ENTER key
+	}
+	else{
+		if(startblockxx>-1 || endblockxx>-1){
+			strcpy(screen_errormsg, "Block command incomplete");
+			strcpy(zwi2, (char*)screen_commandline);
+			trim(zwi2);
+			sprintf(screen_errormessage, "Block command incomplete");
+			write_to_log("===return 22.2====");
+			return(1); // cursor at beginning of command line
+		}
+	}
+
 
 	// now process line commands
 
@@ -2117,9 +2433,14 @@ int now_really_process_commandline(unsigned char *s)
 			strcpy(zwi, (char*)linecmd[t]);
 			trim(zwi);
 			c=toupper(zwi[0]);
+			c1=toupper(zwi[1]);
 			f=0;
 			if(c=='='){ // message line..
 				f=1;
+			}
+			ucase(zwi);
+			if(strcmp(zwi, ".A")==0 || strcmp(zwi, ".B")==0){
+				f=1; // may be used by macros, so it's okay
 			}
 			if(c=='I'){
 				a=atoi(zwi+1);
@@ -2134,7 +2455,7 @@ int now_really_process_commandline(unsigned char *s)
 				strcpy((char*)linecmd[t], "      ");
 				f=1;
 			}
-			if(c=='D'){
+			if(c=='D' && (c1==0 || isdigit(c1))){
 				a=atoi(zwi+1);
 				if(a==0){
 					a=1;
@@ -2147,7 +2468,7 @@ int now_really_process_commandline(unsigned char *s)
 				source_changed=TRUE;
 				f=1;
 			}
-			if(c=='R'){
+			if(c=='R' && (c1==0 || isdigit(c1))){
 				a=atoi(zwi+1);
 				if(a==0){
 					a=1;
@@ -2180,6 +2501,7 @@ int now_really_process_commandline(unsigned char *s)
 			}
 		}
 	}
+	write_to_log("===return Ende====");
 	return(rc); // 0 = process ENTER key
 	            // 1 = beginning of command line
 	            // 2 = leave cursor where it is
@@ -2262,8 +2584,9 @@ int process_input_field(int c, unsigned char *s, int startx, int len, int offx)
 	char cmd[256];
 	int endx;
 
-	// sprintf(zwi, "process_input_field: c=%d", c);
-	// write_to_log(zwi);
+	sprintf(zwi, "process_input_field: c=%d startx=%d len=%d offx=%d", 
+		c, startx, len, offx);
+	write_to_log(zwi);
 
 	endx=startx+len;
 
@@ -2447,8 +2770,8 @@ int now_handle_input_key_editor(int c)
 	int curpos;
 	int t;
 
-	// sprintf(zwi, "1:now_handle_input_key_editor: cursor_area=%d c=%d cursor_x=%d", cursor_area, c, cursor_x);
-	// write_to_log(zwi);
+	sprintf(zwi, "1:now_handle_input_key_editor: cursor_area=%d c=%d cursor_x=%d", cursor_area, c, cursor_x);
+	write_to_log(zwi);
 
 	if(c==KEY_F1){
 		switch(screen_errform){
@@ -2481,6 +2804,7 @@ int now_handle_input_key_editor(int c)
 	// sprintf(zwi, "2:now_handle_input_key_editor: cursor_area=%d c=%d cursor_x=%d", cursor_area, c, cursor_x);
 	// write_to_log(zwi);
 	if(cursor_area==CUR_CMDLINE){
+		write_to_log("CUR_CMDLINE: before process_input_field");
 		rc=process_input_field(c, screen_commandline, 14, 48, 0);
 		// sprintf(zwi, "3:now rc=%d", rc);
 		// write_to_log(zwi);
@@ -2531,6 +2855,7 @@ int now_handle_input_key_editor(int c)
 		pos=cursor_y-screen_topline;
 	   //sprintf(zwi, "LINENBR:pos=%d:cursor_y=%d cursor_x=%d screen_offset_y=%d", pos, cursor_y, cursor_x, screen_offset_y);
 	   //write_to_log(zwi);
+		write_to_log("CUR_LINENBR: before process_input_field");
 		rc=process_input_field(c,linecmd[calc_linenbr(screen_offset_y, pos)],
 			1, 6, 0);
 
@@ -2667,6 +2992,7 @@ int now_handle_input_key_editor(int c)
 		curpos=calc_linenbr(screen_offset_y, pos);
 		if(linetype[curpos]=='N' ||
 		   linetype[curpos]=='E' ||
+		   linetype[curpos]=='T' || // ###JG###
 		   linetype[curpos]=='I'){
 			strcpy(zwi, (char*)lineptr[curpos]);
 			expand_to_nnn_bytes(screen_offset_x+80, zwi);

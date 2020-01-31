@@ -1,13 +1,20 @@
-%%%\documentclass{book}
+%%%sdocumentclass{book}
 \documentclass{report}
-%%%\usepackage{graphicx}
+\usepackage{graphicx}
 \usepackage{url}
-\title{\huge \textbf{pipEdit} 
-\break \break \small Version 0.8.1 \huge 
-\break \break Users Guide \break \break \break}
-\author{The\_Piper \\ the\_piper@web.de}
-\date{December 2019}
 \begin{document}
+\title{\huge \textbf{pipEdit} 
+\break \break \small Version 0.8.2 \huge 
+\break \break Users Guide \break \break \break}
+
+%%%\begin{figure}
+%%%\includegraphics[scale=0.5]{The_Pied_Piper_Logo.jpg}
+%%%\caption{A boat.}
+%%%\label{fig:boat1}
+%%%\end{figure}
+\author{The\_Piper \\ the\_piper@web.de}
+\date{January 2020}
+%%%\begin{document}
 \maketitle
 \tableofcontents
 %%%\listoffigures
@@ -267,7 +274,10 @@ F1 & Yes, discard all changes and leave the editor \\
 F12 & No, do not discard, stay in editor \\
 \end{tabular}
 
-\chapter{Commands}
+\chapter{Command line commands}
+
+The command line is the line near the top of the screen marked \texttt{Command ===>}, where you can, well..., type commands. \\
+Hit \texttt{ENTER} key and the editor will process the typed command. \\
 
 \begin{tabular}{l l}
 Save & Save the current file \\
@@ -289,14 +299,44 @@ Line commands are typed at the line number of a text line. \\
 d & Delete line \\
 i & Insert blank line \\
 r & Repeat line \\
+x & eXclude line \\
 \end{tabular} \\
 
 Every command takes a number as a parameter.
-So \texttt{d3} deletes 3 lines, \texttt{i5} inserts 5 blank lines and
-\texttt{r2} repeats the current line two times.
+So \texttt{d3} deletes 3 lines, \texttt{i5} inserts 5 blank lines,
+\texttt{r2} repeats the current line two times and \texttt{x7} excludes 7 lines.
 
+\chapter{Block commands}
 
+Block commands affect a block of lines (surprise, surprise...), like a block
+of lines you want to delete, copy or repeat. \\
 
+A block is marked with the given block commands, so type  \texttt{dd} in the
+line number area to mark the beginning of a block you want to delete, and
+again \texttt{dd} to mark the end of this block. \\
+
+Example: \\ \\
+\texttt{
+000005 line5 \\
+\textbf{dd}'''' line6 \\
+000007 line7 \\
+000008 line8 \\
+\textbf{dd}'''' line9 \\
+000010 line10 \\
+} \\
+\break
+Then hit the \texttt{ENTER} key and the lines will be deleted.
+
+\break
+The block commands are: \\
+
+\begin{tabular}{l l}
+RR & Repeat a block of lines, duplicate it right after the last line of the block. \\
+DD & Delete the block of lines marked with \texttt{dd}  \texttt{dd}. \\
+CC & Copy the block after a line marked with \texttt{a} or before a line marked
+     with \texttt{b}. \\
+XX & eXclude the lines of the block. \\
+\end{tabular} \\
 
 
 \chapter{Macros}
@@ -313,6 +353,27 @@ This is the name of the temporary file pipEdit writes before calling the macro a
 The macro changes this file, like the comp macro, which inserts message lines of the error messages of the compile into the source code.
 
 The format of this file is this (and the result pipEdit reads, must be the same format):
+
+The first 5 lines: \\
+
+\begin{tabular}{l}
+\texttt{msg}=Done\\
+\texttt{message}=Hex dump done \\
+\texttt{cursor\_x}=-1 \\
+\texttt{cursor\_y}=-1 \\
+\texttt{modified}=0 \\
+\end{tabular}
+\\
+\begin{tabular}{l l}
+\textbf{\texttt{msg}} & the short message the macro can set \\
+\textbf{\texttt{message}} & the long message (F1) the macro can set \\
+\textbf{\texttt{cursor\_x}} & the x position of the cursor the macro can set \\
+\textbf{\texttt{cursor\_y}} & the y position of the cursor the macro can set \\
+\textbf{\texttt{modified}} & did the macro modify the source code, yes (1) or no (0). This is needed to tell the editor if \\ 
+ & the source code must be saved or not. \\
+\end{tabular}
+\newpage
+All lines after the first 5 ones: \\
 
 \begin{tabular}{l l l}
 \textbf{Bytes} & \textbf{Type}        & \textbf{Content} \\
@@ -453,4 +514,62 @@ Type hex to show the hex codes, type res or reset to get rid of them.
 
 
 
+\chapter{cs Macro}
+
+The cs macro (Copy to Scratch file) can copy a block of lines into a temporary
+file in the \texttt{/tmp} folder and, after leaving the editor and editing a different file,  copy this temporary file back into the editors content. \\
+
+
+\textbf{Copy a block of lines to a temporary file} \\
+Mark a block of lines by typing \texttt{.a} and \texttt{.b} in the line numbers
+area of the editor.
+
+Then type \texttt{cs} in the command line to copy the lines into the temporary
+file. \\
+
+Example: \\
+
+\texttt{
+Command ==> cs \\
+000001 line1 \\
+000002 line2 \\
+000003 line3 \\
+000004 line4 \\
+000005 line5 \\
+\textbf{.a}'''' line6 \\
+000007 line7 \\
+000008 line8 \\
+\textbf{.b}'''' line9 \\
+000010 line10 \\
+} \\
+\break
+Then hit the \texttt{ENTER} key and the lines 6, 7, 8 and 9 will be copied
+into a temporary file.
+\\
+\\
+
+\textbf{Copy a block of lines from the temporary file into a different source code} \\
+
+Specify the location where the block of lines should be copied to with
+\texttt{a} (after this line) or \texttt{b} (before this line) (and without
+a dot ".") in the line numbers area of the editor.
+
+Then type \texttt{cs} in the command line to copy the lines from the temporary
+file into the current source code. \\
+
+Example: \\
+
+\texttt{
+Command ==> cs \\
+000001 line1 \\
+000002 line2 \\
+000003 line3 \\
+000004 line4 \\
+000005 line5 \\
+\textbf{a}''''' line6 \\
+000007 line7 \\
+000008 line8 \\
+000009 line9 \\
+000010 line10 \\
+}
 \end{document}

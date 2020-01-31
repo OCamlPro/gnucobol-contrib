@@ -360,6 +360,7 @@ int getch(void)
 	}
 
 	// handle CTRL-z and CTRL-c
+	/***************************************************************
 	if(c==3){
 		endwin();
 		printf("Program execution interrupted by user (CTRL-c).\n");
@@ -372,7 +373,6 @@ int getch(void)
 		fprintf(stderr, "Program execution interrupted by user (CTRL-z).\n");
 		exit(2);
 	}
-	/*******************************************
 	***************************************************/
    return(c);
 }

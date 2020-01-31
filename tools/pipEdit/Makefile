@@ -2,7 +2,8 @@
 #
 #
 ### compile with the curses replacement pipcurses
-OPTIONS=-O -D__USE_PIPCURSES__=1
+###OPTIONS=-O -D__USE_PIPCURSES__=1 -ggdb
+OPTIONS=-O -D__USE_PIPCURSES__=1 
 LDFLAGS=
 #
 #
