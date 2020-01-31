@@ -78,6 +78,7 @@ usage(char *binname)
 	printf("  -S name=value   Environment variable to be set for test\n");
 	printf("  -D name=value   Compiler Directing variable is set to value\n");
 	printf("  -X name=value   Push environment variable before running 'cobc'\n");
+	printf("  -Z filename     File to be captured which is output by compiler\n");
 	printf("  -c \"compile command\"  \n");
 	printf("  -k \"Test keywords\"  \n");
 	printf("  -s \"Test setup name\"  \n");
@@ -411,6 +412,7 @@ main(
 	char	inptestfile[200],outtestfile[200],compilecmd[256];
 	char	outlst[80],errlst[80],compprefx[64];
 	char	libs[256],flags[128], exshr[8];
+	char	compFiles[dMaxFile][80];
 	char	outFiles[dMaxFile][80];
 	char	ddFiles[dMaxFile][80];
 	char	bookFiles[dMaxFile][80];
@@ -418,6 +420,7 @@ main(
 	char	setCompEnv[dMaxFile][80];
 	char	setDef[dMaxFile][80];
 	FILE	*at,*fi;
+	int		numComp = 0;
 	int		addBlank = 0, numFiles = 0, numBooks = 0, numEnv = 0, numDef = 0, numCenv = 0;
 
 	strcpy(setup,"SAMPLE PROGRAM");
@@ -443,7 +446,7 @@ main(
 	strcpy(exshr,"-x");
 	strcpy(cobstd,"default");
 	bStdDefault = 1;
-	while ((opt=getopt(argc, argv, "ai:o:O:c:d:hp:B:C:D:X:s:S:k:x:eEgbImwvVM:t:L:l:f:F:")) != EOF) {
+	while ((opt=getopt(argc, argv, "ai:o:O:c:d:hp:B:C:D:X:s:S:k:x:eEgbImwvVM:t:L:l:f:F:Z:")) != EOF) {
 		switch(opt) {
 		case 'a':
 			bAppendAutoTest = 1;
@@ -536,6 +539,13 @@ main(
 					unlink(optarg);
 				}
 				numFiles++;
+			}
+			break;
+		case 'Z':
+			if(numComp < dMaxFile) {
+				strcpy(compFiles[numComp],optarg);
+				unlink(optarg);
+				numComp++;
 			}
 			break;
 		case 'c':
@@ -759,13 +769,13 @@ ReDoCompile:
 		sprintf(wrk,"$COMPILE -std=%s %s",cobstd,&compilecmd[preln]);
 		if(bCompileModule)
 			sprintf(wrk,"$COMPILE_MODULE -std=%s -m %s",cobstd,&compilecmd[preln]);
-		else if(bCompileOnly)
+		else if(bCompileOnly && numComp == 0)
 			sprintf(wrk,"$COMPILE_ONLY -std=%s %s",cobstd,&compilecmd[preln]);
 	} else if(memcmp(compilecmd,"cobc -x",7) == 0) {
 		sprintf(wrk,"$COMPILE -std=%s %s",cobstd,&compilecmd[7]);
 		if(bCompileModule)
 			sprintf(wrk,"$COMPILE_MODULE -std=%s -m %s",cobstd,&compilecmd[7]);
-		else if(bCompileOnly)
+		else if(bCompileOnly && numComp == 0)
 			sprintf(wrk,"$COMPILE_ONLY -std=%s %s",cobstd,&compilecmd[7]);
 	} else {
 		strcpy(wrk,compilecmd);
@@ -818,6 +828,19 @@ ReDoCompile:
 		if(compsts != 0)
 			printf("Second Compile of %s failed!\n",progname);
 		goto ReDoCompile;
+	}
+	for(i=0; i < numComp; i++) {
+		fprintf(at,"\n");
+		fprintf(at,"AT_CAPTURE_FILE(./%s)\n\n",compFiles[i]);
+		fprintf(at,"AT_DATA([reference], [");
+		fi = fopen(compFiles[i],"r");
+		if(fi) {
+			copyFile(fi,at,0,0,0,NULL,NULL,0,0);
+			fclose(fi);
+			fi = NULL;
+		}
+		fprintf(at,"])\n\n");
+		fprintf(at,"AT_CHECK([%s -I# reference %s], [0], [], [])\n\n",diffProg,compFiles[i]);
 	}
 	if(compsts == 0 && !bCompileOnly) {
 		sprintf(tmp,"./%s 1>%s 2>%s",progout,outlst,errlst);

@@ -40,6 +40,7 @@ Where [options] are:
   -S name=value   Environment variable to be set for test
   -D name=value   Compiler Directing variable is set to value
   -X name=value   Push environment variable before running 'cobc'
+  -Z filename     File to be captured which is output by compiler
   -c "compile command"  
   -k "Test keywords"  
   -s "Test setup name"  
