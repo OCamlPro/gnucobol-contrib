@@ -2912,7 +2912,7 @@ void sort_temp_name(const char * ext)
 		} else if ((p = getenv ("TMP")) != NULL) {
 			cob_tmpdir = p;
 		}
-		if (strlen(cob_tmpdir) == 0)
+		if (cob_tmpdir == NULL || strlen(cob_tmpdir) == 0)
 		//	sprintf(cob_tmp_temp, "./");
 			sprintf(cob_tmp_temp, "./Srt%d_%d%s", (int)cob_process_id,
 				(int)cob_iteration, ext);
