@@ -1,19 +1,54 @@
-pipEdit                                                               2020-01-30
+pipEdit                                                               2020-02-12
 =======
 
 pipEdit, ISPF lookalike editor
 currently only target for POSIX terminal interface (like GNU/Linux, cygwin)
 
+                         -------------------------
+For more detailed informations read the PDF-file in the doc folder.
+                         -------------------------
+
 
 Compiling the editor 
 --------------------
-use the shell script "c" to compile
+Use the shell script "c" to compile
+or
+type make to use the Makefile
 
 
 Compiling the comp macro
 ------------------------
 cd into the folder macros
 use the shell script "c" to compile
+
+
+Installing the editor (quick and dirty)
+---------------------------------------
+Compile the editor, the result is pipedit.bin
+
+Copy pipedit.bin to /usr/local/bin which is (hopefully) included in your
+$PATH.
+su cp pipedit.bin /usr/local/bin
+
+copy pipedit.cfg to your $HOME directory
+cp pipedit.cfg $HOME
+
+edit pipedit.cfg in your $HOME directory
+set the language to default
+
+language=default
+
+and comment all other language options with ### at the beginning of the line.
+
+
+Edit the config file for your shell, .bashrc or .kshrc or whatever
+and add the following line
+
+PIPEDITCFG=$HOME/pipedit.cfg ; export PIPEDITCFG
+
+Close your current terminal session by typing exit and start a new one, so the
+changes from .bashrc will take effect.
+
 
 
 Running the editor
