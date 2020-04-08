@@ -3,21 +3,23 @@ program-id. GC21MENUDEMO2.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DEMO OF GNUCOBOL TUI TOOLS
-*> Tectonics:  cobc -x GC21MENUDEMO2
+*> Tectonics:  cobc -x GC21MENUDEMO2 (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      GC21MENUDEMO2
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
-*> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2016.06.15
+*> License:    Copyright 2020 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
+*> Version:    2.0 2020.04.04
 *> Changelog:  1.0 first release.
+*>             2.0 mouse management added (left click to activate a menu Item
+*>                                         double left-click to select a menu item
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
 SPECIAL-NAMES.
-   CRT STATUS IS wCRT-STATUS.
+    CRT STATUS IS wCRT-STATUS.    *> Return Code from Accept (ex.PF Keys, Mouse Keys)
+    CURSOR     IS wCursorRowCol.  *> Cursor Position
 
 DATA DIVISION.
-File Section.
 WORKING-STORAGE SECTION.
 
 01 black   constant as 0.
@@ -30,7 +32,6 @@ WORKING-STORAGE SECTION.
 01 white   constant as 7.
 01 result     usage binary-long.
 01 wresult    pic S9(8).
-01 riga80     pic x(80) value space.
 
 01  CmdLine           pic x(121) VALUE SPACE.
 01  i                 pic s9(4) comp-5.
@@ -42,12 +43,12 @@ WORKING-STORAGE SECTION.
    03 wTimess         pic  9(2).
    03 wTimecc         pic  9(2).
 
-
-copy     'GC21MENU.CPY'.
-copy      'GC01BOX.CPY'.
-copy    'GC03YESNO.CPY'.
-copy   'GC02BOXMEX.CPY'.
-COPY  'GC98KEYCODE.CPY'.
+copy       'GC01BOX.CPY'.
+copy    'GC02BOXMEX.CPY'.
+copy     'GC03YESNO.CPY'.
+copy      'GC21MENU.CPY'.
+COPY   'GC98KEYCODE.CPY'.
+copy 'GC97KEYCODEGC.CPY'  suppress.
 
 01  wDummy        pic x(01) VALUE ' '.
 *> 01  GnuCOBOLdemo1 pic x(480) value
@@ -84,9 +85,9 @@ COPY  'GC98KEYCODE.CPY'.
 78  K-PAGEDOWN    VALUE 2002.
 78  K-NO-FIELD    VALUE 8000.  *> NO DATA FROM ACCEPT (also 8001)
 
-01  wCRT-STATUS  PIC  9(04) VALUE 9999.
 01  wCOMMAND     pic  X(40) value space.
-01  wSTRING      pic  X(60) value space.
+01  wSTRING      pic  X(75) value space.
+01  wSTRING2     pic  X(75) value space.
 01  wLINES       pic  9(03).
 01  wCOLUMNS     pic  9(03).
 01  wLINES2      pic  9(03).
@@ -97,16 +98,36 @@ COPY  'GC98KEYCODE.CPY'.
 01  wSaved-Menu-Area        pic x(8000) value space.
 01  wFirstTime              pic x(01)   value 'Y'.
 
-PROCEDURE DIVISION.
+*>  mouse mask, apply to COB_MOUSE_FLAGS
+78  COB-AUTO-MOUSE-HANDLING          VALUE 1.
+78  COB-ALLOW-LEFT-DOWN              VALUE 2.
+78  COB-ALLOW-LEFT-UP                VALUE 4.
+78  COB-ALLOW-LEFT-DOUBLE            VALUE 8.
+78  COB-ALLOW-MIDDLE-DOWN            VALUE 16.
+78  COB-ALLOW-MIDDLE-UP              VALUE 32.
+78  COB-ALLOW-MIDDLE-DOUBLE          VALUE 64.
+78  COB-ALLOW-RIGHT-DOWN             VALUE 128.
+78  COB-ALLOW-RIGHT-UP               VALUE 256.
+78  COB-ALLOW-RIGHT-DOUBLE           VALUE 512.
+78  COB-ALLOW-MOUSE-MOVE             VALUE 1024.
+
+01  MOUSE-FLAGS         PIC 9(04).
+01  wCRT-STATUS         PIC 9(04) VALUE 9999.
+01  wCursorRowCol       PIC 9(06) value 0000.
+01  redefines wCursorRowCol .
+    05 wCursorRow       Pic 9(03).
+    05 wCursorCol       Pic 9(03).
+
+
 *> **************************************************************
 *>           P R O C E D U R E   D I V I S I O N
 *> **************************************************************
-Initial-Settings.
-   *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
-   set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
-   set environment 'COB_SCREEN_ESC'        TO 'Y'.
-   display ' ' at 0101 with blank screen end-display.
+PROCEDURE DIVISION.
 
+perform InitialSettings thru InitialSettingsEx
+display ' ' at 0101 with blank screen end-display.
+
+DisplayCoverScreen.
 Main.
    perform Display-Cover thru Display-CoverEx.
    *> ***************************************************************************
@@ -120,28 +141,54 @@ Main.
      display TimeX at 002066 with foreground-color white background-color Red end-display
    END-PERFORM.
 
-   EVALUATE wCRT-STATUS   *> which key was pressed ?
-    WHEN  K-ENTER
-      Perform DisplayBackground thru DisplayBackgroundEx
-      PERFORM MenuManager       THRU MenuManagerEx
-    WHEN  K-ESCAPE
-      go to MainEx
+   EVALUATE TRUE   *> which key was pressed ?
+      WHEN  wCRT-STATUS = K-ENTER  OR wCRT-STATUS  = K-LEFT-PRESSED
+            Perform DisplayBackground thru DisplayBackgroundEx
+            PERFORM MenuManager       THRU MenuManagerEx
+      WHEN  wCRT-STATUS = K-ESCAPE
+            go to MainEx
    END-EVALUATE
 
    go to Main.
-MainEx.
 
+
+   *> **********************************************************************************
+   *> END OF program
+   *> **********************************************************************************
+MainEx.
+    *> clear screen
    display ' ' at 0101 with blank screen end-display
-   DISPLAY ' ...OK ! End of work.                          '
-            at 0401 with foreground-color white background-color red
-   DISPLAY ' ----------------------------------------------'
-            at 0501 with foreground-color white background-color red
-   *> ACCEPT OMITTED
-   ACCEPT wDUMMY with NO-ECHO
+
+    display ' GnuCOBOL TUI TOOL - MENU ITEMS MANAGEMENT (with MOUSE !) - END OF DEMO.'
+            at 0301 with foreground-color white background-color green
+
+    *> DISPLAY ITALIAN FLAG
+     move '009036014049' to Box-rc
+     move black to Box-bco
+     move 'S' to Box-style
+     call  GC01BOX using BOX-AREA
+     display '    ' at 010037 with       background-color Green end-display
+     display '    ' at 011037 with       background-color Green end-display
+     display '    ' at 012037 with       background-color Green end-display
+     display '    ' at 013037 with       background-color Green end-display
+     display '    ' at 010041 with blink background-color white end-display
+     display '    ' at 011041 with blink background-color white end-display
+     display '    ' at 012041 with blink background-color white end-display
+     display '    ' at 013041 with blink background-color white end-display
+     display '    ' at 010045 with blink background-color red   end-display
+     display '    ' at 011045 with blink background-color red   end-display
+     display '    ' at 012045 with blink background-color red   end-display
+     display '    ' at 013045 with blink background-color red   end-display
+    display " " at 016001 with background-color black foreground-color black end-display
+
    GOBACK.
 
+
+
 *> *************************************************************
-*> MENU MANAGER
+*>
+*>  M E N U    M A N A G E R
+*>
 *> *************************************************************
 MenuManager.
      perform DisplayBackGround thru DisplayBackgroundEx
@@ -190,7 +237,6 @@ MenuManager.
                 go to MenuManager
            end-if
      END-EVALUATE
-
    .
 MenuManagerEx. exit.
 
@@ -205,7 +251,6 @@ DisplayMenuBar.
       move z' 3001040 Calendar    '      to mn-ele(4)
       move z' 2001053 Other      '       to mn-ele(5)
       move z' 3001065 Exit           '   to mn-ele(6)
-
       move ' Demo of Boxes                            ' to mn-mess(1)
       move ' Demo of Buttons                          ' to mn-mess(2)
       move ' Demo of Menus                            ' to mn-mess(3)
@@ -349,14 +394,15 @@ RunChoice.
        move 'CMD' & X'00' TO CmdLine
        CALL 'SYSTEM'   using CmdLine
       when 4 perform About thru AboutEx  *> ABOUT (a message BOX .....)
-      when 5 go MainEx                   *> END OF WORK
+      when 5  go to DisplayCoverScreen
+      when 6 go MainEx                   *> END OF WORK
      END-EVALUATE
    END-EVALUATE
    .
 RunChoiceEx. exit.
 
 *> *************************************************************
-*>                   ROUTINES DA NON TOCCARE
+*>
 *> *************************************************************
 MoveDropDownMenu.
    *> call 'display_restore_window' using w-buff w-block
@@ -527,16 +573,18 @@ DropDownMenu5ex. exit.
 
 DropDownMenu6.
    perform InitializeDropDownMenu thru InitializeDropDownMenuEx
-   move '12003066 Help        ' & x'00' to mn-ele(1)
+   move ' 2003066 Help        ' & x'00' to mn-ele(1)
    move ' 2004066 Print help  ' & x'00' to mn-ele(2)
    move ' 2005066 DOS         ' & x'00' to mn-ele(3)
    move ' 2006066 About       ' & x'00' to mn-ele(4)
-   move ' 2007066 End of work ' & x'00' to mn-ele(5)
-   move ' Display the documentation manual' to mn-mess(1)
-   move ' Print a manual    ' to mn-mess(2)
+   move '12007066 Go to Cover ' & x'00' to mn-ele(5)
+   move ' 2008066 End of work ' & x'00' to mn-ele(6)
+   move ' Display the documentation manual'       to mn-mess(1)
+   move ' Print a manual    '                     to mn-mess(2)
    move ' Temporary exit to DOS (type ''EXIT'' to return this menu).' to mn-mess(3)
    move ' About this application                ' to mn-mess(4)
-   move ' Exit                           ' to mn-mess(5)
+   move ' Return to COVER screen             '    to mn-mess(5)
+   move ' Exit                           '        to mn-mess(6)
    CALL GC21MENU USING BY REFERENCE MENU-AREA
    Move Mn-Selected to wMn-Selected-MenuDrDn
    .
@@ -554,29 +602,31 @@ InitializeDropDownMenuEx. exit.
 
 *> ****************************************************************************
 Display-Cover.
-*> move red to Box-bco
-set  Box-fco Box-bco to Red
-move '002001024080' to Box-rc
-move 'N'      to Box-style Box-3D
-call GC01BOX using BOX-AREA.
+    set  Box-fco Box-bco to Red
+    *> a box without borders to paint an area of entire screen
+    move '001001025080'  to Box-rc
+    move 'N'             to Box-style Box-3D
+    call GC01BOX using BOX-AREA on exception continue end-call
 
-display rGnu2(1) at 010001 with background-color Red foreground-color White highlight
-display rGnu2(2) at 011001 with background-color Red foreground-color White highlight
-display rGnu2(3) at 012001 with background-color Red foreground-color White highlight
-display rGnu2(4) at 013001 with background-color Red foreground-color White highlight
-display rGnu2(5) at 014001 with background-color Red foreground-color White highlight
-display rGnu2(6) at 015001 with background-color Red foreground-color White highlight
+    display rGnu2(1) at 010001 with background-color Red foreground-color White highlight
+    display rGnu2(2) at 011001 with background-color Red foreground-color White highlight
+    display rGnu2(3) at 012001 with background-color Red foreground-color White highlight
+    display rGnu2(4) at 013001 with background-color Red foreground-color White highlight
+    display rGnu2(5) at 014001 with background-color Red foreground-color White highlight
+    display rGnu2(6) at 015001 with background-color Red foreground-color White highlight
 
- DISPLAY "GnuCOBOL 2.0 TEXT USER INTERFACE TOOLS COLLECTION " AT 017016
-         with foreground-color white background-color red.
-
- ACCEPT wUserName FROM USER NAME end-accept.
- STRING " User: " wUserName into wSTRING.
- DISPLAY wSTRING AT 002001 with foreground-color white background-color red.
- ACCEPT wLINES   from LINES; ACCEPT wCOLUMNS from COLUMNS
- STRING " Screen of " wLINES " x " wCOLUMNS  " - Press a key to Enter, ESCAPE to EXIT. " into wSTRING.
- DISPLAY wSTRING AT 023001 with foreground-color white background-color red.
-Display-CoverEx. Exit.
+     DISPLAY "GnuCOBOL 3.1 TEXT USER INTERFACE TOOLS COLLECTION " AT 017016
+             with foreground-color white background-color red
+     DISPLAY "NEW RELEASE - WITH MOUSE MANAGEMENT - from DILO (Italy)" AT 018014
+             with foreground-color white background-color red
+     ACCEPT wUserName FROM USER NAME end-accept
+     STRING " User: " wUserName into wSTRING2
+     DISPLAY wSTRING2 AT 002001 with foreground-color white background-color red
+     ACCEPT wLINES   from LINES; ACCEPT wCOLUMNS from COLUMNS
+     STRING " Screen of " wLINES " x " wCOLUMNS  ". Type a key or mouse left-click to Enter, ESC to EXIT. " into wSTRING.
+     DISPLAY wSTRING AT 023001 with foreground-color white background-color red
+     .
+Display-CoverEx. exit.
 
 *> ****************************************************************************
 DisplayBackground.
@@ -586,35 +636,55 @@ DisplayBackground.
   move 'D'      to Box-style
   move 'N'      to Box-3D
   call  GC01BOX using BOX-AREA.
-  display "[" & X"FE" & "]" at 002076 with background-color green foreground-color white highlight.
-DisplayBackgroundEx. Exit.
+  display "[" & X"FE" & "]" at 002076 with background-color green foreground-color white highlight
+  display "Cursorkeys/mouse leftclick= activate menu item. Enter/lett doubleclick= select" at 023002
+        with background-color green foreground-color white highlight end-display.
+DisplayBackgroundEx. exit.
 
 
 About.
-set  Box-bco        to white
-set  Box-fco        to white
-move '001001025080' to Box-rc
-move 'S'            to Box-style
-call GC01BOX using Box-Area
+    set  Box-bco        to white
+    set  Box-fco        to white
+    move '001001025080' to Box-rc
+    move 'S'            to Box-style
+    call GC01BOX using Box-Area
 
-move space & x'00' to Bxm-mex(01)
-move '                              ''''~``                          '  & x'00' to Bxm-mex(02)
-move '                             ( o o )                         '  & x'00' to Bxm-mex(03)
-move '     +------------------.oooO--(_)--Oooo.------------------+ '  & x'00' to Bxm-mex(04)
-move '     |                                                     | '  & x'00' to Bxm-mex(05)
-move '     |       GnuCOBOL 2.0 TUI TOOLS COLLECTION (DILO)      | '  & x'00' to Bxm-mex(06)
-move '     |                                                     | '  & x'00' to Bxm-mex(07)
-move '     |                    .oooO                            | '  & x'00' to Bxm-mex(08)
-move '     |                    (   )   Oooo.                    | '  & x'00' to Bxm-mex(09)
-move '     +---------------------\ (----(   )--------------------+ '  & x'00' to Bxm-mex(10)
-move '                            \_)    ) /                       '  & x'00' to Bxm-mex(11)
-move '                                  (_/                        '  & x'00' to Bxm-mex(12)
-move space & x'00' to Bxm-mex(13)
-move space & x'00' to Bxm-mex(14)
+    move space & x'00' to Bxm-mex(01)
+    move '                              ''''~``                          '  & x'00' to Bxm-mex(02)
+    move '                             ( o o )                         '  & x'00' to Bxm-mex(03)
+    move '     +------------------.oooO--(_)--Oooo.------------------+ '  & x'00' to Bxm-mex(04)
+    move '     |                                                     | '  & x'00' to Bxm-mex(05)
+    move '     |       GnuCOBOL 3.1 TUI TOOLS COLLECTION (DILO)      | '  & x'00' to Bxm-mex(06)
+    move '     |                  - from Italy -                     | '  & x'00' to Bxm-mex(07)
+    move '     |                    .oooO                            | '  & x'00' to Bxm-mex(08)
+    move '     |                    (   )   Oooo.                    | '  & x'00' to Bxm-mex(09)
+    move '     +---------------------\ (----(   )--------------------+ '  & x'00' to Bxm-mex(10)
+    move '                            \_)    ) /                       '  & x'00' to Bxm-mex(11)
+    move '                                  (_/                        '  & x'00' to Bxm-mex(12)
+    move space & x'00' to Bxm-mex(13)
+    move space & x'00' to Bxm-mex(14)
 
-Move '37YSabcdefghiYYRNN37YYYN77Y' to Bxm-Parameters
-move '004005021073'                to Bxm-rc
-call GC02BOXMEX using BOXMEX-AREA.
-AboutEx. Exit.
+    Move '37YSabcdefghiYYRNN37YYYN77Y' to Bxm-Parameters
+    move '004005021073'                to Bxm-rc
+    call GC02BOXMEX using BOXMEX-AREA.
+AboutEx. exit.
+
+
+InitialSettings.
+  *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
+  set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
+  set environment 'COB_SCREEN_ESC'        TO 'Y'.
+
+  *> make mouse active
+  COMPUTE MOUSE-FLAGS = COB-AUTO-MOUSE-HANDLING
+                      + COB-ALLOW-LEFT-DOWN   + COB-ALLOW-MIDDLE-DOWN   + COB-ALLOW-RIGHT-DOWN
+                      + COB-ALLOW-LEFT-UP     + COB-ALLOW-MIDDLE-UP     + COB-ALLOW-RIGHT-UP
+                      + COB-ALLOW-LEFT-DOUBLE + COB-ALLOW-MIDDLE-DOUBLE + COB-ALLOW-RIGHT-DOUBLE
+                      + COB-ALLOW-MOUSE-MOVE
+  SET environment     "COB_MOUSE_FLAGS"         to MOUSE-FLAGS
+  continue.
+InitialSettingsEx. exit.
+
+
 
 End Program GC21MENUDEMO2.
