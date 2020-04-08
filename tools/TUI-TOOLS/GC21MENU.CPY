@@ -88,4 +88,3 @@
      *> return to caller
      03 Mn-Selected       pic 9(02).  *> number of selected menu item: 01, 02 etc.
      03 Mn-Key            pic 9(04).  *> 0000 = Enter, 2005 = ESCAPE
-
