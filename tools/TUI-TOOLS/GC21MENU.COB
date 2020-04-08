@@ -1,35 +1,41 @@
-       >> SOURCE FORMAT IS FREE
+       >>SOURCE FORMAT IS FREE
+       REPLACE ==:BCOL:== BY ==with BACKGROUND-COLOR==
+               ==:FCOL:== BY ==FOREGROUND-COLOR==.
 IDENTIFICATION DIVISION.
 PROGRAM-ID. GC21MENU is initial.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DISPLAY MENU ON SCREEN WITH OPTIONS & EFFECTS, LET CHOOSE AN ITEM
-*> Tectonics:  cobc -m GC21MENU.COB  (use GnuCOBOL 2.0 or greater)
+*> Tectonics:  cobc -m GC21MENU.COB  (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      call GC21MENU using Menu-Area
 *> Parameters: look at GC21MENU.CPY (use with copy Version: 1.0 2016.06.15)
-*> Author:     Eugenio Di Lorenzo - Italia (DILO)
-*> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2016.06.15
+*> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
+*> License:    Copyright 2020 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
+*> Version:    2.0 2020.04.04
 *> Changelog:  1.0 first release.
+*>             2.0 mouse management added (left click to activate a menu Item
+*>                                         double left-click to select a menu item
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
 SPECIAL-NAMES.
-    CRT STATUS IS wCRT-STATUS.
+    CRT STATUS IS wCRT-STATUS.    *> Return Code from Accept (ex.PF Keys, Mouse Keys)
+    CURSOR     IS wCursorRowCol.  *> Cursor Position
 
 DATA DIVISION.
 WORKING-STORAGE SECTION.
-copy 'GC01BOX.CPY'.
+copy       'GC01BOX.CPY'  suppress.
+copy 'GC97KEYCODEGC.CPY'  suppress.
 
 01  .
     03  w            pic 9(02) value 0.
     03  i            pic 9(02) value 1.
     03  j            pic 9(02) value 1.
+    03  k            pic 9(02) value 1.
     03  Item-Num     pic 9(02) value 0.  *> count how many menu items
     03  Item-Len     pic 9(02) value 0.
     03  Item-MaxLen  pic 9(02) value 0.
     03  wDummy       PIC X(01) VALUE SPACE.
-    03  wCRT-STATUS  PIC 9(04) VALUE 9999.
     03  wcol         PIC 9(03).
     03  bco          PIC 9(02).
     03  fco          PIC 9(02).
@@ -59,6 +65,31 @@ copy 'GC01BOX.CPY'.
 78  K-PAGEDOWN    VALUE 2002.
 78  K-ESCAPE      VALUE 2005.
 
+*>  mouse mask, apply to COB_MOUSE_FLAGS
+78  COB-AUTO-MOUSE-HANDLING          VALUE 1.
+78  COB-ALLOW-LEFT-DOWN              VALUE 2.
+78  COB-ALLOW-LEFT-UP                VALUE 4.
+78  COB-ALLOW-LEFT-DOUBLE            VALUE 8.
+78  COB-ALLOW-MIDDLE-DOWN            VALUE 16.
+78  COB-ALLOW-MIDDLE-UP              VALUE 32.
+78  COB-ALLOW-MIDDLE-DOUBLE          VALUE 64.
+78  COB-ALLOW-RIGHT-DOWN             VALUE 128.
+78  COB-ALLOW-RIGHT-UP               VALUE 256.
+78  COB-ALLOW-RIGHT-DOUBLE           VALUE 512.
+78  COB-ALLOW-MOUSE-MOVE             VALUE 1024.
+01  MOUSE-FLAGS         PIC 9(04).
+
+01  wCRT-STATUS         PIC 9(04) VALUE 9999.
+
+01  wCursorRowCol       PIC 9(06) value 0000.
+01  redefines wCursorRowCol .
+    05 wCursorRow       Pic 9(03).
+    05 wCursorCol       Pic 9(03).
+
+01 wMn-ItemLenTab    Value zero.
+  05 wMn-ItemLen     occurs 25 pic 9(03). *> menu item length (char number before X"00")
+  05 wMn-ItemCol-End occurs 25 pic 9(03). *> end column of the item
+
 LINKAGE SECTION.
 COPY 'GC21MENU.CPY'.
 
@@ -67,9 +98,7 @@ COPY 'GC21MENU.CPY'.
 *> ***********************************************************************************
 PROCEDURE DIVISION using Menu-Area.
 
-*> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
-set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
-set environment 'COB_SCREEN_ESC'        TO 'Y'.
+perform InitialSettings thru InitialSettingsEx
 
 move 1 to i.
 *> ***********************************************************************************
@@ -96,7 +125,7 @@ Main.
  perform DisplayItem thru DisplayItemEx
 
  add  1 to i
- go to Main.                                            *> go to display next menu item
+ go to Main.    *> go to display next menu item
 
 Main-ex.
  *> after displayed all items draw a box around menu items if requested
@@ -112,8 +141,7 @@ Main-ex.
  end-if
 
  perform hide-cursor thru hide-cursor-ex
-
- exit.
+ continue.
 
 *> ***********************************************************************************
 *> WAIT FOR USER INPUT
@@ -121,7 +149,8 @@ Main-ex.
 Accept-a-Key.
  *> accept of a 1 byte dummy field.
  *> With "Auto" will detect if cursor up/down/left/right pressed
- accept wDummy at 2580 with auto size 0 background-color red foreground-color white end-accept
+ accept wDummy at 2580 with auto size 0 background-color red :FCOL: white end-accept
+ compute wCursorCol = wCursorCol + 1   *> (wCol returned is from 000 to 079 !)
 
   *> <enter> or <escape> return to caller Mn-Selected
   *> if pressed cursor down or right -> activate next menu item
@@ -135,7 +164,7 @@ Accept-a-Key.
 
  EVALUATE TRUE
 
- when wCRT-STATUS = K-RIGHT and (Mn-Arrow = 'H' or ' ')    *> Key dx or down
+ when wCRT-STATUS = K-RIGHT and (Mn-Arrow = 'H' or ' ')  *> Cursor Key right or down
    or wCRT-STATUS = K-DOWN  and (Mn-Arrow = 'V' or ' ')
     move Mn-Selected to i
     move space       to Mn-Act(Mn-Selected)
@@ -159,13 +188,13 @@ Accept-a-Key.
     perform DisplayItem    thru DisplayItemEx
     perform DisplayMessage thru DisplayMessageEx
 
- when wCRT-STATUS = K-LEFT and (Mn-Arrow = 'H' or ' ')     *> key sx or up
+ when wCRT-STATUS = K-LEFT and (Mn-Arrow = 'H' or ' ')   *> cursor key left or up
    or wCRT-STATUS = K-UP   and (Mn-Arrow = 'V' or ' ')
     move Mn-Selected to i
-    move space       to Mn-Act(Mn-Selected)
+    move space    to Mn-Act(Mn-Selected)
     *> display as normal item
-    Move Mn-bcoN to bco
-    Move Mn-fcoN to fco
+    Move Mn-bcoN  to bco
+    Move Mn-fcoN  to fco
     Move Mn-fcoNH to fcoH
 
     perform DisplayItem thru DisplayItemEx
@@ -184,6 +213,40 @@ Accept-a-Key.
     perform DisplayItem    thru DisplayItemEx
     perform DisplayMessage thru DisplayMessageEx
 
+  when (wCRT-STATUS = K-LEFT-PRESSED or wCRT-STATUS = K-LEFT-DBL-CLICK)
+       perform varying k from 1 by 1 until k > Item-Num
+         if wCursorRow  = Mn-r(k)
+            if ( wCursorCol >= Mn-c(k) and  wCursorCol <= wMn-ItemCol-End(k) )
+
+              *> the mouse was clicked on a menu item
+              *> change display of active item to display as normal item
+              move Mn-Selected to i
+              move space       to Mn-Act(Mn-Selected)
+              Move Mn-bcoN  to bco
+              Move Mn-fcoN  to fco
+              Move Mn-fcoNH to fcoH
+              perform DisplayItem thru DisplayItemEx
+              *> change the clicked item to display from normal item to display as active item
+              move k to Mn-Selected i
+              move '1'   to Mn-Act(Mn-Selected)
+              Move Mn-bcoS  to bco
+              Move Mn-fcoS  to fco
+              Move Mn-fcoSH to fcoH
+              perform DisplayItem    thru DisplayItemEx
+              perform DisplayMessage thru DisplayMessageEx
+            end-if
+         end-if
+       end-perform
+
+       if wCRT-STATUS = K-LEFT-DBL-CLICK
+          CALL "C$SLEEP" USING 1 *> small delay to show the click effect
+          *> Windows systems will only be able to sleep at a millisecond granularity
+          *> call “CBL_GC_HOSTED” USING 250000000 end-call
+          move K-ENTER  to Mn-Key
+          go Exit-Program
+       end-if
+
+
  *> ex. in a drop down menu. Mn-Arrow = V and the user press Key left o Key Right
  *> this program return to caller. Caller program will move to the next drop down menu,
  *> it normally move to the next menu item
@@ -198,7 +261,6 @@ Accept-a-Key.
  END-EVALUATE
 
  perform hide-cursor thru hide-cursor-ex
-
  go to Accept-a-Key.
 
 Exit-Program.
@@ -212,8 +274,15 @@ EXIT PROGRAM.
 *> DISPLAY A MENU ITEM
 *> ***********************************************************************************
 DisplayItem.
- move 0 to j.
-DisplayItemLoop.   *> loop to display single characters of a menu item (last char is x'00'.)
+ move 0 to j
+ *> store the legth of a menu item , useful to detect if user has mouse clicked on it
+ move zero to wMn-ItemLen(i)
+ inspect Mn-Item(i) tallying wMn-ItemLen(i) FOR CHARACTERS before x"00"
+ compute wMn-ItemCol-End(i) =  Mn-c(i) +  wMn-ItemLen(i) - 1
+ continue.
+
+*> loop to display single characters of a menu item (last char is x'00'.)
+DisplayItemLoop.
  add 1 to j
  if Mn-Item(i) (j:1) = low-value go DisplayItemEx end-if
 
@@ -223,15 +292,12 @@ DisplayItemLoop.   *> loop to display single characters of a menu item (last cha
 
  compute wcol = mn-c(i) + j - 1 end-compute
  if j = Mn-Hot(i)
-    display Mn-Item(i) (j:1) at line mn-r(i) col wcol
-            with background-color  bco foreground-color Mn-fcoH highlight end-display
+    display Mn-Item(i) (j:1) at line mn-r(i) col wcol :BCOL:  bco :FCOL: Mn-fcoH highlight end-display
  else
     if fcoH = 'Y' and fco not = black  *> black is not highlighted (it becames grey !)
-       display Mn-Item(i) (j:1) at line mn-r(i) col wcol
-               with background-color bco foreground-color fco highlight end-display
+       display Mn-Item(i) (j:1) at line mn-r(i) col wcol :BCOL: bco :FCOL: fco highlight end-display
     else
-       display Mn-Item(i) (j:1) at line mn-r(i) col wcol
-              with background-color bco foreground-color fco end-display
+       display Mn-Item(i) (j:1) at line mn-r(i) col wcol :BCOL: bco :FCOL: fco end-display
     end-if
  end-if
  go to DisplayItemLoop.
@@ -243,7 +309,7 @@ DisplayItemEx. exit.
 DisplayMessage.
  *> clear row 25 from previous message (next menu item may have "no message" )
  if mn-mess(i) (1:1) = low-value
-      display ' ' at line 25 with background-color Mn-bcoN foreground-color Mn-fcoN end-display
+      display ' ' at line 25 :BCOL: Mn-bcoN :FCOL: Mn-fcoN end-display
     go to DisplayMessageEx end-if
 
  move 1 to w .
@@ -253,11 +319,9 @@ DisplayMessageLoop.
     go to DisplayMessageEx
  end-if
  if Mn-fcoMH = 'Y'
-    display Mn-Mess(i) (w:1) at line Mn-MessRow col w
-            with background-color Mn-bcoM foreground-color Mn-fcoM highlight end-display
+    display Mn-Mess(i) (w:1) at line Mn-MessRow col w :BCOL: Mn-bcoM :FCOL: Mn-fcoM highlight end-display
  else
-    display Mn-Mess(i) (w:1) at line Mn-MessRow col w
-            with background-color Mn-bcoM foreground-color Mn-fcoM end-display
+    display Mn-Mess(i) (w:1) at line Mn-MessRow col w :BCOL: Mn-bcoM :FCOL: Mn-fcoM end-display
  end-if
  add 1 to w
  go to DisplayMessageLoop.
@@ -268,5 +332,20 @@ hide-cursor.
     move 0 to wInt
     call static "curs_set" using by value wInt end-call.
 hide-cursor-ex. exit.
+
+InitialSettings.
+  *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
+  set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
+  set environment 'COB_SCREEN_ESC'        TO 'Y'.
+
+  *> make mouse active
+  COMPUTE MOUSE-FLAGS = COB-AUTO-MOUSE-HANDLING
+                      + COB-ALLOW-LEFT-DOWN   + COB-ALLOW-MIDDLE-DOWN   + COB-ALLOW-RIGHT-DOWN
+                      + COB-ALLOW-LEFT-UP     + COB-ALLOW-MIDDLE-UP     + COB-ALLOW-RIGHT-UP
+                      + COB-ALLOW-LEFT-DOUBLE + COB-ALLOW-MIDDLE-DOUBLE + COB-ALLOW-RIGHT-DOUBLE
+                      + COB-ALLOW-MOUSE-MOVE
+  SET environment     "COB_MOUSE_FLAGS"         to MOUSE-FLAGS
+  continue.
+InitialSettingsEx. exit.
 
 End Program GC21MENU.
