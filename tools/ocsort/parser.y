@@ -1,5 +1,5 @@
 %debug
-%error-verbose
+%define parse.error verbose
 %union {
 	int number;
 	char *string;
