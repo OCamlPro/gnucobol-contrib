@@ -43,6 +43,7 @@ WORKING-STORAGE SECTION.
 01 wVisibilityOld  BINARY-SHORT .
 
 COPY 'GC01BOX.CPY'.
+
 COPY 'GC98KEYCODE.CPY'.
 
 *> ***********************************************************************************
