@@ -7,7 +7,7 @@ PROGRAM-ID. GC01BOX is initial.
 *> Tectonics:  cobc -m GC01BOX.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC01BOX using BOX-AREA
 *> Parameters: look at GC01BOX.CPY  (use with copy Version: 1.0 2016.06.15)
-*> Author:     Eugenio Di Lorenzo - Italia (DILO)
+*> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
 *> Version:    1.0 2016.06.15
 *> Changelog:  1.0 first release.
@@ -96,9 +96,9 @@ if Box-3D = "N"
 
        *> intermediate rows
        when (i > box-r1 and i < box-r2) and j = box-c1 move L(4:1) to wChar          *> left vertical line
-       when (i > box-r1 and i < box-r2) and (j > box-c1 and j < box-c2)           *> box fill character
+       when (i > box-r1 and i < box-r2) and (j > box-c1 and j < box-c2)              *> box fill character
              if Box-fill = "Y" move L(5:1) to wChar  else exit perform cycle end-if
-       when (i > box-r1 and i < box-r2) and j = box-c2                            *> right vertical line
+       when (i > box-r1 and i < box-r2) and j = box-c2                               *> right vertical line
                  *> display a shadow a right of the box if requested
                  if box-shadow = "Y" compute k = j + 1 end-compute
                     display X"DB" at line i col k with background-color black foreground-color black end-display
