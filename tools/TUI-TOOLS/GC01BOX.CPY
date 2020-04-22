@@ -26,7 +26,7 @@
 *>           improve appaerance of 3D box. (not yet implemented)
 *> beep      Y= bell
 *> tit       Y= display a title
-*> titDes    string to be displayed as title
+*> titDes    string to be displayed as title, last char must be = x'00'
 *>                                       c1
 *>           Example               r1 ->  +----------- TTTTTTTTT -------------+
 *>           style = 1         displays:  |                                   |
