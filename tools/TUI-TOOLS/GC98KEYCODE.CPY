@@ -1,15 +1,16 @@
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
-*> Purpose:    workarea with KEY SCAN CODES FOR ASCI & NON ASCII charatcters.
-*> Usage:      in your program type CALL STATIC "GETCH" RETURNING Key-Pressed END-CALL
-*>             your program will wait for a user input, field - KeyPressed -
-*>             will contain the corresponding Scan Code of the key pressed by the user
+*> Purpose:    workarea with KEY SCANCODES FOR ASCI & NON ASCII charatcters.
+*> Usage:      use CALL STATIC "GETCH" RETURNING Key-Pressed END-CALL
+*>             your program will wait for a user input. Field - KeyPressed -
+*>             will contain the corresponding scancode of the key pressed by the user
 *> Author:     Eugenio Di Lorenzo (DILO) - Italia
-*> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, 3.0 (or greater)
-*> Version:    1.2 2017.07.21
+*> License:    Copyright 2016 E.Di Lorenzo - GNU LGPL 3.0 (or greater)
+*> Version:    1.3 2018.05.01
 *> Changelog:  1.0 first release.
 *>             1.1 keys CTRL-F1/3 added
 *>             1.2 keys alt-lc added, table fields added
+*>             1.3 alt/ctrl-home /end added
 *> ***********************************************************************************
 01 Key-Pressed            pic 9(3) value zero.
 01 Key-Code.
@@ -32,11 +33,15 @@
       05  Key-Insert      pic 9(3) value 082.
       05  Key-Canc        pic 9(3) value 083.
 
+      05  Key-Alt-Home         pic 9(3) value 151.
+      05  Key-Alt-End          pic 9(3) value 159.
       05  Key-Alt-CursUp       pic 9(3) value 152.
       05  Key-Alt-CursLeft     pic 9(3) value 155.
       05  Key-Alt-CursRight    pic 9(3) value 157.
       05  Key-Alt-CursDn       pic 9(3) value 160.
 
+      05  Key-Ctrl-Home        pic 9(3) value 119.
+      05  Key-Ctrl-End         pic 9(3) value 117.
       05  Key-Ctrl-CursUp      pic 9(3) value 141.
       05  Key-Ctrl-CursLeft    pic 9(3) value 115.
       05  Key-Ctrl-CursRight   pic 9(3) value 116.
