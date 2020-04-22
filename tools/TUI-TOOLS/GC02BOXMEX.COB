@@ -7,7 +7,7 @@ PROGRAM-ID. GC02BOXMEX is initial.
 *> Tectonics:  cobc -m GC02BOXMEX.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC02BOXMEX using BOXMEX-AREA
 *> Parameters: look at GC02BOXMEX.CPY (use with copy Version: 1.1)
-*> Author:     Eugenio Di Lorenzo - Italia (DILO)
+*> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
 *> Version:    1.3 2018.06.30
 *> Changelog:  1.0 first release.
@@ -131,7 +131,7 @@ WORKING-STORAGE SECTION.
      03 Bu-Key            pic 9(04).
 
 copy 'GC01BOX.CPY'.
-COPY 'GC98KEYCODE.CPY'.
+copy 'GC98KEYCODE.CPY'.
 
 LINKAGE SECTION.
 copy 'GC02BOXMEX.CPY'.
@@ -140,31 +140,33 @@ copy 'GC02BOXMEX.CPY'.
 *>           P R O C E D U R E   D I V I S I O N
 *> ***********************************************************************************
 PROCEDURE DIVISION using Boxmex-Area.
-*> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
-set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
-set environment 'COB_SCREEN_ESC'        TO 'Y'.
+  *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
+  set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
+  set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
-if Bxm-savescr = 'Y' perform ScreenSave thru ScreenSaveEx end-if.
+  if Bxm-savescr = 'Y' perform ScreenSave thru ScreenSaveEx end-if
 
+  perform HideCursor thru HideCursorEx
+  continue.
 LoopMain.
     *> Display the BOX around the message
     initialize Box-area ALL TO VALUE
-    move Bxm-rc     to Box-rc.
-    move Bxm-bco    to Box-bco Bu-bcoShadow
-    move Bxm-fco    to Box-fco
-    move Bxm-fcoH   to Box-fcoH
-    move Bxm-style  to Box-Style
-    move Bxm-custom to Box-custom
-    move 'Y'        to Box-fill
-    move Bxm-shadow to Box-Shadow
-    move Bxm-3D     to Box-3D
-    move Bxm-add1c  to Box-add1c
-    move Bxm-tit    to Box-tit
-    move Bxm-titBco to Box-titBco
-    move Bxm-titFco to Box-titFco
+    move Bxm-rc      to Box-rc.
+    move Bxm-bco     to Box-bco Bu-bcoShadow
+    move Bxm-fco     to Box-fco
+    move Bxm-fcoH    to Box-fcoH
+    move Bxm-style   to Box-Style
+    move Bxm-custom  to Box-custom
+    move 'Y'         to Box-fill
+    move Bxm-shadow  to Box-Shadow
+    move Bxm-3D      to Box-3D
+    move Bxm-add1c   to Box-add1c
+    move Bxm-tit     to Box-tit
+    move Bxm-titBco  to Box-titBco
+    move Bxm-titFco  to Box-titFco
     move Bxm-titFcoH to Box-titFcoH
     move Bxm-titDes  to Box-titDes
-    call GC01BOX using BOX-AREA.
+    call GC01BOX using BOX-AREA end-call
 
     *> ***********************************************************************************
     *> LOOP TO DISPLAY MESSAGE ROWS
@@ -185,30 +187,29 @@ LoopMain.
                            with background-color Bxm-bcoM foreground-color Bxm-fcoM end-display
                 end-if
           end-perform
-    end-perform.
+    end-perform
+    continue.
 
 DisplayMessageEx.
-
-
-*> ***********************************************************************************
-*> IF REQUESTED DISPLAY AN OK BUTTON AT -2 ROWS from LOWER BOX border
-*> ***********************************************************************************
-if Bxm-OkButton  = 'Y'
-   initialize Buttons-area ALL TO VALUE
-   move low-value to Bu-tab
-   move 1 to i
-   move i       to Bu-Selected
-   Move Bu-bcoS to bco
-   move Bu-fcoS to fco
-   *> (back of the button has to be the same than the back of the box)
-   move Bxm-bco to Bu-bcoShadow
-   move '0'    to Bu-Arrow
-   move '14000000   OK   ' & x'00' to Bu-Ele(01)
-   compute Bu-r(1)  = Bxm-r2 - 2
-   compute Bu-c(1)  = Bxm-c1 + ((Bxm-c2 - Bxm-c1) / 2 ) - 4
-   perform Display-Button thru Display-ButtonEx
-end-if.
-
+  *> ***********************************************************************************
+  *> IF REQUESTED DISPLAY AN OK BUTTON AT -2 ROWS from LOWER BOX border
+  *> ***********************************************************************************
+  if Bxm-OkButton  = 'Y'
+     initialize Buttons-area ALL TO VALUE
+     move low-value to Bu-tab
+     move 1         to i
+     move i         to Bu-Selected
+     Move Bu-bcoS   to bco
+     move Bu-fcoS   to fco
+     *> (back of the button has to be the same than the back of the box)
+     move Bxm-bco   to Bu-bcoShadow
+     move '0'       to Bu-Arrow
+     move '14000000    Ok   ' & x'00' to Bu-Ele(01)
+     compute Bu-r(1)  = Bxm-r2 - 2
+     compute Bu-c(1)  = Bxm-c1 + ((Bxm-c2 - Bxm-c1) / 2 ) - 4
+     perform Display-Button thru Display-ButtonEx
+  end-if
+  continue.
 
 LoopUserInput.
     if Bxm-wait = 'Y'
@@ -250,14 +251,13 @@ LoopUserInput.
     end-if
 
    *> test if the user has pressed Enter or Escape
-   IF Key-Pressed = Key-Enter or Key-Pressed = Key-Escape
+   if Key-Pressed = Key-Enter or Key-Pressed = Key-Escape
       if Bxm-click   = 'Y' perform Click         thru Click-Ex        end-if
       if Bxm-savescr = 'Y' perform ScreenRestore thru ScreenRestoreEx end-if
       go to EndProgram
    end-if
 
    go to LoopUserInput.
-
 
 *> ***********************************************************************************
 EndProgram.
@@ -274,7 +274,7 @@ Display-Button.
 *> following statements have been copied from GC09BUTTONS.COB (call to GC09BUTTONS has been deleted)
 *> this program can diasaplay a single button and controls if have to wait for a user key or not.
    if Bu-Arrow = '1' or '2'
-      perform varying j from 1 by 1 until Bu-Item(i) (j:1) = x'00' end-perform
+      perform varying j from 1 by 1 until Bu-Item(i) (j:1) = x'00' continue end-perform
    end-if
 
    Evaluate True
@@ -296,7 +296,8 @@ Display-Button.
           end-if
    end-evaluate
 
-   move 0 to j.
+   move 0 to j
+   continue.
 loop1.
    *> loop to display single chars of a BUTTON
    add 1 to j
@@ -322,7 +323,8 @@ loop1.
 
    go to loop1.
 loop1-ex.
-   if bu-Shadow = 'Y' perform Shadow-Button thru Shadow-Button-ex end-if.
+   if bu-Shadow = 'Y' perform Shadow-Button thru Shadow-Button-ex end-if
+   continue.
 Display-ButtonEx. exit.
 
 
@@ -379,7 +381,8 @@ Click.
    *> delete shadow under the button
    compute wR = Bu-r(i) + 1
    compute wC = Bu-c(i) - 1
-   move 1 to wLoop.
+   move 1 to wLoop
+   continue.
 Click1.
     display ' ' at line wR col wC
         with background-color Bu-bcoShadow foreground-color black end-display
@@ -393,12 +396,21 @@ Click-Ex. exit.
 ScreenSave.
    accept wTime from time
    string 'GC02BOXMEX' wTime '.TMP' x'00' into wScreenName
-   call static 'scr_dump' using by reference wScreenName returning wiScrOk end-call.
+   call static 'scr_dump' using by reference wScreenName returning wiScrOk end-call
+   continue.
 ScreenSaveEx. Exit.
 
 ScreenRestore.
    call static 'scr_restore' using by reference wScreenName returning wiScrOk end-call.
-   CALL 'CBL_DELETE_FILE' USING wScreenName.
+   CALL 'CBL_DELETE_FILE' USING wScreenName
+   continue.
 ScreenRestoreEx. Exit.
+
+HideCursor.
+    *> hide the cursor
+    move 0 to wInt
+    call static "curs_set" using by value wInt end-call
+    continue.
+HideCursorEx. exit.
 
 End Program GC02BOXMEX.
