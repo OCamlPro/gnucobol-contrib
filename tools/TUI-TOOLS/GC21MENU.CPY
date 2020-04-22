@@ -5,13 +5,15 @@
 *> Purpose:    WORK-AREA FOR GC21MENU.COB FUNCTION TO MANAGE A MENU ON SCREEN
 *> Usage:      call GC21MENU using Menu-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
-*> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
-*> Version:    1.0 2016.06.15
+*> License:    Copyright 2020 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
+*> Version:    1.1 2020.04.18
 *> Changelog:  1.0 first release.
+*>             1.1 Mn-Hot from 9(01) to 9(02)
 *> ***********************************************************************************
 *> You can manage menus with max 24 items.
 *> Each item has tobe inserted in a table with 25 elements, last char has tobe = low-value
 *> there has to be a last menu item filled with low-values
+*>
 *> Each item has following fields:
 *> FIELD     DESCRIPTION
 *> --------- ----------------------------------------------------
@@ -19,8 +21,10 @@
 *>           only one of items can have '1' . it will be displayed as active
 *>           at first display of the menu. when you exit from the menu
 *>           the active item will have '1' other items will have blank.
-*> Mn-Hot    NOY YET IMPLEMENTED . number of char to be used as hot key (Alt-Key) .
-*>           ex. if item is "Exit" and this field is 2, the typing ALT-X is like select the item
+*> Mn-Hot    char number in a menu item string of char to be used as "hot key" .
+*>           ex. if menu item is " Exit " and Mn-Hot= 02, typing e or E make item "active"
+*>           Hot key is case insensistive (if hotkey is "A" you can type "a" )
+*>           only letters (lower or uppercase) or digits, no other chars(no +, ?, ! etc.)
 *> Mn-r      row & col where the item starts on screen
 *> Mn-c      first row & col are 01, 01, last are 25,80 (row 25 col 80)
 *>           menu items can be displayed in every position, horizontal (bar menu), vertical, sparse.
@@ -31,7 +35,7 @@
 *> Mn-Mess   character string max 80 chars) thats system displays at row 25 on screen.
 *>           it is a message associated at each menu item
 *>           It has to be in ASCIIZ (must have x'00'(low-value) as last byte
-*>           It is not mandatory but if present it has tobe 80 chars
+*>           It is not mandatory but if present it has tobe max 80 chars
 *> Mn-Box    Y= draw a box around the list of items. DEFAULT: no box
 *> Mn-Style  char string to be used as frame of the box.
 *> Mn-Shadow Y = draw a shadow low & right of the box. DEFAULT: no shadow
@@ -56,7 +60,7 @@
      03 Mn-Tab  value low-value.
         04 Mn-Ele occurs 25.             *> last item has tobe low-value (x'00)')
            05 Mn-Act      pic x(01).     *> 1 = item is "active"
-           05 Mn-Hot      pic 9(01).     *> num of character used as hotkey
+           05 Mn-Hot      pic 9(02).     *> num of character used as hotkey
            05 Mn-r        pic 9(03).     *> row
            05 Mn-c        pic 9(03).     *> col
            05 Mn-Item     pic x(81).     *> menu item text, last char hast tobe = x'00'
