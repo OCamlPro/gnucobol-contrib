@@ -31,6 +31,7 @@ import de.japi.components.Japi2RadioGroup;
 import de.japi.components.Japi2ScrollPane;
 import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
+import de.japi.components.Japi2FormattedTextField;
 import de.japi.components.Japi2Window;
 import de.japi.components.listeners.Japi2FocusListener;
 import de.japi.components.listeners.Japi2KeyListener;
@@ -83,17 +84,15 @@ import javax.swing.text.JTextComponent;
  * This class provides seven methods to read parameters from the client during
  * the JAPI2 service execution from the socket's input stream. Those methods 
  * are (see the individual method documentation for further information):
+ * </p>
  * <ul>
  * <li>{@link #read()}</li>
  * <li>{@link #read(byte[], int)}</li>
  * <li>{@link #readString(int)}</li>
  * <li>{@link #readInt()}</li>
- * <li>{@link #readInts(int)}</li>
  * <li>{@link #readLine()}</li>
- * <li>{@link #canRead()}</li> 
  * </ul>
- * </p>
- * 
+ *  
  * <p>
  * This class also provides three methods to write return values of a JAPI2
  * service execution back to the client. Since the JAPI2 kernel creates two
@@ -102,6 +101,7 @@ import javax.swing.text.JTextComponent;
  * Due to the fact that the command stream is used more extensively, this class
  * provides aliases for all write methods which will be directly write to
  * the command stream. All supported methods are:
+ * </p>
  * <ul>
  * <li>{@link #writeBytes(byte[], de.japi.Japi2Session.TargetStream)} and
  * {@link #writeBytes(byte[])}</li>
@@ -110,8 +110,7 @@ import javax.swing.text.JTextComponent;
  * <li>{@link #writeString(java.lang.String, de.japi.Japi2Session.TargetStream)}
  * and {@link #writeString(java.lang.String)}</li>
  * </ul>
- * </p>
- * 
+ *  
  * <p>
  * Beside the methods for reading and writing to the client this class provides
  * also methods for the management of the GUI objects assigned to this 
@@ -1228,6 +1227,8 @@ public class Japi2Session implements Runnable {
                                     CommandCalls.setColumns(this, (Japi2TextArea) obj);
                             else if (obj instanceof Japi2TextField) 
                                     CommandCalls.setColumns(this, (Japi2TextField) obj);
+                            else if (obj instanceof Japi2FormattedTextField) 
+                                    CommandCalls.setColumns(this, (Japi2FormattedTextField) obj);
                             else if (obj instanceof GridLayout)
                                     CommandCalls.setColumns(this, (GridLayout) obj);
                             else 
@@ -1593,6 +1594,8 @@ public class Japi2Session implements Runnable {
                                     QuestionCalls.getColumns(this, (Japi2TextArea) obj);
                             else if (obj instanceof Japi2TextField)
                                     QuestionCalls.getColumns(this, (Japi2TextField) obj);
+                            else if (obj instanceof Japi2FormattedTextField)
+                                    QuestionCalls.getColumns(this, (Japi2FormattedTextField) obj);
                             else if (obj instanceof GridLayout)
                                     QuestionCalls.getColumns(this, (GridLayout) obj);
                             else 
@@ -1734,6 +1737,12 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_TEXTFIELD: 
                             if (obj instanceof Container) 
                                     ConstructionCalls.createTextField(this, (Container) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                    case Japi2Calls.JAPI_FORMATTEDTEXTFIELD: 
+                            if (obj instanceof Container) 
+                                    ConstructionCalls.createFormattedTextField(this, (Container) obj);
                             else 
                                     throw new NotHandledException();
                             break;
@@ -2028,11 +2037,11 @@ public class Japi2Session implements Runnable {
      * <p>
      * By defioniton of the JAPI documentation, this method should be called
      * to log messages of the following type:
+     * </p>
      * <pre>
      * Rueckmeldung der konstruktiven Funktionen. Nur das Erzeugen der 
      * graphischen Objekte wird protokolliert. 
      * </pre>
-     * </p>
      * 
      * @param msg the message to log. This message is send through the formatter
      * of {@link MessageFormat}. That means, placeholders of the type 
@@ -2063,12 +2072,12 @@ public class Japi2Session implements Runnable {
      * <p>
      * By defioniton of the JAPI documentation, this method should be called
      * to log messages of the following type:
+     * </p>
      * <pre>
      * Wie 1, zusaetzliche Ausgabe aller Aktionen, die vom Benutzer ausgefuehrt 
      * werden. 
      * </pre>
-     * </p>
-     * 
+     *  
      * @param msg the message to log. This message is send through the formatter
      * of {@link MessageFormat}. That means, placeholders of the type 
      * <code>'{' [0-9] '}</code> can be used to insert an argument from the
@@ -2098,12 +2107,12 @@ public class Japi2Session implements Runnable {
      * <p>
      * By defioniton of the JAPI documentation, this method should be called
      * to log messages of the following type:
+     * </p>
      * <pre>
      * Wie 2, zusaetzlich werden alle weiteren Funktionen (ausser den 
      * graphischen Befehlen) protokoliert.
      * </pre>
-     * </p>
-     * 
+     *  
      * @param msg the message to log. This message is send through the formatter
      * of {@link MessageFormat}. That means, placeholders of the type 
      * <code>'{' [0-9] '}</code> can be used to insert an argument from the
@@ -2133,11 +2142,11 @@ public class Japi2Session implements Runnable {
      * <p>
      * By defioniton of the JAPI documentation, this method should be called
      * to log messages of the following type:
+     * </p>
      * <pre>
      * Wie 3, zusaetzlich mit allen graphischen Befehlen. 
      * </pre>
-     * </p>
-     * 
+     *  
      * @param msg the message to log. This message is send through the formatter
      * of {@link MessageFormat}. That means, placeholders of the type 
      * <code>'{' [0-9] '}</code> can be used to insert an argument from the
@@ -2260,7 +2269,7 @@ public class Japi2Session implements Runnable {
     /**
      * Reads the next {@link Integer} from the input stream. An integer number
      * consists of four bytes of data. The endian scheme for decoding is defined
-     * by {@link Japi2Session#toInt(byte[])}. This method is a blocking call, 
+     * by Japi2Session#toInt(byte[]). This method is a blocking call, 
      * i.e. once the stream has only three bytes left, this method call will
      * only return if the fourth byte is available.
      * 
@@ -2351,7 +2360,7 @@ public class Japi2Session implements Runnable {
     /**
      * Writes an {@link Integer}, consisting of four bytes, onto the given
      * socket stream (<code>target</code>). The endian encoding of the integer
-     * is defined by the method {@link #toByte(int)}.
+     * is defined by the method toByte(int).
      * 
      * @param a the {@link Integer} to write.
      * @param target the target stream to write to.

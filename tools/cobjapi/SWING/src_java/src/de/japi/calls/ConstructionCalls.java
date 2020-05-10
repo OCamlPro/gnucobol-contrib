@@ -32,6 +32,7 @@ import de.japi.components.Japi2SevenSegment;
 import de.japi.components.Japi2Slider;
 import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
+import de.japi.components.Japi2FormattedTextField;
 import de.japi.components.listeners.Japi2ActionListener;
 import de.japi.components.listeners.Japi2AdjustmentListener;
 import de.japi.components.listeners.Japi2ComponentListener;
@@ -127,6 +128,35 @@ public class ConstructionCalls {
             oid
         );
         textField.addActionListener(al);
+        
+        // send result
+        session.writeInt(oid);
+    }
+
+    /**
+     * This method creates a FormattedTextfield and adds an Japi2Actionlistener to it.
+     */
+    public static void createFormattedTextField (Japi2Session session, Container cont) throws IOException {
+        int col = session.readInt();
+        String maskStr = session.readLine();
+        String placeHldr = session.readLine();        
+        session.log1("FormattedTextField col {0} mask {1} placeHldr {2} in parent object {3}", col, maskStr, placeHldr, cont);
+        
+        if (placeHldr.isEmpty()) {
+           placeHldr = " ";
+        }
+        
+        // create GUI-obj
+        Japi2FormattedTextField formattedTextField = new Japi2FormattedTextField(maskStr, placeHldr.charAt(0), col);
+        int oid = session.addObject(formattedTextField);
+        cont.add(formattedTextField);
+        
+        // add ActionListener
+        Japi2ActionListener al = new Japi2ActionListener(
+            session,
+            oid
+        );
+        formattedTextField.addActionListener(al);
         
         // send result
         session.writeInt(oid);

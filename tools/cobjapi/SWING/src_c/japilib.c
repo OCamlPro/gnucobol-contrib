@@ -50,6 +50,10 @@
 *>------------------------------------------------------------------------------
 *> 2018.03.10 Laszlo Erdos: 
 *>            - Small change for JAPI 2.0.
+*>------------------------------------------------------------------------------
+*> 2020.05.10 Laszlo Erdos: 
+*>            - send_3int_2string, send_3int_2string_get_int and 
+*>              japi_formattedtextfield added.
 *>******************************************************************************
 */
 
@@ -794,6 +798,14 @@ static void send_3int_string(int c, int o, int v, char* s)
 	send_buf();
 }
 
+static void send_3int_2string(int c, int o, int v, char* s1, char* s2)
+{
+	add_3int(c,o,v);
+	add_string(s1);
+	add_string(s2);
+	send_buf();
+}
+
 static void send_4int_string(int c, int o, int v1, int v2, char* s)
 {
 	add_4int(c,o,v1,v2);
@@ -819,7 +831,6 @@ static void send_8int(int c, int o, int v1, int v2, int v3, int v4, int v5, int 
 	add_4int(c,o,v1,v2);
 	send_4int(v3,v4,v5,v6);
 }
-
 
 static int send_2int_get_int(int c, int o)
 {
@@ -848,6 +859,12 @@ static int send_3int_get_int(int c, int o, int v)
 static int send_2int_string_get_int(int c, int o, char* s)
 {
 	send_2int_string(c,o,s);
+	return(get_int(commandstream));
+}
+
+static int send_3int_2string_get_int(int c, int o, int v, char* s1, char* s2)
+{
+	send_3int_2string(c,o,v,s1,s2);
 	return(get_int(commandstream));
 }
 
@@ -1076,6 +1093,9 @@ void japi_additem(int parent, string title)
 
 int japi_textfield(int parent, int col)
 {	return(send_3int_get_int(JAPI_TEXTFIELD,parent,col)); }
+
+int japi_formattedtextfield(int parent, string maskstr, string placehldr, int col)
+{	return(send_3int_2string_get_int(JAPI_FORMATTEDTEXTFIELD,parent,col,maskstr,placehldr)); }
 
 int japi_textarea(int parent, int col, int row)
 {	return(send_4int_get_int(JAPI_TEXTAREA,parent,row,col)); }

@@ -25,8 +25,8 @@ public class Japi2Label extends JLabel {
      /**
      * Sets the size to the given w and h values or to zero if they are smaler
      * than zero.
-     * @param w
-     * @param h 
+     * @param dw
+     * @param dh 
      */
     @Override
     public void setSize(int dw, int dh) {

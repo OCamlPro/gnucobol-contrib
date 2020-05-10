@@ -41,6 +41,9 @@
 *>------------------------------------------------------------------------------
 *> 2018.03.10 Laszlo Erdos: 
 *>            - Small change for JAPI 2.0.
+*>------------------------------------------------------------------------------
+*> 2020.05.10 Laszlo Erdos: 
+*>            - JAPI_FORMATTEDTEXTFIELD and japi_formattedtextfield added.
 *>******************************************************************************
 */
 
@@ -245,6 +248,7 @@
   #define JAPI_SEVENSEGMENT                       4134
   #define JAPI_METER                              4135
   #define JAPI_SPLITPANE                          4136
+  #define JAPI_FORMATTEDTEXTFIELD                 4137
 
 
 
@@ -310,6 +314,7 @@
   extern  int   japi_meter ( int , char*  );
   extern  void  japi_additem ( int , char*  );
   extern  int   japi_textfield ( int , int  );
+  extern  int   japi_formattedtextfield ( int ,  char* , char* , int  );
   extern  int   japi_textarea ( int , int , int  );
   extern  int   japi_menubar ( int  );
   extern  int   japi_menu ( int , char*  );

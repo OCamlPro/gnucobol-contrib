@@ -41,6 +41,9 @@
 *>------------------------------------------------------------------------------
 *> 2018.03.10 Laszlo Erdos: 
 *>            - Small change for JAPI 2.0.
+*>------------------------------------------------------------------------------
+*> 2020.05.10 Laszlo Erdos: 
+*>            - J-FORMATTEDTEXTFIELD added.
 *>******************************************************************************
 
  FUNCTION J-START
@@ -84,6 +87,7 @@
  FUNCTION J-METER
  FUNCTION J-ADDITEM
  FUNCTION J-TEXTFIELD
+ FUNCTION J-FORMATTEDTEXTFIELD
  FUNCTION J-TEXTAREA
  FUNCTION J-MENUBAR
  FUNCTION J-MENU

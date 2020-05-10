@@ -22,6 +22,7 @@ import de.japi.components.Japi2RadioGroup;
 import de.japi.components.Japi2ScrollPane;
 import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
+import de.japi.components.Japi2FormattedTextField;
 import de.japi.components.listeners.Japi2FocusListener;
 import de.japi.components.listeners.Japi2KeyListener;
 import de.japi.components.listeners.Japi2MouseListener;
@@ -468,7 +469,7 @@ public class QuestionCalls {
     } 
     
     /*
-     * These methods return the rows of a Japi2TextArea, Japi2TextField, or GridLayout.
+     * These methods return the rows of a Japi2TextArea, Japi2TextField, Japi2FormattedTextField or GridLayout.
      */
     
     public static void getRows(Japi2Session session, Japi2TextArea textArea) throws IOException {
@@ -487,7 +488,7 @@ public class QuestionCalls {
     }
     
     /*
-     * These methods return the columns of a Japi2TextArea, Japi2TextField, or GridLayout.
+     * These methods return the columns of a Japi2TextArea, Japi2TextField, Japi2FormattedTextField or GridLayout.
      */
     
     public static void getColumns(Japi2Session session, Japi2TextArea textArea) throws IOException {
@@ -498,6 +499,11 @@ public class QuestionCalls {
     public static void getColumns(Japi2Session session, Japi2TextField textField) throws IOException {
         session.log2("Get Columns.");
         session.writeInt(textField.getColumns());
+    }
+    
+    public static void getColumns(Japi2Session session, Japi2FormattedTextField formattedTextField) throws IOException {
+        session.log2("Get Columns.");
+        session.writeInt(formattedTextField.getColumns());
     }
     
     public static void getColumns(Japi2Session session, GridLayout layout) throws IOException {
@@ -590,11 +596,11 @@ public class QuestionCalls {
     /*
      * This method passes the text of a {@link JTextComponent} object to the
      * {@link writeTextHelper} method. It was designed with the classes
-     * {@link Japi2TextArea} and {@link Japi2TextField} in mind.
+     * {@link Japi2TextArea}, {@link Japi2TextField} {@link Japi2FormattedTextField} in mind.
      */
     public static void getText(Japi2Session session, JTextComponent t) throws IOException {
         session.log2("Get text of JTextComponent {0}", t);
-        // t is of class Japi2TextArea or Japi2TextField
+        // t is of class Japi2TextArea, Japi2TextField or Japi2FormattedTextField
         String content = t.getText();
         writeTextHelper(session,content);
     }
@@ -681,8 +687,8 @@ public class QuestionCalls {
     
     /*
      * Writes the length of the text of a {@link JTextComponent} object into the
-     * session. This method was designed with the classes {@link Japi2TextArea}
-     * and {@link Japi2TextField} in mind.
+     * session. This method was designed with the classes {@link Japi2TextArea},
+     * {@link Japi2TextField} and {@link Japi2FormattedTextField} in mind.
      */
     public static void getLength(Japi2Session session, JTextComponent t) throws IOException {
         session.log2("Get length");
@@ -736,8 +742,8 @@ public class QuestionCalls {
     
     /*
      * Writes the selection start of a {@link JTextComponent} object into the
-     * session. This method was designed with the classes {@link Japi2TextArea}
-     * and {@link Japi2TextField} in mind.
+     * session. This method was designed with the classes {@link Japi2TextArea},
+     * {@link Japi2TextField} and {@link Japi2FormattedTextField} in mind.
      */
     public static void getSelectionStart(Japi2Session session, JTextComponent t) throws IOException {
         session.log2("Get selection start of object {0}", t);
@@ -746,8 +752,8 @@ public class QuestionCalls {
     
     /*
      * Writes the selection end of a {@link JTextComponent} object into the
-     * session. This method was designed with the classes {@link Japi2TextArea}
-     * and {@link Japi2TextField} in mind. 
+     * session. This method was designed with the classes {@link Japi2TextArea},
+     * {@link Japi2TextField} and {@link Japi2FormattedTextField} in mind. 
      */
     public static void getSelectionEnd(Japi2Session session, JTextComponent t) throws IOException {
         session.log2("Get selection end of object {0}", t);

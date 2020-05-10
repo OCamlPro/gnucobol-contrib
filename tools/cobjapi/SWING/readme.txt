@@ -297,6 +297,9 @@ Program history, changes and bug fixes are listed in program headers.
 *****************************************************************************
 Date       Name / Change description
 ========== ==================================================================
+2020.05.10 Laszlo Erdos:
+           - New component Japi2FormattedTextField added.
+-----------------------------------------------------------------------------
 2018.03.13 Laszlo Erdos:
            - GnuCOBOL support for JAPI 2 added.
 -----------------------------------------------------------------------------

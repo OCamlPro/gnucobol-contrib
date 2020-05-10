@@ -82,6 +82,7 @@ cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" flowlayout.cob      
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" flowsimple.cob        %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" focuslistener.cob     %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" font.cob              %* %COBCOBJ% %COBCLIB% 
+cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" formattedtextfield.cob %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" frame.cob             %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" graphic.cob           %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" graphicbutton.cob     %* %COBCOBJ% %COBCLIB% 

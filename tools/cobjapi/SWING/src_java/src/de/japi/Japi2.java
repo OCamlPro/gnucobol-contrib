@@ -23,12 +23,13 @@ import javax.swing.UIManager;
  * requests of the JAPI2 kernel. This class is the JVM entrance point.
  * 
  * <p>The main use cases which are handled by this class are:
+ * </p>
  * <ul>
  * <li>setting up a {@link ServerSocket} to accept new connections</li>
  * <li>accepting new connections to the JAPI2 kernel and forward them to a
  * dedicated {@link Japi2Session} which is responsponsible for incomming 
  * requests from this connection</li>
- * <li>running all {@link Japi2Session}s in a {@link ThreadPool} to save
+ * <li>running all {@link Japi2Session}s in a ThreadPool to save
  * performance and bound the number of parallel working threads</li>
  * <li>supports rudimentary logging features through the method 
  * {@link #debug(java.lang.String, java.lang.Object...)}</li>
@@ -39,7 +40,7 @@ import javax.swing.UIManager;
  * <li>provides a storage for messages keys used to display user messages 
  * with in the right language. See {@link #getString(java.lang.String)}</li>
  * </ul>
- * </p>
+ * 
  */
 public class Japi2 {
 
@@ -489,7 +490,7 @@ public class Japi2 {
      * <pre>
      *  [0 - 65535]     Number of port on which the JAPI2 kernel listens for
      *                  clients. If an invalid number is given or the argument
-     *                  is missing, the value {@link Japi2Constants#JAPI_PORT}
+     *                  is missing, the value {@link Japi2Calls#JAPI_PORT}
      *                  is used instead.
      * 
      *  -d              Exteneded debug mode is enabled. Beside the optinal

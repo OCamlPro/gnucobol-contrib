@@ -41,6 +41,9 @@
 *>------------------------------------------------------------------------------
 *> 2018.03.10 Laszlo Erdos: 
 *>            - Small change for JAPI 2.0.
+*>------------------------------------------------------------------------------
+*> 2020.05.10 Laszlo Erdos: 
+*>            - J-FORMATTEDTEXTFIELD added.
 *>******************************************************************************
  
 *>------------------------------------------------------------------------------
@@ -1780,6 +1783,53 @@
  MAIN-J-TEXTFIELD-EX.
     EXIT.
  END FUNCTION J-TEXTFIELD.
+
+
+*>------------------------------------------------------------------------------
+*> int  j_formattedtextfield( int arg0, char* arg1, char* arg2, int arg3)
+*> { return( japi_formattedtextfield(arg0, arg1, arg2, arg3));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-FORMATTEDTEXTFIELD.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-1                          PIC X ANY LENGTH.
+ 01 LNK-ARG-2                          PIC X ANY LENGTH.
+ 01 LNK-ARG-3                          BINARY-INT.
+ 01 LNK-RET                            BINARY-INT.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY REFERENCE LNK-ARG-1
+                          BY REFERENCE LNK-ARG-2
+                          BY VALUE     LNK-ARG-3
+                    RETURNING          LNK-RET.
+
+ MAIN-J-FORMATTEDTEXTFIELD SECTION.
+
+    CALL STATIC "japi_formattedtextfield" 
+         USING BY VALUE LNK-ARG-0
+               BY CONTENT CONCATENATE(TRIM(LNK-ARG-1), X"00")
+               BY CONTENT CONCATENATE(TRIM(LNK-ARG-2), X"00")
+               BY VALUE LNK-ARG-3
+         RETURNING LNK-RET 
+    END-CALL 
+ 
+    GOBACK
+
+    .
+ MAIN-J-FORMATTEDTEXTFIELD-EX.
+    EXIT.
+ END FUNCTION J-FORMATTEDTEXTFIELD.
 
  
 *>------------------------------------------------------------------------------

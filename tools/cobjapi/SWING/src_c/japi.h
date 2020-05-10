@@ -41,6 +41,9 @@
 *>------------------------------------------------------------------------------
 *> 2018.03.10 Laszlo Erdos: 
 *>            - Small change for JAPI 2.0.
+*>------------------------------------------------------------------------------
+*> 2020.05.10 Laszlo Erdos: 
+*>            - j_formattedtextfield added.
 *>******************************************************************************
 */
 
@@ -239,6 +242,7 @@
     extern  int   j_meter ( int , char*  );
     extern  void  j_additem ( int , char*  );
     extern  int   j_textfield ( int , int  );
+    extern  int   j_formattedtextfield ( int , char* , char* , int  );
     extern  int   j_textarea ( int , int , int  );
     extern  int   j_menubar ( int  );
     extern  int   j_menu ( int , char*  );

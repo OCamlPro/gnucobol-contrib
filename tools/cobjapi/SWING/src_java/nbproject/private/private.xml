@@ -5,12 +5,18 @@
             <url>src/de/japi/Japi2Session.java</url>
             <bookmark id="1">
                 <name/>
-                <line>2426</line>
+                <line>2435</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/components/Japi2FormattedTextField.java</file>
+            <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/Japi2Session.java</file>
+            <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/calls/ConstructionCalls.java</file>
+            <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/calls/CommandCalls.java</file>
+            <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/calls/QuestionCalls.java</file>
+        </group>
     </open-files>
 </project-private>

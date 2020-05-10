@@ -23,11 +23,14 @@ import java.util.List;
  * <p>
  * Beside terminating specific sessions, the user can also perform some other
  * useful tasks:
+ * </p>
  * <ul>
  * <li>allow or disallow remote connections to the JAPI2 kernel instance</li>
  * <li>quit the JAPI2 kernel gracefully (not supported in previous releases)</li>
  * <li>view about information and the version</li>
  * </ul>
+ *  
+ * <p>
  * This class performs also the icon (e.g. dock icon) and command integration 
  * (quit and about on the Apple-Menu (top left)) on MacOS systems.
  * </p>

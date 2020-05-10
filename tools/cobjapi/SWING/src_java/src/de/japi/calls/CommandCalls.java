@@ -25,6 +25,7 @@ import de.japi.components.Japi2PrintJob;
 import de.japi.components.Japi2RadioButton;
 import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
+import de.japi.components.Japi2FormattedTextField;
 import de.japi.components.Japi2Window;
 import de.japi.components.layout.Japi2FixLayout;
 import de.japi.components.layout.Japi2GridLayout;
@@ -148,7 +149,7 @@ public class CommandCalls {
         s.log2("Set echo char to {0} for {1}", c, t);
         t.setEchoChar(c);
     }
-    
+
     /**
      * These methods set the Insets (borders of a container) of an object.
      * @param s
@@ -1212,6 +1213,12 @@ public class CommandCalls {
         textArea.setColumns(val);
     }
      
+    public static void setColumns(Japi2Session session, Japi2FormattedTextField textArea) throws IOException {
+        int val = session.readInt();
+        session.log2("Set Columns to {0}", val);
+        textArea.setColumns(val);
+    }
+
     public static void setColumns(Japi2Session session, GridLayout layout) throws IOException {
         int val = session.readInt();
         if (layout.getColumns() == val) {

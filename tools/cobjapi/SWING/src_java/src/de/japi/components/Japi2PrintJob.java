@@ -202,7 +202,7 @@ public class Japi2PrintJob {
     }
     
     /**
-     * The {@link Graphic2D} object of this print job. One can draw directly
+     * The {@link Graphics} object of this print job. One can draw directly
      * to this graphic without taking the page border into account. Also
      * multiple calls will provide the same {@link Graphics} object.
      * 

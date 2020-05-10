@@ -27,8 +27,8 @@ import java.text.AttributedCharacterIterator;
 import java.util.Map;
 
 /**
- * This class is a simple SWING implemenation for {@link Canvas} to match the
- * needs of the original JAPI kernel. It contains a sophisticated repaint 
+ * This class is a simple SWING implemenation for {@link Japi2Canvas} to match 
+ * the needs of the original JAPI kernel. It contains a sophisticated repaint 
  * strategy to save performance.
  * 
  * <p>

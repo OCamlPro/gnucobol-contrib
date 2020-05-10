@@ -197,6 +197,7 @@ public class Japi2Calls {
     public static final int JAPI_SEVENSEGMENT = 4134;
     public static final int JAPI_METER = 4135;
     public static final int JAPI_SPLITPANE = 4136;
+    public static final int JAPI_FORMATTEDTEXTFIELD = 4137;
 
     // JAPI_LISTENERS
     public static final int JAPI_LISTENERS = 5120;

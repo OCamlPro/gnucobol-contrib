@@ -16,7 +16,7 @@ public class Japi2WindowListener extends AbstractJapi2Listener implements Window
      * 
      * <p style="color:red;">
      * Please note that the object id is set to <code>-1</code> by this 
-     * constructor. It must be manually set to a valid id (> -1) through 
+     * constructor. It must be manually set to a valid id (greater -1) through 
      * {@link AbstractJapi2Listener#setId(int)}. Otherwise nothing will happen
      * and an error is logged if debugging is enabled.
      * </p>
