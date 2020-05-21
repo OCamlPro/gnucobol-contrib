@@ -25,6 +25,7 @@ import de.japi.components.Japi2MenuBar;
 import de.japi.components.Japi2MenuItem;
 import de.japi.components.Japi2Meter;
 import de.japi.components.Japi2Panel;
+import de.japi.components.Japi2TabbedPane;
 import de.japi.components.Japi2PrintJob;
 import de.japi.components.Japi2RadioButton;
 import de.japi.components.Japi2RadioGroup;
@@ -810,6 +811,8 @@ public class Japi2Session implements Runnable {
                                     CommandCalls.setInsets(this, (Japi2Window) obj);
                             else if (obj instanceof Japi2Panel)
                                     CommandCalls.setInsets(this, (Japi2Panel) obj);
+                            else if (obj instanceof Japi2TabbedPane)
+                                    CommandCalls.setInsets(this, (Japi2TabbedPane) obj);
                             else 
                                     throw new NotHandledException();
                             break;
@@ -1689,6 +1692,18 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_PANEL: 
                             if (obj instanceof Container) 
                                     ConstructionCalls.createPanel(this, (Container) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                    case Japi2Calls.JAPI_TABBEDPANE: 
+                            if (obj instanceof Container) 
+                                    ConstructionCalls.createTabbedPane(this, (Container) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                    case Japi2Calls.JAPI_ADDTAB: 
+                            if (obj instanceof Japi2TabbedPane)
+                                    ConstructionCalls.createTab(this, (Japi2TabbedPane) obj);
                             else 
                                     throw new NotHandledException();
                             break;

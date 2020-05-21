@@ -44,6 +44,10 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.10 Laszlo Erdos: 
 *>            - JAPI_FORMATTEDTEXTFIELD and japi_formattedtextfield added.
+*>------------------------------------------------------------------------------
+*> 2020.05.21 Laszlo Erdos: 
+*>            - JAPI_TABBEDPANE, japi_tabbedpane.
+*>            - JAPI_ADDTAB, japi_addtab.
 *>******************************************************************************
 */
 
@@ -249,6 +253,8 @@
   #define JAPI_METER                              4135
   #define JAPI_SPLITPANE                          4136
   #define JAPI_FORMATTEDTEXTFIELD                 4137
+  #define JAPI_TABBEDPANE                         4138
+  #define JAPI_ADDTAB                             4139
 
 
 
@@ -288,6 +294,8 @@
   extern  int   japi_graphiclabel ( int , char*  );
   extern  int   japi_canvas ( int , int , int  );
   extern  int   japi_panel ( int  );
+  extern  int   japi_tabbedpane ( int  );
+  extern  int   japi_addtab ( int , char*  );
   extern  int   japi_borderpanel ( int , int  );
   extern  int   japi_radiogroup ( int  );
   extern  int   japi_radiobutton ( int , char*  );

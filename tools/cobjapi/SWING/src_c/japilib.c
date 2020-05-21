@@ -54,6 +54,9 @@
 *> 2020.05.10 Laszlo Erdos: 
 *>            - send_3int_2string, send_3int_2string_get_int and 
 *>              japi_formattedtextfield added.
+*>------------------------------------------------------------------------------
+*> 2020.05.21 Laszlo Erdos: 
+*>            - japi_tabbedpane, japi_addtab.
 *>******************************************************************************
 */
 
@@ -962,6 +965,12 @@ int japi_canvas(int parent,int w, int h)
 
 int japi_panel(int parent)
 {	return(send_3int_get_int(JAPI_PANEL,parent,J_NONE)); }
+
+int japi_tabbedpane(int parent)
+{	return(send_2int_get_int(JAPI_TABBEDPANE,parent)); }
+
+int japi_addtab(int tabbedpane, string title)
+{	return(send_2int_string_get_int(JAPI_ADDTAB,tabbedpane,title)); }
 
 int japi_borderpanel(int parent, int type)
 {	return(send_3int_get_int(JAPI_PANEL,parent,type)); }

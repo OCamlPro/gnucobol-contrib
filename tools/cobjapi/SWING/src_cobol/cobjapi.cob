@@ -44,6 +44,9 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.10 Laszlo Erdos: 
 *>            - J-FORMATTEDTEXTFIELD added.
+*>------------------------------------------------------------------------------
+*> 2020.05.21 Laszlo Erdos: 
+*>            - J-TABBEDPANE, J-ADDTAB.
 *>******************************************************************************
  
 *>------------------------------------------------------------------------------
@@ -653,6 +656,85 @@
  MAIN-J-PANEL-EX.
     EXIT.
  END FUNCTION J-PANEL.
+
+
+*>------------------------------------------------------------------------------
+*> int  j_tabbedpane( int arg0)
+*> { return( japi_tabbedpane(arg0));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-TABBEDPANE.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-RET                            BINARY-INT.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                    RETURNING          LNK-RET.
+
+ MAIN-J-TABBEDPANE SECTION.
+
+    CALL STATIC "japi_tabbedpane" 
+         USING BY VALUE LNK-ARG-0
+         RETURNING LNK-RET 
+    END-CALL 
+ 
+    GOBACK
+
+    .
+ MAIN-J-TABBEDPANE-EX.
+    EXIT.
+ END FUNCTION J-TABBEDPANE.
+
+
+*>------------------------------------------------------------------------------
+*> int  j_addtab( int arg0, char* arg1)
+*> { return( japi_addtab(arg0, arg1));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-ADDTAB.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-1                          PIC X ANY LENGTH.
+ 01 LNK-RET                            BINARY-INT.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY REFERENCE LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-ADDTAB SECTION.
+
+    CALL STATIC "japi_addtab" 
+         USING BY VALUE   LNK-ARG-0
+               BY CONTENT CONCATENATE(TRIM(LNK-ARG-1), X"00")
+         RETURNING LNK-RET 
+    END-CALL 
+ 
+    GOBACK
+
+    .
+ MAIN-J-ADDTAB-EX.
+    EXIT.
+ END FUNCTION J-ADDTAB.
 
  
 *>------------------------------------------------------------------------------

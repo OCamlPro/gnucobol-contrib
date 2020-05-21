@@ -22,6 +22,7 @@ import de.japi.components.Japi2MenuBar;
 import de.japi.components.Japi2MenuItem;
 import de.japi.components.Japi2Meter;
 import de.japi.components.Japi2Panel;
+import de.japi.components.Japi2TabbedPane;
 import de.japi.components.Japi2PopupMenu;
 import de.japi.components.Japi2PrintJob;
 import de.japi.components.Japi2RadioButton;
@@ -591,7 +592,43 @@ public class ConstructionCalls {
         session.log1("PANEL type {0} (ID = {1}) in ParentObject {2}", type, oid, container);
         session.writeInt(oid);
     }
-    
+
+    /*
+     * This method creates a TabbedPane, and adds an Item Listener to it.
+     */
+   public static void createTabbedPane(Japi2Session session, Container container) throws IOException {
+        Japi2TabbedPane tabbedPane = new Japi2TabbedPane();
+        int oid = session.addObject(tabbedPane);
+        
+        if (!(container instanceof JSplitPane)) {
+            container.add(tabbedPane, BorderLayout.CENTER);
+        }
+        
+        //item listener
+        Japi2ComponentListener componentListener = new Japi2ComponentListener(session, oid, Japi2Constants.J_RESIZED);
+        tabbedPane.setJapiListener(componentListener);
+        tabbedPane.addComponentListener(componentListener);
+        
+        session.log1("TABBEDPANE (ID = {0}) in ParentObject {1}", oid, container);
+        session.writeInt(oid);
+    }
+
+    public static void createTab(Japi2Session session, Japi2TabbedPane tabbedpane) throws IOException {
+        String title = session.readLine();
+
+        Japi2Panel panel = new Japi2Panel();
+        int oid = session.addObject(panel);  
+        tabbedpane.addTab(title, panel);
+        
+        //item listener
+        Japi2ComponentListener componentListener = new Japi2ComponentListener(session, oid, Japi2Constants.J_RESIZED);
+        panel.setJapiListener(componentListener);
+        panel.addComponentListener(componentListener);
+        
+        session.log1("TAB {0} (ID = {1}) in Parent Object {2}", title, oid, tabbedpane);
+        session.writeInt(oid);
+    }
+   
     /*
      * This method creates a Label, to display text or image components.
      */

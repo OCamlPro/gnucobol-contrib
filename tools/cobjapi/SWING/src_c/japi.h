@@ -44,6 +44,9 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.10 Laszlo Erdos: 
 *>            - j_formattedtextfield added.
+*>------------------------------------------------------------------------------
+*> 2020.05.21 Laszlo Erdos: 
+*>            - j_tabbedpane, j_addtab.
 *>******************************************************************************
 */
 
@@ -216,6 +219,8 @@
     extern  int   j_graphiclabel ( int , char*  );
     extern  int   j_canvas ( int , int , int  );
     extern  int   j_panel ( int  );
+    extern  int   j_tabbedpane ( int  );
+    extern  int   j_addtab ( int , char*  );
     extern  int   j_borderpanel ( int , int  );
     extern  int   j_radiogroup ( int  );
     extern  int   j_radiobutton ( int , char*  );
@@ -401,7 +406,6 @@
     extern  void  j_beep ( void  );
     extern  int   j_random ( void  );
     extern  void  j_sleep ( int  );
-
 
 
 #endif /* JAPI_H */

@@ -44,6 +44,9 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.10 Laszlo Erdos: 
 *>            - J-FORMATTEDTEXTFIELD added.
+*>------------------------------------------------------------------------------
+*> 2020.05.21 Laszlo Erdos: 
+*>            - J-TABBEDPANE, J-ADDTAB.
 *>******************************************************************************
 
  FUNCTION J-START
@@ -61,6 +64,8 @@
  FUNCTION J-GRAPHICLABEL
  FUNCTION J-CANVAS
  FUNCTION J-PANEL
+ FUNCTION J-TABBEDPANE
+ FUNCTION J-ADDTAB
  FUNCTION J-BORDERPANEL
  FUNCTION J-RADIOGROUP
  FUNCTION J-RADIOBUTTON

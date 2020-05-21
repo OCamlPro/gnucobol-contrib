@@ -20,6 +20,7 @@ import de.japi.components.Japi2Menu;
 import de.japi.components.Japi2MenuItem;
 import de.japi.components.Japi2Meter;
 import de.japi.components.Japi2Panel;
+import de.japi.components.Japi2TabbedPane;
 import de.japi.components.Japi2PopupMenu;
 import de.japi.components.Japi2PrintJob;
 import de.japi.components.Japi2RadioButton;
@@ -193,6 +194,17 @@ public class CommandCalls {
     }
     
     public static void setInsets(Japi2Session s, Japi2Panel p) throws IOException {
+        Insets newInsets = new Insets(
+                s.readInt(),
+                s.readInt(),
+                s.readInt(),
+                s.readInt()
+        );
+        s.log2("Set insets to {0} for {1}", newInsets, p);
+        p.setInsets(newInsets);
+    }
+
+    public static void setInsets(Japi2Session s, Japi2TabbedPane p) throws IOException {
         Insets newInsets = new Insets(
                 s.readInt(),
                 s.readInt(),
