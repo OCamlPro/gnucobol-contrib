@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - frame.c converted into frame.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,31 +54,25 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-SHOW
-    FUNCTION J-LOADIMAGE
-    FUNCTION J-SETSIZE
-    FUNCTION J-SETICON
-    FUNCTION J-NEXTACTION
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-ICON                            BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-ICON                            BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
  
  PROCEDURE DIVISION.
 

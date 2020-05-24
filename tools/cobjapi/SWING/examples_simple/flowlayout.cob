@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - flowlayout.c converted into flowlayout.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,48 +54,34 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-SETSIZE
-    FUNCTION J-SETFLOWLAYOUT
-    FUNCTION J-SETALIGN
-    FUNCTION J-BUTTON
-    FUNCTION J-SETHGAP
-    FUNCTION J-SETVGAP    
-    FUNCTION J-SHOW
-    FUNCTION J-PACK
-    FUNCTION J-NEXTACTION
-    FUNCTION J-SETFLOWFILL
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
- 01 WS-ALIGN                           BINARY-INT.
- 01 WS-ORIENT                          BINARY-INT.
- 01 WS-FILL                            BINARY-INT.
- 01 WS-PACK                            BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
+ 01 WS-ALIGN                           BINARY-LONG.
+ 01 WS-ORIENT                          BINARY-LONG.
+ 01 WS-FILL                            BINARY-LONG.
+ 01 WS-PACK                            BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-ALIGNMENT                       BINARY-INT.
- 01 WS-ORIENTATION                     BINARY-INT.
- 01 WS-DOFILL                          BINARY-INT.
- 01 WS-HGAP                            BINARY-INT.
- 01 WS-VGAP                            BINARY-INT.
-
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-ALIGNMENT                       BINARY-LONG.
+ 01 WS-ORIENTATION                     BINARY-LONG.
+ 01 WS-DOFILL                          BINARY-LONG.
+ 01 WS-HGAP                            BINARY-LONG.
+ 01 WS-VGAP                            BINARY-LONG.
  
  PROCEDURE DIVISION.
 

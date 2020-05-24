@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - borderpanel.c converted into borderpanel.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,44 +54,30 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-SETCOLORBG
-    FUNCTION J-SETCOLOR
-    FUNCTION J-SETGRIDLAYOUT
-    FUNCTION J-SETHGAP
-    FUNCTION J-BORDERPANEL
-    FUNCTION J-SETFLOWLAYOUT
-    FUNCTION J-LABEL
-    FUNCTION J-PACK
-    FUNCTION J-SHOW
-    FUNCTION J-NEXTACTION
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-PANEL                           BINARY-INT.
- 01 WS-LABEL                           BINARY-INT.
-
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-PANEL                           BINARY-LONG.
+ 01 WS-LABEL                           BINARY-LONG.
 
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-R                               BINARY-INT.
- 01 WS-G                               BINARY-INT.
- 01 WS-B                               BINARY-INT.
- 01 WS-ROW                             BINARY-INT.
- 01 WS-COL                             BINARY-INT.
- 01 WS-HGAP                            BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-R                               BINARY-LONG.
+ 01 WS-G                               BINARY-LONG.
+ 01 WS-B                               BINARY-LONG.
+ 01 WS-ROW                             BINARY-LONG.
+ 01 WS-COL                             BINARY-LONG.
+ 01 WS-HGAP                            BINARY-LONG.
  
  PROCEDURE DIVISION.
 

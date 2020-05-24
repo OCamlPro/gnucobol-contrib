@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - scrollpane.c converted into scrollpane.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,50 +54,33 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-SETBORDERLAYOUT
-    FUNCTION J-SCROLLPANE
-    FUNCTION J-VSCROLLBAR
-    FUNCTION J-HSCROLLBAR
-    FUNCTION J-CANVAS
-    FUNCTION J-SETSIZE
-    FUNCTION J-SHOW
-    FUNCTION J-PACK
-    FUNCTION J-DRAWLINE
-    FUNCTION J-NEXTACTION
-    FUNCTION J-GETVIEWPORTWIDTH
-    FUNCTION J-GETVIEWPORTHEIGHT
-    FUNCTION J-GETVALUE
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-SCROLLPANE                      BINARY-INT.
- 01 WS-VSCROLL                         BINARY-INT.
- 01 WS-HSCROLL                         BINARY-INT.
- 01 WS-CANVAS                          BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-SCROLLPANE                      BINARY-LONG.
+ 01 WS-VSCROLL                         BINARY-LONG.
+ 01 WS-HSCROLL                         BINARY-LONG.
+ 01 WS-CANVAS                          BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
 
 *> FUNCTION ARGS 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-X                               BINARY-INT.
- 01 WS-Y                               BINARY-INT.
- 01 WS-X-WIDTH                         BINARY-INT.
- 01 WS-Y-HEIGHT                        BINARY-INT.
-
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-X                               BINARY-LONG.
+ 01 WS-Y                               BINARY-LONG.
+ 01 WS-X-WIDTH                         BINARY-LONG.
+ 01 WS-Y-HEIGHT                        BINARY-LONG.
  
  PROCEDURE DIVISION.
 

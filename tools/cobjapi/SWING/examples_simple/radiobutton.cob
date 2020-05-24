@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - radiobutton.c converted into radiobutton.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,41 +54,29 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-RADIOGROUP
-    FUNCTION J-RADIOBUTTON
-    FUNCTION J-SETPOS
-    FUNCTION J-SETSTATE
-    FUNCTION J-SHOW
-    FUNCTION J-NEXTACTION
-    FUNCTION J-ENABLE
-    FUNCTION J-DISABLE
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-RADIO                           BINARY-INT.
- 01 WS-ENABLE                          BINARY-INT.
- 01 WS-MIDDLE                          BINARY-INT.
- 01 WS-DISABLE                         BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-RADIO                           BINARY-LONG.
+ 01 WS-ENABLE                          BINARY-LONG.
+ 01 WS-MIDDLE                          BINARY-LONG.
+ 01 WS-DISABLE                         BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
 
 *> FUNCTION ARGS 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
-
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
  
  PROCEDURE DIVISION.
 

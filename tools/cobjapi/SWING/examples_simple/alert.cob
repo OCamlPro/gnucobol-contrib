@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - alert.c converted into alert.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,33 +54,24 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-SHOW
-    FUNCTION J-MESSAGEBOX
-    FUNCTION J-SLEEP
-    FUNCTION J-DISPOSE
-    FUNCTION J-ALERTBOX
-    FUNCTION J-CHOICEBOX2
-    FUNCTION J-CHOICEBOX3
-    FUNCTION J-NEXTACTION
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-ALERT                           BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-ALERT                           BINARY-LONG.
 
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-MSEC                            BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-MSEC                            BINARY-LONG.
  
  PROCEDURE DIVISION.
 

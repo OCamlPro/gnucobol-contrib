@@ -297,6 +297,11 @@ Program history, changes and bug fixes are listed in program headers.
 *****************************************************************************
 Date       Name / Change description
 ========== ==================================================================
+2020.05.23 Laszlo Erdos:
+           - File name changed from "cobjapi.cpy" to "CobjapiConstants.cpy".
+           - File name changed from "cobjapifn.cpy" to "CobjapiFunctions.cpy".
+           - BINARY-INT changed to BINARY-LONG.
+-----------------------------------------------------------------------------
 2020.05.21 Laszlo Erdos:
            - New component Japi2TabbedPane added.
 -----------------------------------------------------------------------------

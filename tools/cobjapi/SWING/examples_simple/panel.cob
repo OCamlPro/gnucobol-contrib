@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - panel.c converted into panel.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,57 +54,42 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-MENUBAR
-    FUNCTION J-MENU
-    FUNCTION J-MENUITEM    
-    FUNCTION J-SETBORDERLAYOUT
-    FUNCTION J-PANEL
-    FUNCTION J-SHOW
-    FUNCTION J-LABEL
-    FUNCTION J-SETPOS
-    FUNCTION J-NEXTACTION
-    FUNCTION J-GETACTION
-    FUNCTION J-SETTEXT
-    FUNCTION J-GETWIDTH
-    FUNCTION J-GETHEIGHT
-    FUNCTION J-SYNC
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-DOIT                            BINARY-INT.
- 01 WS-PANEL                           BINARY-INT.
- 01 WS-LABEL                           BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-DOIT                            BINARY-LONG.
+ 01 WS-PANEL                           BINARY-LONG.
+ 01 WS-LABEL                           BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-P-WIDTH                         BINARY-INT VALUE 256.
- 01 WS-P-HEIGHT                        BINARY-INT VALUE 256.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-P-WIDTH                         BINARY-LONG VALUE 256.
+ 01 WS-P-HEIGHT                        BINARY-LONG VALUE 256.
  01 WS-P-WIDTH-DISP                    PIC 9(4).
  01 WS-P-HEIGHT-DISP                   PIC 9(4).
- 01 WS-X                               BINARY-INT VALUE 0.
- 01 WS-Y                               BINARY-INT VALUE 0.
- 01 WS-DX                              BINARY-INT VALUE 2.
- 01 WS-DY                              BINARY-INT VALUE 1.
- 01 WS-L-WIDTH                         BINARY-INT VALUE 0.
- 01 WS-L-HEIGHT                        BINARY-INT VALUE 0.
- 01 WS-RUN                             BINARY-INT VALUE 0.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
+ 01 WS-X                               BINARY-LONG VALUE 0.
+ 01 WS-Y                               BINARY-LONG VALUE 0.
+ 01 WS-DX                              BINARY-LONG VALUE 2.
+ 01 WS-DY                              BINARY-LONG VALUE 1.
+ 01 WS-L-WIDTH                         BINARY-LONG VALUE 0.
+ 01 WS-L-HEIGHT                        BINARY-LONG VALUE 0.
+ 01 WS-RUN                             BINARY-LONG VALUE 0.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
  01 WS-STR                             PIC X(256).
 
  PROCEDURE DIVISION.

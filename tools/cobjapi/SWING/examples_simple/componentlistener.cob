@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - componentlistener.c converted into componentlistener.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,51 +54,35 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-SETGRIDLAYOUT
-    FUNCTION J-TEXTAREA
-    FUNCTION J-COMPONENTLISTENER
-    FUNCTION J-SHOW
-    FUNCTION J-PACK
-    FUNCTION J-NEXTACTION
-    FUNCTION J-GETROWS
-    FUNCTION J-GETCOLUMNS
-    FUNCTION J-APPENDTEXT
-    FUNCTION J-ISVISIBLE
-    FUNCTION J-SETTEXT
-    FUNCTION J-HIDE
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-TEXT                            BINARY-INT.
- 01 WS-RESIZED                         BINARY-INT.
- 01 WS-MOVED                           BINARY-INT.
- 01 WS-HIDDEN                          BINARY-INT.
- 01 WS-SHOWN                           BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-TEXT                            BINARY-LONG.
+ 01 WS-RESIZED                         BINARY-LONG.
+ 01 WS-MOVED                           BINARY-LONG.
+ 01 WS-HIDDEN                          BINARY-LONG.
+ 01 WS-SHOWN                           BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-ROW                             BINARY-INT.
- 01 WS-COL                             BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-ROW                             BINARY-LONG.
+ 01 WS-COL                             BINARY-LONG.
 
 *> vars
  01 WS-STR                             PIC X(256).
  01 WS-ROW-DISP                        PIC 9(5).
  01 WS-COL-DISP                        PIC 9(5).
- 
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
  
  PROCEDURE DIVISION.
 

@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - cursor.c converted into cursor.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,55 +54,44 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-MENUBAR
-    FUNCTION J-MENU
-    FUNCTION J-MENUITEM    
-    FUNCTION J-SETNAMEDCOLORBG
-    FUNCTION J-SETCURSOR
-    FUNCTION J-SHOW
-    FUNCTION J-NEXTACTION
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
 *> cursor type
- 01 WS-CURSOR                          BINARY-INT.
- 01 WS-DEF                             BINARY-INT.
- 01 WS-CROSS                           BINARY-INT.
- 01 WS-HAND                            BINARY-INT.
- 01 WS-MOVE                            BINARY-INT.
- 01 WS-TEXT                            BINARY-INT.
- 01 WS-WAIT                            BINARY-INT.
+ 01 WS-CURSOR                          BINARY-LONG.
+ 01 WS-DEF                             BINARY-LONG.
+ 01 WS-CROSS                           BINARY-LONG.
+ 01 WS-HAND                            BINARY-LONG.
+ 01 WS-MOVE                            BINARY-LONG.
+ 01 WS-TEXT                            BINARY-LONG.
+ 01 WS-WAIT                            BINARY-LONG.
 *> cursor resize
- 01 WS-RESIZE                          BINARY-INT.
- 01 WS-NR                              BINARY-INT.
- 01 WS-NER                             BINARY-INT.
- 01 WS-ER                              BINARY-INT.
- 01 WS-SER                             BINARY-INT.
- 01 WS-SR                              BINARY-INT.
- 01 WS-SWR                             BINARY-INT.
- 01 WS-WR                              BINARY-INT.
- 01 WS-NWR                             BINARY-INT.
+ 01 WS-RESIZE                          BINARY-LONG.
+ 01 WS-NR                              BINARY-LONG.
+ 01 WS-NER                             BINARY-LONG.
+ 01 WS-ER                              BINARY-LONG.
+ 01 WS-SER                             BINARY-LONG.
+ 01 WS-SR                              BINARY-LONG.
+ 01 WS-SWR                             BINARY-LONG.
+ 01 WS-WR                              BINARY-LONG.
+ 01 WS-NWR                             BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
  
  PROCEDURE DIVISION.
 

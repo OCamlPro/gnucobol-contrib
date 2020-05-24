@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - mousebuttons.c converted into mousebuttons.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,34 +54,25 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-SHOW
-    FUNCTION J-NEXTACTION
-    FUNCTION J-MOUSELISTENER
-    FUNCTION J-GETMOUSEBUTTON
-    FUNCTION J-SETTEXT
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
- 01 WS-DCLICK                          BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
+ 01 WS-DCLICK                          BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
  01 WS-STR                             PIC X(256).
- 
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
  
  PROCEDURE DIVISION.
 

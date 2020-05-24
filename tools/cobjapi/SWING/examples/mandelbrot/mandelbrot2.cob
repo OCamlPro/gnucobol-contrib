@@ -41,6 +41,9 @@
 *>------------------------------------------------------------------------------
 *> 2015.03.22 Laszlo Erdos: 
 *>            mandel1.c converted into mandelbrot2.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -52,51 +55,50 @@
  REPOSITORY.
 *>  mandelbrot function
     FUNCTION MANDEL
-*>  Functions for the cobjapi wrapper 
-    COPY "cobjapifn.cpy".
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
- 01 WS-CANVAS                          BINARY-INT.
- 01 WS-CALC                            BINARY-INT.
- 01 WS-START                           BINARY-INT.
- 01 WS-STOP                            BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
+ 01 WS-CANVAS                          BINARY-LONG.
+ 01 WS-CALC                            BINARY-LONG.
+ 01 WS-START                           BINARY-LONG.
+ 01 WS-STOP                            BINARY-LONG.
 
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT VALUE 640.
- 01 WS-HEIGHT                          BINARY-INT VALUE 480.
- 01 WS-X                               BINARY-INT.
- 01 WS-Y                               BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
- 01 WS-R                               BINARY-INT.
- 01 WS-G                               BINARY-INT.
- 01 WS-B                               BINARY-INT.
- 01 WS-MAXITER                         BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG VALUE 640.
+ 01 WS-HEIGHT                          BINARY-LONG VALUE 480.
+ 01 WS-X                               BINARY-LONG.
+ 01 WS-Y                               BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
+ 01 WS-R                               BINARY-LONG.
+ 01 WS-G                               BINARY-LONG.
+ 01 WS-B                               BINARY-LONG.
+ 01 WS-MAXITER                         BINARY-LONG.
 
 *> vars
- 01 WS-DO-WORK                         BINARY-INT VALUE 0.
- 01 WS-ITER                            BINARY-INT.
+ 01 WS-DO-WORK                         BINARY-LONG VALUE 0.
+ 01 WS-ITER                            BINARY-LONG.
  01 WS-Z-REAL                          COMPUTATIONAL-2.
  01 WS-Z-IMAG                          COMPUTATIONAL-2.
  01 WS-X-START                         COMPUTATIONAL-2.
  01 WS-X-END                           COMPUTATIONAL-2.
  01 WS-Y-START                         COMPUTATIONAL-2.
  01 WS-Y-END                           COMPUTATIONAL-2.
-
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
  
  PROCEDURE DIVISION.
 
@@ -231,13 +233,13 @@
  01 WS-Y                               COMPUTATIONAL-2.
  01 WS-TMP                             COMPUTATIONAL-2.
  01 WS-SUM                             COMPUTATIONAL-2.
- 01 WS-ITER                            BINARY-INT.
+ 01 WS-ITER                            BINARY-LONG.
  
  LINKAGE SECTION.
  01 LNK-Z-REAL                         COMPUTATIONAL-2.
  01 LNK-Z-IMAG                         COMPUTATIONAL-2.
- 01 LNK-MAXITER                        BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-MAXITER                        BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
  
  PROCEDURE DIVISION USING BY VALUE     LNK-Z-REAL
                           BY VALUE     LNK-Z-IMAG

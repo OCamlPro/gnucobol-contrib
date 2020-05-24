@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - font.c converted into font.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,81 +54,57 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-MENUBAR
-    FUNCTION J-MENU
-    FUNCTION J-MENUITEM    
-    FUNCTION J-CHECKMENUITEM    
-    FUNCTION J-LABEL
-    FUNCTION J-SETSIZE
-    FUNCTION J-SETPOS
-    FUNCTION J-SETFONT
-    FUNCTION J-PACK
-    FUNCTION J-SHOW
-    FUNCTION J-NEXTACTION
-    FUNCTION J-SETFONTNAME
-    FUNCTION J-SETFONTSIZE
-    FUNCTION J-SETSTATE
-    FUNCTION J-GETSTATE
-    FUNCTION J-SETFONTSTYLE
-    FUNCTION J-GETSTRINGWIDTH
-    FUNCTION J-GETFONTHEIGHT
-    FUNCTION J-GETFONTASCENT
-    FUNCTION J-SETTEXT
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
- 01 WS-LABEL                           BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
+ 01 WS-LABEL                           BINARY-LONG.
 *> font type
- 01 WS-FONT                            BINARY-INT.
- 01 WS-COURIER                         BINARY-INT.
- 01 WS-HELVETIA                        BINARY-INT.
- 01 WS-TIMES                           BINARY-INT.
- 01 WS-DIALOGIN                        BINARY-INT.
- 01 WS-DIALOGOUT                       BINARY-INT.
+ 01 WS-FONT                            BINARY-LONG.
+ 01 WS-COURIER                         BINARY-LONG.
+ 01 WS-HELVETIA                        BINARY-LONG.
+ 01 WS-TIMES                           BINARY-LONG.
+ 01 WS-DIALOGIN                        BINARY-LONG.
+ 01 WS-DIALOGOUT                       BINARY-LONG.
 *> font style
- 01 WS-STYLE                           BINARY-INT.
- 01 WS-NORMAL                          BINARY-INT.
- 01 WS-BOLD                            BINARY-INT.
- 01 WS-ITALIC                          BINARY-INT.
+ 01 WS-STYLE                           BINARY-LONG.
+ 01 WS-NORMAL                          BINARY-LONG.
+ 01 WS-BOLD                            BINARY-LONG.
+ 01 WS-ITALIC                          BINARY-LONG.
 *> font size
- 01 WS-SIZE                            BINARY-INT.
- 01 WS-F10                             BINARY-INT.
- 01 WS-F12                             BINARY-INT.
- 01 WS-F14                             BINARY-INT.
- 01 WS-F18                             BINARY-INT.
+ 01 WS-SIZE                            BINARY-LONG.
+ 01 WS-F10                             BINARY-LONG.
+ 01 WS-F12                             BINARY-LONG.
+ 01 WS-F14                             BINARY-LONG.
+ 01 WS-F18                             BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
- 01 WS-FONTSTYLE                       BINARY-INT.
- 01 WS-FONTSIZE                        BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
+ 01 WS-FONTSTYLE                       BINARY-LONG.
+ 01 WS-FONTSIZE                        BINARY-LONG.
  01 WS-STR                             PIC X(256).
  
 *> vars
  01 WS-STRING-WIDTH                    PIC 9(5).
  01 WS-FONT-HEIGHT                     PIC 9(5).
  01 WS-FONT-ASCENT                     PIC 9(5).
- 
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
  
  PROCEDURE DIVISION.
 

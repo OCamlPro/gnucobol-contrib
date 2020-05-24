@@ -42,6 +42,9 @@
 *> 2015.06.07 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - drawables.c converted into drawables.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -53,39 +56,38 @@
  REPOSITORY.
 *>  drawgraphics function
     FUNCTION FN-DRAWGRAPHICS
-*>  Functions for the cobjapi wrapper 
-    COPY "cobjapifn.cpy".
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-PRINT                           BINARY-INT.
- 01 WS-SAVE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-PRINTER                         BINARY-INT.
- 01 WS-CANVAS                          BINARY-INT.
- 01 WS-IMAGE                           BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-PRINT                           BINARY-LONG.
+ 01 WS-SAVE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-PRINTER                         BINARY-LONG.
+ 01 WS-CANVAS                          BINARY-LONG.
+ 01 WS-IMAGE                           BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
 
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-X-MIN                           BINARY-INT.
- 01 WS-Y-MIN                           BINARY-INT.
- 01 WS-X-MAX                           BINARY-INT.
- 01 WS-Y-MAX                           BINARY-INT.
- 01 WS-MSEC                            BINARY-INT.
- 
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-X-MIN                           BINARY-LONG.
+ 01 WS-Y-MIN                           BINARY-LONG.
+ 01 WS-X-MAX                           BINARY-LONG.
+ 01 WS-Y-MAX                           BINARY-LONG.
+ 01 WS-MSEC                            BINARY-LONG.
  
  PROCEDURE DIVISION.
 
@@ -209,49 +211,48 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-*>  Functions for the cobjapi wrapper 
-    COPY "cobjapifn.cpy".
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
  
  DATA DIVISION.
  
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> function args 
- 01 WS-IMAGE                           BINARY-INT.
- 01 WS-FONT-SIZE                       BINARY-INT VALUE 10.
- 01 WS-X                               BINARY-INT.
- 01 WS-Y                               BINARY-INT.
- 01 WS-X-MIN                           BINARY-INT.
- 01 WS-Y-MIN                           BINARY-INT.
- 01 WS-X-MAX                           BINARY-INT.
- 01 WS-Y-MAX                           BINARY-INT.
- 01 WS-RX                              BINARY-INT.
- 01 WS-RY                              BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-TARGET-X                        BINARY-INT.
- 01 WS-TARGET-Y                        BINARY-INT.
- 01 WS-TARGET-WIDTH                    BINARY-INT.
- 01 WS-TARGET-HEIGHT                   BINARY-INT.
+ 01 WS-IMAGE                           BINARY-LONG.
+ 01 WS-FONT-SIZE                       BINARY-LONG VALUE 10.
+ 01 WS-X                               BINARY-LONG.
+ 01 WS-Y                               BINARY-LONG.
+ 01 WS-X-MIN                           BINARY-LONG.
+ 01 WS-Y-MIN                           BINARY-LONG.
+ 01 WS-X-MAX                           BINARY-LONG.
+ 01 WS-Y-MAX                           BINARY-LONG.
+ 01 WS-RX                              BINARY-LONG.
+ 01 WS-RY                              BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-TARGET-X                        BINARY-LONG.
+ 01 WS-TARGET-Y                        BINARY-LONG.
+ 01 WS-TARGET-WIDTH                    BINARY-LONG.
+ 01 WS-TARGET-HEIGHT                   BINARY-LONG.
  
  01 WS-TMP-STRING                      PIC X(256). 
  01 WS-STRING                          PIC X(14) VALUE "JAPI Test Text".
  
- 01 WS-IND                             BINARY-INT.
+ 01 WS-IND                             BINARY-LONG.
  01 WS-NUM-DISP                        PIC Z(9)9.
  
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
- 
  LINKAGE SECTION.
- 01 LNK-DRAWABLE                       BINARY-INT.
- 01 LNK-X-MIN                          BINARY-INT.
- 01 LNK-Y-MIN                          BINARY-INT.
- 01 LNK-X-MAX                          BINARY-INT.
- 01 LNK-Y-MAX                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-DRAWABLE                       BINARY-LONG.
+ 01 LNK-X-MIN                          BINARY-LONG.
+ 01 LNK-Y-MIN                          BINARY-LONG.
+ 01 LNK-X-MAX                          BINARY-LONG.
+ 01 LNK-Y-MAX                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
  
  PROCEDURE DIVISION USING BY VALUE     LNK-DRAWABLE
                           BY VALUE     LNK-X-MIN

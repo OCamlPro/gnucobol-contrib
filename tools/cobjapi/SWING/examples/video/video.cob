@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - video.c converted into video.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,48 +54,46 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-*> Functions for the cobjapi wrapper 
- COPY "cobjapifn.cpy".
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+ COPY "CobjapiConstants.cpy".
  
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-PLAY                            BINARY-INT.
- 01 WS-START                           BINARY-INT.
- 01 WS-STOP                            BINARY-INT.
- 01 WS-CANVAS                          BINARY-INT.
- 01 WS-SOUND                           BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-PLAY                            BINARY-LONG.
+ 01 WS-START                           BINARY-LONG.
+ 01 WS-STOP                            BINARY-LONG.
+ 01 WS-CANVAS                          BINARY-LONG.
+ 01 WS-SOUND                           BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
 
  01 WS-IMAGE-TAB.
    02 WS-IMAGE-TAB-LINES OCCURS 18 TIMES.
-     03 WS-IMAGE-TAB-LINE              BINARY-INT.
+     03 WS-IMAGE-TAB-LINE              BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
- 01 WS-MSEC                            BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
+ 01 WS-MSEC                            BINARY-LONG.
  01 WS-FILENAME                        PIC X(256).
 
 *> vars
- 01 WS-IND                             BINARY-INT.
- 01 WS-DO-WORK                         BINARY-INT VALUE 0.
+ 01 WS-IND                             BINARY-LONG.
+ 01 WS-DO-WORK                         BINARY-LONG VALUE 0.
  01 WS-FILENAME-IND                    PIC 9(2).
- 
  
  PROCEDURE DIVISION.
 

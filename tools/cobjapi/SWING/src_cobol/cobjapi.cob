@@ -47,6 +47,9 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.21 Laszlo Erdos: 
 *>            - J-TABBEDPANE, J-ADDTAB.
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
  
 *>------------------------------------------------------------------------------
@@ -66,7 +69,7 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION 
                     RETURNING          LNK-RET.
@@ -103,7 +106,7 @@
 
  LINKAGE SECTION.
  01 LNK-ARG-0                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY REFERENCE LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -140,10 +143,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -184,9 +187,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -227,9 +230,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -270,8 +273,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -310,8 +313,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -351,7 +354,7 @@
 
  LINKAGE SECTION.
  01 LNK-ARG-0                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY REFERENCE LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -388,9 +391,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -429,9 +432,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -470,9 +473,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -511,9 +514,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -552,9 +555,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -593,10 +596,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -637,8 +640,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -675,8 +678,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -713,9 +716,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -754,9 +757,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -795,8 +798,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -833,9 +836,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -874,9 +877,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -915,8 +918,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -953,9 +956,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -994,8 +997,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -1032,9 +1035,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -1073,8 +1076,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -1111,8 +1114,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -1149,8 +1152,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -1187,11 +1190,11 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -1234,8 +1237,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -1272,9 +1275,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -1311,14 +1314,14 @@
  
  DATA DIVISION.
  WORKING-STORAGE SECTION.
- 01 WS-IND                             BINARY-INT.
+ 01 WS-IND                             BINARY-LONG.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
  01 LNK-ARG-2                          PIC X ANY LENGTH.
  01 LNK-ARG-3                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -1374,14 +1377,14 @@
  
  DATA DIVISION.
  WORKING-STORAGE SECTION.
- 01 WS-IND                             BINARY-INT.
+ 01 WS-IND                             BINARY-LONG.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
  01 LNK-ARG-2                          PIC X ANY LENGTH.
  01 LNK-ARG-3                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -1439,10 +1442,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
  01 LNK-ARG-2                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -1483,11 +1486,11 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
  01 LNK-ARG-2                          PIC X ANY LENGTH.
  01 LNK-ARG-3                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -1530,12 +1533,12 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
  01 LNK-ARG-2                          PIC X ANY LENGTH.
  01 LNK-ARG-3                          PIC X ANY LENGTH.
  01 LNK-ARG-4                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -1580,13 +1583,13 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
  01 LNK-ARG-2                          PIC X ANY LENGTH.
  01 LNK-ARG-3                          PIC X ANY LENGTH.
  01 LNK-ARG-4                          PIC X ANY LENGTH.
  01 LNK-ARG-5                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -1633,9 +1636,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -1674,10 +1677,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -1718,9 +1721,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -1759,9 +1762,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -1800,9 +1803,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -1843,9 +1846,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -1884,11 +1887,11 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
  01 LNK-ARG-2                          PIC X ANY LENGTH.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -1931,10 +1934,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -1975,8 +1978,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2013,9 +2016,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -2054,9 +2057,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -2095,9 +2098,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -2136,9 +2139,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -2177,8 +2180,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2217,8 +2220,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2258,7 +2261,7 @@
 
  LINKAGE SECTION.
  01 LNK-ARG-0                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY REFERENCE LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2297,8 +2300,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2338,7 +2341,7 @@
 
  LINKAGE SECTION.
  01 LNK-ARG-0                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY REFERENCE LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2375,11 +2378,11 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -2424,9 +2427,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -2467,9 +2470,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -2510,9 +2513,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -2553,8 +2556,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2593,8 +2596,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2633,8 +2636,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2673,8 +2676,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2711,8 +2714,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2749,8 +2752,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2787,8 +2790,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2825,9 +2828,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -2866,8 +2869,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2904,9 +2907,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -2945,8 +2948,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -2983,9 +2986,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3026,9 +3029,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3069,9 +3072,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3112,10 +3115,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
  01 LNK-ARG-2                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3158,9 +3161,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3201,9 +3204,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -3244,8 +3247,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -3284,9 +3287,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3327,9 +3330,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3370,9 +3373,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3413,9 +3416,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3456,9 +3459,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3499,9 +3502,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3542,9 +3545,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3585,9 +3588,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3628,9 +3631,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3671,9 +3674,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3714,9 +3717,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3757,9 +3760,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3800,9 +3803,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3843,9 +3846,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3886,9 +3889,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -3929,8 +3932,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -3967,8 +3970,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -4005,8 +4008,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -4043,7 +4046,7 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION 
                     RETURNING          LNK-RET.
@@ -4079,7 +4082,7 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION 
                     RETURNING          LNK-RET.
@@ -4115,8 +4118,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -4153,8 +4156,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -4191,9 +4194,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -4232,8 +4235,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -4270,8 +4273,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -4308,8 +4311,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -4344,12 +4347,12 @@
  
  DATA DIVISION.
  WORKING-STORAGE SECTION.
- 01 WS-IND                             BINARY-INT.
+ 01 WS-IND                             BINARY-LONG.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -4401,13 +4404,13 @@
  
  DATA DIVISION.
  WORKING-STORAGE SECTION.
- 01 WS-IND                             BINARY-INT.
+ 01 WS-IND                             BINARY-LONG.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
  01 LNK-ARG-2                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -4463,8 +4466,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -4501,10 +4504,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -4547,11 +4550,11 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -4596,9 +4599,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -4639,10 +4642,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -4685,9 +4688,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -4728,8 +4731,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -4768,10 +4771,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -4814,8 +4817,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -4852,8 +4855,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -4888,12 +4891,12 @@
  
  DATA DIVISION.
  WORKING-STORAGE SECTION.
- 01 WS-IND                             BINARY-INT.
+ 01 WS-IND                             BINARY-LONG.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -4947,8 +4950,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -4985,9 +4988,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -5028,9 +5031,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          BINARY-CHAR.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -5071,9 +5074,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          BINARY-CHAR.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -5114,9 +5117,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          BINARY-CHAR.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -5157,7 +5160,7 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION
                     RETURNING          LNK-RET.
@@ -5195,7 +5198,7 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION
                     RETURNING          LNK-RET.
@@ -5233,10 +5236,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -5279,7 +5282,7 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION 
                     RETURNING          LNK-RET.
@@ -5315,7 +5318,7 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION 
                     RETURNING          LNK-RET.
@@ -5351,8 +5354,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -5391,10 +5394,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -5437,9 +5440,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -5478,8 +5481,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -5518,8 +5521,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -5558,8 +5561,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -5598,8 +5601,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -5638,10 +5641,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -5684,8 +5687,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -5722,8 +5725,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -5760,8 +5763,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -5798,8 +5801,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -5836,10 +5839,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -5882,8 +5885,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -5920,8 +5923,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -5960,8 +5963,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -5998,9 +6001,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -6039,8 +6042,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -6077,8 +6080,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -6115,8 +6118,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -6153,8 +6156,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -6191,8 +6194,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -6229,9 +6232,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -6270,8 +6273,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -6308,8 +6311,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -6346,10 +6349,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -6392,8 +6395,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -6430,8 +6433,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -6468,9 +6471,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -6509,9 +6512,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -6550,9 +6553,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -6593,8 +6596,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -6633,10 +6636,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -6679,8 +6682,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -6719,8 +6722,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -6759,9 +6762,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -6802,9 +6805,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -6845,9 +6848,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -6888,12 +6891,12 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -6940,9 +6943,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -6983,9 +6986,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7026,10 +7029,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7072,12 +7075,12 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7124,12 +7127,12 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7176,12 +7179,12 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7228,14 +7231,14 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-ARG-5                          BINARY-INT.
- 01 LNK-ARG-6                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-ARG-5                          BINARY-LONG.
+ 01 LNK-ARG-6                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7286,14 +7289,14 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-ARG-5                          BINARY-INT.
- 01 LNK-ARG-6                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-ARG-5                          BINARY-LONG.
+ 01 LNK-ARG-6                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7344,12 +7347,12 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7396,12 +7399,12 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7448,11 +7451,11 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7497,11 +7500,11 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7546,14 +7549,14 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-ARG-5                          BINARY-INT.
- 01 LNK-ARG-6                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-ARG-5                          BINARY-LONG.
+ 01 LNK-ARG-6                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7604,14 +7607,14 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-ARG-5                          BINARY-INT.
- 01 LNK-ARG-6                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-ARG-5                          BINARY-LONG.
+ 01 LNK-ARG-6                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7662,12 +7665,12 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7714,11 +7717,11 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7763,11 +7766,11 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7812,11 +7815,11 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7861,10 +7864,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7907,11 +7910,11 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
  01 LNK-ARG-3                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7956,9 +7959,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -7999,8 +8002,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -8037,15 +8040,15 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-ARG-5                          BINARY-INT.
- 01 LNK-ARG-6                          BINARY-INT.
- 01 LNK-ARG-7                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-ARG-5                          BINARY-LONG.
+ 01 LNK-ARG-6                          BINARY-LONG.
+ 01 LNK-ARG-7                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -8098,15 +8101,15 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-ARG-5                          BINARY-INT.
- 01 LNK-ARG-6                          BINARY-INT.
- 01 LNK-ARG-7                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-ARG-5                          BINARY-LONG.
+ 01 LNK-ARG-6                          BINARY-LONG.
+ 01 LNK-ARG-7                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -8159,14 +8162,14 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-ARG-5                          BINARY-INT.
- 01 LNK-ARG-6                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-ARG-5                          BINARY-LONG.
+ 01 LNK-ARG-6                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -8215,11 +8218,11 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -8264,17 +8267,17 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-ARG-4                          BINARY-INT.
- 01 LNK-ARG-5                          BINARY-INT.
- 01 LNK-ARG-6                          BINARY-INT.
- 01 LNK-ARG-7                          BINARY-INT.
- 01 LNK-ARG-8                          BINARY-INT.
- 01 LNK-ARG-9                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-ARG-5                          BINARY-LONG.
+ 01 LNK-ARG-6                          BINARY-LONG.
+ 01 LNK-ARG-7                          BINARY-LONG.
+ 01 LNK-ARG-8                          BINARY-LONG.
+ 01 LNK-ARG-9                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -8331,11 +8334,11 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -8380,11 +8383,11 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-ARG-3                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -8429,9 +8432,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -8472,9 +8475,9 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-ARG-1                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY VALUE     LNK-ARG-1
@@ -8516,7 +8519,7 @@
 
  LINKAGE SECTION.
  01 LNK-ARG-0                          PIC X ANY LENGTH.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY REFERENCE LNK-ARG-0
                     RETURNING          LNK-RET.
@@ -8553,10 +8556,10 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
  01 LNK-ARG-1                          PIC X ANY LENGTH.
- 01 LNK-ARG-2                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                           BY REFERENCE LNK-ARG-1
@@ -8597,7 +8600,7 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION
                     RETURNING          LNK-RET.
@@ -8635,7 +8638,7 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION
                     RETURNING          LNK-RET.
@@ -8673,7 +8676,7 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION 
                     RETURNING          LNK-RET.
@@ -8709,8 +8712,8 @@
  WORKING-STORAGE SECTION.
 
  LINKAGE SECTION.
- 01 LNK-ARG-0                          BINARY-INT.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
 
  PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
                     RETURNING          LNK-RET.

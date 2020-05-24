@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - insets.c converted into insets.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,58 +54,38 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-MENUBAR
-    FUNCTION J-MENU
-    FUNCTION J-MENUITEM    
-    FUNCTION J-SETBORDERLAYOUT
-    FUNCTION J-CANVAS
-    FUNCTION J-SETNAMEDCOLOR
-    FUNCTION J-SETNAMEDCOLORBG
-    FUNCTION J-PACK
-    FUNCTION J-SHOW
-    FUNCTION J-NEXTACTION
-    FUNCTION J-GETWIDTH
-    FUNCTION J-GETHEIGHT
-    FUNCTION J-DRAWRECT
-    FUNCTION J-DRAWLINE
-    FUNCTION J-SETINSETS
-    FUNCTION J-GETINSETS
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-INSETS                          BINARY-INT.
- 01 WS-PLUS                            BINARY-INT.
- 01 WS-MINUS                           BINARY-INT.
- 01 WS-CANVAS                          BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-INSETS                          BINARY-LONG.
+ 01 WS-PLUS                            BINARY-LONG.
+ 01 WS-MINUS                           BINARY-LONG.
+ 01 WS-CANVAS                          BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-X                               BINARY-INT.
- 01 WS-Y                               BINARY-INT.
- 01 WS-TOP                             BINARY-INT.
- 01 WS-BOTTOM                          BINARY-INT.
- 01 WS-LEFT                            BINARY-INT.
- 01 WS-RIGHT                           BINARY-INT.
-     
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-X                               BINARY-LONG.
+ 01 WS-Y                               BINARY-LONG.
+ 01 WS-TOP                             BINARY-LONG.
+ 01 WS-BOTTOM                          BINARY-LONG.
+ 01 WS-LEFT                            BINARY-LONG.
+ 01 WS-RIGHT                           BINARY-LONG.
  
  PROCEDURE DIVISION.
 

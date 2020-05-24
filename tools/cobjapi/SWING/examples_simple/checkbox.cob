@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - checkbox.c converted into checkbox.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,51 +54,36 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-MENUBAR
-    FUNCTION J-MENU
-    FUNCTION J-MENUITEM    
-    FUNCTION J-CHECKBOX
-    FUNCTION J-SETSIZE
-    FUNCTION J-SETPOS
-    FUNCTION J-SETSTATE
-    FUNCTION J-GETSTATE
-    FUNCTION J-SETCOLORBG
-    FUNCTION J-SHOW
-    FUNCTION J-NEXTACTION
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
 *> checkbox
- 01 WS-BLUE                            BINARY-INT.
- 01 WS-RED                             BINARY-INT.
- 01 WS-GREEN                           BINARY-INT.
+ 01 WS-BLUE                            BINARY-LONG.
+ 01 WS-RED                             BINARY-LONG.
+ 01 WS-GREEN                           BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
- 01 WS-R                               BINARY-INT.
- 01 WS-G                               BINARY-INT.
- 01 WS-B                               BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
+ 01 WS-R                               BINARY-LONG.
+ 01 WS-G                               BINARY-LONG.
+ 01 WS-B                               BINARY-LONG.
 
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
- 
  PROCEDURE DIVISION.
 
 *>------------------------------------------------------------------------------

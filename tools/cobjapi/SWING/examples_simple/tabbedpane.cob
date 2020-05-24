@@ -41,6 +41,9 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.21 Laszlo Erdos: 
 *>            - panel.cob converted into tabbedpane.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -50,60 +53,42 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-MENUBAR
-    FUNCTION J-MENU
-    FUNCTION J-MENUITEM    
-    FUNCTION J-SETBORDERLAYOUT
-    FUNCTION J-PANEL
-    FUNCTION J-TABBEDPANE
-    FUNCTION J-ADDTAB
-    FUNCTION J-PACK
-    FUNCTION J-SHOW
-    FUNCTION J-LABEL
-    FUNCTION J-SETPOS
-    FUNCTION J-NEXTACTION
-    FUNCTION J-SETBORDERPOS
-    FUNCTION J-SETINSETS
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+ COPY "CobjapiConstants.cpy".
 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-PANEL                           BINARY-INT.
- 01 WS-TABBEDPANE-1                    BINARY-INT.
- 01 WS-TABBEDPANE-2                    BINARY-INT.
- 01 WS-TAB-PANEL-1                     BINARY-INT.
- 01 WS-TAB-PANEL-2                     BINARY-INT.
- 01 WS-TAB-PANEL-3                     BINARY-INT.
- 01 WS-TAB-PANEL-31                    BINARY-INT.
- 01 WS-TAB-PANEL-32                    BINARY-INT.
- 01 WS-TAB-PANEL-33                    BINARY-INT.
- 01 WS-LABEL                           BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-PANEL                           BINARY-LONG.
+ 01 WS-TABBEDPANE-1                    BINARY-LONG.
+ 01 WS-TABBEDPANE-2                    BINARY-LONG.
+ 01 WS-TAB-PANEL-1                     BINARY-LONG.
+ 01 WS-TAB-PANEL-2                     BINARY-LONG.
+ 01 WS-TAB-PANEL-3                     BINARY-LONG.
+ 01 WS-TAB-PANEL-31                    BINARY-LONG.
+ 01 WS-TAB-PANEL-32                    BINARY-LONG.
+ 01 WS-TAB-PANEL-33                    BINARY-LONG.
+ 01 WS-LABEL                           BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
- 01 WS-TOP                             BINARY-INT.
- 01 WS-BOTTOM                          BINARY-INT.
- 01 WS-LEFT                            BINARY-INT.
- 01 WS-RIGHT                           BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
+ 01 WS-TOP                             BINARY-LONG.
+ 01 WS-BOTTOM                          BINARY-LONG.
+ 01 WS-LEFT                            BINARY-LONG.
+ 01 WS-RIGHT                           BINARY-LONG.
 
  PROCEDURE DIVISION.
 

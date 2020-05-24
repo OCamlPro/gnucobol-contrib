@@ -42,6 +42,9 @@
 *> 2015.01.08 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - digits.c converted into digits.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,45 +54,44 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-*> Functions for the cobjapi wrapper 
- COPY "cobjapifn.cpy".
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+ COPY "CobjapiConstants.cpy".
  
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-PANEL                           BINARY-INT.
- 01 WS-SEVEN                           BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-PANEL                           BINARY-LONG.
+ 01 WS-SEVEN                           BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
 
  01 WS-MOUSE-TAB.
    02 WS-MOUSE-TAB-LINES OCCURS 4 TIMES.
-     03 WS-MOUSE-TAB-LINE              BINARY-INT.
+     03 WS-MOUSE-TAB-LINE              BINARY-LONG.
  01 WS-LED-TAB.
    02 WS-LED-TAB-LINES   OCCURS 4 TIMES.
-     03 WS-LED-TAB-LINE                BINARY-INT.
+     03 WS-LED-TAB-LINE                BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-TOP                             BINARY-INT.
- 01 WS-BOTTOM                          BINARY-INT.
- 01 WS-LEFT                            BINARY-INT.
- 01 WS-RIGHT                           BINARY-INT.
- 01 WS-HGAP                            BINARY-INT.
- 01 WS-VGAP                            BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-VALUE                           BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-TOP                             BINARY-LONG.
+ 01 WS-BOTTOM                          BINARY-LONG.
+ 01 WS-LEFT                            BINARY-LONG.
+ 01 WS-RIGHT                           BINARY-LONG.
+ 01 WS-HGAP                            BINARY-LONG.
+ 01 WS-VGAP                            BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-VALUE                           BINARY-LONG.
 
 *> vars
- 01 WS-IND                             BINARY-INT.
+ 01 WS-IND                             BINARY-LONG.
  
  PROCEDURE DIVISION.
 

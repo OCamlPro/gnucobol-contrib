@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - borderlayout.c converted into borderlayout.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,36 +54,27 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-SETBORDERLAYOUT
-    FUNCTION J-BUTTON
-    FUNCTION J-SETBORDERPOS
-    FUNCTION J-SHOW
-    FUNCTION J-NEXTACTION
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-LEFT                            BINARY-INT.
- 01 WS-RIGHT                           BINARY-INT.
- 01 WS-BOTTOM                          BINARY-INT.
- 01 WS-TOP                             BINARY-INT.
- 01 WS-CENTER                          BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-LEFT                            BINARY-LONG.
+ 01 WS-RIGHT                           BINARY-LONG.
+ 01 WS-BOTTOM                          BINARY-LONG.
+ 01 WS-TOP                             BINARY-LONG.
+ 01 WS-CENTER                          BINARY-LONG.
 
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
  
  PROCEDURE DIVISION.
 

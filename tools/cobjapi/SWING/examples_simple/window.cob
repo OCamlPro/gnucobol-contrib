@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - window.c converted into window.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,55 +54,38 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-WINDOW
-    FUNCTION J-SETFLOWLAYOUT
-    FUNCTION J-LABEL
-    FUNCTION J-SETNAMEDCOLORBG
-    FUNCTION J-MOUSELISTENER
-    FUNCTION J-GETPOS
-    FUNCTION J-SETPOS
-    FUNCTION J-GETMOUSEPOS
-    FUNCTION J-PACK
-    FUNCTION J-SHOW
-    FUNCTION J-NEXTACTION
-    FUNCTION J-SETTEXT
-    FUNCTION J-HIDE
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-LABEL                           BINARY-INT.
- 01 WS-WINDOW                          BINARY-INT.
- 01 WS-RELEASED                        BINARY-INT.
- 01 WS-PRESSED                         BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-LABEL                           BINARY-LONG.
+ 01 WS-WINDOW                          BINARY-LONG.
+ 01 WS-RELEASED                        BINARY-LONG.
+ 01 WS-PRESSED                         BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
- 01 WS-X                               BINARY-INT.
- 01 WS-Y                               BINARY-INT.
- 01 WS-FX                              BINARY-INT.
- 01 WS-FY                              BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
+ 01 WS-X                               BINARY-LONG.
+ 01 WS-Y                               BINARY-LONG.
+ 01 WS-FX                              BINARY-LONG.
+ 01 WS-FY                              BINARY-LONG.
  01 WS-X-DISP                          PIC 9(4).
  01 WS-Y-DISP                          PIC 9(4).
  01 WS-FX-DISP                         PIC 9(4).
  01 WS-FY-DISP                         PIC 9(4).
  01 WS-MESSAGE                         PIC X(256).
-
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
  
  PROCEDURE DIVISION.
 

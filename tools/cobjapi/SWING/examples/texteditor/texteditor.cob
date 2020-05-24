@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - text.c converted into texteditor.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,43 +54,42 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-*> Functions for the cobjapi wrapper 
- COPY "cobjapifn.cpy".
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+ COPY "CobjapiConstants.cpy".
  
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-PANEL                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-NEW                             BINARY-INT.
- 01 WS-SAVE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-EDIT                            BINARY-INT.
- 01 WS-SELALL                          BINARY-INT.
- 01 WS-CUT                             BINARY-INT.
- 01 WS-COPY                            BINARY-INT.
- 01 WS-PASTE                           BINARY-INT.
- 01 WS-TEXT                            BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-PANEL                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-NEW                             BINARY-LONG.
+ 01 WS-SAVE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-EDIT                            BINARY-LONG.
+ 01 WS-SELALL                          BINARY-LONG.
+ 01 WS-CUT                             BINARY-LONG.
+ 01 WS-COPY                            BINARY-LONG.
+ 01 WS-PASTE                           BINARY-LONG.
+ 01 WS-TEXT                            BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-SELSTART                        BINARY-INT VALUE 0.
- 01 WS-SELEND                          BINARY-INT VALUE 0.
- 01 WS-ROW                             BINARY-INT.
- 01 WS-COL                             BINARY-INT.
- 01 WS-FONTSIZE                        BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-SELSTART                        BINARY-LONG VALUE 0.
+ 01 WS-SELEND                          BINARY-LONG VALUE 0.
+ 01 WS-ROW                             BINARY-LONG.
+ 01 WS-COL                             BINARY-LONG.
+ 01 WS-FONTSIZE                        BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
  
  01 WS-NEWTEXT                         PIC X(256) VALUE
     "JAPI (Java Application"   & X"0A" &

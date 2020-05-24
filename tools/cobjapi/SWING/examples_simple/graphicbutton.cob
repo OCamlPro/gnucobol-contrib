@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - graphicbutton.c converted into graphicbutton.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,47 +54,31 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-SETFLOWLAYOUT
-    FUNCTION J-SETINSETS
-    FUNCTION J-SETHGAP
-    FUNCTION J-SETVGAP
-    FUNCTION J-GRAPHICBUTTON
-    FUNCTION J-SETIMAGE
-    FUNCTION J-LOADIMAGE
-    FUNCTION J-DISABLE
-    FUNCTION J-ENABLE
-    FUNCTION J-SHOW
-    FUNCTION J-PACK
-    FUNCTION J-NEXTACTION
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-FIRST                           BINARY-INT.
- 01 WS-GBUTTON                         BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-FIRST                           BINARY-LONG.
+ 01 WS-GBUTTON                         BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-HGAP                            BINARY-INT.
- 01 WS-VGAP                            BINARY-INT.
- 01 WS-TOP                             BINARY-INT.
- 01 WS-BOTTOM                          BINARY-INT.
- 01 WS-LEFT                            BINARY-INT.
- 01 WS-RIGHT                           BINARY-INT.
- 
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-HGAP                            BINARY-LONG.
+ 01 WS-VGAP                            BINARY-LONG.
+ 01 WS-TOP                             BINARY-LONG.
+ 01 WS-BOTTOM                          BINARY-LONG.
+ 01 WS-LEFT                            BINARY-LONG.
+ 01 WS-RIGHT                           BINARY-LONG.
  
  PROCEDURE DIVISION.
 

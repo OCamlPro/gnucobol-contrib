@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - dialogmodal.c converted into dialogmodal.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,55 +54,33 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-MENUBAR
-    FUNCTION J-MENU
-    FUNCTION J-MENUITEM    
-    FUNCTION J-DIALOG
-    FUNCTION J-SETFLOWLAYOUT
-    FUNCTION J-LABEL
-    FUNCTION J-BUTTON
-    FUNCTION J-PACK
-    FUNCTION J-SHOW
-    FUNCTION J-HIDE
-    FUNCTION J-NEXTACTION
-    FUNCTION J-DISABLE
-    FUNCTION J-ENABLE
-    FUNCTION J-GETXPOS
-    FUNCTION J-GETYPOS
-    FUNCTION J-GETWIDTH
-    FUNCTION J-GETHEIGHT
-    FUNCTION J-SETPOS
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
- 01 WS-DOIT                            BINARY-INT.
- 01 WS-OPEN                            BINARY-INT.
- 01 WS-DIALOG                          BINARY-INT.
- 01 WS-LABEL                           BINARY-INT.
- 01 WS-CLOSE                           BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
+ 01 WS-DOIT                            BINARY-LONG.
+ 01 WS-OPEN                            BINARY-LONG.
+ 01 WS-DIALOG                          BINARY-LONG.
+ 01 WS-LABEL                           BINARY-LONG.
+ 01 WS-CLOSE                           BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
-
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
  
  PROCEDURE DIVISION.
 

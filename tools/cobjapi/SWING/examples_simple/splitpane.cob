@@ -42,6 +42,9 @@
 *> 2018.03.13 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - splitpane.c converted into splitpane.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,44 +54,30 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-SETBORDERLAYOUT
-    FUNCTION J-SPLITPANE
-    FUNCTION J-SETBORDERPOS
-    FUNCTION J-PANEL
-    FUNCTION J-SETCOLORBG
-    FUNCTION J-LABEL
-    FUNCTION J-SETSPLITPANELEFT
-    FUNCTION J-SETSPLITPANERIGHT
-    FUNCTION J-SHOW
-    FUNCTION J-NEXTACTION
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
- 01 J-HORIZONTAL                       BINARY-INT VALUE 0.
- 01 J-CENTER                           BINARY-INT VALUE 1.
+ COPY "CobjapiConstants.cpy".
 
  *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-PANEL-1                         BINARY-INT.
- 01 WS-PANEL-2                         BINARY-INT.
- 01 WS-SP                              BINARY-INT.
- 01 WS-LABEL                           BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-PANEL-1                         BINARY-LONG.
+ 01 WS-PANEL-2                         BINARY-LONG.
+ 01 WS-SP                              BINARY-LONG.
+ 01 WS-LABEL                           BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-POS                             BINARY-INT.
- 01 WS-R                               BINARY-INT.
- 01 WS-G                               BINARY-INT.
- 01 WS-B                               BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-POS                             BINARY-LONG.
+ 01 WS-R                               BINARY-LONG.
+ 01 WS-G                               BINARY-LONG.
+ 01 WS-B                               BINARY-LONG.
 
  PROCEDURE DIVISION.
 

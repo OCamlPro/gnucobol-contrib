@@ -55,6 +55,9 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.10 Laszlo Erdos: 
 *>            - textfield.cob converted into formattedtextfield.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -64,40 +67,31 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-FORMATTEDTEXTFIELD
-    FUNCTION J-LABEL
-    FUNCTION J-SETECHOCHAR
-    FUNCTION J-SETPOS
-    FUNCTION J-GETTEXT
-    FUNCTION J-SHOW
-    FUNCTION J-PACK
-    FUNCTION J-NEXTACTION
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-FTEXTFIELD-1                    BINARY-INT.
- 01 WS-FTEXTFIELD-2                    BINARY-INT.
- 01 WS-FTEXTFIELD-3                    BINARY-INT.
- 01 WS-FTEXTFIELD-4                    BINARY-INT.
- 01 WS-LABEL                           BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-FTEXTFIELD-1                    BINARY-LONG.
+ 01 WS-FTEXTFIELD-2                    BINARY-LONG.
+ 01 WS-FTEXTFIELD-3                    BINARY-LONG.
+ 01 WS-FTEXTFIELD-4                    BINARY-LONG.
+ 01 WS-LABEL                           BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-COLUMNS                         BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-COLUMNS                         BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
  01 WS-CONTENT                         PIC X(256).
  01 WS-MASK-STR                        PIC X(30).
  01 WS-PLACE-HOLDER-CHAR               PIC X(1).

@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - menu.c converted into menu.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,58 +54,40 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-MENUBAR
-    FUNCTION J-MENU
-    FUNCTION J-HELPMENU
-    FUNCTION J-MENUITEM    
-    FUNCTION J-SEPARATOR
-    FUNCTION J-DISABLE
-    FUNCTION J-ENABLE
-    FUNCTION J-SETSHORTCUT
-    FUNCTION J-CHECKMENUITEM
-    FUNCTION J-SHOW
-    FUNCTION J-NEXTACTION
-    FUNCTION J-GETSTATE
-    FUNCTION J-GETTEXT
-    FUNCTION J-SETTEXT
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-SUBMENU                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-EDIT                            BINARY-INT.
- 01 WS-OPTIONS                         BINARY-INT.
- 01 WS-HELP                            BINARY-INT.
- 01 WS-OPEN                            BINARY-INT.
- 01 WS-SAVE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-ABOUT                           BINARY-INT.
- 01 WS-CUT                             BINARY-INT.
- 01 WS-COPY                            BINARY-INT.
- 01 WS-PASTE                           BINARY-INT.
- 01 WS-ENABLE                          BINARY-INT.
- 01 WS-SETTINGS                        BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-SUBMENU                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-EDIT                            BINARY-LONG.
+ 01 WS-OPTIONS                         BINARY-LONG.
+ 01 WS-HELP                            BINARY-LONG.
+ 01 WS-OPEN                            BINARY-LONG.
+ 01 WS-SAVE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-ABOUT                           BINARY-LONG.
+ 01 WS-CUT                             BINARY-LONG.
+ 01 WS-COPY                            BINARY-LONG.
+ 01 WS-PASTE                           BINARY-LONG.
+ 01 WS-ENABLE                          BINARY-LONG.
+ 01 WS-SETTINGS                        BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
  01 WS-SHORTCUT-CHAR                   BINARY-CHAR.
  01 WS-CONTENT                         PIC X(1024).
-     
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
  
  PROCEDURE DIVISION.
 

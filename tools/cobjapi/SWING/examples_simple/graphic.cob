@@ -42,6 +42,9 @@
 *> 2014.12.24 Laszlo Erdos: 
 *>            - GnuCOBOL support for JAPI added. 
 *>            - graphic.c converted into graphic.cob. 
+*>------------------------------------------------------------------------------
+*> 2020.05.23 Laszlo Erdos: 
+*>            - BINARY-INT replaced with BINARY-LONG.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -51,99 +54,71 @@
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
  REPOSITORY.
-    FUNCTION J-SETDEBUG
-    FUNCTION J-START
-    FUNCTION J-FRAME
-    FUNCTION J-CANVAS
-    FUNCTION J-SETSIZE
-    FUNCTION J-SETPOS
-    FUNCTION J-SHOW
-    FUNCTION J-PACK
-    FUNCTION J-SETNAMEDCOLOR
-    FUNCTION J-CLIPRECT
-    FUNCTION J-TRANSLATE
-    FUNCTION J-DRAWSTRING
-    FUNCTION J-DRAWLINE
-    FUNCTION J-DRAWPOLYGON
-    FUNCTION J-DRAWRECT
-    FUNCTION J-DRAWROUNDRECT
-    FUNCTION J-DRAWCIRCLE
-    FUNCTION J-DRAWOVAL
-    FUNCTION J-DRAWARC
-    FUNCTION J-DRAWPOLYLINE
-    FUNCTION J-FILLPOLYGON
-    FUNCTION J-FILLRECT
-    FUNCTION J-FILLROUNDRECT
-    FUNCTION J-FILLCIRCLE
-    FUNCTION J-FILLOVAL
-    FUNCTION J-FILLARC
-    FUNCTION J-NEXTACTION
-    FUNCTION J-QUIT
-    FUNCTION ALL INTRINSIC.
+    FUNCTION ALL INTRINSIC
+    COPY "CobjapiFunctions.cpy".
 
  DATA DIVISION.
 
  WORKING-STORAGE SECTION.
+ COPY "CobjapiConstants.cpy".
+ 
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
- 01 WS-CANVAS                          BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
+ 01 WS-CANVAS                          BINARY-LONG.
 
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
- 01 WS-X                               BINARY-INT.
- 01 WS-Y                               BINARY-INT.
- 01 WS-R                               BINARY-INT.
- 01 WS-RX                              BINARY-INT.
- 01 WS-RY                              BINARY-INT.
- 01 WS-ARC1                            BINARY-INT.
- 01 WS-ARC2                            BINARY-INT.
- 01 WS-X1                              BINARY-INT.
- 01 WS-Y1                              BINARY-INT.
- 01 WS-X2                              BINARY-INT.
- 01 WS-Y2                              BINARY-INT.
- 01 WS-ARCX                            BINARY-INT.
- 01 WS-ARCY                            BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
+ 01 WS-X                               BINARY-LONG.
+ 01 WS-Y                               BINARY-LONG.
+ 01 WS-R                               BINARY-LONG.
+ 01 WS-RX                              BINARY-LONG.
+ 01 WS-RY                              BINARY-LONG.
+ 01 WS-ARC1                            BINARY-LONG.
+ 01 WS-ARC2                            BINARY-LONG.
+ 01 WS-X1                              BINARY-LONG.
+ 01 WS-Y1                              BINARY-LONG.
+ 01 WS-X2                              BINARY-LONG.
+ 01 WS-Y2                              BINARY-LONG.
+ 01 WS-ARCX                            BINARY-LONG.
+ 01 WS-ARCY                            BINARY-LONG.
 *> Polygon 
- 01 WS-POLYGON-LEN                     BINARY-INT VALUE 10.
+ 01 WS-POLYGON-LEN                     BINARY-LONG VALUE 10.
  01 WS-POLYGON-X-VALUES.
-   02 FILLER                           BINARY-INT VALUE  10.
-   02 FILLER                           BINARY-INT VALUE  20.
-   02 FILLER                           BINARY-INT VALUE  30.
-   02 FILLER                           BINARY-INT VALUE  40.
-   02 FILLER                           BINARY-INT VALUE  50.
-   02 FILLER                           BINARY-INT VALUE  60.
-   02 FILLER                           BINARY-INT VALUE  70.
-   02 FILLER                           BINARY-INT VALUE  80.
-   02 FILLER                           BINARY-INT VALUE  90.
-   02 FILLER                           BINARY-INT VALUE 100.
+   02 FILLER                           BINARY-LONG VALUE  10.
+   02 FILLER                           BINARY-LONG VALUE  20.
+   02 FILLER                           BINARY-LONG VALUE  30.
+   02 FILLER                           BINARY-LONG VALUE  40.
+   02 FILLER                           BINARY-LONG VALUE  50.
+   02 FILLER                           BINARY-LONG VALUE  60.
+   02 FILLER                           BINARY-LONG VALUE  70.
+   02 FILLER                           BINARY-LONG VALUE  80.
+   02 FILLER                           BINARY-LONG VALUE  90.
+   02 FILLER                           BINARY-LONG VALUE 100.
  01 WS-POLYGON-X REDEFINES WS-POLYGON-X-VALUES.
    02 WS-POLYGON-X-LINES OCCURS 10 TIMES.
-     03 WS-POLYGON-X-LINE              BINARY-INT.
+     03 WS-POLYGON-X-LINE              BINARY-LONG.
  01 WS-POLYGON-Y-VALUES.
-   02 FILLER                           BINARY-INT VALUE  10.
-   02 FILLER                           BINARY-INT VALUE  90.
-   02 FILLER                           BINARY-INT VALUE  10.
-   02 FILLER                           BINARY-INT VALUE  90.
-   02 FILLER                           BINARY-INT VALUE  10.
-   02 FILLER                           BINARY-INT VALUE  90.
-   02 FILLER                           BINARY-INT VALUE  10.
-   02 FILLER                           BINARY-INT VALUE  90.
-   02 FILLER                           BINARY-INT VALUE  10.
-   02 FILLER                           BINARY-INT VALUE  90.
+   02 FILLER                           BINARY-LONG VALUE  10.
+   02 FILLER                           BINARY-LONG VALUE  90.
+   02 FILLER                           BINARY-LONG VALUE  10.
+   02 FILLER                           BINARY-LONG VALUE  90.
+   02 FILLER                           BINARY-LONG VALUE  10.
+   02 FILLER                           BINARY-LONG VALUE  90.
+   02 FILLER                           BINARY-LONG VALUE  10.
+   02 FILLER                           BINARY-LONG VALUE  90.
+   02 FILLER                           BINARY-LONG VALUE  10.
+   02 FILLER                           BINARY-LONG VALUE  90.
  01 WS-POLYGON-Y REDEFINES WS-POLYGON-Y-VALUES.
    02 WS-POLYGON-Y-LINES OCCURS 10 TIMES.
-     03 WS-POLYGON-Y-LINE              BINARY-INT.
- 
-*> Constants for the cobjapi wrapper 
- COPY "cobjapi.cpy".
+     03 WS-POLYGON-Y-LINE              BINARY-LONG.
  
  PROCEDURE DIVISION.
 
