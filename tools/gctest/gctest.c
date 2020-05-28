@@ -45,9 +45,10 @@ static int  bNeedsIsam = 0;
 static char progexe[100];
 static char progname[100];
 static char diffProg[32] = "gcdiff";
+
 /*
  * Display program usage information
-*/
+ */
 static void
 usage(char *binname)
 {
@@ -390,29 +391,42 @@ main(
 	int		argc,
 	char	*argv[])
 {
-	int		opt,i,j,k,compsts,runsts;
-	int		getSummary = 1;
-	int		getKeyword = 1;
-	int		fixedFormat = 1;
-	int		bCompileOnly = 0;
-	int		bCompileModule = 0;
-	int		bCompile = 1;
-	int		bWall = 1;
-	int		bStdMf = 0;
-	int		bStdIBM = 0;
-	int		bStd2002 = 0;
-	int		bStd2014 = 0;
-	int		bStd85 = 0;
-	int		bStdDefault = 0;
-	int		bAppendAutoTest = 0;
-	int		bDoSetup = 0;
-	int		preln;
-	char	inpdd[48],outdd[48],*p,setdd[48],settestfile[200];
-	char	tmp[300],wrk[200],progout[200],cmod[80], cobstd[16], autoname[48];
-	char	setup[200],keywords[200],callfh[48];
-	char	inptestfile[200],outtestfile[200],compilecmd[256];
-	char	outlst[80],errlst[80],compprefx[64];
-	char	libs[256],flags[128], exshr[8];
+	int	opt,i,j,k,compsts,runsts;
+	int	getSummary = 1;
+	int	getKeyword = 1;
+	int	fixedFormat = 1;
+	int	bCompileOnly = 0;
+	int	bCompileModule = 0;
+	int	bCompile = 1;
+	int	bWall = 1;
+	int	bStdMf = 0;
+	int	bStdIBM = 0;
+	int	bStd2002 = 0;
+	int	bStd2014 = 0;
+	int	bStd85 = 0;
+	int	bStdDefault = 1;
+	int	bAppendAutoTest = 0;
+	int	bDoSetup = 0;
+	int	preln;
+	char	inpdd[48] = "INPUT",
+	        outdd[48] = "OUTPUT",
+	        *p,setdd[48],settestfile[200];
+	char	tmp[300],wrk[200],progout[200],
+	        cmod[80]         = {},
+	        cobstd[16]       = "default",
+	        autoname[48]     = {};
+	char	setup[200]       = "SAMPLE PROGRAM",
+	        keywords[200]    = "report",
+	        callfh[48]       = {};
+	char	inptestfile[200] = {},
+	        outtestfile[200] = {},
+	        compilecmd[256];
+	char	outlst[80]       = "./stdout.lst",
+	        errlst[80]       = "./stderr.lst",
+	        compprefx[64];
+	char	libs[256]        = {},
+	        flags[128]       = {},
+	        exshr[8]         = "-x";
 	char	compFiles[dMaxFile][80];
 	char	outFiles[dMaxFile][80];
 	char	ddFiles[dMaxFile][80];
@@ -421,32 +435,15 @@ main(
 	char	setCompEnv[dMaxFile][80];
 	char	setDef[dMaxFile][80];
 	FILE	*at,*fi;
-	int		numComp = 0;
-	int		addBlank = 0, numFiles = 0, numBooks = 0, numEnv = 0, numDef = 0, numCenv = 0;
+	int     numComp = 0;
+	int     addBlank = 0, numFiles = 0, numBooks = 0, numEnv = 0, numDef = 0, numCenv = 0;
 
-	strcpy(setup,"SAMPLE PROGRAM");
-	strcpy(keywords,"report");
-	strcpy(outlst,"./stdout.lst");
-	strcpy(errlst,"./stderr.lst");
-	strcpy(inpdd,"INPUT");
-	strcpy(outdd,"OUTPUT");
-	memset(inptestfile,0,sizeof(inptestfile));
-	memset(outtestfile,0,sizeof(outtestfile));
-	memset(progname,0,sizeof(progname));
-	memset(progexe,0,sizeof(progexe));
-	memset(cmod,0,sizeof(cmod));
-	memset(callfh,0,sizeof(callfh));
-	memset(libs,0,sizeof(libs));
-	memset(flags,0,sizeof(flags));
-	memset(autoname,0,sizeof(autoname));
 	putenv("SHELL=/bin/sh");
 	putenv("COMPILE_MODULE=cobc");
 	putenv("COMPILE_ONLY=cobc");
 	putenv("COMPILE=cobc");
 	putenv("COBC=cobc");
-	strcpy(exshr,"-x");
-	strcpy(cobstd,"default");
-	bStdDefault = 1;
+
 	while ((opt=getopt(argc, argv, "ai:o:O:c:d:hp:B:C:D:X:s:S:k:x:eEgbImwvVM:t:L:l:f:F:Z:")) != EOF) {
 		switch(opt) {
 		case 'a':
