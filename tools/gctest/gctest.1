@@ -1,0 +1,134 @@
+.Dd 21 May 2020
+.Dt GCTEST \&1 GnuCOBOL
+.\"Os Linux 
+.Sh NAME
+.Nm gctest
+.Nd create file for inclusion in GnuCOBOL testsuite
+.Sh SYNOPSIS
+.Nm Oo options Oc Op Ar program
+.Sh DESCRIPTION
+.Nm
+invokes the GnuCOBOL compiler and executes the program.
+It will capture output from the compiler and program execution to create
+an autotest file suitable for inclusion in the GnuCOBOL testsuite.
+You have to manually merge in the created
+.Sy program.at
+file yourself.
+.Pp
+The options are:
+.Bl -tag -width "-o outputfile" -compact
+.It Fl p Ar program
+COBOL program to compile and test
+.It Fl C Ar mod.c
+a C module to be compiled and linked to 
+.Ar program
+.It Fl B Ar copybook
+include
+.Ar copybook
+to autotest file for compile
+.It Fl i Ar input
+define input file for test program
+.It Fl o Ar report
+define output report file
+.It Fl O Ar line-seq
+define LINE SEQUENTIAL output file
+.It Fl a
+append to
+.Sy program.at 
+(default is overwrite)
+.It Fl b
+make test code start with blank line
+.It Fl e
+test compile only, expecting errors
+.It Fl E
+compile only \(em both std=mf & std=2002 \(em expecting errors
+.It Fl f Ar opt
+add
+.Fl f opt
+to compile command
+.It Fl F Ar opt
+add
+.Fl opt
+to compile command
+.It Fl g
+compile as shared module
+.It Fl m
+use
+.Fl std=mf
+instead of
+.Fl std=cobol2002
+.It Fl M Ar name
+use
+.Ar name Ns Li .at
+for autotest file name
+.It Fl I
+use
+.Fl std=ibm
+instead of
+.Fl std=cobol2002
+.It Fl t Ar std
+compile with 
+.Fl std Ns Li = Ns Ar std 
+where
+.Ar std
+is one of mf, ibm, 2002, 2014, 85, ibm, mvs, acu, or bs2000
+.It Fl w
+compile with no warnings
+.It Fl S Ar name Ns Li = Ns Ar value
+set environment variable
+.Ar name
+to
+.Ar value
+when running the test
+.It Fl D Ar name Ns Li = Ns Ar value
+compiler Directing variable
+.Ar name
+is set to
+.Ar value
+.It Fl X Ar name Ns Li = Ns Ar value
+set environment variable
+.Ar name
+to
+.Ar value
+before invoking
+.Sy cobc
+.It Fl Z Ar filename
+file to be captured which is output by compiler
+.It Fl c Sq Ar compiler
+invoke
+.Sy cobc
+as
+.Ar compiler
+.It Fl k Sq Ar keywords
+add
+.Ar keywords
+as the test's keywords
+.It Fl s Sq Ar setup
+add
+.Ar setup
+as the test's setup name
+.El
+.
+.Pp
+.Ar program
+may be provided with
+.Fl p ,
+or as a final argument.  If both, the last name is ignored. 
+.
+.\" .Sh ENVIRONMENT
+.\" .Sh FILES
+.\" .Sh EXIT STATUS
+.Sh EXAMPLES
+.Bd -literal -offset 5n
+gctest -m -b -k report -s 'Sample REPORT' \\
+       -i STUDENT=student0.inp \\
+       -o REPORT1=REPORT0.txt -p rwtst0.bat
+.Ed
+.\" .Sh DIAGNOSTICS
+.\" .Sh COMPATIBILITY
+.\" .Sh SEE ALSO
+.\" .Sh STANDARDS
+.\" .Sh HISTORY
+.\" .Sh AUTHORS
+.\" .Sh CAVEATS
+.\" .Sh BUGS
