@@ -24,25 +24,26 @@
                and create the autotest data as a byproduct
 */
 
+#include <assert.h>
+#include <ctype.h>  
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h> 
-#include <time.h> 
 #include <sys/time.h> 
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <ctype.h>  
+#include <time.h> 
+#include <unistd.h>
 
 extern char *optarg;
 extern int optind;
 
 static int  incrErr = 0;
 static int  bShareMod = 0;
-static int	bVerbose = 0;
-static int	bNeedsIsam = 0;
-static char progexe[100] = " ? $ ";
-static char progname[100] = " ";
+static int  bVerbose = 0;
+static int  bNeedsIsam = 0;
+static char progexe[100];
+static char progname[100];
 static char diffProg[32] = "gcdiff";
 /*
  * Display program usage information
@@ -625,12 +626,12 @@ main(
 			printf("Unknown option '%c' \n",opt);
 		case 'h':
 			usage(argv[0]);
-			exit(0);
+			exit(EXIT_FAILURE);
 			break;
 		case 'V':
 			printf("GnuCOBOL compile a COBOL program, execute & capture output\n");
 			printf("%s compiled on %s %s\n",__FILE__,__DATE__,__TIME__);
-			exit(0);
+			exit(EXIT_FAILURE);
 			break;
 		}
 	}
@@ -651,9 +652,9 @@ main(
 		strcpy(progname,argv[optind]);
 	}
 	if(progname[0] <= ' ') {
-		printf("Missing program name to test;\n");
+	        fprintf(stderr, "Missing program name to test;\n");
 		usage(argv[0]);
-		exit(0);
+		exit(EXIT_FAILURE);
 	}
 	strcpy(progout,progname);
 	if((p=strrchr(progout,'.') ) != NULL)
@@ -663,7 +664,7 @@ main(
 	fi = fopen(progname,"r");
 	if(fi == NULL) {
 		perror(progname);
-		exit(-1);
+		exit(EXIT_FAILURE);
 	}
 	snifFile(fi,&fixedFormat,getSummary,setup,getKeyword,keywords);
 	fi = NULL;
@@ -673,7 +674,7 @@ main(
 	at = fopen(tmp,bAppendAutoTest?"a":"w");
 	if(at == NULL) {
 		perror(tmp);
-		exit(-1);
+		exit(EXIT_FAILURE);
 	}
 	fprintf(at,"\n");
 	if(autoname[0] <= ' '
@@ -705,13 +706,13 @@ main(
 	sprintf(&tmp[strlen(tmp)]," 1>%s 2>%s",outlst,errlst);
 	compsts = system(tmp);
 	if(compsts != 0)
-		printf("Compile of %s failed!\n",progname);
+		fprintf(stderr, "Compile of %s failed!\n",progname);
 	if(inptestfile[0] > ' '
 	&& compsts == 0) {
 		fi = fopen(inptestfile,"r");
 		if(fi == NULL) {
 			perror(inptestfile);
-			exit(-1);
+			exit(EXIT_FAILURE);
 		}
 		fprintf(at,"AT_DATA([inp_data],[");
 		copyFile(fi,at,0,0,0,NULL,NULL,0,0);
@@ -735,7 +736,7 @@ main(
 	fi = fopen(progname,"r");
 	if(fi == NULL) {
 		perror(progname);
-		exit(-1);
+		exit(EXIT_FAILURE);
 	}
 	if(bCompileModule) {
 		fprintf(at,"AT_DATA([%s], [",progname);
@@ -752,7 +753,7 @@ main(
 		fi = fopen(cmod,"r");
 		if(fi == NULL) {
 			perror(cmod);
-			exit(-1);
+			exit(EXIT_FAILURE);
 		}
 		fprintf(at,"AT_DATA([cmod.c], [[");
 		copyFile(fi,at,addBlank,0,0,NULL,NULL,0,1);
@@ -846,13 +847,21 @@ ReDoCompile:
 		sprintf(tmp,"./%s 1>%s 2>%s",progout,outlst,errlst);
 		runsts = system(tmp);
 		if(runsts != 0) {
+			printf("Execution of %s failed! Status: 0x%04X; ",progname, runsts);
+			if( WIFEXITED(runsts) ) {
+				printf("exit %d\n", WEXITSTATUS(runsts));
+			} else if(  !WIFSIGNALED(runsts) ) {
+				printf("(neither normal exit nor signaled?)\n");
+			} else {
+				assert(WIFSIGNALED(runsts));
+				const char *core_file = "";
 #if defined(WCOREDUMP)
-			printf("Execution of %s failed! Status: 0x%04X; exit %d; Core %d\n",progname,runsts,
-						WIFEXITED(runsts),WEXITSTATUS(runsts),WCOREDUMP(runsts));
-#else
-			printf("Execution of %s failed! Status: 0x%04X; exit %d\n",progname,runsts,
-						WIFEXITED(runsts),WEXITSTATUS(runsts));
+				if( WCOREDUMP(runsts) ) {
+					core_file = "(core_file)";
+				}
 #endif
+				printf("exit %d %s\n", WTERMSIG(runsts), core_file);
+			}
 		}
 		fprintf(at,"AT_CHECK([");
 		if(inptestfile[0] > ' ') {
@@ -934,7 +943,7 @@ ReDoCompile:
 		sprintf(tmp,"./%s",progout);
 		unlink(tmp);
 	}
-	exit(0);
-	return 0;
+
+	return EXIT_SUCCESS;
 }
 

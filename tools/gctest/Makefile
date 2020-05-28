@@ -1,14 +1,25 @@
-RM=rm -f
-MKDIR=mkdir -p
-INSTALL=cp
-CC=cc -c -o
-CCFLAGS=
-LDFLAGS=
-LD=cc -o
+CC        = cc -c -o
+CCFLAGS   = 
+INSTALL   = $(firstword $(shell sh -c 'command -v install') cp)
+LD        = cc -o
+LDFLAGS   = 
+MKDIR     = mkdir -p
+RM        = rm -f
 
+#
+# PREFIX defines the default installation location, chosen from some
+# likely candidates. 
+# Override PREFIX by using "make install PREFIX=DIR", where DIR/bin
+#          is the directory you'd like gctest installed in .
+#
 
-TARGET=gctest
-MAINSRC=gctest.c
+PREFIXES  = /usr/local/bin $(HOME)/bin
+PREFIX    = $(dir $(firstword $(foreach d,$(PREFIXES),$(wildcard $(d)))))
+DOCDIR = $(PREFIX)/share/man/man7
+
+TARGET    = gctest
+MAINSRC   = gctest.c
+
 OBJS=
 
 all: $(TARGET) 
@@ -21,15 +32,15 @@ $(TARGET): $(OBJS) $(MAINSRC)
 
 
 %.o: %.c
-		$(CC) $@ $< $(CCFLAGS) $(DEBUGFLAGS)
+	$(CC) $@ $< $(CCFLAGS) $(DEBUGFLAGS)
 
 install:
-	if test -d /usr/local/bin ; then \
-	$(INSTALL) $(TARGET) /usr/local/bin; \
-	else \
-	if test -d $(HOME)/bin ; then \
-	$(INSTALL) $(TARGET) $(HOME)/bin; \
-	fi; \
+	@if test -d "$(PREFIX)/bin"; \
+	then $(INSTALL) $(TARGET) $(PREFIX)/bin; \
+	     mkdir -p $(DOCDIR); \
+	     { $(INSTALL) gctest.7 $(DOCDIR)/; \
+	       chmod -x $(DOCDIR)/gctest.7; } || exit 1; \
+	else echo install target $(PREFIX)/bin does not exist >&2; \
 	fi
 
 clean:
