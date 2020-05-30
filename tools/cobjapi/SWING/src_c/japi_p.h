@@ -48,6 +48,9 @@
 *> 2020.05.21 Laszlo Erdos: 
 *>            - JAPI_TABBEDPANE, japi_tabbedpane.
 *>            - JAPI_ADDTAB, japi_addtab.
+*>------------------------------------------------------------------------------
+*> 2020.05.30 Laszlo Erdos: 
+*>            - JAPI_ADDTABWITHICON, japi_addtabwithicon.
 *>******************************************************************************
 */
 
@@ -159,6 +162,8 @@
   #define JAPI_SETDANGER                          2113
   #define JAPI_SETSPLITPANELEFT                   2114
   #define JAPI_SETSPLITPANERIGHT                  2115
+  #define JAPI_ADDTAB                             2116
+  #define JAPI_ADDTABWITHICON                     2117
 
 
 
@@ -254,7 +259,6 @@
   #define JAPI_SPLITPANE                          4136
   #define JAPI_FORMATTEDTEXTFIELD                 4137
   #define JAPI_TABBEDPANE                         4138
-  #define JAPI_ADDTAB                             4139
 
 
 
@@ -296,6 +300,7 @@
   extern  int   japi_panel ( int  );
   extern  int   japi_tabbedpane ( int  );
   extern  int   japi_addtab ( int , char*  );
+  extern  int   japi_addtabwithicon ( int , char* , char*  );
   extern  int   japi_borderpanel ( int , int  );
   extern  int   japi_radiogroup ( int  );
   extern  int   japi_radiobutton ( int , char*  );

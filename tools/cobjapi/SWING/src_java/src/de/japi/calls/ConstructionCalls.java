@@ -45,11 +45,15 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
@@ -613,6 +617,9 @@ public class ConstructionCalls {
         session.writeInt(oid);
     }
 
+    /*
+     * This method creates a Tab for a TabbedPane, and adds an Item Listener to it.
+     */
     public static void createTab(Japi2Session session, Japi2TabbedPane tabbedpane) throws IOException {
         String title = session.readLine();
 
@@ -628,7 +635,36 @@ public class ConstructionCalls {
         session.log1("TAB {0} (ID = {1}) in Parent Object {2}", title, oid, tabbedpane);
         session.writeInt(oid);
     }
-   
+
+    /*
+     * This method creates a Tab with Icon for a TabbedPane, and adds an Item Listener to it.
+     */
+    public static void createTabWithIcon(Japi2Session session, Japi2TabbedPane tabbedpane) throws IOException {
+        String title = session.readLine();
+        String filename = session.readLine();
+
+        // Load the image
+        Image picture = Toolkit.getDefaultToolkit().getImage(new URL(
+                "http",
+                session.getResourceHost(),
+                session.getResourcePort(),
+                filename)
+        );
+        ImageIcon icon = new ImageIcon(picture);
+        
+        Japi2Panel panel = new Japi2Panel();
+        int oid = session.addObject(panel);  
+        tabbedpane.addTab(title, icon, panel);
+        
+        //item listener
+        Japi2ComponentListener componentListener = new Japi2ComponentListener(session, oid, Japi2Constants.J_RESIZED);
+        panel.setJapiListener(componentListener);
+        panel.addComponentListener(componentListener);
+        
+        session.log1("TAB {0} (ID = {1}) in Parent Object {2} icon = {3}", title, oid, tabbedpane, icon);
+        session.writeInt(oid);
+    }
+    
     /*
      * This method creates a Label, to display text or image components.
      */

@@ -47,6 +47,9 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.21 Laszlo Erdos: 
 *>            - j_tabbedpane, j_addtab.
+*>------------------------------------------------------------------------------
+*> 2020.05.30 Laszlo Erdos: 
+*>            - j_addtabwithicon.
 *>******************************************************************************
 */
 
@@ -221,6 +224,7 @@
     extern  int   j_panel ( int  );
     extern  int   j_tabbedpane ( int  );
     extern  int   j_addtab ( int , char*  );
+    extern  int   j_addtabwithicon ( int , char* , char*  );
     extern  int   j_borderpanel ( int , int  );
     extern  int   j_radiogroup ( int  );
     extern  int   j_radiobutton ( int , char*  );

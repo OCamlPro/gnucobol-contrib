@@ -57,6 +57,9 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.21 Laszlo Erdos: 
 *>            - japi_tabbedpane, japi_addtab.
+*>------------------------------------------------------------------------------
+*> 2020.05.30 Laszlo Erdos: 
+*>            - send_2int_2string, japi_addtabwithicon.
 *>******************************************************************************
 */
 
@@ -788,6 +791,14 @@ static void send_2int_string(int c, int o, char* s)
 	send_buf();
 }
 
+static void send_2int_2string(int c, int o, char* s, char* t)
+{
+	add_2int(c,o);
+	add_string(s);
+	add_string(t);
+	send_buf();
+}
+
 static void send_4int(int c, int o, int v1, int v2)
 {
 	add_4int(c,o,v1,v2);
@@ -971,6 +982,15 @@ int japi_tabbedpane(int parent)
 
 int japi_addtab(int tabbedpane, string title)
 {	return(send_2int_string_get_int(JAPI_ADDTAB,tabbedpane,title)); }
+
+int japi_addtabwithicon(int tabbedpane, string title, string iname)
+{
+	char fname[1024];
+	sprintf(fname,"%s",iname);
+	send_2int_2string(JAPI_ADDTABWITHICON, tabbedpane, title, tmpname(fname));
+	httpsend();
+	return(get_int(commandstream));
+}
 
 int japi_borderpanel(int parent, int type)
 {	return(send_3int_get_int(JAPI_PANEL,parent,type)); }

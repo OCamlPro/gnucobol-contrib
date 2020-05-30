@@ -1707,6 +1707,12 @@ public class Japi2Session implements Runnable {
                             else 
                                     throw new NotHandledException();
                             break;
+                    case Japi2Calls.JAPI_ADDTABWITHICON: 
+                            if (obj instanceof Japi2TabbedPane)
+                                    ConstructionCalls.createTabWithIcon(this, (Japi2TabbedPane) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
                     case Japi2Calls.JAPI_LABEL: 
                             if (obj instanceof Container) 
                                     ConstructionCalls.createLabel(this, (Container) obj);

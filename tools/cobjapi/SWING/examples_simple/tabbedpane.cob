@@ -44,6 +44,9 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.23 Laszlo Erdos: 
 *>            - BINARY-INT replaced with BINARY-LONG.
+*>------------------------------------------------------------------------------
+*> 2020.05.30 Laszlo Erdos: 
+*>            - J-ADDTABWITHICON.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -121,9 +124,10 @@
     MOVE 30 TO WS-RIGHT 
     MOVE J-SETINSETS(WS-TABBEDPANE-1, WS-TOP, WS-BOTTOM, WS-LEFT, WS-RIGHT) TO WS-RET
 
-    MOVE J-ADDTAB(WS-TABBEDPANE-1, "Tab #1") TO WS-TAB-PANEL-1
-    MOVE J-ADDTAB(WS-TABBEDPANE-1, "Tab #2") TO WS-TAB-PANEL-2
-    MOVE J-ADDTAB(WS-TABBEDPANE-1, "Tab #3") TO WS-TAB-PANEL-3
+*>  add tabs with icon
+    MOVE J-ADDTABWITHICON(WS-TABBEDPANE-1, "Tab #1", "images/open.gif") TO WS-TAB-PANEL-1
+    MOVE J-ADDTABWITHICON(WS-TABBEDPANE-1, "Tab #2", "images/new.gif") TO WS-TAB-PANEL-2
+    MOVE J-ADDTABWITHICON(WS-TABBEDPANE-1, "Tab #3", "images/save.gif") TO WS-TAB-PANEL-3
 
     MOVE J-LABEL(WS-TAB-PANEL-1, "This is Tab-Panel #1") TO WS-LABEL
     MOVE 40 TO WS-XPOS
@@ -146,6 +150,7 @@
     MOVE 10 TO WS-LEFT  
     MOVE 10 TO WS-RIGHT 
     MOVE J-SETINSETS(WS-TABBEDPANE-2, WS-TOP, WS-BOTTOM, WS-LEFT, WS-RIGHT) TO WS-RET
+*>  add tabs without icon
     MOVE J-ADDTAB(WS-TABBEDPANE-2, "Tab #31") TO WS-TAB-PANEL-31
     MOVE J-ADDTAB(WS-TABBEDPANE-2, "Tab #32") TO WS-TAB-PANEL-32
     MOVE J-ADDTAB(WS-TABBEDPANE-2, "Tab #33") TO WS-TAB-PANEL-33

@@ -54,11 +54,15 @@
 *>            - "FUNCTION ALL INTRINSIC." commented out so as not to conflict
 *>              with existing code.
 *>            - "end of file" comment added.
+*>------------------------------------------------------------------------------
+*> 2020.05.30 Laszlo Erdos: 
+*>            - J-ADDTABWITHICON.
 *>******************************************************************************
 
  FUNCTION J-ADD
  FUNCTION J-ADDITEM
  FUNCTION J-ADDTAB
+ FUNCTION J-ADDTABWITHICON
  FUNCTION J-ALERTBOX
  FUNCTION J-APPENDTEXT
  FUNCTION J-BEEP

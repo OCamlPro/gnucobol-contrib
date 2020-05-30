@@ -50,6 +50,9 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.23 Laszlo Erdos: 
 *>            - BINARY-INT replaced with BINARY-LONG.
+*>------------------------------------------------------------------------------
+*> 2020.05.30 Laszlo Erdos: 
+*>            - J-ADDTABWITHICON.
 *>******************************************************************************
  
 *>------------------------------------------------------------------------------
@@ -738,6 +741,50 @@
  MAIN-J-ADDTAB-EX.
     EXIT.
  END FUNCTION J-ADDTAB.
+
+
+*>------------------------------------------------------------------------------
+*> int  j_addtabwithicon( int arg0, char* arg1, char* arg2)
+*> { return( japi_addtabwithicon(arg0, arg1, arg2));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-ADDTABWITHICON.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          PIC X ANY LENGTH.
+ 01 LNK-ARG-2                          PIC X ANY LENGTH.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY REFERENCE LNK-ARG-1
+                          BY REFERENCE LNK-ARG-2
+                    RETURNING          LNK-RET.
+
+ MAIN-J-ADDTABWITHICON SECTION.
+
+    CALL STATIC "japi_addtabwithicon" 
+         USING BY VALUE   LNK-ARG-0
+               BY CONTENT CONCATENATE(TRIM(LNK-ARG-1), X"00")
+               BY CONTENT CONCATENATE(TRIM(LNK-ARG-2), X"00")
+         RETURNING LNK-RET 
+    END-CALL 
+ 
+    GOBACK
+
+    .
+ MAIN-J-ADDTABWITHICON-EX.
+    EXIT.
+ END FUNCTION J-ADDTABWITHICON.
 
  
 *>------------------------------------------------------------------------------
