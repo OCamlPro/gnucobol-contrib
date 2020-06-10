@@ -5,18 +5,20 @@ IDENTIFICATION DIVISION.
 PROGRAM-ID. GC21MENU is initial.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
-*> Purpose:    DISPLAY MENU ON SCREEN WITH OPTIONS & EFFECTS, LET CHOOSE AN ITEM
-*> Tectonics:  cobc -m GC21MENU.COB  (compile with GnuCOBOL 3.1 or greater)
+*> Purpose:    DISPLAY A LIST OF MENU ITEMS ON THE SCREEN
+*> Tectonics:  cobc -m GC21MENU.COB -lpdcurses (compile with GnuCOBOL 3.1 or greater)
+*> CALLS;      GC01BOX.DLL (complie from GC01BOX.COB)
 *> Usage:      call GC21MENU using Menu-Area
 *> Parameters: look at GC21MENU.CPY
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *> License:    Copyright 2020 E.Di Lorenzo - GNU Lesser General Public License
-*> Version:    3.0 2020.04.15
+*> Version:    3.1 2020.06.10
 *> Changelog:  1.0 first release.
 *>             2.0 mouse management added (left click to make menu item "active"
 *>                                         double left-click to select a menu item
 *>             3.0 hot key management added to make menu item "active"
 *>                 Mn-Hot from 9(01) to 9(02)
+*>             3.1 tectonics specifies  -lpdcurses
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -82,7 +84,7 @@ copy 'GC97KEYCODEGC.CPY'  suppress.
 78  COB-ALLOW-RIGHT-UP               VALUE 256.
 78  COB-ALLOW-RIGHT-DOUBLE           VALUE 512.
 78  COB-ALLOW-MOUSE-MOVE             VALUE 1024.
-01  MOUSE-FLAGS         PIC 9(04).
+01  COB-MOUSE-FLAGS         PIC 9(04).
 
 01  wCRT-STATUS         PIC 9(04) VALUE 9999.
 
@@ -439,12 +441,12 @@ InitialSettings.
   set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
   *> make mouse active
-  COMPUTE MOUSE-FLAGS = COB-AUTO-MOUSE-HANDLING
+  COMPUTE COB-MOUSE-FLAGS = COB-AUTO-MOUSE-HANDLING
                       + COB-ALLOW-LEFT-DOWN   + COB-ALLOW-MIDDLE-DOWN   + COB-ALLOW-RIGHT-DOWN
                       + COB-ALLOW-LEFT-UP     + COB-ALLOW-MIDDLE-UP     + COB-ALLOW-RIGHT-UP
                       + COB-ALLOW-LEFT-DOUBLE + COB-ALLOW-MIDDLE-DOUBLE + COB-ALLOW-RIGHT-DOUBLE
                       + COB-ALLOW-MOUSE-MOVE
-  SET environment     "COB_MOUSE_FLAGS"         to MOUSE-FLAGS
+  SET environment     "COB_MOUSE_FLAGS"         to COB-MOUSE-FLAGS
 
   perform hide-cursor thru hide-cursor-ex
   continue.
