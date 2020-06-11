@@ -37,6 +37,7 @@ $(document).ready(function(){
   Welcome <?cob display trim(WS-HTM-NICKNAME) "!" end-display ?><br>
   Languages: <?cob display trim(WS-HTM-LANGUAGE-OUT) end-display ?><br>
   Level: <?cob display trim(WS-HTM-LEVEL) "  (" WS-HTM-LEVEL-COUNT " words)" end-display ?><br>
+  I accept Cookies: <?cob display trim(WS-HTM-ACCEPT-COOKIES-OUT) end-display ?><br>
   
   <div class="w3-container w3-cell w3-cell-middle">
     <div class="w3-panel w3-light-grey w3-round-xlarge">
@@ -73,6 +74,9 @@ $(document).ready(function(){
  01 WS-LEVEL                     PIC X(100).
  01 WS-HTM-LEVEL                 PIC X(100).
  01 WS-HTM-LEVEL-COUNT           PIC 9(4).
+ 01 WS-ACCEPT-COOKIES            PIC X(100).
+ 01 WS-HTM-ACCEPT-COOKIES        PIC X(100).
+ 01 WS-HTM-ACCEPT-COOKIES-OUT    PIC X(100).
  
  01 WS-INPUT-OK                  PIC 9(1).
     88 V-NO                      VALUE 0.
@@ -81,6 +85,8 @@ $(document).ready(function(){
     88 V-OK VALUE "EN-DE", "DE-EN", "EN-HU", "HU-EN", "DE-HU", "HU-DE".
  01 WS-LEVEL-CHECK               PIC X(1).    
     88 V-OK VALUE "1", "2", "3", "4", "5", "6", "7", "8".
+ 01 WS-ACCEPT-COOKIES-CHECK      PIC X(2).    
+    88 V-OK VALUE "on".
 
  01 LN-MOD2.
    02 LN-INPUT.
@@ -151,6 +157,8 @@ $(document).ready(function(){
     CALL "HTM2COB-SPEC-CHARS" USING WS-LANGUAGE, WS-HTM-LANGUAGE END-CALL
     CALL "HTM2COB-POST" USING "level", WS-LEVEL END-CALL
     CALL "HTM2COB-SPEC-CHARS" USING WS-LEVEL, WS-HTM-LEVEL END-CALL
+    CALL "HTM2COB-POST" USING "acceptcookies", WS-ACCEPT-COOKIES END-CALL
+    CALL "HTM2COB-SPEC-CHARS" USING WS-ACCEPT-COOKIES, WS-HTM-ACCEPT-COOKIES END-CALL
 
 *>  check nickname    
     IF WS-HTM-NICKNAME = SPACES
@@ -170,15 +178,6 @@ $(document).ready(function(){
        EXIT SECTION
     END-IF
 
-*>  check level
-    MOVE WS-HTM-LEVEL TO WS-LEVEL-CHECK
-    IF NOT V-OK OF WS-LEVEL-CHECK
-    OR STORED-CHAR-LENGTH(WS-HTM-LEVEL) NOT = 1
-    THEN
-       SET V-NO OF WS-INPUT-OK TO TRUE
-       EXIT SECTION
-    END-IF
-    
     EVALUATE WS-LANGUAGE-CHECK
         WHEN "EN-DE"
            MOVE "English - German"    TO WS-HTM-LANGUAGE-OUT
@@ -194,6 +193,29 @@ $(document).ready(function(){
            MOVE "Hungarian - German"  TO WS-HTM-LANGUAGE-OUT
     END-EVALUATE
 
+*>  check level
+    MOVE WS-HTM-LEVEL TO WS-LEVEL-CHECK
+    IF NOT V-OK OF WS-LEVEL-CHECK
+    OR STORED-CHAR-LENGTH(WS-HTM-LEVEL) NOT = 1
+    THEN
+       SET V-NO OF WS-INPUT-OK TO TRUE
+       EXIT SECTION
+    END-IF
+
+*>  check acceptcookies
+    MOVE WS-HTM-ACCEPT-COOKIES TO WS-ACCEPT-COOKIES-CHECK
+    IF NOT V-OK OF WS-ACCEPT-COOKIES-CHECK
+    OR STORED-CHAR-LENGTH(WS-HTM-ACCEPT-COOKIES) NOT = 2
+    THEN
+       SET V-NO OF WS-INPUT-OK TO TRUE
+       EXIT SECTION
+    END-IF
+
+    IF WS-HTM-ACCEPT-COOKIES = "on"
+    THEN
+       MOVE "Yes" TO WS-HTM-ACCEPT-COOKIES-OUT    
+    END-IF
+    
     EXIT SECTION .
     
 *>------------------------------------------------------------------------------

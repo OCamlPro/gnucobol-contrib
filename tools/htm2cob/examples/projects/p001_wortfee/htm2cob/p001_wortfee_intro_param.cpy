@@ -59,7 +59,7 @@
 *> Max number of lines in the internal table. It means the number of fields
 *> and the number of upload file names together in a form. These are only the
 *> names without values.
- 78 HTM2COB-TAB-MAX-LINE        GLOBAL VALUE 3.
+ 78 HTM2COB-TAB-MAX-LINE        GLOBAL VALUE 4.
 *> Max value length for all field values together. This is only the field values
 *> together, without field names, without upload file names, without upload file
 *> size. For special chars you need 2 or 3 bytes. (bytes)
