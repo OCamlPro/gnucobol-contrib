@@ -1,10 +1,10 @@
        >> SOURCE FORMAT IS FREE
 IDENTIFICATION DIVISION.
-PROGRAM-ID. GC58SAVERCLOCK.
+PROGRAM-ID. GC58SAVERCLOCK is initial.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    SCREENSAVER DISPLAYING A MOVING CLOCK and optionally A SCROLLING STRING
-*> Tectonics:  cobc -x GC58SAVERCLOCK.COB  (use GnuCOBOL 2.0 or greater)
+*> Tectonics:  cobc -m  -lpdcurses GC58SAVERCLOCK.COB (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      call GC58SAVERCLOCK using SAVER-AREA
 *> Parameters: look at GC58SAVERCLOCK.cpy  (use with copy Version: 1.2)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
@@ -125,6 +125,20 @@ copy 'GC01BOX.CPY'.
 77    szScreenName        PIC X(256).
 77    iScrOk              BINARY-LONG.
 
+01 wColorB PIC 9(1).
+01 wColorF PIC 9(1).
+
+01 CURRENT-DATE-AND-TIME.
+   05 CDT-Year               PIC 9(4).
+   05 CDT-Month              PIC 9(2). *> 01-12
+   05 CDT-Day                PIC 9(2). *> 01-31
+   05 CDT-Hour               PIC 9(2). *> 00-23
+   05 CDT-Minutes            PIC 9(2). *> 00-59
+   05 CDT-Seconds            PIC 9(2). *> 00-59
+   05 CDT-Hundredths-Of-Secs PIC 9(2). *> 00-99
+   05 CDT-GMT-Diff-Hours     PIC S9(2) SIGN LEADING SEPARATE.
+   05 CDT-GMT-Diff-Minutes   PIC 9(2). *> 00 or 30
+
 
 LINKAGE SECTION.
 COPY 'GC58SAVERCLOCK.CPY'.
@@ -185,8 +199,9 @@ MAIN.
 
    *> RESTORE SCREEN
    CALL STATIC "scr_restore" USING BY REFERENCE szScreenName RETURNING iScrOk END-CALL
-   .
    goback.
+
+
 
 *> ***************************************************************
 *>                      ROUTINES AREA
@@ -226,20 +241,16 @@ DisplayClock.
           perform DisplayBox    thru DisplayBoxEx
           perform DisplayTme    thru DisplayTmeEx
 
-          *> change colors to clock and/or to scrolling string if requested
-          if SSChangeCol  = 'Y' add 1 to SSbackcol  SSforecol  end-if
-          if SSChangeColT = 'Y' add 1 to SSbackcolT SSforecolT end-if
-          if SSbackcol  > 7 move 1 to SSbackcol  end-if
-          if SSforecol  > 7 move 1 to SSforecol  end-if
-          if SSbackcolT > 7 move 1 to SSbackcolT end-if
-          if SSforecolT > 7 move 1 to SSforecolT end-if
+          perform SetRandomColors thru SetRandomColorsEx
+
+
      else
         perform DisplayBox thru DisplayBoxEx
         perform DisplayTme thru DisplayTmeEx
         add 1 to wCount
         move wCol1 to wCol
      end-if
-     .
+     continue.
 DisplayClockEx. exit.
 
 DisplayBox.
@@ -250,11 +261,10 @@ DisplayBox.
    move SSbackcol to Box-bco
    move SSforecol to Box-fco
    CALL GC01BOX USING BY CONTENT BOX-AREA
-   .
+   continue.
 DisplayBoxEx. exit.
 
 DisplayTme.
-
    string kEle2(Timehh1 + 1, 1) kEle2(Timehh2 + 1, 1) '   '
           kEle2(Timemm1 + 1, 1) kEle2(Timemm2 + 1, 1) '   '
           kEle2(Timess1 + 1, 1) kEle2(Timess2 + 1, 1)
@@ -268,10 +278,16 @@ DisplayTme.
           kEle2(Timess1 + 1, 3) kEle2(Timess2 + 1, 3)
           delimited by size into wClockRow3
 
-   display wClockRow1 line wlin1 column wCol with background-color SSbackcol foreground-color SSforecol highlight
-   display wClockRow2 line wlin2 column wCol with background-color SSbackcol foreground-color SSforecol highlight
-   display wClockRow3 line wlin3 column wCol with background-color SSbackcol foreground-color SSforecol highlight
-   continue.
+   if SSforecol = 0
+       display wClockRow1 line wlin1 column wCol with background-color SSbackcol foreground-color SSforecol
+       display wClockRow2 line wlin2 column wCol with background-color SSbackcol foreground-color SSforecol
+       display wClockRow3 line wlin3 column wCol with background-color SSbackcol foreground-color SSforecol
+   else
+       display wClockRow1 line wlin1 column wCol with background-color SSbackcol foreground-color SSforecol highlight
+       display wClockRow2 line wlin2 column wCol with background-color SSbackcol foreground-color SSforecol highlight
+       display wClockRow3 line wlin3 column wCol with background-color SSbackcol foreground-color SSforecol highlight
+   end-if
+     continue.
 DisplayTmeEx. exit.
 
 
@@ -284,11 +300,33 @@ DisplayScrollingString.
        end-if
        move wScr (1      : 81 - i) to wRow (i : 81 - i)
        move wScr (81 - i : i     ) to wRow (1 :      i)
-       display wRow at 001001
-               with background-color SSbackcolt foreground-color SSforecolt highlight end-display
+       display wRow at 001001 with background-color SSbackcolt foreground-color SSforecolt highlight end-display
     end-if
-    .
+    continue.
 DisplayScrollingStringEx. exit.
+
+SetRandomColors.
+          Move FUNCTION CURRENT-DATE       to CURRENT-DATE-AND-TIME
+          Move CURRENT-DATE-AND-TIME(14:1) to wColorB
+          Move FUNCTION CURRENT-DATE       to CURRENT-DATE-AND-TIME
+          Move CURRENT-DATE-AND-TIME(16:1) to wColorF
+
+          *> display wColorB at 0401  wColorF at 0410
+          *> accept omitted
+
+          *> change colors to clock and/or to scrolling string if requested
+          *> if SSChangeCol  = 'Y' add 1 to SSbackcol  SSforecol  end-if
+          *> if SSChangeColT = 'Y' add 1 to SSbackcolT SSforecolT end-if
+          if SSChangeCol  = 'Y' move wColorB to SSbackcol SSbackcolT end-if
+          if SSChangeColT = 'Y' move wColorF to SSforecol SSforecolT end-if
+
+          if SSbackcol  > 7 move 5 to SSbackcol  end-if
+          if SSforecol  > 7 move 2 to SSforecol  end-if
+          if SSbackcolT > 7 move 6 to SSbackcolT end-if
+          if SSforecolT > 7 move 4 to SSforecolT end-if
+          continue.
+
+SetRandomColorsEx. exit.
 
 InitialSettings.
    move SStitle2 to wScr
@@ -305,7 +343,7 @@ InitialSettings.
    if wlin1 <  3 move 20 to wlin1 end-if
    compute wlin2 = wlin1 + 1
    compute wlin3 = wlin1 + 2
-   .
+   continue.
 InitialSettingsEx. exit.
 
 End Program GC58SAVERCLOCK.
