@@ -1,6 +1,6 @@
 *** GnuCOBOL TUI (TEXT USER INTERFACE) TOOLS AND UTILITIES COLLECTON ***
 
-In this folder you can find: 
+In this folder you will find: 
 GnuCOBOL TUI TOOLS (GC01xxxxxx to GC98xxxxxx) and 
 GnuCOBOL Utilities (GC99xxxxxx) 
 
@@ -15,9 +15,9 @@ The TUI Collection includes programs to manage classical TUI objects like: dropd
 multiple-choice Buttons, YES-No buttons, calendar to pickup a date, 
 on-screen messages, boxes, checkboxes, radiobuttons, listview, calculator, and so on.
 All programs have been developed exclusively using GnuCOBOL 
-(pure COBOL with also direct calls to "C" funtions but without "C wrappers").
+(pure COBOL with also direct calls to "C" funtions from some C libraries but without "C wrappers").
 They are GnuCOBOL programs you can "CALL" from your source 
-to manage dropdown menus, display box, buttons , radiobuttons and so on ... 
+to manage dropdown menus, display boxes, buttons , radiobuttons and so on ... 
 You can choose: position, size, colors, borders, shadows, titles, 3D effect ...
 Source files are well commented. Documentation of parameters are inside the copybooks.
 Each TUI-TOOL have a corresponding demo programs to show how to use the TOOL.
@@ -84,7 +84,7 @@ size, position, single/double/custom borders, 3D effect and so on.
 GC61CALC.COB - call it to display a simple pocket calculator on screen.
 The user can enter numbers and operators. Returns the result of calculation to the caller .
 GC64CALCULATOR.COB - call it to display a calculator on screen.
-The user can use the mouse to click on digits and operators. 
+The user can use the mouse to select digits and operators. 
 Returns the result of calculation to the caller .
 
 GC71CRUDExxxx.COB - A complete "CRUDE" (Create, Read, Update, Delete) application. 
@@ -122,9 +122,11 @@ of individual fields directly in the copy.
 See samples at 
 https://sourceforge.net/p/open-cobol/discussion/contrib/thread/e21eb9ba/#90fd
 
+GC99MOUSEDEMO.COB - Shows programming the MOUSE in a TUI mode. 
+
 GC99SCREENGEN.COB - Copy generator for cobol programs that use SCREEN SECTION. 
 How to use it:
-1. create a text file with the graphical layout of the SCREEN (25 rows x 80 cols). 
+1. create a text file with the graphical layout of the SCREEN (25 rows x 80 cols or more). 
 Use the $ symbol when you want a PIC X field, use the # symbol when you want a PIC 9. 
 2. run the program GC99SCREENGEN to read the TXT file with the SCREEN layout 
 It will create the corresponding Copy COBOL in a .CPY text file. 
