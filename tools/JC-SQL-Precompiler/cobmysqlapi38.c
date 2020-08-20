@@ -1,8 +1,9 @@
 /*  cob-mysql  Version  3.2                            18/May/2014    */
 /*  Copyright (C) sanpontze. All Rights Reserved                      */
 /*  cobmysqlapi versions 3.6 - 3.7, copyright. The_Piper, GPL v3      */
+/*                                                                    */
 /*  cobmysqlapi Version 3.8                                           */
-/*  Copyright (c) Vincent Coen, under GPL v3.                         */
+/*  Copyright (c) Vincent Coen, under GPL v3 2017 - 2018              */
 /*  Use with library sources from mysql-connector-c via mysql.com and
  *   other source locations                                           */
 /**********************************************************************
@@ -41,7 +42,11 @@
 *                mysql-connector-c-6.1.6-src.tar.gz (.rpm or .zip etc)
 *                Latest versions will always be available here :
 *                03 Jan 2017--Vincent Coen - Applewood Computers {170103}
-*                [http://www.applewood.dtdns.net/files/ ]
+*                [http://www.applewood.linkpc.net/files/ ]
+*
+*   Version 3.8A--Updated url here as address has small change
+*                [http://www.applewood.linkpc.net/files/ ]
+*                v3.8 is corrected.
 *
 **********************************************************************/
 
