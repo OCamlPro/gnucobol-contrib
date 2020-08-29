@@ -17,5 +17,5 @@ read -n1 -r -p "Press any key to continue..." key
 
 # compile
 cobc -m -std=mf DB2SQLMSG.cob -I/cygdrive/c/Programme/IBM/SQLLIB/include/cobol_mf -L/cygdrive/c/Programme/IBM/SQLLIB/lib -ldb2api
-cobc -m -std=mf DB2MOD7.cbl -I/cygdrive/c/Programme/IBM/SQLLIB/include/cobol_mf -L/cygdrive/c/Programme/IBM/SQLLIB/lib -ldb2api
+cobc -m -std=mf DB2MOD7.cbl -fnot-reserved=TITLE -I/cygdrive/c/Programme/IBM/SQLLIB/include/cobol_mf -L/cygdrive/c/Programme/IBM/SQLLIB/lib -ldb2api
 cobc -x DB2TEST7.cob
