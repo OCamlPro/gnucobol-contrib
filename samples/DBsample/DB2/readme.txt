@@ -45,6 +45,12 @@ Retested using:
 - cygwin (64 bit)
 - IBM DB2 Express-C 11.1 for Win (64 bit)
 
+Retested using:
+- Windows 10 (64 bit) running on a HP laptop 
+- MinGW GnuCOBOL 3.1-rc1.0 (64 bit), built on Jul 09 2020, Packaged  Jul 01 2020
+  C version (MinGW) "10.1.0"
+- IBM DB2 Express-C 11.1 for Win (64 bit)
+
 Installation and Configuration
 ==============================
 
