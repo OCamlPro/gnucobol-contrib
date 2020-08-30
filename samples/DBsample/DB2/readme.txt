@@ -101,4 +101,8 @@ Date       Name / Change description
 2017.10.03 Laszlo Erdos: 
            - Reserved word "AUTHOR" renamed to "AUTHORS". 
            - Table OCCURS TO error corrected.
+2020.08.29 Laszlo Erdos: 
+           - Compiler parameter -fnot-reserved=TITLE added.
+2020.08.30 Laszlo Erdos: 
+           - Compile and run script win_mingw added.
 *****************************************************************************
