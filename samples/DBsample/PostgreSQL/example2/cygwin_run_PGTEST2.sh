@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# If OCDB_LOGLEVEL is set, then the file ocesql.log is created under \tmp
+# log file
+# export OCDB_LOGFILE=/tmp/ocesql.log
+
+# If OCDB_LOGLEVEL is set, then the file ocesql.log is created under /tmp
 # Possible values:
 # - nothing to set -> same as NOLOG
 # - NOLOG or nolog
