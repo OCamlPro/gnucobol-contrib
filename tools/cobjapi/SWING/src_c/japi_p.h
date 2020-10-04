@@ -51,6 +51,28 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.30 Laszlo Erdos: 
 *>            - JAPI_ADDTABWITHICON, japi_addtabwithicon.
+*>------------------------------------------------------------------------------
+*> 2020.10.03 Laszlo Erdos: 
+*>            - JAPI_NODE, JAPI_ADDNODE, JAPI_TREE
+*>            - JAPI_ENABLEDOUBLECLICK, JAPI_DISABLEDOUBLECLICK
+*>            - JAPI_SETTREETEXTSELCOLOR   
+*>            - JAPI_SETTREEBGSELCOLOR     
+*>            - JAPI_SETTREEBORDERSELCOLOR 
+*>            - JAPI_SETTREETEXTNONSELCOLOR
+*>            - JAPI_SETTREEBGNONSELCOLOR  
+*>
+*>            - japi_node, japi_addnode, japi_tree
+*>            - japi_enabledoubleclick, japi_disabledoubleclick
+*>            - japi_settreetextselnamedcolor
+*>            - japi_settreebgselnamedcolor
+*>            - japi_settreeborderselnamedcolor
+*>            - japi_settreetextnonselnamedcolor
+*>            - japi_settreebgnonselnamedcolor
+*>            - japi_settreetextselcolor
+*>            - japi_settreebgselcolor
+*>            - japi_settreeborderselcolor
+*>            - japi_settreetextnonselcolor
+*>            - japi_settreebgnonselcolor
 *>******************************************************************************
 */
 
@@ -90,6 +112,11 @@
   #define JAPI_GETSCALEDIMAGE                     1047
   #define JAPI_GETIMAGESOURCE                     1048
   #define JAPI_DRAWIMAGESOURCE                    1049
+  #define JAPI_SETTREETEXTSELCOLOR                1050
+  #define JAPI_SETTREEBGSELCOLOR                  1051
+  #define JAPI_SETTREEBORDERSELCOLOR              1052
+  #define JAPI_SETTREETEXTNONSELCOLOR             1053
+  #define JAPI_SETTREEBGNONSELCOLOR               1054
 
 
 
@@ -164,7 +191,9 @@
   #define JAPI_SETSPLITPANERIGHT                  2115
   #define JAPI_ADDTAB                             2116
   #define JAPI_ADDTABWITHICON                     2117
-
+  #define JAPI_ADDNODE                            2118
+  #define JAPI_ENABLEDOUBLECLICK                  2119
+  #define JAPI_DISABLEDOUBLECLICK                 2120
 
 
   /*   JAPI_QUESTIONS  */
@@ -259,6 +288,8 @@
   #define JAPI_SPLITPANE                          4136
   #define JAPI_FORMATTEDTEXTFIELD                 4137
   #define JAPI_TABBEDPANE                         4138
+  #define JAPI_NODE                               4139
+  #define JAPI_TREE                               4140
 
 
 
@@ -301,6 +332,11 @@
   extern  int   japi_tabbedpane ( int  );
   extern  int   japi_addtab ( int , char*  );
   extern  int   japi_addtabwithicon ( int , char* , char*  );
+  extern  int   japi_node ( char*  );
+  extern  void  japi_addnode ( int , int  );
+  extern  int   japi_tree ( int , int  );
+  extern  void  japi_enabledoubleclick ( int  );
+  extern  void  japi_disabledoubleclick ( int  );
   extern  int   japi_borderpanel ( int , int  );
   extern  int   japi_radiogroup ( int  );
   extern  int   japi_radiobutton ( int , char*  );
@@ -480,6 +516,16 @@
   extern  void  japi_setcolorbg ( int , int , int , int  );
   extern  void  japi_setnamedcolor ( int , int  );
   extern  void  japi_setnamedcolorbg ( int , int  );
+  extern  void  japi_settreetextselnamedcolor ( int , int  );
+  extern  void  japi_settreebgselnamedcolor ( int , int  );
+  extern  void  japi_settreeborderselnamedcolor ( int , int  );
+  extern  void  japi_settreetextnonselnamedcolor ( int , int  );
+  extern  void  japi_settreebgnonselnamedcolor ( int , int  );
+  extern  void  japi_settreetextselcolor ( int , int , int , int  );
+  extern  void  japi_settreebgselcolor ( int , int , int , int  );
+  extern  void  japi_settreeborderselcolor ( int , int , int , int  );
+  extern  void  japi_settreetextnonselcolor ( int , int , int , int  );
+  extern  void  japi_settreebgnonselcolor ( int , int , int , int  );
   extern  int   japi_loadimage ( char*  );
   extern  int   japi_saveimage ( int , char* , int  );
   extern  void  japi_sync (  );

@@ -50,6 +50,20 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.30 Laszlo Erdos: 
 *>            - j_addtabwithicon.
+*>------------------------------------------------------------------------------
+*> 2020.10.03 Laszlo Erdos: 
+*>            - j_node, j_addnode, j_tree
+*>            - j_enabledoubleclick, j_disabledoubleclick
+*>            - j_settreetextselnamedcolor
+*>            - j_settreebgselnamedcolor
+*>            - j_settreeborderselnamedcolor
+*>            - j_settreetextnonselnamedcolor
+*>            - j_settreebgnonselnamedcolor
+*>            - j_settreetextselcolor
+*>            - j_settreebgselcolor
+*>            - j_settreeborderselcolor
+*>            - j_settreetextnonselcolor
+*>            - j_settreebgnonselcolor
 *>******************************************************************************
 */
 
@@ -225,6 +239,11 @@
     extern  int   j_tabbedpane ( int  );
     extern  int   j_addtab ( int , char*  );
     extern  int   j_addtabwithicon ( int , char* , char*  );
+    extern  int   j_node ( char*  );
+    extern  void  j_addnode ( int , int  );
+    extern  int   j_tree ( int , int  );
+    extern  void  j_enabledoubleclick ( int  );
+    extern  void  j_disabledoubleclick ( int  );
     extern  int   j_borderpanel ( int , int  );
     extern  int   j_radiogroup ( int  );
     extern  int   j_radiobutton ( int , char*  );
@@ -404,6 +423,16 @@
     extern  void  j_setcolorbg ( int , int , int , int  );
     extern  void  j_setnamedcolor ( int , int  );
     extern  void  j_setnamedcolorbg ( int , int  );
+    extern  void  j_settreetextselnamedcolor ( int , int  );
+    extern  void  j_settreebgselnamedcolor ( int , int  );
+    extern  void  j_settreeborderselnamedcolor ( int , int  );
+    extern  void  j_settreetextnonselnamedcolor ( int , int  );
+    extern  void  j_settreebgnonselnamedcolor ( int , int  );
+    extern  void  j_settreetextselcolor ( int , int , int , int  );
+    extern  void  j_settreebgselcolor ( int , int , int , int  );
+    extern  void  j_settreeborderselcolor ( int , int , int , int  );
+    extern  void  j_settreetextnonselcolor ( int , int , int , int  );
+    extern  void  j_settreebgnonselcolor ( int , int , int , int  );
     extern  int   j_loadimage ( char*  );
     extern  int   j_saveimage ( int , char* , int  );
     extern  void  j_sync ( void  );

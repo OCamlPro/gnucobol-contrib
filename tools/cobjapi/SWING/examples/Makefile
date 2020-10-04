@@ -2,7 +2,7 @@
 #
 # Usage: make [DEBUG=Y] [VERBOSE=Y] [COBFLAGS=-Wno-unfinished]
 
-SUBDIRS = colorpicker digits drawables imageviewer mandelbrot texteditor thinclient video
+SUBDIRS = colorpicker digits drawables imageviewer mandelbrot texteditor thinclient tree video
 
 ifdef DEBUG
 	SUBFLAGS += DEBUG=$(DEBUG)

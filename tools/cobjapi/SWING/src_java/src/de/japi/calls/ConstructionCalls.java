@@ -34,6 +34,7 @@ import de.japi.components.Japi2Slider;
 import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
 import de.japi.components.Japi2FormattedTextField;
+import de.japi.components.Japi2Tree;
 import de.japi.components.listeners.Japi2ActionListener;
 import de.japi.components.listeners.Japi2AdjustmentListener;
 import de.japi.components.listeners.Japi2ComponentListener;
@@ -45,15 +46,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Image;
-import java.awt.MediaTracker;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
@@ -64,6 +61,7 @@ import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * This class contains all JAPI calls which construct a GUI object.
@@ -618,53 +616,49 @@ public class ConstructionCalls {
     }
 
     /*
-     * This method creates a Tab for a TabbedPane, and adds an Item Listener to it.
+     * This method creates a DefaultMutableTreeNode.
      */
-    public static void createTab(Japi2Session session, Japi2TabbedPane tabbedpane) throws IOException {
+   public static void createNode(Japi2Session session) throws IOException {
         String title = session.readLine();
-
-        Japi2Panel panel = new Japi2Panel();
-        int oid = session.addObject(panel);  
-        tabbedpane.addTab(title, panel);
         
-        //item listener
-        Japi2ComponentListener componentListener = new Japi2ComponentListener(session, oid, Japi2Constants.J_RESIZED);
-        panel.setJapiListener(componentListener);
-        panel.addComponentListener(componentListener);
-        
-        session.log1("TAB {0} (ID = {1}) in Parent Object {2}", title, oid, tabbedpane);
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(title);
+        int oid = session.addObject(node);
+ 
+        session.log1("NODE (ID = {0}) Title {1}", oid, title);
         session.writeInt(oid);
     }
 
     /*
-     * This method creates a Tab with Icon for a TabbedPane, and adds an Item Listener to it.
+     * This method creates a Tree, and adds an Item Listener to it.
      */
-    public static void createTabWithIcon(Japi2Session session, Japi2TabbedPane tabbedpane) throws IOException {
-        String title = session.readLine();
-        String filename = session.readLine();
+   public static void createTree(Japi2Session session, Container container) throws IOException {
+        int root = session.readInt();
+        DefaultMutableTreeNode rootNode = session.getObjectById(root, DefaultMutableTreeNode.class);
+       
+        Japi2Tree tree = new Japi2Tree(rootNode, session);
+        int oid = session.addObject(tree);
+        
+        if (!(container instanceof JSplitPane)) {
+            container.add(tree, BorderLayout.CENTER);
+        }
 
-        // Load the image
-        Image picture = Toolkit.getDefaultToolkit().getImage(new URL(
-                "http",
-                session.getResourceHost(),
-                session.getResourcePort(),
-                filename)
-        );
-        ImageIcon icon = new ImageIcon(picture);
+        tree.setActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    session.writeInt(oid, Japi2Session.TargetStream.ACTION);
+                } catch (Exception ex) {
+                    Japi2.getInstance().debug("Can't write list action "
+                            + "event: {0}", ex);
+                }
+            }
+        });
         
-        Japi2Panel panel = new Japi2Panel();
-        int oid = session.addObject(panel);  
-        tabbedpane.addTab(title, icon, panel);
-        
-        //item listener
-        Japi2ComponentListener componentListener = new Japi2ComponentListener(session, oid, Japi2Constants.J_RESIZED);
-        panel.setJapiListener(componentListener);
-        panel.addComponentListener(componentListener);
-        
-        session.log1("TAB {0} (ID = {1}) in Parent Object {2} icon = {3}", title, oid, tabbedpane, icon);
+        session.log1("TREE (ID = {0}) in ParentObject {1}", oid, container);
         session.writeInt(oid);
     }
-    
+   
     /*
      * This method creates a Label, to display text or image components.
      */

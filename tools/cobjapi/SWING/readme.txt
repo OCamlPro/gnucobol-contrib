@@ -298,6 +298,9 @@ Program history, changes and bug fixes are listed in program headers.
 Date       Name / Change description
 ========== ==================================================================
 -----------------------------------------------------------------------------
+2020.10.03 Laszlo Erdos:
+           - New functions for Tree added.
+-----------------------------------------------------------------------------
 2020.05.30 Laszlo Erdos:
            - New function J-ADDTABWITHICON added.
 -----------------------------------------------------------------------------

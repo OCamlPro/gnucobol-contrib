@@ -1,10 +1,7 @@
 package de.japi.components;
 
-import de.japi.Japi2Constants;
-import de.japi.components.layout.Japi2FixLayout;
 import de.japi.components.listeners.Japi2ComponentListener;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;

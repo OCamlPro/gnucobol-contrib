@@ -60,6 +60,20 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.30 Laszlo Erdos: 
 *>            - send_2int_2string, japi_addtabwithicon.
+*>------------------------------------------------------------------------------
+*> 2020.10.03 Laszlo Erdos: 
+*>            - japi_node, japi_addnode, japi_tree
+*>            - japi_enabledoubleclick, japi_disabledoubleclick
+*>            - japi_settreetextselnamedcolor
+*>            - japi_settreebgselnamedcolor
+*>            - japi_settreeborderselnamedcolor
+*>            - japi_settreetextnonselnamedcolor
+*>            - japi_settreebgnonselnamedcolor
+*>            - japi_settreetextselcolor
+*>            - japi_settreebgselcolor
+*>            - japi_settreeborderselcolor
+*>            - japi_settreetextnonselcolor
+*>            - japi_settreebgnonselcolor
 *>******************************************************************************
 */
 
@@ -784,6 +798,13 @@ static void send_2int_char(int c, int o, char s)
 	send_buf();
 }
 
+static void send_int_string(int c, char* s)
+{
+	add_int(c);
+	add_string(s);
+	send_buf();
+}
+
 static void send_2int_string(int c, int o, char* s)
 {
 	add_2int(c,o);
@@ -873,6 +894,12 @@ static int send_3int_get_int(int c, int o, int v)
 static int send_2int_string_get_int(int c, int o, char* s)
 {
 	send_2int_string(c,o,s);
+	return(get_int(commandstream));
+}
+
+static int send_int_string_get_int(int c, char* s)
+{
+	send_int_string(c,s);
 	return(get_int(commandstream));
 }
 
@@ -991,6 +1018,21 @@ int japi_addtabwithicon(int tabbedpane, string title, string iname)
 	httpsend();
 	return(get_int(commandstream));
 }
+
+int japi_node(string title)
+{	return(send_2int_string_get_int(JAPI_NODE,DUMMYOBJ,title)); }
+
+void japi_addnode(int parentnode, int node)
+{	send_3int(JAPI_ADDNODE,parentnode,node); }
+
+int japi_tree(int parent, int node)
+{	return(send_3int_get_int(JAPI_TREE,parent,node)); }
+
+void japi_enabledoubleclick(int tree)
+{	return(send_2int(JAPI_ENABLEDOUBLECLICK,tree)); }
+
+void japi_disabledoubleclick(int tree)
+{	return(send_2int(JAPI_DISABLEDOUBLECLICK,tree)); }
 
 int japi_borderpanel(int parent, int type)
 {	return(send_3int_get_int(JAPI_PANEL,parent,type)); }
@@ -1770,18 +1812,113 @@ void japi_setcolorbg(int component, int red, int green, int blue)
 	send_char(c);
 }
 
-void japi_setnamedcolor(int component, int farbe)
+void japi_setnamedcolor(int component, int color)
 {
-    japi_setcolor(component,cga_color[farbe%MAXNAMEDCOLORS][0],
-                            cga_color[farbe%MAXNAMEDCOLORS][1],
-                            cga_color[farbe%MAXNAMEDCOLORS][2]);
+    japi_setcolor(component,cga_color[color%MAXNAMEDCOLORS][0],
+                            cga_color[color%MAXNAMEDCOLORS][1],
+                            cga_color[color%MAXNAMEDCOLORS][2]);
 }
 
-void japi_setnamedcolorbg(int component, int farbe)
+void japi_setnamedcolorbg(int component, int color)
 {
-    japi_setcolorbg(component,cga_color[farbe%MAXNAMEDCOLORS][0],
-                              cga_color[farbe%MAXNAMEDCOLORS][1],
-		                      cga_color[farbe%MAXNAMEDCOLORS][2]);
+    japi_setcolorbg(component,cga_color[color%MAXNAMEDCOLORS][0],
+                              cga_color[color%MAXNAMEDCOLORS][1],
+		                      cga_color[color%MAXNAMEDCOLORS][2]);
+}
+
+void  japi_settreetextselcolor (int component, int red, int green, int blue)
+{
+	char c;
+	add_2int(JAPI_SETTREETEXTSELCOLOR,component);
+	c=(char)red;
+	add_char(c);
+	c=(char)green;
+	add_char(c);
+	c=(char)blue;
+	send_char(c);
+}
+
+void  japi_settreebgselcolor (int component, int red, int green, int blue)
+{
+	char c;
+	add_2int(JAPI_SETTREEBGSELCOLOR,component);
+	c=(char)red;
+	add_char(c);
+	c=(char)green;
+	add_char(c);
+	c=(char)blue;
+	send_char(c);
+}
+
+void  japi_settreeborderselcolor (int component, int red, int green, int blue)
+{
+	char c;
+	add_2int(JAPI_SETTREEBORDERSELCOLOR,component);
+	c=(char)red;
+	add_char(c);
+	c=(char)green;
+	add_char(c);
+	c=(char)blue;
+	send_char(c);
+}
+
+void  japi_settreetextnonselcolor (int component, int red, int green, int blue)
+{
+	char c;
+	add_2int(JAPI_SETTREETEXTNONSELCOLOR,component);
+	c=(char)red;
+	add_char(c);
+	c=(char)green;
+	add_char(c);
+	c=(char)blue;
+	send_char(c);
+}
+
+void  japi_settreebgnonselcolor (int component, int red, int green, int blue)
+{
+	char c;
+	add_2int(JAPI_SETTREEBGNONSELCOLOR,component);
+	c=(char)red;
+	add_char(c);
+	c=(char)green;
+	add_char(c);
+	c=(char)blue;
+	send_char(c);
+}
+
+void  japi_settreetextselnamedcolor (int component, int color)
+{
+    japi_settreetextselcolor(component,cga_color[color%MAXNAMEDCOLORS][0],
+                                       cga_color[color%MAXNAMEDCOLORS][1],
+                                       cga_color[color%MAXNAMEDCOLORS][2]);
+}
+
+void  japi_settreebgselnamedcolor (int component, int color)
+{
+    japi_settreebgselcolor(component,cga_color[color%MAXNAMEDCOLORS][0],
+                                     cga_color[color%MAXNAMEDCOLORS][1],
+                                     cga_color[color%MAXNAMEDCOLORS][2]);
+}
+
+void  japi_settreeborderselnamedcolor (int component, int color)
+{
+    japi_settreeborderselcolor(component,cga_color[color%MAXNAMEDCOLORS][0],
+                                         cga_color[color%MAXNAMEDCOLORS][1],
+                                         cga_color[color%MAXNAMEDCOLORS][2]);
+}
+
+void  japi_settreetextnonselnamedcolor (int component, int color)
+{
+    japi_settreetextnonselcolor(component,cga_color[color%MAXNAMEDCOLORS][0],
+                                          cga_color[color%MAXNAMEDCOLORS][1],
+                                          cga_color[color%MAXNAMEDCOLORS][2]);
+}
+
+void  japi_settreebgnonselnamedcolor (int component, int color)
+{
+    japi_settreebgnonselcolor(component,cga_color[color%MAXNAMEDCOLORS][0],
+                                        cga_color[color%MAXNAMEDCOLORS][1],
+                                        cga_color[color%MAXNAMEDCOLORS][2]);
 }
 
 int japi_loadimage(string filename)

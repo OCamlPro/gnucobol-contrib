@@ -33,6 +33,7 @@ import de.japi.components.Japi2ScrollPane;
 import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
 import de.japi.components.Japi2FormattedTextField;
+import de.japi.components.Japi2Tree;
 import de.japi.components.Japi2Window;
 import de.japi.components.listeners.Japi2FocusListener;
 import de.japi.components.listeners.Japi2KeyListener;
@@ -65,6 +66,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.text.JTextComponent;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * This class represents the main session of a JAPI2 kernel connection. It 
@@ -523,6 +525,36 @@ public class Japi2Session implements Runnable {
                             else 
                                     throw new NotHandledException();
                             break;
+                    case Japi2Calls.JAPI_SETTREETEXTSELCOLOR: 
+                            if (obj instanceof Japi2Tree)
+                                    GraphicCalls.setTreeTextSelColor(this, (Japi2Tree) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                    case Japi2Calls.JAPI_SETTREEBGSELCOLOR: 
+                            if (obj instanceof Japi2Tree)
+                                    GraphicCalls.setTreeBgSelColor(this, (Japi2Tree) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                    case Japi2Calls.JAPI_SETTREEBORDERSELCOLOR: 
+                            if (obj instanceof Japi2Tree)
+                                    GraphicCalls.setTreeBorderSelColor(this, (Japi2Tree) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                    case Japi2Calls.JAPI_SETTREETEXTNONSELCOLOR: 
+                            if (obj instanceof Japi2Tree)
+                                    GraphicCalls.setTreeTextNonSelColor(this, (Japi2Tree) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                    case Japi2Calls.JAPI_SETTREEBGNONSELCOLOR: 
+                            if (obj instanceof Japi2Tree)
+                                    GraphicCalls.setTreeBgNonSelColor(this, (Japi2Tree) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
                     case Japi2Calls.JAPI_SETXOR: 
                             if (obj instanceof Japi2Canvas)
                                     GraphicCalls.setXOR(this, (Japi2Canvas) obj);
@@ -772,6 +804,11 @@ public class Japi2Session implements Runnable {
                             else 
                                     throw new NotHandledException();
                             break;
+                            
+// -----------------------------------------------------------------------------
+// CommandCalls                            
+// -----------------------------------------------------------------------------
+                            
                     case Japi2Calls.JAPI_SELECTTEXT: 
                             if (obj instanceof Japi2TextArea) 
                                     CommandCalls.selectText(this, (Japi2TextArea) obj);
@@ -1286,6 +1323,45 @@ public class Japi2Session implements Runnable {
                             else 
                                     throw new NotHandledException();
                             break; 
+                    case Japi2Calls.JAPI_ADDTAB: 
+                            if (obj instanceof Japi2TabbedPane)
+                                    CommandCalls.addTab(this, (Japi2TabbedPane) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                    case Japi2Calls.JAPI_ADDTABWITHICON: 
+                            if (obj instanceof Japi2TabbedPane)
+                                    CommandCalls.addTabWithIcon(this, (Japi2TabbedPane) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+
+                    case Japi2Calls.JAPI_ADDNODE: 
+                            if (obj instanceof DefaultMutableTreeNode)
+                                    CommandCalls.addNode(this, (DefaultMutableTreeNode) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+
+                    case Japi2Calls.JAPI_ENABLEDOUBLECLICK: 
+                            if (obj instanceof Japi2Tree)
+                                    CommandCalls.enableDoubleClick(this, (Japi2Tree) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                            
+                    case Japi2Calls.JAPI_DISABLEDOUBLECLICK: 
+                            if (obj instanceof Japi2Tree)
+                                    CommandCalls.disableDoubleClick(this, (Japi2Tree) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                            
+                            
+// -----------------------------------------------------------------------------
+// QuestionCalls                            
+// -----------------------------------------------------------------------------
+                            
                     case Japi2Calls.JAPI_GETKEYCHAR: 
                             if (obj instanceof Japi2KeyListener) 
                                     QuestionCalls.getChar(this, (Japi2KeyListener) obj);
@@ -1634,6 +1710,11 @@ public class Japi2Session implements Runnable {
                             else 
                                     throw new NotHandledException();
                             break;
+
+// -----------------------------------------------------------------------------
+// ConstructionCalls                            
+// -----------------------------------------------------------------------------
+
                     case Japi2Calls.JAPI_FRAME: 
                             ConstructionCalls.createJFrame(this);
                             break;
@@ -1701,15 +1782,12 @@ public class Japi2Session implements Runnable {
                             else 
                                     throw new NotHandledException();
                             break;
-                    case Japi2Calls.JAPI_ADDTAB: 
-                            if (obj instanceof Japi2TabbedPane)
-                                    ConstructionCalls.createTab(this, (Japi2TabbedPane) obj);
-                            else 
-                                    throw new NotHandledException();
+                    case Japi2Calls.JAPI_NODE: 
+                                    ConstructionCalls.createNode(this);
                             break;
-                    case Japi2Calls.JAPI_ADDTABWITHICON: 
-                            if (obj instanceof Japi2TabbedPane)
-                                    ConstructionCalls.createTabWithIcon(this, (Japi2TabbedPane) obj);
+                    case Japi2Calls.JAPI_TREE: 
+                            if (obj instanceof Container) 
+                                    ConstructionCalls.createTree(this, (Container) obj);
                             else 
                                     throw new NotHandledException();
                             break;

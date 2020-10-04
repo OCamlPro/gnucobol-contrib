@@ -53,6 +53,20 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.30 Laszlo Erdos: 
 *>            - J-ADDTABWITHICON.
+*>------------------------------------------------------------------------------
+*> 2020.10.03 Laszlo Erdos: 
+*>            - J-NODE, J-ADDNODE, J-TREE
+*>            - J-ENABLEDOUBLECLICK, J-DISABLEDOUBLECLICK
+*>            - J-SETTREETEXTSELNAMEDCOLOR
+*>            - J-SETTREEBGSELNAMEDCOLOR
+*>            - J-SETTREEBORDERSELNAMEDCOLOR
+*>            - J-SETTREETEXTNONSELNAMEDCOLOR
+*>            - J-SETTREEBGNONSELNAMEDCOLOR
+*>            - J-SETTREETEXTSELCOLOR
+*>            - J-SETTREEBGSELCOLOR
+*>            - J-SETTREEBORDERSELCOLOR
+*>            - J-SETTREETEXTNONSELCOLOR
+*>            - J-SETTREEBGNONSELCOLOR
 *>******************************************************************************
  
 *>------------------------------------------------------------------------------
@@ -785,6 +799,204 @@
  MAIN-J-ADDTABWITHICON-EX.
     EXIT.
  END FUNCTION J-ADDTABWITHICON.
+
+
+*>------------------------------------------------------------------------------
+*> int  j_node( char* arg0)
+*> { return( japi_node(arg0));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-NODE.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          PIC X ANY LENGTH.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY REFERENCE LNK-ARG-0
+                    RETURNING          LNK-RET.
+
+ MAIN-J-NODE SECTION.
+
+    CALL STATIC "japi_node" 
+         USING BY CONTENT CONCATENATE(TRIM(LNK-ARG-0), X"00")
+         RETURNING LNK-RET 
+    END-CALL 
+ 
+    GOBACK
+
+    .
+ MAIN-J-NODE-EX.
+    EXIT.
+ END FUNCTION J-NODE.
+
+
+*>------------------------------------------------------------------------------
+*> void  j_addnode( int arg0, int arg1)
+*> { japi_addnode(arg0, arg1);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-ADDNODE.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-ADDNODE SECTION.
+
+    CALL STATIC "japi_addnode" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+ 
+    GOBACK
+
+    .
+ MAIN-J-ADDNODE-EX.
+    EXIT.
+ END FUNCTION J-ADDNODE.
+
+
+*>------------------------------------------------------------------------------
+*> int  j_tree( int arg0, int arg1)
+*> { return( japi_tree(arg0, arg1));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-TREE.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-TREE SECTION.
+
+    CALL STATIC "japi_tree" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+         RETURNING LNK-RET 
+    END-CALL 
+ 
+    GOBACK
+
+    .
+ MAIN-J-TREE-EX.
+    EXIT.
+ END FUNCTION J-TREE.
+
+
+*>------------------------------------------------------------------------------
+*> int  j_enabledoubleclick( int arg0)
+*> { return( japi_enabledoubleclick(arg0));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-ENABLEDOUBLECLICK.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                    RETURNING          LNK-RET.
+
+ MAIN-J-ENABLEDOUBLECLICK SECTION.
+
+    CALL STATIC "japi_enabledoubleclick" 
+         USING BY VALUE LNK-ARG-0
+         RETURNING LNK-RET 
+    END-CALL 
+ 
+    GOBACK
+
+    .
+ MAIN-J-ENABLEDOUBLECLICK-EX.
+    EXIT.
+ END FUNCTION J-ENABLEDOUBLECLICK.
+
+
+*>------------------------------------------------------------------------------
+*> int  j_disabledoubleclick( int arg0)
+*> { return( japi_disabledoubleclick(arg0));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-DISABLEDOUBLECLICK.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                    RETURNING          LNK-RET.
+
+ MAIN-J-DISABLEDOUBLECLICK SECTION.
+
+    CALL STATIC "japi_disabledoubleclick" 
+         USING BY VALUE LNK-ARG-0
+         RETURNING LNK-RET 
+    END-CALL 
+ 
+    GOBACK
+
+    .
+ MAIN-J-DISABLEDOUBLECLICK-EX.
+    EXIT.
+ END FUNCTION J-DISABLEDOUBLECLICK.
 
  
 *>------------------------------------------------------------------------------
@@ -8546,6 +8758,466 @@
  MAIN-J-SETNAMEDCOLORBG-EX.
     EXIT.
  END FUNCTION J-SETNAMEDCOLORBG.
+
+
+*>------------------------------------------------------------------------------
+*> void j_settreetextselnamedcolor( int arg0, int arg1)
+*> { japi_settreetextselnamedcolor(arg0, arg1);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETTREETEXTSELNAMEDCOLOR.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETTREETEXTSELNAMEDCOLOR SECTION.
+
+    CALL STATIC "japi_settreetextselnamedcolor" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETTREETEXTSELNAMEDCOLOR-EX.
+    EXIT.
+ END FUNCTION J-SETTREETEXTSELNAMEDCOLOR.
+
+ 
+*>------------------------------------------------------------------------------
+*> void j_settreebgselnamedcolor( int arg0, int arg1)
+*> { japi_settreebgselnamedcolor(arg0, arg1);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETTREEBGSELNAMEDCOLOR.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETTREEBGSELNAMEDCOLOR SECTION.
+
+    CALL STATIC "japi_settreebgselnamedcolor" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETTREEBGSELNAMEDCOLOR-EX.
+    EXIT.
+ END FUNCTION J-SETTREEBGSELNAMEDCOLOR.
+
+
+*>------------------------------------------------------------------------------
+*> void j_settreeborderselnamedcolor( int arg0, int arg1)
+*> { japi_settreeborderselnamedcolor(arg0, arg1);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETTREEBORDERSELNAMEDCOLOR.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETTREEBORDERSELNAMEDCOLOR SECTION.
+
+    CALL STATIC "japi_settreeborderselnamedcolor" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETTREEBORDERSELNAMEDCOLOR-EX.
+    EXIT.
+ END FUNCTION J-SETTREEBORDERSELNAMEDCOLOR.
+
+
+*>------------------------------------------------------------------------------
+*> void j_settreetextnonselnamedcolor( int arg0, int arg1)
+*> { japi_settreetextnonselnamedcolor(arg0, arg1);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETTREETEXTNONSELNAMEDCOLOR.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETTREETEXTNONSELNAMEDCOLOR SECTION.
+
+    CALL STATIC "japi_settreetextnonselnamedcolor" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETTREETEXTNONSELNAMEDCOLOR-EX.
+    EXIT.
+ END FUNCTION J-SETTREETEXTNONSELNAMEDCOLOR.
+
+
+*>------------------------------------------------------------------------------
+*> void j_settreebgnonselnamedcolor( int arg0, int arg1)
+*> { japi_settreebgnonselnamedcolor(arg0, arg1);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETTREEBGNONSELNAMEDCOLOR.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETTREEBGNONSELNAMEDCOLOR SECTION.
+
+    CALL STATIC "japi_settreebgnonselnamedcolor" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETTREEBGNONSELNAMEDCOLOR-EX.
+    EXIT.
+ END FUNCTION J-SETTREEBGNONSELNAMEDCOLOR.
+
+
+*>------------------------------------------------------------------------------
+*> void j_settreetextselcolor( int arg0, int arg1, int arg2, int arg3)
+*> { japi_settreetextselcolor(arg0, arg1, arg2, arg3);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETTREETEXTSELCOLOR.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                          BY VALUE     LNK-ARG-2
+                          BY VALUE     LNK-ARG-3
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETTREETEXTSELCOLOR SECTION.
+
+    CALL STATIC "japi_settreetextselcolor" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+               BY VALUE LNK-ARG-2
+               BY VALUE LNK-ARG-3
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETTREETEXTSELCOLOR-EX.
+    EXIT.
+ END FUNCTION J-SETTREETEXTSELCOLOR.
+
+
+*>------------------------------------------------------------------------------
+*> void j_settreebgselcolor( int arg0, int arg1, int arg2, int arg3)
+*> { japi_settreebgselcolor(arg0, arg1, arg2, arg3);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETTREEBGSELCOLOR.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                          BY VALUE     LNK-ARG-2
+                          BY VALUE     LNK-ARG-3
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETTREEBGSELCOLOR SECTION.
+
+    CALL STATIC "japi_settreebgselcolor" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+               BY VALUE LNK-ARG-2
+               BY VALUE LNK-ARG-3
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETTREEBGSELCOLOR-EX.
+    EXIT.
+ END FUNCTION J-SETTREEBGSELCOLOR.
+
+
+*>------------------------------------------------------------------------------
+*> void j_settreeborderselcolor( int arg0, int arg1, int arg2, int arg3)
+*> { japi_settreeborderselcolor(arg0, arg1, arg2, arg3);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETTREEBORDERSELCOLOR.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                          BY VALUE     LNK-ARG-2
+                          BY VALUE     LNK-ARG-3
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETTREEBORDERSELCOLOR SECTION.
+
+    CALL STATIC "japi_settreeborderselcolor" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+               BY VALUE LNK-ARG-2
+               BY VALUE LNK-ARG-3
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETTREEBORDERSELCOLOR-EX.
+    EXIT.
+ END FUNCTION J-SETTREEBORDERSELCOLOR.
+
+
+*>------------------------------------------------------------------------------
+*> void j_settreetextnonselcolor( int arg0, int arg1, int arg2, int arg3)
+*> { japi_settreetextnonselcolor(arg0, arg1, arg2, arg3);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETTREETEXTNONSELCOLOR.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                          BY VALUE     LNK-ARG-2
+                          BY VALUE     LNK-ARG-3
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETTREETEXTNONSELCOLOR SECTION.
+
+    CALL STATIC "japi_settreetextnonselcolor" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+               BY VALUE LNK-ARG-2
+               BY VALUE LNK-ARG-3
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETTREETEXTNONSELCOLOR-EX.
+    EXIT.
+ END FUNCTION J-SETTREETEXTNONSELCOLOR.
+
+
+*>------------------------------------------------------------------------------
+*> void j_settreebgnonselcolor( int arg0, int arg1, int arg2, int arg3)
+*> { japi_settreebgnonselcolor(arg0, arg1, arg2, arg3);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETTREEBGNONSELCOLOR.
+ AUTHOR.      Laszlo Erdos.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                          BY VALUE     LNK-ARG-2
+                          BY VALUE     LNK-ARG-3
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETTREEBGNONSELCOLOR SECTION.
+
+    CALL STATIC "japi_settreebgnonselcolor" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+               BY VALUE LNK-ARG-2
+               BY VALUE LNK-ARG-3
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETTREEBGNONSELCOLOR-EX.
+    EXIT.
+ END FUNCTION J-SETTREEBGNONSELCOLOR.
 
  
 *>------------------------------------------------------------------------------

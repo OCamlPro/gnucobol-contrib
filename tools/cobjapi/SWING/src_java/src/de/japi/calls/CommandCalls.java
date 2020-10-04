@@ -27,11 +27,13 @@ import de.japi.components.Japi2RadioButton;
 import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
 import de.japi.components.Japi2FormattedTextField;
+import de.japi.components.Japi2Tree;
 import de.japi.components.Japi2Window;
 import de.japi.components.layout.Japi2FixLayout;
 import de.japi.components.layout.Japi2GridLayout;
 import de.japi.components.layout.Japi2HorizontalFlowLayout;
 import de.japi.components.layout.Japi2VerticalFlowLayout;
+import de.japi.components.listeners.Japi2ComponentListener;
 import java.applet.Applet;
 import java.applet.AudioClip;
 import java.awt.Adjustable;
@@ -48,12 +50,14 @@ import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.MenuComponent;
 import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
@@ -63,6 +67,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.JTextComponent;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * This class contains all JAPI calls which are commands,i.e. any kind of set 
@@ -588,6 +593,81 @@ public class CommandCalls {
         session.log2("add {0} to {1}", title, choice);
         choice.addItem(title);
     }    
+
+    /*
+     * This method creates a Tab for a TabbedPane, and adds an Item Listener to it.
+     */
+    public static void addTab(Japi2Session session, Japi2TabbedPane tabbedpane) throws IOException {
+        String title = session.readLine();
+
+        Japi2Panel panel = new Japi2Panel();
+        int oid = session.addObject(panel);  
+        tabbedpane.addTab(title, panel);
+        
+        //item listener
+        Japi2ComponentListener componentListener = new Japi2ComponentListener(session, oid, Japi2Constants.J_RESIZED);
+        panel.setJapiListener(componentListener);
+        panel.addComponentListener(componentListener);
+        
+        session.log2("TAB {0} (ID = {1}) in Parent Object {2}", title, oid, tabbedpane);
+        session.writeInt(oid);
+    }
+
+    /*
+     * This method creates a Tab with Icon for a TabbedPane, and adds an Item Listener to it.
+     */
+    public static void addTabWithIcon(Japi2Session session, Japi2TabbedPane tabbedpane) throws IOException {
+        String title = session.readLine();
+        String filename = session.readLine();
+
+        // Load the image
+        Image picture = Toolkit.getDefaultToolkit().getImage(new URL(
+                "http",
+                session.getResourceHost(),
+                session.getResourcePort(),
+                filename)
+        );
+        ImageIcon icon = new ImageIcon(picture);
+        
+        Japi2Panel panel = new Japi2Panel();
+        int oid = session.addObject(panel);  
+        tabbedpane.addTab(title, icon, panel);
+        
+        //item listener
+        Japi2ComponentListener componentListener = new Japi2ComponentListener(session, oid, Japi2Constants.J_RESIZED);
+        panel.setJapiListener(componentListener);
+        panel.addComponentListener(componentListener);
+        
+        session.log2("TAB {0} (ID = {1}) in Parent Object {2} icon = {3}", title, oid, tabbedpane, icon);
+        session.writeInt(oid);
+    }
+
+    /*
+     * This method adds a node to an other node.
+     */
+    public static void addNode(Japi2Session session, DefaultMutableTreeNode parentNode) throws IOException {
+        int node = session.readInt();
+
+        DefaultMutableTreeNode childNode = session.getObjectById(node, DefaultMutableTreeNode.class);
+        session.log2("Parent Node {0}, Child Node {1}", parentNode, childNode);
+        parentNode.add(childNode);
+    }
+
+    /*
+     * This method enable double click action on a tree.
+     */
+    public static void enableDoubleClick(Japi2Session session, Japi2Tree tree) throws IOException {
+        session.log2("enableDoubleClick, tree {0}", tree);
+        tree.enableDoubleClickAction();
+    }
+
+    /*
+     * This method disable double click action on a tree.
+     */
+    public static void disableDoubleClick(Japi2Session session, Japi2Tree tree) throws IOException {
+        session.log2("enableDoubleClick, tree {0}", tree);
+        tree.disableDoubleClickAction();
+    }
     
     /*
      * These methods select an item in a list or a choiceBox/comoboBox.

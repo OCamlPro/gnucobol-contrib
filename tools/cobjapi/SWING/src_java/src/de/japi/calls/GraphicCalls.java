@@ -6,6 +6,7 @@ import de.japi.Japi2Session;
 import de.japi.components.Japi2Canvas;
 import de.japi.components.Japi2Frame;
 import de.japi.components.Japi2PrintJob;
+import de.japi.components.Japi2Tree;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -124,6 +125,51 @@ public class GraphicCalls {
         printJob.getGraphics().setColor(new Color(red, green, blue));
         printJob.getGraphics().fillRect(0, 0, d.width, d.height);
         printJob.getGraphics().setColor(c);
+    }
+
+    public static void setTreeTextSelColor(Japi2Session session, Japi2Tree tree) throws IOException {
+        int red = session.readByte();
+        int green = session.readByte();
+        int blue = session.readByte();
+
+        session.log3("Set textSelectionColor in {0}: {1}, {2}, {3}", tree, red, green, blue);
+        tree.setTextSelectionColor(new Color(red, green, blue));
+    }
+
+    public static void setTreeBgSelColor(Japi2Session session, Japi2Tree tree) throws IOException {
+        int red = session.readByte();
+        int green = session.readByte();
+        int blue = session.readByte();
+
+        session.log3("Set backgroundSelectionColor in {0}: {1}, {2}, {3}", tree, red, green, blue);
+        tree.setBackgroundSelectionColor(new Color(red, green, blue));
+    }
+
+    public static void setTreeBorderSelColor(Japi2Session session, Japi2Tree tree) throws IOException {
+        int red = session.readByte();
+        int green = session.readByte();
+        int blue = session.readByte();
+
+        session.log3("Set borderSelectionColor in {0}: {1}, {2}, {3}", tree, red, green, blue);
+        tree.setBorderSelectionColor(new Color(red, green, blue));
+    }
+
+    public static void setTreeTextNonSelColor(Japi2Session session, Japi2Tree tree) throws IOException {
+        int red = session.readByte();
+        int green = session.readByte();
+        int blue = session.readByte();
+
+        session.log3("Set textNonSelectionColor in {0}: {1}, {2}, {3}", tree, red, green, blue);
+        tree.setTextNonSelectionColor(new Color(red, green, blue));
+    }
+
+    public static void setTreeBgNonSelColor(Japi2Session session, Japi2Tree tree) throws IOException {
+        int red = session.readByte();
+        int green = session.readByte();
+        int blue = session.readByte();
+
+        session.log3("Set backgroundNonSelectionColor in {0}: {1}, {2}, {3}", tree, red, green, blue);
+        tree.setBackgroundNonSelectionColor(new Color(red, green, blue));
     }
     
     /*
