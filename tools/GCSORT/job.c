@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -435,8 +435,12 @@ int job_load(struct job_t *job, int argc, char **argv) {
 				buffer=(char *)realloc(buffer,bufferLength+argvLength+1);
 			buffer[bufferLength]=' ';
 			// controllo se i parametri sono raggruppati tra doppi apici (2° parametro riga comando)
-			strcpy(buffer+bufferLength+1,argv[i]);
-			bufferLength+=argvLength;
+            // s.m. 20201015
+            // skip option
+            if (!(_stricmp(argv[i],"-fsign=EBCDIC")==0) && !(_stricmp(argv[i],"-fsign=ASCII")==0)) {
+			    strcpy(buffer+bufferLength+1,argv[i]);
+			    bufferLength+=argvLength;
+		    }
 		}
 	}
 	if (buffer==NULL) {
@@ -2730,7 +2734,8 @@ void job_getTypeFlags (int nTypeField, int* nType, int* nFlags ) {
                 *nFlags = COB_FLAG_HAVE_SIGN;
 				break;
 			case FIELD_TYPE_ZONED:
-                *nType = COB_TYPE_NUMERIC_DISPLAY;
+           // s.m. 20201015      *nType = COB_TYPE_NUMERIC_DISPLAY;
+                *nType = COB_TYPE_NUMERIC;
                 *nFlags = COB_FLAG_HAVE_SIGN;
 				break;
 			case FIELD_TYPE_NUMERIC_CLO:
@@ -2846,7 +2851,7 @@ INLINE int job_compare_qsort(const void *first, const void *second)
 		    result=memcmp((unsigned char*) first+nSp, (unsigned char*) second+nSp, sortField_getLength(sortField));
         else
             job_getTypeFlags (sortField_getType(sortField), &nType, &nFlags);
-
+// Verify (GnuCobol)typeck.c
 		if (sortField_getType(sortField) != FIELD_TYPE_CHARACTER) {
 			job_cob_field_set(g_fd1, nType, nLen, 0, nFlags, nLen);
 			job_cob_field_set(g_fd2, nType, nLen, 0, nFlags, nLen);

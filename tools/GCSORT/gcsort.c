@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -61,6 +61,7 @@ struct cob_frame	*frame_overflow;
 struct cob_frame	*frame_ptr;
 struct cob_frame	frame_stack[255];
 
+int g_cb_ebcdic_sign = 0;
 
 extern int yydebug;
 void yyset_debug(int ndbg);
@@ -84,14 +85,22 @@ int main(int argc, char **argv)
 			GCSORT_Config() ;
 			return OC_RTC_OK;
 		}
-	}	
+       	/* -fsign=<ASCII/EBCDIC> : Specify display sign */
+		if (!strcasecmp (argv[1], "-fsign=EBCDIC")) {
+				g_cb_ebcdic_sign = 1;
+			} else if (!strcasecmp (argv[1], "-fsign=ASCII")) {
+				g_cb_ebcdic_sign = 0;
+			} 
+
+     }
+
 	if (argc < 2) {
 		fprintf(stdout,"________________________________________________________________________\n");
 		fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-		fprintf(stdout,"Copyright (C) 2009-2019 Cedric ISSALY / Sauro Menna\n");
+		fprintf(stdout,"Copyright (C) 2009-2020 Cedric ISSALY / Sauro Menna\n");
 		fprintf(stdout,"________________________________________________________________________\n");
 		fprintf(stdout,"gcsort. Nothing to do.\n");
-		fprintf(stdout,"Usage: gcsort <command>\n");
+		fprintf(stdout,"Usage: gcsort <option> <command>\n");
 		fprintf(stdout,"              Execute command\n");
 		fprintf(stdout,"or   : gcsort TAKE <filename params>\n");
 		fprintf(stdout,"              Read and execute command from filename params\n");
@@ -151,7 +160,8 @@ int main_prod(int argc, char **argv) {
 	module->module_type = 0;
 	module->module_param_cnt = 0;
 	module->module_returning = 0;
-	module->ebcdic_sign = 0;
+	// s.m.20201015 module->ebcdic_sign = 0;
+	module->ebcdic_sign = g_cb_ebcdic_sign;
 	module->decimal_point = '.';
 	module->currency_symbol = '$';
 	module->numeric_separator = ',';

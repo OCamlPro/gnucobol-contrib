@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -43,7 +43,7 @@ void GCSORT_Config ( void )
 	/*
 	fprintf(stdout,"__________________________________________________________________________________________________________\n");
 	fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-	fprintf(stdout,"Copyright (C) 2009-2019 Cedric ISSALY / Sauro Menna\n");
+	fprintf(stdout,"Copyright (C) 2009-2020 Cedric ISSALY / Sauro Menna\n");
 	fprintf(stdout,"__________________________________________________________________________________________________________\n");
 	fprintf(stdout,"\n");
 	fprintf(stdout,"GCSORT_BYTEORDER  - 0 for NATIVE, 1 for BIGENDIAN                              : %ld\n", job->nByteOrder);
@@ -63,7 +63,7 @@ void GCSORT_Config ( void )
 //
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-	fprintf(stdout,"Copyright (C) 2009-2019 Cedric ISSALY / Sauro Menna\n");
+	fprintf(stdout,"Copyright (C) 2009-2020 Cedric ISSALY / Sauro Menna\n");
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"\n");
 //-->>	fprintf(stdout,"GCSORT_BYTEORDER             : %d", job->nByteOrder);
@@ -111,7 +111,7 @@ void GCSORT_Config ( void )
 void GCSORT_Version ( void ) 
 {
 	printf("gcsort Version %s\n", GCSORT_VERSION); 
-	printf("Copyright (C) 2009-2019 Cedric ISSALY / Sauro Menna\n");
+	printf("Copyright (C) 2009-2020 Cedric ISSALY / Sauro Menna\n");
 	printf("Packaged  %s\n", GCSORT_TAR_DATE);
 	return;
 } 
@@ -124,8 +124,11 @@ void GCSORT_Usage ( void )
     printf(" Syntax case insensitive                                                         \n");
     printf(" Return code : 0 (ok) - 16 (error)                                                 \n");
     printf("________________________________________________________________________________________\n");
-    printf("Usage with file parameters  : gcsort take filename   \n");
-    printf("Usage from command line     : gcsort <control statements> \n");
+    printf("Usage with file parameters  : gcsort <options> take filename   \n");
+    printf("Usage from command line     : gcsort <options> <control statements> \n");
+    printf("________________________________________________________________________________________\n");
+    printf("gcsort options\n");
+    printf("-fsign=[ASCII|EBCDIC] define display sign representation\n");
     printf("________________________________________________________________________________________\n");
     printf("gcsort control statements\n");
     printf("Notations: '{name}' = parameters , '|' = Alternative format of control statement\n");
