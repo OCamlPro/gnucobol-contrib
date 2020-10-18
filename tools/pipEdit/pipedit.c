@@ -1,13 +1,26 @@
 /***************************************************************************
 Errors:
 
+   DEL command problems with current line and displayed screen
+
 ***process_commandline() - using a wrong delimiter does not cause an error
 
-implement block commands, cc, dd, rr, xx ###JG###
+***implement block commands, cc, dd, rr, xx ###JG###
+
+   error at typing at last line of file
 
 ****************************************************************************/
-
-
+/******************************************************************************
+ +----------+-------+---------------------------------------------------------+
+ | 20200921 | 0.8.5 | line commands c and m + a/b, del all nx/x               |
+ +----------+-------+---------------------------------------------------------+
+ | 20200520 | 0.8.4 | Bugfix for CC and A/D                                   |
+ +----------+-------+---------------------------------------------------------+
+ | 20200429 | 0.8.3 | show cursor x/y when pressing left right up down key    |
+ +----------+-------+---------------------------------------------------------+
+ | 2019nnnn | 0.8.2 | Block commands RR DD XX CC A B                          |
+ +----------+-------+---------------------------------------------------------+
+ ******************************************************************************/
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -15,7 +28,8 @@ implement block commands, cc, dd, rr, xx ###JG###
 # include <time.h>
 # include <signal.h>
 
-# define VERSION "pipEdit 0.8.2 - Block commands RR DD XX CC A B"
+# define SHORTVERSION "pipEdit 0.8.5 2020-10-11"
+# define VERSION "pipEdit 0.8.5 - 2020-10-11 - c and m plus A/B del all nx/x"
 
 # ifdef __USE_PIPCURSES__
 	# include "pipcurses.c"
@@ -1461,6 +1475,7 @@ void do_right(void)
 	char zwi2[256];
 	int a;
 
+	strcpy(screen_errormsg, ""); // clear msg, show cursur x/y again
 	strcpy(zwi, (char*)screen_commandline);
 	trim(zwi);
 	ucase(zwi);
@@ -1501,6 +1516,7 @@ void do_left(void)
 	char zwi[256];
 	int a;
 
+	strcpy(screen_errormsg, ""); // clear msg, show cursur x/y again
 	strcpy(zwi, (char*)screen_commandline);
 	trim(zwi);
 	ucase(zwi);
@@ -1534,6 +1550,7 @@ void do_page_up(void)
 	char zwi[256];
 	int a;
 
+	strcpy(screen_errormsg, ""); // clear msg, show cursur x/y again
 	strcpy(zwi, (char*)screen_commandline);
 	trim(zwi);
 	ucase(zwi);
@@ -1573,6 +1590,7 @@ void do_page_down(void)
 	char zwi[256];
 	int a;
 
+	strcpy(screen_errormsg, ""); // clear msg, show cursur x/y again
 	strcpy(zwi, (char*)screen_commandline);
 	trim(zwi);
 	ucase(zwi);
@@ -1952,11 +1970,13 @@ int now_really_process_commandline(unsigned char *s)
 	int t, i;
 	int rc;
 	int z;
+	int cnt;
 	int afterbefore, afterbeforeline;
 	int startblockcc, endblockcc;
 	int startblockrr, endblockrr;
 	int startblockdd, endblockdd;
 	int startblockxx, endblockxx;
+	int copymoveline;
 	int curpos; // needed for remove_empty_insert_lines
 
 
@@ -2087,6 +2107,12 @@ int now_really_process_commandline(unsigned char *s)
 		write_to_log("===return 12====");
 		return(1); // cursor at beginning of command line
 	}
+	if(f==0 && (strcmp(zwi, "VER")==0 || strcmp(zwi, "VERSION")==0)){
+		strcpy(screen_errormsg, SHORTVERSION);
+		strcpy(screen_errormessage, VERSION);
+		set_to_space(screen_commandline, 80);
+		return(1); // cursor at beginning of command line
+	}
 	if(f==0 && strcmp(zwi, "COLS")==0){
 		set_to_space(screen_commandline, 80);
 		switch(screen_cols){
@@ -2171,6 +2197,77 @@ int now_really_process_commandline(unsigned char *s)
 		write_to_log("===return 18====");
 		return(2); // leave cursor where it is
 	}
+	// del all nx or del all x
+	if(f==0 && (strncmp(zwi, "DEL ", 4)==0 || strncmp(zwi, "DEL", 3)==0)){
+		word(orizwi, zwi2, 2);
+		word(orizwi, zwi3, 3);
+		ucase(zwi2);
+		if(strcmp(zwi2, "ALL")!=0){
+			strcpy(screen_errormsg, "Invalid operand");
+			sprintf(screen_errormessage, "Operand ALL was expected, but >%s< was found.", zwi2);
+			return(1); // cursor at beginning of command line
+		}
+		ucase(zwi3);
+		if(strcmp(zwi3, "X")!=0 && strcmp(zwi3, "NX")!=0){
+			strcpy(screen_errormsg, "Invalid operand");
+			strcpy(screen_errormessage, "Operand X or NX was expected.");
+			sprintf(screen_errormessage, "Operand X or NX was expected, but >%s< was found.", zwi3);
+			return(1); // cursor at beginning of command line
+		}
+		if(strcmp(zwi3, "X")==0){
+			cnt=0;
+			for(t=0; t<linecnt; t++){
+				if(linetype[t]=='X'){
+					delete_one_line(t);
+					t--;
+					source_changed=TRUE;
+					cnt++;
+				}
+			}
+		}
+		if(strcmp(zwi3, "NX")==0){
+			cnt=0;
+			for(t=0; t<linecnt; t++){
+				if(linetype[t]=='N'){
+					delete_one_line(t);
+					t--;
+					source_changed=TRUE;
+					cnt++;
+				}
+			}
+		}
+		sprintf(zwi, "DEL:1 cnt=%d current_line=%d linecnt=%d screen_offset_y=%d",
+			cnt, current_line, linecnt, screen_offset_y);
+		write_to_log(zwi);
+		if(cnt>0){
+			sprintf(screen_errormsg, "%d lines deleted.", cnt);
+			sprintf(screen_errormessage, "%d lines deleted.", cnt);
+		}
+		else{
+			strcpy(screen_errormsg, "No lines deleted.");
+			strcpy(screen_errormessage, "No lines deleted.");
+		}
+		set_to_space(screen_commandline, 80);
+		if(current_line>=linecnt){
+			current_line=linecnt-1;
+		}
+		if(current_line<0){
+			current_line=0;
+		}
+		if(screen_offset_y>=linecnt){
+			screen_offset_y=linecnt-1;
+			for(;;){
+				if(screen_offset_y<(linecnt-screen_lines)) break;
+				screen_offset_y--;
+				if(screen_offset_y<1) break;
+			}
+		}
+		draw_screen_editor();
+		sprintf(zwi, "DEL:2 cnt=%d current_line=%d linecnt=%d screen_offset_y=%d",
+			cnt, current_line, linecnt, screen_offset_y);
+		write_to_log(zwi);
+		return(1); // cursor at beginning of command line
+	}
 	if(strlen(zwi)==0){ // empty command line, no error...
 		f=1;
 	}
@@ -2193,16 +2290,27 @@ int now_really_process_commandline(unsigned char *s)
 	
 	write_to_log("Processing block commands  !!!!!!!!!!!!!!!!!!!!!!!!!!");
 	afterbefore=-1; // ###JG###
+	afterbeforeline=-1;
+	copymoveline=-1;
 	for(t=0; t<linecnt; t++){
 		strcpy(zwi, (char*)linecmd[t]);
 		trim(zwi);
-		if(zwi[0]=='a' && zwi[1]==0){
+		ucase(zwi);
+		if(zwi[0]=='A' && zwi[1]==0){
 			afterbefore=1;
 			afterbeforeline=t;
+			// strcpy((char*)linecmd[t], "      ");
 		}
-		if(zwi[0]=='b' && zwi[1]==0){
+		if(zwi[0]=='B' && zwi[1]==0){
 			afterbefore=2;
 			afterbeforeline=t;
+			// strcpy((char*)linecmd[t], "      ");
+		}
+		if(zwi[0]=='C' && zwi[1]==0){
+			copymoveline=1;
+		}
+		if(zwi[0]=='M' && zwi[1]==0){
+			copymoveline=2;
 		}
 	}
 
@@ -2231,7 +2339,7 @@ int now_really_process_commandline(unsigned char *s)
 					endblockcc=t;
 				}
 				else{
-					strcpy(screen_errormsg, "1:copy/move pending");
+					strcpy(screen_errormsg, "copy/move pending");
 					strcpy(zwi2, (char*)screen_commandline);
 					trim(zwi2);
 					sprintf(screen_errormessage, "copy/move is pending");
@@ -2295,22 +2403,37 @@ int now_really_process_commandline(unsigned char *s)
 			}
 		}
 	}
-	//sprintf(zwi, ">>>startblockcc=%d endblockcc=%d afterbefore=%d", 
-	//	   startblockcc, endblockcc, afterbefore);
-	//write_to_log(zwi);
+	sprintf(zwi, ">>>startblockcc=%d endblockcc=%d afterbefore=%d", 
+		   startblockcc, endblockcc, afterbefore);
+	write_to_log(zwi);
 	if(startblockcc>-1 && endblockcc>-1 && afterbefore>-1){
 		z=0;
 		for(i=startblockcc; i<=endblockcc; i++, z++){
-			if(afterbefore==1){
+			if(afterbefore==1){ // insert after
 				insert_one_empty_line(afterbeforeline+1+z);
 				linetype[afterbeforeline+1+z]='N';
+				sprintf(zwi, "=== afterbeforeline=%d startblockcc=%d", afterbeforeline, startblockcc);
+				write_to_log(zwi);
+				if(afterbeforeline<startblockcc){
+					write_to_log("===cc increment====");
+					// increment those because we inserted one line before!!!
+					startblockcc++;
+					endblockcc++;
+					i++;
+				}
 				free(lineptr[afterbeforeline+1+z]);
 				lineptr[afterbeforeline+1+z]=malloc(strlen((char*)lineptr[i])+1);
 				strcpy((char*)lineptr[afterbeforeline+1+z], (char*)lineptr[i]);
 			}
-			else{
+			else{ // insert before
 				insert_one_empty_line(afterbeforeline+z);
 				linetype[afterbeforeline+z]='N';
+				if(afterbeforeline<startblockcc){
+					// increment those because we inserted one line before!!!
+					startblockcc++;
+					endblockcc++;
+					i++;
+				}
 				free(lineptr[afterbeforeline+z]);
 				lineptr[afterbeforeline+z]=malloc(strlen((char*)lineptr[i])+1);
 				strcpy((char*)lineptr[afterbeforeline+z], (char*)lineptr[i]);
@@ -2330,8 +2453,11 @@ int now_really_process_commandline(unsigned char *s)
 		return(0); // process ENTER key
 	}
 	else{
-		if(startblockcc>-1 || endblockcc>-1 || afterbefore>-1){
-			strcpy(screen_errormsg, "2:copy/move pending");
+		sprintf(zwi, "startblockcc=%d endblockcc=%d afterbefore=%d", 
+		    startblockcc, endblockcc, afterbefore);
+		write_to_log(zwi);
+		if((startblockcc>-1||endblockcc>-1||afterbefore>-1) && copymoveline==-1){
+			strcpy(screen_errormsg, "copy/move pending");
 			strcpy(zwi2, (char*)screen_commandline);
 			trim(zwi2);
 			sprintf(screen_errormessage, "copy/move is pending");
@@ -2495,9 +2621,127 @@ int now_really_process_commandline(unsigned char *s)
 				source_changed=FALSE;
 				f=1;
 			}
+			if(c=='C'){ // copy
+				sprintf(zwi, "afterbefore=%d", afterbefore);
+				write_to_log(zwi);
+				if(afterbefore==1){
+					if(afterbeforeline>t){ // after current line, okay
+						write_to_log("c a after current line");
+						strcpy((char*)linecmd[afterbeforeline], "      ");
+						insert_one_empty_line(afterbeforeline+1);
+						linetype[afterbeforeline+1]='N';
+						strcpy((char*)lineptr[afterbeforeline+1], (char*)lineptr[t]);
+						strcpy((char*)linecmd[t], "      ");
+					}
+					else{ // before current line, current line t moves to t+1
+						write_to_log("c a before current line");
+						strcpy((char*)linecmd[t], "      ");
+						strcpy((char*)linecmd[afterbeforeline], "      ");
+						insert_one_empty_line(afterbeforeline+1);
+						linetype[afterbeforeline+1]='N';
+						strcpy((char*)lineptr[afterbeforeline+1],(char*)lineptr[t+1]);
+					}
+					source_changed=TRUE;
+					f=1;
+				}
+				else{
+					if(afterbefore==2){
+						if(afterbeforeline>t){ // after current line, okay
+							write_to_log("c b after current line");
+							strcpy((char*)linecmd[afterbeforeline], "      ");
+							insert_one_empty_line(afterbeforeline);
+							linetype[afterbeforeline]='N';
+							strcpy((char*)lineptr[afterbeforeline], (char*)lineptr[t]);
+							strcpy((char*)linecmd[t], "      ");
+						}
+						else{
+							write_to_log("c b before current line");
+							insert_one_empty_line(afterbeforeline);
+							linetype[afterbeforeline]='N';
+							strcpy((char*)lineptr[afterbeforeline], (char*)lineptr[t+1]);
+							strcpy((char*)linecmd[t+1], "      ");
+							strcpy((char*)linecmd[afterbeforeline-1], "      ");
+							strcpy((char*)linecmd[afterbeforeline], "      ");
+							strcpy((char*)linecmd[afterbeforeline+1], "      ");
+						}
+						source_changed=TRUE;
+						f=1;
+					}
+					else{
+						strcpy(screen_errormsg, "copy/move is pending");
+						sprintf(screen_errormessage, "copy/move is pending");
+					}
+				}
+			}
+			if(c=='M'){ // move
+				if(afterbefore==1){
+					if(afterbeforeline>t){ // after current line, okay
+						write_to_log("c a after current line");
+						insert_one_empty_line(afterbeforeline+1);
+						linetype[afterbeforeline+1]='N';
+						strcpy((char*)lineptr[afterbeforeline+1], (char*)lineptr[t]);
+						strcpy((char*)linecmd[t], "      ");
+						strcpy((char*)linecmd[afterbeforeline], "      ");
+						delete_one_line(t);
+					}
+					else{ // before current line, current line t moves to t+1
+						write_to_log("c a before current line");
+						strcpy((char*)linecmd[t], "      ");
+						strcpy((char*)linecmd[afterbeforeline], "      ");
+						insert_one_empty_line(afterbeforeline+1);
+						linetype[afterbeforeline+1]='N';
+						strcpy((char*)lineptr[afterbeforeline+1],(char*)lineptr[t+1]);
+						delete_one_line(t+1);
+					}
+					source_changed=TRUE;
+					f=1;
+				}
+				else{
+					if(afterbefore==2){
+						if(afterbeforeline>t){ // after current line, okay
+							write_to_log("c b after current line");
+							insert_one_empty_line(afterbeforeline);
+							linetype[afterbeforeline]='N';
+							strcpy((char*)lineptr[afterbeforeline], (char*)lineptr[t]);
+							strcpy((char*)linecmd[t], "      ");
+							strcpy((char*)linecmd[afterbeforeline+1], "      ");
+							delete_one_line(t);
+						}
+						else{
+							write_to_log("c b before current line");
+							insert_one_empty_line(afterbeforeline);
+							linetype[afterbeforeline]='N';
+							strcpy((char*)lineptr[afterbeforeline], (char*)lineptr[t+1]);
+							strcpy((char*)linecmd[t+1], "      ");
+							strcpy((char*)linecmd[afterbeforeline-1], "      ");
+							strcpy((char*)linecmd[afterbeforeline], "      ");
+							strcpy((char*)linecmd[afterbeforeline+1], "      ");
+							delete_one_line(t+1);
+						}
+						source_changed=TRUE;
+						f=1;
+					}
+					else{
+						strcpy(screen_errormsg, "copy/move is pending");
+						sprintf(screen_errormessage, "copy/move is pending");
+					}
+				}
+			}
 			if(f==0){
-				strcpy(screen_errormsg, "Invalid line cmd");
-				sprintf(screen_errormessage, "Invalid line command %s", zwi);
+				if(afterbeforeline>0){
+					strcpy(screen_errormsg, "copy/move is pending");
+					sprintf(screen_errormessage, "copy/move is pending");
+				}
+				else{
+					if(screen_errormsg[0]==0){ // dont overwrite existing error msg
+						strcpy(screen_errormsg, "Invalid line cmd");
+						sprintf(screen_errormessage,"Invalid line command >%s<", zwi);
+					}
+				}
+			}
+			else{
+				strcpy(screen_errormsg, "");
+				strcpy(screen_errormessage, "");
 			}
 		}
 	}
@@ -2813,7 +3057,12 @@ int now_handle_input_key_editor(int c)
 							cursor_y=screen_topline;
 							curpos=pos+screen_offset_y;
 							// jump to first non space character in line
-							strcpy(zwi, (char*)lineptr[curpos+1]);
+							if(lineptr[curpos+1]!=NULL){
+								strcpy(zwi, (char*)lineptr[curpos+1]);
+							}
+							else{
+								strcpy(zwi, "");
+							}
 							// sprintf(zwi2, "zwi=>%s<", zwi);
 							// write_to_log(zwi2);
 							for(t=0;;t++){

@@ -3,6 +3,11 @@
 # include <string.h>
 # include <unistd.h>
 
+# ifndef TRUE
+	# define TRUE (0==0)
+	# define FALSE (0!=0)
+# endif
+
 char *linetab[128000];
 char *errtab[128000][7];
 int linecnt=0;
@@ -70,7 +75,7 @@ void get_config_entry(char *pentry, char *value)
 	}
 }
 /******************************************************************************/
-void read_par_file(char *parfile)
+int read_par_file(char *parfile)
 {
 	char line[256];
 	int rc;
@@ -86,7 +91,7 @@ void read_par_file(char *parfile)
 
 	fp=fopen(parfile, "rb");
 	if(fp==NULL){
-		return;
+		return(FALSE);
 	}
 
 	stage=0;
@@ -163,6 +168,8 @@ void read_par_file(char *parfile)
 		}
 	}
 	fclose(fp);
+
+	return(TRUE);
 }
 /******************************************************************************/
 int do_replace(char *s, char *old, char *new)
@@ -202,6 +209,7 @@ int main(int argc, char **argv)
 	char fname[256];
 	char scriptname[256];
 	char parfile[256];
+	char msg[256];
 	char line[512];
 	char zwi[1024];
 	char zwi2[1024];
@@ -222,6 +230,7 @@ int main(int argc, char **argv)
 	int pos;
 	int rc;
 	int valid_target;
+	int par_file_exists;
 
 	strcpy(zwi, getenv("LANG"));
 	strcpy(text_error, "error:");
@@ -253,13 +262,18 @@ int main(int argc, char **argv)
 	fprintf(stderr, "config_file=>%s<\n", config_file);
 	fprintf(stderr, "conf_target=>%s<\n", conf_target);
 	// fprintf(stderr, "orifilename=>%s<\n", orifilename);
-	read_par_file(parfile);
+	par_file_exists=read_par_file(parfile);
 
 	// printf("comp: reading file from >%s<\n", filename);
 	fp=fopen(filename, "rb");
 	if(fp==NULL){
 		exit(99);
 	}
+   read_one_line(fp, line); // skip msg
+   read_one_line(fp, line); // skip message
+   read_one_line(fp, line); // skip cursor_x
+   read_one_line(fp, line); // skip cursor_y
+   read_one_line(fp, line); // skip modified
 	for(t=0;;){
 		if(read_one_line(fp, line)==EOF) break;
 		if(line[6]!='M'){
@@ -305,10 +319,10 @@ int main(int argc, char **argv)
 	}
 	fclose(fp);
 
-	// fprintf(stderr, "compiler=>%s<\n", compiler);
-	// fprintf(stderr, "errfile=>%s<\n", errfile);
+	fprintf(stderr, "compiler=>%s<\n", compiler);
+	fprintf(stderr, "errfile=>%s<\n", errfile);
 	sprintf(zwi, "chmod 755 %s; %s", scriptname, scriptname);
-	// fprintf(stderr, "system:zwi=>%s<\n", zwi);
+	fprintf(stderr, "system:zwi=>%s<\n", zwi);
 	system(zwi);
 
 	// fprintf(stderr, "fopen errfile=>%s<\n", errfile);
@@ -342,7 +356,7 @@ int main(int argc, char **argv)
 				strcat(zwi, " ");
 			}
 			if(strncmp(zwi, text_error, strlen(text_error))==0 && ecnt<7){
-				// fprintf(stderr, "a=%d ecnt=%d zwi=>%s<\n", a, ecnt, zwi);
+				fprintf(stderr, "a=%d ecnt=%d zwi=>%s<\n", a, ecnt, zwi);
 				errtab[a-1][ecnt]=malloc(strlen(zwi)+1);
 				strcpy(errtab[a-1][ecnt], zwi);
 				ecnt++;
@@ -428,6 +442,7 @@ int main(int argc, char **argv)
 		exit(33);
 	}
 	// fprintf(stderr,"fname=>%s< lstfile=>%s< zwi=>%s<\n", fname, lstfile, zwi);
+
 	for(;;){
 		rc=read_one_line(fp, line);
 		if(rc==EOF) break;
@@ -443,6 +458,21 @@ int main(int argc, char **argv)
 	remove(zwi); // remove the listing from /tmp
 	printf("comp: writing file to >%s<\n", filename);
 	fp=fopen(filename, "wb");
+	if(par_file_exists==FALSE){
+   	sprintf(msg, "No par file found!");
+	}
+	else{
+   	fprintf(fp, "msg=Compile done.\n");
+	}
+	if(errcnt==0){
+   	fprintf(fp, "message=Compile done, no errors.\n");
+	}
+	else{
+   	fprintf(fp, "message=Compile done, errors!!\n");
+	}
+   fprintf(fp, "cursor_x=14\n");
+   fprintf(fp, "cursor_y=3\n");
+   fprintf(fp, "modified=0\n");
 	if(errcnt==0){
 		fprintf(fp, "000000M      * * * No Errors * * *\n");
 	}
@@ -498,7 +528,7 @@ int main(int argc, char **argv)
 			zwi[i]=0;
 			pos=t+1;
 			fprintf(stderr, "remove >%s%s<\n", remname, zwi);
-			sprintf(zwi2, "remove >%s%s<\n", remname, zwi);
+			sprintf(zwi2, "%s%s", remname, zwi);
 			remove(zwi2);
 		}
 		if(removetmp[t]==0) break;

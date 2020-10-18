@@ -4,7 +4,7 @@
 \usepackage{url}
 \begin{document}
 \title{\huge \textbf{pipEdit} 
-\break \break \small Version 0.8.2 \huge 
+\break \break \small Version 0.8.5 \huge 
 \break \break Users Guide \break \break \break}
 
 %%%\begin{figure}
@@ -13,7 +13,7 @@
 %%%\label{fig:boat1}
 %%%\end{figure}
 \author{The\_Piper \\ the\_piper@web.de}
-\date{January 2020}
+\date{October 2020}
 %%%\begin{document}
 \maketitle
 \tableofcontents
@@ -73,9 +73,13 @@ Without ncurses, using my ncurses replacement, pipcurses, type this: \\
 
 Or use the Makefile, edit it to your needs and type \texttt{make} \\
 
-Of course you can try to compile it for Windows, Dev-Cpp, for example, is a free compiler which should be able to compile source code for gcc.
+Of course you can try to compile it for Windows, Dev-Cpp, for example, is a free compiler which should be able to compile source code for gcc. \\
+ 
+\url{https://www.bloodshed.net/devcpp.html} \\
 
-\url{https://www.bloodshed.net/devcpp.html}
+Or install GnuCobol for windows, which comes with a version of gcc for windows.
+Here are the binaries for Windows: \\ \break
+\url{https://arnoldtrembley.com/GnuCOBOL.htm#binaries}
 
 
 \chapter{Configuring pipEdit}
@@ -251,12 +255,12 @@ F12 & Retrieve \\
 \end{tabular}
 \\
 
-\textit{The function keys are defined in the config file. If you want or must
-use other function keys for those actions, edit the config file.}
+The function keys are defined in the config file. If you want or must
+use other function keys for those actions, edit the config file. \\
 
-\textit{For example, the terminal emulation I
+For example, the terminal emulation I
 use, uses F11 to toggle full screen mode. So scroll right on F11 doesn't work 
-very well.}  \\
+very well.  \\
 
 \begin{tabular}{l l}
 Arrow up & Cursor up \\
@@ -285,8 +289,10 @@ save4macro & Save the current file in a format macros use \\
 res / reset & Remove all message lines \\
 can / cancel & Cancel editing, must be confirmed again \\
 cols & Toggles the display of columns above code \\
-l / loc & Locate a line number \\
+l / loc & Locate a line number, move it to top of screen \\
 f / find & Find string in text \\
+del & DEL ALL NX or DEL ALL X, deletes all eXcluded or non eXcluded lines \\
+ver / version & displays the version of pipEdit\\
 \end{tabular}
 
 
@@ -300,11 +306,41 @@ d & Delete line \\
 i & Insert blank line \\
 r & Repeat line \\
 x & eXclude line \\
+c & Copy line after/before\\
+m & Move line after/before\\
 \end{tabular} \\
 
-Every command takes a number as a parameter.
+Every command, except c and m,  takes a number as a parameter.
 So \texttt{d3} deletes 3 lines, \texttt{i5} inserts 5 blank lines,
 \texttt{r2} repeats the current line two times and \texttt{x7} excludes 7 lines.
+\\
+
+Example: \\
+
+\textbf{ \texttt{
+\begin{tabular}{l l}
+000001  & One \\
+d2      & Two \\
+000003  & Three \\
+000004  & Four \\
+000005  & Five \\
+\end{tabular} \\
+} } \\
+
+The commands c and m need a destination to where copy/move the line, marked with a (after) or b (before) at the line number. \\
+
+Example: \\
+
+\textbf{ \texttt{
+\begin{tabular}{l l}
+000001  & One \\
+c       & Two \\
+000003  & Three \\
+a       & Four \\
+000005  & Five \\
+\end{tabular} \\
+} }
+
 
 \chapter{Block commands}
 
