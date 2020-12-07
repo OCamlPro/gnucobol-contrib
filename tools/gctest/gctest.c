@@ -24,31 +24,30 @@
                and create the autotest data as a byproduct
 */
 
-#include <assert.h>
-#include <ctype.h>  
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h> 
+#include <time.h> 
 #include <sys/time.h> 
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <time.h> 
-#include <unistd.h>
+#include <ctype.h>  
 
 extern char *optarg;
 extern int optind;
 
 static int  incrErr = 0;
+static int	bGuessDate = 0;
 static int  bShareMod = 0;
-static int  bVerbose = 0;
-static int  bNeedsIsam = 0;
-static char progexe[100];
-static char progname[100];
+static int	bVerbose = 0;
+static int	bNeedsIsam = 0;
+static char progexe[100] = " ? $ ";
+static char progname[100] = " ";
 static char diffProg[32] = "gcdiff";
-
 /*
  * Display program usage information
- */
+*/
 static void
 usage(char *binname)
 {
@@ -117,7 +116,10 @@ getFileName(
  * Copy 'fi' thru to 'fo'
  */
 static void
-copyFile(FILE *fi, FILE *fo, int addBlank, int rmvseq, int showit, char *oldnm, char *newnm, int incrnum, int tabs)
+copyFile(FILE *fi, FILE *fo, 
+		int addBlank, int rmvseq, int showit, 
+		char *oldnm, char *newnm, 
+		int incrnum, int tabs)
 {
 	char	buf[4096], wrk[4096], *p;
 	int		i,j,k,pos,olen = 0, nlen = 0;
@@ -184,7 +186,7 @@ copyFile(FILE *fi, FILE *fo, int addBlank, int rmvseq, int showit, char *oldnm, 
 					&& buf[i+j] != '\'') {
 						memset(&wrk[i],' ',j);
 						memcpy(&wrk[i],"prog.cob",k);
-						if(buf[i+j] == ':')
+						if(buf[i+j] == ':' || buf[i+j] == ' ')
 							strcpy(&wrk[i+k],&buf[i+j]);
 						else
 							strcpy(&wrk[i+j],&buf[i+j]);
@@ -195,6 +197,14 @@ copyFile(FILE *fi, FILE *fo, int addBlank, int rmvseq, int showit, char *oldnm, 
 					strcpy(buf,wrk);
 					if(incrnum > 0) {
 						for(i=j=0; buf[j] != 0; ) {
+							if(memcmp(&buf[j]," at line ",9)== 0
+							&& strstr (buf," statement ") != NULL
+							&& isdigit(buf[j+9])) {
+								pos = j;
+								k = atoi(&buf[j+9]);
+								for(j=j+9; isdigit(buf[j]); j++);
+								i += sprintf(&wrk[i]," at line %d",k+incrnum);
+							} else
 							if(buf[j] == ':'
 							&& buf[j+1] == ' '
 							&& isdigit(buf[j+2])) {
@@ -221,7 +231,11 @@ copyFile(FILE *fi, FILE *fo, int addBlank, int rmvseq, int showit, char *oldnm, 
 					if (j > k) {
 						memset(&wrk[i],' ',j);
 						memcpy(&wrk[i],"prog",k);
-						strcpy(&wrk[i+j],&buf[i+j]);
+						if(memcmp(&buf[i+j]," was ",5)==0
+						|| memcmp(&buf[i+j]," from ",6)==0)
+							strcpy(&wrk[i+k],&buf[i+j]);
+						else
+							strcpy(&wrk[i+j],&buf[i+j]);
 					} else {
 						strcpy(&wrk[i],"prog");
 						strcpy(&wrk[i+k],&buf[i+j]);
@@ -267,6 +281,41 @@ copyFile(FILE *fi, FILE *fo, int addBlank, int rmvseq, int showit, char *oldnm, 
 					i += sprintf(&wrk[i],": %d",k+incrnum);
 				} else {
 					wrk[i++] = buf[j++];
+				}
+			}
+			wrk[i] = 0;
+			strcpy(buf,wrk);
+		}
+
+		if(bGuessDate) {
+			for(i=j=0; buf[j] != 0; j++) {
+				if((memcmp(&buf[j]," Jan ",5)==0
+				|| memcmp(&buf[j]," Feb ",5)==0
+				|| memcmp(&buf[j]," Mar ",5)==0
+				|| memcmp(&buf[j]," Apr ",5)==0
+				|| memcmp(&buf[j]," May ",5)==0
+				|| memcmp(&buf[j]," Jun ",5)==0
+				|| memcmp(&buf[j]," Jul ",5)==0
+				|| memcmp(&buf[j]," Aug ",5)==0
+				|| memcmp(&buf[j]," Sep ",5)==0
+				|| memcmp(&buf[j]," Oct ",5)==0
+				|| memcmp(&buf[j]," Nov ",5)==0
+				|| memcmp(&buf[j]," Dec ",5)==0) 
+				&& isdigit(buf[j+5])
+				&& isdigit(buf[j+6])
+				&& buf[j+7] == ' '
+				&& isdigit(buf[j+8])
+				&& isdigit(buf[j+9])
+				&& isdigit(buf[j+10])
+				&& isdigit(buf[j+11])
+				&& buf[j+12] == ' '
+				&& buf[j+15] == ':'
+				&& buf[j+18] == ':') {
+					memcpy(&wrk[i], " MMM DD YYYY HH:MI:SS", 21);
+					i += 21;
+					j += 20;
+				} else {
+					wrk[i++] = buf[j];
 				}
 			}
 			wrk[i] = 0;
@@ -391,42 +440,29 @@ main(
 	int		argc,
 	char	*argv[])
 {
-	int	opt,i,j,k,compsts,runsts;
-	int	getSummary = 1;
-	int	getKeyword = 1;
-	int	fixedFormat = 1;
-	int	bCompileOnly = 0;
-	int	bCompileModule = 0;
-	int	bCompile = 1;
-	int	bWall = 1;
-	int	bStdMf = 0;
-	int	bStdIBM = 0;
-	int	bStd2002 = 0;
-	int	bStd2014 = 0;
-	int	bStd85 = 0;
-	int	bStdDefault = 1;
-	int	bAppendAutoTest = 0;
-	int	bDoSetup = 0;
-	int	preln;
-	char	inpdd[48] = "INPUT",
-	        outdd[48] = "OUTPUT",
-	        *p,setdd[48],settestfile[200];
-	char	tmp[300],wrk[200],progout[200],
-	        cmod[80]         = {},
-	        cobstd[16]       = "default",
-	        autoname[48]     = {};
-	char	setup[200]       = "SAMPLE PROGRAM",
-	        keywords[200]    = "report",
-	        callfh[48]       = {};
-	char	inptestfile[200] = {},
-	        outtestfile[200] = {},
-	        compilecmd[256];
-	char	outlst[80]       = "./stdout.lst",
-	        errlst[80]       = "./stderr.lst",
-	        compprefx[64];
-	char	libs[256]        = {},
-	        flags[128]       = {},
-	        exshr[8]         = "-x";
+	int		opt,i,j,k,compsts,runsts=0;
+	int		getSummary = 1;
+	int		getKeyword = 1;
+	int		fixedFormat = 1;
+	int		bCompileOnly = 0;
+	int		bCompileModule = 0;
+	int		bCompile = 1;
+	int		bWall = 1;
+	int		bStdMf = 0;
+	int		bStdIBM = 0;
+	int		bStd2002 = 0;
+	int		bStd2014 = 0;
+	int		bStd85 = 0;
+	int		bStdDefault = 0;
+	int		bAppendAutoTest = 0;
+	int		bDoSetup = 0;
+	int		preln;
+	char	inpdd[48],outdd[48],*p,setdd[48],settestfile[200];
+	char	tmp[300],wrk[200],progout[200],cmod[80], cobstd[16], autoname[48];
+	char	setup[200],keywords[200],callfh[48];
+	char	inptestfile[200],outtestfile[200],compilecmd[256];
+	char	outlst[80],errlst[80],compprefx[64];
+	char	libs[256],flags[128], exshr[8];
 	char	compFiles[dMaxFile][80];
 	char	outFiles[dMaxFile][80];
 	char	ddFiles[dMaxFile][80];
@@ -435,15 +471,32 @@ main(
 	char	setCompEnv[dMaxFile][80];
 	char	setDef[dMaxFile][80];
 	FILE	*at,*fi;
-	int     numComp = 0;
-	int     addBlank = 0, numFiles = 0, numBooks = 0, numEnv = 0, numDef = 0, numCenv = 0;
+	int		numComp = 0;
+	int		addBlank = 0, numFiles = 0, numBooks = 0, numEnv = 0, numDef = 0, numCenv = 0;
 
+	strcpy(setup,"SAMPLE PROGRAM");
+	strcpy(keywords,"report");
+	strcpy(outlst,"./stdout.lst");
+	strcpy(errlst,"./stderr.lst");
+	strcpy(inpdd,"INPUT");
+	strcpy(outdd,"OUTPUT");
+	memset(inptestfile,0,sizeof(inptestfile));
+	memset(outtestfile,0,sizeof(outtestfile));
+	memset(progname,0,sizeof(progname));
+	memset(progexe,0,sizeof(progexe));
+	memset(cmod,0,sizeof(cmod));
+	memset(callfh,0,sizeof(callfh));
+	memset(libs,0,sizeof(libs));
+	memset(flags,0,sizeof(flags));
+	memset(autoname,0,sizeof(autoname));
 	putenv("SHELL=/bin/sh");
 	putenv("COMPILE_MODULE=cobc");
 	putenv("COMPILE_ONLY=cobc");
 	putenv("COMPILE=cobc");
 	putenv("COBC=cobc");
-
+	strcpy(exshr,"-x");
+	strcpy(cobstd,"default");
+	bStdDefault = 1;
 	while ((opt=getopt(argc, argv, "ai:o:O:c:d:hp:B:C:D:X:s:S:k:x:eEgbImwvVM:t:L:l:f:F:Z:")) != EOF) {
 		switch(opt) {
 		case 'a':
@@ -623,12 +676,12 @@ main(
 			printf("Unknown option '%c' \n",opt);
 		case 'h':
 			usage(argv[0]);
-			exit(EXIT_FAILURE);
+			exit(0);
 			break;
 		case 'V':
 			printf("GnuCOBOL compile a COBOL program, execute & capture output\n");
 			printf("%s compiled on %s %s\n",__FILE__,__DATE__,__TIME__);
-			exit(EXIT_FAILURE);
+			exit(0);
 			break;
 		}
 	}
@@ -643,15 +696,18 @@ main(
 	if(callfh[0] > ' ')
 		sprintf(&compprefx[strlen(compprefx)]," -use-extfh=%s",callfh);
 	preln = strlen(compprefx);
-	sprintf(compilecmd,"%s%s%s -o @f @F @c",compprefx,libs,flags);	/* Collect warnings */
+	if(memcmp(cmod,"main",4) == 0) 
+		sprintf(compilecmd,"%s%s%s -o @f @c @F",compprefx,libs,flags);	/* Collect warnings */
+	else
+		sprintf(compilecmd,"%s%s%s -o @f @F @c",compprefx,libs,flags);	/* Collect warnings */
 	if(progname[0] <= ' '
 	&& optind < argc) {
 		strcpy(progname,argv[optind]);
 	}
 	if(progname[0] <= ' ') {
-	        fprintf(stderr, "Missing program name to test;\n");
+		printf("Missing program name to test;\n");
 		usage(argv[0]);
-		exit(EXIT_FAILURE);
+		exit(0);
 	}
 	strcpy(progout,progname);
 	if((p=strrchr(progout,'.') ) != NULL)
@@ -661,7 +717,7 @@ main(
 	fi = fopen(progname,"r");
 	if(fi == NULL) {
 		perror(progname);
-		exit(EXIT_FAILURE);
+		exit(-1);
 	}
 	snifFile(fi,&fixedFormat,getSummary,setup,getKeyword,keywords);
 	fi = NULL;
@@ -671,7 +727,7 @@ main(
 	at = fopen(tmp,bAppendAutoTest?"a":"w");
 	if(at == NULL) {
 		perror(tmp);
-		exit(EXIT_FAILURE);
+		exit(-1);
 	}
 	fprintf(at,"\n");
 	if(autoname[0] <= ' '
@@ -703,13 +759,13 @@ main(
 	sprintf(&tmp[strlen(tmp)]," 1>%s 2>%s",outlst,errlst);
 	compsts = system(tmp);
 	if(compsts != 0)
-		fprintf(stderr, "Compile of %s failed!\n",progname);
+		printf("Compile of %s failed!\n",progname);
 	if(inptestfile[0] > ' '
 	&& compsts == 0) {
 		fi = fopen(inptestfile,"r");
 		if(fi == NULL) {
 			perror(inptestfile);
-			exit(EXIT_FAILURE);
+			exit(-1);
 		}
 		fprintf(at,"AT_DATA([inp_data],[");
 		copyFile(fi,at,0,0,0,NULL,NULL,0,0);
@@ -733,7 +789,7 @@ main(
 	fi = fopen(progname,"r");
 	if(fi == NULL) {
 		perror(progname);
-		exit(EXIT_FAILURE);
+		exit(-1);
 	}
 	if(bCompileModule) {
 		fprintf(at,"AT_DATA([%s], [",progname);
@@ -750,7 +806,7 @@ main(
 		fi = fopen(cmod,"r");
 		if(fi == NULL) {
 			perror(cmod);
-			exit(EXIT_FAILURE);
+			exit(-1);
 		}
 		fprintf(at,"AT_DATA([cmod.c], [[");
 		copyFile(fi,at,addBlank,0,0,NULL,NULL,0,1);
@@ -844,21 +900,13 @@ ReDoCompile:
 		sprintf(tmp,"./%s 1>%s 2>%s",progout,outlst,errlst);
 		runsts = system(tmp);
 		if(runsts != 0) {
-			printf("Execution of %s failed! Status: 0x%04X; ",progname, runsts);
-			if( WIFEXITED(runsts) ) {
-				printf("exit %d\n", WEXITSTATUS(runsts));
-			} else if(  !WIFSIGNALED(runsts) ) {
-				printf("(neither normal exit nor signaled?)\n");
-			} else {
-				assert(WIFSIGNALED(runsts));
-				const char *core_file = "";
 #if defined(WCOREDUMP)
-				if( WCOREDUMP(runsts) ) {
-					core_file = "(core_file)";
-				}
+			printf("Execution of %s failed! Status: 0x%04X; exit %d; Core %d\n",progname,runsts,
+						WIFEXITED(runsts),WEXITSTATUS(runsts),WCOREDUMP(runsts));
+#else
+			printf("Execution of %s failed! Status: 0x%04X; exit %d\n",progname,runsts,
+						WIFEXITED(runsts),WEXITSTATUS(runsts));
 #endif
-				printf("exit %d %s\n", WTERMSIG(runsts), core_file);
-			}
 		}
 		fprintf(at,"AT_CHECK([");
 		if(inptestfile[0] > ' ') {
@@ -920,27 +968,29 @@ ReDoCompile:
 		}
 		for(i=0; i < numFiles; i++) {
 			fprintf(at,"\n");
+			bGuessDate = 1;
 			fprintf(at,"AT_CAPTURE_FILE(./%s)\n\n",outFiles[i]);
 			fprintf(at,"AT_DATA([reference], [");
 			fi = fopen(outFiles[i],"r");
 			if(fi) {
-				copyFile(fi,at,0,0,0,NULL,NULL,0,0);
+				copyFile(fi,at,0,0,0,NULL,NULL,incrErr,0);
 				fclose(fi);
 				fi = NULL;
 			}
 			fprintf(at,"])\n\n");
 			fprintf(at,"AT_CHECK([%s reference %s], [0], [], [])\n\n",diffProg,outFiles[i]);
+			bGuessDate = 0;
 		}
 	}
 	if (!bShareMod)
 		fprintf(at,"AT_CLEANUP\n\n");
 	fclose(at);
 	unlink(outlst); unlink(errlst);
-	if(!bCompileModule) {
+	if(!bCompileModule && runsts == 0) {
 		sprintf(tmp,"./%s",progout);
 		unlink(tmp);
 	}
-
-	return EXIT_SUCCESS;
+	exit(0);
+	return 0;
 }
 
