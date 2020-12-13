@@ -74,24 +74,24 @@
 
  WORKING-STORAGE SECTION.
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-SCROLLPANE                      BINARY-INT.
- 01 WS-VSCROLL                         BINARY-INT.
- 01 WS-HSCROLL                         BINARY-INT.
- 01 WS-CANVAS                          BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-SCROLLPANE                      BINARY-LONG.
+ 01 WS-VSCROLL                         BINARY-LONG.
+ 01 WS-HSCROLL                         BINARY-LONG.
+ 01 WS-CANVAS                          BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
 
 *> FUNCTION ARGS 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-X                               BINARY-INT.
- 01 WS-Y                               BINARY-INT.
- 01 WS-X-WIDTH                         BINARY-INT.
- 01 WS-Y-HEIGHT                        BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-X                               BINARY-LONG.
+ 01 WS-Y                               BINARY-LONG.
+ 01 WS-X-WIDTH                         BINARY-LONG.
+ 01 WS-Y-HEIGHT                        BINARY-LONG.
 
 *> Constants for the cobjapi wrapper 
  COPY "cobjapi.cpy".

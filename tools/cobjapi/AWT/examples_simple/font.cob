@@ -81,42 +81,42 @@
 
  WORKING-STORAGE SECTION.
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
- 01 WS-LABEL                           BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
+ 01 WS-LABEL                           BINARY-LONG.
 *> font type
- 01 WS-FONT                            BINARY-INT.
- 01 WS-COURIER                         BINARY-INT.
- 01 WS-HELVETIA                        BINARY-INT.
- 01 WS-TIMES                           BINARY-INT.
- 01 WS-DIALOGIN                        BINARY-INT.
- 01 WS-DIALOGOUT                       BINARY-INT.
+ 01 WS-FONT                            BINARY-LONG.
+ 01 WS-COURIER                         BINARY-LONG.
+ 01 WS-HELVETIA                        BINARY-LONG.
+ 01 WS-TIMES                           BINARY-LONG.
+ 01 WS-DIALOGIN                        BINARY-LONG.
+ 01 WS-DIALOGOUT                       BINARY-LONG.
 *> font style
- 01 WS-STYLE                           BINARY-INT.
- 01 WS-NORMAL                          BINARY-INT.
- 01 WS-BOLD                            BINARY-INT.
- 01 WS-ITALIC                          BINARY-INT.
+ 01 WS-STYLE                           BINARY-LONG.
+ 01 WS-NORMAL                          BINARY-LONG.
+ 01 WS-BOLD                            BINARY-LONG.
+ 01 WS-ITALIC                          BINARY-LONG.
 *> font size
- 01 WS-SIZE                            BINARY-INT.
- 01 WS-F10                             BINARY-INT.
- 01 WS-F12                             BINARY-INT.
- 01 WS-F14                             BINARY-INT.
- 01 WS-F18                             BINARY-INT.
+ 01 WS-SIZE                            BINARY-LONG.
+ 01 WS-F10                             BINARY-LONG.
+ 01 WS-F12                             BINARY-LONG.
+ 01 WS-F14                             BINARY-LONG.
+ 01 WS-F18                             BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
- 01 WS-FONTSTYLE                       BINARY-INT.
- 01 WS-FONTSIZE                        BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
+ 01 WS-FONTSTYLE                       BINARY-LONG.
+ 01 WS-FONTSIZE                        BINARY-LONG.
  01 WS-STR                             PIC X(256).
  
 *> vars

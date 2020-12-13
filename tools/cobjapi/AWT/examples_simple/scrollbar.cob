@@ -76,25 +76,25 @@
 
  WORKING-STORAGE SECTION.
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-SCROLL                          BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-SCROLL                          BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
 
 *> FUNCTION ARGS 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
- 01 WS-MIN-VAL                         BINARY-INT.
- 01 WS-MAX-VAL                         BINARY-INT.
- 01 WS-SLIDE-SIZE                      BINARY-INT.
- 01 WS-UNIT-INCREMENT-AMOUNT           BINARY-INT.
- 01 WS-BLOCK-INCREMENT-AMOUNT          BINARY-INT. 
- 01 WS-CURRENT-VALUE                   BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
+ 01 WS-MIN-VAL                         BINARY-LONG.
+ 01 WS-MAX-VAL                         BINARY-LONG.
+ 01 WS-SLIDE-SIZE                      BINARY-LONG.
+ 01 WS-UNIT-INCREMENT-AMOUNT           BINARY-LONG.
+ 01 WS-BLOCK-INCREMENT-AMOUNT          BINARY-LONG. 
+ 01 WS-CURRENT-VALUE                   BINARY-LONG.
 
 *> Constants for the cobjapi wrapper 
  COPY "cobjapi.cpy".

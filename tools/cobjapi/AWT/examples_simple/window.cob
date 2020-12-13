@@ -74,24 +74,24 @@
 
  WORKING-STORAGE SECTION.
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-LABEL                           BINARY-INT.
- 01 WS-WINDOW                          BINARY-INT.
- 01 WS-RELEASED                        BINARY-INT.
- 01 WS-PRESSED                         BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-LABEL                           BINARY-LONG.
+ 01 WS-WINDOW                          BINARY-LONG.
+ 01 WS-RELEASED                        BINARY-LONG.
+ 01 WS-PRESSED                         BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
- 01 WS-X                               BINARY-INT.
- 01 WS-Y                               BINARY-INT.
- 01 WS-FX                              BINARY-INT.
- 01 WS-FY                              BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
+ 01 WS-X                               BINARY-LONG.
+ 01 WS-Y                               BINARY-LONG.
+ 01 WS-FX                              BINARY-LONG.
+ 01 WS-FY                              BINARY-LONG.
  01 WS-X-DISP                          PIC 9(4).
  01 WS-Y-DISP                          PIC 9(4).
  01 WS-FX-DISP                         PIC 9(4).

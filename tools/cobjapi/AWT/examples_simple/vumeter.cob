@@ -78,28 +78,28 @@
 
  WORKING-STORAGE SECTION.
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-PROGRESS                        BINARY-INT.
- 01 WS-METER                           BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-PROGRESS                        BINARY-LONG.
+ 01 WS-METER                           BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
 
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-VALUE                           BINARY-INT VALUE 50.
- 01 WS-VGAP                            BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-MIN-VAL                         BINARY-INT.
- 01 WS-MAX-VAL                         BINARY-INT.
- 01 WS-DANGER-VAL                      BINARY-INT.
- 01 WS-MSEC                            BINARY-INT. 
- 01 WS-TOP                             BINARY-INT.
- 01 WS-BOTTOM                          BINARY-INT.
- 01 WS-LEFT                            BINARY-INT.
- 01 WS-RIGHT                           BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-VALUE                           BINARY-LONG VALUE 50.
+ 01 WS-VGAP                            BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-MIN-VAL                         BINARY-LONG.
+ 01 WS-MAX-VAL                         BINARY-LONG.
+ 01 WS-DANGER-VAL                      BINARY-LONG.
+ 01 WS-MSEC                            BINARY-LONG. 
+ 01 WS-TOP                             BINARY-LONG.
+ 01 WS-BOTTOM                          BINARY-LONG.
+ 01 WS-LEFT                            BINARY-LONG.
+ 01 WS-RIGHT                           BINARY-LONG.
  
 *> Constants for the cobjapi wrapper 
  COPY "cobjapi.cpy".

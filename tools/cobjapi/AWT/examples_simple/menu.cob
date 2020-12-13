@@ -75,29 +75,29 @@
 
  WORKING-STORAGE SECTION.
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-SUBMENU                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-EDIT                            BINARY-INT.
- 01 WS-OPTIONS                         BINARY-INT.
- 01 WS-HELP                            BINARY-INT.
- 01 WS-OPEN                            BINARY-INT.
- 01 WS-SAVE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-ABOUT                           BINARY-INT.
- 01 WS-CUT                             BINARY-INT.
- 01 WS-COPY                            BINARY-INT.
- 01 WS-PASTE                           BINARY-INT.
- 01 WS-ENABLE                          BINARY-INT.
- 01 WS-SETTINGS                        BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-SUBMENU                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-EDIT                            BINARY-LONG.
+ 01 WS-OPTIONS                         BINARY-LONG.
+ 01 WS-HELP                            BINARY-LONG.
+ 01 WS-OPEN                            BINARY-LONG.
+ 01 WS-SAVE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-ABOUT                           BINARY-LONG.
+ 01 WS-CUT                             BINARY-LONG.
+ 01 WS-COPY                            BINARY-LONG.
+ 01 WS-PASTE                           BINARY-LONG.
+ 01 WS-ENABLE                          BINARY-LONG.
+ 01 WS-SETTINGS                        BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
  01 WS-SHORTCUT-CHAR                   BINARY-CHAR.
  01 WS-CONTENT                         PIC X(1024).
      

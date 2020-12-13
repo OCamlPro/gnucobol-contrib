@@ -69,20 +69,20 @@
 
  WORKING-STORAGE SECTION.
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-RADIO                           BINARY-INT.
- 01 WS-ENABLE                          BINARY-INT.
- 01 WS-MIDDLE                          BINARY-INT.
- 01 WS-DISABLE                         BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-RADIO                           BINARY-LONG.
+ 01 WS-ENABLE                          BINARY-LONG.
+ 01 WS-MIDDLE                          BINARY-LONG.
+ 01 WS-DISABLE                         BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
 
 *> FUNCTION ARGS 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
 
 *> Constants for the cobjapi wrapper 
  COPY "cobjapi.cpy".

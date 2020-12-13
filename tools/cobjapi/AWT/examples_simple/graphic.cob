@@ -85,62 +85,62 @@
 
  WORKING-STORAGE SECTION.
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
- 01 WS-CANVAS                          BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
+ 01 WS-CANVAS                          BINARY-LONG.
 
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
- 01 WS-X                               BINARY-INT.
- 01 WS-Y                               BINARY-INT.
- 01 WS-R                               BINARY-INT.
- 01 WS-RX                              BINARY-INT.
- 01 WS-RY                              BINARY-INT.
- 01 WS-ARC1                            BINARY-INT.
- 01 WS-ARC2                            BINARY-INT.
- 01 WS-X1                              BINARY-INT.
- 01 WS-Y1                              BINARY-INT.
- 01 WS-X2                              BINARY-INT.
- 01 WS-Y2                              BINARY-INT.
- 01 WS-ARCX                            BINARY-INT.
- 01 WS-ARCY                            BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
+ 01 WS-X                               BINARY-LONG.
+ 01 WS-Y                               BINARY-LONG.
+ 01 WS-R                               BINARY-LONG.
+ 01 WS-RX                              BINARY-LONG.
+ 01 WS-RY                              BINARY-LONG.
+ 01 WS-ARC1                            BINARY-LONG.
+ 01 WS-ARC2                            BINARY-LONG.
+ 01 WS-X1                              BINARY-LONG.
+ 01 WS-Y1                              BINARY-LONG.
+ 01 WS-X2                              BINARY-LONG.
+ 01 WS-Y2                              BINARY-LONG.
+ 01 WS-ARCX                            BINARY-LONG.
+ 01 WS-ARCY                            BINARY-LONG.
 *> Polygon 
- 01 WS-POLYGON-LEN                     BINARY-INT VALUE 10.
+ 01 WS-POLYGON-LEN                     BINARY-LONG VALUE 10.
  01 WS-POLYGON-X-VALUES.
-   02 FILLER                           BINARY-INT VALUE  10.
-   02 FILLER                           BINARY-INT VALUE  20.
-   02 FILLER                           BINARY-INT VALUE  30.
-   02 FILLER                           BINARY-INT VALUE  40.
-   02 FILLER                           BINARY-INT VALUE  50.
-   02 FILLER                           BINARY-INT VALUE  60.
-   02 FILLER                           BINARY-INT VALUE  70.
-   02 FILLER                           BINARY-INT VALUE  80.
-   02 FILLER                           BINARY-INT VALUE  90.
-   02 FILLER                           BINARY-INT VALUE 100.
+   02 FILLER                           BINARY-LONG VALUE  10.
+   02 FILLER                           BINARY-LONG VALUE  20.
+   02 FILLER                           BINARY-LONG VALUE  30.
+   02 FILLER                           BINARY-LONG VALUE  40.
+   02 FILLER                           BINARY-LONG VALUE  50.
+   02 FILLER                           BINARY-LONG VALUE  60.
+   02 FILLER                           BINARY-LONG VALUE  70.
+   02 FILLER                           BINARY-LONG VALUE  80.
+   02 FILLER                           BINARY-LONG VALUE  90.
+   02 FILLER                           BINARY-LONG VALUE 100.
  01 WS-POLYGON-X REDEFINES WS-POLYGON-X-VALUES.
    02 WS-POLYGON-X-LINES OCCURS 10 TIMES.
-     03 WS-POLYGON-X-LINE              BINARY-INT.
+     03 WS-POLYGON-X-LINE              BINARY-LONG.
  01 WS-POLYGON-Y-VALUES.
-   02 FILLER                           BINARY-INT VALUE  10.
-   02 FILLER                           BINARY-INT VALUE  90.
-   02 FILLER                           BINARY-INT VALUE  10.
-   02 FILLER                           BINARY-INT VALUE  90.
-   02 FILLER                           BINARY-INT VALUE  10.
-   02 FILLER                           BINARY-INT VALUE  90.
-   02 FILLER                           BINARY-INT VALUE  10.
-   02 FILLER                           BINARY-INT VALUE  90.
-   02 FILLER                           BINARY-INT VALUE  10.
-   02 FILLER                           BINARY-INT VALUE  90.
+   02 FILLER                           BINARY-LONG VALUE  10.
+   02 FILLER                           BINARY-LONG VALUE  90.
+   02 FILLER                           BINARY-LONG VALUE  10.
+   02 FILLER                           BINARY-LONG VALUE  90.
+   02 FILLER                           BINARY-LONG VALUE  10.
+   02 FILLER                           BINARY-LONG VALUE  90.
+   02 FILLER                           BINARY-LONG VALUE  10.
+   02 FILLER                           BINARY-LONG VALUE  90.
+   02 FILLER                           BINARY-LONG VALUE  10.
+   02 FILLER                           BINARY-LONG VALUE  90.
  01 WS-POLYGON-Y REDEFINES WS-POLYGON-Y-VALUES.
    02 WS-POLYGON-Y-LINES OCCURS 10 TIMES.
-     03 WS-POLYGON-Y-LINE              BINARY-INT.
+     03 WS-POLYGON-Y-LINE              BINARY-LONG.
  
 *> Constants for the cobjapi wrapper 
  COPY "cobjapi.cpy".

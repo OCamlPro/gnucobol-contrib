@@ -60,18 +60,18 @@
 
  WORKING-STORAGE SECTION.
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-COLOR                           BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-COLOR                           BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
 
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
  01 WS-R                               BINARY-CHAR UNSIGNED.
  01 WS-G                               BINARY-CHAR UNSIGNED.
  01 WS-B                               BINARY-CHAR UNSIGNED.
@@ -150,43 +150,43 @@
  
  WORKING-STORAGE SECTION.
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-DIALOG                          BINARY-INT.
+ 01 WS-DIALOG                          BINARY-LONG.
 *> scrolls 
- 01 WS-R-SCROLL                        BINARY-INT.
- 01 WS-G-SCROLL                        BINARY-INT.
- 01 WS-B-SCROLL                        BINARY-INT.
+ 01 WS-R-SCROLL                        BINARY-LONG.
+ 01 WS-G-SCROLL                        BINARY-LONG.
+ 01 WS-B-SCROLL                        BINARY-LONG.
 *> labels
- 01 WS-R-LABEL                         BINARY-INT.
- 01 WS-G-LABEL                         BINARY-INT.
- 01 WS-B-LABEL                         BINARY-INT.
+ 01 WS-R-LABEL                         BINARY-LONG.
+ 01 WS-G-LABEL                         BINARY-LONG.
+ 01 WS-B-LABEL                         BINARY-LONG.
 *> panels
- 01 WS-PANEL-1                         BINARY-INT.
- 01 WS-PANEL-2                         BINARY-INT.
+ 01 WS-PANEL-1                         BINARY-LONG.
+ 01 WS-PANEL-2                         BINARY-LONG.
 *> buttons
- 01 WS-OK                              BINARY-INT.
- 01 WS-CANCEL                          BINARY-INT.
+ 01 WS-OK                              BINARY-LONG.
+ 01 WS-CANCEL                          BINARY-LONG.
 
- 01 WS-CANVAS                          BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-CANVAS                          BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
 
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-TOP                             BINARY-INT.
- 01 WS-BOTTOM                          BINARY-INT.
- 01 WS-LEFT                            BINARY-INT.
- 01 WS-RIGHT                           BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT.
- 01 WS-HEIGHT                          BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
- 01 WS-ROW                             BINARY-INT.
- 01 WS-COL                             BINARY-INT.
- 01 WS-HGAP                            BINARY-INT.
- 01 WS-MAX-VAL                         BINARY-INT.
- 01 WS-CURRENT-VALUE                   BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-TOP                             BINARY-LONG.
+ 01 WS-BOTTOM                          BINARY-LONG.
+ 01 WS-LEFT                            BINARY-LONG.
+ 01 WS-RIGHT                           BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
+ 01 WS-ROW                             BINARY-LONG.
+ 01 WS-COL                             BINARY-LONG.
+ 01 WS-HGAP                            BINARY-LONG.
+ 01 WS-MAX-VAL                         BINARY-LONG.
+ 01 WS-CURRENT-VALUE                   BINARY-LONG.
  01 WS-R                               BINARY-CHAR UNSIGNED.
  01 WS-G                               BINARY-CHAR UNSIGNED.
  01 WS-B                               BINARY-CHAR UNSIGNED.
@@ -198,11 +198,11 @@
  COPY "cobjapi.cpy".
  
  LINKAGE SECTION.
- 01 LNK-FRAME                          BINARY-INT.
+ 01 LNK-FRAME                          BINARY-LONG.
  01 LNK-R                              BINARY-CHAR UNSIGNED.
  01 LNK-G                              BINARY-CHAR UNSIGNED.
  01 LNK-B                              BINARY-CHAR UNSIGNED.
- 01 LNK-RET                            BINARY-INT.
+ 01 LNK-RET                            BINARY-LONG.
  
  PROCEDURE DIVISION USING BY VALUE     LNK-FRAME
                           BY REFERENCE LNK-R

@@ -74,45 +74,45 @@
 
  WORKING-STORAGE SECTION.
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
- 01 WS-CANVAS                          BINARY-INT.
- 01 WS-CALC                            BINARY-INT.
- 01 WS-START                           BINARY-INT.
- 01 WS-CLEAR                           BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
+ 01 WS-CANVAS                          BINARY-LONG.
+ 01 WS-CALC                            BINARY-LONG.
+ 01 WS-START                           BINARY-LONG.
+ 01 WS-CLEAR                           BINARY-LONG.
 
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-WIDTH                           BINARY-INT VALUE 256.
- 01 WS-HEIGHT                          BINARY-INT VALUE 256.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
- 01 WS-X                               BINARY-INT.
- 01 WS-Y                               BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG VALUE 256.
+ 01 WS-HEIGHT                          BINARY-LONG VALUE 256.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
+ 01 WS-X                               BINARY-LONG.
+ 01 WS-Y                               BINARY-LONG.
 
 *> vars
- 01 WS-IND                             BINARY-INT.
+ 01 WS-IND                             BINARY-LONG.
 
 *> R-TAB = WIDTH * HEIGHT ==> 65536 = 256 * 256 
  01 WS-R-TAB.
    02 WS-R-TAB-LINES OCCURS 65536 TIMES.
-     03 WS-R-TAB-LINE                  BINARY-INT.
+     03 WS-R-TAB-LINE                  BINARY-LONG.
  
 *> G-TAB = WIDTH * HEIGHT ==> 65536 = 256 * 256 
  01 WS-G-TAB.
    02 WS-G-TAB-LINES OCCURS 65536 TIMES.
-     03 WS-G-TAB-LINE                  BINARY-INT.
+     03 WS-G-TAB-LINE                  BINARY-LONG.
 
 *> B-TAB = WIDTH * HEIGHT ==> 65536 = 256 * 256 
  01 WS-B-TAB.
    02 WS-B-TAB-LINES OCCURS 65536 TIMES.
-     03 WS-B-TAB-LINE                  BINARY-INT.
+     03 WS-B-TAB-LINE                  BINARY-LONG.
      
 *> Constants for the cobjapi wrapper 
  COPY "cobjapi.cpy".

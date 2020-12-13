@@ -72,26 +72,26 @@
 
  WORKING-STORAGE SECTION.
 *> function return value 
- 01 WS-RET                             BINARY-INT.
+ 01 WS-RET                             BINARY-LONG.
 
 *> GUI elements
- 01 WS-FRAME                           BINARY-INT.
- 01 WS-MENUBAR                         BINARY-INT.
- 01 WS-FILE                            BINARY-INT.
- 01 WS-QUIT                            BINARY-INT.
- 01 WS-OBJ                             BINARY-INT.
+ 01 WS-FRAME                           BINARY-LONG.
+ 01 WS-MENUBAR                         BINARY-LONG.
+ 01 WS-FILE                            BINARY-LONG.
+ 01 WS-QUIT                            BINARY-LONG.
+ 01 WS-OBJ                             BINARY-LONG.
 *> checkbox
- 01 WS-BLUE                            BINARY-INT.
- 01 WS-RED                             BINARY-INT.
- 01 WS-GREEN                           BINARY-INT.
+ 01 WS-BLUE                            BINARY-LONG.
+ 01 WS-RED                             BINARY-LONG.
+ 01 WS-GREEN                           BINARY-LONG.
  
 *> function args 
- 01 WS-DEBUG-LEVEL                     BINARY-INT.
- 01 WS-XPOS                            BINARY-INT.
- 01 WS-YPOS                            BINARY-INT.
- 01 WS-R                               BINARY-INT.
- 01 WS-G                               BINARY-INT.
- 01 WS-B                               BINARY-INT.
+ 01 WS-DEBUG-LEVEL                     BINARY-LONG.
+ 01 WS-XPOS                            BINARY-LONG.
+ 01 WS-YPOS                            BINARY-LONG.
+ 01 WS-R                               BINARY-LONG.
+ 01 WS-G                               BINARY-LONG.
+ 01 WS-B                               BINARY-LONG.
 
 *> Constants for the cobjapi wrapper 
  COPY "cobjapi.cpy".
