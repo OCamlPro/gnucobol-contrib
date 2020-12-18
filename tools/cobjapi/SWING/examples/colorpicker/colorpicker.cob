@@ -49,7 +49,6 @@
 
  IDENTIFICATION DIVISION.
  PROGRAM-ID. colorpicker.
- AUTHOR.     Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -140,7 +139,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. FN-COLORPICKER.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.

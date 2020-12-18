@@ -46,7 +46,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-START.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -82,7 +81,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-CONNECT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -120,7 +118,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETPORT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -160,7 +157,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETDEBUG.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -200,7 +196,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-FRAME.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -238,7 +233,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-BUTTON.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -279,7 +273,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GRAPHICBUTTON.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -320,7 +313,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-CHECKBOX.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -361,7 +353,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-LABEL.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -402,7 +393,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GRAPHICLABEL.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -443,7 +433,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-CANVAS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -487,7 +476,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-PANEL.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -525,7 +513,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-BORDERPANEL.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -566,7 +553,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-RADIOGROUP.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -604,7 +590,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-RADIOBUTTON.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -645,7 +630,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-LIST.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -686,7 +670,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-CHOICE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -724,7 +707,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DIALOG.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -765,7 +747,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-WINDOW.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -803,7 +784,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-POPUPMENU.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -844,7 +824,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SCROLLPANE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -882,7 +861,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-HSCROLLBAR.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -920,7 +898,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-VSCROLLBAR.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -958,7 +935,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-LINE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1005,7 +981,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-PRINTER.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1043,7 +1018,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-IMAGE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1084,7 +1058,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-FILEDIALOG.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1147,7 +1120,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-FILESELECT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1210,7 +1182,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-MESSAGEBOX.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1254,7 +1225,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-ALERTBOX.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1301,7 +1271,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-CHOICEBOX2.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1351,7 +1320,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-CHOICEBOX3.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1404,7 +1372,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-PROGRESSBAR.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1445,7 +1412,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-LED.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1489,7 +1455,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SEVENSEGMENT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1530,7 +1495,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-METER.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1571,7 +1535,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-ADDITEM.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1614,7 +1577,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-TEXTFIELD.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1655,7 +1617,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-TEXTAREA.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1699,7 +1660,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-MENUBAR.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1737,7 +1697,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-MENU.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1778,7 +1737,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-HELPMENU.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1819,7 +1777,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-MENUITEM.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1860,7 +1817,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-CHECKMENUITEM.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1901,7 +1857,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-PACK.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1941,7 +1896,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-PRINT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -1981,7 +1935,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-PLAYSOUNDFILE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2021,7 +1974,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-PLAY.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2061,7 +2013,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SOUND.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2099,7 +2050,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETFONT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2148,7 +2098,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETFONTNAME.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2191,7 +2140,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETFONTSIZE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2234,7 +2182,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETFONTSTYLE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2277,7 +2224,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SEPERATOR.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2309,9 +2255,9 @@
  MAIN-J-SEPERATOR-EX.
     EXIT.
  END FUNCTION J-SEPERATOR.
+
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SEPARATOR.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2351,7 +2297,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DISABLE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2391,7 +2336,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-ENABLE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2431,7 +2375,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETSTATE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2469,7 +2412,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETROWS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2507,7 +2449,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETCOLUMNS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2545,7 +2486,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETSELECT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2583,7 +2523,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-ISSELECT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2624,7 +2563,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-ISVISIBLE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2662,7 +2600,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-ISPARENT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2703,7 +2640,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-ISRESIZABLE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2741,7 +2677,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SELECT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2784,7 +2719,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DESELECT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2827,7 +2761,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-MULTIPLEMODE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2870,7 +2803,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-INSERT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2916,7 +2848,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-REMOVE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -2959,7 +2890,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-REMOVEITEM.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3002,7 +2932,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-REMOVEALL.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3042,7 +2971,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETSTATE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3085,7 +3013,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETROWS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3128,7 +3055,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETCOLUMNS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3171,7 +3097,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETICON.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3214,7 +3139,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETIMAGE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3257,7 +3181,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETVALUE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3300,7 +3223,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETRADIOGROUP.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3343,7 +3265,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETUNITINC.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3386,7 +3307,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETBLOCKINC.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3429,7 +3349,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETMIN.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3472,7 +3391,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETMAX.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3515,7 +3433,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETDANGER.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3558,7 +3475,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETSLIDESIZE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3601,7 +3517,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETCURSOR.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3644,7 +3559,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETRESIZABLE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3687,7 +3601,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETLENGTH.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3725,7 +3638,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETVALUE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3763,7 +3675,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETDANGER.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3801,7 +3712,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETSCREENHEIGHT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3837,7 +3747,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETSCREENWIDTH.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3873,7 +3782,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETHEIGHT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3911,7 +3819,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETWIDTH.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3949,7 +3856,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETINSETS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -3990,7 +3896,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETLAYOUTID.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4028,7 +3933,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETINHEIGHT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4066,7 +3970,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETINWIDTH.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4104,7 +4007,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETTEXT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4161,7 +4063,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETITEM.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4221,7 +4122,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETITEMCOUNT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4259,7 +4159,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DELETE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4305,7 +4204,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-REPLACETEXT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4354,7 +4252,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-APPENDTEXT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4397,7 +4294,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-INSERTTEXT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4443,7 +4339,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETTEXT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4486,7 +4381,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SELECTALL.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4526,7 +4420,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SELECTTEXT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4572,7 +4465,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETSELSTART.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4610,7 +4502,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETSELEND.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4648,7 +4539,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETSELTEXT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4705,7 +4595,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETCURPOS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4743,7 +4632,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETCURPOS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4786,7 +4674,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETECHOCHAR.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4829,7 +4716,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETEDITABLE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4872,7 +4758,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETSHORTCUT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4915,7 +4800,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-QUIT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4953,7 +4837,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-KILL.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -4991,7 +4874,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETSIZE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5037,7 +4919,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETACTION.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5073,7 +4954,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-NEXTACTION.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5109,7 +4989,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SHOW.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5149,7 +5028,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SHOWPOPUP.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5195,7 +5073,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-ADD.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5236,7 +5113,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-RELEASE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5276,7 +5152,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-RELEASEALL.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5316,7 +5191,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-HIDE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5356,7 +5230,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DISPOSE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5396,7 +5269,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETPOS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5442,7 +5314,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETVIEWPORTHEIGHT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5480,7 +5351,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETVIEWPORTWIDTH.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5518,7 +5388,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETXPOS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5556,7 +5425,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETYPOS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5594,7 +5462,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETPOS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5640,7 +5507,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETPARENTID.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5678,7 +5544,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETFOCUS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5718,7 +5583,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-HASFOCUS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5756,7 +5620,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETSTRINGWIDTH.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5797,7 +5660,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETFONTHEIGHT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5835,7 +5697,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETFONTASCENT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5873,7 +5734,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-KEYLISTENER.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5911,7 +5771,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETKEYCODE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5949,7 +5808,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETKEYCHAR.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -5987,7 +5845,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-MOUSELISTENER.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6028,7 +5885,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETMOUSEX.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6066,7 +5922,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETMOUSEY.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6104,7 +5959,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETMOUSEPOS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6150,7 +6004,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETMOUSEBUTTON.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6188,7 +6041,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-FOCUSLISTENER.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6226,7 +6078,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-COMPONENTLISTENER.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6267,7 +6118,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-WINDOWLISTENER.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6308,7 +6158,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETFLOWLAYOUT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6351,7 +6200,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETBORDERLAYOUT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6391,7 +6239,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETGRIDLAYOUT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6437,7 +6284,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETFIXLAYOUT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6477,7 +6323,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETNOLAYOUT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6517,7 +6362,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETBORDERPOS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6560,7 +6404,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETHGAP.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6603,7 +6446,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETVGAP.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6646,7 +6488,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETINSETS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6698,7 +6539,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETALIGN.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6741,7 +6581,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETFLOWFILL.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6784,7 +6623,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-TRANSLATE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6830,7 +6668,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-CLIPRECT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6882,7 +6719,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DRAWRECT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6934,7 +6770,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-FILLRECT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -6986,7 +6821,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DRAWROUNDRECT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7044,7 +6878,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-FILLROUNDRECT.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7102,7 +6935,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DRAWOVAL.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7154,7 +6986,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-FILLOVAL.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7206,7 +7037,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DRAWCIRCLE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7255,7 +7085,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-FILLCIRCLE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7304,7 +7133,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DRAWARC.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7362,7 +7190,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-FILLARC.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7420,7 +7247,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DRAWLINE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7472,7 +7298,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DRAWPOLYLINE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7521,7 +7346,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DRAWPOLYGON.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7570,7 +7394,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-FILLPOLYGON.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7619,7 +7442,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DRAWPIXEL.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7665,7 +7487,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DRAWSTRING.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7714,7 +7535,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETXOR.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7757,7 +7577,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETIMAGE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7795,7 +7614,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETIMAGESOURCE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7856,7 +7674,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DRAWIMAGESOURCE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7917,7 +7734,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-GETSCALEDIMAGE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -7973,7 +7789,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DRAWIMAGE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -8022,7 +7837,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-DRAWSCALEDIMAGE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -8089,7 +7903,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETCOLOR.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -8138,7 +7951,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETCOLORBG.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -8187,7 +7999,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETNAMEDCOLOR.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -8230,7 +8041,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SETNAMEDCOLORBG.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -8273,7 +8083,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-LOADIMAGE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -8311,7 +8120,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SAVEIMAGE.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -8355,7 +8163,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SYNC.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -8393,7 +8200,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-BEEP.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -8431,7 +8237,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-RANDOM.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -8467,7 +8272,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. J-SLEEP.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.

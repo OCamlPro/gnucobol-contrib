@@ -46,7 +46,6 @@
 
  IDENTIFICATION DIVISION.
  PROGRAM-ID. drawables.
- AUTHOR.     Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -204,7 +203,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. FN-DRAWGRAPHICS.
- AUTHOR.      Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.

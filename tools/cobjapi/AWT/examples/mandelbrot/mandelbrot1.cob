@@ -45,7 +45,6 @@
 
  IDENTIFICATION DIVISION.
  PROGRAM-ID. mandelbrot1.
- AUTHOR.     Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -223,7 +222,6 @@
 *>------------------------------------------------------------------------------
  IDENTIFICATION DIVISION.
  FUNCTION-ID. MANDEL.
- AUTHOR.      Laszlo Erdos.
  
  DATA DIVISION.
  WORKING-STORAGE SECTION.
