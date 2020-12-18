@@ -12,7 +12,7 @@ program-id. GC21MENUDEMO2.
 *> Changelog:  1.0 first release.
 *>             2.0 mouse management added (left click to activate a menu Item
 *>                                         double left-click to select a menu item
-*>                 Mn-Hot from 9(01) to 9(02)
+*>                 right click or double-right-click is similar to ESCAPE
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -34,10 +34,10 @@ WORKING-STORAGE SECTION.
 01 result     usage binary-long.
 01 wresult    pic S9(8).
 
-01  CmdLine           pic x(121) VALUE SPACE.
-01  i                 pic s9(4) comp-5.
-01  Sel-BarMenuItem   pic s9(2) comp-5.
-01  TimeX              pic  x(15).
+01  CmdLine           pic  x(121) VALUE SPACE.
+01  i                 pic s9(004) comp-5.
+01  Sel-BarMenuItem   pic s9(002) comp-5.
+01  TimeX             pic  x(015).
 01  wTime.
    03 wTimehh         pic  9(2).
    03 wTimemm         pic  9(2).
@@ -112,7 +112,7 @@ copy 'GC97KEYCODEGC.CPY'  suppress.
 78  COB-ALLOW-RIGHT-DOUBLE           VALUE 512.
 78  COB-ALLOW-MOUSE-MOVE             VALUE 1024.
 
-01  MOUSE-FLAGS         PIC 9(04).
+*> 01  MOUSE-FLAGS         PIC 9(04).
 01  wCRT-STATUS         PIC 9(04) VALUE 9999.
 01  wCursorRowCol       PIC 9(06) value 0000.
 01  redefines wCursorRowCol .
@@ -143,10 +143,12 @@ Main.
    END-PERFORM.
 
    EVALUATE TRUE   *> which key was pressed ?
-      WHEN  wCRT-STATUS = K-ENTER  OR wCRT-STATUS  = K-LEFT-PRESSED
+      WHEN  wCRT-STATUS = K-ENTER
+        OR  wCRT-STATUS = K-LEFT-PRESSED
+        OR  wCRT-STATUS = K-LEFT-DBL-CLICK
             Perform DisplayBackground thru DisplayBackgroundEx
             PERFORM MenuManager       THRU MenuManagerEx
-      WHEN  wCRT-STATUS = K-ESCAPE
+      WHEN  wCRT-STATUS = K-ESCAPE or wCRT-STATUS = K-RIGHT-PRESSED or wCRT-STATUS = K-RIGHT-DBL-CLICK
             go to MainEx
    END-EVALUATE
 
@@ -218,6 +220,10 @@ MenuManager.
                      go to MenuManager
                  when K-ESCAPE
                       go to MenuManager
+                 when K-RIGHT-PRESSED
+                      go to MenuManager
+                 when K-RIGHT-DBL-CLICK
+                      go to MenuManager
                  when K-RIGHT
                       go to MenuManager
                       *> perform MoveDropDownMenu thru MoveDropDownMenu-Ex
@@ -228,7 +234,7 @@ MenuManager.
                END-EVALUATE
 
          *> when pressed escape on menu bar ask if to exit
-         WHEN mn-Key = K-ESCAPE
+         WHEN mn-Key = K-ESCAPE or mn-Key = K-RIGHT-PRESSED or mn-Key = K-RIGHT-DBL-CLICK
            move 09 to Yn-r1
            move '        Confirm the exit ?       ' to Yn-mess
            call GC03YESNO using YESNO-AREA
@@ -638,7 +644,7 @@ DisplayBackground.
   move 'N'      to Box-3D
   call  GC01BOX using BOX-AREA.
   display "[" & X"FE" & "]" at 002076 with background-color green foreground-color white highlight
-  display "Cursorkeys/mouse leftclick= activate menu item. Enter/lett doubleclick= select" at 023002
+  display "Cursorkeys/mouse leftclick= activate menu item. Enter/left doubleclick= select" at 023002
         with background-color green foreground-color white highlight end-display.
 DisplayBackgroundEx. exit.
 
@@ -657,16 +663,17 @@ About.
     move '     |                                                     | '  & x'00' to Bxm-mex(05)
     move '     |       GnuCOBOL 3.1 TUI TOOLS COLLECTION (DILO)      | '  & x'00' to Bxm-mex(06)
     move '     |                  - from Italy -                     | '  & x'00' to Bxm-mex(07)
-    move '     |                    .oooO                            | '  & x'00' to Bxm-mex(08)
-    move '     |                    (   )   Oooo.                    | '  & x'00' to Bxm-mex(09)
-    move '     +---------------------\ (----(   )--------------------+ '  & x'00' to Bxm-mex(10)
-    move '                            \_)    ) /                       '  & x'00' to Bxm-mex(11)
-    move '                                  (_/                        '  & x'00' to Bxm-mex(12)
-    move space & x'00' to Bxm-mex(13)
+    move '     |                                                     | '  & x'00' to Bxm-mex(08)
+    move '     |                    .oooO                            | '  & x'00' to Bxm-mex(09)
+    move '     |                    (   )   Oooo.                    | '  & x'00' to Bxm-mex(10)
+    move '     +---------------------\ (----(   )--------------------+ '  & x'00' to Bxm-mex(11)
+    move '                            \_)    ) /                       '  & x'00' to Bxm-mex(12)
+    move '                                  (_/                        '  & x'00' to Bxm-mex(13)
     move space & x'00' to Bxm-mex(14)
+    move space & x'00' to Bxm-mex(15)
 
-    Move '37YSabcdefghiYYRNN37YYYN77Y' to Bxm-Parameters
-    move '004005021073'                to Bxm-rc
+    Move '37YSabcdefghiYYRNN37YYYYNN77Y' to Bxm-Parameters
+    move '004005021073'                 to Bxm-rc
     call GC02BOXMEX using BOXMEX-AREA.
 AboutEx. exit.
 
