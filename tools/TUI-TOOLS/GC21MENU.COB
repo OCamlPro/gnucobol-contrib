@@ -12,13 +12,16 @@ PROGRAM-ID. GC21MENU is initial.
 *> Parameters: look at GC21MENU.CPY
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *> License:    Copyright 2020 E.Di Lorenzo - GNU Lesser General Public License
-*> Version:    3.1 2020.06.10
+*> Version:    3.2 2020.12.12
 *> Changelog:  1.0 first release.
-*>             2.0 mouse management added (left click to make menu item "active"
-*>                                         double left-click to select a menu item
+*>             2.0 mouse management added
+*>                 left click on a Mrni tem to make it "active" similar to cursor keys;
+*>                 double left-click similar to Enter ( select a Menu Item)
 *>             3.0 hot key management added to make menu item "active"
 *>                 Mn-Hot from 9(01) to 9(02)
 *>             3.1 tectonics specifies  -lpdcurses
+*>             3.2 uppercase hotkey management added,
+*>                 right click or double-right-click is similar to ESCAPE
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -40,6 +43,7 @@ copy 'GC97KEYCODEGC.CPY'  suppress.
     03  Item-Len     pic 9(02) value 0.
     03  Item-MaxLen  pic 9(02) value 0.
     03  wDummy       PIC X(01) VALUE SPACE.
+    03  wPrompt      PIC X(01) VALUE SPACE.
     03  wcol         PIC 9(03).
     03  bco          PIC 9(02).
     03  fco          PIC 9(02).
@@ -97,6 +101,7 @@ copy 'GC97KEYCODEGC.CPY'  suppress.
   05 wMn-ItemLen     occurs 25 pic 9(03). *> menu item length (char number before X"00")
   05 wMn-ItemCol-End occurs 25 pic 9(03). *> end column of the item
 
+
 01 wChars.
    03  wChars1 pic x(26) value 'abcdefghijklmnopqrstuvwxyz'.
    03  wChars-Ele redefines wChars1 pic x(01) occurs 26 indexed by wChars-Idx.
@@ -104,15 +109,12 @@ copy 'GC97KEYCODEGC.CPY'  suppress.
    03  wNums1 pic x(26) value '0123456789'.
    03  wNums-Ele  redefines wNums1  pic x(01) occurs 10 indexed by wNums-Idx.
 
-01  Key-lc.
-    05                   pic x(26) value 'abcdefghijklmnopqrstuvwxyz'.
-01  Key-lc-Table redefines Key-lc.
-    05 Key-lc-Ele        pic X(1) occurs 26 indexed by Key-lc-Idx.
-
-01 Key-num.
-    05                   pic x(10) value '0123456789'.
-01 Key-num-Table redefines Key-num.
-   05 Key-num-Ele        pic x(1) occurs 10 indexed by Key-num-Idx.
+01 wKey-lc         PIC x(26) value 'abcdefghijklmnopqrstuvwxyz'.
+01 wKey-lc-Table redefines wKey-lc.
+   05 wKey-lc-Ele  pic x(01) occurs 26 indexed by wKey-lc-Idx.
+01 wKey-num        PIC x(10) value '0123456789'.
+01 wKey-num-Table redefines wKey-num.
+   05 wKey-num-Ele pic X(01) occurs 10 indexed by wKey-num-Idx.
 
 LINKAGE SECTION.
 COPY 'GC21MENU.CPY'.
@@ -126,7 +128,7 @@ perform InitialSettings thru InitialSettingsEx
 
 move 1 to i.
 *> ***********************************************************************************
-*> loop to display MENU ITEMS at right position and display a message at row 25
+*> loop to display al MENU ITEMS and display a message at row 25
 *> ***********************************************************************************
 Main.
  if mn-ele(i) = low-value
@@ -134,16 +136,12 @@ Main.
     go to Main-ex               *> end of items
  end-if
 
- if Mn-Act(i) = '1'             *> for "active item" display the associated message
-    perform DisplayMessage thru DisplayMessageEx
+ if Mn-Act(i) = '1'             *> active item colors
+    perform DisplayMessage thru DisplayMessageEx *> for "active item" display the associated message
     move i       to Mn-Selected
-    Move mn-bcoS to bco         *> active item colors
-    move mn-fcoS to fco
-    Move mn-fcoSH to fcoH
- else
-    Move mn-bcoN to bco
-    move mn-fcoN to fco         *> non active item colors
-    Move mn-fcoNH to fcoH
+    Move mn-bcoS to bco move mn-fcoS to fco Move mn-fcoSH to fcoH
+ else                            *> non active item colors
+    Move mn-bcoN to bco move mn-fcoN to fco Move mn-fcoNH to fcoH
  end-if
 
  perform DisplayItem thru DisplayItemEx
@@ -170,17 +168,20 @@ Main-ex.
 *> ***********************************************************************************
 Accept-a-Key.
  *> accept of a 1 byte dummy field.
- *> the dummy field is at cursor position of the 1st byte of the fors menu item
+ *> the dummy field is at cursor position of the 1st byte of the first menu item
  *> it has same back end fore color of 1st menu item so it is invisible
  *> with "Auto" option is useful to detect if cursor up/down/left/right is pressed
+ move Mn-Item(1) (1:1) to wPrompt
  move space to wDummy
 
  if Mn-Selected = 1
     accept wDummy at line Mn-r(1) col Mn-c(1)
-           with auto no-echo size 0 background-color Mn-bcoS :FCOL: Mn-fcoS end-accept
+           *> with auto no-echo size 0 background-color Mn-bcoS :FCOL: Mn-fcoS end-accept
+           with auto-skip prompt character is wPrompt :BCOL: Mn-bcoS :FCOL: Mn-fcoS highlight end-accept
  else
     accept wDummy at line Mn-r(1) col Mn-c(1)
-           with auto no-echo size 0 background-color Mn-bcoN :FCOL: Mn-fcoN end-accept
+           *> with auto no-echo size 0 background-color Mn-bcoN :FCOL: Mn-fcoN end-accept
+           with auto-skip prompt character is wPrompt :BCOL: Mn-bcoN :FCOL: Mn-fcoN end-accept
  end-if
 
   *> <enter> or <escape> return to caller Mn-Selected
@@ -190,10 +191,19 @@ Accept-a-Key.
   *> move '1' to mn-Act of next or previous item
   *> other keys have no effect
 
-*> if user has typed a letter or a digit then wCRT-STATUS is = 00000 (K-ENTER) !
+*> detect Enter or ESCAPE key only if user has not typed a letter or a digit
+*> if user has typed a letter or a digit then WDummy is just une char and has the "AUTO" attribute
+*> then the wCRT-STATUS is = 00000 (K-ENTER) !
 If wDummy = space
- IF wCRT-STATUS = K-ENTER  move K-ENTER  to Mn-Key go Exit-Program end-if
- IF wCRT-STATUS = K-ESCAPE move K-ESCAPE to Mn-Key go Exit-Program end-if
+   IF wCRT-STATUS = K-ENTER
+      move wCRT-STATUS  to Mn-Key
+      go Exit-Program
+   END-IF
+   *> Escape or a Mouse Right Button = exit
+   IF wCRT-STATUS = K-ESCAPE or wCRT-STATUS = K-RIGHT-PRESSED or wCRT-STATUS = K-RIGHT-DBL-CLICK
+      move wCRT-STATUS to Mn-Key
+     go Exit-Program
+   end-if
 end-if
 
  EVALUATE TRUE
@@ -247,12 +257,13 @@ end-if
     perform DisplayItem    thru DisplayItemEx
     perform DisplayMessage thru DisplayMessageEx
 
+  *> User clicked a Left Mouse Key: check if mouse position was on a meni item
   when (wCRT-STATUS = K-LEFT-PRESSED or wCRT-STATUS = K-LEFT-DBL-CLICK)
-       *> check if mouse position is on a menu item
        perform varying k from 1 by 1 until k > Item-Num
          if wCursorRow  = Mn-r(k)
             if ( wCursorCol >= Mn-c(k) and  wCursorCol <= wMn-ItemCol-End(k) )
               *> the mouse has been clicked on a menu item
+              move wCRT-STATUS  to Mn-Key
               *> change display of active item to display as normal item
               move Mn-Selected to i
               move space       to Mn-Act(Mn-Selected)
@@ -282,31 +293,36 @@ end-if
          end-if
        end-perform
 
- *> ex. in a drop down menu. Mn-Arrow = V and the user press Key left o Key Right
- *> this program return to caller. Caller program will move to the next drop down menu,
- *> it normally move to the next menu item
- when Mn-Return = 'Y' and (
-       (wCRT-STATUS = K-LEFT  and Mn-Arrow = 'V')
-    or (wCRT-STATUS = K-RIGHT and Mn-Arrow = 'V')
-    or (wCRT-STATUS = K-UP    and Mn-Arrow = 'H')
-    or (wCRT-STATUS = K-DOWN  and Mn-Arrow = 'H')
-       )
-    move wCRT-STATUS to Mn-Key go Exit-Program
+     *> ex. in a drop down menu. Mn-Arrow = V and the user press Key left o Key Right
+     *> this program return to caller. Caller program will move to the next drop down menu,
+     *> it normally move to the next menu item
+     when Mn-Return = 'Y' and (
+           (wCRT-STATUS = K-LEFT  and Mn-Arrow = 'V')
+        or (wCRT-STATUS = K-RIGHT and Mn-Arrow = 'V')
+        or (wCRT-STATUS = K-UP    and Mn-Arrow = 'H')
+        or (wCRT-STATUS = K-DOWN  and Mn-Arrow = 'H')
+           )
+        move wCRT-STATUS to Mn-Key go Exit-Program
 
     *> *****************************************************************************************
     *> IF USER HAS TYPED A LETTER - SEARCH IF IT IS A HOT KEY
     *> *****************************************************************************************
      when wDummy >= "a" and <= "z"
+       or wDummy >= "A" and <= "Z"
+        *> change wDummy (if it is an uppercase) to lowercase
+        inspect wDummy converting 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'abcdefghijklmnopqrstuvwxyz'
+
         *> search the index of Key Pressed
-        set wChars-Idx Key-lc-Idx to 0
-        search Key-lc-Ele varying  Key-lc-Idx
-               at end set Key-lc-Idx to 0
-               when   Key-lc-Ele (Key-lc-Idx) = wDummy  continue
+        set wChars-Idx wKey-lc-Idx to 0
+        search wKey-lc-Ele varying  wKey-lc-Idx
+               at end set wKey-lc-Idx to 0
+               when   wKey-lc-Ele (wKey-lc-Idx) = wDummy  continue
         end-search
 
-        set wChars-Idx to Key-lc-Idx
+        set wChars-Idx to wKey-lc-Idx
         perform varying k from 1 by 1 until k > Item-Num
                 if Mn-Hot(k) not = zero move Mn-Item(k) (Mn-Hot(k):1) to wChar end-if
+                *> change wChar (if it is an uppercase Hotkey) to lowercase
                 inspect wChar converting 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'abcdefghijklmnopqrstuvwxyz'
                 if wChar = wChars-Ele(wChars-Idx)
                     *> the letter typed by the user is a valid hotkey !
@@ -333,13 +349,13 @@ end-if
     *> *****************************************************************************************
      when wDummy >= "0" and <= "9"
         *> search the index of Key Pressed
-        set wChars-Idx Key-num-Idx to 0
-        search Key-num-Ele varying  Key-num-Idx
-               at end set Key-num-Idx to 0
-               when   Key-num-Ele (Key-num-Idx) = wDummy  continue
+        set wChars-Idx wKey-num-Idx to 0
+        search wKey-num-Ele varying  wKey-num-Idx
+               at end set wKey-num-Idx to 0
+               when   wKey-num-Ele (wKey-num-Idx) = wDummy  continue
         end-search
 
-        set wNums-Idx to Key-num-Idx
+        set wNums-Idx to wKey-num-Idx
         perform varying k from 1 by 1 until k > Item-Num
                 if Mn-Hot(k) not = zero move Mn-Item(k) (Mn-Hot(k):1) to wNum end-if
                 if wNum = wNums-Ele(wNums-Idx)
