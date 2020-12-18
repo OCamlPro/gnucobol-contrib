@@ -6,7 +6,7 @@ PROGRAM-ID. GC02BOXMEX is initial.
 *> Purpose:    DISPLAY A MESSAGE IN A BOX ON SCREEN WITH OPTIONS AND EFFECTS
 *> Tectonics:  cobc -m GC02BOXMEX.COB  (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC02BOXMEX using BOXMEX-AREA
-*> Parameters: look at GC02BOXMEX.CPY (use with copy Version: 1.1)
+*> Parameters: look at GC02BOXMEX.CPY
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
 *> Version:    1.3 2018.06.30
@@ -58,11 +58,10 @@ WORKING-STORAGE SECTION.
 
 *> ***********************************************************************************
 *>  SAME PARAMETERS OF GC09BUTTONS - call to GC09BUTTONS has been deleted,
-*>  the code to diaplay on ebutton has been inserted in this program
+*>  the code to display a button has been inserted in this program
 *> ***********************************************************************************
 01 Buttons-Area.
 *> ***********************************************************************************
-*>
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
 *> Bu-Act    1= this item is displayed as the one Active (tobe Selected)
