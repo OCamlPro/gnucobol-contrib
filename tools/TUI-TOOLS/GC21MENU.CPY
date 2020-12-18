@@ -56,6 +56,7 @@
 *> Mn-Selected    The number of selected item. returned to caller: 01, 02, 03, ..
 *> Mn-Key    Key code at exit from the menu program. returned to caller.
 *>           0000 = Enter, 2005 = ESACPE
+*>           Retunrn codes are GnuCOBOL FUNCTION KEYS, KEY CODES, MOUSE KEYS CODES
 *> *************************************************************
      03 Mn-Tab  value low-value.
         04 Mn-Ele occurs 25.             *> last item has tobe low-value (x'00)')
