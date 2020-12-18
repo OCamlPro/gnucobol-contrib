@@ -4,7 +4,7 @@ PROGRAM-ID. GC03YESNODEMO.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DEMO OF GC03YESNO -  DISPLAYS A YES & NO BOX
-*> Tectonics:  cobc -x GC03YESNODEMO.COB (use GnuCOBOL 2.0 or greater)
+*> Tectonics:  cobc -x GC03YESNODEMO.COB (use GnuCOBOL 3.1 or greater)
 *> Usage:      GC03YESNODEMO
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
@@ -12,6 +12,7 @@ PROGRAM-ID. GC03YESNODEMO.
 *> Version:    1.0 2016.06.15
 *> Changelog:  1.0 first release.
 *> ***********************************************************************************
+
 ENVIRONMENT DIVISION.
 DATA DIVISION.
 WORKING-STORAGE SECTION.
