@@ -35,7 +35,7 @@
 *>                                        +-----------------------------------+ <- r2
 *>                                                                           c2
 *>           where ' TTTTTTTTT ' is the title of the box if requested (optional)
-*>                                             c1
+*>                                       c1
 *>           Example               r1 ->  ABBBBBBBBBBBB TTTTTTTTT BBBBBBBBBBBBC
 *>           style = C         displays:  DEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEF
 *>           custom = ABCDEFGHZ           DEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEF
