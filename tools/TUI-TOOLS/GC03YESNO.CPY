@@ -9,6 +9,7 @@
 *> Version:    1.0 2016.06.15
 *> Changelog:  1.0 first release.
 *> ***********************************************************************************
+
 *> Displays a Box with a YES and NO options and returns the choice to caller
 *> the BOX has a fixed size of 10 rows and 40 cols (included cols for shadow)
 *>
