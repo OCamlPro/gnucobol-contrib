@@ -69,7 +69,6 @@
       05 Bxm-r2c2.
          07 Bxm-r2   pic 9(03) value 025.
          07 Bxm-c2   pic 9(03) value 080.
-
    03 Bxm-Parameters.
       05 Bxm-bco     pic 9(01) value white.       *> back color of box
       05 Bxm-fco     pic 9(01) value white.       *> fore color of box
