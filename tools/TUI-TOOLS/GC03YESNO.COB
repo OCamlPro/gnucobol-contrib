@@ -7,7 +7,7 @@ PROGRAM-ID. GC03YESNO is initial.
 *> Tectonics:  cobc -m GC03YESNO.COB (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC03YESNO using YESNO-AREA
 *> Parameters: look at GC03YESNO.cpy (use with copy Version: 1.0 2016.06.15)
-*> Author:     Eugenio Di Lorenzo - Italia (DILO)
+*> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
 *> Version:    1.0 2016.06.15
 *> Changelog:  1.0 first release.
@@ -59,7 +59,7 @@ set environment 'COB_SCREEN_ESC'        TO 'Y'.
     move 'I'      to Box-3D
     move 'Y'      to Box-add1c
     perform Big-Box thru Big-Box-ex
-    perform Message  thru Message-ex
+    perform Message1  thru Message1-ex
     *> box YES
     move 'N'      to Box-shadow
     move 'E'      to box-3D
@@ -142,12 +142,12 @@ Big-Box.
     .
 Big-Box-EX. exit.
 
-Message.
+Message1.
    move 0 to j
    compute wlin = yn-r1 + 2 *> riga del cursore
    .
 loopm. *> loop per display singoli caratteri della voce di menu
-   if j >= 34 go Message-ex end-if
+   if j >= 34 go Message1-ex end-if
    add 1 to j
    *> cursor column
    compute wcol = yn-c1 + 1 + j
@@ -156,7 +156,7 @@ loopm. *> loop per display singoli caratteri della voce di menu
 
    go to loopm
    .
-Message-EX. exit.
+Message1-EX. exit.
 
 *> ************************************************************************************
 *> YES BUTTON
