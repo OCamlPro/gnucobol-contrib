@@ -2,15 +2,16 @@
 01 Buttons-Area.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) AND UTILITIES COLLECTION
-*> Purpose:    WORK-AREA FOR GC09BUTTONS.COB - DISPLAY BUTTONS
+*> Purpose:    WORK-AREA FOR GC09BUTTONS.COB - DISPLAY BUTTONS AND MANAGE BUTTONS ON SCREEN
 *> Usage:      call GC09BUTTONS using Buttons-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.3 2017.11.04
+*> Version:    1.4 2020.12.12
 *> Changelog:  1.0 first release.
 *>             1.1 added beep parameter
 *>             1.2 added hot key management
 *>             1.3 Bu-Hot changed from 9(01) to 9(02)
+*>             2.0 Little changes fro mouse management
 *> ***********************************************************************************
 *> on screen You can manage max 24 buttons of 1 row .
 *> Each button has tobe inserted in a table with 25 elements
@@ -35,19 +36,19 @@
 *>
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
-*> Bu-Act    1= this item is displayed as Active (tobe Selected)(it has the focus)
+*> Bu-Act    1= this Button is displayed as Active (tobe Selected)(it has the focus)
 *>           only one of items can have Bu-Act = 1. it will be highlighted
 *>           at first display of the buttons. when you exit from the buttons function
 *>           the active button (item) will have '1' other items will have blank.
 *> Bu-r      row & col where the button starts on screen
 *> Bu-c      first row & col are 01, 01, last are 25,80 (row 25 col 80)
-*>           buttons can be displayed in every position, also sparse.
-*>           buttons cannot be overlapped ! (the fuction does not havecontrols !)
-*> Bu-Item   charatcters string to be displayed on Button (max 80 chars).
+*>           buttons can be displayed in every position, vertical, horizontal or sparse.
+*>           buttons cannot be overlapped ! (the fuction does not have controls !)
+*> Bu-Item   charatcters string to be displayed inside the Button (max 80 chars).
 *>           It has to be in ASCIIZ format (must have x'00'(low-value) as last byte
-*> Bu-Hot    number of char of Bu-Item to be used as hot key .
-*>           ex. if Bu-Item = "Exit" and Bu-Hot = 2, typing X or x activate the button
-*>           Hot key is case insensistive  (if hotkey is "A" you can type also "a" )
+*> Bu-Hot    position of the char of Bu-Item that have to be used as hot key .
+*>           if Bu-Item= "Exit" and Bu-Hot= 2 (x is the hotkey), typing X or x activate the button
+*>           Hot key is case insensistive  (if hotkey is "A" you can type "A" or also "a" )
 *>           only letters (lower or uppercase) or digits, no other chars (no +, ?, ! etc.)
 *> Bu-Shadow Y= draw a shadow around buttons  Default = Y
 *> Bu-Arrow  If the selected button displayed in "selected" color,
@@ -56,16 +57,17 @@
 *>           1= ex. [>   EXIT   <] at border of button ;
 *>           2= ex. [ >  EXIT  < ] at 2nd and penultimate position
 *> Bu-Arrow-Char1/2 Single chars to make active button more visible (ex: > and <  or: ( and )  or: = ...)
-*> Bu-click  Y= when hit enter on a button you will have a "click effect"
-*>           move button 1 char to right, changed to black/white color with no shadow
-*> Bu-beep   Y= when hit enter on button sound a beep
-*> Bu bco-shadow set it to the same back color of the underlying background
+*> Bu-click  Y= when hit enter or mouse doubleclick on a button you will have a "click effect"
+*>           = move button 1 char to right, change colors to black/white and have no shadow
+*> Bu-beep   Y= when hit enter or mouse doubleclcik on a button sound a beep
+*> Bu- bcoshadow set it to the same back color of the underlying background
 *>
 *> Bu-selected Returns to caller the number of selected button by the user 01, 02, 03, ..
-*> Bu-Key    key code pressed by user: 0013 = Enter, 0027 = Escape
+*> Bu-Key    key pressed by user: 0000 = Enter, 2005 = Escape, 2043 = mouse left doubleclick
 *>           Caller pgm will know if user selected a button
-*>           with enter or has pressed Escape key to exit
-*> *************************************************************
+*>           with enter or Mouse left doubleclick or has pressed Escape key to exit
+*>           Retunrn codes are GnuCOBOL FUNCTION KEYS, KEY CODES, MOUSE KEYS CODES
+*> ***********************************************************************************
      03 Bu-Tab  value low-value.
         04 Bu-Ele occurs 25.
            05 Bu-Act          pic x(01).
@@ -97,7 +99,7 @@
         *> back color of shadow background (it has tobe settled to the same of box background)
         05 Bu-bcoShadow      pic 9(01) value white.  *> default backcolor for "shadow" of buttons
      *> *************************************************************
-     *> RETUNRS TO CALLER
+     *> RETURNS TO CALLER
      *> *************************************************************
      03 Bu-Selected       pic 9(02).
      03 Bu-Key            pic 9(04).
