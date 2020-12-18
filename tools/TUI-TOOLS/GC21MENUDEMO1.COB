@@ -57,7 +57,7 @@ DISPLAY "GnuCOBOL 3.1 TEXT USER INTERFACE TOOLS COLLECTION - MENU MANAGEMENT." A
         with foreground-color white background-color red
 DISPLAY "NEW RELEASE - WITH MOUSE MANAGEMENT - from DILO (Itay).             " AT 003003
         with foreground-color white background-color red
-display "Cursorkeys/mouse leftclick= activate menu item. Enter/lett doubleclick= select. " at 024001
+display "Cursorkeys/mouse leftclick= Activate menu item. Enter/left doubleclick= Select. " at 024001
         with background-color 4 foreground-color 7 highlight end-display
 
 move '005008013038' to Box-rc
