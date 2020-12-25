@@ -541,7 +541,7 @@ public class Japi2 {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             
             
-       //     UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+//            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
             
         } catch (Exception ex) {
             getInstance().debug("Cannot set system LaF: {0}", ex);

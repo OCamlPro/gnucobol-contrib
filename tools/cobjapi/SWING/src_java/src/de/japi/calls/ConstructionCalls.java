@@ -34,10 +34,12 @@ import de.japi.components.Japi2Slider;
 import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
 import de.japi.components.Japi2FormattedTextField;
+import de.japi.components.Japi2InternalFrame;
 import de.japi.components.Japi2Tree;
 import de.japi.components.listeners.Japi2ActionListener;
 import de.japi.components.listeners.Japi2AdjustmentListener;
 import de.japi.components.listeners.Japi2ComponentListener;
+import de.japi.components.listeners.Japi2FocusListener;
 import de.japi.components.listeners.Japi2ItemListener;
 import de.japi.components.listeners.Japi2TextListener;
 import de.japi.components.listeners.Japi2WindowListener;
@@ -46,11 +48,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Image;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
@@ -59,6 +63,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -658,6 +663,30 @@ public class ConstructionCalls {
         session.log1("TREE (ID = {0}) in ParentObject {1}", oid, container);
         session.writeInt(oid);
     }
+
+    /*
+     * This method creates a Japi2InternalFrame.
+     */
+    public static void createInternalFrame(Japi2Session session, Container container) throws IOException {
+        String title = session.readLine();
+        int resizable = session.readInt();
+        int closable = session.readInt();
+        int maximizable = session.readInt();
+        int iconifiable = session.readInt();
+        boolean resizableFlag = resizable == 1;
+        boolean closableFlag = closable == 1;
+        boolean maximizableFlag = maximizable == 1;
+        boolean iconifiableFlag = iconifiable == 1;
+        
+        // Create the frame
+        Japi2InternalFrame internalFrame = new Japi2InternalFrame(title, resizableFlag, closableFlag, maximizableFlag, iconifiableFlag);
+        int oid = session.addObject(internalFrame);
+        container.add(internalFrame);
+        
+        session.log1("INTERNALFRAME {0} (ID = {1}) in Parent Object {2}", title, oid, container);
+        // Write back the id
+        session.writeInt(oid);
+    }
    
     /*
      * This method creates a Label, to display text or image components.
@@ -887,6 +916,16 @@ public class ConstructionCalls {
         c.add(splitPane);
         
         int oid = session.addObject(splitPane);
+        session.writeInt(oid);
+    }
+
+    public static void createDesktopPane(Japi2Session session, Japi2Frame c) throws IOException {
+        session.log1("DesktopPane in parent object {0}", c);
+        
+        JDesktopPane desktopPane = new JDesktopPane();
+        c.setContentPane(desktopPane);
+        
+        int oid = session.addObject(desktopPane);
         session.writeInt(oid);
     }
     

@@ -73,6 +73,10 @@
 *>            - japi_settreeborderselcolor
 *>            - japi_settreetextnonselcolor
 *>            - japi_settreebgnonselcolor
+*>------------------------------------------------------------------------------
+*> 2020.12.22 Laszlo Erdos: 
+*>            - JAPI_INTERNALFRAME, JAPI_DESKTOPPANE
+*>            - japi_internalframe, japi_desktoppane
 *>******************************************************************************
 */
 
@@ -290,6 +294,8 @@
   #define JAPI_TABBEDPANE                         4138
   #define JAPI_NODE                               4139
   #define JAPI_TREE                               4140
+  #define JAPI_INTERNALFRAME                      4141
+  #define JAPI_DESKTOPPANE                        4142
 
 
 
@@ -319,6 +325,7 @@
   extern  int   japi_splitpane ( int , int , int  );
   extern  void  japi_setsplitpaneleft ( int , int  );
   extern  void  japi_setsplitpaneright ( int , int  );
+  extern  int   japi_desktoppane ( int  );
   extern  void  japi_setport ( int  );
   extern  void  japi_setdebug ( int  );
   extern  int   japi_frame ( char*  );
@@ -337,6 +344,7 @@
   extern  int   japi_tree ( int , int  );
   extern  void  japi_enabledoubleclick ( int  );
   extern  void  japi_disabledoubleclick ( int  );
+  extern  int   japi_internalframe( int , char* , int , int , int , int  );
   extern  int   japi_borderpanel ( int , int  );
   extern  int   japi_radiogroup ( int  );
   extern  int   japi_radiobutton ( int , char*  );

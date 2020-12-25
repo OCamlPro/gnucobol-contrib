@@ -211,6 +211,8 @@ public class Japi2Calls {
     public static final int JAPI_TABBEDPANE = 4138;
     public static final int JAPI_NODE = 4139;
     public static final int JAPI_TREE = 4140;
+    public static final int JAPI_INTERNALFRAME = 4141;
+    public static final int JAPI_DESKTOPPANE = 4142;
 
     // JAPI_LISTENERS
     public static final int JAPI_LISTENERS = 5120;

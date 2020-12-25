@@ -90,6 +90,8 @@ cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" graphiclabel.cob    
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" gridlayout.cob        %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" image.cob             %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" insets.cob            %* %COBCOBJ% %COBCLIB% 
+cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" internalframe1.cob    %* %COBCOBJ% %COBCLIB% 
+cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" internalframe2.cob    %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" keylistener.cob       %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" label.cob             %* %COBCOBJ% %COBCLIB% 
 cobc -x -free -Wno-unfinished %verbose% -I"%src_cobol_dir%" lines.cob             %* %COBCOBJ% %COBCLIB% 

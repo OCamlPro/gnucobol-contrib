@@ -33,6 +33,7 @@ import de.japi.components.Japi2ScrollPane;
 import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
 import de.japi.components.Japi2FormattedTextField;
+import de.japi.components.Japi2InternalFrame;
 import de.japi.components.Japi2Tree;
 import de.japi.components.Japi2Window;
 import de.japi.components.listeners.Japi2FocusListener;
@@ -824,6 +825,8 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_PACK: 
                             if (obj instanceof Window) 
                                     CommandCalls.pack(this, (Window) obj);
+                            else if (obj instanceof Japi2InternalFrame)
+                                    CommandCalls.pack(this, (Japi2InternalFrame) obj);
                             else 
                                     throw new NotHandledException();
                             break;
@@ -1251,6 +1254,8 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_SETICON: 
                             if (obj instanceof Japi2Frame) 
                                     CommandCalls.setIcon(this, (Japi2Frame) obj);
+                            else if (obj instanceof Japi2InternalFrame) 
+                                    CommandCalls.setIcon(this, (Japi2InternalFrame) obj);
                             else 
                                     throw new NotHandledException();
                             break;
@@ -1791,6 +1796,12 @@ public class Japi2Session implements Runnable {
                             else 
                                     throw new NotHandledException();
                             break;
+                    case Japi2Calls.JAPI_INTERNALFRAME: 
+                            if (obj instanceof Container) 
+                                    ConstructionCalls.createInternalFrame(this, (Container) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
                     case Japi2Calls.JAPI_LABEL: 
                             if (obj instanceof Container) 
                                     ConstructionCalls.createLabel(this, (Container) obj);
@@ -1969,6 +1980,12 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_SPLITPANE:
                             if (obj instanceof Container) 
                                     ConstructionCalls.createSplitPane(this, (Container) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                    case Japi2Calls.JAPI_DESKTOPPANE:
+                            if (obj instanceof Japi2Frame) 
+                                    ConstructionCalls.createDesktopPane(this, (Japi2Frame) obj);
                             else 
                                     throw new NotHandledException();
                             break;

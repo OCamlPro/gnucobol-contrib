@@ -5,7 +5,7 @@
             <url>src/de/japi/Japi2Session.java</url>
             <bookmark id="1">
                 <name/>
-                <line>2534</line>
+                <line>2551</line>
                 <key/>
             </bookmark>
         </file>
@@ -14,7 +14,7 @@
         <group>
             <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/Japi2Session.java</file>
             <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/Japi2Calls.java</file>
-            <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/calls/GraphicCalls.java</file>
+            <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/components/Japi2InternalFrame.java</file>
             <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/calls/ConstructionCalls.java</file>
             <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/calls/CommandCalls.java</file>
             <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/components/Japi2Tree.java</file>

@@ -67,6 +67,9 @@
 *>            - J-SETTREEBORDERSELCOLOR
 *>            - J-SETTREETEXTNONSELCOLOR
 *>            - J-SETTREEBGNONSELCOLOR
+*>------------------------------------------------------------------------------
+*> 2020.12.22 Laszlo Erdos: 
+*>            - J-INTERNALFRAME, J-DESKTOPPANE
 *>******************************************************************************
  
 *>------------------------------------------------------------------------------
@@ -182,6 +185,43 @@
  MAIN-J-SPLITPANE-EX.
     EXIT.
  END FUNCTION J-SPLITPANE.
+
+
+*>------------------------------------------------------------------------------
+*> int  j_desktoppane( int arg0)
+*> { return( japi_desktoppane(arg0));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-DESKTOPPANE.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                    RETURNING          LNK-RET.
+
+ MAIN-J-DESKTOPPANE SECTION.
+
+    CALL STATIC "japi_desktoppane" 
+         USING BY VALUE LNK-ARG-0
+         RETURNING LNK-RET 
+    END-CALL 
+ 
+    GOBACK
+
+    .
+ MAIN-J-DESKTOPPANE-EX.
+    EXIT.
+ END FUNCTION J-DESKTOPPANE.
 
 
 *>------------------------------------------------------------------------------
@@ -974,6 +1014,58 @@
  MAIN-J-DISABLEDOUBLECLICK-EX.
     EXIT.
  END FUNCTION J-DISABLEDOUBLECLICK.
+
+
+*>------------------------------------------------------------------------------
+*> int  j_internalframe( int arg0, char* arg1, int arg2, int arg3, int arg4, int arg5)
+*> { return( japi_internalframe(arg0, arg1, arg2, arg3, arg4, arg5));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-INTERNALFRAME.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          PIC X ANY LENGTH.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-ARG-5                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY REFERENCE LNK-ARG-1
+                          BY VALUE     LNK-ARG-2
+                          BY VALUE     LNK-ARG-3
+                          BY VALUE     LNK-ARG-4
+                          BY VALUE     LNK-ARG-5
+                    RETURNING          LNK-RET.
+
+ MAIN-J-INTERNALFRAME SECTION.
+
+    CALL STATIC "japi_internalframe" 
+         USING BY VALUE   LNK-ARG-0
+               BY CONTENT CONCATENATE(TRIM(LNK-ARG-1), X"00")
+               BY VALUE   LNK-ARG-2
+               BY VALUE   LNK-ARG-3
+               BY VALUE   LNK-ARG-4
+               BY VALUE   LNK-ARG-5
+         RETURNING LNK-RET 
+    END-CALL 
+ 
+    GOBACK
+
+    .
+ MAIN-J-INTERNALFRAME-EX.
+    EXIT.
+ END FUNCTION J-INTERNALFRAME.
 
  
 *>------------------------------------------------------------------------------

@@ -64,6 +64,9 @@
 *>            - j_settreeborderselcolor
 *>            - j_settreetextnonselcolor
 *>            - j_settreebgnonselcolor
+*>------------------------------------------------------------------------------
+*> 2020.12.22 Laszlo Erdos: 
+*>            - j_internalframe, j_desktoppane
 *>******************************************************************************
 */
 
@@ -226,6 +229,7 @@
     extern  int   j_splitpane ( int , int , int  );
     extern  void  j_setsplitpaneleft ( int , int  );
     extern  void  j_setsplitpaneright ( int , int  );
+    extern  int   j_desktoppane ( int  );
     extern  void  j_setport ( int  );
     extern  void  j_setdebug ( int  );
     extern  int   j_frame ( char*  );
@@ -244,6 +248,7 @@
     extern  int   j_tree ( int , int  );
     extern  void  j_enabledoubleclick ( int  );
     extern  void  j_disabledoubleclick ( int  );
+    extern  int   j_internalframe( int , char* , int , int , int , int  );
     extern  int   j_borderpanel ( int , int  );
     extern  int   j_radiogroup ( int  );
     extern  int   j_radiobutton ( int , char*  );

@@ -298,6 +298,12 @@ Program history, changes and bug fixes are listed in program headers.
 Date       Name / Change description
 ========== ==================================================================
 -----------------------------------------------------------------------------
+2020.12.22 Laszlo Erdos:
+           - DesktopPane and InternalFrame added.
+-----------------------------------------------------------------------------
+2020.12.18 Laszlo Erdos:
+           - In COBOL 2014 obsolete keyword AUTHOR deleted.
+-----------------------------------------------------------------------------
 2020.10.03 Laszlo Erdos:
            - New functions for Tree added.
 -----------------------------------------------------------------------------

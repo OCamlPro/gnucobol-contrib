@@ -74,6 +74,10 @@
 *>            - japi_settreeborderselcolor
 *>            - japi_settreetextnonselcolor
 *>            - japi_settreebgnonselcolor
+*>------------------------------------------------------------------------------
+*> 2020.12.22 Laszlo Erdos: 
+*>            - japi_internalframe, send_2int_string_4int_get_int
+*>            - japi_desktoppane
 *>******************************************************************************
 */
 
@@ -919,6 +923,15 @@ static void send_2int_3string_get_string(int c, int o, char* a, char* s,char *d,
 	get_string(commandstream,r);
 }
 
+static int send_2int_string_4int_get_int(int c, int o, char* a, int v1, int v2, int v3, int v4)
+{
+	add_2int(c,o);
+	add_string(a);
+	add_4int(v1,v2,v3,v4);
+	send_buf();
+	return(get_int(commandstream));
+}
+
 static int send_4int_get_int(int c, int o, int v1, int v2)
 {
 	send_4int(c,o,v1,v2);
@@ -953,6 +966,11 @@ void japi_setsplitpaneleft(int sp, int component) {
 void japi_setsplitpaneright(int sp, int component) {
 	send_3int(JAPI_SETSPLITPANERIGHT, sp, component);
 }
+
+int japi_desktoppane(int parent) {
+	return send_2int_get_int(JAPI_DESKTOPPANE, parent);
+}
+
 void japi_setport(int p)
 {   port=p; }
 
@@ -1033,6 +1051,9 @@ void japi_enabledoubleclick(int tree)
 
 void japi_disabledoubleclick(int tree)
 {	return(send_2int(JAPI_DISABLEDOUBLECLICK,tree)); }
+
+int japi_internalframe(int parent, string title, int resizable, int closable, int maximizable, int iconifiable)
+{	return(send_2int_string_4int_get_int(JAPI_INTERNALFRAME,parent,title,resizable,closable,maximizable,iconifiable)); }
 
 int japi_borderpanel(int parent, int type)
 {	return(send_3int_get_int(JAPI_PANEL,parent,type)); }

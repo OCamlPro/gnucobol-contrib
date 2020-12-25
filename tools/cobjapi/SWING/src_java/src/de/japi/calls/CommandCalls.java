@@ -27,6 +27,7 @@ import de.japi.components.Japi2RadioButton;
 import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
 import de.japi.components.Japi2FormattedTextField;
+import de.japi.components.Japi2InternalFrame;
 import de.japi.components.Japi2Tree;
 import de.japi.components.Japi2Window;
 import de.japi.components.layout.Japi2FixLayout;
@@ -576,6 +577,11 @@ public class CommandCalls {
     public static void pack(Japi2Session session, Window window) throws IOException {
         session.log2("Pack {0}", window);
         window.pack();
+    }
+
+    public static void pack(Japi2Session session, Japi2InternalFrame internalFrame) throws IOException {
+        session.log2("Pack {0}", internalFrame);
+        internalFrame.pack();
     }
     
     /*
@@ -1478,6 +1484,17 @@ public class CommandCalls {
         Image image = session.getObjectById(icon, Image.class);
         session.log2("Set Icon {0} to {1}", frame, image);
         frame.setIconImage(image);    
+    }
+
+     /*
+      * Sets a previously loaded Image as an Icon for an InternalFrame. 
+      */
+    
+    public static void setIcon(Japi2Session session, Japi2InternalFrame internalFrame) throws IOException {
+        int icon = session.readInt();
+        Image image = session.getObjectById(icon, Image.class);
+        session.log2("Set Icon {0} to {1}", internalFrame, image);
+        internalFrame.setFrameIcon(new ImageIcon(image));
     }
     
     /*
