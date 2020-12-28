@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
     Copyright (C) 2014 Geoff McLane
  *
  *	This file is part of GCSORT.
@@ -38,6 +38,7 @@
 #include "gcsort.h"
 #include "mmfioc.h"
 #include "job.h" 
+#include "gcshare.h"
 
 
 //~~~ CWinMMFIO implementation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

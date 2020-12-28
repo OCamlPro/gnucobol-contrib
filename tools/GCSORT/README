@@ -63,6 +63,7 @@ gcsort
             COND=({Condition})[,FORMAT={FormatType}]                     
 
     INREC   FIELDS | INREC   BUILD =({FieldSpec})
+    INREC   OVERLAY =({FieldSpec})
     OUTREC  FIELDS | OUTREC  BUILD =({FieldSpec})
 
     OUTFIL                                                                         

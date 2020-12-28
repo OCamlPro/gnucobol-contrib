@@ -1,9 +1,16 @@
+2020-12-28  Sauro Menna  <smenna@users.sourceforge.net>
+	* New option INREC OVERLAY 
+    * Fix problem in gcc compiler environment
+    * Review of the configuration of the parser source
+      New folder parser. Modified Makefile.
 2020-10-15  Sauro Menna  <smenna@users.sourceforge.net>
 	* gcsort.c - new option for sign EBCDIC (-fsign=EBCDIC)
     * gcsort.h - 
     * gcsorthelp.c - Review Help for new option
     * job.c - new option for sign EBCDIC (-fsign=EBCDIC)
     * utils - new option for sign EBCDIC (-fsign=EBCDIC)
+    * doc\GCSORT1_0_V01.pdf - review for new option
+    * doc\GCSORT1_0_V01.odt - review for new option
 2020-02-05  Sergey Kashyrin <ska@kiska.net>
 	* job.c - fixing small SIGSEGV bug in sort_temp_name for Linux
 2019-03-05  Sauro Menna  <smenna@users.sourceforge.net>

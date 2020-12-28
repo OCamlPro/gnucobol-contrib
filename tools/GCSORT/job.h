@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -82,8 +82,6 @@ struct job_t;
 
 #define MAXFILEIN 100
 
-char	cob_tmp_buff[COB_MEDIUM_BUFF];
-char	cob_tmp_temp[FILENAME_MAX];
 
 
 struct job_t {
@@ -157,7 +155,7 @@ struct job_t {
 	unsigned long   LenCurrRek;
 };
 
-struct job_t *globalJob;
+// ok ok ok struct job_t* globalJob;
 
 struct job_t *job_constructor( void );
 void job_destructor(struct job_t *job);

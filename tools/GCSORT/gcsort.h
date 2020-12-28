@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -25,7 +25,6 @@
 #define _CRT_NONSTDC_NO_DEPRECATE 
 
 // x64 ini
-
 #ifdef	_MSC_VER
 #ifdef VBISAM_LIB
 #ifdef __cplusplus
@@ -66,8 +65,7 @@
 #define OC_RTC_ERROR 16
 
 
-// Variables
-char szMexToken[260];
+// Variables char szMexToken[260];
 
 
 void GCSORT_Config( void );

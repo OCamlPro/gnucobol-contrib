@@ -25,6 +25,7 @@
 #endif
 #include "gcsort.h"
 #include "job.h"
+// #include "libgcsort.h"
 
 void GCSORT_Config ( void ) 
 {
@@ -72,14 +73,16 @@ void GCSORT_Config ( void )
 //-->>	else
 //-->>		fprintf(stdout," - Bigendian\n");
 	fprintf(stdout,"GCSORT_DEBUG                 : %d", job->ndeb);
-	if (job->ndeb == 0)
+	if (job->ndeb == 0) {
 		fprintf(stdout," - No info debug\n");
+    }
 	else
+    {
 		if (job->ndeb == 1)
 			fprintf(stdout," - Info debug\n");
 		else
 			fprintf(stdout," - Info debug Parser/Scanner\n");
-
+    }
 	fprintf(stdout,"GCSORT_MEMSIZE               : " CB_FMT_LLD " MByte\n", (long long)(job->ulMemSizeAlloc+job->ulMemSizeAllocSort)/1024000);
 	fprintf(stdout,"         Memory size for key : " CB_FMT_LLD " MByte\n", (long long)(job->ulMemSizeAllocSort/1024000));
 	fprintf(stdout,"        Memory size for data : " CB_FMT_LLD " MByte\n", (long long)(job->ulMemSizeAlloc/1024000));
@@ -165,7 +168,8 @@ void GCSORT_Usage ( void )
     printf("            COND=({Condition})[,FORMAT={FormatType}]                     \n");
     printf("\n");
     printf("    INREC   FIELDS | INREC   BUILD =({FieldSpec})\n");                     
-    printf("    OUTREC  FIELDS | OUTREC  BUILD =({FieldSpec})\n");                     
+    printf("    INREC   OVERLAY =({FieldSpec})\n");
+    printf("    OUTREC  FIELDS | OUTREC  BUILD =({FieldSpec})\n");
     printf("\n");
     printf("    OUTFIL                                                                         \n");
     printf("         INCLUDE | OMIT ({Condition})[,FORMAT={FormatType}]                            \n");

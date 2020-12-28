@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -22,11 +22,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+// #include "libgcsort.h"
 #include <libcob.h>
 #include "gcsort.h"
 #include "job.h"
 #include "file.h"
 #include "utils.h"
+#include "gcshare.h"
 
 struct file_t *file_constructor(char *name) {
 	struct file_t *file=(struct file_t *)malloc(sizeof(struct file_t));

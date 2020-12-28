@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -31,28 +31,30 @@ struct fieldValue_t;
 #define INREC_TYPE_CHANGE_POSITION	1
 #define INREC_TYPE_CHANGE			2
 #define INREC_TYPE_RANGE_POSITION	3
+#define INREC_TYPE_CHANGE_ABSPOS	4
 
 struct inrec_t {
+	int nIsOverlay;
 	int type;
 	union {
 		struct {
 			int position;
 			int length;
-		} range;				//0
+		} range;				//0	INREC_TYPE_RANGE
 		struct {
 			int position;
 			struct fieldValue_t *fieldValue;
-		} change_position;		//1
+		} change_position;		//1	INREC_TYPE_CHANGE_POSITION
 		struct {
 			int posAbsRec;
 			struct fieldValue_t *fieldValue;
 			char type;
-		} change;				//2
+		} change;				//2	INREC_TYPE_CHANGE
 		struct {		
 			int posAbsRec;
 			int position;
 			int length;
-		} range_position;		//3
+		} range_position;		//3	INREC_TYPE_RANGE_POSITION
 	};
 	struct inrec_t *next;
 };
@@ -64,6 +66,7 @@ struct inrec_t *inrec_constructor_range_position(int posAbsRec, int position, in
 struct inrec_t *inrec_constructor_subst(unsigned char *chfieldValue);
 struct inrec_t *inrec_constructor_padding(int nAbsPos, unsigned char *chfieldValue, int nPosAbsRec);
 struct inrec_t *inrec_constructor_substnchar(unsigned char *ntch, unsigned char *chfieldValue);
+struct inrec_t* inrec_constructor_possubstnchar(int npos, unsigned char* ntch, unsigned char* chfieldValue);
 
 void inrec_destructor(struct inrec_t *inrec);
 int inrec_addQueue(struct inrec_t **inrec,struct inrec_t *inrec_add);
@@ -71,6 +74,8 @@ struct inrec_t *inrec_getNext(struct inrec_t *inrec);
 int inrec_print(struct inrec_t *inrec);
 int inrec_getLength(struct inrec_t *inrec);
 int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos);
+int inrec_copy_overlay(struct inrec_t* inrec, unsigned char* output, unsigned char* input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos);
+int inrec_SetOverlay(struct inrec_t* Inrec, int nOverlay);
 
 int inrec_addDefinition(struct inrec_t *Inrec);
 

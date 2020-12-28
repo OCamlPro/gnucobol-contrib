@@ -32,6 +32,8 @@
 	#include <process.h>
 	#include <windows.h>
 #else
+    #include <sys/types.h>
+    #include <unistd.h>
     #include <inttypes.h>
 #endif
 
@@ -58,6 +60,10 @@
 #include "outfil.h"
 #include "mmfioc.h"
 
+#define MAIN_FILE
+#include "gcshare.h"
+//--> #undef  MAIN_FILE
+
 // #include "bufferedreader.h"
 // #include "bufferedwriter.h"
 
@@ -70,7 +76,7 @@
  
 
 char  szHeaderOutMF[128];
-char* pEnd;
+//-->> 20201226 char* pEnd;
 cob_field*      g_fd1;      // field for compare key
 cob_field*      g_fd2;      // field for compare key
 int	nLenMemory=0;
@@ -479,7 +485,7 @@ int job_load(struct job_t *job, int argc, char **argv) {
 
 
 //new	
-	if (returnCode != 0)
+	if (returnCode != 0) 
 	{
 		fprintf(stdout,"==============================================================================\n");
 		fprintf(stdout,"SORT ERROR \n");
@@ -1526,7 +1532,7 @@ int job_loadFiles(struct job_t *job) {
 	int bIsFirstTime=1;
     int bIsFirstLoop=0;    
 	int nIdxFileIn = 0;
-	int nbyteRead;
+	unsigned int nbyteRead;
 	int nk=0;
 	int useRecord;
 	int64_t lPosSeqLS = 0;
@@ -1641,10 +1647,24 @@ int job_loadFiles(struct job_t *job) {
 // Only in this point
 // Before all command
 			if (job->inrec!=NULL) {
-				memset(recordBuffer, 0x20, sizeof(recordBuffer));
-				nbyteRead = inrec_copy(job->inrec, recordBuffer, szBuffRek, job->outputLength, file_getMaxLength(file), file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, 0);
-				memmove(szBuffRek, recordBuffer, nbyteRead);
-				nLenRek = nbyteRead;
+				if (job->inrec->nIsOverlay == 0) {
+					memset(recordBuffer, 0x20, sizeof(recordBuffer));
+					nbyteRead = inrec_copy(job->inrec, recordBuffer, szBuffRek, job->outputLength, file_getMaxLength(file), file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, 0);
+					memmove(szBuffRek, recordBuffer, nbyteRead);
+					nLenRek = nbyteRead;
+				}
+				else
+				{		// Overlay
+					memset(recordBuffer, 0x20, sizeof(recordBuffer));
+					memmove(recordBuffer, szBuffRek, file_getMaxLength(file));	// copy input record
+					nbyteRead = inrec_copy_overlay(job->inrec, recordBuffer, szBuffRek, job->outputLength, file_getMaxLength(file), file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, 0);
+					nbyteRead++;
+					// copy all data record
+					if (nbyteRead < job->inputLength)
+						nbyteRead = job->inputLength;
+					memmove(szBuffRek, recordBuffer, nbyteRead);
+					nLenRek = nbyteRead;
+				}
 			}
 //
 
@@ -1819,12 +1839,12 @@ int job_save_out(struct job_t *job)
 	{
 		useRecord=1;
 		nLenRecOut = job->outputLength;
-		memcpy(&lPosPnt,  job->buffertSort+(i)*(job->nLenKeys+SIZESRTBUFF)+job->nLenKeys,                   SZPOSPNT);  //lPosPnt
-		memcpy(&nLenRek,  job->buffertSort+(i)*(job->nLenKeys+SIZESRTBUFF)+job->nLenKeys+SZPOSPNT,          SZLENREC);  // nLenRek
-		memcpy(&pAddress, job->buffertSort+(i)*(job->nLenKeys+SIZESRTBUFF)+job->nLenKeys+SZPOSPNT+SZLENREC, SZPNTDATA); // Pointer Data Area 
+		memcpy(&lPosPnt,  job->buffertSort+(i)*((int64_t)job->nLenKeys+SIZESRTBUFF)+job->nLenKeys,                   SZPOSPNT);  // lPosPnt
+		memcpy(&nLenRek,  job->buffertSort+(i)*((int64_t)job->nLenKeys+SIZESRTBUFF)+job->nLenKeys+SZPOSPNT,          SZLENREC);  // nLenRek
+		memcpy(&pAddress, job->buffertSort+(i)*((int64_t)job->nLenKeys+SIZESRTBUFF)+job->nLenKeys+SZPOSPNT+SZLENREC, SZPNTDATA); // Pointer Data Area 
 
-		memcpy(szBuffRek, &lPosPnt, SZPOSPNT); // PosPnt
-		memcpy(szBuffRek+SZPOSPNT,  (unsigned char*) pAddress, nLenRek); // buffer
+		memcpy((unsigned char*)szBuffRek, &lPosPnt, SZPOSPNT); // PosPnt
+		memcpy((unsigned char*)szBuffRek+SZPOSPNT,  (unsigned char*) pAddress, nLenRek); // buffer
 
 // SUMFIELDS Verify condition for SumFields  == 0, == 1 (None), == 2 (P,L,T)
 		// 1  SUM FIELDS = NONE
@@ -1941,7 +1961,8 @@ job_save_exit:
 int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen )
 {
 // 20180511 s.m. start
-    int nLenRek = job->inputFile->stFileDef->record->size;
+    // s.m. 20201226 int nLenRek = job->inputFile->stFileDef->record->size;
+	int nLenRek = job->outputFile->stFileDef->record->size;
 // 20180511 s.m. end
 // set area data
 	memcpy(file->stFileDef->record->data, szBuf, nLen);
@@ -3173,15 +3194,33 @@ int job_merge_files(struct job_t *job) {
 		if (useRecord==1 && job->omitCondField!=NULL && condField_test(job->omitCondField,(unsigned char*) recordBuffer+nSplitPosPnt, job)==1) 
 			useRecord=0;
 // INREC
-		if (useRecord == 1) {
+		if (useRecord == 1) {  
 			if (job->inrec!=NULL) {
-				memset(szBuffRek, 0x20, recordBufferLength);
-				nLenInRec = inrec_copy(job->inrec, szBuffRek, recordBuffer, nLenRecOut, nbyteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
-				if (recordBufferLength < nLenInRec)
-					recordBuffer= (unsigned char*) realloc(recordBuffer,nLenInRec+1);
-				memcpy(recordBuffer+nSplitPosPnt, szBuffRek, nLenInRec );
-				job->LenCurrRek = nLenInRec;
-				nLenRek = nLenInRec;
+				// check overlay
+				if (job->inrec->nIsOverlay == 0) {
+					memset(szBuffRek, 0x20, recordBufferLength);
+					nLenInRec = inrec_copy(job->inrec, szBuffRek, recordBuffer, nLenRecOut, nbyteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
+					if (recordBufferLength < nLenInRec)
+						recordBuffer= (unsigned char*) realloc(recordBuffer,nLenInRec+1);
+					memcpy(recordBuffer+nSplitPosPnt, szBuffRek, nLenInRec );
+					job->LenCurrRek = nLenInRec;
+					nLenRek = nLenInRec;
+				}
+				else
+				{		// Overlay
+					memset(szBuffRek, 0x20, recordBufferLength);
+					memmove(recordBuffer, szBuffRek, file_getMaxLength(file));	// copy input record
+					nLenInRec = inrec_copy_overlay(job->inrec, szBuffRek, recordBuffer, nLenRecOut, nbyteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
+					nLenInRec++;
+					if (nLenInRec < recordBufferLength)
+						nLenInRec = recordBufferLength;
+					if (recordBufferLength < nLenInRec)
+						recordBuffer = (unsigned char*)realloc(recordBuffer, nLenInRec + 1);
+					memcpy(recordBuffer + nSplitPosPnt, szBuffRek, nLenInRec);
+					job->LenCurrRek = nLenInRec;
+					nLenRek = nLenInRec;
+
+				}
 			}
 		}
 // INREC

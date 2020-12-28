@@ -71,7 +71,7 @@ int main(int argc, char **argv)
 {
 
 	int rtc = 0;
-	if (argc >= 2)
+	if (argc >= 2) 
 	{
 		if (strstr(argv[1], "--help") != NULL) {
 			GCSORT_Usage() ;
@@ -131,8 +131,8 @@ int main_prod(int argc, char **argv) {
 	struct job_t *job; 
 	int nRC = -2;
 	time (&timeStart);
-	yydebug=0; // no debug  // yydebug=1; // yes debug
-	yyset_debug(0);	// set debug scanner off
+	yydebug = 0; // 0; // no debug  // yydebug=1; // yes debug
+	yyset_debug(0); // 0);	// set debug scanner off
 
 	cob_init(argc, argv);
 	cob_module_enter(&module, &cob_glob_ptr, 0);
@@ -217,7 +217,7 @@ int main_prod(int argc, char **argv) {
         if (job_GetTypeOp(job) == 'M') 		
 		    printf("GCSORT - Merge OK\n");
         else
-		    printf("GCSORT - Sort OK\n");
+		    printf("GCSORT - Sort OK\n"); 
     }
 	else
 	{

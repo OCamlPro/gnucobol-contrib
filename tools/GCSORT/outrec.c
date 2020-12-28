@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -27,6 +27,7 @@
 #include "utils.h"
 #include "job.h"
 #include "outrec.h"
+#include "gcshare.h"
 
 
 struct outrec_t *outrec_constructor_range(int position, int length) 
@@ -130,7 +131,7 @@ struct outrec_t *outrec_constructor_subst(unsigned char *chfieldValue)
     }
 	return outrec;
 }
-
+ 
 struct outrec_t *outrec_constructor_substnchar(unsigned char* ntch, unsigned char *chfieldValue) 
 {
 	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
@@ -145,6 +146,17 @@ struct outrec_t *outrec_constructor_substnchar(unsigned char* ntch, unsigned cha
 
 }
 
+struct outrec_t* outrec_constructor_possubstnchar(int npos, unsigned char* ntch, unsigned char* chfieldValue) {
+	struct outrec_t* outrec = (struct outrec_t*)malloc(sizeof(struct outrec_t));
+	if (outrec != NULL) {
+		outrec->type = OUTREC_TYPE_CHANGE;
+		outrec->change.fieldValue = fieldValue_constructor((char*)ntch, (char*)chfieldValue, TYPE_STRUCT_STD);
+		outrec->change.posAbsRec = npos; // ?? -1;
+		outrec->change.type = 0x00;
+		outrec->next = NULL;
+	}
+	return outrec;
+}
 void outrec_destructor(struct outrec_t *outrec) 
 {
 	switch (outrec->type) {

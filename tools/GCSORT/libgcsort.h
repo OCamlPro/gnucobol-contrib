@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -24,8 +24,7 @@
 // -- #ifdef	_WIN32
 #if defined(_WIN32) && ( !defined(__MINGW32__) && !defined(__MINGW64__))
 
-
-		#ifdef	_MSC_VER
+	#ifdef	_MSC_VER
 	#pragma warning(disable: 4800)
 	#endif
 
@@ -38,14 +37,11 @@
 	#include <libcob/common.h>
 
 #else
-
 #include <gmp.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 #include <libcob/common.h>
-
 #ifdef __cplusplus
 }
 #endif

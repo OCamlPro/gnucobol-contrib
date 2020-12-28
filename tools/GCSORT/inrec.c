@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -19,13 +19,14 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h> 
 #include <string.h>
 #include "job.h"
 #include "inrec.h"
 #include "fieldvalue.h"
 #include "utils.h"
 #include "gcsort.h"
+#include "gcshare.h"
 
 
 struct inrec_t *inrec_constructor_range(int position, int length) {
@@ -59,6 +60,9 @@ struct inrec_t *inrec_constructor_change(struct fieldValue_t *fieldValue) {
     }
 	return inrec;
 }
+/*
+* 
+*/
 struct inrec_t *inrec_constructor_range_position(int posAbsRec, int position, int length) {
 	struct inrec_t *inrec=(struct inrec_t *)malloc(sizeof(struct inrec_t));
     if (inrec != NULL) {
@@ -115,12 +119,18 @@ struct inrec_t *inrec_constructor_subst(unsigned char *chfieldValue) {
     if (inrec != NULL) {
 	    inrec->type=INREC_TYPE_CHANGE;
 	    nsp = strlen((char*)chfieldValue)-1;
-	    memset(szSubstValue, 0x00, nsp+1);
+	    memset(szSubstValue, 0x00, 10);
 	    memset(szSubstType, 0x00,  2);
 	    memcpy(szSubstValue, chfieldValue, nsp);
-	
-	    memcpy((char*)szSubstValue, chfieldValue, nsp);
-	    memcpy(szSubstType, (char*)chfieldValue+nsp, 1);	// TYpe
+		memcpy((char*)szSubstValue, chfieldValue, nsp);
+	    memcpy(szSubstType, (char*)chfieldValue+nsp, 1);	// Type
+		// check if len = 1
+		if (nsp == 0) {
+			if (szSubstType[0] == 'X')
+				szSubstValue[0] = ' ';
+			if (szSubstType[0] == 'Z')
+				szSubstValue[0] = '0';
+		}
 	    inrec->change.fieldValue = fieldValue_constr_newF((char*)szSubstType, (char*)szSubstValue, TYPE_STRUCT_STD);
 	    inrec->change.posAbsRec = -2;	// For print
 	    inrec->change.type = 0x00;
@@ -128,6 +138,19 @@ struct inrec_t *inrec_constructor_subst(unsigned char *chfieldValue) {
     }
 	return inrec;
 }
+
+struct inrec_t* inrec_constructor_possubstnchar(int npos, unsigned char* ntch, unsigned char* chfieldValue) {
+	struct inrec_t* inrec = (struct inrec_t*)malloc(sizeof(struct inrec_t));
+	if (inrec != NULL) {
+		inrec->type = INREC_TYPE_CHANGE_ABSPOS; //INREC_TYPE_CHANGE;
+		inrec->change.fieldValue = fieldValue_constructor((char*)ntch, (char*)chfieldValue, TYPE_STRUCT_STD);
+		inrec->change.posAbsRec = npos - 1; // ?? -1;
+		inrec->change.type = 0x00;
+		inrec->next = NULL;
+	}
+	return inrec;
+}
+
 
 struct inrec_t *inrec_constructor_substnchar(unsigned char* ntch, unsigned char *chfieldValue) {
 	struct inrec_t *inrec=(struct inrec_t *)malloc(sizeof(struct inrec_t));
@@ -150,6 +173,7 @@ void inrec_destructor(struct inrec_t *inrec) {
 				fieldValue_destructor(inrec->change_position.fieldValue);
 			break;
 		case INREC_TYPE_CHANGE:
+		case INREC_TYPE_CHANGE_ABSPOS:
 			if (inrec->change.fieldValue != NULL)		// look nsp
 				fieldValue_destructor(inrec->change.fieldValue);
 			break;
@@ -188,7 +212,10 @@ int inrec_print(struct inrec_t *inrec) {
 					printf("%d%s",inrec->change.fieldValue->occursion,utils_getFieldValueTypeName(inrec->change.type));
 				else
 					printf("%d:%c",inrec->change.posAbsRec,inrec->change.type);
-
+			break;
+		case INREC_TYPE_CHANGE_ABSPOS:
+			fprintf(stdout, "%d:", inrec->change.posAbsRec);
+			fieldValue_print(inrec->change_position.fieldValue);
 			break;
 		case INREC_TYPE_RANGE_POSITION:
 			fprintf(stdout, "%d:%d,%d",inrec->range_position.posAbsRec, inrec->range_position.position+1, inrec->range_position.length);
@@ -213,7 +240,10 @@ int inrec_getLength(struct inrec_t *inrec) {
 			case INREC_TYPE_CHANGE:
 				length+=fieldValue_getGeneratedLength(o->change.fieldValue);
 				break;
-		case INREC_TYPE_RANGE_POSITION:
+			case INREC_TYPE_CHANGE_ABSPOS:
+				length += o->change.posAbsRec+ fieldValue_getGeneratedLength(o->change.fieldValue);
+				break;
+			case INREC_TYPE_RANGE_POSITION:
 				length+=o->range_position.length;
 				break;
 			default:
@@ -227,14 +257,14 @@ int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *inpu
 	int nSplit = 0;
 	struct inrec_t *i;
 	int nIRangeLen = 0;
-	if (nIsMF == 1)  // EMUALTE MFSORT  position is 1 for DFSORT position is +4 
+	if (nIsMF == 1)  // EMULATE MFSORT  position is 1 for DFSORT position is +4 
 	if (job_EmuleMFSort() == 2) // DFSort   // 0 Normal yes shift, 1 MF no shift
 	{
 		if (nFileFormat == FILE_TYPE_VARIABLE)
 			nSplit = -4;		// Postion 
 	}
 	for (i=inrec;i!=NULL;i=i->next) {
-		switch (i->type) {
+		switch (i->type) { 
 			case INREC_TYPE_RANGE:
 				nIRangeLen = i->range.length;
 				if (nIRangeLen == -1)		// outrec pos, -1  (for variable)
@@ -254,6 +284,13 @@ int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *inpu
 				memcpy(output+position+nSplitPos+nSplit, fieldValue_getGeneratedValue(i->change.fieldValue),fieldValue_getGeneratedLength(i->change.fieldValue));
 				position+=fieldValue_getGeneratedLength(i->change.fieldValue);
 				break;
+				// new 202012
+			case INREC_TYPE_CHANGE_ABSPOS:
+				memcpy(output + i->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(i->change.fieldValue), fieldValue_getGeneratedLength(i->change.fieldValue));
+				// -- >> 			position += fieldValue_getGeneratedLength(i->change.fieldValue);
+				// 
+				position = i->range.position + fieldValue_getGeneratedLength(i->change.fieldValue);
+				break;
 			case INREC_TYPE_RANGE_POSITION:
 // 20160408 record input len 
 				nIRangeLen = i->range_position.length;
@@ -271,11 +308,85 @@ int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *inpu
 				break;
 		}
 	}
-//	return position;
+//	return position; 
 	return position-1;  // position contains a first position of buffer
+}
+// 20201211 -  OVERLAY INREC
+int inrec_copy_overlay(struct inrec_t* inrec, unsigned char* output, unsigned char* input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos) {
+	int position = 0;
+	int nSplit = 0;
+	struct inrec_t* i;
+	int nIRangeLen = 0;
+	if (nIsMF == 1)  // EMUALTE MFSORT  position is 1 for DFSORT position is +4 
+		if (job_EmuleMFSort() == 2) // DFSort   // 0 Normal yes shift, 1 MF no shift
+		{
+			if (nFileFormat == FILE_TYPE_VARIABLE)
+				nSplit = -4;		// Position 
+		}
+	for (i = inrec; i != NULL; i = i->next) {
+		switch (i->type) {
+		case INREC_TYPE_RANGE:
+			nIRangeLen = i->range.length;
+			if (nIRangeLen == -1)		// outrec pos, -1  (for variable)
+				nIRangeLen = inputLength - i->range.position - nSplit;
+			if ((i->range.position + nSplit + nIRangeLen) <= inputLength)
+				memcpy(output + position + nSplitPos + nSplit, input + i->range.position + nSplitPos + nSplit, nIRangeLen);
+			else
+				// copy only chars present in input for max len input
+				memcpy(output + position + nSplitPos + nSplit, input + i->range.position + nSplitPos + nSplit, abs(inputLength - (i->range.position + nSplit)));
+			position += nIRangeLen;
+			break;
+		case INREC_TYPE_CHANGE_POSITION:
+			memcpy(output + position + nSplitPos + nSplit, fieldValue_getGeneratedValue(i->change_position.fieldValue), fieldValue_getGeneratedLength(i->change_position.fieldValue));
+			position += fieldValue_getGeneratedLength(i->change_position.fieldValue);
+			break;
+		case INREC_TYPE_CHANGE:
+			//-->> memcpy(output + i->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(i->change.fieldValue), fieldValue_getGeneratedLength(i->change.fieldValue));
+			memcpy(output + position + nSplitPos + nSplit, fieldValue_getGeneratedValue(i->change.fieldValue), fieldValue_getGeneratedLength(i->change.fieldValue));
+			// -- >> 
+			position += fieldValue_getGeneratedLength(i->change.fieldValue);
+			// position = i->range.position + fieldValue_getGeneratedLength(i->change.fieldValue);
+			break;
+			// new 202012
+		case INREC_TYPE_CHANGE_ABSPOS:
+			memcpy(output + i->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(i->change.fieldValue), fieldValue_getGeneratedLength(i->change.fieldValue));
+			// -- >> 			position += fieldValue_getGeneratedLength(i->change.fieldValue);
+			// 
+			position = i->range.position + fieldValue_getGeneratedLength(i->change.fieldValue);
+			break;
+		case INREC_TYPE_RANGE_POSITION:
+			// 20160408 record input len 
+			nIRangeLen = i->range_position.length;
+			if (nIRangeLen == -1)		// outrec pos, -1  (for variable)
+				nIRangeLen = inputLength - i->range_position.position - nSplit;
+
+			if ((i->range_position.position + nSplitPos + nSplit + nIRangeLen) <= inputLength)
+				memcpy(output + i->range_position.posAbsRec + nSplitPos + nSplit, input + i->range_position.position + nSplitPos + nSplit, nIRangeLen);
+			else
+				// copy only char present in input for max len input
+				memcpy(output + i->range_position.posAbsRec + nSplitPos + nSplit, input + i->range_position.position + nSplitPos + nSplit, abs(inputLength - (i->range_position.position + nSplit)));
+			position = (i->range_position.posAbsRec + nIRangeLen);
+			break;
+		default:
+			break;
+		}
+	}
+	//	return position; 
+	return position - 1;  // position contains a first position of buffer
 }
 
 int inrec_addDefinition(struct inrec_t *Inrec) {
 	inrec_addQueue(&(globalJob->inrec), Inrec);
+	return 0;
+}
+// Set Overlay flag
+int inrec_SetOverlay(struct inrec_t* Inrec, int nOverlay) {
+	struct inrec_t* inrec;
+	for (inrec = globalJob->inrec; inrec != NULL; inrec = inrec_getNext(inrec)) {
+	//-->> force value for all elements	if (Inrec == inrec) {
+			inrec->nIsOverlay= nOverlay;
+	//-->> force value for all elements		break;
+	//-->> force value for all elements	}
+	}
 	return 0;
 }

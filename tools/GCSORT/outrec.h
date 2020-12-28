@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -66,6 +66,7 @@ struct outrec_t *outrec_constructor_range_position(int posAbsRec, int position, 
 struct outrec_t *outrec_constructor_subst(unsigned char *chfieldValue);
 struct outrec_t *outrec_constructor_padding(int nAbsPos, unsigned char *chfieldValue, int nPosAbsRec);
 struct outrec_t *outrec_constructor_substnchar(unsigned char* ntch, unsigned char *chfieldValue);
+struct outrec_t* outrec_constructor_possubstnchar(int npos, unsigned char* ntch, unsigned char* chfieldValue);
 void outrec_destructor(struct outrec_t *outrec);
 int outrec_addQueue(struct outrec_t **outrec,struct outrec_t *outrec_add);
 struct outrec_t *outrec_getNext(struct outrec_t *outrec);
@@ -73,5 +74,6 @@ int outrec_print(struct outrec_t *outrec);
 int outrec_getLength(struct outrec_t *outrec);
 int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos);
 int outrec_addDefinition(struct outrec_t *outrec);
+
 
 #endif // OUTREC_H_INCLUDED

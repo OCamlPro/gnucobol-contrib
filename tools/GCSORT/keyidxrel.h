@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -27,6 +27,7 @@
 
 #include <stdint.h>
 #include <libcob.h>
+// #include <libcob/common.h>
 
 struct file_t;
 struct KeyIdx_t {

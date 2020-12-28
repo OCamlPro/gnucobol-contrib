@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -24,7 +24,7 @@
 #include <stdlib.h> 
 #include <time.h>
 // #ifdef _WIN32
-#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+#if	defined(_MSC_VER) // s.m. 20201021 || defined(__MINGW32__) || defined(__MINGW64__)
 	#include <windows.h>
 #else
 	#include <limits.h>
@@ -37,6 +37,7 @@
 #include "gcsort.h"
 #include "utils.h"
 #include "outfil.h"
+#include "gcshare.h"
 
 // s.m.
 // inserita funzione per gestione del test case sensitive
@@ -612,6 +613,9 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
         case COB_TYPE_NUMERIC_DISPLAY:
             attrArea->digits = 0;
             attrArea->scale = 0;
+// s.m. 20201015
+    	    attrArea->flags  = COB_FLAG_HAVE_SIGN;
+// s.m. 20201015
             break;
 	}
 

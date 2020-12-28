@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -31,8 +31,9 @@
 #include "gcsort.h"
 #include "utils.h"
 #include "job.h"
+#include "gcshare.h"
 
-typedef cob_field_attr cob_field_attr;
+//##-->> s.m. 20201021 typedef cob_field_attr cob_field_attr;
 static const cob_field_attr cob_all_attr = {0x22, 0, 0, 0, NULL};
 static cob_field cob_all_zero	= {1, (cob_u8_ptr)"0", &cob_all_attr};
 

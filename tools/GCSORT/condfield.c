@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+// #include <libcob.h>
 #include "file.h"
 #include "job.h"
 #include "condfield.h"
@@ -30,6 +31,8 @@
 #include "fieldvalue.h"
 #include "sortfield.h"
 #include "sumfield.h" 
+
+#include "gcshare.h"
  
 struct condField_t *condField_constructor_condition(int position, int length, int type, int condition, struct fieldValue_t *fieldValue) {
 	struct condField_t *condField=(struct condField_t *)malloc(sizeof(struct condField_t));

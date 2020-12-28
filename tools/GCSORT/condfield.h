@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -21,7 +21,8 @@
 
 #ifndef CONDFIELD_H_INCLUDED
 #define CONDFIELD_H_INCLUDED
-
+// #include <stdint.h>
+// #include <stdio.h>
 
 
 #define COND_TYPE_OPERATION		0
@@ -30,6 +31,8 @@
 #define COND_TYPE_COND_FIELDS	3	// 156,15,CH,LT,141,15,CH
 
 #include <libcob.h>
+//
+// #include "libgcsort.h"
 
 struct condField_t;
 struct fieldValue_t;

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -56,6 +56,7 @@
 #include "sumfield.h"
 #include "utils.h"
 #include "outfil.h"
+#include "gcshare.h"
 
 
 #ifdef _MSC_VER

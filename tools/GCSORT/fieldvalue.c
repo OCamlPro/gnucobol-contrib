@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -24,11 +24,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
-
 #include <libcob.h>
 
 #include "gcsort.h"
 #include "libgcsort.h"
+// #include <libcob.h>
+// #include <libcob/common.h>
 #include "fieldvalue.h"
 #include "utils.h"
 #include "job.h"

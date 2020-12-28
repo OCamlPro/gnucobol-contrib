@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2019 Sauro Menna
+    Copyright (C) 2016-2020 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -24,9 +24,9 @@
 #define HEADER_MF 128
 
 #include <stdint.h>
+// #include "libgcsort.h"
 #include <libcob.h>
 #include "keyidxrel.h"
-
 
 struct file_t {
 	char *name;
@@ -68,7 +68,6 @@ int file_GetMF(struct file_t *file);
 //int file_getOrgType(struct file_t *file);
 int file_setOutputFile(struct file_t *file);
 int file_setInputFile(struct file_t *file);
-int file_setFileDef(cob_file *fileDef, struct file_t *fkey);
 int file_SetInfoForFile(struct file_t* fkey, int nMode);
 
 #endif // FILE_H_INCLUDED
