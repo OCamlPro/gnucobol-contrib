@@ -3,7 +3,7 @@ program-id. GC21MENUDEMO2.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DEMO OF GNUCOBOL TUI TOOLS
-*> Tectonics:  cobc -x GC21MENUDEMO2 (compile with GnuCOBOL 3.1 or greater)
+*> Tectonics:  cobc -x GC21MENUDEMO2 -lpdcurses (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      GC21MENUDEMO2
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
