@@ -4,7 +4,7 @@ PROGRAM-ID. GC03YESNO is initial.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DISPLAY  YES & NO BUTTONS ON SCREEN
-*> Tectonics:  cobc -m GC03YESNO.COB (use GnuCOBOL 2.0 or greater)
+*> Tectonics:  cobc -m GC03YESNO.COB -lpdcurses (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      call GC03YESNO using YESNO-AREA
 *> Parameters: look at GC03YESNO.cpy (use with copy Version: 1.0 2016.06.15)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
