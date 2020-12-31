@@ -4,7 +4,7 @@ PROGRAM-ID. GC02BOXMEX is initial.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DISPLAY A MESSAGE IN A BOX ON SCREEN WITH OPTIONS AND EFFECTS
-*> Tectonics:  cobc -m GC02BOXMEX.COB  (use GnuCOBOL 2.0 or greater)
+*> Tectonics:  cobc -m GC02BOXMEX.COB  -lpdcurses (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      call GC02BOXMEX using BOXMEX-AREA
 *> Parameters: look at GC02BOXMEX.CPY
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
