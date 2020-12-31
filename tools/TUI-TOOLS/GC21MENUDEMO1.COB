@@ -3,7 +3,7 @@ PROGRAM-ID. GC21MENUDEMO1.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DEMO OF GC21MENU -  MENU MANAGER WITH MOUSE ADDED
-*> Tectonics:  cobc -x GC21MENUDEMO1.COB (compile with GnuCOBOL 3.1 or greater)
+*> Tectonics:  cobc -x GC21MENUDEMO1.COB -lpdcurses (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      GC21MENUDEMO1
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
@@ -66,9 +66,9 @@ move 'S'            to Box-style
 call  GC01BOX using BOX-AREA
 
 move low-value                              to mn-tab
-move z'102007010 Option number one         ' to mn-ele(1)
-move z' 02009010 This is the second option ' to mn-ele(2)
-move z' 02011010 Exit                      ' to mn-ele(3)
+move z'102007010xOption number one         ' to mn-ele(1)
+move z' 02009010mThis is the second option ' to mn-ele(2)
+move z' 02011010oExit                      ' to mn-ele(3)
 move  ' This is the message associated to the option number one                   ' to mn-mess(1)
 move  ' Choose second menu item !                                                 ' to mn-mess(2)
 move  ' Exit from this GnuCOBOL demo.                                             ' to mn-mess(3)
