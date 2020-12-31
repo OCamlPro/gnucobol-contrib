@@ -1,29 +1,32 @@
 *** GnuCOBOL TUI (TEXT USER INTERFACE) TOOLS AND UTILITIES COLLECTON ***
 
 In this folder you will find: 
-GnuCOBOL TUI TOOLS (GC01xxxxxx to GC98xxxxxx) and 
-GnuCOBOL Utilities (GC99xxxxxx) 
+- GnuCOBOL TUI TOOLS (GC01xxxxxx to GC98xxxxxx)   
+- GnuCOBOL Utilities (GC99xxxxxx) 
 
 Although the textual interfaces are often replaced by graphical interfaces, 
 a good compiler have to allow to develop complete applications in an easy way 
 even with textual user interfaces.
 
-GnuCOBOL have to generate applications with those objects that allow a classical and 
+GnuCOBOL have to generate applications with objects that allow a classical and 
 friendly user interface like other programming languages on windows and unix platform.
 here you will find a collection of GnuCOBOL programs useful to this purpose.
 The TUI Collection includes programs to manage classical TUI objects like: dropdown menus, 
-multiple-choice Buttons, YES-No buttons, calendar to pickup a date, 
-on-screen messages, boxes, checkboxes, radiobuttons, listview, calculator, and so on.
+Buttons, YES-NO buttons, calendars to pickup a date, on-screen messages, boxes, 
+checkboxes, radiobuttons, listview, calculator, and so on.
 All programs have been developed exclusively using GnuCOBOL 
-(pure COBOL with also direct calls to "C" funtions from some C libraries but without "C wrappers").
-They are GnuCOBOL programs you can "CALL" from your source 
-to manage dropdown menus, display boxes, buttons , radiobuttons and so on ... 
-You can choose: position, size, colors, borders, shadows, titles, 3D effect ...
+(pure COBOL with some direct calls to "C" funtions from PDCURSES library but without "C wrappers").
+They are GnuCOBOL programs you can "CALL" from your source to manage dropdown menus, 
+display boxes, buttons , radiobuttons and so on ... 
+You can choose: screen position, size, colors, borders, shadows, titles, 3D effect ...
 Source files are well commented. Documentation of parameters are inside the copybooks.
-Each TUI-TOOL have a corresponding demo programs to show how to use the TOOL.
-The GnuCOBOL sources have been compiled with GnuCOBOL 3.0.
+Each TUI-TOOL have one or more corresponding demo programs to show how to use the TOOL.
+The GnuCOBOL sources have been compiled with GnuCOBOL 2.0 and now to GnuCOBOL 3.1.
+Mouse management is already added to some of TUI TOOLS. 
 Let me know if you have any suggestion or idea to improve/extend the tools.
 Your suggestions will be very useful and welcome.
+
+2020: The implementation of the various Tools to add mouse management is currently underway.
 
 The collection has folllowing TOOLS.
 
@@ -39,9 +42,11 @@ YES and NO on screen, you can specify back/fore colors, size, position, and so o
 
 GC09BUTTONS.COB - call it to display buttons on screen, you can specify number of 
 buttons, back/fore colors, size, position, text of buttons, hotkey and so on.
+2020: Mouse management is added.
 
-GC13CHEKBOX.COB - call it to display checkbox items (switches) on screen, you can 
+GC13CHECKBOX.COB - call it to display checkbox items (switches) on screen, you can 
 specify number of items, back/fore colors, size, position, symbol, brackets and so on.
+2020: Mouse management is added.
 
 GC18RADIOBUTTON.COB - call it to display rediobutton items (options) on screen, you can 
 specify number of items, back/fore colors, size, position, symbol , brackets and so on.
@@ -49,8 +54,8 @@ specify number of items, back/fore colors, size, position, symbol , brackets and
 GC21MENU.COB - call it to display menus on screen, you can manage bar menu, 
 dropdown menu, specify number of items, text and length of items, back/fore colors, 
 position, messages associated to menu items, and so on.
-Mouse mgmt added to select menu items. hot key mgmt added, This is the definitive version.
-GC22MENU.COB - (obsolete) version of GC21MENU implementing hot keys. 
+2020: Mouse mgmt added to select menu items. hot key mgmt added, This is the definitive version.
+GC22MENU.COB - (now obsolete) version of GC21MENU implementing hot keys. 
 It use "call getch" instead of ACCEPT OMITTED to detect letter keypress from user.
 
 GC26LISTVIEW.COB - call it to display a window with an item list on screen. 
@@ -84,10 +89,10 @@ size, position, single/double/custom borders, 3D effect and so on.
 GC61CALC.COB - call it to display a simple pocket calculator on screen.
 The user can enter numbers and operators. Returns the result of calculation to the caller .
 GC64CALCULATOR.COB - call it to display a calculator on screen.
-The user can use the mouse to select digits and operators. 
+The user can also use the mouse to select digits and operators. 
 Returns the result of calculation to the caller .
 
-GC71CRUDExxxx.COB - A complete "CRUDE" (Create, Read, Update, Delete) application. 
+GC71CRUDExxxx.COB - A complete "CRUDE" (Create, Read, Update, DElete) application. 
 It shows you how to create, read(browse), update, delete indexed file records. 
 It is a real application (it manage a "master data" file) showing also:
 - how to accept and check alphanumeric fields on screen, 
@@ -105,31 +110,34 @@ GC76TABxxxxx.COB - A "TABLE" system. You can insert/write, edit, delete, list "T
 GC99BANNER.COB - accept a string and print that string in big character.
 Useful to print a banner page for your reports.
 
-GC99COPYGEN.COB - Copy generator for cobol programs that write reports. How to use it:
-1. create a text file with the graphical layout of the report. 
+GC99COPYGEN.COB - Automatic COBOL Copy generator from graphic Reports layout.
+Useful for cobol programs that write reports. How to use it:
+1. Create a .TXT text file with the graphical layout of the report. 
 Set all constants and variables. 
-Use the $ symbol when you want a PIC X field, use the # symbol when you want a PIC 9. 
+Use one or more $ symbol when you want a PIC X field, 
+use one or mre # symbol when you want a PIC 9 field. 
 For a better graphical representation of the report you can also insert 
-blank lines or also repeated rows equal to previous lines.
-2. run the program GC99COPYGEN to read the TXT file with the report layout 
-It will create the corresponding Copy COBOL in a .CPY text file. 
+blank lines or repeated rows equal to previous lines.
+2. run the program GC99COPYGEN to read the report layout .TXT file.
+It will create the corresponding COBOL Copy in a .CPY text file. 
 The program will skip blank lines and will skip rows equals to each other, 
-eg. rows with same fields, will produce a single line in the copy.
-3. the Copy COBOL obtained should be used directly in the COBOL program 
+eg. rows with same fields, will produce a single 01 level into the copy.
+3. the generated COBOL Copy should be used directly in the COBOL program 
 that will produce the report, or you can change it before, 
-to enhance the Copy COBOL example for a better the editing Picture 
+to enhance the COBOL Copy for a better PIC editing  
 of individual fields directly in the copy.
 See samples at 
 https://sourceforge.net/p/open-cobol/discussion/contrib/thread/e21eb9ba/#90fd
 
-GC99MOUSEDEMO.COB - Shows programming the MOUSE in a TUI mode. 
+GC99MOUSEDEMO.COB - Shows how to programming the MOUSE in a TUI mode. 
 
-GC99SCREENGEN.COB - Copy generator for cobol programs that use SCREEN SECTION. 
+GC99SCREENGEN.COB - Automatic COBOL Copy generator for programs that use SCREEN SECTION. 
 How to use it:
-1. create a text file with the graphical layout of the SCREEN (25 rows x 80 cols or more). 
-Use the $ symbol when you want a PIC X field, use the # symbol when you want a PIC 9. 
-2. run the program GC99SCREENGEN to read the TXT file with the SCREEN layout 
-It will create the corresponding Copy COBOL in a .CPY text file. 
-3. the Copy COBOL obtained should be used directly in the COBOL program 
+1. Create a .TXT text file with the graphical layout of the SCREEN (25 rows x 80 cols or more). 
+Use one or more $ symbol when you want a PIC X field, 
+use one or more # symbol when you want a PIC 9 field. 
+2. Run the program GC99SCREENGEN to read the .TXT file with the SCREEN layout 
+It will create the corresponding COBOL Copy in a .CPY text file. 
+3. the generated COBOL Copy should be used directly in the COBOL program 
 that will display / accept the SCREEN, or you can change it before, 
-to enhance the Copy COBOL example for a better SCREEN display of individual fields.
+to enhance the COBOL Copy for a better SCREEN display of individual fields.
