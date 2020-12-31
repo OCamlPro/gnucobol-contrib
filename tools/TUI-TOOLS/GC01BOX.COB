@@ -4,7 +4,7 @@ PROGRAM-ID. GC01BOX is initial.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DISPLAY A BOX ON SCREEN WITH OPTIONS AND SPECIAL EFFECTS
-*> Tectonics:  cobc -m GC01BOX.COB  (use GnuCOBOL 3.1 or greater)
+*> Tectonics:  cobc -m GC01BOX.COB  -lpdcurses (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      call GC01BOX using BOX-AREA
 *> Parameters: look at GC01BOX.CPY  (use with copy Version: 1.0 2016.06.15)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
