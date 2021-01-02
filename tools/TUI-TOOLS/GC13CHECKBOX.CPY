@@ -17,11 +17,6 @@
 *> Each checkbox item has to be inserted in a table with 99 elements
 *> there has to be a last item in the table, filled with low-value
 *>
-*> Example of use.
-*> step 1. display a box (not mandatory ) but good to have a better user interface
-*> step 2. display a group of CHECKBOX items (switches) inside the BOX
-*> wait for user action (cursorkeys,mouse key,spacebar oe enter to mark/unmark, TAB/ESC to exit
-*>
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
 *> Ck-Act    1= this item is displayed as Active,it has the "focus" (tobe marked/unmarked with spacebar)
@@ -45,20 +40,20 @@
 *>           It has to be in ASCIIZ format (must have x'00'(low-value) as last byte
 *> Ck-Markchar   single char used to "mark" the single chechbox item. example an "X" or an "o"
 *> Ck-Bracket-Char1/2 - Single chars to make active checkbox more visible example [ ] or ( ) or < >
-*> Ck-wait   Y= display checkbox items and wait for a user keypress (normal use)
+*> Ck-wait   Y= display checkbox items and wait for a user action (normal use)
 *>           N= display checkbox items  and returns to caller without waiting for a keypress by the user
-*>           useful to just display the checkbox list at first entire screen display
+*>           useful to just display the checkbox list at first ful screen display
 *> Ck-Selected  return to caller the number (in the table) of the checkbox item "active" at exit
 *> Ck-Key    key code pressed by user: 0000 = Enter, 2005 = Escape (see GnuCOBOL codes)
-*>           Caller pgm will know if user selected checkbox items and exit with enter
+*>           Caller pgm will know if user selected some checkbox items and exit with TAB, ESC ...
 *>           to confirm the selections or has pressed Escape key to exit
-*>           It is up to the caller to decide how to use the returned key & option selected by the user
+*>           It is up to the caller to decide how to use switches selected by the user & returned key
 *> Ck-Number  Count how many items are in the Checkbox panel (= before the low value item)
 *>
 *> sample schema of checkbox items list
-*>                   Ck-c(n)
-*>                   |
-*>                   V
+*>                  Ck-c(n)
+*>                  |
+*>                  V
 *>       Ck-r(1) [X] xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  (item description max 76 chars + x'00'
 *>       Ck-r(2) [X] xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 *>       Ch-r(3) [X] xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
