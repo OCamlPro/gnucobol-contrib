@@ -35,11 +35,13 @@ PROGRAM-ID. GC13CHECKBOX is initial.
 *> Example of use.
 *> step 1. display a box (not mandatory ) but useful to have a better user interface
 *> step 2. display a group of CHECKBOX items (switches) inside the BOX
-*> step 3. wait for user input (cursors keys,mouse key,spacebar to mark/unmark, enter or ESC to exit
-*> A single click with left mouse key on the item description = activate the item
-*> A single click with left mouse key inside the brackets = check/uncheck the item
+*> step 3. wait for a user action . Some user actions:
+*> use cursor keys to activate an item
+*> use a single click with left mouse key on item description or inside brackets = activate the item
+*> use a double click with left mouse key or Enter or Spacebar = mark or unmark the active item
+*> To exit from checkbox items management use: TAB, ESC, PGUP/DOWN, right mouse key single or doubleclick
 *>
-*> sample schema of checkbox items list with 6 items
+*> sample schema of CHECKBOX items list with 6 items
 *>
 *>       +----------------------------------------+
 *>       |  [X] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  |
@@ -162,13 +164,9 @@ Accept-a-Key.
 
       move Ck-Item(1) (1:1) to wPrompt *> resetta wDummy prima della accept
 
-      *> display wdummy at 0101
-      *> display wCRT-STATUS at 0130
-
-
   if Ck-wait  = 'Y'
      *> after displayed checkbox items wait for user action (normal use)
-     *> with update non imposta blank in wDummy se digitato Enter
+     *> accept of the wDummy field is always on 1st byte of 1st item. it is normal or highlight
      if Ck-Selected = 1
         accept wDummy at line Ck-r(1) col Ck-c(1)
                  with auto-skip prompt character is wPrompt :BCOL: Ck-bcoA :FCOL: Ck-fcoA highlight
@@ -184,13 +182,10 @@ Accept-a-Key.
       go to END-PROGRAM
   end-if
 
-  *> display wdummy at 0110
-  *> display wCRT-STATUS at 0130
-*> accept omitted
 
 *> <escape> TAB/BAckTAB, PGUP/DOWN or right mouse key: return to caller
-*> if pressed cursor down or right -> activate next Item
-*> if pressed cursor up   or left  <- activate previous Item
+*> if pressed cursor down or right -> activate next radiobutton Item
+*> if pressed cursor up   or left  <- activate previous radiobutton Item
 *> *************************************************************************
 *> ENTER = mark/unmark the checkbox item
 *> *************************************************************************
@@ -408,10 +403,10 @@ DisplayCheckboxItems.
    if Ck-Act(i) = '1'
       *> set bco and fco to color of Active Checkbox
       move i       to Ck-Selected
-      Move Ck-bcoA to bco move Ck-fcoA to fco Move Ck-fcoAH to fcoH
+      move Ck-bcoA to bco move Ck-fcoA to fco Move Ck-fcoAH to fcoH
    else
       *> set bco and fco to color of non active CHECKBOX
-      Move Ck-bcoN to bco move Ck-fcoN to fco Move Ck-fcoNH to fcoH
+      move Ck-bcoN to bco move Ck-fcoN to fco Move Ck-fcoNH to fcoH
    end-if
    perform DisplayCheckBox thru DisplayCheckBoxEx
    add  1 to i
