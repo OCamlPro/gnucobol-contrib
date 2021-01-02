@@ -4,8 +4,8 @@ ID DIVISION.
 program-id. GC13CHECKBOXDEMO.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
-*> Purpose:    DEMO OF GC13CHECKBOXDEMO -  DISPLAYS & MANAGE CHECKBOX ON SCREEN
-*> Description: Displays a small group of checkbox items, diaplays other 3 small gropus showing
+*> Purpose:    DEMO OF GC13CHECKBOX TUI TOOL -  DISPLAYS & MANAGE CHECKBOX ON SCREEN
+*> Description: Displays a small group of checkbox items, displays other 3 small gropus showing
 *>              different options. Then displays a checkbox items list of 29 items grouped in 4 subgroups.
 *> Tectonics:  cobc -x GC13CHECKBOXDEMO.COB -lpdcurses (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      GC13CHECKBOXDEMO
@@ -23,8 +23,9 @@ CONFIGURATION SECTION.
 special-names.
    Currency Sign is '€'.
    Decimal-Point is Comma.
-   CRT STATUS    is wRetCode.      *> Return Code (es. PF, Arrows, TAB, Mouse Keys)
+   CRT STATUS    is wCRT-STATUS.      *> Return Code (es. PF, Arrows, TAB, Mouse Keys)
    CURSOR        is wCursorRowCol. *> Cursor Position
+
 DATA DIVISION.
 WORKING-STORAGE SECTION.
 01 black   constant as 0.
@@ -41,8 +42,7 @@ WORKING-STORAGE SECTION.
 01  i                 pic 999 value zero.
 01  wR                pic 999 value zero.
 
-01  wRetCode            PIC 9(4) value 0.  *> CRT-STATUS codes
-
+01  wCRT-STATUS         PIC 9(4) value 0.  *> CRT-STATUS codes
 01  wCursorRowCol       PIC 9(6) value 0.  *> from CURSOR IS ...
 01  redefines wCursorRowCol .
     05 wCursorRow       Pic 9(3).
@@ -71,13 +71,12 @@ Start-Display.
     move blue     to Box-bco   set Box-fco to white
     move '001001' to Box-r1c1  move '025080' to Box-r2c2
     move 'D'      to Box-style move 'N'      to Box-3D
-    call GC01BOX using BOX-AREA
+    perform callGC01BOX thru callGC01BOX-ex
     move 2 to Wr
     display 'GnuCOBOL GC13CHECKBOX TUI TOOL at work. F1= HELP, ENTER= Continue.'
             at 0303 with :FCOL: white :BCOL: blue
     accept wDummy at 2479 auto no-echo size 0 end-accept
-    if wRetCode = K-F1   perform DisplayHelp thru DisplayHelpEx   end-if
-
+    if wCRT-STATUS = K-F1   perform DisplayHelp thru DisplayHelpEx   end-if
 
 
     display ' GnuCOBOL GC13CHECKBOX TUI TOOL at work. '
@@ -88,20 +87,20 @@ Start-Display.
           at 2303 with :FCOL: white :BCOL: blue
     display " Activate an item (give the 'focus to') also with hot keys (yellow chars) "
           at 2403 with :FCOL: white :BCOL: blue
-*> *********************************************************************************
-*> DISPLAY CHECKBOX NUMBER 1
-*> *********************************************************************************
+  *> *********************************************************************************
+  *> DISPLAY CHECKBOX NUMBER 1
+  *> *********************************************************************************
 *> DISPLAY A BOX AS BACKGROUND OF SCREEN
 set  Box-bco Box-fco to white move '002003020077' to Box-rc
 move 'S' to Box-style move 'N' to Box-3D Box-shadow move 'E' to Box-3D Move 'Y' to Box-tit
 move ' Mark or unmark one or more switches per group ' & x'00' to Box-titDes
-call GC01BOX using BOX-AREA
+perform callGC01BOX thru callGC01BOX-ex
 
 *> DISPLAY A BOX AS BACKGROUND OF A CHECKBOX ITEMS GROUP
 set  Box-bco   Box-fco to white
 move '003005013040' to Box-rc
 move 'S' to Box-style move 'N' to Box-3D Box-shadow Box-tit move 'R' to Box-3D
-call GC01BOX using BOX-AREA
+perform callGC01BOX thru callGC01BOX-ex
 display 'Group 1 switches' at 003007 with :BCOL: white :FCOL: black end-display
 
 *> DISPLAY CHECKBOX ITEMS N.1
@@ -116,14 +115,13 @@ Move ' 103009011 Load compatible units      ' & x'00' to Ck-Ele(06)
 Move '1 06010011 Allow STATIC in objects    ' & x'00' to Ck-Ele(07)
 Move '  02011011 C like operators           ' & x'00' to Ck-Ele(08)
 Move ' 104012011 Conditional defines        ' & x'00' to Ck-Ele(09)
-call GC13CHECKBOX using CHECKBOX-AREA
-
+perform callGC13CHECKBOX thru callGC13CHECKBOX-ex
 perform DisplaySwitchResult thru DisplaySwitchResultEx.
 
 *> DISPLAY A BOX AS BACKGROUND OF A CHECKBOX ITEMS GROUP
 set  Box-bco   Box-fco to white move '003048011075' to Box-rc
 move 'S' to Box-style move 'N' to Box-3D Box-shadow Box-tit move 'R' to Box-3D
-call GC01BOX using BOX-AREA
+perform callGC01BOX thru callGC01BOX-ex
 display 'Group 2 switches' at 003050 with :BCOL: white :FCOL: black end-display
 
 *> DISPLAY CHECKBOX ITEMS N.2
@@ -140,14 +138,14 @@ Move ' 102007054 Error Messages      ' & x'00' to Ck-Ele(04)
 Move ' 102008054 Reserved words      ' & x'00' to Ck-Ele(05)
 Move ' 103009054 Colums stats        ' & x'00' to Ck-Ele(06)
 Move '  02010054 Total stats         ' & x'00' to Ck-Ele(07)
-call GC13CHECKBOX using CHECKBOX-AREA
+perform callGC13CHECKBOX thru callGC13CHECKBOX-ex
 
 perform DisplaySwitchResult thru DisplaySwitchResultEx.
 
 *> DISPLAY A BOX AS BACKGROUND OF A CHECKBOX ITEMS GROUP
 set  Box-bco   Box-fco to white move '014005018040' to Box-rc
 move 'S' to Box-style move 'N' to Box-3D Box-shadow Box-tit move 'R' to Box-3D
-call GC01BOX using BOX-AREA
+perform callGC01BOX thru callGC01BOX-ex
 display 'Group 3 switches' at 014007 with :BCOL: white :FCOL: black highlight end-display
 
 *> DISPLAY CHECKBOX ITEMS N.3
@@ -158,7 +156,7 @@ move low-value                                        to Ck-tab
 Move ' 102015011 Counts                     ' & x'00' to Ck-Ele(01)
 Move '1 02016011 Percentages                ' & x'00' to Ck-Ele(02)
 Move '  02017011 Valid uppercase            ' & x'00' to Ck-Ele(03)
-call GC13CHECKBOX using CHECKBOX-AREA
+perform callGC13CHECKBOX thru callGC13CHECKBOX-ex
 
 perform DisplaySwitchResult thru DisplaySwitchResultEx.
 
@@ -182,12 +180,12 @@ Move ' 100017048 06-Load compatible units  ' & x'00' to Ck-Ele(07)
 Move '  00017048 07-Allow STATIC in objects' & x'00' to Ck-Ele(08)
 Move '  00017048 08-C like operators       ' & x'00' to Ck-Ele(09)
 Move ' 100017048 09-Overlapped items !     ' & x'00' to Ck-Ele(10)
-call GC13CHECKBOX using CHECKBOX-AREA
+perform callGC13CHECKBOX thru callGC13CHECKBOX-ex
 
 perform DisplaySwitchResult thru DisplaySwitchResultEx.
 accept wDummy at 2479
 DISPLAY ' ESC = return to previous screen, Enter to select and Exit '
-         AT 001003 with :FCOL: yellow :BCOL: blue highlight.
+         AT 001003 with :FCOL: yellow :BCOL: blue highlight
 
 *> *********************************************************************************
 *> DISPLAY CHECKBOX - 29 CHECKBOX ITEMS ON A SINGLE NEW SCREEN PAGE
@@ -196,12 +194,12 @@ DISPLAY ' ESC = return to previous screen, Enter to select and Exit '
 *> DISPLAY A BOX AS BACKGROUND OF CHECKBOX ITEMS
 set  Box-bco Box-fco to white move '002003020077' to Box-rc
 move 'S' to Box-style move 'N' to Box-3D Box-shadow move 'E' to Box-3D Move 'N' to Box-tit
-call GC01BOX using BOX-AREA
+perform callGC01BOX thru callGC01BOX-ex
 
 set  Box-bco   Box-fco to white move '003005019074' to Box-rc
 move 'S' to Box-style move 'N' to Box-3D Box-shadow move 'R' to Box-3D Move 'Y' to Box-tit
-move ' Preferences (one list of 29 items (switches) in 4 groups ' & x'00' to Box-titDes
-call GC01BOX using BOX-AREA
+move ' Checkboxes. A list of 29 items (switches) in 4 groups ' & x'00' to Box-titDes
+perform callGC01BOX thru callGC01BOX-ex
 
 *> DISPLAY CHECKBOX ITEMS N.5
 display 'Options'     at 004007 with :BCOL: white :FCOL: black  end-display
@@ -240,7 +238,7 @@ Move ' 103018046 06-Load compatible units  ' & x'00' to Ck-Ele(26)
 Move '  03018046 07-Allow STATIC in objects' & x'00' to Ck-Ele(27)
 Move '  03018046 08-C like operators       ' & x'00' to Ck-Ele(28)
 Move ' 103018046 09-Overlapped items !     ' & x'00' to Ck-Ele(29)
-call GC13CHECKBOX using CHECKBOX-AREA
+perform callGC13CHECKBOX thru callGC13CHECKBOX-ex
 
 perform DisplaySwitchResult thru DisplaySwitchResultEx.
 accept wDummy at 2479
@@ -255,7 +253,7 @@ if Ck-Key = K-ESCAPE go to Start-Display end-if
     move cyan     to Box-bco   set Box-fco to white
     move '001001' to Box-r1c1  move '025080' to Box-r2c2
     move 'D'      to Box-style move 'N'      to Box-3D
-    call GC01BOX using Box-Area
+    perform callGC01BOX thru callGC01BOX-ex
 
     display ' GnuCOBOL TUI-TOOLS (from DILO - Italy): GC13CHECKBOX at work.'
              at 003003 with      :FCOL: white :BCOL: cyan
@@ -264,7 +262,7 @@ if Ck-Key = K-ESCAPE go to Start-Display end-if
     move '009035014048' to Box-rc
     move black to Box-bco
     move 'S' to Box-style
-    call  GC01BOX using BOX-AREA
+    perform callGC01BOX thru callGC01BOX-ex
 
    display '    ' at 010036 with       :FCOL: white :BCOL: Green end-display
    display '    ' at 011036 with       :FCOL: white :BCOL: Green end-display
@@ -278,10 +276,15 @@ if Ck-Key = K-ESCAPE go to Start-Display end-if
    display '    ' at 011044 with blink :FCOL: white :BCOL: red   end-display
    display '    ' at 012044 with blink :FCOL: white :BCOL: red   end-display
    display '    ' at 013044 with blink :FCOL: white :BCOL: red   end-display
-   accept wDummy at 2479.
+   accept wDummy at 2479
 
-goback.
+   continue.
+END-OF-PROGRAM.
+   goback.
 
+*> *********************************************************************************
+*>
+*> *********************************************************************************
 DisplaySwitchResult.
     DISPLAY '                                                                           '
          AT 025003 with :FCOL: white :BCOL: blue reverse-video
@@ -335,7 +338,9 @@ DisplayHelp.
    compute Bxm-r2 = Bxm-r1 + 19
    compute Bxm-c2 = Bxm-c1 + 32
    call GC02BOXMEX using by content BOXMEX-AREA
-        on exception display 'CALL BOXMEX error. Module BOXMEX not Found.' end-call
+        on exception display 'CALL GC02BOXMEX error. Module GC02BOXMEX not Found.'
+        accept OMITTED
+   end-call
    perform ScreenRestore thru ScreenRestoreEx.
 DisplayHelpEx. exit.
 
@@ -348,6 +353,27 @@ ScreenRestore.
    call static 'scr_restore' using by reference wScreenName returning wiScrOk end-call
    CALL 'CBL_DELETE_FILE' USING wScreenName.
 ScreenRestoreEx. exit.
+
+callGC01BOX.
+    call GC01BOX using by content BOX-AREA
+         on exception     display ' CALL GC01BOX error. Module GC01BOX not Found !' at 0501
+                          display ' type Enter to continue without boxes ...      ' at 0601
+                          accept OMITTED
+         not on exception continue
+    end-call
+    continue.
+callGC01BOX-ex. exit.
+
+callGC13CHECKBOX.
+      call GC13CHECKBOX using by content CHECKBOX-AREA
+         on exception     display ' CALL GC13CHECBOX error. Module GC13CHECKBOX not Found !' at 0501
+                          display ' type Enter to close ...                                ' at 0601
+                          accept OMITTED
+                          go END-OF-PROGRAM
+         not on exception continue
+    end-call
+    continue.
+callGC13CHECKBOX-ex. exit.
 
 
 End Program GC13CHECKBOXDEMO.
