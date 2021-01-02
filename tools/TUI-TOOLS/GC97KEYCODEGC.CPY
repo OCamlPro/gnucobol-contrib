@@ -2,7 +2,7 @@
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    workarea with GnuCOBOL FUNCTION KEYS AND KEY RETURN CODES
-*> VALUEs returned in CRT STATUS field (or COB-CRT-STATUS)
+*> VALUEs returned in CRT-STATUS field (or COB-CRT-STATUS)
 *> Author:     Eugenio Di Lorenzo (DILO) - Italia
 *> License:    Copyright 2020 E.Di Lorenzo - LGPL, 3.0 (or greater)
 *> Version:    2.0 2020.04.04
