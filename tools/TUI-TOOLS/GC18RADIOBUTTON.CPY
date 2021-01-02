@@ -6,11 +6,12 @@
 *> Usage:      call GC18RADIOBUTTON using RadioButton-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
-*> Version:    1.3 2018.06.30
+*> Version:    2.0. 2021.01.01
 *> Changelog:  1.0 first release.
 *>             1.1 Rb-Hot from 9(01) to 9(02)
 *>             1.2 Rb-wait added
 *>             1.3 Rb-Number added
+*>             2.0 Mouse management added
 *> ***********************************************************************************************************
 *> on screen You can manage a group of max 98 RadioButton items (options) each of 1 row .
 *> Each RadioButton has tobe inserted in a table with 99 elements
@@ -52,18 +53,33 @@
 *>           It has to be in ASCIIZ format (must have x'00'(low-value) as last byte
 *> Rb-Markchar   single char used to "mark" the single chechbox item. example an "*"  asterisk
 *> Rb-Bracket-Char1/2 - Single chars to make active RadioButton more visible example ( ) or [ ]
-*> Rb-wait   Y= display radiobutton items and wait for a user keypress
+*> Rb-wait   Y= display radiobutton items and wait for a user action (standard use)
 *>           N= display radiobutton items  and returns to caller without wait for a keypress by the user
-*>           useful to display the radiobutton list at first screen entire display
-*> in that case non eof radiobtton is "active"  (has the focus) none has Rn-Act = 1.
+*>           useful just to display radiobuttos at first full screen display
+*>           in that case none of radiobutton is "active"  (has the focus) none has Rn-Act = 1.
 *> Rb-Selected  return to caller the number of the Option selected/marked by the user
-*>           Caller pgm will know if user selected a RadioButton with enter
-*>           or has pressed Escape key to exit whitout selection
-*> Rb-Key    key code pressed by user: 0013 = Enter, 0027 = Escape
-*>           Caller pgm will know if user has selected radiobutton items and exit with enter
-*>           to confirm the selections or has pressed Escape key to exit
-*>           it is up to the caller to decide how to use the returned selection of switches
+*>           Caller pgm will know if user selected a RadioButton with enter or mouse or ...
+*>           or has pressed Escape key or tAb or ... to exit
+*> Rb-Key    key code pressed by user: 0000 = Enter, 2005 = Escape (see GnuCOBOL codes)
+*>           Caller pgm will know if user has selected a radiobutton and exit with Cursor or mouse
+*>           to confirm the selections or has pressed Enter, TAB, Escape key ... to exit
+*>           It is up to the caller to decide how to use radiobuttn selected by the user & returned key
 *> Rb-Number  Count how many items are in the Radiobutton panel (= before the low value item)
+*>
+*> sample schema of radiobuttn items list
+*>                  Rb-c(n)
+*>                  |
+*>                  V
+*>       Rb-r(1) ( ) aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  (item description max 76 chars + x'00'
+*>       Rb-r(2) ( ) bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+*>       Rb-r(3) ( ) cccccccccccccccccccccccccccccccc
+*>       Rb-r(4) (o) dddddddddddddddddddddddddddddddd
+*>       Rb-r(5) ( ) eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+*>       Rb-r(6) ( ) ffffffffffffffffffffffffffffffff
+*>               1234 <-- Rb-c(n) has to be >= 4
+*>
+*>       max 99 items,  max 76 chars each one.
+*>       Strings have to be in ASCIIZ format = last byte is x'00'(low-value).
 *> ***********************************************************************************************************
      03 Rb-Tab  value low-value.
         04 Rb-Ele occurs 99.
