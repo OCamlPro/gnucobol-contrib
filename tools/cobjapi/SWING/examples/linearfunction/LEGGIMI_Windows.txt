@@ -1,0 +1,13 @@
+1)  Installare JAVA (jre).
+        
+2)  Per seguire il programma:
+        - doppio click sul file "JAPI.jar"
+        - doppio click sul programma "10functionsfloat.exe".
+        
+Indicazioni generali sull'utilizzo:
+        -  Se all'avvio si aprono 2 schermate non bisogna mai chiudere quella del terminale altrimenti il progamma si blocca.
+           Il programma, infatti, per funzionare bene dovrebbe essere chiamato dalla linea di comando "cmd" 
+           posizionandosi nell'apposita cartella e digitando "10functionsfloat.exe")
+           In caso di blocco bisogna terminarlo cliccando col tasto destro del mouse sull'icona del JAVA caricato in basso a destra, 
+           sulla barra delle applicazioni, e terminarlo scegliendo l'ultima opzione del menu a tendina.
+           

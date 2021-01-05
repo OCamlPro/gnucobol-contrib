@@ -1,0 +1,7 @@
+1)  Installare JAVA (jre).
+        
+2)  Per seguire il programma:
+        - caricare il file .jar con il seguente comando da terminale: java -jar JAPI.jar
+        - eseguire il programma da un altro terminale digitando: ./10functionsfloat
+
+           
