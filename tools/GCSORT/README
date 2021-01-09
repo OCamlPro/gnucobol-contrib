@@ -65,6 +65,7 @@ gcsort
     INREC   FIELDS | INREC   BUILD =({FieldSpec})
     INREC   OVERLAY =({FieldSpec})
     OUTREC  FIELDS | OUTREC  BUILD =({FieldSpec})
+    OUTREC  OVERLAY =({FieldSpec})
 
     OUTFIL                                                                         
          INCLUDE | OMIT ({Condition})[,FORMAT={FormatType}]                            
