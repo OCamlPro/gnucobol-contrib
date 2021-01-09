@@ -224,6 +224,7 @@ int outfile_clone_output(struct job_t* job, struct file_t* file)
 		// 
 		file_SetInfoForFile(file, COB_OPEN_OUTPUT);
 		fprintf(stderr,"*GCSORT*W680* OUTFIL without FILES/FNAMES, forced GIVE definition %s\n",file_getName(file));
+		job->nOutFileSameOutFile = 1; // In this case Output file skipped, name is used for OutFil
 		return 0;
 	}
 	file->nNumKeys = job->outputFile->nNumKeys;  
@@ -346,6 +347,7 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
             		    return -1;
 				    }
 				    pOutfil->recordWriteOutTotal++;
+					pOutfil->outfil_File->nCountRow++;  // for single file
 				    nNumWrite++;
                 }
                 else
@@ -430,5 +432,9 @@ int outfil_set_area (struct file_t* file, unsigned char* szBuf, int nLen )
 	{
 		file->stFileDef->record->size = nLen;
 	}
+	// s.m. 202101 Start
+	if (file->organization == FILE_ORGANIZATION_LINESEQUENTIAL)
+		file->stFileDef->record->size = file->stFileDef->record_max;
+	// s.m. 202101 End
 	return 0 ;
 }

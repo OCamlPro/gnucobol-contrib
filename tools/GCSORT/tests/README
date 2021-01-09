@@ -50,11 +50,24 @@
         (Example : export PATH=$PATH:/home/<user>/gcsort/tests/bin)                                
                 
      d. Sequence to activate tests.
-        1) execute     : compile      ---> compile gctestsetup Cobol program.
-        2) change dir  : bin
-        3) execute     : gctesettup   ---> execute setup (copy files, compile test program, run programs) 
-        4) execute     : gctestrun    ---> execute all cases
-        
+         Linux Environment
+        1) execute     : ./compile.sh         ---> Linux Environment. compile gctestsetup Cobol program.
+        2) change dir  : cd ../bin
+        3) execute     : ./gctesettup         ---> Linux Environment. execute setup (copy files, compile test program, run programs) 
+        4) execute     : ./gctestrun          ---> execute all cases
+
+         MinGW Environment
+        1) execute     : ./compile_mingw.bat  ---> MinGW Environment. compile gctestsetup Cobol program.
+        2) change dir  : cd ../bin
+        3) execute     : ./gctesettup         ---> MinGW Environment. execute setup (copy files, compile test program, run programs) 
+        4) execute     : ./gctestrun          ---> execute all cases
+
+         Windows Environment
+        1) execute     : compile.bat          ---> Windows Environment. compile gctestsetup Cobol program.
+        2) change dir  : cd ..\bin
+        3) execute     : gctesettup           ---> Windows Environment. execute setup (copy files, compile test program, run programs)  
+        4) execute     : gctestrun            ---> execute all cases
+
         If test is ok, program prints :
             ---------------------------------------
             |   Test id      | retcode |  status  |
@@ -69,9 +82,12 @@
             =====   T E S T    P A S S E D    =====
             =======================================
         
-        You can execute : gctestrun 1>../log/logout.txt  2>..\log\logerr.txt
+        You can execute : 
+            (Linux) ./gctestrun 1>../log/logout.txt  2>../log/logerr.txt 
+            (MinGW) ./gctestrun 1>../log/logout.txt  2>../log/logerr.txt
+            (Windows) gctestrun 1>..\log\logout.txt  2>..\log\logerr.txt or
         to redirect message output into files.
-        After the run, checks ../log/logout.txt file 
+        After the run, checks log files. 
         
         
         

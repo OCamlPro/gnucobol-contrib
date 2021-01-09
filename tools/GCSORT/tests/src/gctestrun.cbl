@@ -18,6 +18,8 @@
        data division.
        file section.
        working-storage section.
+       77 chrsl                 pic x value '/'.
+       77 chrbs                 pic x value '\'.
 	   01 cmd-string            pic x(250).
        01 env-set-name          pic x(25).
        01 env-set-value         pic x(250).
@@ -45,7 +47,10 @@
           03    ar-retcode-ele occurs 5 times.
            05   ar-tst-name           pic x(12).
            05   ar-tst-rtc01          pic 99.
-      
+      *
+       77   ntype               BINARY-LONG .
+       77   cmd-go              pic x(80) value space.
+       
       *-------------------------------------------------------*
        procedure division.
       *-------------------------------------------------------*
@@ -57,6 +62,8 @@
            display '*===============================================*'
            display '  gctestrun       Running test ....'
            display '*===============================================*'
+           call 'gctestgetop' using ntype
+           display ' Environment : ' ntype 
       *
            perform exec-all-gr varying idx from 1 by 1
                   until idx > ar-name-max-ele
@@ -148,6 +155,7 @@
        set-value-env             section.
       *---------------------------------------------------------*
        sv-00.
+           inspect env-set-value replacing all chrsl by chrbs
 	       display env-set-name  upon ENVIRONMENT-NAME
            display env-set-value upon ENVIRONMENT-VALUE          
            .
@@ -159,8 +167,24 @@
        exec-test-modules         section.
       *---------------------------------------------------------*
        gein-00.
+           move 99 to ar-tst-rtc01(idx) 
            move ar-ele-vet(idx)  to cmd-string
-           call  'SYSTEM' using cmd-string
+Win        if (ntype = 1)
+               inspect cmd-string replacing all chrsl by chrbs
+               move cmd-string to cmd-go
+           else
+Linux        if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+             else
+                 display ' SYSTEM call problem '
+                 goback
+             end-if             
+           end-if            
+           call  'SYSTEM' using cmd-go
            move  RETURN-CODE  to ar-tst-rtc01(idx)           
       D    display  'RETURN-CODE Value : ' RETURN-CODE
       * reset 

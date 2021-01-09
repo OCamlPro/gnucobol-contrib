@@ -22,22 +22,67 @@
        input-output section.
        file-control.
       *sort input file
-      * sinsqf01.cpy
-           copy  sinsqf01.
+            select sortin assign to external dd_infile
+                organization is sequential
+                access is sequential
+                file status is fs-infile.
       *sort output file
-      * soutsqf01.cpy
-           copy soutsqf01.
+          select sortout assign to EXTERNAL dd_outfile
+                organization is sequential
+                access is sequential
+                file status is fs-outfile.
       *sort file (sd)
-      * ssrtsqf01.cpy
-           copy ssrtsqf01.
+           select file-sort assign to external dd_sortwork
+                file status is fs-sort.
        data division.
        file section.
       * finsqf01.cpy
-           copy finsqf01.
-      * foutsqf01.cpy
-           copy foutsqf01.
-      * fsrtsqf01.cpy
-           copy fsrtsqf01.
+       fd sortin.
+       01 infile-record.
+           05 in-seq-record       pic  9(07).
+           05 in-ch-field         pic  x(5).
+           05 in-bi-field         pic  9(7) comp.
+           05 in-fi-field         pic s9(7) comp.
+           05 in-fl-field         comp-2.
+           05 in-pd-field         pic s9(7) comp-3.
+           05 in-zd-field         pic s9(7).
+           05 in-fl-field-1       comp-1.
+           05 in-clo-field        pic s9(7) sign is leading.
+           05 in-cst-field        pic s9(7) sign is trailing separate.
+           05 in-csl-field        pic s9(7) sign is leading separate.
+           05 in-ch-filler        pic  x(25).
+
+       fd sortout.
+       01 outfile-record.
+           05 out-seq-record     pic  9(07).
+           05 out-ch-field       pic  x(5).
+           05 out-bi-field       pic  9(7) comp.
+           05 out-fi-field       pic s9(7) comp.
+           05 out-fl-field       comp-2.
+           05 out-pd-field       pic s9(7) comp-3.
+           05 out-zd-field       pic s9(7).
+           05 out-fl-field-1     COMP-1.
+           05 out-clo-field      pic s9(7) sign is leading.
+           05 out-cst-field      pic s9(7) sign is trailing separate.
+           05 out-csl-field      pic s9(7) sign is leading separate.
+           05 out-ch-filler      pic  x(25).
+
+       sd file-sort.
+       01 sort-data.
+           05 srt-seq-record      pic  9(07).
+           05 srt-xx-seq-record redefines srt-seq-record pic  x(07).
+           05 srt-ch-field        pic  x(5).
+           05 srt-bi-field        pic  9(7) comp.
+           05 srt-fi-field        pic s9(7) comp.
+           05 srt-fl-field        comp-2.
+           05 srt-pd-field        pic s9(7) comp-3.
+           05 srt-zd-field        pic s9(7).
+           05 srt-xx-zd-field redefines srt-zd-field pic x(7).
+           05 srt-fl-field-1        COMP-1.
+           05 srt-clo-field       pic s9(7) sign is leading.
+           05 srt-cst-field       pic s9(7) sign is trailing separate.
+           05 srt-csl-field       pic s9(7) sign is leading separate.
+           05 ch-filler           pic  x(25).
       *
        working-storage section.
        77 fs-infile                      pic xx.
@@ -70,6 +115,8 @@
            display " Sort on ascending  key    srt-ch-field "                 
            display "*===============================================* "
            
+           perform reset-totalizer
+           
       *  check if defined environment variables
            move 'dd_infile'  to env-pgm
            perform check-env-var
@@ -90,6 +137,19 @@
            display " Record input  : "  record-counter-in
            display " Record output : "  record-counter-out
            display "*===============================================* "
+           
+test00**    open input sortin.
+test00**    display '========================================='
+test00**    display ' Input file '
+test00**    display '========================================='
+test00**    perform view-data2 until fs-infile not equal "00"
+test00**    close sortin
+test00**    display '========================================='
+test00**    display ' Output file '
+test00**    display '========================================='
+test00**    open input sortout.
+test00**    perform view-data until fs-outfile not equal "00"
+test00**    close sortout
            goback
            .
       *
@@ -171,6 +231,7 @@
                move sort-data        to save-record-sort              
            end-if
            if (key-prec-ch-field = key-curr-ch-field)
+               move 1            to bIsPending
                perform add-totalizer
            else
                perform write-record-out
@@ -178,27 +239,40 @@
                move key-curr-ch-field   to key-prec-ch-field
                perform reset-totalizer
                perform add-totalizer
-           end-if
-      
-      * ## NO filtering data 
-      *     move sort-data        to outfile-record              
-      *     write outfile-record 
-      *     add 1 to record-counter-out
+           end-if      
            .
 
       * ============================= *
        add-totalizer.
       * ============================= *
       * Sum all Fields  
-      *  copy   prsrttot.cpy
-           copy  praddsrttot.
-           move 1            to bIsPending
+            add Srt-bi-field     to Tot-bi-field
+test00**         display ' add Srt-bi-field ' Srt-bi-field
+test00**                 ' to  Tot-bi-field ' Tot-bi-field
+            add Srt-fi-field     to Tot-fi-field
+test00**        display ' add Srt-fi-field ' Srt-fi-field
+test00**                ' to  Tot-fi-field ' Tot-fi-field
+            add Srt-fl-field     to Tot-fl-field
+            add Srt-pd-field     to Tot-pd-field
+            add Srt-zd-field     to Tot-zd-field
+            add Srt-fl-field-1   to Tot-fl-field-1
+            add Srt-clo-field    to Tot-clo-field
+            add Srt-cst-field    to Tot-cst-field
+            add Srt-csl-field    to Tot-csl-field
            .
       * ============================= *
        reset-totalizer.    
       * ============================= *
       *  copy   przerotot.cpy
-           copy   przerotot.
+           move zero to Tot-bi-field
+           move zero to Tot-fi-field
+           move zero to Tot-fl-field
+           move zero to Tot-pd-field
+           move zero to Tot-zd-field
+           move zero to Tot-fl-field-1
+           move zero to Tot-clo-field
+           move zero to Tot-cst-field
+           move zero to Tot-csl-field
            .
       * ============================= *
       * reset totals
@@ -209,7 +283,19 @@
            add  1                   to record-counter-out
            move save-record-sort    to outfile-record
       *  copy   prtotout.cpy
-           copy   prtotout.
+           move Tot-bi-field    to out-bi-field
+test00**          display ' write Tot-bi-field ' Tot-bi-field
+test00**                  ' write Out-bi-field ' Out-bi-field
+           move Tot-fi-field    to out-fi-field
+test00**        display ' write Tot-fi-field ' Tot-fi-field
+test00**                ' write Out-fi-field ' Out-fi-field
+           move Tot-fl-field    to out-fl-field
+           move Tot-pd-field    to out-pd-field
+           move Tot-zd-field    to out-zd-field
+           move Tot-fl-field-1  to out-fl-field-1
+           move Tot-clo-field   to out-clo-field
+           move Tot-cst-field   to out-cst-field
+           move Tot-csl-field   to out-csl-field
            move zero                to bIsPending
            write outfile-record 
            .
@@ -227,6 +313,31 @@
                            " fi="   out-fi-field      
                            " pd="   out-pd-field      
                            " zd="   out-zd-field 
-                           " fl="   out-fl-field      
+                           " fl="   out-fl-field     
+                           " fl_="  out-fl-field-1  
+                           " clo="  out-clo-field   
+                           " cst="  out-cst-field   
+                           " csl="  out-csl-field   
            end-if
+           .
+      * ============================= *
+       view-data2.
+      * ============================= *
+           read sortin at end 
+                display " "
+           end-read
+           if fs-infile equal "00"
+                   display "============== ## ============== "
+                   display " sq="   in-seq-record 
+                           " ch="   in-ch-field 
+                           " bi="   in-bi-field      
+                           " fi="   in-fi-field      
+                           " pd="   in-pd-field      
+                           " zd="   in-zd-field 
+                           " fl="   in-fl-field      
+                           " fl_="  in-fl-field-1  
+                           " clo="  in-clo-field   
+                           " cst="  in-cst-field   
+                           " csl="  in-csl-field  
+            end-if
            .

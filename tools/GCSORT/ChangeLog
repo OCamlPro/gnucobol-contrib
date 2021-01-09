@@ -1,3 +1,9 @@
+2021-01-08  Sauro Menna  <smenna@users.sourceforge.net>
+    * New option OUTREC OVERLAY 
+    * Fix problems in MinGW environment
+    * Review of test suite (folder tests) 
+    * Fix problem in OUTREC
+    * Changed Makefile to compile source and not generate parser/scanner
 2020-12-28  Sauro Menna  <smenna@users.sourceforge.net>
 	* New option INREC OVERLAY 
     * Fix problem in gcc compiler environment

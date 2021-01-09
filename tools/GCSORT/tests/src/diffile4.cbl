@@ -37,33 +37,33 @@
        data division.
        file section.
        fd sortcbl.
-       01 infile-record-cbl.
-           05 in1-seq-record     pic  9(07).
-           05 in1-ch-field       pic  x(5).
-           05 in1-bi-field       pic  9(7) comp.
-           05 in1-fi-field       pic s9(7) comp.
-           05 in1-fl-field       comp-2.
-           05 in1-pd-field       pic s9(7) comp-3.
-           05 in1-zd-field       pic s9(7).
-           05 in1-fl-field-1     COMP-1.
-           05 in1-clo-field      pic s9(7) sign is leading.
+       01 infile-record-cbl.                                            
+           05 in1-seq-record     pic  9(07).                                       
+           05 in1-zd-field       pic s9(7).                          
+           05 in1-fl-field       comp-2.                             
+           05 in1-fi-field       pic s9(7) comp.                     
+           05 in1-pd-field       pic s9(7) comp-3.                   
+           05 in1-bi-field       pic  9(7) comp.                     
+           05 in1-ch-field       pic  x(5).                          
+           05 in1-fl-field-1     COMP-1.                             
+           05 in1-clo-field      pic s9(7) sign is leading.          
            05 in1-cst-field      pic s9(7) sign is trailing separate.
-           05 in1-csl-field      pic s9(7) sign is leading separate.
-           05 in1-ch-filler      pic  x(25).
+           05 in1-csl-field      pic s9(7) sign is leading separate. 
+           05 in1-ch-filler      pic  x(25).                         
        fd sortgcs.
-       01 infile-record-gcs.
-           05 in2-seq-record     pic  9(07).
-           05 in2-ch-field       pic  x(5).
-           05 in2-bi-field       pic  9(7) comp.
-           05 in2-fi-field       pic s9(7) comp.
-           05 in2-fl-field       comp-2.
-           05 in2-pd-field       pic s9(7) comp-3.
-           05 in2-zd-field       pic s9(7).
-           05 in2-fl-field-1     COMP-1.
-           05 in2-clo-field      pic s9(7) sign is leading.
-           05 in2-cst-field      pic s9(7) sign is trailing separate.
-           05 in2-csl-field      pic s9(7) sign is leading separate.
-           05 in2-ch-filler      pic  x(25).
+       01 infile-record-gcs.                                                    
+           05 in2-seq-record     pic  9(07).                                
+           05 in2-zd-field       pic s9(7).                                 
+           05 in2-fl-field       comp-2.                                    
+           05 in2-fi-field       pic s9(7) comp.                            
+           05 in2-pd-field       pic s9(7) comp-3.                          
+           05 in2-bi-field       pic  9(7) comp.                            
+           05 in2-ch-field       pic  x(5).                                 
+           05 in2-fl-field-1     COMP-1.                                    
+           05 in2-clo-field      pic s9(7) sign is leading.                 
+           05 in2-cst-field      pic s9(7) sign is trailing separate.       
+           05 in2-csl-field      pic s9(7) sign is leading separate.        
+           05 in2-ch-filler      pic  x(25).                                
       *
        working-storage section.
        77 fs-infile1                 pic xx.
@@ -91,7 +91,7 @@
       * ============================= *
        master-sort.
            display "*===============================================* "
-           display " diff2 "
+           display " diff4 "
            display " Check file produced by Cobol Program and GCSORT "
            display "*===============================================* "
       *  check if defined : dd_incobol,   dd_ingcsort

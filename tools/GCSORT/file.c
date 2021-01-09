@@ -51,7 +51,7 @@ struct file_t *file_constructor(char *name) {
         file->nNumKeys=0;
         file->stFileDef=NULL;
         file->stKeys=NULL;
-    }
+	}
 	return file;
 }
 void file_destructor(struct file_t *file) {
@@ -286,12 +286,24 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 						tKeys->pCobFieldKey->attr->scale, tKeys->pCobFieldKey->attr->flags, tKeys->pCobFieldKey->size, NOALLOCATE_DATA);
 					file->stFileDef->keys[k].field->data = file->stFileDef->record->data+tKeys->position;
                     file->stFileDef->keys[k].field->size = tKeys->length;
-                    file->stFileDef->keys[k].flag = 0;
+					file->stFileDef->keys[k].flag = 0;		/* ASCENDING/DESCENDING (for SORT) */
+					file->stFileDef->keys[k].tf_duplicates = 0;
 					if (tKeys->type == KEY_IDX_ALTERNATIVE_DUP)
-						file->stFileDef->keys[k].flag = 1;		// with duplicates
+						file->stFileDef->keys[k].tf_duplicates = 1;		// with duplicates
+					file->stFileDef->keys[k].tf_ascending=0;
+					file->stFileDef->keys[k].tf_suppress=0;
+					file->stFileDef->keys[k].char_suppress = 0;
+					file->stFileDef->keys[k].count_components = 0;// count_components
+					file->stFileDef->keys[k].component[0] = NULL;
 					file->stFileDef->keys[k].offset = tKeys->position;
 					tKeys =  tKeys->next;
 			}
+			// s.m. 202101 start
+			file->stFileDef->flag_line_adv=0;
+			file->stFileDef->curkey=-1;
+			file->stFileDef->mapkey=-1;
+			// s.m. 202101 end
+
             file->stFileDef->access_mode = COB_ACCESS_DYNAMIC;  
 			file->stFileDef->organization = COB_ORG_INDEXED;
 			break;

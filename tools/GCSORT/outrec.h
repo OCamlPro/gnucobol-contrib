@@ -33,8 +33,10 @@ struct fieldValue_t;
 #define OUTREC_TYPE_CHANGE_POSITION		1
 #define OUTREC_TYPE_CHANGE				2
 #define OUTREC_TYPE_RANGE_POSITION		3
+#define OUTREC_TYPE_CHANGE_ABSPOS	    4
 
 struct outrec_t {
+	int nIsOverlay;
 	int type;
 	union {
 		struct {
@@ -73,6 +75,9 @@ struct outrec_t *outrec_getNext(struct outrec_t *outrec);
 int outrec_print(struct outrec_t *outrec);
 int outrec_getLength(struct outrec_t *outrec);
 int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos);
+int outrec_copy_overlay(struct outrec_t* outrec, unsigned char* output, unsigned char* input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos);
+int outrec_SetOverlay(struct outrec_t* Outrec, int nOverlay);
+
 int outrec_addDefinition(struct outrec_t *outrec);
 
 

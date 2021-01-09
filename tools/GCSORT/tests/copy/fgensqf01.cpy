@@ -24,4 +24,4 @@
            05 clo-field          pic s9(7) sign is leading.
            05 cst-field          pic s9(7) sign is  trailing separate.
            05 csl-field          pic s9(7) sign is  leading separate.
-           05 ch-filler          pic  x(25).
+           05 ch-filler          pic x(25).

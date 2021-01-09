@@ -12,8 +12,8 @@
       *-------------------------------------------------------------------------------*
       *    copy wktotsum01.cpy
        01  SumFields-00.
-         02 Tot-bi-field            pic  9(18) comp.
-         02 Tot-fi-field            pic s9(18) comp.
+         02 Tot-bi-field            pic  9(16) comp.
+         02 Tot-fi-field            pic s9(16) comp.
          02 Tot-fl-field            comp-2.
          02 Tot-pd-field            pic s9(18) comp-3.
          02 Tot-zd-field            pic s9(18).

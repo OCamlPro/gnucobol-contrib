@@ -36,7 +36,7 @@
        01       tab-ch.
            02   tab-ele-num           pic 99    value 26.
            02   tab-ele-value         pic x(52) value
-             "QQAAZZWWSSXXEEDDCCRRFFVVTTGGBBYYHHNNUUJJMMIIKKOOLLPP".
+           "QQAAZZWWSSXXEEDDCCRRFFVVTTGGBBYYHHNNUUJJMMIIKKOOLLPP".
            02   tab-ch-ele redefines 
                     tab-ele-value occurs 26 times pic xx.
        01    cmd-line           pic x(132).
@@ -113,7 +113,7 @@
            end-if
                
            move tab-ch-ele(idx) to  ch-field(1:2)    
-           move tab-ch-ele(idx) to  ch-field(3:2)
+           move tab-ch-ele(idx) to  ch-field(3:3)
            perform add-counter
            move  count-value    to  bi-field    
            perform add-counter
@@ -150,7 +150,7 @@
                move 26 to idx
            end-if
            move tab-ch-ele(idx) to  ch-field(1:2)    
-           move tab-ch-ele(idx) to  ch-field(3:2)
+           move tab-ch-ele(idx) to  ch-field(3:3)
            perform sub-counter
            move  count-value    to  bi-field    
            perform sub-counter

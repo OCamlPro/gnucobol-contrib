@@ -170,6 +170,7 @@ void GCSORT_Usage ( void )
     printf("    INREC   FIELDS | INREC   BUILD =({FieldSpec})\n");                     
     printf("    INREC   OVERLAY =({FieldSpec})\n");
     printf("    OUTREC  FIELDS | OUTREC  BUILD =({FieldSpec})\n");
+    printf("    OUTREC  OVERLAY =({FieldSpec})\n");
     printf("\n");
     printf("    OUTFIL                                                                         \n");
     printf("         INCLUDE | OMIT ({Condition})[,FORMAT={FormatType}]                            \n");

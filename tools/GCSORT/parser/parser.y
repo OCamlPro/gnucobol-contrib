@@ -66,6 +66,7 @@
 	struct outfil_t*	current_outfil=NULL;
 	struct condField_t*	condField=NULL;
     struct inrec_t *    inrec=NULL;
+    struct outrec_t *   outrec=NULL;
 
 
 	int nRecCase=0;
@@ -74,6 +75,7 @@
 	int current_inrec=0;
 	int current_sortField=0;
     int inrec_overlay=0;
+    int outrec_overlay=0;
 	int nPosAbsRec=0;
 	int nRtc=0;
 	int nCountGroupFiles=0;
@@ -649,6 +651,7 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
+                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec += outrec->range.length;
@@ -689,6 +692,7 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
+                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec += fieldValue_getGeneratedLength(outrec->change.fieldValue);
@@ -731,6 +735,7 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
+                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec = outrec->range_position.posAbsRec + outrec->range_position.length;
@@ -771,6 +776,7 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
+                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec += fieldValue_getGeneratedLength(outrec->change.fieldValue);
@@ -813,6 +819,7 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
+                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec += fieldValue_getGeneratedLength(outrec->change.fieldValue);
@@ -857,6 +864,7 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
+                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
             }
@@ -903,6 +911,7 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
+                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec += fieldValue_getGeneratedLength(outrec->change.fieldValue);
@@ -951,6 +960,7 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
+                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
             }
@@ -1002,6 +1012,7 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
+                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec += outrec->range.length;
@@ -1068,7 +1079,31 @@ outrecclause:
         current_outrec=0;
         nRecCase=0;
 }
-;
+    /* s.m. 20201206 */
+    | OUTREC OVERLAY '=' '(' {
+        strcpy(szMexToken, " outrec clause Overlay");
+        current_outrec=1;
+        nRecCase=1;
+		nPosAbsRec = 0;
+} allinoutrec ')' {
+        current_outrec=0;
+        nRecCase=0;
+        outrec_overlay=1;
+        outrec_SetOverlay(outrec, outrec_overlay);
+}
+    |   /* */
+      OUTREC OVERLAY '(' {
+        strcpy(szMexToken, " outrec clause Overlay");
+        current_outrec=1;
+        nRecCase=1;
+		nPosAbsRec = 0;
+        } allinoutrec ')' {
+        current_outrec=0;
+        nRecCase=0;
+        outrec_overlay=1;
+        outrec_SetOverlay(outrec, outrec_overlay);
+};
+
 
 /* Case for OUTREC in OUTFIL */
 outrecclause:

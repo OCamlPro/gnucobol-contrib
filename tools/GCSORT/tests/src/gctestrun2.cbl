@@ -23,6 +23,8 @@
        fd  fcmd.
        01  r-cmd        pic x(1024).
        working-storage section.
+       77 chrsl                 pic x value '/'.
+       77 chrbs                 pic x value '\'.
        77 wk-fcmd               pic x(128).
        77 f-s                   pic xx.
 	   01 cmd-string            pic x(250).
@@ -69,7 +71,7 @@
             05 ar-pgm-name-02         pic x(10) value 'diffile '.
             05 ar-pgm-name-03         pic x(10) value 'diffile '.
             05 ar-pgm-name-04         pic x(10) value 'diffile '.
-            05 ar-pgm-name-05         pic x(10) value 'diffile2'.
+            05 ar-pgm-name-05         pic x(10) value 'diffile4'.
           03 ar-ele-vetdiff redefines ar-pgm-name
                         occurs 5 times pic x(10).
       *
@@ -245,6 +247,10 @@
             07 ar-ele-take-vet-02         pic x(80).                       ** value of takefile
             
       **
+          
+       77   ntype               BINARY-LONG .
+       77   cmd-go              pic x(80) value space.
+           
       *-------------------------------------------------------*
        procedure division.
       *-------------------------------------------------------*
@@ -257,6 +263,9 @@
            display '  gctestrun2           SORT'
            display '                       Group2'
            display '*===============================================*'
+           call 'gctestgetop' using ntype    
+           display ' Environment : ' ntype 
+ 
       *
            perform exec-all-gr02 varying idx from 1 by 1
                   until idx > ar-name-max-ele
@@ -274,6 +283,7 @@
        exec-all-gr02              section.
       *---------------------------------------------------------*
        exal-00.
+           display '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'
            display '*===============================================*'
            display ' ID test : ' ar-ele-vet(idx)  "   Start "
            display '*===============================================*'
@@ -300,6 +310,8 @@
            display '*===============================================*'
            display ' ID test : ' ar-ele-vet(idx)  '   End '
            display '*===============================================*'
+           display '-------------------------------------------------'
+           display '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'
            .
        exal-99.
            exit.       
@@ -414,8 +426,14 @@
        set-value-env             section.
       *---------------------------------------------------------*
        sv-00.
+           inspect env-set-value replacing all chrsl by chrbs
 	       display env-set-name  upon ENVIRONMENT-NAME
            display env-set-value upon ENVIRONMENT-VALUE          
+           if ( env-set-value not equal space )
+               display '****************************************'           
+               display env-set-name '=' env-set-value          
+               display '****************************************'           
+           end-if    
            .
        sv-99.
            exit.
@@ -429,7 +447,23 @@
            move '../files/fsqf01.dat' to env-set-value
            perform set-value-env
            move 'genfile' to cmd-string
-           call     'SYSTEM' using cmd-string
+Win        if (ntype = 1)
+               inspect cmd-string replacing all chrsl by chrbs
+               move cmd-string to cmd-go
+           else
+Linux        if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+             else
+                 display ' SYSTEM call problem '
+                 goback
+             end-if             
+           end-if            
+           display ' cmd line : '  cmd-go
+           call     'SYSTEM' using cmd-go
       D    display  'RETURN-CODE Value : ' RETURN-CODE
       * reset 
            move 'dd_outfile'     to env-set-name
@@ -443,6 +477,7 @@
        sort-cbl-gr02a             section.
       *---------------------------------------------------------*
        stcb-00.
+           move 99  to ar-tst-rtc01(idx-take)  
       ** set dd_infile=%filedir%\fsqf01.dat 
            move 'dd_infile'              to env-set-name
            move '../files/fsqf01.dat'    to env-set-value
@@ -470,7 +505,23 @@
            string ar-ele-vet(idx) delimited by space
                   'b1'            delimited by size
                   into cmd-string
-           call 'SYSTEM' using cmd-string
+Win        if (ntype = 1)
+               inspect cmd-string replacing all chrsl by chrbs
+               move cmd-string to cmd-go
+           else
+Linux        if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+             else
+                 display ' SYSTEM call problem '
+                 goback
+             end-if             
+           end-if            
+           display ' cmd line : ' cmd-go
+           call 'SYSTEM' using cmd-go
       *
            move  RETURN-CODE  to ar-tst-rtc01(idx)
       D    display  "RETURN-CODE Value : " RETURN-CODE
@@ -492,6 +543,7 @@
        sort-cbl-gr02b             section.
       *---------------------------------------------------------*
        stcb-00.
+           move 99  to ar-tst-rtc02(idx-take)  
       ** set dd_infile=%filedir%\fsqf01.dat 
            move 'dd_infile'              to env-set-name
            move '../files/fsqf01.dat'    to env-set-value
@@ -519,9 +571,25 @@
            string ar-ele-vet(idx) delimited by space
                   'b2'            delimited by size
                   into cmd-string
-           call 'SYSTEM' using cmd-string
+Win        if (ntype = 1)
+               inspect cmd-string replacing all chrsl by chrbs
+               move cmd-string to cmd-go
+           else
+Linux        if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+             else
+                 display ' SYSTEM call problem '
+                 goback
+             end-if             
+           end-if            
+           display ' cmd line : ' cmd-go
+           call 'SYSTEM' using    cmd-go
       *
-           move  RETURN-CODE  to ar-tst-rtc01(idx)
+           move  RETURN-CODE  to ar-tst-rtc02(idx)
       D    display  "RETURN-CODE Value : " RETURN-CODE
       * reset 
            move 'dd_infile'      to env-set-name
@@ -542,6 +610,7 @@
        sort-cbl-gr02c             section.
       *---------------------------------------------------------*
        stcb-00.
+           move 99  to ar-tst-rtc01(idx)  
       ** set dd_infile=%filedir%\fsqf01.dat 
            move 'dd_infile'              to env-set-name
            move '../files/fsqf01.dat'    to env-set-value
@@ -569,7 +638,23 @@
            string ar-ele-vet(idx) delimited by space
                   'b3'            delimited by size
                   into cmd-string
-           call 'SYSTEM' using cmd-string
+Win        if (ntype = 1)
+               inspect cmd-string replacing all chrsl by chrbs
+               move cmd-string to cmd-go
+           else
+Linux        if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+             else
+                 display ' SYSTEM call problem '
+                 goback
+             end-if             
+           end-if            
+           display ' cmd line : ' cmd-go
+           call 'SYSTEM' using    cmd-go
       *
            move  RETURN-CODE  to ar-tst-rtc01(idx)
       D    display  "RETURN-CODE Value : " RETURN-CODE
@@ -592,6 +677,7 @@
        sort-gc-gr02               section.
       *---------------------------------------------------------*
        stgc-00.
+           move 99  to ar-tst-rtc02(idx)  
       ** set dd_infile=%filedir%\fsqf01.dat 
            move 'dd_infile'              to env-set-name
            move '../files/fsqf01.dat'    to env-set-value
@@ -660,7 +746,23 @@
                    ar-ele-vet(idx)  delimited by space
                    '.prm'         delimited by size
                       into cmd-string
-           call     'SYSTEM' using cmd-string
+Win        if (ntype = 1)
+                inspect cmd-string replacing all chrsl by chrbs
+                move cmd-string to cmd-go
+           else
+Linux        if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+             else
+                 display ' SYSTEM call problem '
+                 goback
+             end-if             
+           end-if            
+           display ' cmd line : '  cmd-go
+           call     'SYSTEM' using cmd-go
       *
            move  RETURN-CODE  to ar-tst-rtc02(idx)
       D    display  'RETURN-CODE Value : ' RETURN-CODE
@@ -699,6 +801,7 @@
        diffile-gr02a              section.
       *---------------------------------------------------------*
        diff-00.
+           move 99  to ar-tst-rtc03(idx)  
       ** set dd_incobol=%filedir%\susesqf01_cbl.srt
            move 'dd_incobol'              to env-set-name
            move space                    to env-set-value
@@ -717,9 +820,25 @@
       *
       ** %exedir%\diffile
            move ar-ele-vetdiff(idx)    to cmd-string
-           call     "SYSTEM" using cmd-string
-      *
+Win        if (ntype = 1)
+               inspect cmd-string replacing all chrsl by chrbs
+               move cmd-string to cmd-go
+           else
+Linux        if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+             else
+                 display ' SYSTEM call problem '
+                 goback
+             end-if             
+           end-if            
+           display ' cmd line : '   cmd-go
+           call     "SYSTEM" using  cmd-go
            move  RETURN-CODE  to ar-tst-rtc03(idx)
+      *
       D    display  "RETURN-CODE Value : " RETURN-CODE
       ** set rtc2=%errorlevel%
       * reset 
@@ -739,6 +858,7 @@
        diffile-gr02b              section.
       *---------------------------------------------------------*
        diff-00.
+           move 99  to ar-tst-rtc03(idx)  
       ** set dd_incobol=%filedir%\susesqf01_cbl.srt
            move 'dd_incobol'              to env-set-name
            move space                    to env-set-value
@@ -757,9 +877,25 @@
       *
       ** %exedir%\diffile
            move ar-ele-vetdiff(idx)    to cmd-string
-           call     "SYSTEM" using cmd-string
-      *
+Win        if (ntype = 1)
+               inspect cmd-string replacing all chrsl by chrbs
+               move cmd-string to cmd-go
+           else
+Linux        if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+             else
+                 display ' SYSTEM call problem '
+                 goback
+             end-if             
+           end-if            
+           display ' cmd line : '   cmd-go
+           call     "SYSTEM" using  cmd-go
            move  RETURN-CODE  to ar-tst-rtc03(idx)
+      *
       D    display  "RETURN-CODE Value : " RETURN-CODE
       ** set rtc2=%errorlevel%
       * reset 
@@ -779,6 +915,7 @@
        diffile-gr02c              section.
       *---------------------------------------------------------*
        diff-00.
+           move 99  to ar-tst-rtc03(idx)  
       ** set dd_incobol=%filedir%\susesqf01_cbl.srt
            move 'dd_incobol'              to env-set-name
            move space                    to env-set-value
@@ -797,9 +934,25 @@
       *
       ** %exedir%\diffile
            move ar-ele-vetdiff(idx)    to cmd-string
-           call     "SYSTEM" using cmd-string
-      *
+Win        if (ntype = 1)
+               inspect cmd-string replacing all chrsl by chrbs
+               move cmd-string to cmd-go
+           else
+Linux        if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+             else
+                 display ' SYSTEM call problem '
+                 goback
+             end-if             
+           end-if            
+           display ' cmd line : '   cmd-go
+           call     "SYSTEM" using  cmd-go
            move  RETURN-CODE  to ar-tst-rtc03(idx)
+      *
       D    display  "RETURN-CODE Value : " RETURN-CODE
       ** set rtc2=%errorlevel%
       * reset 
@@ -820,6 +973,7 @@
        sort-cbl-gr02-2            section.
       * ---------------------------------------------------------*
        st02-00.
+           move 99  to ar-tst-rtc02(idx)  
       * 
            move 'dd_infile'              to env-set-name
            move '../files/fsqf01.dat'    to env-set-value
@@ -838,7 +992,7 @@
                     '_cbl01.srt'    delimited by size
                     into env-set-value
            perform set-value-env
-      * 
+      *  
            move 'dd_outfile2'             to env-set-name
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
@@ -865,7 +1019,24 @@
            string ar-ele-vet(idx) delimited by space
                   'b' delimited by size
                    into cmd-string
-           call     "SYSTEM" using cmd-string
+Win        if (ntype = 1)
+               inspect cmd-string replacing all chrsl by chrbs
+               move cmd-string to cmd-go
+           else
+Linux        if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+             else
+                 display ' SYSTEM call problem '
+                 goback
+             end-if             
+           end-if            
+           display ' cmd line : '   cmd-go
+           call     "SYSTEM" using  cmd-go
+           move  RETURN-CODE  to ar-tst-rtc02(idx)
        
       D    display  "RETURN-CODE Value : " RETURN-CODE
       *  reset 
@@ -911,6 +1082,7 @@
        sort-cbl-gr02-002          section.
       *---------------------------------------------------------*
        st02-00.
+           move 99  to ar-tst-rtc02(idx)  
       ** set dd_infile=%filedir%\fsqf01.dat 
            move 'dd_infile'              to env-set-name
            move '../files/fsqf01.dat'    to env-set-value
@@ -927,7 +1099,24 @@
       *
       ** %exedir%\soutfsqf04 
            move 'soutfsqf04b '       to       cmd-string
-           call     "SYSTEM" using cmd-string
+Win        if (ntype = 1)
+               inspect cmd-string replacing all chrsl by chrbs
+               move cmd-string to cmd-go
+           else
+Linux        if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+             else
+                 display ' SYSTEM call problem '
+                 goback
+             end-if             
+           end-if            
+           display ' cmd line : '   cmd-go
+           call     "SYSTEM" using  cmd-go
+           move  RETURN-CODE  to ar-tst-rtc02(idx)
       *
       D    display  "RETURN-CODE Value : " RETURN-CODE
       * reset 
@@ -948,6 +1137,7 @@
        sort-gc-gr02-002           section.
       *---------------------------------------------------------*
        st03-00.
+           move 99  to ar-tst-rtc03(idx)  
       ** set dd_infile=%filedir%\fsqf01.dat 
            move 'dd_infile'              to env-set-name
            move '../files/fsqf01.dat'    to env-set-value
@@ -966,6 +1156,7 @@
                     ar-ele-vet(idx) delimited by space
                     '.prm'    delimited by size
                     into wk-fcmd
+           inspect wk-fcmd replacing all chrsl by chrbs
            open output fcmd
            if f-s not equal '00' 
               display 'Error on open output file: ' wk-fcmd
@@ -983,8 +1174,25 @@
                    ar-ele-vet(idx)  delimited by space
                    '.prm'         delimited by size
                       into cmd-string
-           call     'SYSTEM' using cmd-string
-      *
+Win        if (ntype = 1)
+               inspect cmd-string replacing all chrsl by chrbs
+               move cmd-string to cmd-go
+           else
+Linux        if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+             else
+                 display ' SYSTEM call problem '
+                 goback
+             end-if             
+           end-if            
+           display ' cmd line : '   cmd-go
+           call     'SYSTEM' using  cmd-go
+           move  RETURN-CODE  to ar-tst-rtc03(idx)
+      * 
       D    display  "RETURN-CODE Value : " RETURN-CODE
       * reset 
            move 'dd_infile'     to env-set-name
@@ -1003,6 +1211,7 @@
        diffile-gr02-002           section.
       *---------------------------------------------------------*
        st04-00.
+           move 99  to ar-tst-rtc03(idx)  
       ** set dd_incobol=%filedir%\soutfsqf04_cbl.srt
            move 'dd_incobol'              to env-set-name
            move '../files/soutfsqf04_cbl.srt'    to env-set-value
@@ -1013,8 +1222,25 @@
            perform set-value-env
       *
       ** %exedir%\diffile2
-           move 'diffile2 '                 to cmd-string
-           call     "SYSTEM" using cmd-string
+           move ar-ele-vetdiff(idx)    to cmd-string
+Win        if (ntype = 1)
+               inspect cmd-string replacing all chrsl by chrbs
+               move cmd-string to cmd-go
+           else
+Linux        if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+             else
+                 display ' SYSTEM call problem '
+                 goback
+             end-if             
+           end-if            
+           display ' cmd line : '   cmd-go
+           call     "SYSTEM" using  cmd-go
+           move  RETURN-CODE  to ar-tst-rtc03(idx)
       *
       D    display  "RETURN-CODE Value : " RETURN-CODE
       * reset 

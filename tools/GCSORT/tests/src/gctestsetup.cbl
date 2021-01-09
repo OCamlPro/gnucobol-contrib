@@ -56,6 +56,9 @@
        77   posstart            pic 9(3).
        77   lensub              pic 9(3).
       *
+       77   ntype               BINARY-LONG .
+       77   cmd-go              pic x(80) value space.
+      *
        01     parm-def.
            03 parm-ele.
              05 p1                  pic x(256).
@@ -108,6 +111,9 @@
            display '  gctestsetup          '
            display '             Setup test enviroment '
            display '*===============================================*'
+      *    call 'gcsysop' returning ntype
+           call 'gctestgetop' using ntype
+TEST00***          display ' after call gcsysop ntype = ' ntype  
            open input fdef
            if (f-s not = '00')
                 display '*gctestsetup* error opening gctestsetup.def'
@@ -187,6 +193,22 @@
            if (r-command(1:1) NOT = '*') AND
               (r-command(1:1) NOT = SPACE) 
              evaluate TRIM(r-command, TRAILING)
+               when 'compdll'
+                   move TRIM(r-command, TRAILING) to cmd-cmd 
+                   move TRIM(r-param1, TRAILING)  to cmd-param
+                   perform get-command-line
+                   if (bfound = zero)
+                     display 
+                     '*gctestsetup* command not defined into file .def'
+                     display ' command : ' cmd-cmd 
+                     goback
+                   end-if
+                   perform set-command-line
+                   call 'SYSTEM' using cmd-def
+                   move RETURN-CODE   to retcode
+                   if retcode not = zero
+                        add 1 to count-errors
+                   end-if
                when 'compile'
                    move TRIM(r-command, TRAILING) to cmd-cmd 
                    move TRIM(r-param1, TRAILING)  to cmd-param
@@ -212,7 +234,19 @@
                    move space                    to env-set-value
                    perform set-value-env
                when 'execute'
-                   call 'SYSTEM' using r-param1
+Win                if (ntype = 1)
+                    call 'SYSTEM' using r-param1
+                   else
+Linux                if (ntype = 2)
+                        move space to cmd-go
+                        string './' delimited by size 
+                               r-param1 delimited by size
+                                  into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'          
+                        call 'SYSTEM' using cmd-go
+                       end-if
+                   end-if
+                              
                    move RETURN-CODE   to retcode
                    if retcode not = zero
                         add 1 to count-errors

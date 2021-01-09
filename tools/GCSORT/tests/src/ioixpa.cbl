@@ -25,9 +25,9 @@
                organization is indexed
                access mode  is dynamic
                record key is msr-02
-               alternate record key is msr-03
-               alternate record key is msr-04 with duplicates
-               alternate record key is msr-05 with duplicates
+     **        alternate record key is msr-03
+     **        alternate record key is msr-04 with duplicates
+     **        alternate record key is msr-05 with duplicates
                .
 
        data division.

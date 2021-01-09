@@ -27,6 +27,7 @@
 // x64 ini
 #ifdef	_MSC_VER
 #ifdef VBISAM_LIB
+_LIB
 #ifdef __cplusplus
 #define DLL_EXPIMP extern "C" __declspec(dllexport)
 #else

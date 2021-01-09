@@ -38,9 +38,9 @@ struct KeyIdx_t {
                                     //     1 = A  Alternative, 
                                     //     2 = AD Alternative with duplicates, 
                                     //     3 = C  Continue previous definition
-	cob_field* 	     pCobFieldKey;    // Field
-	struct KeyIdx_t *next;          // Next
-} KeyIdx;
+    cob_field* pCobFieldKey;    // Field
+    struct KeyIdx_t* next;          // Next
+}; // KeyIdx;
 
 
 struct KeyIdx_t *KeyIdx_constructor(int position, int length, int type);

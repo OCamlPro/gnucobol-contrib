@@ -18,6 +18,8 @@
        data division.
        file section.
        working-storage section.
+       77 chrsl                 pic x value '/'.
+       77 chrbs                 pic x value '\'.
        77 wk-cmd-sort           pic x(12) value
                 'gcsort take '.
        77 wk-dir-take           pic x(30) value
@@ -104,6 +106,8 @@
             07 ar-ele-take-vet-name       pic x(12).                       ** name
             07 ar-ele-take-vet-set        pic x(12).                       ** set
             07 ar-ele-take-vet-pgm        pic x(12).                       ** pgm gen
+       77   ntype               BINARY-LONG .
+       77   cmd-go              pic x(80) value space.
       *-------------------------------------------------------*
        procedure division.
       *-------------------------------------------------------*
@@ -116,6 +120,8 @@
            display '  gctestrun5           SORT '
            display '                       Group5 (Sum Fields)'
            display '*===============================================*'
+           call 'gctestgetop' using ntype    
+           display ' Environment : ' ntype 
       *
            perform exec-all-gr05 varying idx from 1 by 1
                   until idx > ar-name-max-ele
@@ -135,6 +141,7 @@
        exec-all-gr05              section.
       *---------------------------------------------------------*
        exal-00.
+           display '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'
            display '*===============================================*'
            display ' ID test : ' ar-ele-vet(idx)  "   Start "
            display '*===============================================*'
@@ -144,6 +151,8 @@
            display '*===============================================*'
            display ' ID test : ' ar-ele-vet(idx)  "   End "
            display '*===============================================*'
+           display '-------------------------------------------------'
+           display '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'
            .
        exal-99.
            exit.       
@@ -221,8 +230,14 @@
        set-value-env             section.
       *---------------------------------------------------------*
        sv-00.
+           inspect env-set-value replacing all chrsl by chrbs
 	       display env-set-name  upon ENVIRONMENT-NAME
            display env-set-value upon ENVIRONMENT-VALUE          
+           if ( env-set-value not equal space )
+               display '****************************************'           
+               display env-set-name '=' env-set-value          
+               display '****************************************'           
+           end-if    
            .
        sv-99.
            exit.
@@ -232,6 +247,7 @@
        genfile-input-gr05         section.
       *---------------------------------------------------------*
        gein-00.
+           move  99  to ar-tst-rtc01(idx)           
            move ar-ele-take-vet-set(idx)   to env-set-name
            move space                      to env-set-value
            string '../files/'                   delimited by size
@@ -240,7 +256,23 @@
            perform set-value-env
            
            move ar-ele-take-vet-pgm(idx)  to cmd-string
-           call     'SYSTEM' using cmd-string
+Win            if (ntype = 1)
+                   inspect cmd-string replacing all chrsl by chrbs
+                   move cmd-string to cmd-go
+              else
+Linux           if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+                else
+                 display ' SYSTEM call problem '
+                 goback
+               end-if             
+             end-if            
+           display ' cmd line : '   cmd-go
+           call     'SYSTEM' using  cmd-go
                move  RETURN-CODE  to ar-tst-rtc01(idx)           
       D    display  'RETURN-CODE Value : ' RETURN-CODE
       * reset 
@@ -255,6 +287,7 @@
       *---------------------------------------------------------*
        stcb-00.
       ** 
+           move  99  to ar-tst-rtc02(idx)           
       ** 
                move space                  to cmd-string
                string wk-cmd-sort                delimited by size
@@ -262,8 +295,23 @@
                       ar-ele-take-vet-name(idx)  delimited by space
                       '_take.prm'                delimited by size
                             into cmd-string
-      D        display  "cmd-string : " cmd-string
-               call "SYSTEM" using cmd-string
+Win            if (ntype = 1)
+                   inspect cmd-string replacing all chrsl by chrbs
+                   move cmd-string to cmd-go
+              else
+Linux           if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+                else
+                 display ' SYSTEM call problem '
+                 goback
+               end-if             
+             end-if            
+               display  "cmd-string : " cmd-go
+               call "SYSTEM" using      cmd-go
                move  RETURN-CODE  to ar-tst-rtc02(idx)           
       D        display  "RETURN-CODE Value : " RETURN-CODE
       ** 

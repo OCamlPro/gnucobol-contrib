@@ -18,6 +18,8 @@
        data division.
        file section.
        working-storage section.
+       77 chrsl                 pic x value '/'.
+       77 chrbs                 pic x value '\'.
        77 wk-cmd-sort           pic x(12) value
                 'gcsort take '.
        77 wk-dir-take           pic x(12) value
@@ -39,7 +41,7 @@
       *
        01       array-retcode-epilog-gr03.
           03    ar-retcode-ele occurs 49 times.
-           05   ar-tst-name           pic x(10).
+           05   ar-tst-name           pic x(15).
            05   ar-tst-rtc01          pic 99.
       
       ***
@@ -297,6 +299,8 @@
               07 ele-cmd-take-exec-type     pic x(08).
               07 ele-cmd-take-exec-cmd      pic x(80).
       ***
+       77   ntype               BINARY-LONG .
+       77   cmd-go              pic x(80) value space.
       *-------------------------------------------------------*
        procedure division.
       *-------------------------------------------------------*
@@ -309,6 +313,9 @@
            display '  gctestrun3           SORT'
            display '                       Group3'
            display '*===============================================*'
+           call 'gctestgetop' using ntype    
+           display ' Environment : ' ntype 
+
       *
            perform exec-all-gr03
                 varying idx from 1 by 1
@@ -318,7 +325,7 @@
            perform epilog-calculate-gr03
            if  retcode-sum not = zero
                 move 25  to RETURN-CODE
-           end-if
+           end-if       
            .
        end-99.
            goback.
@@ -329,21 +336,21 @@
       *---------------------------------------------------------*
        eprt-00.
            display '----------------------------------'
-                   '-----'
-           display '|              | '
+                   '---------'
+           display '|                   | '
                    'retcode |'
                    '           |'
-           display '| Test id      | ' 
+           display '| Test id           | ' 
                    'gcsort  |'         
                    '   status  |' 
            display '----------------------------------'
-                   '-----'
+                   '---------'
            perform epilog-view-gr03 
                varying idx from 1 by 1
                   until idx > ele-cmd-take-exec-num
 
            display '----------------------------------'
-                   '-----'
+                   '---------'
            . 
        eprt-99.
            exit.
@@ -394,8 +401,14 @@
        set-value-env             section.
       *---------------------------------------------------------*
        sv-00.
+           inspect env-set-value replacing all chrsl by chrbs
 	       display env-set-name  upon ENVIRONMENT-NAME
            display env-set-value upon ENVIRONMENT-VALUE          
+           if ( env-set-value not equal space )
+               display '****************************************'           
+               display env-set-name '=' env-set-value          
+               display '****************************************'           
+           end-if    
            .
        sv-99.
            exit.
@@ -405,6 +418,7 @@
       *---------------------------------------------------------*
        exal-00.
            if (ele-cmd-take-exec-type(idx) = 'gcsort  ')
+           display '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'
             display '*===============================================*'
             display ' ID test : ' ele-cmd-take-exec-id(idx)  '   Start '
             display '*===============================================*'
@@ -417,6 +431,8 @@
             display '*===============================================*'
             display ' ID test : ' ele-cmd-take-exec-id(idx)  '   End '
             display '*===============================================*'
+           display '-------------------------------------------------'
+           display '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'
            end-if
            .
        exal-99.
@@ -438,6 +454,7 @@
        exec-cmd-row               section.
       *---------------------------------------------------------*
        excm-00.
+ 
            if (ele-cmd-take-exec-type(idx-take) = 'setvar  ')
                move ele-cmd-take-exec-cmd(idx-take)  to cmd-string-tmp
            end-if
@@ -450,15 +467,34 @@
                add  1  to idx-err 
                move ele-cmd-take-exec-id(idx-take) 
                        to ar-tst-name(idx-err)
+               move 99  to ar-tst-rtc01(idx-err) 
                move space                  to cmd-string
                string wk-cmd-sort                delimited by size
                       wk-dir-take                delimited by size
                       ele-cmd-take-exec-cmd(idx-take) delimited by space
                             into cmd-string
       D        display  "cmd-string : " cmd-string
-               call "SYSTEM" using cmd-string
+Win            if (ntype = 1)
+                   inspect cmd-string replacing all chrsl by chrbs
+                   move cmd-string to cmd-go
+              else
+Linux           if (ntype = 2) or (ntype = 3)  
+                 move space to cmd-go
+                 string './'   delimited by size 
+                    cmd-string delimited by size
+                          into cmd-go
+TEST00***               display ' cmd:>' cmd-go  '<'
+                else
+                 display ' SYSTEM call problem '
+                 goback
+               end-if             
+             end-if            
+               display ' cmd line : ' cmd-go
+               call "SYSTEM" using    cmd-go
+               move  RETURN-CODE  to ar-tst-rtc01(idx-err)  
+               display 'ar-tst-rtc01(idx-err)  ' ar-tst-rtc01(idx-err)                
       D        display  "RETURN-CODE Value : " RETURN-CODE
-               move  RETURN-CODE  to ar-tst-rtc01(idx-take)           
+TEST00**               CALL "CBL_OC_NANOSLEEP" USING 1000000000               
            end-if
            .
        excm-99.

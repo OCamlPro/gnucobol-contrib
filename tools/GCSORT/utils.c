@@ -614,7 +614,7 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
             attrArea->digits = 0;
             attrArea->scale = 0;
 // s.m. 20201015
-    	    attrArea->flags  = COB_FLAG_HAVE_SIGN;
+    	    attrArea->flags  = attrArea->flags | COB_FLAG_HAVE_SIGN;
 // s.m. 20201015
             break;
 	}

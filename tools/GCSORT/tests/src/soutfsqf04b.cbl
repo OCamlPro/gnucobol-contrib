@@ -59,7 +59,8 @@
       * foutsqf02.cpy
            copy foutsqf02.
       * fsrtsqf01.cpy
-           copy fsrtsqf01.
+      ** s.m. 2020 12     copy fsrtsqf01.
+           copy fsrtsqf02.
       *
       *
        working-storage section.

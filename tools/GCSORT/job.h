@@ -107,6 +107,7 @@ struct job_t {
 // Option
 	int	 nVLSCMP;   // 0 disabled , 1 = enabled -- temporarily replace any missing compare field bytes with binary zeros
 	int	 nVLSHRT;   // 0 disabled , 1 = enabled -- treat any comparison involving a short field as false
+	int  nOutFileSameOutFile;	// when OutFil use OutFile
 	int	 ndeb; 
 	int	 sumFields;
 	int  bIsTake;
@@ -216,6 +217,8 @@ cob_field* job_cob_field_create ( void );
 void job_cob_field_set (cob_field* field_ret, int type, int digits, int scale, int flags, int nLen);
 void job_cob_field_destroy ( cob_field* field_ret);
 void job_print_error_file(cob_file* stFileDef, int nLenRecOut);
+
+void job_checkslash(char* str);
 
 static INLINE int write_buffered (int		desc, 
 						   unsigned char*	buffer_pointer, 

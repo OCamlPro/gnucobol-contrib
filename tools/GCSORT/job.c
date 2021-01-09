@@ -152,6 +152,7 @@ struct job_t *job_constructor( void ) {
 	job->omitCondField=NULL;
 	job->tmpCondField=NULL;
 	job->outrec=NULL;
+	job->nOutFileSameOutFile=0;
 	job->inrec=NULL;
 	job->sumFields=0;
 	job->SumField=NULL;
@@ -416,7 +417,7 @@ int job_load(struct job_t *job, int argc, char **argv) {
 	int   bufferLength=0;
 	int   i;
 	int   nTakeCmd = 0;
-	int   returnCode;
+	int   returnCode=-1;
 
 	globalJob=job;
  	buffer=(char *) malloc(COB_MEDIUM_BUFF);	// COmmandLine
@@ -577,9 +578,21 @@ int job_CloneFileForOutfil( struct job_t *job)
 	}
 	return 0;
 }
+
+void job_checkslash(char* str)
+{
+	int nL = strlen(str);
+	for (int k=0;k<nL;k++) {
+		if (str[k] == '/')
+			str[k] = '\\';
+	}
+}
+
 int job_RedefinesFileName( struct job_t *job) 
 {
 	struct file_t *file;
+	char szExt[5];
+	
 	int nPos=-1;
 	if (job->inputFile!=NULL) {
 		for (file=job->inputFile; file!=NULL; file=file_getNext(file)) {
@@ -589,9 +602,13 @@ int job_RedefinesFileName( struct job_t *job)
 					return -1;
 			}
 			memcpy(file->name, job->arrayFileInCmdLine[nPos], strlen(job->arrayFileInCmdLine[nPos]));
-
+#if _WIN32    // all commands for linux, change for windows
+			job_checkslash(file->name);
+#endif
 			if (file->stFileDef != NULL) {
+				memset(file->stFileDef->assign->data, 0x00, strlen(job->arrayFileInCmdLine[nPos])+1);
 				memcpy(file->stFileDef->assign->data, job->arrayFileInCmdLine[nPos], strlen(job->arrayFileInCmdLine[nPos]));
+//#if CONFIGURED_ISAM == VBISAM
 #ifdef VBISAM
 				// check if file name from command line contains ".dat" for indexed file
 				if (file->organization == FILE_ORGANIZATION_INDEXED) {
@@ -616,9 +633,13 @@ int job_RedefinesFileName( struct job_t *job)
 			//-->>free(file->name);
 			//-->>file->name = strdup(job->arrayFileOutCmdLine[nPos]);
 			memcpy(file->name, job->arrayFileOutCmdLine[nPos], strlen(job->arrayFileOutCmdLine[nPos]));
+#if _WIN32    // all commands for linux, change for windows
+			job_checkslash(file->name);
+#endif
 			if (file->stFileDef != NULL) {
 				//-->>free(file->stFileDef->assign->data);
 				//-->>file->stFileDef->assign->data = _strdup(job->arrayFileOutCmdLine[nPos]);
+				memset(file->stFileDef->assign->data, 0x00, strlen(job->arrayFileOutCmdLine[nPos]) + 1);
 				memcpy(file->stFileDef->assign->data, job->arrayFileOutCmdLine[nPos], strlen(job->arrayFileOutCmdLine[nPos]));
 #ifdef VBISAM
 				// check if file name from command line contains ".dat" for indexed file
@@ -1759,6 +1780,7 @@ int job_save_out(struct job_t *job)
 	unsigned char  szKeyCurr[1024+SZPOSPNT];
 	unsigned char  szKeyPrec[1024+SZPOSPNT];
 	unsigned char  szKeySave[1024+SZPOSPNT];
+	// unsigned char  szKeyFirst[1024+SZPOSPNT];
 	unsigned char* pAddress;
 	unsigned char* recordBuffer;
 	unsigned char* recordBufferPrevious;  // for Sum Fileds NONE
@@ -1766,6 +1788,7 @@ int job_save_out(struct job_t *job)
 	unsigned char* szBuffTmp;
 	unsigned char* szPrecSumFields;	// Prec
 	unsigned char* szSaveSumFields; // save
+	unsigned char* szFirstRek;
 	unsigned int   byteRead = 0;
 	unsigned int   lpntTemp = 0;
 	unsigned int   nLenPrec = 0;
@@ -1773,6 +1796,7 @@ int job_save_out(struct job_t *job)
 	unsigned int   nLenRek = 0;
 	unsigned int   nLenRekTemp = 0;
 	unsigned int   nLenSave = 0;	// recordBufferLength=(job->outputLength>job->inputLength?job->outputLength:job->inputLength);
+    unsigned int   bIsFirstKeySumField = 0;
 	recordBufferLength=MAX_RECSIZE; 
 
 	recordBufferLength = recordBufferLength + SZPOSPNT;
@@ -1797,9 +1821,19 @@ int job_save_out(struct job_t *job)
 	szSaveSumFields=(unsigned char *) malloc(recordBufferLength);
 	if (szSaveSumFields == 0)
 		fprintf(stderr,"*GCSORT*S025*ERROR: Cannot Allocate szSaveSumFields : %s\n", strerror(errno));
+	szFirstRek = (unsigned char*)malloc(recordBufferLength);
+	if (szFirstRek == 0)
+		fprintf(stderr, "*GCSORT*S025A*ERROR: Cannot Allocate szFirstRek : %s\n", strerror(errno));
 
-	// Outfill == NULL, staandard output file
-    if (job->outfil == NULL) {
+	if (job->outfil != NULL) {
+		if (outfil_open_files(job) < 0) {
+			retcode_func = -1;
+			goto job_save_exit;
+		}
+	}
+	// Outfil == NULL, standard output file
+    //if (job->outfil == NULL) {
+	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) {
 		cob_open(job->outputFile->stFileDef,  COB_OPEN_OUTPUT, 0, NULL);
 		if (atol((char *)job->outputFile->stFileDef->file_status) != 0) {
 			fprintf(stderr,"*GCSORT*S026*ERROR: Cannot open file %s - File Status (%c%c)\n",file_getName(job->outputFile), 
@@ -1807,12 +1841,6 @@ int job_save_out(struct job_t *job)
 			retcode_func = -1;
 			goto job_save_exit;
 		}
-    }
-    if (job->outfil != NULL){
-        if (outfil_open_files(job) < 0) {
-                retcode_func = -1;
-                goto job_save_exit;
-        }
     }
 
     nSplitPosPnt = SZPOSPNT;
@@ -1860,9 +1888,18 @@ int job_save_out(struct job_t *job)
 // SUMFIELD
 		// 2  SUM FIELDS = (P,L,T,....)
 		if (job->sumFields==2) {
-			memcpy(szKeyCurr,    job->buffertSort+(i)*(job->nLenKeys+SIZESRTBUFF)+job->nLenKeys, SZPOSPNT);  //lPosPnt
-			memcpy(szKeyCurr+SZPOSPNT,  job->buffertSort+(i)*(job->nLenKeys+SIZESRTBUFF),           job->nLenKeys);  //Key
-			useRecord = SumFields_KeyCheck(job, &bIsWrited, szKeyPrec, &nLenPrec, szKeyCurr,  &nLenRek, szKeySave,  &nLenSave, 
+		// s.m. 202012 memcpy(szKeyCurr,           job->buffertSort+(i)*(job->nLenKeys+SIZESRTBUFF)+job->nLenKeys, SZPOSPNT);  //lPosPnt
+		// s.m. 202012 memcpy(szKeyCurr+SZPOSPNT,  job->buffertSort+(i)*(job->nLenKeys+SIZESRTBUFF),          job->nLenKeys);  //Key
+		// s.m. 202012 
+			memcpy(szKeyCurr,            job->buffertSort+(i)*(job->nLenKeys+SIZESRTBUFF)+job->nLenKeys, SZPOSPNT);  //lPosPnt
+			memcpy(szKeyCurr + SZPOSPNT, job->buffertSort+(i)*(job->nLenKeys+SIZESRTBUFF), job->nLenKeys);  //Key
+
+		// s.m. 202012 			
+			if (bIsFirstKeySumField == 0) {			// Save first key for sum field, use this for write
+		    	memcpy(szFirstRek, szBuffRek, nLenRek + nSplitPosPnt);  //PosPnt + First Record
+		    	bIsFirstKeySumField = 1;
+		   }
+			useRecord = SumFields_KeyCheck(job, &bIsWrited, szKeyPrec, &nLenPrec, szKeyCurr,  &nLenRek, szKeySave,  &nLenSave,
                                            szPrecSumFields, szSaveSumFields, szBuffRek, SZPOSPNT);
 
 		}
@@ -1870,15 +1907,22 @@ int job_save_out(struct job_t *job)
 		if (useRecord==0)	// skip record
 			continue;
 
+
 		byteRead = nLenRek + nSplitPosPnt;
 		nNumBytes = nNumBytes + byteRead;
 		memcpy(recordBuffer, szBuffRek, byteRead);
-		
+		// s.m. 202012
+		if (bIsFirstKeySumField == 1) {
+			bIsFirstKeySumField = 0;
+			memcpy(recordBuffer, szFirstRek, nLenRek + nSplitPosPnt);
+		}
+		// 
+
 // OUTREC
 		if (job->outrec!=NULL) {
-			memset(szBuffRek, 0x20, sizeof(szBuffRek));
-			memcpy(szBuffRek, recordBuffer, nSplitPosPnt);
+			memset(szBuffRek, 0x20, recordBufferLength);
 			nLenRek = outrec_copy(job->outrec, szBuffRek, recordBuffer, job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
+			memset(recordBuffer, 0x20, recordBufferLength); // s.m. 202101
 			memcpy(recordBuffer, szBuffRek, nLenRek+nSplitPosPnt);
             nLenRecOut = nLenRek ;
 		}
@@ -1888,9 +1932,12 @@ int job_save_out(struct job_t *job)
 		if ((nLenRek > 0) && (job->outfil == NULL)){
 			if (job->sumFields==2) {
 				bIsWrited = 1;
-				SumField_SumFieldUpdateRek((unsigned char*)recordBuffer+SZPOSPNT);	// Update record in  memory
-				SumField_ResetTot(job);									            // reset totalizer
-				SumField_SumField((unsigned char*)szPrecSumFields+SZPOSPNT);		// Sum record in  memory
+				// s.m. 202012 store first key for buffer
+				// memcpy(recordBuffer, szKeyFirst, job->nLenKeys + SZPOSPNT);  //Key
+				// s.m. 202012 store first key for buffer
+				SumField_SumFieldUpdateRek((unsigned char*)recordBuffer+SZPOSPNT);	    // Update record in  memory
+				SumField_ResetTot(job);									                // reset totalizer
+				SumField_SumField((unsigned char*)szPrecSumFields+SZPOSPNT);		    // Sum record in  memory
 			}			
 			job_set_area(job, job->outputFile, recordBuffer+nSplitPosPnt, nLenRecOut);	// Len output
 			cob_write (job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
@@ -1900,6 +1947,13 @@ int job_save_out(struct job_t *job)
             	retcode_func = -1;
 				goto job_save_exit;
 			}
+			// s.m. 202012
+			if (job->sumFields == 2) {
+				memcpy(szFirstRek, szPrecSumFields, nLenRek + nSplitPosPnt);
+				bIsFirstKeySumField = 1;
+			}
+			// s.m. 202012
+
             job->recordWriteOutTotal++;
 		}	
 
@@ -1916,8 +1970,12 @@ int job_save_out(struct job_t *job)
 
 // 
 	if ((job->sumFields==2) && (bIsWrited == 1)) {   // pending buffer
-		SumField_SumFieldUpdateRek((char*)szPrecSumFields+SZPOSPNT);	// Update record in  memory
-		memcpy(recordBuffer, szPrecSumFields, nLenPrec+SZPOSPNT);		// Substitute record for write
+		// s.m. 202012 SumField_SumFieldUpdateRek((char*)szPrecSumFields+SZPOSPNT);	// Update record in  memory
+		// s.m. 202012 memcpy(recordBuffer, szPrecSumFields, nLenPrec+SZPOSPNT);		// Substitute record for write
+		// s.m. 202012 
+		SumField_SumFieldUpdateRek((char*)szFirstRek +SZPOSPNT);	// Update record in  memory
+		memcpy(recordBuffer, szFirstRek, nLenPrec+SZPOSPNT);		// Substitute record for write
+		// s.m. 202012 
 		nLenRek = nLenPrec;
 		nLenRecOut = job->outputLength;
 		job_set_area(job, job->outputFile, recordBuffer+nSplitPosPnt, nLenRecOut);	// Len output
@@ -1939,6 +1997,7 @@ job_save_exit:
 	free(szPrecSumFields);
 	free(szSaveSumFields);
 	free(recordBufferPrevious);
+	free(szFirstRek);
 
 	cob_close (job->outputFile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
 
@@ -2023,6 +2082,7 @@ int job_save_tempfile(struct job_t *job)
 	unsigned char* szBuffTmp;
 	unsigned char* szPrecSumFields;	// Prec
 	unsigned char* szSaveSumFields; // save
+	unsigned char* szFirstRek;
 	unsigned int   byteRead = 0;
 	unsigned int   lpntTemp = 0;
 	unsigned int   nLenRekTemp = 0;	
@@ -2046,6 +2106,9 @@ int job_save_tempfile(struct job_t *job)
 	szSaveSumFields=(unsigned char *) malloc(recordBufferLength);
 	if (szSaveSumFields == 0)
 		fprintf(stderr,"*GCSORT*S034*ERROR: Cannot Allocate szSaveSumFields : %s\n", strerror(errno));
+	szFirstRek = (unsigned char*)malloc(recordBufferLength);
+	if (szFirstRek == 0)
+		fprintf(stderr, "*GCSORT*S034A*ERROR: Cannot Allocate szFirstRek : %s\n", strerror(errno));
 	bufferwriteglobal=(unsigned char*) malloc(MAX_SIZE_CACHE_WRITE);
 	if (bufferwriteglobal == 0)
 		fprintf(stderr,"*GCSORT*S035*ERROR: Cannot Allocate bufferwriteglobal : %s\n", strerror(errno));
@@ -2267,6 +2330,8 @@ job_save_exit:
 	free(szPrecSumFields);
 	free(szSaveSumFields);
 	free(bufferwriteglobal);
+	free(szFirstRek);
+
 
 	if (desc >= 0){
 		if (close(desc)<0) {
@@ -2366,10 +2431,12 @@ char szNameTmp[FILENAME_MAX];
 	unsigned char* szBuffRekOutRec;
 	unsigned char* szPrecSumFields;	// Prec
 	unsigned char* szSaveSumFields; // save
+	unsigned char* szFirstRek;
 	unsigned int   nLenRek = 0;
-	unsigned int nLenPrec = 0;
-	unsigned int nLenRecOut = 0;
-	unsigned int nLenSave=0;
+	unsigned int   nLenPrec = 0;
+	unsigned int   nLenRecOut = 0;
+	unsigned int   nLenSave=0;
+	unsigned int   bIsFirstKeySumField = 0;
 
     if (job->bIsPresentSegmentation == 0)
 		return 0;
@@ -2405,7 +2472,13 @@ char szNameTmp[FILENAME_MAX];
 	szSaveSumFields=(unsigned char *) malloc(recordBufferLength);
 	if (szSaveSumFields == 0)
 		fprintf(stderr,"*GCSORT*S054*ERROR: Cannot Allocate szSaveSumFields : %s\n", strerror(errno));
-// new
+
+	szFirstRek = (unsigned char*)malloc(recordBufferLength);
+	if (szFirstRek == 0)
+		fprintf(stderr, "*GCSORT*S054A*ERROR: Cannot Allocate szFirstRek : %s\n", strerror(errno));
+
+
+	// new
 // Verify segmentation and if last section of file input
 //
 
@@ -2518,8 +2591,13 @@ char szNameTmp[FILENAME_MAX];
 		if (job->sumFields==2) {
 			job_GetKeys(szBufRekTmpFile[nPosPtr]+SZPOSPNT, szKeyTemp); 
 			memcpy(szKeyCurr,    szBufRekTmpFile[nPosPtr], SZPOSPNT);			//lPosPnt
-			memcpy(szKeyCurr+SZPOSPNT,  szKeyTemp, job->nLenKeys+SZPOSPNT);				//Key
-			useRecord = SumFields_KeyCheck(job, &bIsWrited, szKeyPrec, &nLenPrec, szKeyCurr,  &nLenRek, szKeySave,  &nLenSave, 
+			memcpy(szKeyCurr+SZPOSPNT,  szKeyTemp, job->nLenKeys+SZPOSPNT);		//Key
+		// s.m. 202012 			
+			if (bIsFirstKeySumField == 0) {			// Save first key for sum field, use this for write
+				memcpy(szFirstRek, szBuffRek, nLenRek + nSplitPosPnt);  //PosPnt + First Record
+				bIsFirstKeySumField = 1;
+			}
+			useRecord = SumFields_KeyCheck(job, &bIsWrited, szKeyPrec, &nLenPrec, szKeyCurr,  &nLenRek, szKeySave,  &nLenSave,
                                            szPrecSumFields, szSaveSumFields, szBufRekTmpFile[nPosPtr], SZPOSPNT);
 		}
 
@@ -2534,17 +2612,24 @@ char szNameTmp[FILENAME_MAX];
 			continue;
 		}
 
+		// s.m. 202012
+		if (bIsFirstKeySumField == 1) {
+			bIsFirstKeySumField = 0;
+			memcpy(recordBuffer, szFirstRek, nLenRek + nSplitPosPnt);
+		}
+		// 
 // OUTREC  
 		if ((useRecord==1) && (job->outrec!=NULL)) {
-			memset((unsigned char*)szBuffRekOutRec, 0x20, byteRead);
+			memset((unsigned char*)szBuffRekOutRec, 0x20, recordBufferLength);
 			nLenRek = outrec_copy(job->outrec, szBuffRekOutRec, szBufRekTmpFile[nPosPtr], job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
+			memset(recordBuffer, 0x20, recordBufferLength); // s.m. 202101
 			memcpy(szBufRekTmpFile[nPosPtr], szBuffRekOutRec, nLenRek+nSplitPosPnt);
 			byteReadTmpFile[nPosPtr]=nLenRek;
 			byteRead=nLenRek;
 			nLenRecOut=nLenRek; // for Outrec force length of record
 		}
 
-// NORNAL
+// NORMAL
 		if ((useRecord==1) && (job->outfil == NULL)) {
 			//nPosition = nPosition + 4 + byteRead;
 			if (job->sumFields==2) {
@@ -2564,6 +2649,12 @@ char szNameTmp[FILENAME_MAX];
             		retcode_func = -1;
 					goto job_save_tempfinal_exit;
 				}
+				// s.m. 202012
+				if (job->sumFields == 2) {
+					memcpy(szFirstRek, szPrecSumFields, nLenRek + nSplitPosPnt);
+					bIsFirstKeySumField = 1;
+				}
+				// s.m. 202012
 				job->recordWriteOutTotal++;
 			}
 		}
@@ -2584,8 +2675,12 @@ char szNameTmp[FILENAME_MAX];
 		}
 	}
 	if ((job->sumFields==2) && (bIsWrited == 1)) {   // pending buffer
-		SumField_SumFieldUpdateRek((char*)szPrecSumFields+SZPOSPNT);				// Update record in  memory
-		memcpy(recordBuffer, szPrecSumFields, nLenPrec+SZPOSPNT);		// Substitute record for write
+		//s.m. 202012 SumField_SumFieldUpdateRek((char*)szPrecSumFields+SZPOSPNT);				// Update record in  memory
+		//s.m. 202012 memcpy(recordBuffer, szPrecSumFields, nLenPrec+SZPOSPNT);		// Substitute record for write
+		//s.m. 202012 
+		SumField_SumFieldUpdateRek((char*)szFirstRek + SZPOSPNT);				// Update record in  memory
+		memcpy(recordBuffer, szFirstRek, nLenPrec + SZPOSPNT);		// Substitute record for write
+		//s.m. 202012 
 		nLenRek = nLenPrec;
         nLenRecOut = job->outputLength;
 		job_set_area(job, job->outputFile, recordBuffer+nSplitPosPnt, nLenRecOut); // Len output
@@ -2614,6 +2709,7 @@ job_save_tempfinal_exit:
 	free(szPrecSumFields);
 	free(szBuffRekOutRec);
 	free(szBuffRek);
+	free(szFirstRek);
 	for (kj=0; kj < MAX_HANDLE_TEMPFILE;kj++) {
 		if (szBufRekTmpFile[kj] != NULL)
 			free(szBufRekTmpFile[kj]);				
@@ -3093,7 +3189,14 @@ int job_merge_files(struct job_t *job) {
 // new
 // Verify segmentation and if last section of file input
 //
-	if (job->outputFile != NULL) { // new
+	if (job->outfil != NULL) {
+		if (outfil_open_files(job) < 0) {
+			retcode_func = -1;
+			goto job_merge_files_exit;
+		}
+	}
+	// If Outfile is not null and OutFil not present or OutFil present without FNAME
+	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { // new
 		cob_open(job->outputFile->stFileDef,  COB_OPEN_OUTPUT, 0, NULL);
 		if (atol((char *)job->outputFile->stFileDef->file_status) != 0) {
 			fprintf(stderr,"*GCSORT*S065*ERROR: Cannot open file %s - File Status (%c%c)\n",file_getName(job->outputFile),
@@ -3102,13 +3205,6 @@ int job_merge_files(struct job_t *job) {
 			goto job_merge_files_exit;
 		}
 	}
-	if (job->outfil != NULL) {
-		if (outfil_open_files( job ) < 0) {
-			retcode_func = -1;
-			goto job_merge_files_exit;
-		}
-	}
-
 
 	bFirstRound = 1;
 	bIsFirstTime = 1;
@@ -3261,7 +3357,8 @@ int job_merge_files(struct job_t *job) {
 			if (job->outrec!=NULL) {
 				memset(szBuffRek, 0x20, recordBufferLength);
 				nbyteRead = outrec_copy(job->outrec, szBuffRek, recordBuffer, nLenRecOut, nbyteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
-				memcpy(recordBuffer, szBuffRek, nbyteRead);
+				memset(recordBuffer, 0x20, recordBufferLength); // s.m. 202101
+				memcpy(recordBuffer, szBuffRek, nbyteRead + nSplitPosPnt);
 				job->LenCurrRek = nbyteRead ;
 				nLenRek = nbyteRead;
 			}

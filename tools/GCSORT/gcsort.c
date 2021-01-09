@@ -61,6 +61,11 @@ struct cob_frame	*frame_overflow;
 struct cob_frame	*frame_ptr;
 struct cob_frame	frame_stack[255];
 
+#define  COB_SOURCE_FILE		"gcsort.c"
+#define  COB_MODULE_FORMATTED_DATE	"gen 04 2021 18:46:15"
+#define  COB_MODULE_DATE		20210104
+#define  COB_MODULE_TIME		184615
+
 int g_cb_ebcdic_sign = 0;
 
 extern int yydebug;
@@ -122,7 +127,7 @@ int main(int argc, char **argv)
 	#endif
 #endif 
 //  
- 	return rtc;
+  	return rtc;
 }
 
 int main_prod(int argc, char **argv) {
@@ -136,30 +141,30 @@ int main_prod(int argc, char **argv) {
 
 	cob_init(argc, argv);
 	cob_module_enter(&module, &cob_glob_ptr, 0);
+
 	module->cob_procedure_params = cob_procedure_params;
+
 	/* Set frame stack pointer */
 	frame_ptr = frame_stack;
 	frame_ptr->perform_through = 0;
+
+	//-->> s.m. 202101 s.m.  
 	frame_overflow = frame_ptr + 255 - 1;
 	cob_module_path = cob_glob_ptr->cob_main_argv0;
 //-->>
 /* Initialize module structure */
 	module->module_name = "gcsort";
-	module->module_formatted_date = NULL;     // COB_MODULE_FORMATTED_DATE;
-	module->module_source = NULL;             // COB_SOURCE_FILE;
+	module->module_formatted_date = COB_MODULE_FORMATTED_DATE;
+	module->module_source = COB_SOURCE_FILE;
 	module->module_entry.funcptr = NULL;      // (void *(*)())ioixpafix;
 	module->module_cancel.funcptr = NULL;     // (void *(*)())ioixpafix_;
-	module->collating_sequence = NULL;
-	module->crt_status = NULL;
-	module->cursor_pos = NULL;
 	module->module_ref_count = NULL;
 	module->module_path = &cob_module_path;
 	module->module_active = 0;
-	module->module_date = 0;                  //COB_MODULE_DATE;
-	module->module_time = 0;                  //COB_MODULE_TIME;
+	module->module_date = COB_MODULE_DATE;
+	module->module_time = COB_MODULE_TIME;
 	module->module_type = 0;
 	module->module_param_cnt = 0;
-	module->module_returning = 0;
 	// s.m.20201015 module->ebcdic_sign = 0;
 	module->ebcdic_sign = g_cb_ebcdic_sign;
 	module->decimal_point = '.';
@@ -173,6 +178,15 @@ int main_prod(int argc, char **argv) {
 	module->flag_main = 1;
 	module->flag_fold_call = 0;
 	module->flag_exit_program = 0;
+	module->flag_debug_trace = 0;
+	module->flag_dump_ready = 0;
+	module->module_stmt = 0;
+	module->module_sources = NULL;
+
+	module->collating_sequence = NULL;
+	module->crt_status = NULL;
+	module->cursor_pos = NULL;
+	module->module_returning = 0;
 
 	/* Initialize cancel callback */
 	cob_set_cancel (module);
@@ -184,7 +198,7 @@ int main_prod(int argc, char **argv) {
 	if (job != NULL)
 	   	nRC = job_load(job, argc, argv);
 	else	
-    		nRC = -1;
+    	nRC = -1;
     if (nRC == 0){
 	// check SORT FIELDS=COPY
 	// in this case force MERGE 
@@ -235,9 +249,15 @@ int main_prod(int argc, char **argv) {
     if (module->module_active) {
   	    module->module_active--;
     }
-  /* Pop module stack */
+	// printf("GCSORT - cob_module_leave\n");
+	/* Pop module stack */
     cob_module_leave (module);
-    // new
+	cob_module_free(&module);
+	//	printf("GCSORT - cob_stop_run\n");
+	//	cob_stop_run(nRC);
+	//	cob_terminate_exec(nRC); 
+	//
+	// printf("GCSORT - cob_stop_run after\n");
 	return nRC;
 }
 
