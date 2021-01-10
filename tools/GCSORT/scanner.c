@@ -447,8 +447,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	(yy_c_buf_p) = yy_cp;
 
 /* %% [4.0] data tables for the DFA and the user's section 1 definitions go here */
-#define YY_NUM_RULES 68
-#define YY_END_OF_BUFFER 69
+#define YY_NUM_RULES 69
+#define YY_END_OF_BUFFER 70
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -458,55 +458,55 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[446] =
     {   0,
-       65,   65,   65,   65,   65,   65,   65,   65,   65,   65,
-       65,   65,   69,   67,   66,   68,   67,   67,   67,   67,
-       65,   52,   65,   65,   65,   56,   65,   65,   65,   65,
-       65,   65,   65,   65,   65,   65,   65,   57,   65,   64,
-       64,   64,   51,   51,   61,   61,   61,   60,   60,   65,
-       65,   65,   65,   66,    0,    0,    0,    0,    0,    0,
-        0,    0,   63,    0,    0,    0,   53,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,   65,   52,   59,
-       59,   62,   65,   62,   65,   65,   65,   65,   50,   62,
-       62,   65,   65,   50,   65,   50,   65,   65,   50,   50,
+       66,   66,   66,   66,   66,   66,   66,   66,   66,   66,
+       66,   66,   70,   68,   67,   69,   68,   68,   68,   68,
+       66,   53,   66,   66,   66,   57,   66,   66,   66,   66,
+       66,   66,   66,   66,   66,   66,   66,   58,   66,   65,
+       65,   65,   52,   52,   62,   62,   62,   61,   61,   66,
+       66,   66,   66,   67,    0,    0,    0,    0,    0,    0,
+        0,    0,   64,    0,    0,    0,   54,    0,    0,    0,
+        0,    0,    0,    0,    0,    0,    0,   66,   53,   60,
+       60,   63,   66,   63,   66,   66,   66,   66,   51,   63,
+       63,   66,   66,   51,   66,   51,   66,   66,   51,   51,
 
-       65,   50,   65,   65,   65,   65,   65,   65,   62,   65,
-       65,   65,   65,   65,   50,   65,   65,   65,   65,   62,
-       64,   58,   58,   58,   58,    0,    0,    0,    0,    0,
+       66,   51,   66,   66,   66,   66,   66,   66,   63,   66,
+       66,   66,   66,   66,   51,   66,   66,   66,   66,   63,
+       65,   59,   59,   59,   59,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-       53,    0,   47,    0,    0,    0,    0,    0,    0,    0,
-        0,   49,   52,   65,   62,   65,   65,   62,   62,    5,
-       65,   65,   65,   65,   65,   65,   65,   65,   17,   65,
-       65,   65,   65,   65,   22,   65,   65,   65,   65,   65,
-       65,   65,   65,   65,   65,   34,   35,   65,    0,    0,
+       54,    0,   48,    0,    0,    0,    0,    0,    0,    0,
+        0,   50,   53,   66,   63,   66,   66,   63,   63,    5,
+       66,   66,   66,   66,   66,   66,   66,   66,   18,   66,
+       66,   66,   66,   66,   23,   66,   66,   66,   66,   66,
+       66,   66,   66,   66,   66,   35,   36,   66,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
 
-        0,    0,    0,   53,    0,    0,    0,    0,    0,   48,
-        0,   52,   65,    2,   65,    4,   65,   65,   65,   65,
-       65,   65,   14,   65,   65,   65,   65,   19,   20,   65,
-       65,   65,   65,   65,   65,   27,   65,   29,   65,   65,
-       65,   65,   65,    0,    0,    0,    0,    0,   19,   20,
-        0,   27,    0,    0,    0,    0,    0,    0,    0,   53,
-        0,   46,    0,    0,    0,    0,   52,    1,   65,   65,
-       65,   65,   11,   65,   65,   65,   16,   18,   65,   19,
-       19,   65,   65,   65,   65,   65,   65,   27,   27,   65,
-       32,   65,   65,   65,   65,    0,   11,    0,    0,    0,
+        0,    0,    0,   54,    0,    0,    0,    0,    0,   49,
+        0,   53,   66,    2,   66,    4,   66,   66,   66,   66,
+       66,   66,   14,   66,   66,   66,   66,   20,   21,   66,
+       66,   66,   66,   66,   66,   28,   66,   30,   66,   66,
+       66,   66,   66,    0,    0,    0,    0,    0,   20,   21,
+        0,   28,    0,    0,    0,    0,    0,    0,    0,   54,
+        0,   47,    0,    0,    0,    0,   53,    1,   66,   66,
+       66,   66,   11,   66,   66,   66,   16,   19,   66,   20,
+       20,   66,   66,   66,   66,   66,   66,   28,   28,   66,
+       33,   66,   66,   66,   66,    0,   11,    0,    0,    0,
 
-        0,    0,   32,    0,    0,    0,    0,    0,    3,   53,
-        0,    0,    0,    0,   54,    1,    1,   65,    6,   42,
-        8,   11,   11,   12,   13,   65,   65,   21,   23,   25,
-       65,   26,   65,   65,   65,   65,   65,   36,   37,    6,
-       12,   13,    0,   25,    0,    0,    0,    0,   36,   37,
-       55,    0,   43,    0,    0,   54,   40,    0,    7,   12,
-       12,   13,   13,   15,   65,   24,   10,   65,   28,   65,
-       65,   31,   15,   28,    0,    0,   31,   55,   41,    0,
-        0,   54,    7,   44,    0,    9,   38,    0,   33,   30,
-       30,   55,   45,   39,   54,    9,   33,   55,   54,   55,
+        0,    0,   33,    0,    0,    0,    0,    0,    3,   54,
+        0,    0,    0,    0,   55,    1,    1,   66,    6,   43,
+        8,   11,   11,   12,   13,   66,   66,   22,   24,   17,
+       66,   27,   66,   66,   66,   66,   66,   37,   38,    6,
+       12,   13,    0,   26,    0,    0,    0,    0,   37,   38,
+       56,    0,   44,    0,    0,   55,   41,    0,    7,   12,
+       12,   13,   13,   15,   66,   25,   10,   66,   29,   66,
+       66,   32,   15,   29,    0,    0,   32,   56,   42,    0,
+        0,   55,    7,   45,    0,    9,   39,    0,   34,   31,
+       31,   56,   46,   40,   55,    9,   34,   56,   55,   56,
 
-       54,   55,   54,   55,   54,   55,   54,   55,   54,   55,
-       54,   55,   54,   55,   54,   55,   54,   55,   54,   55,
-       54,   55,   54,   55,   54,   55,   54,   55,   54,   55,
-       54,   55,   54,   55,   54,   55,   54,   55,   54,   55,
-       54,   55,   54,   55,    0
+       55,   56,   55,   56,   55,   56,   55,   56,   55,   56,
+       55,   56,   55,   56,   55,   56,   55,   56,   55,   56,
+       55,   56,   55,   56,   55,   56,   55,   56,   55,   56,
+       55,   56,   55,   56,   55,   56,   55,   56,   55,   56,
+       55,   56,   55,   56,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -898,15 +898,15 @@ static char *yy_last_accepting_cpos;
 extern int yy_flex_debug;
 int yy_flex_debug = 1;
 
-static yyconst flex_int16_t yy_rule_linenum[68] =
+static yyconst flex_int16_t yy_rule_linenum[69] =
     {   0,
       117,  118,  119,  120,  121,  122,  123,  129,  137,  143,
       150,  151,  152,  153,  154,  155,  156,  157,  158,  159,
-      160,  162,  163,  164,  165,  167,  168,  169,  170,  171,
-      172,  173,  174,  175,  176,  177,  178,  180,  181,  182,
-      183,  184,  185,  186,  187,  190,  191,  192,  193,  196,
-      197,  198,  199,  200,  201,  203,  204,  206,  207,  208,
-      209,  212,  216,  221,  222,  223,  224
+      160,  161,  163,  164,  165,  166,  168,  169,  170,  171,
+      172,  173,  174,  175,  176,  177,  178,  179,  181,  182,
+      183,  184,  185,  186,  187,  188,  191,  192,  193,  194,
+      197,  198,  199,  200,  201,  202,  204,  205,  207,  208,
+      209,  210,  213,  217,  222,  223,  224,  225
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -1326,13 +1326,13 @@ do_action:	/* This label is used only to access EOF actions. */
 			{
 			if ( yy_act == 0 )
 				fprintf( stderr, "--scanner backing up\n" );
-			else if ( yy_act < 68 )
+			else if ( yy_act < 69 )
 				fprintf( stderr, "--accepting rule at line %ld (\"%s\")\n",
 				         (long)yy_rule_linenum[yy_act], yytext );
-			else if ( yy_act == 68 )
+			else if ( yy_act == 69 )
 				fprintf( stderr, "--accepting default rule (\"%s\")\n",
 				         yytext );
-			else if ( yy_act == 69 )
+			else if ( yy_act == 70 )
 				fprintf( stderr, "--(end of buffer or a NUL)\n" );
 			else
 				fprintf( stderr, "--EOF (start condition %d)\n", YY_START );
@@ -1451,38 +1451,38 @@ BEGIN(CHSC);    return INREC;
 case 17:
 YY_RULE_SETUP
 #line 156 "..\\..\\parser\\scanner.l"
-BEGIN(KEYV);    return KEY;
+BEGIN(CHSC);    return OUTREC;		
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 157 "..\\..\\parser\\scanner.l"
-nPhase = 1;  BEGIN(INITIAL); return MERGE;
+BEGIN(KEYV);    return KEY;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 158 "..\\..\\parser\\scanner.l"
-return NONE;
+nPhase = 1;  BEGIN(INITIAL); return MERGE;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 159 "..\\..\\parser\\scanner.l"
-BEGIN(TCOND);   return OMIT; 
+return NONE;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 160 "..\\..\\parser\\scanner.l"
+BEGIN(TCOND);   return OMIT; 
+	YY_BREAK
+case 22:
+YY_RULE_SETUP
+#line 161 "..\\..\\parser\\scanner.l"
 return OPTION;
 	YY_BREAK
 /*"ORG"		                                    return ORG;*/
-case 22:
-YY_RULE_SETUP
-#line 162 "..\\..\\parser\\scanner.l"
-BEGIN(TORG);                return ORG;
-	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 163 "..\\..\\parser\\scanner.l"
-return OUTFIL;
+BEGIN(TORG);                return ORG;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
@@ -1492,73 +1492,73 @@ return OUTFIL;
 case 25:
 YY_RULE_SETUP
 #line 165 "..\\..\\parser\\scanner.l"
+return OUTFIL;
+	YY_BREAK
+case 26:
+YY_RULE_SETUP
+#line 166 "..\\..\\parser\\scanner.l"
 BEGIN(CHSC);    return OUTREC;		
 	YY_BREAK
 /* "RECORD"	                         return RECORD; */
-case 26:
-YY_RULE_SETUP
-#line 167 "..\\..\\parser\\scanner.l"
-BEGIN(INITIAL); return RECORD;
-	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 168 "..\\..\\parser\\scanner.l"
-return SAVE;
+BEGIN(INITIAL); return RECORD;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 169 "..\\..\\parser\\scanner.l"
-return SKIPREC;
+return SAVE;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 170 "..\\..\\parser\\scanner.l"
-nPhase = 1;  BEGIN(INITIAL); return SORT;
+return SKIPREC;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 171 "..\\..\\parser\\scanner.l"
-return STARTREC;
+nPhase = 1;  BEGIN(INITIAL); return SORT;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 172 "..\\..\\parser\\scanner.l"
-return STOPAFT;
+return STARTREC;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 173 "..\\..\\parser\\scanner.l"
-return SPLIT;
+return STOPAFT;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 174 "..\\..\\parser\\scanner.l"
-return SPLITBY;
+return SPLIT;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 175 "..\\..\\parser\\scanner.l"
-return SUM;
+return SPLITBY;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 176 "..\\..\\parser\\scanner.l"
-BEGIN(INITIAL); return USE;
+return SUM;
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 177 "..\\..\\parser\\scanner.l"
-return VLSCMP;
+BEGIN(INITIAL); return USE;
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 178 "..\\..\\parser\\scanner.l"
-return VLSHRT;
+return VLSCMP;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 180 "..\\..\\parser\\scanner.l"
-printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
+#line 179 "..\\..\\parser\\scanner.l"
+return VLSHRT;
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
@@ -1578,7 +1578,7 @@ printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOK
 case 42:
 YY_RULE_SETUP
 #line 184 "..\\..\\parser\\scanner.l"
-printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
+printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
@@ -1597,8 +1597,8 @@ printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOK
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 190 "..\\..\\parser\\scanner.l"
-return AND;
+#line 188 "..\\..\\parser\\scanner.l"
+printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
@@ -1608,7 +1608,7 @@ return AND;
 case 48:
 YY_RULE_SETUP
 #line 192 "..\\..\\parser\\scanner.l"
-return OR;
+return AND;
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
@@ -1617,107 +1617,112 @@ return OR;
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 196 "..\\..\\parser\\scanner.l"
-yylval.string = _strdup(yytext) ;					return OPCOND; 	
+#line 194 "..\\..\\parser\\scanner.l"
+return OR;
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
 #line 197 "..\\..\\parser\\scanner.l"
-yylval.string = _strdup(yytext) ;					return ORDER; 
+yylval.string = _strdup(yytext) ;					return OPCOND; 	
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
 #line 198 "..\\..\\parser\\scanner.l"
-yylval.number = strtol(yytext, &pEnd, 10) ;			return DIGIT;  
+yylval.string = _strdup(yytext) ;					return ORDER; 
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 199 "..\\..\\parser\\scanner.l"
-yylval.number = strtol(yytext, &pEnd, 10) ;			return DIGIT; 
+yylval.number = strtol(yytext, &pEnd, 10) ;			return DIGIT;  
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 200 "..\\..\\parser\\scanner.l"
-yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;		return SIGNDIGITBIG;  
+yylval.number = strtol(yytext, &pEnd, 10) ;			return DIGIT; 
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
 #line 201 "..\\..\\parser\\scanner.l"
 yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;		return SIGNDIGITBIG;  
 	YY_BREAK
-/* {FORMATTYPE}		        yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  */
 case 56:
 YY_RULE_SETUP
-#line 203 "..\\..\\parser\\scanner.l"
-yylval.string = _strdup(yytext) ;                   return RECTYPEFIX;
+#line 202 "..\\..\\parser\\scanner.l"
+yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;		return SIGNDIGITBIG;  
 	YY_BREAK
+/* {FORMATTYPE}		        yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  */
 case 57:
 YY_RULE_SETUP
 #line 204 "..\\..\\parser\\scanner.l"
+yylval.string = _strdup(yytext) ;                   return RECTYPEFIX;
+	YY_BREAK
+case 58:
+YY_RULE_SETUP
+#line 205 "..\\..\\parser\\scanner.l"
 yylval.string = _strdup(yytext) ;                   return RECTYPEVAR;
 	YY_BREAK
 /* {FILETYPE}   	            yylval.string = _strdup(yytext) ;                   return FILETYPE;  */ 
-case 58:
-YY_RULE_SETUP
-#line 206 "..\\..\\parser\\scanner.l"
-yylval.string = _strdup(yytext) ;                   return FILETYPE; 
-	YY_BREAK
 case 59:
 YY_RULE_SETUP
 #line 207 "..\\..\\parser\\scanner.l"
-yylval.string = _strdup(yytext) ;                   return OCCURFILL;
+yylval.string = _strdup(yytext) ;                   return FILETYPE; 
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
 #line 208 "..\\..\\parser\\scanner.l"
-yylval.string = _strdup(yytext) ;                   return CHARTCOND;    
+yylval.string = _strdup(yytext) ;                   return OCCURFILL;
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
 #line 209 "..\\..\\parser\\scanner.l"
-yylval.string = _strdup(yytext) ;                   return CHARTYPE; 
+yylval.string = _strdup(yytext) ;                   return CHARTCOND;    
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 212 "..\\..\\parser\\scanner.l"
+#line 210 "..\\..\\parser\\scanner.l"
+yylval.string = _strdup(yytext) ;                   return CHARTYPE; 
+	YY_BREAK
+case 63:
+YY_RULE_SETUP
+#line 213 "..\\..\\parser\\scanner.l"
 yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  
 	YY_BREAK
 /* String C''';'   */
-case 63:
-/* rule 63 can match eol */
+case 64:
+/* rule 64 can match eol */
 YY_RULE_SETUP
-#line 216 "..\\..\\parser\\scanner.l"
+#line 217 "..\\..\\parser\\scanner.l"
 {yylval.string=malloc(strlen(yytext)-1);
 					 memcpy(yylval.string,yytext+1,strlen(yytext)-2);
 					 yylval.string[strlen(yytext)-2]=0;
 					 return STRING;}
 	YY_BREAK
-case 64:
-YY_RULE_SETUP
-#line 221 "..\\..\\parser\\scanner.l"
-yylval.string = _strdup(yytext) ; return KEYTYPE; 
-	YY_BREAK
 case 65:
 YY_RULE_SETUP
 #line 222 "..\\..\\parser\\scanner.l"
-yylval.string = _strdup(yytext) ; return STRING;
+yylval.string = _strdup(yytext) ; return KEYTYPE; 
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
 #line 223 "..\\..\\parser\\scanner.l"
-
+yylval.string = _strdup(yytext) ; return STRING;
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
 #line 224 "..\\..\\parser\\scanner.l"
-return yytext[0];
+
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 227 "..\\..\\parser\\scanner.l"
+#line 225 "..\\..\\parser\\scanner.l"
+return yytext[0];
+	YY_BREAK
+case 69:
+YY_RULE_SETUP
+#line 228 "..\\..\\parser\\scanner.l"
 ECHO;
 	YY_BREAK
-#line 1721 "..\\..\\scanner.c"
+#line 1726 "..\\..\\scanner.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(KEYV):
 case YY_STATE_EOF(ORDK):
@@ -2804,6 +2809,6 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 227 "..\\..\\parser\\scanner.l"
+#line 228 "..\\..\\parser\\scanner.l"
 
 

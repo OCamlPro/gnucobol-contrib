@@ -149,9 +149,9 @@ struct outrec_t *outrec_constructor_substnchar(unsigned char* ntch, unsigned cha
 struct outrec_t* outrec_constructor_possubstnchar(int npos, unsigned char* ntch, unsigned char* chfieldValue) {
 	struct outrec_t* outrec = (struct outrec_t*)malloc(sizeof(struct outrec_t));
 	if (outrec != NULL) {
-		outrec->type = OUTREC_TYPE_CHANGE;
+		outrec->type = OUTREC_TYPE_CHANGE_ABSPOS; //OUTREC_TYPE_CHANGE;
 		outrec->change.fieldValue = fieldValue_constructor((char*)ntch, (char*)chfieldValue, TYPE_STRUCT_STD);
-		outrec->change.posAbsRec = npos; // ?? -1;
+		outrec->change.posAbsRec = npos - 1; // ?? -1;
 		outrec->change.type = 0x00;
 		outrec->next = NULL;
 	}

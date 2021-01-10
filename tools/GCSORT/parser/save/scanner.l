@@ -35,8 +35,6 @@
   #include "parser.h"
   char * pEnd;
   int    nPhase = 0;
-  extern char szMexToken[260];
-
   void yyerror(const char *error) {
 	printf("Error : %s\n",error);
 	if(yytext != NULL) {
@@ -132,28 +130,12 @@ OPCOND          EQ|GT|GE|LT|LE|NE|SS
                             }else {	
                                 BEGIN(CHSC); 
                            } return FIELDS; 
-
-                                                      
-"OVERLAY"{BLANK}[=]{BLANK}   if (nPhase == 1) {       
-                                BEGIN(ORDK);          
-                                nPhase = 0;           
-                            }else {	                  
-                                BEGIN(CHSC);          
-                            } return OVERLAY;         
-"OVERLAY"                    if (nPhase == 1) {       
-                                BEGIN(ORDK);          
-                                nPhase = 0;           
-                            }else {	                  
-                                BEGIN(CHSC);          
-                           } return OVERLAY;          
-                                                      
 [,]*{BLANK}"FILES"{BLANK}[,]*                   return FNAMES; //return FILES;
 [,]*{BLANK}"FNAMES"{BLANK}[,]*	                return FNAMES;
 [,]*{BLANK}"FORMAT"{BLANK}[,]*                  return FORMAT;
 "GIVE"		                    BEGIN(INITIAL); return GIVE;
 [,]*{BLANK}"INCLUDE"            BEGIN(TCOND);   return INCLUDE; 
 "INREC"		                    BEGIN(CHSC);    return INREC;		
-"OUTREC"		                BEGIN(CHSC);    return OUTREC;		
 "KEY"	                        BEGIN(KEYV);    return KEY;
 "MERGE"		       nPhase = 1;  BEGIN(INITIAL); return MERGE;
 [(]*{BLANK}"NONE"{BLANK}[)]*	                return NONE;

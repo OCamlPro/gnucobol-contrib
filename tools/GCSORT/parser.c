@@ -2915,7 +2915,7 @@ yyreduce:
     {
         strcpy(szMexToken, " outrec clause Overlay");
         current_outrec=1;
-        nRecCase=1;
+        nRecCase=2;
 		nPosAbsRec = 0;
 }
     break;
@@ -2937,7 +2937,7 @@ yyreduce:
     {
         strcpy(szMexToken, " outrec clause Overlay");
         current_outrec=1;
-        nRecCase=1;
+        nRecCase=2;
 		nPosAbsRec = 0;
         }
     break;

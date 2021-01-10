@@ -52,12 +52,9 @@
 	#include "outfil.h"
 	#include "sumfield.h"
 	#include "utils.h"
-    #include "gcshare.h"
 
 	#define  INREC_CASE		1
 	#define  OUTREC_CASE	2
-
-    //-->> extern char szMexToken[260];
 
 	int yylex    (void);
 	void yyerror (char const *);
@@ -65,17 +62,12 @@
 	struct file_t*		current_file=NULL;
 	struct outfil_t*	current_outfil=NULL;
 	struct condField_t*	condField=NULL;
-    struct inrec_t *    inrec=NULL;
-    struct outrec_t *   outrec=NULL;
-
 
 	int nRecCase=0;
 	int nTypeFile=0;
 	int current_outrec=0;
 	int current_inrec=0;
 	int current_sortField=0;
-    int inrec_overlay=0;
-    int outrec_overlay=0;
 	int nPosAbsRec=0;
 	int nRtc=0;
 	int nCountGroupFiles=0;
@@ -114,7 +106,6 @@
 %token				VLSHRT					"VLSHRT clause"
 %token 				BUILD					"BUILD instruction"
 %token 				FIELDS					"FIELDS instruction"
-%token 				OVERLAY					"OVERLAY instruction"
 %token 				GIVE					"GIVE clause"
 %token 				MERGE					"MERGE clause"
 %token 				ORG						"ORG instruction"
@@ -651,7 +642,6 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
-                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec += outrec->range.length;
@@ -660,64 +650,19 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                    // struct inrec_t *
-                    inrec=inrec_constructor_range($1,$3);
+                    struct inrec_t *inrec=inrec_constructor_range($1,$3);
                     if (inrec == NULL) {
                         utl_abend_terminate(MEMORYALLOC, 119, ABEND_SKIP);
                         YYABORT;
                     }
                     nPosAbsRec += inrec->range.length;
-                    inrec->nIsOverlay=inrec_overlay;
                     inrec_addDefinition(inrec);
             }
             break;
         default:
             break;
         }
-} 
-   // new  20201211 start
-    /* ######################################################################################## */
-    // case 11:C'A'  (from position 11 output, copy character 'A')
-    /* ######################################################################################## */
-    | DIGIT ':' CHARTYPE STRING {
-        switch(nRecCase) {
-        case OUTREC_CASE :
-            strcpy(szMexToken, " inrec clause ");
-            if (current_outrec==1) {
-                struct outrec_t *outrec=outrec_constructor_possubstnchar($1, $3, $4);
-                if (outrec == NULL) {
-                    utl_abend_terminate(MEMORYALLOC, 124, ABEND_SKIP);
-                    YYABORT;
-                }
-                if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
-                } else {
-                    outrec->nIsOverlay=outrec_overlay;
-                    outrec_addDefinition(outrec);
-                }
-                nPosAbsRec += fieldValue_getGeneratedLength(outrec->change.fieldValue);
-            }
-            break;
-        case INREC_CASE :
-            strcpy(szMexToken, " inrec clause ");
-            if (current_inrec==1) {
-                // struct inrec_t *
-                inrec=inrec_constructor_possubstnchar($1, $3, $4);
-                if (inrec == NULL) {
-                    utl_abend_terminate(MEMORYALLOC, 125, ABEND_SKIP);
-                    YYABORT;
-                }
-                inrec->nIsOverlay=inrec_overlay;
-                inrec_addDefinition(inrec);
-                nPosAbsRec += fieldValue_getGeneratedLength(inrec->change.fieldValue);
-            }
-           break;
-        default:
-            break;
-        }
-		free($4); 
 }
-   // new  20201211 end
     /* ######################################################################################## */
     // (pos 20 output), (pos 10, len 5 input)
     // case 20:10,5  (from position 20 output, copy field position 10 for len 5 from input)
@@ -735,7 +680,6 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
-                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec = outrec->range_position.posAbsRec + outrec->range_position.length;
@@ -744,14 +688,12 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
-                inrec=inrec_constructor_range_position($1, $3, $5);
+                struct inrec_t *inrec=inrec_constructor_range_position($1, $3, $5);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 121, ABEND_SKIP);
                     YYABORT;
                 }
                 nPosAbsRec = inrec->range_position.posAbsRec + inrec->range_position.length;
-                inrec->nIsOverlay=inrec_overlay;
                 inrec_addDefinition(inrec);
             }
             break;
@@ -776,7 +718,6 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
-                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec += fieldValue_getGeneratedLength(outrec->change.fieldValue);
@@ -785,13 +726,11 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
-                inrec=inrec_constructor_subst($1);
+                struct inrec_t *inrec=inrec_constructor_subst($1);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 123, ABEND_SKIP);
                     YYABORT;
                 }
-                inrec->nIsOverlay=inrec_overlay;
                 inrec_addDefinition(inrec);
                 nPosAbsRec += fieldValue_getGeneratedLength(inrec->change.fieldValue);
             }
@@ -819,7 +758,6 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
-                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec += fieldValue_getGeneratedLength(outrec->change.fieldValue);
@@ -828,13 +766,11 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
-                inrec=inrec_constructor_substnchar($1,$2);
+                struct inrec_t *inrec=inrec_constructor_substnchar($1,$2);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 125, ABEND_SKIP);
                     YYABORT;
                 }
-                inrec->nIsOverlay=inrec_overlay;
                 inrec_addDefinition(inrec);
                 nPosAbsRec += fieldValue_getGeneratedLength(inrec->change.fieldValue);
             }
@@ -864,7 +800,6 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
-                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
             }
@@ -872,15 +807,13 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
-                inrec=inrec_constructor_padding($1, $3, nPosAbsRec);
+                struct inrec_t *inrec=inrec_constructor_padding($1, $3, nPosAbsRec);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 127, ABEND_SKIP);
                     YYABORT;
                 }
                 if ($1 > nPosAbsRec) 
                     nPosAbsRec = $1;		// - inrec->change_position.fieldValue->generated_length;
-                inrec->nIsOverlay=inrec_overlay;
                 inrec_addDefinition(inrec);
             }
            break;
@@ -898,12 +831,7 @@ inoutrec:
         case OUTREC_CASE :
             strcpy(szMexToken, " outrec clause ");
             if (current_outrec==1) {
-       //         struct outrec_t *outrec=outrec_constructor_subst($1);
-                char szType01[3];
-                memset(szType01, 0x00, 3);
-                szType01[0]='1';
-                strcat(szType01, $1);
-                struct outrec_t *outrec=outrec_constructor_subst(szType01);
+                struct outrec_t *outrec=outrec_constructor_subst($1);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 128, ABEND_SKIP);
                     YYABORT;
@@ -911,7 +839,6 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
-                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec += fieldValue_getGeneratedLength(outrec->change.fieldValue);
@@ -920,18 +847,11 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
-        //                inrec=inrec_constructor_subst($1);
-                char szType01[3];
-                memset(szType01, 0x00, 3);
-                szType01[0]='1';
-                strcat(szType01, $1);
-                inrec=inrec_constructor_subst(szType01);
+                struct inrec_t *inrec=inrec_constructor_subst($1);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 129, ABEND_SKIP);
                     YYABORT;
                 }
-                inrec->nIsOverlay=inrec_overlay;
                 inrec_addDefinition(inrec);
                 nPosAbsRec += fieldValue_getGeneratedLength(inrec->change.fieldValue);
             }
@@ -960,7 +880,6 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
-                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
             }
@@ -968,13 +887,11 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
-                inrec=inrec_constructor_change($1);
+                struct inrec_t *inrec=inrec_constructor_change($1);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 131, ABEND_SKIP);
                     YYABORT;
                 }
-                inrec->nIsOverlay=inrec_overlay;
                 inrec_addDefinition(inrec);
                 nPosAbsRec += fieldValue_getGeneratedLength(inrec->change.fieldValue);
             }
@@ -1012,7 +929,6 @@ inoutrec:
                 if (nstate_outfil==1) {
                     outfil_addoutfilrec(outrec);
                 } else {
-                    outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec += outrec->range.length;
@@ -1021,13 +937,11 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
-                inrec=inrec_constructor_range($1,-1);
+                struct inrec_t *inrec=inrec_constructor_range($1,-1);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 134, ABEND_SKIP);
                     YYABORT;
                 }
-                inrec->nIsOverlay=inrec_overlay;
                 inrec_addDefinition(inrec);
             }
             break;
@@ -1079,31 +993,7 @@ outrecclause:
         current_outrec=0;
         nRecCase=0;
 }
-    /* s.m. 20201206 */
-    | OUTREC OVERLAY '=' '(' {
-        strcpy(szMexToken, " outrec clause Overlay");
-        current_outrec=1;
-        nRecCase=2;
-		nPosAbsRec = 0;
-} allinoutrec ')' {
-        current_outrec=0;
-        nRecCase=0;
-        outrec_overlay=1;
-        outrec_SetOverlay(outrec, outrec_overlay);
-}
-    |   /* */
-      OUTREC OVERLAY '(' {
-        strcpy(szMexToken, " outrec clause Overlay");
-        current_outrec=1;
-        nRecCase=2;
-		nPosAbsRec = 0;
-        } allinoutrec ')' {
-        current_outrec=0;
-        nRecCase=0;
-        outrec_overlay=1;
-        outrec_SetOverlay(outrec, outrec_overlay);
-};
-
+;
 
 /* Case for OUTREC in OUTFIL */
 outrecclause:
@@ -1171,30 +1061,7 @@ inrecclause:
 			current_inrec=0;
 			nRecCase=0;
 }
-    /* s.m. 20201206 */
-    | INREC OVERLAY '=' '(' {
-        strcpy(szMexToken, " inrec clause Overlay");
-        current_inrec=1;
-        nRecCase=1;
-		nPosAbsRec = 0;
-} allinoutrec ')' {
-        current_inrec=0;
-        nRecCase=0;
-        inrec_overlay=1;
-        inrec_SetOverlay(inrec, inrec_overlay);
-}
-    |   /* */
-      INREC OVERLAY '(' {
-        strcpy(szMexToken, " inrec clause Overlay");
-        current_inrec=1;
-        nRecCase=1;
-		nPosAbsRec = 0;
-        } allinoutrec ')' {
-        current_inrec=0;
-        nRecCase=0;
-        inrec_overlay=1;
-        inrec_SetOverlay(inrec, inrec_overlay);
-};
+;
 /* =================================================================================== */
 
 
