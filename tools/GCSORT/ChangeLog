@@ -1,3 +1,6 @@
+2021-01-14  Sauro Menna  <smenna@users.sourceforge.net>
+    * Fix problems with Temporary Files
+    * New module to verify result of sort (tests/src)
 2021-01-08  Sauro Menna  <smenna@users.sourceforge.net>
     * New option OUTREC OVERLAY 
     * Fix problems in MinGW environment

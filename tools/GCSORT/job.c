@@ -1568,6 +1568,10 @@ int job_loadFiles(struct job_t *job) {
 	unsigned int   nLenRek;
 	unsigned int   nPosCurrentSeek = 0;
 
+	//pAddress = (unsigned char*)malloc(SZPNTDATA+1);
+	//if (pAddress == 0)
+	//	fprintf(stderr, "*GCSORT*S030A*ERROR: Cannot Allocate pAddress : %s\n", strerror(errno));
+
 	memset(szBuffRekNull, 0x00, GCSORT_MAX_BUFF_REK);
 	if (job->bIsPresentSegmentation == 0) {
 		job->recordNumber=0;
@@ -1712,7 +1716,7 @@ int job_loadFiles(struct job_t *job) {
                             (unsigned char*) &job->LenCurrRek ,   SZLENREC); // len
 			// Pointer Address Data
 			memmove((unsigned char*) job->buffertSort+(job->recordNumber)*(job->nLenKeys+SIZESRTBUFF)+job->nLenKeys+SZPOSPNT+SZLENREC , 
-                            &pAddress, SZPNTDATA); // Pointer Address Data
+			                &pAddress, SZPNTDATA); // Pointer Address Data
 			
 			job->ulMemSizeRead = job->ulMemSizeRead + nLenRek; // key + pointer record + record length
 			job->ulMemSizeSort = job->ulMemSizeSort + job->nLenKeys + SIZESRTBUFF;
@@ -1742,6 +1746,8 @@ int job_loadFiles(struct job_t *job) {
 		cob_close (file->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
 		nEOFFileIn=1;
 	}
+
+	// free(pAddress);
 
 	return 0;
 }
@@ -1798,8 +1804,15 @@ int job_save_out(struct job_t *job)
 	unsigned int   nLenSave = 0;	// recordBufferLength=(job->outputLength>job->inputLength?job->outputLength:job->inputLength);
     unsigned int   bIsFirstKeySumField = 0;
 	unsigned int   nbyteOvl = 0;
-	recordBufferLength=MAX_RECSIZE; 
 
+	//-->>
+//	pAddress = (unsigned char*)malloc(SZPNTDATA + 1);
+//	if (pAddress == 0)
+//		fprintf(stderr, "*GCSORT*S030B*ERROR: Cannot Allocate pAddress : %s\n", strerror(errno));
+
+
+
+	recordBufferLength=MAX_RECSIZE; 
 	recordBufferLength = recordBufferLength + SZPOSPNT;
 
 	recordBuffer=(unsigned char *) malloc(recordBufferLength);
@@ -1870,7 +1883,9 @@ int job_save_out(struct job_t *job)
 		nLenRecOut = job->outputLength;
 		memcpy(&lPosPnt,  job->buffertSort+(i)*((int64_t)job->nLenKeys+SIZESRTBUFF)+job->nLenKeys,                   SZPOSPNT);  // lPosPnt
 		memcpy(&nLenRek,  job->buffertSort+(i)*((int64_t)job->nLenKeys+SIZESRTBUFF)+job->nLenKeys+SZPOSPNT,          SZLENREC);  // nLenRek
+		//-->> 
 		memcpy(&pAddress, job->buffertSort+(i)*((int64_t)job->nLenKeys+SIZESRTBUFF)+job->nLenKeys+SZPOSPNT+SZLENREC, SZPNTDATA); // Pointer Data Area 
+		//-->> 202101 new pAddress=job->buffertSort+(i)*((int64_t)job->nLenKeys+SIZESRTBUFF)+job->nLenKeys+SZPOSPNT+SZLENREC; // Pointer Data Area 
 
 		memcpy((unsigned char*)szBuffRek, &lPosPnt, SZPOSPNT); // PosPnt
 		memcpy((unsigned char*)szBuffRek+SZPOSPNT,  (unsigned char*) pAddress, nLenRek); // buffer
@@ -2024,6 +2039,7 @@ job_save_exit:
 	free(szSaveSumFields);
 	free(recordBufferPrevious);
 	free(szFirstRek);
+//	free(pAddress);
 
 	cob_close (job->outputFile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
 
@@ -2112,6 +2128,11 @@ int job_save_tempfile(struct job_t *job)
 	unsigned int   byteRead = 0;
 	unsigned int   lpntTemp = 0;
 	unsigned int   nLenRekTemp = 0;	
+
+//	pAddress = (unsigned char*)malloc(SZPNTDATA + 1);
+//	if (pAddress == 0)
+//		fprintf(stderr, "*GCSORT*S030C*ERROR: Cannot Allocate pAddress : %s\n", strerror(errno));
+
 
     recordBufferLength=MAX_RECSIZE; 
 
@@ -2215,11 +2236,12 @@ int job_save_tempfile(struct job_t *job)
 	for(i=0;i<job->recordNumber;i++) 
 	{
 		useRecord=1;
-		memcpy(&lPosPnt,  job->buffertSort+(i)*(job->nLenKeys+SIZESRTBUFF)+job->nLenKeys,                   SZPOSPNT);  //lPosPnt
-		memcpy(&nLenRek,  job->buffertSort+(i)*(job->nLenKeys+SIZESRTBUFF)+job->nLenKeys+SZPOSPNT,          SZLENREC); // nLenRek
-		memcpy(&pAddress, job->buffertSort+(i)*(job->nLenKeys+SIZESRTBUFF)+job->nLenKeys+SZPOSPNT+SZLENREC, SZPNTDATA); // Pointer Data Area 
-		memcpy(szBuffRek,     &lPosPnt, SZPOSPNT); // PosPnt
-		memcpy(szBuffRek+SZPOSPNT,  (unsigned char*) pAddress, nLenRek); // buffer
+		memcpy(&lPosPnt,  job->buffertSort+(i)*((int64_t)job->nLenKeys+SIZESRTBUFF)+job->nLenKeys,                   SZPOSPNT);  //lPosPnt
+		memcpy(&nLenRek,  job->buffertSort+(i)*((int64_t)job->nLenKeys+SIZESRTBUFF)+job->nLenKeys+SZPOSPNT,          SZLENREC); // nLenRek
+		// s.m. 202101 
+		memcpy(&pAddress, job->buffertSort+(i)*((int64_t)job->nLenKeys+SIZESRTBUFF)+job->nLenKeys+SZPOSPNT+SZLENREC, SZPNTDATA); // Pointer Data Area
+		memcpy((unsigned char*)szBuffRek,     &lPosPnt, SZPOSPNT); // PosPnt
+		memcpy((unsigned char*)szBuffRek+SZPOSPNT,  (unsigned char*) pAddress, nLenRek); // buffer
 
 		byteRead = nLenRek + nSplitPosPnt;
 		nNumBytes = nNumBytes + byteRead;
@@ -2255,8 +2277,8 @@ int job_save_tempfile(struct job_t *job)
 					
 				if (nCompare < 0 )   // 
 				{
-					write_buffered(desc, (unsigned char*)&nLenRekTemp, SIZEINT, &bufferwriteglobal, &position_buf_write);
-					if (write_buffered(desc, (unsigned char*)szBuffTmp, nLenRekTemp+nSplitPosPnt, &bufferwriteglobal, &position_buf_write)<0) {
+					write_buffered(desc, (unsigned char*)&nLenRekTemp, SIZEINT, bufferwriteglobal, &position_buf_write);
+					if (write_buffered(desc, (unsigned char*)szBuffTmp, nLenRekTemp+nSplitPosPnt, bufferwriteglobal, &position_buf_write)<0) {
 						fprintf(stderr,"*GCSORT*S038*ERROR: Cannot write to file %s : %s\n",file_getName(job->outputFile),strerror(errno));
 						if ((close(desc))<0) {
 							fprintf(stderr,"*GCSORT*S039*ERROR: Cannot close file %s : %s\n",file_getName(job->outputFile),strerror(errno));
@@ -2281,10 +2303,10 @@ int job_save_tempfile(struct job_t *job)
 		// 
 		if (nLenRek > 0){
             // memcpy(szCnvNum, &nLenRek, 4);
-            write_buffered(desc, (unsigned char*)&nLenRek, SIZEINT, &bufferwriteglobal, &position_buf_write);
+            write_buffered(desc, (unsigned char*)&nLenRek, SIZEINT, bufferwriteglobal, &position_buf_write);
             // PosPnt for sort record position
             // Insert for every write file temp
-            if (write_buffered(desc, (unsigned char*)recordBuffer, nLenRek+nSplitPosPnt, &bufferwriteglobal, &position_buf_write)<0) {
+            if (write_buffered(desc, (unsigned char*)recordBuffer, nLenRek+nSplitPosPnt, bufferwriteglobal, &position_buf_write)<0) {
                 fprintf(stderr,"*GCSORT*S040*ERROR: Cannot write to file %s : %s\n",file_getName(job->outputFile),strerror(errno));
                 if ((close(desc))<0) {
                     fprintf(stderr,"*GCSORT*S041*ERROR: Cannot close file %s : %s\n",file_getName(job->outputFile),strerror(errno));
@@ -2299,7 +2321,7 @@ int job_save_tempfile(struct job_t *job)
 
 	}		//
 
-    if (write_buffered_final(desc, &bufferwriteglobal, &position_buf_write)<0) {
+    if (write_buffered_final(desc, bufferwriteglobal, &position_buf_write)<0) {
             fprintf(stderr,"*GCSORT*S042*ERROR: Cannot write to file %s : %s\n",file_getName(job->outputFile),strerror(errno));
             retcode_func = -1;
             goto job_save_exit;
@@ -2309,8 +2331,8 @@ int job_save_tempfile(struct job_t *job)
 	while ((bTempEof == 0) && (descTmp >= 0)){
 		if (bSkip == 1)	{
 			/*   */
-			write_buffered(desc, (unsigned char*) &nLenRekTemp, SIZEINT, &bufferwriteglobal, &position_buf_write);
-			write_buffered(desc, (unsigned char*) szBuffTmp, nLenRekTemp+SZPOSPNT, &bufferwriteglobal, &position_buf_write);
+			write_buffered(desc, (unsigned char*) &nLenRekTemp, SIZEINT, bufferwriteglobal, &position_buf_write);
+			write_buffered(desc, (unsigned char*) szBuffTmp, nLenRekTemp+SZPOSPNT, bufferwriteglobal, &position_buf_write);
 			bSkip=0;
 		}
 		byteReadTemp = mmfio_Read((unsigned char*) &nLenRekTemp, SIZEINT, &mmfTmp);
@@ -2330,9 +2352,9 @@ int job_save_tempfile(struct job_t *job)
 			continue;
 		}
 		nNumBytesTemp = nNumBytesTemp + byteReadTemp;
-		write_buffered(desc, (unsigned char*) &nLenRekTemp, SIZEINT, &bufferwriteglobal, &position_buf_write);
+		write_buffered(desc, (unsigned char*) &nLenRekTemp, SIZEINT, bufferwriteglobal, &position_buf_write);
 
-		if (write_buffered(desc, (unsigned char*) szBuffTmp, byteReadTemp, &bufferwriteglobal, &position_buf_write)<0) {
+		if (write_buffered(desc, (unsigned char*) szBuffTmp, byteReadTemp, bufferwriteglobal, &position_buf_write)<0) {
 			fprintf(stderr,"*GCSORT*S043*ERROR: Cannot write to file %s : %s\n",file_getName(job->outputFile),strerror(errno));
 			if ((close(desc))<0) {
 				fprintf(stderr,"*GCSORT*S044*ERROR: Cannot close file %s : %s\n",file_getName(job->outputFile),strerror(errno));
@@ -2344,7 +2366,7 @@ int job_save_tempfile(struct job_t *job)
 		job->nCountSrt[job->nIndextmp]++;
 	}
 
-    if (write_buffered_final(desc, &bufferwriteglobal, &position_buf_write)<0) {
+    if (write_buffered_final(desc, bufferwriteglobal, &position_buf_write)<0) {
         fprintf(stderr,"*GCSORT*S045*ERROR: Cannot write to file %s : %s\n",file_getName(job->outputFile),strerror(errno));
     }
 
@@ -2357,6 +2379,8 @@ job_save_exit:
 	free(szSaveSumFields);
 	free(bufferwriteglobal);
 	free(szFirstRek);
+	//free(pAddress);
+
 
 
 	if (desc >= 0){
@@ -3057,9 +3081,16 @@ INLINE int job_compare_qsort(const void *first, const void *second)
 void sort_temp_name(const char * ext)
 { 
 // #ifdef	_WIN32
-#ifdef _MSC_VER
-	if (globalJob->strPathTempFile == NULL)
+#if defined(_MSC_VER)  ||  defined(__MINGW32__) || defined(__MINGW64__)
+	// s.m. 202101 if (globalJob->strPathTempFile == NULL)
+	if (strlen(globalJob->strPathTempFile) == 0) {
 		GetTempPath(FILENAME_MAX, cob_tmp_temp);
+		if (strlen(cob_tmp_temp) == 0) {
+			cob_tmp_temp[0] = '.';
+			cob_tmp_temp[1] = '\\';
+			cob_tmp_temp[2]= 0x00;
+		}
+	}
 	else
 		strcpy(cob_tmp_temp, globalJob->strPathTempFile);
 	GetTempFileName(cob_tmp_temp, "Srt", 0, cob_tmp_buff);
@@ -3087,8 +3118,8 @@ void sort_temp_name(const char * ext)
 		} else if ((p = getenv ("TMP")) != NULL) {
 			cob_tmpdir = p;
 		}
-		if (cob_tmpdir == NULL || strlen(cob_tmpdir) == 0)
-		//	sprintf(cob_tmp_temp, "./");
+		if (p == NULL)
+			//	sprintf(cob_tmp_temp, "./");
 			sprintf(cob_tmp_temp, "./Srt%d_%d%s", (int)cob_process_id,
 				(int)cob_iteration, ext);
 		else
@@ -3104,6 +3135,7 @@ void sort_temp_name(const char * ext)
 	return;
 	//return buff;
 #endif
+	printf("cob_tmp_temp : \n%s\n", cob_tmp_temp);
 }
 
 INLINE int job_IdentifyBufMerge(unsigned char** ptrBuf, int nMaxElements)

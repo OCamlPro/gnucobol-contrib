@@ -223,14 +223,14 @@ void job_checkslash(char* str);
 static INLINE int write_buffered (int		desc, 
 						   unsigned char*	buffer_pointer, 
 						   int				nLenRek, 
-						   unsigned char**	bufferwriteglobal,
+						   unsigned char*	bufferwriteglobal,
 						   int*				position_buf_write
 						  )
 {
 	int nSplit;
     int tempPosition = *position_buf_write + nLenRek;  
     if (tempPosition > MAX_SIZE_CACHE_WRITE) {
-		if (_write(desc, (unsigned char*)(*bufferwriteglobal), (unsigned int) *position_buf_write) < 0) 
+		if (_write(desc, (unsigned char*)(bufferwriteglobal), (unsigned int) *position_buf_write) < 0) 
 		{
     		fprintf(stderr,"*GCSORT*S090*ERROR: Cannot write output file  %s\n",strerror(errno));
     		return -1;
@@ -238,7 +238,7 @@ static INLINE int write_buffered (int		desc,
     	*position_buf_write=0;
     }
 	nSplit = *position_buf_write;
-	memmove((unsigned char*)(*bufferwriteglobal+nSplit), (unsigned char*)buffer_pointer, nLenRek);
+	memmove((unsigned char*)(bufferwriteglobal+nSplit), (unsigned char*)buffer_pointer, nLenRek);
    *position_buf_write=*position_buf_write+nLenRek;
     return 0;
 }
@@ -246,31 +246,31 @@ static INLINE int write_buffered (int		desc,
 static INLINE int write_buffered_save_final (int		desc, 
 									 unsigned char*		buffer_pointer, 
 										     int		nLenRek, 
-								    unsigned char**		bufferwriteglobal,
+								    unsigned char*		bufferwriteglobal,
 											 int*		position_buf_write
 											)
 {
     if (*position_buf_write + nLenRek > MAX_SIZE_CACHE_WRITE_FINAL) {
-    	if (_write(desc, (unsigned char*)(*bufferwriteglobal), (unsigned int) *position_buf_write) < 0) 
+    	if (_write(desc, (unsigned char*)(bufferwriteglobal), (unsigned int) *position_buf_write) < 0) 
     	{
     		fprintf(stderr,"*GCSORT*S091*ERROR: Cannot write output file  %s\n",strerror(errno));
     		return -1;
     	}
     	*position_buf_write=0;
     }
-	memmove((unsigned char*)(*bufferwriteglobal+(*position_buf_write)), (unsigned char*)buffer_pointer, nLenRek);
+	memmove((unsigned char*)(bufferwriteglobal+(*position_buf_write)), (unsigned char*)buffer_pointer, nLenRek);
    *position_buf_write=*position_buf_write+nLenRek;
     return 0;
 }
 
 static INLINE int write_buffered_final (int  desc, 
-						unsigned char**  bufferwriteglobal,
+						unsigned char*  bufferwriteglobal,
 						int*	position_buf_write
 					)
 {
 	if (*position_buf_write == 0)
 		return 0;
-    if (write(desc, (unsigned char*)*bufferwriteglobal , *position_buf_write) < 0) 
+    if (write(desc, (unsigned char*)bufferwriteglobal , *position_buf_write) < 0) 
     {
     	fprintf(stderr,"*GCSORT*S092*ERROR: Cannot write output file  %s\n",strerror(errno));
     	return -1;

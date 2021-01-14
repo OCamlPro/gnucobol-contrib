@@ -74,8 +74,8 @@
        01  save-record-sort              pic x(38).
       * ============================= *
        01 bError                         pic 999  value zero.
-       77 record-counter-incbl           pic 9(7) value zero.
-       77 record-counter-ingcs           pic 9(7) value zero.
+       77 record-counter-incbl           pic 9(9) value zero.
+       77 record-counter-ingcs           pic 9(9) value zero.
        77 bIsFirstTime                   pic 9    value zero.       
        77 bIsPending                     pic 9    value zero.       
        01 current-time.
@@ -157,20 +157,22 @@
       * ============================= *
        10.
            if fs-infile1 = "00"
-               read sortcbl at end display " End file sortcbl "
+               read sortcbl at end 
+                display " End file sortcbl fs " fs-infile1
                     end-read
            end-if
            if fs-infile1 = "00"
                 add 1 to record-counter-incbl
            end-if
            if fs-infile2 = "00"
-              read sortgcs at end display " End file sortgcs "
+              read sortgcs at end 
+                display " End file sortgcs fs " fs-infile2
                 end-read
            end-if
            if fs-infile2 = "00"
                 add 1 to record-counter-ingcs
            end-if
-           if (fs-infile1 = "00" and fs-infile1 = "00")
+           if (fs-infile1 = "00" and fs-infile2 = "00")
 test00**                perform check-key
                 perform check-key-dett
            end-if
