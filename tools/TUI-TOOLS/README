@@ -47,6 +47,10 @@ GC13CHECKBOX.COB - call it to display checkbox items (switches) on screen, you c
 specify number of items, back/fore colors, size, position, symbol, brackets and so on.
 2020: Mouse management was added.
 
+GC15OFFON.COB - call it to display OFF or ON items (switches) on screen, you can 
+specify number of items, back/fore colors, size, position, symbol, brackets and so on.
+Mouse management in included to select items and to put switches ON or OFF.
+
 GC18RADIOBUTTON.COB - call it to display rediobutton items (options) on screen, you can 
 specify number of items, back/fore colors, size, position, symbol , brackets and so on.
 2020: Mouse management was added.
