@@ -4,10 +4,11 @@
 *> Purpose:    workarea with GnuCOBOL FUNCTION KEYS AND KEY RETURN CODES
 *> VALUEs returned in CRT-STATUS field (or COB-CRT-STATUS)
 *> Author:     Eugenio Di Lorenzo (DILO) - Italia
-*> License:    Copyright 2020 E.Di Lorenzo - LGPL, 3.0 (or greater)
-*> Version:    2.0 2020.04.04
+*> License:    Copyright 2021 E.Di Lorenzo - LGPL, 3.0 (or greater)
+*> Version:    2.1 2021.0101
 *> Changelog:  1.0 first release.
 *>             2.0 mouse keys added
+*>             2.1 ALT-Fxx keys added
 *> **************************************************************.
 
 77  K-ENTER       PIC 9(04) VALUE 0000.
@@ -50,6 +51,16 @@
 77  K-CTRL-F12    PIC 9(04) VALUE 1036.
 
 77  K-ALT-F1      PIC 9(04) VALUE 1037.
+77  K-ALT-F2      PIC 9(04) VALUE 1038.
+77  K-ALT-F3      PIC 9(04) VALUE 1039.
+77  K-ALT-F4      PIC 9(04) VALUE 1040.
+77  K-ALT-F5      PIC 9(04) VALUE 1041.
+77  K-ALT-F6      PIC 9(04) VALUE 1042.
+77  K-ALT-F7      PIC 9(04) VALUE 1043.
+77  K-ALT-F8      PIC 9(04) VALUE 1044.
+77  K-ALT-F9      PIC 9(04) VALUE 1045.
+77  K-ALT-F10     PIC 9(04) VALUE 1046.
+77  K-ALT-F11     PIC 9(04) VALUE 1047.
 77  K-ALT-F12     PIC 9(04) VALUE 1048.
 
 *>  Exception keys - PIC 9(04) VALUEs 2xxx.
@@ -153,4 +164,4 @@
 78  SET-RIGHT-UP               VALUE 256.
 78  SET-RIGHT-DOUBLE           VALUE 512.
 78  SET-MOUSE-MOVE             VALUE 1024.
-01  MOUSE-FLAGS      PIC 9(04).
+01  SET-MOUSE-FLAGS      PIC 9(04).
