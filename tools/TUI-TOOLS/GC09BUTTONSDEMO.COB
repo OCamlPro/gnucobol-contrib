@@ -274,7 +274,7 @@ display " Activate a Button (give the 'focus to') also with hot keys (red chars)
         at 2303 with foreground-color white background-color blue
 
 *> save the background
-move Z'SAVESCREEN.SCR' to szScreenName
+move Z'GC09BUTTONSDEMO.SCR' to szScreenName
 accept wDummy at 0202
 
 *> *********************************************************************************
