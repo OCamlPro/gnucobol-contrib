@@ -6,14 +6,15 @@ program-id. GC15OFFONDEMO.
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DEMO OF GC15OFFON TUI TOOL -  DISPLAYS & MANAGE OFFON ITEMS ON SCREEN
 *> Description: Displays a small group of OFFON items, displays other 3 small groups showing
-*>              different options. Then displays a OFFON items list of 29 items grouped in 4 subgroups.
+*>              different options of the tool.
 *> Tectonics:  cobc -x GC15OFFONDEMO.COB -lpdcurses (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      GC15OFFONDEMO
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2021 E.Di Lorenzo - GNU Lesser General Public License LGPL 3.0 (or greater)
-*> Version:    1.0 2021.01.01
+*> Version:    1.1 2021.01.15
 *> Changelog:  1.0 first version.
+*>             1.1 small fixes
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -38,6 +39,7 @@ WORKING-STORAGE SECTION.
 01  wDummy            pic x(01) VALUE     ' '.
 01  wString           pic x(70) VALUE     ' '.
 01  i                 pic 999 value zero.
+01  y                 pic  99 value 1.
 01  wR                pic 999 value zero.
 
 01  wCRT-STATUS         PIC 9(4) value 0.  *> CRT-STATUS codes
@@ -71,10 +73,10 @@ Start-Display.
     move 'D'      to Box-style move 'N'      to Box-3D
     perform callGC01BOX thru callGC01BOX-ex
     move 2 to Wr
-    display 'GnuCOBOL GC15OFFON TUI TOOL at work. F1= HELP, ENTER= Continue.'
+    display 'GnuCOBOL GC15OFFON TUI TOOL at work. '
             at 0303 with :FCOL: white :BCOL: blue
-    accept wDummy at 2479 auto no-echo size 0 end-accept
-    if wCRT-STATUS = K-F1   perform DisplayHelp thru DisplayHelpEx   end-if
+
+    perform DisplayHelp thru DisplayHelpEx
 
     display ' GnuCOBOL GC15OFFON TUI TOOL at work. '
           at 2103 with :FCOL: white :BCOL: blue
@@ -82,9 +84,8 @@ Start-Display.
           at 2203 with :FCOL: white :BCOL: blue
     display ' enter/spacebar/left mousekey doubleclick: change OFF/ON. TAB or ESC to exit'
           at 2303 with :FCOL: white :BCOL: blue
-    display " Activate an item (give the 'focus to') also with hot keys (yellow chars) "
+    display " Activate an item (give the 'focus to') also with hot keys. F1 = tool HELP  "
           at 2403 with :FCOL: white :BCOL: blue
-
 
 *> DISPLAY A BOX AS BACKGROUND OF THE SCREEN
 set  Box-bco Box-fco to white move '002003020077' to Box-rc
@@ -99,7 +100,7 @@ set  Box-bco   Box-fco to white  *> DISPLAY A BOX AS BACKGROUND OF A OFFON ITEMS
 move '003004013046' to Box-rc
 move 'S' to Box-style move 'N' to Box-3D Box-shadow Box-tit move 'R' to Box-3D
 perform callGC01BOX thru callGC01BOX-ex
-display 'Group 1 switches (F1=HELP)' at 003007 with :BCOL: white :FCOL: black end-display
+display ' Your choice (F1=HELP)' at 003007 with :BCOL: white :FCOL: black end-display
 
 initialize OFFON-area ALL TO VALUE
 move low-value  to Oo-tab
@@ -114,7 +115,7 @@ Move '  08010005033 Allow STATIC in objects... ' & x'00' to Oo-Ele(07)
 Move '  02011005033 C like operators.......... ' & x'00' to Oo-Ele(08)
 Move ' 103012005033 Conditional defines....... ' & x'00' to Oo-Ele(09)
 perform callGC15OFFON thru callGC15OFFON-ex
-perform DisplaySwitchResult thru DisplaySwitchResultEx.
+perform DisplayMarkTable thru DisplayMarkTableEx.
 
 *> *********************************************************************************
 *> DISPLAY OFFON ITEMS N.2
@@ -123,13 +124,15 @@ set  Box-bco   Box-fco to white *> DISPLAY A BOX AS BACKGROUND OF A OFFON ITEMS 
 move '003047011076' to Box-rc
 move 'S' to Box-style move 'N' to Box-3D Box-shadow Box-tit move 'R' to Box-3D
 perform callGC01BOX thru callGC01BOX-ex
-display 'Group 2 switches' at 003050 with :BCOL: white :FCOL: black end-display
+display ' Parameters F1=Help ' at 003050 with :BCOL: white :FCOL: black end-display
 
 initialize OFFON-area ALL TO VALUE
 move 'x'       to Oo-MarkChar
 move '()'      to Oo-BracketChars
 move blue to Oo-bcoN Oo-bcoA Oo-bcoH
 move cyan to Oo-fcoN
+move ' OFF' to Oo-OFF-Descr   *> between OFF and 1st bracket there is no "blank char"
+move 'ON  ' to Oo-ON-Descr    *> between 2nd bracket and ON there is no "blank char"
 move low-value                             to Oo-tab
 *>              12345678901234567890
 Move ' 102004048063 Counts        ' & x'00' to Oo-Ele(01)
@@ -141,7 +144,7 @@ Move ' 103009048063 Colums stats  ' & x'00' to Oo-Ele(06)
 Move '  02010048063 Total stats   ' & x'00' to Oo-Ele(07)
 perform callGC15OFFON thru callGC15OFFON-ex
 
-perform DisplaySwitchResult thru DisplaySwitchResultEx.
+perform DisplayMarkTable thru DisplayMarkTableEx.
 
 *> *********************************************************************************
 *> DISPLAY OFFON ITEMS N.3
@@ -150,7 +153,7 @@ perform DisplaySwitchResult thru DisplaySwitchResultEx.
 set  Box-bco   Box-fco to white move '014004018046' to Box-rc
 move 'S' to Box-style move 'N' to Box-3D Box-shadow Box-tit move 'R' to Box-3D
 perform callGC01BOX thru callGC01BOX-ex
-display 'Group 3 switches' at 014007 with :BCOL: white :FCOL: black highlight end-display
+display ' Options ' at 014007 with :BCOL: white :FCOL: black highlight end-display
 
 
 initialize OFFON-area ALL TO VALUE
@@ -163,10 +166,10 @@ Move '1 02016005033 Percentages                ' & x'00' to Oo-Ele(02)
 Move '  02017005033 Valid uppercase            ' & x'00' to Oo-Ele(03)
 perform callGC15OFFON thru callGC15OFFON-ex
 
-perform DisplaySwitchResult thru DisplaySwitchResultEx.
+perform DisplayMarkTable thru DisplayMarkTableEx.
 
 *> DISPLAY OFFON ITEMS N.4
-display 'Group 4 switches F1=HELP' at 012049 with :BCOL: white :FCOL: black highlight end-display
+display 'Debugger Preferences ' at 012049 with :BCOL: white :FCOL: black highlight end-display
 initialize OFFON-area ALL TO VALUE
 
 move 'o'     to Oo-MarkChar
@@ -174,20 +177,22 @@ move blue    to Oo-bcoN Oo-bcoA Oo-bcoH
 move yellow  to Oo-fcoN
 move red     to Oo-fcoH
 move 'Y'     to Oo-fcoNH
+move '  NO' to Oo-OFF-Descr
+move 'YES ' to Oo-ON-Descr
 move low-value                           to Oo-tab
-Move '1 00013048063 01-Stop after    ' & x'00' to Oo-Ele(01)
-Move ' 100014048063 02-Allow LABEL   ' & x'00' to Oo-Ele(02)
-Move '  00015048063 03-Enable macro  ' & x'00' to Oo-Ele(03)
-Move '  00016048063 03-Disable       ' & x'00' to Oo-Ele(04)
-Move ' 100017048063 04-Overnight     ' & x'00' to Oo-Ele(05)
-Move ' 100017048063 05-Include       ' & x'00' to Oo-Ele(06)
-Move ' 100017048063 06-Load units    ' & x'00' to Oo-Ele(07)
-Move '  00017048063 07-Allow STAT    ' & x'00' to Oo-Ele(08)
-Move '  00017048063 08-C like        ' & x'00' to Oo-Ele(09)
-Move ' 100017048063 09-Overlapped    ' & x'00' to Oo-Ele(10)
+Move '1 00013048063 01-Stop after....' & x'00' to Oo-Ele(01)
+Move ' 100014048063 02-Allow LABEL...' & x'00' to Oo-Ele(02)
+Move '  00015048063 03-Enable macro..' & x'00' to Oo-Ele(03)
+Move '  00016048063 03-Disable.......' & x'00' to Oo-Ele(04)
+Move ' 100017048063 04-Overnight.....' & x'00' to Oo-Ele(05)
+Move ' 100017048063 05-Include.......' & x'00' to Oo-Ele(06)
+Move ' 100017048063 06-Load units....' & x'00' to Oo-Ele(07)
+Move '  00017048063 07-Allow STAT....' & x'00' to Oo-Ele(08)
+Move '  00017048063 08-C like........' & x'00' to Oo-Ele(09)
+Move ' 100017048063 09-Overlapped....' & x'00' to Oo-Ele(10)
 perform callGC15OFFON thru callGC15OFFON-ex
 
-perform DisplaySwitchResult thru DisplaySwitchResultEx.
+perform DisplayMarkTable thru DisplayMarkTableEx.
 accept wDummy at 2479
 DISPLAY ' ESC = return to previous screen, Enter to select and Exit '
          AT 001003 with :FCOL: yellow :BCOL: blue highlight
@@ -234,10 +239,10 @@ END-OF-PROGRAM.
 *> *********************************************************************************
 *>
 *> *********************************************************************************
-DisplaySwitchResult.
+DisplayMarkTable.
     DISPLAY '                                                                           '
          AT 025003 with :FCOL: white :BCOL: blue reverse-video
-    STRING ' Switches set to: -'
+    STRING ' OFFON are set to: -'
                       Oo-Mark(01) '-' Oo-Mark(02) '-' Oo-Mark(03) '-' Oo-mark(04) '-' Oo-Mark(05) '-'
                       Oo-Mark(06) '-' Oo-Mark(07) '-' Oo-Mark(08) '-' Oo-mark(09) '-' Oo-Mark(10) '-'
                       Oo-Mark(11) '-' Oo-Mark(12) '-' Oo-Mark(13) '-' Oo-mark(14) '-' Oo-Mark(15) '-'
@@ -248,42 +253,41 @@ DisplaySwitchResult.
     DISPLAY wSTRING     AT 025003 with :FCOL: white :BCOL: blue reverse-video
     DISPLAY Oo-Selected AT 021076 with :FCOL: white :BCOL: blue reverse-video
     continue.
-DisplaySwitchResultEx. Exit.
+DisplayMarkTableEx. Exit.
 
 DisplayHelp.
     perform ScreenSave thru ScreenSaveEx
-    *> DISPLAY THE FRAME AND THE HELP TEXT
+
     initialize Boxmex-Area ALL TO VALUE
     move low-value to Bxm-tabmex
-    *> Description: Displays a small group of OFFON items, diaplays other 3 small gropus showing
-    *> different options. Then displays a OFFON items list of 29 items grouped in 4 subgroups.
-    move z'                               ' to Bxm-mex(01)
-    move z' Use left mouse button on item ' to Bxm-mex(02)
-    move z' to activate the item          ' to Bxm-mex(03)
-    move z'                               ' to Bxm-mex(04)
-    move z' Use cursor keys or hotkeys    ' to Bxm-mex(05)
-    move z' to activate an item           ' to Bxm-mex(06)
-    move z'                               ' to Bxm-mex(07)
-    move z' Enter or spacebar o left      ' to Bxm-mex(08)
-    move z' doubleclick to set OFF or ON  ' to Bxm-mex(09)
-    move z' the active item               ' to Bxm-mex(10)
-    move z'                               ' to Bxm-mex(11)
-    move z' TAB, ESC or right mouseclick  ' to Bxm-mex(12)
-    move z' to exit from OFFON mgmt       ' to Bxm-mex(13)
-    move z'                               ' to Bxm-mex(14)
-    move z'                               ' to Bxm-mex(15)
-    move z' eugenio.dilo@gmail.com   2021 ' to Bxm-mex(16)
-    move z'                               ' to Bxm-mex(17)
-    move z' hit <enter> to continue ...   ' to Bxm-mex(18)
+    move 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' This demo will show you four  ' to Bxm-mex(y) add 1 to y
+    move z' use of the OFFON tool.        ' to Bxm-mex(y) add 1 to y
+    move z' Different colors, positions   ' to Bxm-mex(y) add 1 to y
+    move z' type of bracket, and type     ' to Bxm-mex(y) add 1 to y
+    move z' of marker.                    ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' OFFON tool has its own help.  ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' OFF and ON strings are also   ' to Bxm-mex(y) add 1 to y
+    move z' changed to NO and YES.        ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' eugenio.dilo@gmail.com (2021) ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' hit <enter> to continue ...   ' to Bxm-mex(y) add 1 to y
 
     move cyan     to Bxm-bco    Bxm-titBco Bxm-bcoM
     move white    to Bxm-fco    Bxm-titFco Bxm-fcoM
     move 'Y'      to Bxm-Click  Bxm-tit
     move 'N'      to Bxm-3D     Bxm-OkButton
     move 'S'      to Bxm-style
-    move x'B4' & ' GnuCOBOL OFFON - HELP '  & x'C3' & x'00' to Bxm-titDes
-   compute Bxm-r1 = 05
-   compute Bxm-c1 = 10
+    move x'B4' & ' GnuCOBOL OFFON DEMO '  & x'C3' & x'00' to Bxm-titDes
+   compute Bxm-r1 = 03
+   compute Bxm-c1 = 42
    compute Bxm-r2 = Bxm-r1 + 19
    compute Bxm-c2 = Bxm-c1 + 32
    call GC02BOXMEX using by content BOXMEX-AREA
@@ -304,7 +308,7 @@ ScreenRestore.
 ScreenRestoreEx. exit.
 
 callGC01BOX.
-    call GC01BOX using by content BOX-AREA
+    call GC01BOX using by reference BOX-AREA
          on exception     display ' CALL GC01BOX error. Module GC01BOX not Found !' at 0501
                           display ' type Enter to continue without boxes ...      ' at 0601
                           accept OMITTED
@@ -314,7 +318,7 @@ callGC01BOX.
 callGC01BOX-ex. exit.
 
 callGC15OFFON.
-      call GC15OFFON using by content OFFON-AREA
+      call GC15OFFON using by reference OFFON-AREA
          on exception     display ' CALL GC15OFFON error. Module GC15OFFON not Found !' at 0501
                           display ' type Enter to close ...                                ' at 0601
                           accept OMITTED
