@@ -8,15 +8,17 @@ PROGRAM-ID. GC15OFFON is initial.
 *> GnuCOBOL TT (TUI TOOLS) AND UTILITIES COLLECTION
 *> Purpose:    DISPLAYS AND MANAGE A GROUP OF OFF/ON ITEMS (SWITCHES) ON SCREEN
 *>             make OFFON items active with cursor keys or left mousekey singleclick
-*>             change OFFON item with spacebar or enter or left mousekey doubleclick
-*>             exit with: TAB/BACKTAB, ESC, PAGEUP/DOWN, single or doubleclick of right mousekey
+*>             change to OFF or ON the item with spacebar or enter or left mousekey doubleclick
+*>             exit with: ESC, TAB/BACKTAB, PAGEUP/DOWN, single or doubleclick of right mousekey
+*>             F! HELP shows other features
 *> Tectonics:  cobc -m GC15OFFON.COB  -lpdcurses (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      call GC15OFFON using OFFON-AREA
 *> Parameters: look at GC15OFFON.CPY (use with copy Version: 1.0)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *> License:    Copyright 2021 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2021.01.01
+*> Version:    1.1 2021.01.15
 *> Changelog:  1.0 first release.
+*>             1.1 OFF and ON now are variable. Example you can set to NO and YES from caller program
 *>
 *> You can manage a group of max 98 OFFON items on screen, each of 1 row (also overlapped).
 *> Each OFFON item has to be inserted in a table with 99 elements
@@ -24,7 +26,7 @@ PROGRAM-ID. GC15OFFON is initial.
 *>
 *> Example of use.
 *> step 1. display a box (not mandatory ) but useful to have a better user interface
-*> step 2. display a group of OFFON items (switches) inside the BOX
+*> step 2. display a group of OFFON items (active ON or deactive OFF) inside the BOX
 *> step 3. wait for a user action . Some user actions:
 *> use cursor keys to activate an OFFON item (have the focus)
 *> use a single click with left mouse key on item description or inside brackets = activate the item
@@ -62,6 +64,7 @@ Working-Storage Section.
     03  i            pic 9(02) value 1.
     03  j            pic 9(02) value 1.
     03  k            pic 9(02) value 1.
+    03  y            pic 9(02) value 1.
     03  bco          PIC 9(02).
     03  fco          PIC 9(02).
     03  fcoH         PIC X(01).
@@ -101,18 +104,8 @@ Working-Storage Section.
 01 wNum         PIC X(01).
 
 *>  mouse mask, apply to COB_MOUSE_FLAGS
-78  COB-AUTO-MOUSE-HANDLING          VALUE 1.
-78  COB-ALLOW-LEFT-DOWN              VALUE 2.
-78  COB-ALLOW-LEFT-UP                VALUE 4.
-78  COB-ALLOW-LEFT-DOUBLE            VALUE 8.
-78  COB-ALLOW-MIDDLE-DOWN            VALUE 16.
-78  COB-ALLOW-MIDDLE-UP              VALUE 32.
-78  COB-ALLOW-MIDDLE-DOUBLE          VALUE 64.
-78  COB-ALLOW-RIGHT-DOWN             VALUE 128.
-78  COB-ALLOW-RIGHT-UP               VALUE 256.
-78  COB-ALLOW-RIGHT-DOUBLE           VALUE 512.
-78  COB-ALLOW-MOUSE-MOVE             VALUE 1024.
-01  COB-MOUSE-FLAGS                  PIC 9(04).
+*> 78  COB-AUTO-MOUSE-HANDLING          VALUE 1.
+*> 01  COB-MOUSE-FLAGS                  PIC 9(04).
 
 01  wCRT-STATUS         PIC 9(04) VALUE 9999.
 
@@ -130,7 +123,6 @@ Working-Storage Section.
 01 wiScrOk            BINARY-LONG.
 
 01 wOo-Parameters     PIC x(12) value space.
-
 
 copy    'GC02BOXMEX.CPY' suppress.
 copy 'GC97KEYCODEGC.CPY'  suppress.
@@ -195,7 +187,6 @@ Accept-a-Key.
 *> detect Enter or ESCAPE key only if user has not typed a letter or a digit
 *> if user has typed a letter or a digit then WDummy is just une char and has the "AUTO" attribute
 *> then the wCRT-STATUS is = 00000 (K-ENTER) !
-
 
 *> *************************************************************************
 *> EVALUATE THE USER ACTION (A KEY OR A MOUSE KEY WASS PRESSED)
@@ -370,38 +361,48 @@ Accept-a-Key.
      when wCRT-STATUS = K-F1              *> F1 HELP
             perform DisplayHelp thru DisplayHelpEx
             go to DisplayScreen
-      when wCRT-STATUS = K-F2              *> F2 change "non active" items Fore Color
+      when wCRT-STATUS = K-ALT-F2              *> change "non active" items Fore Color
             move 1 to i
             add 1 to Oo-FcoN
             If Oo-FcoN > 7 move 0 to Oo-FcoN end-if
             go to DisplayScreen
-      when wCRT-STATUS = K-F3              *> F3 change "non active" items Back Color
+      when wCRT-STATUS = K-ALT-F3              *> change "non active" items Back Color
             move 1 to i
             add 1 to Oo-BcoN
             If Oo-BcoN > 7 move 0 to Oo-BcoN end-if
             go to DisplayScreen
-      when wCRT-STATUS = K-F4              *> F2 change "active" items Fore Color
+      when wCRT-STATUS = K-ALT-F4              *> change "active" items Fore Color
             move 1 to i
             add 1 to Oo-FcoA
             If Oo-FcoA > 7 move 0 to Oo-FcoA end-if
             go to DisplayScreen
-      when wCRT-STATUS = K-F5              *> F3 change "active" items Back Color
+      when wCRT-STATUS = K-ALT-F5              *> change "active" items Back Color
             move 1 to i
             add 1 to Oo-BcoA
             If Oo-BcoA > 7 move 0 to Oo-BcoA end-if
             go to DisplayScreen
-      when wCRT-STATUS = K-F9              *> F9 reset colors to their initial state
+      when wCRT-STATUS = K-ALT-F6              *> change hotkey Fore Color
+            move 1 to i
+            add 1 to Oo-FcoH
+            If Oo-FcoH > 7 move 0 to Oo-FcoH end-if
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F7              *> change hotkey Back Color
+            move 1 to i
+            add 1 to Oo-BcoH
+            If Oo-BcoH > 7 move 0 to Oo-BcoH end-if
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F9              *> reset params & colors to initial state
             move 1 to i
             move wOo-Parameters to Oo-Parameters
             go to DisplayScreen
    *> *************************************************************************
    *> EXIT WITH ONE OF FOLLOWING KEYS
    *> *************************************************************************
-       when wCRT-STATUS = K-TAB
+       when wCRT-STATUS = K-ESCAPE
+         or wCRT-STATUS = K-TAB
          or wCRT-STATUS = K-BACKTAB
          or wCRT-STATUS = K-PAGEUP
          or wCRT-STATUS = K-PAGEDOWN
-         or wCRT-STATUS = K-ESCAPE
          or wCRT-STATUS = K-RIGHT-PRESSED
          or wCRT-STATUS = K-RIGHT-DBL-CLICK
             move wCRT-STATUS to Oo-Key
@@ -489,7 +490,8 @@ loop1-ex.
    *> display: space, OFF, space, bracket open, 3 chars for marker, bracket close, space,ON (13 chars)
     if fcoH = 'Y'
        compute wCol = Oo-c-OFFON(i)      end-compute
-       display 'OFF '          at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco highlight
+       *> display 'OFF '          at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco highlight
+       display Oo-OFF-descr    at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco highlight
        compute wCol = Oo-c-OFFON(i) +  4 end-compute
        display Oo-BracketChar1 at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco highlight
        compute wCol = Oo-c-OFFON(i) +  6 end-compute
@@ -497,8 +499,8 @@ loop1-ex.
        compute wCol = Oo-c-OFFON(i) +  8 end-compute
        display Oo-BracketChar2 at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco highlight
        compute wCol = Oo-c-OFFON(i) +  9 end-compute
-       display ' ON '          at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco highlight
-
+       *> display ' ON '          at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco highlight
+       display Oo-ON-Descr        at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco highlight
        if Oo-Mark(i) = '1'
           compute wCol = Oo-c-OFFON(i) + 7 end-compute
           display Oo-MarkChar at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco highlight
@@ -512,7 +514,8 @@ loop1-ex.
        end-if
    else
        compute wCol = Oo-c-OFFON(i)     end-compute
-       display 'OFF '          at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco
+       *> display 'OFF '          at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco
+       display Oo-OFF-descr    at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco
        compute wCol = Oo-c-OFFON(i) +  4 end-compute
        display Oo-BracketChar1 at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco
        compute wCol = Oo-c-OFFON(i) +  6 end-compute
@@ -520,7 +523,8 @@ loop1-ex.
        compute wCol = Oo-c-OFFON(i) +  8 end-compute
        display Oo-BracketChar2 at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco
        compute wCol = Oo-c-OFFON(i) +  9 end-compute
-       display ' ON '          at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco
+       *> display ' ON '          at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco
+       display Oo-ON-Descr        at line Oo-r(i) col wcol with :BCOL: bco :FCOL: fco
 
        if Oo-Mark(i) = '1'
           compute wCol = Oo-c-OFFON(i) + 7 end-compute
@@ -543,13 +547,12 @@ InitialSettings.
   set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
   *> make mouse active
-  COMPUTE COB-MOUSE-FLAGS = COB-AUTO-MOUSE-HANDLING
-                      + COB-ALLOW-LEFT-DOWN   + COB-ALLOW-MIDDLE-DOWN   + COB-ALLOW-RIGHT-DOWN
-                      + COB-ALLOW-LEFT-UP     + COB-ALLOW-MIDDLE-UP     + COB-ALLOW-RIGHT-UP
-                      + COB-ALLOW-LEFT-DOUBLE + COB-ALLOW-MIDDLE-DOUBLE + COB-ALLOW-RIGHT-DOUBLE
-                      + COB-ALLOW-MOUSE-MOVE
-  SET environment     "COB_MOUSE_FLAGS"         to COB-MOUSE-FLAGS
-
+  COMPUTE SET-MOUSE-FLAGS = SET-AUTO-MOUSE-HANDLING
+                      + SET-LEFT-DOWN   + SET-MIDDLE-DOWN   + SET-RIGHT-DOWN
+                      + SET-LEFT-UP     + SET-MIDDLE-UP     + SET-RIGHT-UP
+                      + SET-LEFT-DOUBLE + SET-MIDDLE-DOUBLE + SET-RIGHT-DOUBLE
+                      + SET-MOUSE-MOVE
+  SET environment "COB_MOUSE_FLAGS"    to SET-MOUSE-FLAGS
   continue.
 InitialSettingsEx. exit.
 
@@ -558,24 +561,25 @@ DisplayHelp.
 
     initialize Boxmex-Area ALL TO VALUE
     move low-value to Bxm-tabmex
-    move z'                               ' to Bxm-mex(01)
-    move z' Use left mouse button on item ' to Bxm-mex(02)
-    move z' to activate the item          ' to Bxm-mex(03)
-    move z'                               ' to Bxm-mex(04)
-    move z' Use cursor keys or hotkeys    ' to Bxm-mex(05)
-    move z' to activate an item           ' to Bxm-mex(06)
-    move z'                               ' to Bxm-mex(07)
-    move z' Enter or spacebar o left      ' to Bxm-mex(08)
-    move z' doubleclick to set OFF or ON  ' to Bxm-mex(09)
-    move z' the active item               ' to Bxm-mex(10)
-    move z'                               ' to Bxm-mex(11)
-    move z' TAB, ESC or right mouseclick  ' to Bxm-mex(12)
-    move z' to exit from OFFON mgmt       ' to Bxm-mex(13)
-    move z'                               ' to Bxm-mex(14)
-    move z'                               ' to Bxm-mex(15)
-    move z' eugenio.dilo@gmail.com   2021 ' to Bxm-mex(16)
-    move z'                               ' to Bxm-mex(17)
-    move z' hit <enter> to return ...     ' to Bxm-mex(18)
+    move 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' Use left mouse button on item ' to Bxm-mex(y) add 1 to y
+    move z' or cursor keys or hotkeys     ' to Bxm-mex(y) add 1 to y
+    move z' to activate an item.          ' to Bxm-mex(y) add 1 to y
+    move z' Enter or spacebar o left      ' to Bxm-mex(y) add 1 to y
+    move z' doubleclick to change item.   ' to Bxm-mex(y) add 1 to y
+    move z' Use TAB, ESC, PAGE or right   ' to Bxm-mex(y) add 1 to y
+    move z' mouseclick  to exit.          ' to Bxm-mex(y) add 1 to y
+    move z' ALT-F2/F3 chg back/Fore color ' to Bxm-mex(y) add 1 to y
+    move z' of non Active items.          ' to Bxm-mex(y) add 1 to y
+    move z' ALT-F4/F5 chg back/Fore color ' to Bxm-mex(y) add 1 to y
+    move z' of Active item.               ' to Bxm-mex(y) add 1 to y
+    move z' ALT-F6/F7 chg back/Fore color ' to Bxm-mex(y) add 1 to y
+    move z' of non Active items           ' to Bxm-mex(y) add 1 to y
+    move z' ALT-F9 reset all color changes' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' eugenio.dilo@gmail.com   2021 ' to Bxm-mex(y) add 1 to y
+    move z' hit <enter> to continue ...   ' to Bxm-mex(y) add 1 to y
     move blue     to Bxm-bco    Bxm-titBco Bxm-bcoM
     move white    to Bxm-fco    Bxm-titFco Bxm-fcoM
     move 'Y'      to Bxm-Click  Bxm-tit
