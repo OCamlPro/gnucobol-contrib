@@ -6,8 +6,10 @@
 *> Usage:      call GC15OFFON using OFFON-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2021 E.Di Lorenzo - GNU Lesser General Public License 3.0 (or greater)
-*> Version:    1.0 2021.01.01
+*> Version:    1.1 2021.01.15
 *> Changelog:  1.0 first release.
+*>             1.1 OFF and ON now are variable. Example you can set to NO and YES from caller program
+*>                 new fields Oo-OFF-Descr and Oo-ON-Descr
 *> ***********************************************************************************************************
 *> on screen You can manage a group of max 98 OFFON items each of 1 row (also overlapped).
 *> Each OFFON item has to be inserted in a table with 99 elements
@@ -23,8 +25,8 @@
 *>           all items can have '1' or blank
 *>           when you exit from OFFON function, OFFON items will have '1' if they are "ON"
 *>           other OFFON items will have blank
-*> Oo-Hot    number of charachter of Oo-Item to be used as hot key, ex. if Oo-Item is " Option 1 "
- *>          and this Oo-Hot = 3, then the typing p or P is like activate the item with cursor keys
+*> Oo-Hot    number of charachter of Oo-Item string to be used as hotkey, ex.if Oo-Item is " Option 1 "
+*>           and Oo-Hot = 3, then the typing p or P is like activate the item with cursor keys
 *>           Hot keys are case insensistive  (if a hotkey is "p" you can also type a "P" )
 *>           You can use only letters or digits, no other chars allowed (no +, ?, ! etc.)
 *> Oo-r      row & col where the description of first OFFON item starts on screen
@@ -32,7 +34,7 @@
 *>           OFFON items can be displayed in every position, also sparse or overlapped
 *>           note the brackets and mark char are displayed at column = Oo-c + 12
 *>           example   "Description........ OFF [X  ] ON" . the "D" is at Oo-r , Oo-c position
-*> Oo-c-OFFON column where the OFF / ON part (the "O" of OFF starts
+*> Oo-c-OFFON column where the OFF / ON part (= the "O" of OFF starts  (the 1st char of Oo-OFF-Descr
 *> Oo-Item   charatcters string to be displayed as OFFON text (max 80 - 12 = 68 chars).
 *>           It has to be in ASCIIZ format (must have x'00'(low-value) as last byte
 *> Oo-Markchar   single char used to "mark" the single OFFON item. example an "X" or an "O"
@@ -40,6 +42,8 @@
 *> Oo-wait   Y= display OFFON items and wait for a user action (normal use)
 *>           N= display OFFON items  and returns to caller without waiting for a keypress by the user
 *>           useful to just display the OFFON list at first ful screen display
+*> Oo-OFF-Descr Description used on screen for OFF switch. Default = OFF
+*> Oo-ON-Descr the Description used on screen for ON switch. Default = ON
 *> Oo-Selected  return to caller the number (in the table) of the OFFON item "active" at exit
 *> Oo-Key    key code pressed by user: 0000 = Enter, 2005 = Escape (see GnuCOBOL codes)
 *>           Caller pgm will know if user selected some OFFON items and exit with TAB, ESC ...
@@ -81,20 +85,22 @@
         05 Oo-BracketChars.
            07 Oo-BracketChar1 pic x(01) value '['.
            07 Oo-BracketChar2 pic x(01) value ']'.
-        *> colors for Normal OFFON item (non active)
-        05 Oo-bcoN            pic 9(01) value green.  *> backcolor for "normal" OFFON item
-        05 Oo-fcoN            pic 9(01) value black.  *> forecolor for "normal" OFFON item
-        05 Oo-fcoNH           pic X(01) Value 'N'.    *> foreground for Normal OFFON item in Highlight ?
-        *> colors for active (to be selected) OFFON item
-        05 Oo-bcoA            pic 9(01) value green.  *> backcolor for "active" OFFON item
-        05 Oo-fcoA            pic 9(01) value white.  *> forecolor for "active" OFFON item
-        05 Oo-fcoAH           pic X(01) Value 'Y'.    *> forecolor of active OFFON item in Highlight ?
-        *> colors for hot key char of a OFFON item (not yet available)
-        05 Oo-bcoH            pic 9(01) value green.  *> backcolor for "hot key" char
-        05 Oo-fcoH            pic 9(01) value yellow. *> forecolor for "hot key" char
-        05 Oo-fcoHH           pic X(01) Value 'Y'.    *> foreground hotkey char in Highlight ?
-     *> wait: 'Y' normal OFFON wait, N = just display list of OFFON items and exit
+        *> colors for non active (Normal) OFFON item
+        05 Oo-BcoN            pic 9(01) value green.  *> backcolor for "normal" OFFON item
+        05 Oo-FcoN            pic 9(01) value black.  *> forecolor for "normal" OFFON item
+        05 Oo-FcoNH           pic X(01) Value 'N'.    *> foreground for Normal OFFON item in Highlight ?
+        *> colors for active (selected) OFFON item
+        05 Oo-BcoA            pic 9(01) value green.  *> backcolor for "active" OFFON item
+        05 Oo-FcoA            pic 9(01) value white.  *> forecolor for "active" OFFON item
+        05 Oo-FcoAH           pic X(01) Value 'Y'.    *> forecolor of active OFFON item in Highlight ?
+        *> colors for hot-key char of a OFFON item
+        05 Oo-BcoH            pic 9(01) value green.  *> backcolor for "hot key" char
+        05 Oo-FcoH            pic 9(01) value yellow. *> forecolor for "hot key" char
+        05 Oo-FcoHH           pic X(01) Value 'Y'.    *> foreground hotkey char in Highlight ?
+     *> wait: 'Y' normal OFFON wait, N = just display list of OFFON items and return to caller/exit
      03 Oo-wait               pic x(01) value 'Y'.
+     03 Oo-OFF-Descr          pic x(04) value 'OFF '.
+     03 Oo-ON-Descr           pic x(04) value ' ON '.
      *> *************************************************************
      *> RETURNS TO CALLER
      *> *************************************************************
