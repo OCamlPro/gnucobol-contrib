@@ -575,17 +575,17 @@ DisplayHelp.
     move z' ALT-F4/F5 chg back/Fore color ' to Bxm-mex(y) add 1 to y
     move z' of Active item.               ' to Bxm-mex(y) add 1 to y
     move z' ALT-F6/F7 chg back/Fore color ' to Bxm-mex(y) add 1 to y
-    move z' of non Active items           ' to Bxm-mex(y) add 1 to y
+    move z' of HotKey                     ' to Bxm-mex(y) add 1 to y
     move z' ALT-F9 reset all color changes' to Bxm-mex(y) add 1 to y
     move z'                               ' to Bxm-mex(y) add 1 to y
-    move z' eugenio.dilo@gmail.com   2021 ' to Bxm-mex(y) add 1 to y
-    move z' hit <enter> to continue ...   ' to Bxm-mex(y) add 1 to y
+    move z' eugenio.dilo@gmail.com (2021) ' to Bxm-mex(y) add 1 to y
+    move z' enter/mouseclick, continue ...' to Bxm-mex(y) add 1 to y
     move blue     to Bxm-bco    Bxm-titBco Bxm-bcoM
     move white    to Bxm-fco    Bxm-titFco Bxm-fcoM
     move 'Y'      to Bxm-Click  Bxm-tit
     move 'N'      to Bxm-3D     Bxm-OkButton
     move 'S'      to Bxm-style
-    move x'B4' & ' GnuCOBOL OFFON - HELP '  & x'C3' & x'00' to Bxm-titDes
+    move x'B4' & ' OFFON - HELP '  & x'C3' & x'00' to Bxm-titDes
    compute Bxm-r1 = 05
    compute Bxm-c1 = 10
    compute Bxm-r2 = Bxm-r1 + 19
