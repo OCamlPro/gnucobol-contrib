@@ -1,5 +1,5 @@
        >> SOURCE FORMAT IS FREE
-REPLACE ==:BCOL:== BY ==BACKGROUND-COLOR==  *> use :BCOL: & :FCOL: is to have short code
+REPLACE ==:BCOL:== BY ==BACKGROUND-COLOR==
         ==:FCOL:== BY ==FOREGROUND-COLOR==.
 
 IDENTIFICATION DIVISION.
@@ -7,14 +7,14 @@ PROGRAM-ID. GC18RADIOBUTTON is initial.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) AND UTILITIES COLLECTION
 *> Purpose:    DISPLAYS AND MANAGE RADIOBUTTON ITEMS ON SCREEN
-*>             make only one of items "marked/selected" with cursor keys or left mousekey singleclick
+*>             only one of the items "marked/selected" with cursor keys or left mousekey singleclick
 *>             exit with: ENTER, TAB/BACKTAB, ESC, PAGEUP/DOWN, single or doubleclick of right mousekey
 *> Tectonics:  cobc -m GC18RADIOBUTTON.COB -lpdcurses (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      call GC18RADIOBUTTON using RADIOBUTTON-AREA
 *> Parameters: look at GC18RADIOBUTTON.cpy (use with copy Version: 2.0)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
-*> License:    Copyright 2017 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    2.0 2021.01.01
+*> License:    Copyright 2021 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
+*> Version:    2.1 2021.01.31
 *> Changelog:  1.0 first release.
 *>             1.1 hot key management added
 *>             1.2 Rb-Hot from 9(01) to 9(02)
@@ -26,18 +26,19 @@ PROGRAM-ID. GC18RADIOBUTTON is initial.
 *>                 added single click of left mousekey on a radiobutton to make it active and marked
 *>                 double left-click is same as Enter
 *>                 single or doubleclick of right mousekey is same as ESCAPE
+*>             2.1 F1, ALT-F2/F3/F4/F5/F6/F7/F9 added (HELP and change colors)
 *>
 *> You can manage a group of max 98 RADIOBUTTON items on screen, each of 1 row (also overlapped).
 *> Each radiobutton item has to be inserted in a table with 99 elements
 *> there have to be a last item in the table, filled with low-value
 *>
 *> Example of use.
-*> step 1. display a box (not mandatory ) but useful to have a better user interface
+*> step 1. display a box (not mandatory ) but useful to have better user interface
 *> step 2. display a group of RADIOBUTTON items (switches) inside the BOX
 *> step 3. wait for a user action . Some user actions:
-*> use cursor keys to activate and mark a radiobutton
-*> use left mouse key single or doubleclick on a radiobutton = activate and mark the radiobutton
-*> To exit from radiobutton mgmt use: TAB, ENTER, ESC, PGUP/DOWN, right mouse key single or doubleclick
+*>  use cursor keys to activate and mark a radiobutton
+*>  use left mouse key single or doubleclick on a radiobutton = activate and mark the radiobutton
+*>  To exit from radiobutton mgmt use: TAB, ENTER, ESC, PGUP/DOWN, right mouse key single or doubleclick
 *>
 *> sample schema of RADIOBUTTON items list with 6 items
 *>
@@ -64,6 +65,7 @@ Working-Storage Section.
     03  i            pic 9(02) value 1.
     03  j            pic 9(02) value 1.
     03  k            pic 9(02) value 1.
+    03  y            pic 9(02) value 1.
     03  bco          PIC 9(02).
     03  fco          PIC 9(02).
     03  fcoH         PIC X(01).
@@ -72,7 +74,6 @@ Working-Storage Section.
     03  wRb-c        pic 9(03) value zero.
     03  wlen         pic 9(02) value 0.
     03  len-voce     pic 9(02) value 0.
-
 
 01 black   constant as 0.
 01 blue    constant as 1.
@@ -95,7 +96,6 @@ Working-Storage Section.
 01 wKey-num        PIC x(10) value '0123456789'.
 01 wKey-num-Table redefines wKey-num.
    05 wKey-num-Ele pic X(01) occurs 10 indexed by wKey-num-Idx.
-
 
 01 wChars.
    03  wChars1 pic x(26) value 'abcdefghijklmnopqrstuvwxyz'.
@@ -132,6 +132,13 @@ Working-Storage Section.
     05 wRb-ItemLen     occurs 99 pic 9(03). *> item length (char number before X"00")
     05 wRb-ItemCol-End occurs 99 pic 9(03). *> end column of the radiobutton item
 
+*> SAVE/RESTORE SCREEN VARIABLES
+01 wScreenName        PIC X(256).
+01 wiScrOk            BINARY-LONG.
+
+01 wRb-Parameters     PIC x(12) value space.
+
+copy    'GC02BOXMEX.CPY' suppress.
 copy 'GC97KEYCODEGC.CPY'  suppress.
 
 LINKAGE SECTION.
@@ -146,16 +153,25 @@ PROCEDURE DIVISION using RadioButton-Area.
    perform InitialSettings thru InitialSettingsEx.
    move 1 to i, j, w.
 
+   move Rb-Parameters to wRb-Parameters *> useful to reset colors
+   perform HideCursor thru HideCursorEx
+   continue.
+
+DisplayScreen.
    *> display ALL RADIOBUTTON ITEMS
    perform DisplayRadioButtonItems thru DisplayRadioButtonItemsEx
-
-   perform HideCursor thru HideCursorEx
    continue.
 
 *> ***********************************************************************************
 *> WAIT FOR USER ACTION
 *> ***********************************************************************************
 Accept-a-Key.
+ *> accept of a 1 byte dummy field at a fixed position Rb-r(1) Rb-c(1)
+ *> the dummy field is at cursor position of the 1st byte of the first rediobutton ITEM
+ *> it has same back and fore color of 1st ITEM so it is invisible
+ *> the "with Auto" option is useful to detect user action ex.a cursor key is pressed
+
+   move Rb-Item(1) (1:1) to wPrompt *> reset wDummy before accept
 
    if Rb-wait  = 'Y'
       *> after displayed radiobutton items wait for user action (normal use)
@@ -173,7 +189,19 @@ Accept-a-Key.
        go to END-PROGRAM
    end-if
 
+*> <escape> TAB/BAckTAB, PGUP/DOWN or right mouse key: return to caller
+*> if pressed cursor down or right -> activate next radiobutton Item
+*> if pressed cursor up   or left  <- activate previous radiobutton Item
+*> *************************************************************************
+*>
+*> *************************************************************************
+*> detect Enter or ESCAPE key only if user has not typed a letter or a digit
+*> if user has typed a letter or a digit then WDummy is just une char and has the "AUTO" attribute
+*> then the wCRT-STATUS is = 00000 (K-ENTER) !
 
+*> *************************************************************************
+*> EVALUATE THE USER ACTION (A KEY OR A MOUSE KEY WASS PRESSED)
+*> *************************************************************************
    EVALUATE TRUE
    *> i = number of RadioButton item
            *> NEXT RADIOBUTTON ITEM WILL BECAME "ACTIVE" AND "MARKED"
@@ -238,7 +266,6 @@ Accept-a-Key.
            perform varying k from 1 by 1 until k > Rb-number
              if wCursorRow  = Rb-r(k)
                 compute wRb-c = Rb-c(k) - 4  *> (4 = 2 brackets + 1 marker + 1 space)
-                *> if ( wCursorCol >= Ck-c(k) and  wCursorCol <= wCk-ItemCol-End(k) )
                 if ( wCursorCol >= wRb-c and wCursorCol <= wRb-ItemCol-End(k) )
                   *> the mouse has been clicked on a ITEM (or on the Radiobutton marker itself)
                   move wCRT-STATUS  to Rb-Key
@@ -339,6 +366,44 @@ Accept-a-Key.
                 end-if
         end-perform
 
+     when wCRT-STATUS = K-F1              *> F1 HELP
+            perform DisplayHelp thru DisplayHelpEx
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F2              *> change "non active" items Fore Color
+            move 1 to i
+            add 1 to Rb-FcoN
+            If Rb-FcoN > 7 move 0 to Rb-FcoN end-if
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F3              *> change "non active" items Back Color
+            move 1 to i
+            add 1 to Rb-BcoN
+            If Rb-BcoN > 7 move 0 to Rb-BcoN end-if
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F4              *> change "active" items Fore Color
+            move 1 to i
+            add 1 to Rb-FcoA
+            If Rb-FcoA > 7 move 0 to Rb-FcoA end-if
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F5              *> change "active" items Back Color
+            move 1 to i
+            add 1 to Rb-BcoA
+            If Rb-BcoA > 7 move 0 to Rb-BcoA end-if
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F6              *> change hotkey Fore Color
+            move 1 to i
+            add 1 to Rb-FcoH
+            If Rb-FcoH > 7 move 0 to Rb-FcoH end-if
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F7              *> change hotkey Back Color
+            move 1 to i
+            add 1 to Rb-BcoH
+            If Rb-BcoH > 7 move 0 to Rb-BcoH end-if
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F9              *> reset params & colors to initial state
+            move 1 to i
+            move wRb-Parameters to Rb-Parameters
+            go to DisplayScreen
+
    *> *************************************************************************
    *> EXIT WITH ONE OF FOLLOWING KEYS - ONLY ONE OPTION SELECTED - THE  MARKED RADIOBUTTON
    *> *************************************************************************
@@ -348,8 +413,6 @@ Accept-a-Key.
          or wCRT-STATUS = K-PAGEUP
          or wCRT-STATUS = K-PAGEDOWN
          or wCRT-STATUS = K-BACKTAB
-         or wCRT-STATUS = K-F1
-         or wCRT-STATUS = K-F12
          or wCRT-STATUS = K-RIGHT-PRESSED
          or wCRT-STATUS = K-RIGHT-DBL-CLICK
             move wCRT-STATUS to Rb-Key
@@ -486,6 +549,45 @@ InitialSettings.
   continue.
 InitialSettingsEx. exit.
 
+DisplayHelp.
+    perform ScreenSave thru ScreenSaveEx
+
+    initialize Boxmex-Area ALL TO VALUE
+    move low-value to Bxm-tabmex
+    move 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' Use left mouse button         ' to Bxm-mex(y) add 1 to y
+    move z' or cursor keys or hotkeys     ' to Bxm-mex(y) add 1 to y
+    move z' to select a Radiobutton.      ' to Bxm-mex(y) add 1 to y
+    move z' Use Enter,TAB, ESC, PAGE or   ' to Bxm-mex(y) add 1 to y
+    move z' right mouseclick  to exit.    ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' F1 Help                       ' to Bxm-mex(y) add 1 to y
+    move z' ALT-F2/F3 chg back/Fore color ' to Bxm-mex(y) add 1 to y
+    move z' of non Active items.          ' to Bxm-mex(y) add 1 to y
+    move z' ALT-F4/F5 chg back/Fore color ' to Bxm-mex(y) add 1 to y
+    move z' of Active item.               ' to Bxm-mex(y) add 1 to y
+    move z' ALT-F6/F7 chg back/Fore color ' to Bxm-mex(y) add 1 to y
+    move z' of HotKey                     ' to Bxm-mex(y) add 1 to y
+    move z' ALT-F9 reset all color changes' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' eugenio.dilo@gmail.com (2021) ' to Bxm-mex(y) add 1 to y
+    move z' enter/mouseclick, continue ...' to Bxm-mex(y) add 1 to y
+    move blue     to Bxm-bco    Bxm-titBco Bxm-bcoM
+    move white    to Bxm-fco    Bxm-titFco Bxm-fcoM
+    move 'Y'      to Bxm-Click  Bxm-tit
+    move 'N'      to Bxm-3D     Bxm-OkButton
+    move 'S'      to Bxm-style
+    move x'B4' & ' RADIOBUTTON - HELP '  & x'C3' & x'00' to Bxm-titDes
+   compute Bxm-r1 = 05
+   compute Bxm-c1 = 10
+   compute Bxm-r2 = Bxm-r1 + 19
+   compute Bxm-c2 = Bxm-c1 + 32
+   call GC02BOXMEX using BOXMEX-AREA
+
+   perform ScreenRestore thru ScreenRestoreEx.
+DisplayHelpEx. exit.
+
 HideCursor.
   *> hide the cursor and save its previous state
   *> use always a "display or an accept at .... " before,  to have done a call to "initscr"
@@ -500,5 +602,15 @@ ShowCursor.
   call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
   continue.
 ShowCursorEx. exit.
+
+ScreenSave.
+   move Z'GC18RADIOBUTTON.TMP' to wScreenName
+   call static 'scr_dump' using by reference wScreenName returning wiScrOk end-call.
+ScreenSaveEx. exit.
+
+ScreenRestore.
+   call static 'scr_restore' using by reference wScreenName returning wiScrOk end-call
+   CALL 'CBL_DELETE_FILE' USING wScreenName.
+ScreenRestoreEx. exit.
 
 End Program GC18RADIOBUTTON.
