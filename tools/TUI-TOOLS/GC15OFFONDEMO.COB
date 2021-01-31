@@ -48,14 +48,10 @@ WORKING-STORAGE SECTION.
     05 wCursorRow       Pic 9(3).
     05 wCursorCol       Pic 9(3).
 
-*> SAVE/RESTORE SCREEN VARIABLES
-01 wScreenName        PIC X(256).
-01 wiScrOk            BINARY-LONG.
-
-COPY 'GC01BOX.CPY'.
-copy 'GC02BOXMEX.CPY'     suppress.
-COPY 'GC15OFFON.CPY'.
-COPY 'GC97KEYCODEGC.CPY'.
+COPY 'GC01BOX.CPY'         suppress.
+copy 'GC02BOXMEX.CPY'      suppress.
+COPY 'GC15OFFON.CPY'       suppress.
+COPY 'GC97KEYCODEGC.CPY'   suppress.
 
 *> **************************************************************
 *>           P R O C E D U R E   D I V I S I O N
@@ -73,7 +69,7 @@ Start-Display.
     move 'D'      to Box-style move 'N'      to Box-3D
     perform callGC01BOX thru callGC01BOX-ex
     move 2 to Wr
-    display 'GnuCOBOL GC15OFFON TUI TOOL at work. '
+    display 'GnuCOBOL GC15OFFON TUI TOOL. '
             at 0303 with :FCOL: white :BCOL: blue
 
     perform DisplayHelp thru DisplayHelpEx
@@ -154,7 +150,6 @@ set  Box-bco   Box-fco to white move '014004018046' to Box-rc
 move 'S' to Box-style move 'N' to Box-3D Box-shadow Box-tit move 'R' to Box-3D
 perform callGC01BOX thru callGC01BOX-ex
 display ' Options ' at 014007 with :BCOL: white :FCOL: black highlight end-display
-
 
 initialize OFFON-area ALL TO VALUE
 move 'o'  to Oo-MarkChar
@@ -256,7 +251,6 @@ DisplayMarkTable.
 DisplayMarkTableEx. Exit.
 
 DisplayHelp.
-    perform ScreenSave thru ScreenSaveEx
 
     initialize Boxmex-Area ALL TO VALUE
     move low-value to Bxm-tabmex
@@ -268,17 +262,17 @@ DisplayHelp.
     move z' type of bracket, and type     ' to Bxm-mex(y) add 1 to y
     move z' of marker.                    ' to Bxm-mex(y) add 1 to y
     move z'                               ' to Bxm-mex(y) add 1 to y
-    move z' OFFON tool has its own help.  ' to Bxm-mex(y) add 1 to y
+    move z' OFFON tool has its F1 = help. ' to Bxm-mex(y) add 1 to y
     move z'                               ' to Bxm-mex(y) add 1 to y
     move z' OFF and ON strings are also   ' to Bxm-mex(y) add 1 to y
     move z' changed to NO and YES.        ' to Bxm-mex(y) add 1 to y
     move z'                               ' to Bxm-mex(y) add 1 to y
     move z'                               ' to Bxm-mex(y) add 1 to y
     move z'                               ' to Bxm-mex(y) add 1 to y
-    move z'                               ' to Bxm-mex(y) add 1 to y
     move z' eugenio.dilo@gmail.com (2021) ' to Bxm-mex(y) add 1 to y
     move z'                               ' to Bxm-mex(y) add 1 to y
-    move z' hit <enter> to continue ...   ' to Bxm-mex(y) add 1 to y
+    move z' hit <enter> or click mouse    ' to Bxm-mex(y) add 1 to y
+    move z' left button to continue ...   ' to Bxm-mex(y) add 1 to y
 
     move cyan     to Bxm-bco    Bxm-titBco Bxm-bcoM
     move white    to Bxm-fco    Bxm-titFco Bxm-fcoM
@@ -294,18 +288,8 @@ DisplayHelp.
         on exception display 'CALL GC02BOXMEX error. Module GC02BOXMEX not Found.'
         accept OMITTED
    end-call
-   perform ScreenRestore thru ScreenRestoreEx.
+   continue.
 DisplayHelpEx. exit.
-
-ScreenSave.
-   move Z'GC15OFFONDEMO.SCR' to wScreenName
-   call static 'scr_dump' using by reference wScreenName returning wiScrOk end-call.
-ScreenSaveEx. exit.
-
-ScreenRestore.
-   call static 'scr_restore' using by reference wScreenName returning wiScrOk end-call
-   CALL 'CBL_DELETE_FILE' USING wScreenName.
-ScreenRestoreEx. exit.
 
 callGC01BOX.
     call GC01BOX using by reference BOX-AREA
