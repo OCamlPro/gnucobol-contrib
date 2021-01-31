@@ -21,8 +21,6 @@ ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
 *> source-computer. WINDOWS10 64bit WITH DEBUGGING MODE.
 special-names.
-   Currency Sign is '€'.
-   Decimal-Point is Comma.
    CRT STATUS    is wCRT-STATUS.      *> Return Code (es. PF, Arrows, TAB, Mouse Keys)
    CURSOR        is wCursorRowCol. *> Cursor Position
 
@@ -40,6 +38,7 @@ WORKING-STORAGE SECTION.
 01  wDummy            pic x(01) VALUE     ' '.
 01  wString           pic x(70) VALUE     ' '.
 01  i                 pic 999 value zero.
+01  y                 pic  99 value 1.
 01  wR                pic 999 value zero.
 
 01  wCRT-STATUS         PIC 9(4) value 0.  *> CRT-STATUS codes
@@ -73,11 +72,9 @@ Start-Display.
     move 'D'      to Box-style move 'N'      to Box-3D
     perform callGC01BOX thru callGC01BOX-ex
     move 2 to Wr
-    display 'GnuCOBOL GC13CHECKBOX TUI TOOL at work. F1= HELP, ENTER= Continue.'
+    display 'GnuCOBOL GC13CHECKBOX TUI TOOL at work. '
             at 0303 with :FCOL: white :BCOL: blue
-    accept wDummy at 2479 auto no-echo size 0 end-accept
-    if wCRT-STATUS = K-F1   perform DisplayHelp thru DisplayHelpEx   end-if
-
+    perform DisplayHelp thru DisplayHelpEx
 
     display ' GnuCOBOL GC13CHECKBOX TUI TOOL at work. '
           at 2103 with :FCOL: white :BCOL: blue
@@ -101,7 +98,7 @@ set  Box-bco   Box-fco to white
 move '003005013040' to Box-rc
 move 'S' to Box-style move 'N' to Box-3D Box-shadow Box-tit move 'R' to Box-3D
 perform callGC01BOX thru callGC01BOX-ex
-display 'Group 1 switches' at 003007 with :BCOL: white :FCOL: black end-display
+display 'Group 1 switches. F1 = HELP ' at 003007 with :BCOL: white :FCOL: black end-display
 
 *> DISPLAY CHECKBOX ITEMS N.1
 initialize CHECKBOX-area ALL TO VALUE
@@ -116,7 +113,7 @@ Move '1 06010011 Allow STATIC in objects    ' & x'00' to Ck-Ele(07)
 Move '  02011011 C like operators           ' & x'00' to Ck-Ele(08)
 Move ' 104012011 Conditional defines        ' & x'00' to Ck-Ele(09)
 perform callGC13CHECKBOX thru callGC13CHECKBOX-ex
-perform DisplaySwitchResult thru DisplaySwitchResultEx.
+perform DisplayMarkTable thru DisplayMarkTableEx.
 
 *> DISPLAY A BOX AS BACKGROUND OF A CHECKBOX ITEMS GROUP
 set  Box-bco   Box-fco to white move '003048011075' to Box-rc
@@ -140,7 +137,7 @@ Move ' 103009054 Colums stats        ' & x'00' to Ck-Ele(06)
 Move '  02010054 Total stats         ' & x'00' to Ck-Ele(07)
 perform callGC13CHECKBOX thru callGC13CHECKBOX-ex
 
-perform DisplaySwitchResult thru DisplaySwitchResultEx.
+perform DisplayMarkTable thru DisplayMarkTableEx.
 
 *> DISPLAY A BOX AS BACKGROUND OF A CHECKBOX ITEMS GROUP
 set  Box-bco   Box-fco to white move '014005018040' to Box-rc
@@ -158,7 +155,7 @@ Move '1 02016011 Percentages                ' & x'00' to Ck-Ele(02)
 Move '  02017011 Valid uppercase            ' & x'00' to Ck-Ele(03)
 perform callGC13CHECKBOX thru callGC13CHECKBOX-ex
 
-perform DisplaySwitchResult thru DisplaySwitchResultEx.
+perform DisplayMarkTable thru DisplayMarkTableEx.
 
 *> DISPLAY CHECKBOX ITEMS N.4
 display 'Group 4 switches' at 012045 with :BCOL: white :FCOL: black highlight end-display
@@ -182,7 +179,7 @@ Move '  00017048 08-C like operators       ' & x'00' to Ck-Ele(09)
 Move ' 100017048 09-Overlapped items !     ' & x'00' to Ck-Ele(10)
 perform callGC13CHECKBOX thru callGC13CHECKBOX-ex
 
-perform DisplaySwitchResult thru DisplaySwitchResultEx.
+perform DisplayMarkTable thru DisplayMarkTableEx.
 accept wDummy at 2479
 DISPLAY ' ESC = return to previous screen, Enter to select and Exit '
          AT 001003 with :FCOL: yellow :BCOL: blue highlight
@@ -240,7 +237,7 @@ Move '  03018046 08-C like operators       ' & x'00' to Ck-Ele(28)
 Move ' 103018046 09-Overlapped items !     ' & x'00' to Ck-Ele(29)
 perform callGC13CHECKBOX thru callGC13CHECKBOX-ex
 
-perform DisplaySwitchResult thru DisplaySwitchResultEx.
+perform DisplayMarkTable thru DisplayMarkTableEx.
 accept wDummy at 2479
 
 if Ck-Key = K-ESCAPE go to Start-Display end-if
@@ -285,7 +282,7 @@ END-OF-PROGRAM.
 *> *********************************************************************************
 *>
 *> *********************************************************************************
-DisplaySwitchResult.
+DisplayMarkTable.
     DISPLAY '                                                                           '
          AT 025003 with :FCOL: white :BCOL: blue reverse-video
     STRING ' Switches set to: -'
@@ -295,67 +292,63 @@ DisplaySwitchResult.
                       Ck-Mark(16) '-' Ck-Mark(17) '-' Ck-Mark(18) '-' Ck-mark(19) '-' Ck-Mark(20) '-'
                       Ck-Mark(21) '-' Ck-Mark(22) '-' Ck-Mark(23) '-' Ck-mark(24) '-' Ck-Mark(25) '-'
                       Ck-Mark(26) '-' Ck-Mark(27) '-' Ck-Mark(28) '-' Ck-mark(29) '-' Ck-Mark(30) '+'
-             into wSTRING
+             into wSTRING  *> wString is truncated at 70 char
     DISPLAY wSTRING     AT 025003 with :FCOL: white :BCOL: blue reverse-video
     DISPLAY Ck-Selected AT 021076 with :FCOL: white :BCOL: blue reverse-video
     continue.
-DisplaySwitchResultEx. Exit.
+DisplayMarkTableEx. Exit.
 
 DisplayHelp.
-    perform ScreenSave thru ScreenSaveEx
-    *> DISPLAY THE FRAME AND THE HELP TEXT
+
     initialize Boxmex-Area ALL TO VALUE
     move low-value to Bxm-tabmex
-    *> Description: Displays a small group of checkbox items, diaplays other 3 small gropus showing
-    *> different options. Then displays a checkbox items list of 29 items grouped in 4 subgroups.
-    move z'                               ' to Bxm-mex(01)
-    move z' Use left mouse button on item ' to Bxm-mex(02)
-    move z' to activate the item          ' to Bxm-mex(03)
-    move z'                               ' to Bxm-mex(04)
-    move z' Use cursor keys or hotkeys    ' to Bxm-mex(05)
-    move z' to activate an item           ' to Bxm-mex(06)
-    move z'                               ' to Bxm-mex(07)
-    move z' Enter or spacebar o left      ' to Bxm-mex(08)
-    move z' doubleclick to mark/unmark    ' to Bxm-mex(09)
-    move z' the active item               ' to Bxm-mex(10)
-    move z'                               ' to Bxm-mex(11)
-    move z' TAB, ESC or right mouseclick  ' to Bxm-mex(12)
-    move z' to exit from checkbox mgmt    ' to Bxm-mex(13)
-    move z'                               ' to Bxm-mex(14)
-    move z'                               ' to Bxm-mex(15)
-    move z' eugenio.dilo@gmail.com   2020 ' to Bxm-mex(16)
-    move z'                               ' to Bxm-mex(17)
-    move z' hit <enter> to continue ...   ' to Bxm-mex(18)
+    move 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' This demo will show you some  ' to Bxm-mex(y) add 1 to y
+    move z' use of the CHECKBOX tool.     ' to Bxm-mex(y) add 1 to y
+    move z' Different colors, positions   ' to Bxm-mex(y) add 1 to y
+    move z' type of bracket, and type     ' to Bxm-mex(y) add 1 to y
+    move z' of marker.                    ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' CHECKBOX tool has its own     ' to Bxm-mex(y) add 1 to y
+    move z' help. F1 to show help         ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' eugenio.dilo@gmail.com (2021) ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' hit <enter> or click mouse    ' to Bxm-mex(y) add 1 to y
+    move z' left button to continue ...   ' to Bxm-mex(y) add 1 to y
 
     move cyan     to Bxm-bco    Bxm-titBco Bxm-bcoM
     move white    to Bxm-fco    Bxm-titFco Bxm-fcoM
     move 'Y'      to Bxm-Click  Bxm-tit
     move 'N'      to Bxm-3D     Bxm-OkButton
     move 'S'      to Bxm-style
-    move x'B4' & ' GnuCOBOL Checkbox - HELP '  & x'C3' & x'00' to Bxm-titDes
-   compute Bxm-r1 = 05
-   compute Bxm-c1 = 10
+    move x'B4' & ' GnuCOBOL CHECKBOX DEMO '  & x'C3' & x'00' to Bxm-titDes
+   compute Bxm-r1 = 04
+   compute Bxm-c1 = 42
    compute Bxm-r2 = Bxm-r1 + 19
    compute Bxm-c2 = Bxm-c1 + 32
    call GC02BOXMEX using by content BOXMEX-AREA
         on exception display 'CALL GC02BOXMEX error. Module GC02BOXMEX not Found.'
         accept OMITTED
    end-call
-   perform ScreenRestore thru ScreenRestoreEx.
+   continue.
 DisplayHelpEx. exit.
 
-ScreenSave.
-   move Z'GC13CHECKBOXDEMO.SCR' to wScreenName
-   call static 'scr_dump' using by reference wScreenName returning wiScrOk end-call.
-ScreenSaveEx. exit.
+*> ScreenSave.
+   *> move Z'GC13CHECKBOXDEMO.SCR' to wScreenName
+   *> call static 'scr_dump' using by reference wScreenName returning wiScrOk end-call.
+*> ScreenSaveEx. exit.
 
-ScreenRestore.
-   call static 'scr_restore' using by reference wScreenName returning wiScrOk end-call
-   CALL 'CBL_DELETE_FILE' USING wScreenName.
-ScreenRestoreEx. exit.
+*> ScreenRestore.
+   *> call static 'scr_restore' using by reference wScreenName returning wiScrOk end-call
+   *> CALL 'CBL_DELETE_FILE' USING wScreenName.
+*> ScreenRestoreEx. exit.
 
 callGC01BOX.
-    call GC01BOX using by content BOX-AREA
+    call GC01BOX using by reference BOX-AREA
          on exception     display ' CALL GC01BOX error. Module GC01BOX not Found !' at 0501
                           display ' type Enter to continue without boxes ...      ' at 0601
                           accept OMITTED
@@ -365,7 +358,7 @@ callGC01BOX.
 callGC01BOX-ex. exit.
 
 callGC13CHECKBOX.
-      call GC13CHECKBOX using by content CHECKBOX-AREA
+      call GC13CHECKBOX using by reference CHECKBOX-AREA
          on exception     display ' CALL GC13CHECBOX error. Module GC13CHECKBOX not Found !' at 0501
                           display ' type Enter to close ...                                ' at 0601
                           accept OMITTED
