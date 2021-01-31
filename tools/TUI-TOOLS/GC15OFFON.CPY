@@ -97,7 +97,7 @@
         05 Oo-BcoH            pic 9(01) value green.  *> backcolor for "hot key" char
         05 Oo-FcoH            pic 9(01) value yellow. *> forecolor for "hot key" char
         05 Oo-FcoHH           pic X(01) Value 'Y'.    *> foreground hotkey char in Highlight ?
-     *> wait: 'Y' normal OFFON wait, N = just display list of OFFON items and return to caller/exit
+     *> wait: 'Y' normal OFFON wait, N = just display list of OFFON items and return to caller
      03 Oo-wait               pic x(01) value 'Y'.
      03 Oo-OFF-Descr          pic x(04) value 'OFF '.
      03 Oo-ON-Descr           pic x(04) value ' ON '.
