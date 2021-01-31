@@ -1,6 +1,5 @@
        >> SOURCE FORMAT IS FREE
 REPLACE ==:BCOL:== BY ==BACKGROUND-COLOR== ==:FCOL:== BY ==FOREGROUND-COLOR==.
-
 *> ID DIVISION.
 program-id. GC18RADIOBUTTONDEMO.
 *> ***********************************************************************************
@@ -20,10 +19,9 @@ ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
 *> source-computer. WINDOWS10 64bit WITH DEBUGGING MODE.
 special-names.
-   Currency Sign is '€'.
-   Decimal-Point is Comma.
    CRT STATUS    is wCRT-STATUS.   *> Return Code (es. PF, Arrows, TAB, Mouse Keys)
    CURSOR        is wCursorRowCol. *> Cursor Position
+
 DATA DIVISION.
 WORKING-STORAGE SECTION.
 01 black   constant as 0.
@@ -39,6 +37,7 @@ WORKING-STORAGE SECTION.
 01  wDummy      pic x(01) VALUE     ' '.
 01  wString     pic x(70) VALUE     ' '.
 01  i           pic 999 value zero.
+01  y           pic  99 value 1.
 01  wR          pic 999 value zero.
 01  wRetCod     pic 9999 value zero.
 
@@ -47,10 +46,6 @@ WORKING-STORAGE SECTION.
 01  redefines wCursorRowCol .
     05 wCursorRow       Pic 9(3).
     05 wCursorCol       Pic 9(3).
-
-*> SAVE/RESTORE SCREEN VARIABLES
-01 wScreenName        PIC X(256).
-01 wiScrOk            BINARY-LONG.
 
 COPY 'GC01BOX.CPY'         suppress.
 copy 'GC02BOXMEX.CPY'      suppress.
@@ -68,40 +63,41 @@ PROCEDURE DIVISION.
 Start-Display.
   initialize Box-area ALL TO VALUE
     *> display a big box as background
-    move cyan     to Box-bco   set Box-fco to white
+    move blue     to Box-bco   set Box-fco to white
     move '001001' to Box-r1c1  move '025080' to Box-r2c2
     move 'D'      to Box-style move 'N'      to Box-3D
     perform callGC01BOX thru callGC01BOX-ex
     move 2 to Wr
 
-    display 'GnuCOBOL GC18RADIOBUTTON TUI TOOL at work. F1= HELP, ENTER= Continue.'
-            at 0303 with :FCOL: white :BCOL: wBco
-    accept wDummy at 2479 with  auto no-echo size 0  :FCOL: white :BCOL: cyan end-accept
-    if wCRT-STATUS = K-F1   perform DisplayHelp thru DisplayHelpEx   end-if
+    display 'GnuCOBOL GC18RADIOBUTTON TUI TOOL. '
+            at 0303 with :FCOL: white :BCOL: blue
+
+    perform DisplayHelp thru DisplayHelpEx
 
     display ' GnuCOBOL GC18RADIOBUTTON TUI TOOL at work. '
-          at 2103 with foreground-color white background-color wBco
+          at 2103 with foreground-color white background-color blue
     display ' CursorKey or left single/double click on a radiobutton to select.'
-          at 2203 with :FCOL: white :BCOL: wBco
+          at 2203 with :FCOL: white :BCOL: blue
     display ' Enter, TAB, ESC or right mouse key click to exit.'
-          at 2303 with :FCOL: white :BCOL: wBco
-    display " Select a radiobutton also with hot keys (yellow chars). "
-          at 2403 with :FCOL: white :BCOL: wBco
-*> *********************************************************************************
-*> DISPLAY RADIOBUTTON NUMBER 1
-*> *********************************************************************************
+          at 2303 with :FCOL: white :BCOL: blue
+    display " Select a radiobutton also with hot keys (yellow chars). F1 = tool HELP "
+          at 2403 with :FCOL: white :BCOL: blue
+
 *> DISPLAY A BOX AS BACKGROUND OF SCREEN
 set  Box-bco   Box-fco to white
 move '002003020077' to Box-rc
 move 'S'            to Box-style
 move 'N'            to Box-3D Box-shadow
 move 'E'            to Box-3D
-Move 'Y' to Box-tit
-move black to Box-titFco
-move 'N'   to Box-titFcoH
+Move 'Y'            to Box-tit
+move black          to Box-titFco
+move 'N'            to Box-titFcoH
 move ' Select one of the Options for each group ' & x'00' to Box-titDes
 perform callGC01BOX thru callGC01BOX-ex
 
+*> *********************************************************************************
+*> DISPLAY RADIOBUTTON NUMBER 1
+*> *********************************************************************************
 *> DISPLAY A BOX AS BACKGROUND OF A RADIOBUTTON ITEMS GROUP 1
 set  Box-bco   Box-fco to white
 move '003005013040' to Box-rc
@@ -110,7 +106,7 @@ move 'N'            to Box-3D Box-shadow Box-tit
 move 'R'            to Box-3D
 perform callGC01BOX thru callGC01BOX-ex
 
-display ' Group 1 Options ' at 003006 with :BCOL: white :FCOL: black end-display
+display ' Group 1 Options. F1=HELP ' at 003006 with :BCOL: white :FCOL: black end-display
 
 *> DISPLAY RADIOBUTTON ITEMS N.1
 initialize RadioButton-Area ALL TO VALUE
@@ -313,7 +309,7 @@ END-OF-PROGRAM.
 *> *********************************************************************************
 DisplayOptionResult.
     DISPLAY '                                                                            '
-         AT 025003 with foreground-color white background-color wBco.
+        AT 025003 with :FCOL: white :BCOL: blue reverse-video
     STRING ' Options set to: -'
                       Rb-Mark(01) '-' Rb-Mark(02) '-' Rb-Mark(03) '-' Rb-mark(04) '-' Rb-Mark(05) '-'
                       Rb-Mark(06) '-' Rb-Mark(07) '-' Rb-Mark(08) '-' Rb-mark(09) '-' Rb-Mark(10) '-'
@@ -322,64 +318,49 @@ DisplayOptionResult.
                       Rb-Mark(21) '-' Rb-Mark(22) '-' Rb-Mark(23) '-' Rb-mark(24) '-' Rb-Mark(25) '-'
                       Rb-Mark(26) '-' Rb-Mark(27) '-' Rb-Mark(28) '-' Rb-mark(29) '-' Rb-Mark(30) '+'
              into wSTRING.
-    DISPLAY wSTRING     AT 025003 with foreground-color yellow highlight background-color wBco.
-    DISPLAY Rb-Selected AT 021076 with foreground-color yellow highlight background-color wBco.
-
+    DISPLAY wSTRING     AT 025003 with :FCOL: white :BCOL: blue reverse-video
+    DISPLAY Rb-Selected AT 021076 with :FCOL: white :BCOL: blue reverse-video
     continue.
 DisplayOptionResultEx. Exit.
 
 DisplayHelp.
-    perform ScreenSave thru ScreenSaveEx
-    *> DISPLAY THE FRAME AND THE HELP TEXT
+
     initialize Boxmex-Area ALL TO VALUE
     move low-value to Bxm-tabmex
-    *> Description: Displays a small group of checkbox items, diaplays other 3 small gropus showing
-    *> different options. Then displays a checkbox items list of 29 items grouped in 4 subgroups.
-    move z'                               ' to Bxm-mex(01)
-    move z' Use left mouse button on item ' to Bxm-mex(02)
-    move z' to activate the radiobutton   ' to Bxm-mex(03)
-    move z' (click or doubleclick)        ' to Bxm-mex(04)
-    move z' Use cursor keys or hotkeys    ' to Bxm-mex(05)
-    move z' to activate a radiobutton     ' to Bxm-mex(06)
-    move z'                               ' to Bxm-mex(07)
-    move z'                               ' to Bxm-mex(08)
-    move z'                               ' to Bxm-mex(09)
-    move z'                               ' to Bxm-mex(10)
-    move z' Enter, TAB, ESC or            ' to Bxm-mex(11)
-    move z' right mouseclick              ' to Bxm-mex(12)
-    move z' to exit from radiobutton mgmt ' to Bxm-mex(13)
-    move z'                               ' to Bxm-mex(14)
-    move z'                               ' to Bxm-mex(15)
-    move z' eugenio.dilo@gmail.com   2020 ' to Bxm-mex(16)
-    move z'                               ' to Bxm-mex(17)
-    move z' hit <enter> to continue ...   ' to Bxm-mex(18)
+    move 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' This demo will show you some  ' to Bxm-mex(y) add 1 to y
+    move z' use of the RADIOBUTTON tool.  ' to Bxm-mex(y) add 1 to y
+    move z' Different colors, positions   ' to Bxm-mex(y) add 1 to y
+    move z' type of bracket, and type     ' to Bxm-mex(y) add 1 to y
+    move z' of marker.                    ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' RADIOBUTTON tool has its own  ' to Bxm-mex(y) add 1 to y
+    move z' help. F1 to show help         ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' eugenio.dilo@gmail.com (2021) ' to Bxm-mex(y) add 1 to y
+    move z'                               ' to Bxm-mex(y) add 1 to y
+    move z' hit <enter> or click mouse    ' to Bxm-mex(y) add 1 to y
+    move z' left button to continue ...   ' to Bxm-mex(y) add 1 to y
 
     move cyan     to Bxm-bco    Bxm-titBco Bxm-bcoM
     move white    to Bxm-fco    Bxm-titFco Bxm-fcoM
     move 'Y'      to Bxm-Click  Bxm-tit
     move 'N'      to Bxm-3D     Bxm-OkButton
     move 'S'      to Bxm-style
-    move x'B4' & ' GnuCOBOL Radiobutton - HELP '  & x'C3' & x'00' to Bxm-titDes
-   compute Bxm-r1 = 05
-   compute Bxm-c1 = 10
+    move x'B4' & ' GnuCOBOL RADIOBUTTON DEMO '  & x'C3' & x'00' to Bxm-titDes
+   compute Bxm-r1 = 03
+   compute Bxm-c1 = 42
    compute Bxm-r2 = Bxm-r1 + 19
    compute Bxm-c2 = Bxm-c1 + 32
    call GC02BOXMEX using by content BOXMEX-AREA
-        on exception display 'CALL BOXMEX error. Module BOXMEX not Found.'
+        on exception display 'CALL GC02BOXMEX error. Module GC02BOXMEX not Found.'
         accept OMITTED
    end-call
-   perform ScreenRestore thru ScreenRestoreEx.
+   continue.
 DisplayHelpEx. exit.
-
-ScreenSave.
-   move Z'GC18RADIOBUTTONDEMO.SCR' to wScreenName
-   call static 'scr_dump' using by reference wScreenName returning wiScrOk end-call.
-ScreenSaveEx. exit.
-
-ScreenRestore.
-   call static 'scr_restore' using by reference wScreenName returning wiScrOk end-call
-   CALL 'CBL_DELETE_FILE' USING wScreenName.
-ScreenRestoreEx. exit.
 
 callGC01BOX.
     call GC01BOX using by content BOX-AREA
