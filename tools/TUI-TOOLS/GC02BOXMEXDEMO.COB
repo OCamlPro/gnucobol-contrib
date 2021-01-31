@@ -1,4 +1,6 @@
        >>SOURCE FORMAT IS FREE
+       REPLACE ==:BCOL:== BY ==with BACKGROUND-COLOR==
+               ==:FCOL:== BY ==FOREGROUND-COLOR==.
 ID DIVISION.
 PROGRAM-ID. GC02BOXMEXDEMO.
 *> ***********************************************************************************
@@ -8,9 +10,10 @@ PROGRAM-ID. GC02BOXMEXDEMO.
 *> Usage:      GC02BOXMEXDEMO
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
-*> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2016.06.15
+*> License:    Copyright 2021 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
+*> Version:    2.0 2021.01.01
 *> Changelog:  1.0 first release.
+*>             2.0 mouse mangement was added
 *> ***********************************************************************************
 
 DATA DIVISION.
@@ -69,23 +72,19 @@ message1.
     move low-value to Bxm-tabmex
     move '                                ' & x'00' to Bxm-mex(01)
     move '     GnuCOBOL TUI TOOLS DEMO    ' & x'00' to Bxm-mex(02)
-    move '       Copyright (c) 2016       ' & x'00' to Bxm-mex(03)
+    move '       Copyright (c) 2021       ' & x'00' to Bxm-mex(03)
     move '       ------------------       ' & x'00' to Bxm-mex(04)
     move '           GC02BOXMEX           ' & x'00' to Bxm-mex(05)
     move '           - Italia -           ' & x'00' to Bxm-mex(06)
     move '                                ' & x'00' to Bxm-mex(07)
     move ' move message with cursor keys  ' & x'00' to Bxm-mex(08)
     move '005020017055' to Bxm-rc
-    move white to Bxm-bco
-    move black to Bxm-fco
-    move 'N' to Bxm-Shadow
-    move 'N' to Bxm-3D
-    move 'D' to Bxm-Style
-    move 'N' to Bxm-fcoMH
-    move 'Y' to Bxm-tit
-    move ' First Message ' & x'00' to Bxm-titDes
-
-    call GC02BOXMEX using BOXMEX-AREA.
+    move white to Bxm-bco  move black to Bxm-fco
+    move 'N' to Bxm-Shadow Bxm-3D Bxm-fcoMH
+    move 'D' to Bxm-Style  move 'Y' to Bxm-tit
+    move ' First Message ' & x'00'  to Bxm-titDes
+    perform callGC02BOXMEX thru callGC02BOXMEX-ex
+    continue.
 
     *> ***********************************************************************************
     *>      MESSAGE N.2
@@ -110,8 +109,8 @@ message2.
     move 'Y' to Bxm-Shadow Bxm-click
     move 'E' to Bxm-3D
     move 'S' to Bxm-Style
-
-    call GC02BOXMEX using BOXMEX-AREA.
+    perform callGC02BOXMEX thru callGC02BOXMEX-ex
+    continue.
 
 
 *> ***********************************************************************************
@@ -133,7 +132,7 @@ message3.
     move z' and MinGW. It has also been built as a truly native Windows application ' to Bxm-mex(06)
     move z' utilizing Microsoft"s freely-downloadable Visual Studio Express package ' to Bxm-mex(07)
     move z' to provide the C compiler and linker/loader.The principal developers of ' to Bxm-mex(08)
-    move z' GnuCOBOL are Keisuke Nishida and Roger While.                           ' to Bxm-mex(09)
+    move z' GnuCOBOL are Keisuke Nishida, Roger While and Simon Sobisch.            ' to Bxm-mex(09)
     move space & x'00' to Bxm-mex(10)
     move space & x'00' to Bxm-mex(11)
     move space & x'00' to Bxm-mex(12)
@@ -149,7 +148,8 @@ message3.
     move 'N' to Bxm-Shadow Bxm-click
     move 'N' to Bxm-3D Bxm-wait Bxm-OkButton
     move 'D' to Bxm-Style
-    call GC02BOXMEX using BOXMEX-AREA.
+    perform callGC02BOXMEX thru callGC02BOXMEX-ex
+
 
     display 'Cursor/Page/Tab and spacebar keys change active Button.                      '
           at 2303 with foreground-color white background-color green
@@ -199,7 +199,7 @@ message3.
     move z' application utilizing Microsoft"s freely-downloadable                   ' to Bxm-mex(10)
     move z' Visual Studio Express package to provide the C compiler                 ' to Bxm-mex(11)
     move z' and linker/loader. The principal developers of GnuCOBOL                 ' to Bxm-mex(12)
-    move z' are Keisuke Nishida and Roger While.                                    ' to Bxm-mex(13)
+    move z' are Keisuke Nishida, Roger While and Simon Sobisch.                     ' to Bxm-mex(13)
     move space & x'00' to Bxm-mex(14)
     move '003003019077' to Bxm-rc
     move red    to Bxm-bco Bxm-titBco
@@ -209,8 +209,7 @@ message3.
     move 'Y' to Bxm-fcoMH
     move 'N' to Bxm-Shadow Bxm-click Bxm-3D Bxm-wait Bxm-OkButton
     move 'D' to Bxm-Style
-    call GC02BOXMEX using BOXMEX-AREA.
-
+    perform callGC02BOXMEX thru callGC02BOXMEX-ex
 
     *> DISPLAY BUTTONS
     initialize Buttons-area ALL TO VALUE
@@ -256,9 +255,9 @@ message5.
     move low-value to Bxm-tabmex
     move space & x'00' to Bxm-mex(01)
     move '            __________________________________________         '  & x'00' to Bxm-mex(02)
-    move '   ________|                                          |_______ '  & x'00' to Bxm-mex(03)
-    move '   \       |               GnuCOBOL 2.0               |      / '  & x'00' to Bxm-mex(04)
-    move '    \      |           TUI TOOLS COLLECTION           |     /  '  & x'00' to Bxm-mex(05)
+    move '   ________|               GnuCOBOL 3.1               |_______ '  & x'00' to Bxm-mex(03)
+    move '   \       |           TUI TOOLS COLLECTION           |      / '  & x'00' to Bxm-mex(04)
+    move '    \      |                  (DILO)                  |     /  '  & x'00' to Bxm-mex(05)
     move '    /      |__________________________________________|     \  '  & x'00' to Bxm-mex(06)
     move '   /__________)                                    (_________\ '  & x'00' to Bxm-mex(07)
     move space & x'00' to Bxm-mex(08)
@@ -274,7 +273,8 @@ message5.
     move 'E' to Bxm-3D
     move 'S' to Bxm-Style
     move "R" to Bxm-3D
-    call GC02BOXMEX using BOXMEX-AREA.
+    perform callGC02BOXMEX thru callGC02BOXMEX-ex
+    continue.
 
 *> ***********************************************************************************
 *>      MESSAGE N.6
@@ -306,38 +306,53 @@ message6.
   move white  to Bxm-fco
   move red  to Bxm-bcoM
   move yellow   to Bxm-fcoM
-  move 'Y' to Bxm-fcoMH
-  move 'Y' to Bxm-Shadow Bxm-click
+  move 'Y' to Bxm-fcoMH Bxm-Shadow Bxm-click
   move 'N' to Bxm-3D
   move 'D' to Bxm-Style
-  call GC02BOXMEX using BOXMEX-AREA.
+  perform callGC02BOXMEX thru callGC02BOXMEX-ex
+  continue.
 
 
-*> DISPLAY THE FLAG OF ITALY
+*> DISPLAY ITALIAN FLAG
+  display ' GnuCOBOL TUI-TOOLS (from DILO - Italy): GC02BOXMEX at work.'
+            at 003006 with      :FCOL: white :BCOL: cyan
+  display ' < End of Demo > ... Enter to exit ...'
+            at 023006 with      :FCOL: white :BCOL: cyan
+
      move '009036014049' to Box-rc
      move black to Box-bco
      move 'S' to Box-style
      call  GC01BOX using BOX-AREA
 
-     display 'GnuCOBOL TUI TOOL to display messages on screen.'
-          at 2206 with foreground-color magenta background-color white highlight
-     display 'See the GC02BOXMEX at work. End of demo. '
-          at 2306 with foreground-color magenta background-color white highlight
+     display '    ' at 010037 :BCOL: Green :FCOL: white
+     display '    ' at 011037 :BCOL: Green :FCOL: white
+     display '    ' at 012037 :BCOL: Green :FCOL: white
+     display '    ' at 013037 :BCOL: Green :FCOL: white
+     display '    ' at 010041 :BCOL: white :FCOL: white blink
+     display '    ' at 011041 :BCOL: white :FCOL: white blink
+     display '    ' at 012041 :BCOL: white :FCOL: white blink
+     display '    ' at 013041 :BCOL: white :FCOL: white blink
+     display '    ' at 010045 :BCOL: red   :FCOL: white blink
+     display '    ' at 011045 :BCOL: red   :FCOL: white blink
+     display '    ' at 012045 :BCOL: red   :FCOL: white blink
+     display '    ' at 013045 :BCOL: red   :FCOL: white blink
+     accept wDummy at 2479
 
-     display '    ' at 010037 with foreground-color white background-color Green end-display
-     display '    ' at 011037 with foreground-color white background-color Green end-display
-     display '    ' at 012037 with foreground-color white background-color Green end-display
-     display '    ' at 013037 with foreground-color white background-color Green end-display
-     display '    ' at 010041 with blink foreground-color white background-color white end-display
-     display '    ' at 011041 with blink foreground-color white background-color white end-display
-     display '    ' at 012041 with blink foreground-color white background-color white end-display
-     display '    ' at 013041 with blink foreground-color white background-color white end-display
-     display '    ' at 010045 with blink foreground-color white background-color red   end-display
-     display '    ' at 011045 with blink foreground-color white background-color red   end-display
-     display '    ' at 012045 with blink foreground-color white background-color red   end-display
-     display '    ' at 013045 with blink foreground-color white background-color red   end-display
-   ACCEPT OMITTED.
 
-goback.
+    continue.
+END-OF-PROGRAM.
+     goback.
+
+
+callGC02BOXMEX.
+      call GC02BOXMEX using by content BOXMEX-AREA
+         on exception     display ' CALL GC02BOXMEXDEMO error. Module GC02BOXMEXDEMO not Found !' at 0501
+                          display ' type Enter to close ...                                       ' at 0601
+                          accept OMITTED
+                          go END-OF-PROGRAM
+         not on exception continue
+    end-call
+    continue.
+callGC02BOXMEX-ex. exit.
 
 End Program GC02BOXMEXDEMO.
