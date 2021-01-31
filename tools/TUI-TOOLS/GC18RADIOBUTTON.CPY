@@ -102,12 +102,12 @@
         05 Rb-bcoA            pic 9(01) value green.  *> backcolor for "active" RadioButton item
         05 Rb-fcoA            pic 9(01) value white.  *> forecolor for "active" RadioButton item
         05 Rb-fcoAH           pic X(01) Value 'Y'.    *> forecolor of active RadioButton item in Highlight ?
-        *> colors for hot key char of a RadioButton item (not yet available)
+        *> colors for hot key char of a RadioButton item
         05 Rb-bcoH            pic 9(01) value green.  *> backcolor for "hot key" char
         05 Rb-fcoH            pic 9(01) value yellow. *> forecolor for "hot key" char
         05 Rb-fcoHH           pic X(01) Value 'Y'.    *> foreground hotkey char in Highlight ?
-        *> back color of shadow background (it has tobe settled to the same of box background)
-        05 Rb-wait            pic x(01) value 'Y'.
+     *> wait= Y normal Radiobutton; wait= N display list of Radiobuttons items and return to caller
+     03 Rb-wait               pic x(01) value 'Y'.
      *> *************************************************************
      *> RETUNRS TO CALLER
      *> *************************************************************
