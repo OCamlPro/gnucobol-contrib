@@ -6,9 +6,10 @@
 *> Usage:      call GC02BOXMEX using Boxmex-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.1 2016.06.15
+*> Version:    2.0 2021.01.01
 *> Changelog:  1.0 first release.
 *>             1.1 added OkButton
+*>             2.0 mouse management was added. Mouse click is same as Enter
 *> ***********************************************************************************
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
@@ -39,8 +40,8 @@
 *> tit       Y= display a title
 *> titDes    string to be displayed as title
 *> OkButton  Y= display a single OK button at row = r2 -2 . N = not display the single button.
-*> click     Y= when hit enter on the single button you will have a "click effect"
-*>           move button 1 char to right, black/white color , no shadow
+*> click     Y= when hit enter on the single button you will have a "click effect":
+*>           re-display the button 1 char to right, in black/white color and without shadow
 *> tabmex    table of 1 to 20 strings to be displayed in the box
 *>           firts element will be displayed 1 row under the box frame
 *>           and 1 column right of the box frame. see following sample:
@@ -88,7 +89,7 @@
       05 Bxm-wait       pic x(01) value 'Y'.
       05 Bxm-savescr    pic x(01) value 'Y'.
       05 Bxm-OkButton   pic x(01) value 'Y'.
-      05 Bxm-Click      pic x(01) value 'N'.
+      05 Bxm-Click      pic x(01) value 'Y'.
       05 Bxm-tit        pic x(01) value 'N'.         *> Y = display a title at top of the box
       05 Bxm-titBco     pic 9(01) value white.       *> back color of titlebox
       05 Bxm-titFco     pic 9(01) value white.       *> fore color of titlebox
