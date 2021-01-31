@@ -86,12 +86,12 @@
         05 Ck-bcoA            pic 9(01) value green.  *> backcolor for "active" checkbox item
         05 Ck-fcoA            pic 9(01) value white.  *> forecolor for "active" checkbox item
         05 Ck-fcoAH           pic X(01) Value 'Y'.    *> forecolor of active checkbox item in Highlight ?
-        *> colors for hot key char of a checkbox item (not yet available)
+        *> colors for hot key char of a checkbox item
         05 Ck-bcoH            pic 9(01) value green.  *> backcolor for "hot key" char
         05 Ck-fcoH            pic 9(01) value yellow. *> forecolor for "hot key" char
         05 Ck-fcoHH           pic X(01) Value 'Y'.    *> foreground hotkey char in Highlight ?
-        *> wait: 'Y' normal checkbox wait, N = just display list of checkbox items and exit
-        05 Ck-wait            pic x(01) value 'Y'.
+     *> wait: 'Y' normal checkbox wait, N = just display list of checkbox items and return to caller
+     03 Ck-wait               pic x(01) value 'Y'.
      *> *************************************************************
      *> RETUNRS TO CALLER
      *> *************************************************************
