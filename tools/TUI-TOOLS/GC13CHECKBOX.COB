@@ -14,8 +14,8 @@ PROGRAM-ID. GC13CHECKBOX is initial.
 *> Usage:      call GC13CHECKBOX using CHECKBOX-AREA
 *> Parameters: look at GC13CHECKBOX.cpy (use with copy Version: 2.0)
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
-*> License:    Copyright 2020 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    2.0 2020.12.12
+*> License:    Copyright 2021 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
+*> Version:    2.1 2021.01.31
 *> Changelog:  1.0 first release.
 *>             1.1 hot key management added
 *>             1.2 Ck-Hot from 9(01) to 9(02)
@@ -27,6 +27,7 @@ PROGRAM-ID. GC13CHECKBOX is initial.
 *>                 added single click of left mousekey on an item to make it active
 *>                 double left-click is same as Enter
 *>                 single or doubleclick of right mousekey is same as ESCAPE
+*>             2.1 F1, ALT-F2/F3/F4/F5/F6/F7/F9 added (HELP and change colors)
 *>
 *> You can manage a group of max 98 CHECKBOX items on screen, each of 1 row (also overlapped).
 *> Each checkbox item has to be inserted in a table with 99 elements
@@ -69,6 +70,7 @@ Working-Storage Section.
     03  i            pic 9(02) value 1.
     03  j            pic 9(02) value 1.
     03  k            pic 9(02) value 1.
+    03  y            pic 9(02) value 1.
     03  bco          PIC 9(02).
     03  fco          PIC 9(02).
     03  fcoH         PIC X(01).
@@ -132,6 +134,13 @@ Working-Storage Section.
     05 wCk-ItemLen     occurs 99 pic 9(03). *> item length (char number before X"00")
     05 wCk-ItemCol-End occurs 99 pic 9(03). *> end column of the item
 
+*> SAVE/RESTORE SCREEN VARIABLES
+01 wScreenName        PIC X(256).
+01 wiScrOk            BINARY-LONG.
+
+01 wCk-Parameters     PIC x(12) value space.
+
+copy    'GC02BOXMEX.CPY' suppress.
 copy 'GC97KEYCODEGC.CPY'  suppress.
 
 LINKAGE SECTION.
@@ -146,12 +155,14 @@ PROCEDURE DIVISION using CHECKBOX-Area.
    perform InitialSettings thru InitialSettingsEx.
    move 1 to i, j, w.
 
-   *> display ALL CHECKBOX ITEMS
-   perform DisplayCheckboxItems thru DisplayCheckboxItemsEx
-
+   move Ck-Parameters to wCk-Parameters *> useful to reset colors
    perform HideCursor thru HideCursorEx
    continue.
 
+DisplayScreen.
+   *> display ALL CHECKBOX ITEMS
+   perform DisplayCheckboxItems thru DisplayCheckboxItemsEx
+   continue.
 
 *> ***********************************************************************************
 *> WAIT FOR USER ACTION
@@ -162,7 +173,7 @@ Accept-a-Key.
  *> it has same back and fore color of 1st ITEM so it is invisible
  *> the "with Auto" option is useful to detect user action ex.a cursor key is pressed
 
-      move Ck-Item(1) (1:1) to wPrompt *> resetta wDummy prima della accept
+  move Ck-Item(1) (1:1) to wPrompt *> reset wDummy before accept
 
   if Ck-wait  = 'Y'
      *> after displayed checkbox items wait for user action (normal use)
@@ -170,11 +181,9 @@ Accept-a-Key.
      if Ck-Selected = 1
         accept wDummy at line Ck-r(1) col Ck-c(1)
                  with auto-skip prompt character is wPrompt :BCOL: Ck-bcoA :FCOL: Ck-fcoA highlight
-                *> with auto-skip update                      :BCOL: Ck-bcoA :FCOL: Ck-fcoA highlight
      else
         accept wDummy at line Ck-r(1) col Ck-c(1)
                 with auto-skip prompt character is wPrompt :BCOL: Ck-bcoN :FCOL: Ck-fcoN
-                *> with auto-skip update                        :BCOL: Ck-bcoN :FCOL: Ck-fcoN
      end-if
   else
       *> if requested by the caller, after displayed checkbox items list, return to caller
@@ -182,17 +191,15 @@ Accept-a-Key.
       go to END-PROGRAM
   end-if
 
-
 *> <escape> TAB/BAckTAB, PGUP/DOWN or right mouse key: return to caller
-*> if pressed cursor down or right -> activate next radiobutton Item
-*> if pressed cursor up   or left  <- activate previous radiobutton Item
+*> if pressed cursor down or right -> activate next checkbox Item
+*> if pressed cursor up   or left  <- activate previous checkbox Item
 *> *************************************************************************
 *> ENTER = mark/unmark the checkbox item
 *> *************************************************************************
 *> detect Enter or ESCAPE key only if user has not typed a letter or a digit
 *> if user has typed a letter or a digit then WDummy is just une char and has the "AUTO" attribute
 *> then the wCRT-STATUS is = 00000 (K-ENTER) !
-
 
 *> *************************************************************************
 *> EVALUATE THE USER ACTION (A KEY OR A MOUSE KEY WASS PRESSED)
@@ -364,6 +371,44 @@ Accept-a-Key.
             move Ck-fcoA to fco
             perform DisplayCheckBox thru DisplayCheckBoxEx
 
+     when wCRT-STATUS = K-F1              *> F1 HELP
+            perform DisplayHelp thru DisplayHelpEx
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F2              *> change "non active" items Fore Color
+            move 1 to i
+            add 1 to Ck-FcoN
+            If Ck-FcoN > 7 move 0 to Ck-FcoN end-if
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F3              *> change "non active" items Back Color
+            move 1 to i
+            add 1 to Ck-BcoN
+            If Ck-BcoN > 7 move 0 to Ck-BcoN end-if
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F4              *> change "active" items Fore Color
+            move 1 to i
+            add 1 to Ck-FcoA
+            If Ck-FcoA > 7 move 0 to Ck-FcoA end-if
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F5              *> change "active" items Back Color
+            move 1 to i
+            add 1 to Ck-BcoA
+            If Ck-BcoA > 7 move 0 to Ck-BcoA end-if
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F6              *> change hotkey Fore Color
+            move 1 to i
+            add 1 to Ck-FcoH
+            If Ck-FcoH > 7 move 0 to Ck-FcoH end-if
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F7              *> change hotkey Back Color
+            move 1 to i
+            add 1 to Ck-BcoH
+            If Ck-BcoH > 7 move 0 to Ck-BcoH end-if
+            go to DisplayScreen
+      when wCRT-STATUS = K-ALT-F9              *> reset params & colors to initial state
+            move 1 to i
+            move wCk-Parameters to Ck-Parameters
+            go to DisplayScreen
+
    *> *************************************************************************
    *> EXIT WITH ONE OF FOLLOWING KEYS
    *> *************************************************************************
@@ -372,8 +417,6 @@ Accept-a-Key.
          or wCRT-STATUS = K-PAGEUP
          or wCRT-STATUS = K-PAGEDOWN
          or wCRT-STATUS = K-BACKTAB
-         or wCRT-STATUS = K-F1
-         or wCRT-STATUS = K-F12
          or wCRT-STATUS = K-RIGHT-PRESSED
          or wCRT-STATUS = K-RIGHT-DBL-CLICK
             move wCRT-STATUS to Ck-Key
@@ -387,7 +430,6 @@ Accept-a-Key.
 END-PROGRAM.
    perform ShowCursor thru ShowCursorEx
    GOBACK.
-
 
 *> ***********************************************************************************
 *> LOOP to display ALL CHECKBOX ITEMS
@@ -506,6 +548,45 @@ InitialSettings.
   continue.
 InitialSettingsEx. exit.
 
+DisplayHelp.
+    perform ScreenSave thru ScreenSaveEx
+
+    initialize Boxmex-Area ALL TO VALUE
+    move low-value to Bxm-tabmex
+    move 1 to y
+    move z' Use left mouse button         ' to Bxm-mex(y) add 1 to y
+    move z' or cursor keys or hotkeys     ' to Bxm-mex(y) add 1 to y
+    move z' to activate a checkbox item.  ' to Bxm-mex(y) add 1 to y
+    move z' Enter or spacebar or left     ' to Bxm-mex(y) add 1 to y
+    move z' doubleclick to mark/unmark    ' to Bxm-mex(y) add 1 to y
+    move z' the active item               ' to Bxm-mex(y) add 1 to y
+    move z' TAB, ESC or right mouseclick  ' to Bxm-mex(y) add 1 to y
+    move z' to exit from checkbox mgmt    ' to Bxm-mex(y) add 1 to y
+    move z' F1 Help                       ' to Bxm-mex(y) add 1 to y
+    move z' ALT-F2/F3 chg back/Fore color ' to Bxm-mex(y) add 1 to y
+    move z' of non Active items.          ' to Bxm-mex(y) add 1 to y
+    move z' ALT-F4/F5 chg back/Fore color ' to Bxm-mex(y) add 1 to y
+    move z' of Active item.               ' to Bxm-mex(y) add 1 to y
+    move z' ALT-F6/F7 chg back/Fore color ' to Bxm-mex(y) add 1 to y
+    move z' of HotKey                     ' to Bxm-mex(y) add 1 to y
+    move z' ALT-F9 reset all color changes' to Bxm-mex(y) add 1 to y
+    move z' eugenio.dilo@gmail.com (2021) ' to Bxm-mex(y) add 1 to y
+    move z' enter/mouseclick, continue ...' to Bxm-mex(y) add 1 to y
+    move blue     to Bxm-bco    Bxm-titBco Bxm-bcoM
+    move white    to Bxm-fco    Bxm-titFco Bxm-fcoM
+    move 'Y'      to Bxm-Click  Bxm-tit
+    move 'N'      to Bxm-3D     Bxm-OkButton
+    move 'S'      to Bxm-style
+    move x'B4' & ' CHECKBOX - HELP '  & x'C3' & x'00' to Bxm-titDes
+   compute Bxm-r1 = 05
+   compute Bxm-c1 = 10
+   compute Bxm-r2 = Bxm-r1 + 19
+   compute Bxm-c2 = Bxm-c1 + 32
+   call GC02BOXMEX using BOXMEX-AREA
+
+   perform ScreenRestore thru ScreenRestoreEx.
+DisplayHelpEx. exit.
+
 HideCursor.
   *> hide the cursor and save its previous state
   *> use always a "display or an accept at .... " before,  to have done a call to "initscr"
@@ -520,5 +601,15 @@ ShowCursor.
   call static "curs_set" using by value wVisibilityNew returning wVisibilityOld end-call
   continue.
 ShowCursorEx. exit.
+
+ScreenSave.
+   move Z'GC13CHECKBOX.TMP' to wScreenName
+   call static 'scr_dump' using by reference wScreenName returning wiScrOk end-call.
+ScreenSaveEx. exit.
+
+ScreenRestore.
+   call static 'scr_restore' using by reference wScreenName returning wiScrOk end-call
+   CALL 'CBL_DELETE_FILE' USING wScreenName.
+ScreenRestoreEx. exit.
 
 End Program GC13CHECKBOX.
