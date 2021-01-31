@@ -1,4 +1,6 @@
        >>SOURCE FORMAT IS FREE
+       REPLACE ==:BCOL:== BY ==with BACKGROUND-COLOR==
+               ==:FCOL:== BY ==FOREGROUND-COLOR==.
 ID DIVISION.
 PROGRAM-ID. GC02BOXMEX is initial.
 *> ***********************************************************************************
@@ -9,7 +11,7 @@ PROGRAM-ID. GC02BOXMEX is initial.
 *> Parameters: look at GC02BOXMEX.CPY
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.3 2018.06.30
+*> Version:    2.0 2021.01.01
 *> Changelog:  1.0 first release.
 *>             1.1 call to GC09BUTTONS deleted.
 *>                 inserted code to  Display a single button
@@ -20,7 +22,16 @@ PROGRAM-ID. GC02BOXMEX is initial.
 *>                 to have a message and next more buttons to be selected.
 *>             1.2 changed Bu-Hot from 9(01) to 9(02)
 *>             1.3 added DELETE TMP file at exit
+*>             2.0 changed from "call getch" to ACCEPT a DUMMY field to detect mouse key
+*>                 mouse management is added
+*>                 left click or double left-click the mouse key now is same as Enter
 *> ***********************************************************************************
+ENVIRONMENT DIVISION.
+CONFIGURATION SECTION.
+SPECIAL-NAMES.
+    CRT STATUS IS wCRT-STATUS.    *> Return Code from Accept (ex.PF Keys, Mouse Keys)
+    CURSOR     IS wCursorRowCol.  *> Cursor Position
+
 DATA DIVISION.
 WORKING-STORAGE SECTION.
 01 black   constant as 0.
@@ -38,12 +49,17 @@ WORKING-STORAGE SECTION.
 01  salva-j pic 9(02) value 1.
 01  wR   pic 999 value zero.
 01  wC   pic 999 value zero.
-01  wlen         pic 9(02) value 0.
-01  wCol         pic 9(02) value 0.
+01  wLen         pic 9(02) value 0.
+01  wLin         pic 9(03) value 0.
+01  wCol         pic 9(03) value 0.
 01  len-voce     pic 9(02) value 0.
 01  fcoH         PIC X(01).
 01  bco          PIC 9(02).
 01  fco          PIC 9(02).
+
+01  wDummy       PIC X(01) VALUE SPACE.
+01  wPrompt      PIC X(01) VALUE SPACE.
+
 01  wTime.
    03 wTimehh         pic  9(2).
    03 wTimemm         pic  9(2).
@@ -56,9 +72,30 @@ WORKING-STORAGE SECTION.
 01  wVisibilityNew   BINARY-SHORT .
 01  wVisibilityOld   BINARY-SHORT .
 
+01  wCRT-STATUS         PIC 9(04) VALUE 9999.
+
+01  wCursorRowCol       PIC 9(06) value 0000.
+01  redefines wCursorRowCol .
+    05 wCursorRow       Pic 9(03).
+    05 wCursorCol       Pic 9(03).
+
+*>  mouse mask, apply to COB_MOUSE_FLAGS
+78  COB-AUTO-MOUSE-HANDLING          VALUE 1.
+78  COB-ALLOW-LEFT-DOWN              VALUE 2.
+78  COB-ALLOW-LEFT-UP                VALUE 4.
+78  COB-ALLOW-LEFT-DOUBLE            VALUE 8.
+78  COB-ALLOW-MIDDLE-DOWN            VALUE 16.
+78  COB-ALLOW-MIDDLE-UP              VALUE 32.
+78  COB-ALLOW-MIDDLE-DOUBLE          VALUE 64.
+78  COB-ALLOW-RIGHT-DOWN             VALUE 128.
+78  COB-ALLOW-RIGHT-UP               VALUE 256.
+78  COB-ALLOW-RIGHT-DOUBLE           VALUE 512.
+78  COB-ALLOW-MOUSE-MOVE             VALUE 1024.
+01  COB-MOUSE-FLAGS         PIC 9(04).
+
 *> ***********************************************************************************
 *>  SAME PARAMETERS OF GC09BUTTONS - call to GC09BUTTONS has been deleted,
-*>  the code to display a button has been inserted in this program
+*>  becouse the code to display the OK button has been inserted in this program
 *> ***********************************************************************************
 01 Buttons-Area.
 *> ***********************************************************************************
@@ -130,7 +167,7 @@ WORKING-STORAGE SECTION.
      03 Bu-Key            pic 9(04).
 
 copy 'GC01BOX.CPY'.
-copy 'GC98KEYCODE.CPY'.
+copy 'GC97KEYCODEGC.CPY'  suppress.
 
 LINKAGE SECTION.
 copy 'GC02BOXMEX.CPY'.
@@ -139,14 +176,15 @@ copy 'GC02BOXMEX.CPY'.
 *>           P R O C E D U R E   D I V I S I O N
 *> ***********************************************************************************
 PROCEDURE DIVISION using Boxmex-Area.
-  *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
-  set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
-  set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
-  if Bxm-savescr = 'Y' perform ScreenSave thru ScreenSaveEx end-if
-
+  perform InitialSettings thru InitialSettingsEx
+  *> save screen before displaying the message (useful to restore the screen at exit)
+  if Bxm-savescr = 'Y'
+     perform ScreenSave thru ScreenSaveEx
+  end-if
   perform HideCursor thru HideCursorEx
   continue.
+
 LoopMain.
     *> Display the BOX around the message
     initialize Box-area ALL TO VALUE
@@ -170,28 +208,26 @@ LoopMain.
     *> ***********************************************************************************
     *> LOOP TO DISPLAY MESSAGE ROWS
     *> ***********************************************************************************
-    if Bxm-tabmex = low-value go DisplayMessageEx end-if
+  if Bxm-tabmex = low-value go DisplayMessageEx end-if
 
-    perform varying i from 1 by 1 until bxm-mex(i) = low-value or i > 20
-         *> chars loop
-          compute wR = Bxm-r1 + i
-          *> max 78 cols
-          perform varying j from 1 by 1 until Bxm-mex(i) (j:1) = low-value or j > length of Bxm-mex
-                compute wC = Bxm-c1 + j
-                if Bxm-fcoMH = 'Y'
-                   display Bxm-mex(i) (j:1) at line wR col wC
-                           with background-color Bxm-bcoM foreground-color Bxm-fcoM highlight end-display
-                else
-                   display Bxm-mex(i) (j:1) at line wR col wC
-                           with background-color Bxm-bcoM foreground-color Bxm-fcoM end-display
-                end-if
-          end-perform
-    end-perform
-    continue.
+  perform varying i from 1 by 1 until bxm-mex(i) = low-value or i > 20
+        *> chars loop
+        compute wR = Bxm-r1 + i
+        *> max 78 cols
+        perform varying j from 1 by 1 until Bxm-mex(i) (j:1) = low-value or j > length of Bxm-mex
+              compute wC = Bxm-c1 + j
+              if Bxm-fcoMH = 'Y'
+                  display Bxm-mex(i) (j:1) at line wR col wC :BCOL: Bxm-bcoM :FCOL: Bxm-fcoM highlight
+              else
+                  display Bxm-mex(i) (j:1) at line wR col wC :BCOL: Bxm-bcoM :FCOL: Bxm-fcoM
+              end-if
+        end-perform
+  end-perform
+  continue.
 
 DisplayMessageEx.
   *> ***********************************************************************************
-  *> IF REQUESTED DISPLAY AN OK BUTTON AT -2 ROWS from LOWER BOX border
+  *> IF REQUESTED DISPLAY AN "OK" BUTTON AT -2 ROWS from LOWER BOX border
   *> ***********************************************************************************
   if Bxm-OkButton  = 'Y'
      initialize Buttons-area ALL TO VALUE
@@ -211,36 +247,48 @@ DisplayMessageEx.
   continue.
 
 LoopUserInput.
+   *> accept of a 1 byte dummy field.
+   *> the dummy field is at position of the 1st byte of the first message row
+   *> it has same content, back and fore color of 1st character so it is invisible
+   *> the with "Auto-skip" option is useful to detect if cursor up/down/left/right is pressed
+    move Bxm-mex(1) (2:1) to wPrompt
+    move space to wDummy
     if Bxm-wait = 'Y'
-      *> after dispalyed the message wait for user key press
-       call static "getch" returning Key-Pressed end-call
+      *> after displayed the message wait for user key action (a key or a mouse key)
+       compute wLin = Bxm-r1 + 1   compute wCol = Bxm-c1 + 1
+       accept wDummy at line wLin  col wCol
+           with auto-skip prompt character is wPrompt :BCOL: Bxm-bcoM :FCOL: Bxm-bcoM end-accept
     else
-       *> after dispalyed the message return to caller
+       *> after displayed the message return to caller without waiting for user action
+       *> (useful for example if caller have to display some buttons)
        go to EndProgram
     end-if
 
-    *> test if the user has pressed a cursor KEY
+
+    *> test if the user has pressed a cursor KEY (move the MESSAGE BOX
     if Bxm-savescr = 'Y'
        EVALUATE TRUE
-           when Key-Pressed = Key-CursRight
+           *> when Key-Pressed = Key-CursRight
+           when wCRT-STATUS = K-RIGHT
                 if Bxm-c2 <= 79
                    add 1 to Bxm-c1 Bxm-c2
                    perform ScreenRestore thru ScreenRestoreEx
                    go to LoopMain
                 end-if
-           when Key-Pressed = Key-CursDn
+           *> when Key-Pressed = Key-CursDn
+           when wCRT-STATUS = K-DOWN
                 if Bxm-r2 <= 24
                    add 1 to Bxm-r1 Bxm-r2
                    perform ScreenRestore thru ScreenRestoreEx
                    go to LoopMain
                 end-if
-           when Key-Pressed = Key-CursLeft
+            when wCRT-STATUS = K-LEFT
                 if Bxm-c1 >= 2
                    subtract 1 from Bxm-c1 Bxm-c2
                    perform ScreenRestore thru ScreenRestoreEx
                    go to LoopMain
                 end-if
-           when Key-Pressed = Key-CursUp
+           when wCRT-STATUS = K-UP
                 if Bxm-r1 >= 2
                    subtract 1 from Bxm-r1 Bxm-r2
                    perform ScreenRestore thru ScreenRestoreEx
@@ -249,8 +297,8 @@ LoopUserInput.
        END-EVALUATE
     end-if
 
-   *> test if the user has pressed Enter or Escape
-   if Key-Pressed = Key-Enter or Key-Pressed = Key-Escape
+   *> test if the user has pressed Enter or Escape or a Mouse key
+   if wCRT-STATUS = K-ENTER or K-ESCAPE or K-LEFT-PRESSED or K-LEFT-DBL-CLICK
       if Bxm-click   = 'Y' perform Click         thru Click-Ex        end-if
       if Bxm-savescr = 'Y' perform ScreenRestore thru ScreenRestoreEx end-if
       go to EndProgram
@@ -269,9 +317,8 @@ Display-Button.
 *> ***********************************************************************************
 *> DISPLAY AN OK BUTTON AT -2 ROWS from LOWER BOX border
 *> ***********************************************************************************
-
 *> following statements have been copied from GC09BUTTONS.COB (call to GC09BUTTONS has been deleted)
-*> this program can diasaplay a single button and controls if have to wait for a user key or not.
+*> this program can diasplay a single button and controls if have to wait for a user action or not.
    if Bu-Arrow = '1' or '2'
       perform varying j from 1 by 1 until Bu-Item(i) (j:1) = x'00' continue end-perform
    end-if
@@ -308,15 +355,12 @@ loop1.
 
    compute wCol = Bu-c(i) + j - 1 end-compute
    if j = Bu-Hot(i)
-      display Bu-Item(i) (j:1) at line Bu-r(i) col wcol
-        with background-color  bco foreground-color Bu-fcoH highlight end-display
+      display Bu-Item(i) (j:1) at line Bu-r(i) col wcol :BCOL:  bco :FCOL: Bu-fcoH highlight
    else
       if fcoH = 'Y'
-         display Bu-Item(i) (j:1) at line Bu-r(i) col wcol
-            with background-color bco foreground-color fco highlight end-display
+         display Bu-Item(i) (j:1) at line Bu-r(i) col wcol :BCOL: bco :FCOL: fco highlight
       else
-         display Bu-Item(i) (j:1) at line Bu-r(i) col wcol
-            with background-color bco foreground-color fco end-display
+         display Bu-Item(i) (j:1) at line Bu-r(i) col wcol :BCOL: bco :FCOL: fco
       end-if
    end-if
 
@@ -340,16 +384,14 @@ loop2.
       compute wR = Bu-r(i) *> + 1
       compute wC = Bu-c(i) + j - 1
       *> half lower  char (last position at right of button)
-      display X'DC' at line wR col wC
-          with background-color Bu-bcoShadow foreground-color black end-display
+      display X'DC' at line wR col wC :BCOL: Bu-bcoShadow :FCOL: black end-display
       go Shadow-Button-ex
    end-if
 
    compute wR = Bu-r(i) + 1
    compute wC = Bu-c(i) + j
    *> half upper char (under the button)
-   display X'DF' at line wR col wC
-        with background-color Bu-bcoShadow foreground-color black end-display
+   display X'DF' at line wR col wC :BCOL: Bu-bcoShadow :FCOL: black end-display
    go to loop2.
 Shadow-Button-EX. exit.
 
@@ -370,8 +412,7 @@ Click.
    *> delete the char at left of the button
    compute wR = Bu-r(i)
    compute wC = Bu-c(i) - 1
-   display ' ' at line wR col wC
-        with background-color Bu-bcoShadow foreground-color black end-display
+   display ' ' at line wR col wC :BCOL: Bu-bcoShadow :FCOL: black end-display
 
    *> count number of chars of the button
    move 1 to j
@@ -383,8 +424,7 @@ Click.
    move 1 to wLoop
    continue.
 Click1.
-    display ' ' at line wR col wC
-        with background-color Bu-bcoShadow foreground-color black end-display
+    display ' ' at line wR col wC :BCOL: Bu-bcoShadow :FCOL: black end-display
     add 1 to wLoop  wC
     if wLoop < len-voce go to click1 end-if
     *> small delay to show the click effect
@@ -394,7 +434,7 @@ Click-Ex. exit.
 
 ScreenSave.
    accept wTime from time
-   string 'GC02BOXMEX' wTime '.TMP' x'00' into wScreenName
+   string 'GC02BOXMEX' wTime '.SCR' x'00' into wScreenName
    call static 'scr_dump' using by reference wScreenName returning wiScrOk end-call
    continue.
 ScreenSaveEx. Exit.
@@ -411,5 +451,22 @@ HideCursor.
     call static "curs_set" using by value wInt end-call
     continue.
 HideCursorEx. exit.
+
+InitialSettings.
+  *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
+  set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
+  set environment 'COB_SCREEN_ESC'        TO 'Y'.
+
+  *> make mouse active
+  COMPUTE COB-MOUSE-FLAGS = COB-AUTO-MOUSE-HANDLING
+                      + COB-ALLOW-LEFT-DOWN   + COB-ALLOW-MIDDLE-DOWN   + COB-ALLOW-RIGHT-DOWN
+                      + COB-ALLOW-LEFT-UP     + COB-ALLOW-MIDDLE-UP     + COB-ALLOW-RIGHT-UP
+                      + COB-ALLOW-LEFT-DOUBLE + COB-ALLOW-MIDDLE-DOUBLE + COB-ALLOW-RIGHT-DOUBLE
+                      + COB-ALLOW-MOUSE-MOVE
+  SET environment     "COB_MOUSE_FLAGS"         to COB-MOUSE-FLAGS
+
+  perform hidecursor thru hidecursorex
+  continue.
+InitialSettingsEx. exit.
 
 End Program GC02BOXMEX.
