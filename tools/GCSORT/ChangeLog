@@ -1,9 +1,17 @@
+2021-02-01  Sauro Menna  <smenna@users.sourceforge.net>
+    * Check LIBCOB version (__LIBCOB_VERSION) for variables of cob_modules
+    * Management of warning codes (New value 4 for Warning, like DFSORT)
+    * Changes to improve performance
+    * Review position of parser.y and scanner.l files
+    * Modified MAKEFILE project
+    * Updated test COBOL programs (tests/src) 
+    
 2021-01-14  Sauro Menna  <smenna@users.sourceforge.net>
     * Fix problems with Temporary Files
     * New module to verify result of sort (tests/src)
 2021-01-08  Sauro Menna  <smenna@users.sourceforge.net>
     * New option OUTREC OVERLAY 
-    * Fix problems in MinGW environment
+    * Fix problems in MinGW enviro nment
     * Review of test suite (folder tests) 
     * Fix problem in OUTREC
     * Changed Makefile to compile source and not generate parser/scanner

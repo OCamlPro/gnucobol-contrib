@@ -223,8 +223,9 @@ int outfile_clone_output(struct job_t* job, struct file_t* file)
 	if (file->stFileDef == NULL) {
 		// 
 		file_SetInfoForFile(file, COB_OPEN_OUTPUT);
-		fprintf(stderr,"*GCSORT*W680* OUTFIL without FILES/FNAMES, forced GIVE definition %s\n",file_getName(file));
+		fprintf(stderr,"*GCSORT*W680* WARNING : OUTFIL without FILES/FNAMES, forced GIVE definition %s\n",file_getName(file));
 		job->nOutFileSameOutFile = 1; // In this case Output file skipped, name is used for OutFil
+        g_retWarn=4;
 		return 0;
 	}
 	file->nNumKeys = job->outputFile->nNumKeys;  

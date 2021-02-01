@@ -174,7 +174,7 @@
            if fs-infile2 = "00"
                 add 1 to record-counter-ingcs
            end-if
-           if (fs-infile1 = "00" and fs-infile1 = "00")
+           if (fs-infile1 = "00" and fs-infile2 = "00")
                 perform check-key
            end-if
            .

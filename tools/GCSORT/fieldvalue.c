@@ -114,7 +114,7 @@ struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF)
 			break;
 		default:
 			fprintf(stdout,"*GCSORT*S200*ERROR:  Field Type unknow %d\n", fieldValue->type);
-            exit(OC_RTC_ERROR); 
+            exit(GC_RTC_ERROR); 
 			break;
 	}
 	fieldValue->pCobField.data = NULL;
@@ -190,7 +190,7 @@ struct fieldValue_t *fieldValue_constr_newF(char *type, char *value, int nTypeF)
 			break;
 		default:
 			fprintf(stdout,"*GCSORT*S201*ERROR: Field Value Type unknow %d\n", fieldValue->type);
-            exit(OC_RTC_ERROR); 
+            exit(GC_RTC_ERROR); 
 			break;
 	}
 	fieldValue->pCobField.data = NULL;
@@ -243,7 +243,7 @@ int fieldValue_checkvalue(struct fieldValue_t *fieldValue, cob_field* pField, in
 		break;
 		default:
         fprintf(stdout,"*GCSORT*S202*ERROR: Field Value Type unknow %d\n", fieldValue->type);
-        exit(OC_RTC_ERROR); 
+        exit(GC_RTC_ERROR); 
 		break;
 
 	}

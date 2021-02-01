@@ -62,7 +62,6 @@ struct outrec_t {
 };
 
 struct outrec_t *outrec_constructor_range(int position, int length);
-//struct outrec_t *outrec_constructor_change_position(int position, struct fieldValue_t *fieldValue);
 struct outrec_t *outrec_constructor_change(struct fieldValue_t *fieldValue);
 struct outrec_t *outrec_constructor_range_position(int posAbsRec, int position, int length);
 struct outrec_t *outrec_constructor_subst(unsigned char *chfieldValue);

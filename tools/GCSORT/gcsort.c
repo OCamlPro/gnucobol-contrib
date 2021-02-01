@@ -42,6 +42,7 @@
 #include "job.h"
 #include "utils.h"
 #include "file.h"
+#include "gcshare.h"
 
 
 /* Module initialization indicator */
@@ -74,29 +75,25 @@ void yyset_debug(int ndbg);
 int main_prod(int argc, char **argv);
 int main(int argc, char **argv) 
 {
-
+	 
 	int rtc = 0;
+	g_retWarn = 0;
 	if (argc >= 2) 
 	{
 		if (strstr(argv[1], "--help") != NULL) {
 			GCSORT_Usage() ;
-			return OC_RTC_OK;
+			return GC_RTC_OK;
 		}
 		if (strstr(argv[1], "--version") != NULL){
 			GCSORT_Version() ;
-			return OC_RTC_OK;
+			return GC_RTC_OK;
 		}
 		if (strstr(argv[1], "--config") != NULL){
 			GCSORT_Config() ;
-			return OC_RTC_OK;
+			return GC_RTC_OK;
 		}
        	/* -fsign=<ASCII/EBCDIC> : Specify display sign */
-		if (!strcasecmp (argv[1], "-fsign=EBCDIC")) {
-				g_cb_ebcdic_sign = 1;
-			} else if (!strcasecmp (argv[1], "-fsign=ASCII")) {
-				g_cb_ebcdic_sign = 0;
-			} 
-
+		verify_options(argc, argv);
      }
 
 	if (argc < 2) {
@@ -115,7 +112,7 @@ int main(int argc, char **argv)
 		fprintf(stdout,"              Print version information\n");
 		fprintf(stdout,"or   : gcsort --config\n");
 		fprintf(stdout,"              Print values of environment variables\n");
-		return OC_RTC_ERROR;
+		return GC_RTC_ERROR;
 	}
 
 	rtc = main_prod(argc,argv);
@@ -127,6 +124,8 @@ int main(int argc, char **argv)
 	#endif
 #endif 
 //  
+	if (rtc == 0)
+		rtc = rtc + g_retWarn;	// verify warning
   	return rtc;
 }
 
@@ -178,10 +177,13 @@ int main_prod(int argc, char **argv) {
 	module->flag_main = 1;
 	module->flag_fold_call = 0;
 	module->flag_exit_program = 0;
+
+#if __LIBCOB_VERSION >= 3
 	module->flag_debug_trace = 0;
 	module->flag_dump_ready = 0;
 	module->module_stmt = 0;
 	module->module_sources = NULL;
+#endif
 
 	module->collating_sequence = NULL;
 	module->crt_status = NULL;
@@ -239,7 +241,7 @@ int main_prod(int argc, char **argv) {
 		    printf("GCSORT - Merge ERROR\n");  
         else
 		    printf("GCSORT - Sort ERROR\n");  
-		nRC = OC_RTC_ERROR;
+		nRC = GC_RTC_ERROR;
 	}
 
 //-->>	
@@ -262,3 +264,27 @@ int main_prod(int argc, char **argv) {
 }
 
 
+void verify_options(int numargs, char** args)
+{
+	char* pch;
+	if ((numargs > 1) && (strlen(args[1]) > 0)) {
+		pch = strtok(args[1], " =");
+		if (pch != NULL) {
+			if (!strcasecmp(pch, "-fsign")) {
+				pch = strtok(NULL, " =");
+				if (pch != NULL) {
+					if (!strcasecmp(pch, "EBCDIC"))
+						g_cb_ebcdic_sign = 1;
+					else
+					if (!strcasecmp(pch, "ASCII"))
+						g_cb_ebcdic_sign = 0;
+					else {
+						fprintf(stdout, "*GCSORT* ERROR: Problem with option -fsign, values correct are ASCII/EBCDIC\n");
+						exit(GC_RTC_ERROR);
+					}
+				}
+			}
+		}
+	}
+	return;
+}

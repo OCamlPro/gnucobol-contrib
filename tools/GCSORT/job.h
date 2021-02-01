@@ -165,7 +165,11 @@ int job_sort(struct job_t* job);
 int job_load(struct job_t *job, int argc, char **argv);
 int job_check(struct job_t *job);
 int job_loadFiles(struct job_t *job);
-int job_sort_data(struct job_t *job);
+#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+	int job_sort_data(struct job_t *job);
+#else
+	static INLINE2 int job_sort_data(struct job_t* job);
+#endif
 int job_save_out(struct job_t *job);
 int job_save_tempfile(struct job_t *job);
 int job_save_tempfinal(struct job_t *job);
@@ -175,7 +179,12 @@ INLINE int job_ReadFileTemp(struct mmfio_t* descTmp, int* nLR, unsigned char* sz
 int job_print(struct job_t *job);
 int job_GetTypeOp(struct job_t *job);
 
-INLINE int job_GetKeys(const void *szBufferIn, void *szKeyOut);
+// INLINE2 int job_GetKeys(const void *szBufferIn, void *szKeyOut);
+#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+	static INLINE int job_GetKeys(unsigned char* szBufferIn, unsigned char* szKeyOut);
+#else
+	static INLINE2 int job_GetKeys(unsigned char* szBufferIn, unsigned char* szKeyOut);
+#endif
 int job_GetLenKeys( void );
 int job_GetLastPosKeys( void);
 
@@ -195,21 +204,28 @@ int	job_scanPrioritySearch(char* buffer);
 int	job_FileInputBuffer (struct job_t *job, char* szBuffIn, char* bufnew, int nPosStart);
 int	job_FileOutputBuffer (struct job_t *job, char* szBuffIn, char* bufnew, int nPosStart);
 int job_PutIntoArrayFile(char* pszBufOut, char* pszBufIn, int nLength);
-int job_RedefinesFileName( struct job_t *job); 
+int job_RedefinesFileName( struct job_t *job);
 int job_NormalOperations(struct job_t *job);
 int job_CloneFileForOutfil( struct job_t *job);
 void job_CloneFileForOutfilSet(struct job_t *job, struct file_t* file);
 int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen );
 int	job_scanCmdSpecialChar(char* bufnew);
 int	job_RescanCmdSpecialChar(char* bufnew);
-void job_SetRecLen(struct job_t *job, int recordsize, unsigned char* szHR);
+// void job_SetRecLen(struct job_t *job, int recordsize, unsigned char* szHR);
 void job_ReviewMemeAlloc ( struct job_t *job  );
 
-void job_getTypeFlags (int nTypeField, int* nType, int* nFlags );
-
+#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+	void job_getTypeFlags(int nTypeField, int* nType, int* nFlags, int nLen);
+#else
+	static INLINE2 void job_getTypeFlags (int nTypeField, int* nType, int* nFlags, int nLen );
+#endif
 INLINE int job_compare_key(const void *first, const void *second);
 INLINE int job_compare_rek(const void *first, const void *second, int bCheckPosPnt);
-INLINE int job_compare_qsort(const void *first, const void *second);
+#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+static INLINE  int job_compare_qsort(const void* first, const void* second);
+#else
+static INLINE2 int job_compare_qsort(const void* first, const void* second);
+#endif
 
 INLINE int job_IdentifyBufMerge(unsigned char** ptrBuf, int nMaxElements);
 INLINE int job_ReadFileMerge(struct file_t* file, int* descTmp, int* nLR, unsigned char* szBuffRek, int nFirst);
@@ -238,7 +254,7 @@ static INLINE int write_buffered (int		desc,
     	*position_buf_write=0;
     }
 	nSplit = *position_buf_write;
-	memmove((unsigned char*)(bufferwriteglobal+nSplit), (unsigned char*)buffer_pointer, nLenRek);
+	memcpy((unsigned char*)(bufferwriteglobal+nSplit), (unsigned char*)buffer_pointer, nLenRek);
    *position_buf_write=*position_buf_write+nLenRek;
     return 0;
 }
@@ -258,7 +274,7 @@ static INLINE int write_buffered_save_final (int		desc,
     	}
     	*position_buf_write=0;
     }
-	memmove((unsigned char*)(bufferwriteglobal+(*position_buf_write)), (unsigned char*)buffer_pointer, nLenRek);
+	memcpy((unsigned char*)(bufferwriteglobal+(*position_buf_write)), (unsigned char*)buffer_pointer, nLenRek);
    *position_buf_write=*position_buf_write+nLenRek;
     return 0;
 }

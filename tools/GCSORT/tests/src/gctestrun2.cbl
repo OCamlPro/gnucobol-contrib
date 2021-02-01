@@ -426,7 +426,9 @@
        set-value-env             section.
       *---------------------------------------------------------*
        sv-00.
-           inspect env-set-value replacing all chrsl by chrbs
+Win        if (ntype = 1)
+              inspect env-set-value replacing all chrsl by chrbs
+           end-if
 	       display env-set-name  upon ENVIRONMENT-NAME
            display env-set-value upon ENVIRONMENT-VALUE          
            if ( env-set-value not equal space )
@@ -1192,6 +1194,10 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            display ' cmd line : '   cmd-go
            call     'SYSTEM' using  cmd-go
            move  RETURN-CODE  to ar-tst-rtc03(idx)
+           if (ar-tst-rtc03(idx)  = 4)
+               move zero to ar-tst-rtc03(idx)
+               display ' Forced zero to retcode - There is a warning.'
+           end-if
       * 
       D    display  "RETURN-CODE Value : " RETURN-CODE
       * reset 

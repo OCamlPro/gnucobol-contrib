@@ -47,7 +47,6 @@ struct outfil_t{
 
 struct outfil_t *outfil_constructor( void );
 void outfil_destructor(struct outfil_t *outfil);
-int outfil_print(struct outfil_t *outfil);
 struct outfil_t *outfil_getNext(struct outfil_t *outfil);
 int outfil_addQueue(struct outfil_t **outfil, struct outfil_t *outfilToAdd);
 int outfil_SetStartRec(struct outfil_t* outfil, int64_t nStartRek);

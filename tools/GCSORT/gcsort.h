@@ -52,8 +52,14 @@ _LIB
 
 
 #define GCSORT_ALLOCATE				50
+//s.m. 
 #define GCSORT_ALLOCATE_MEMSIZE		512000000 
+// for debug #define GCSORT_ALLOCATE_MEMSIZE		512000 
+
 #define GCSORT_MAX_BUFF_REK			32768+SZPOSPNT
+
+#define GCSORT_KEY_MAX              1024
+#define GCSORT_SIZE_FILENAME        1024
 
 // value 1 : generate temp file fixed name : cob17, cob18, cob19, cob1a, cob1b
 #define GCSORT_DEBUG                0  // 0 no debug - 1 debug
@@ -62,15 +68,21 @@ _LIB
 #define GCSORT_TAR_DATE "Oct 15 2020 18:21:00 UTC"
 
 // Return Code
-#define OC_RTC_OK	 0
-#define OC_RTC_ERROR 16
+#define GC_RTC_OK	 0
+// s.m. 202101
+#define GC_RTC_WARN	 4
+#define GC_RTC_ERROR 16
 
 
 // Variables char szMexToken[260];
 
+#if	!defined(_MSC_VER) // defined(__MINGW32__) || defined(__MINGW64__)
+#define strtok_s __strtok_r
+#endif
 
 void GCSORT_Config( void );
 void GCSORT_Usage ( void ) ;
 void GCSORT_Version( void ) ;
+void verify_options(int numargs, char** args);
 
 #endif // GCSORT_H_INCLUDED

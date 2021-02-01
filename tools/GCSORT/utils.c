@@ -405,6 +405,7 @@ PIC S9(n) COMP-3|PACKED-DECIMAL
 			return "CST";
 
 		default:
+			fprintf(stderr, "* utils_getFieldTypeName*  : %d\n", type);
 			return "";
 
 	}
@@ -611,12 +612,16 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
     	    attrArea->flags  = attrArea->flags | COB_FLAG_HAVE_SIGN;
             break;
         case COB_TYPE_NUMERIC_DISPLAY:
-            attrArea->digits = 0;
+            //s.m. 20210121 attrArea->digits = 0;
             attrArea->scale = 0;
 // s.m. 20201015
     	    attrArea->flags  = attrArea->flags | COB_FLAG_HAVE_SIGN;
 // s.m. 20201015
             break;
+		default:
+			fprintf(stdout, "util_setAttrib - type not found %d \n", type);
+			exit(GC_RTC_ERROR);
+			return ;
 	}
 
     return;//
@@ -639,7 +644,7 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
         utl_abend_terminate(MEMORYALLOC, 12, ABEND_EXEC);
 	field_ret->attr = attrArea;
 	field_ret->data = NULL;
-	if (nData == 0) {
+	if (nData == ALLOCATE_DATA) {
 		field_ret->data = (unsigned char*) malloc((sizeof(unsigned char)*nLen)+1);
         if (field_ret->data == NULL)
             utl_abend_terminate(MEMORYALLOC, 13, ABEND_EXEC);
@@ -654,7 +659,7 @@ void util_cob_field_del ( cob_field* field_ret, int nData)
 	if (field_ret!=NULL) {
 		if (field_ret->attr!=NULL)
 				free((void*)field_ret->attr); 
-		if (nData == 0) {
+		if (nData == ALLOCATE_DATA) {
 			if (field_ret->data!=NULL)
 				free(field_ret->data); 
 		}
@@ -673,6 +678,6 @@ void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate)
         break;
     }
     if (nTerminate == ABEND_EXEC)
-        exit(OC_RTC_ERROR);       
+        exit(GC_RTC_ERROR);       
     return;
 }

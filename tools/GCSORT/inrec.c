@@ -100,7 +100,7 @@ struct inrec_t *inrec_constructor_padding(int nAbsPos, unsigned char *chfieldVal
             {
                 fprintf(stderr,"*GCSORT*S400*ERROR: absolute position %d is minor of current position of field %d\n",
                 nAbsPos, nPosAbsRec+1);
-                exit(OC_RTC_ERROR);
+                exit(GC_RTC_ERROR);
             }
 	    inrec->change.fieldValue = fieldValue_constr_newF((char*) chfieldValue, szVal, TYPE_STRUCT_STD);
 	    inrec->change.posAbsRec = nAbsPos;

@@ -24,7 +24,6 @@
 #define HEADER_MF 128
 
 #include <stdint.h>
-// #include "libgcsort.h"
 #include <libcob.h>
 #include "keyidxrel.h"
 
@@ -40,7 +39,6 @@ struct file_t {
 	int nTypeNameFile; // Outfile
 	int handleFile;
 	int nFileMaxSize;
-	//   int nOrgType;
 	int nNumKeys;
 	cob_file* stFileDef;		// info for cob_open, cob_read, cob_write, cob_close
 	int opt; // option for write

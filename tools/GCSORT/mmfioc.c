@@ -161,7 +161,7 @@ int mmfio_Open(const unsigned char* strfile, enum OPENFLAGS oflags, int64_t maxs
 	{
 		memcpy(mmf->m_strErrMsg, MMF_ERR_OPEN_FILE, sizeof(MMF_ERR_OPEN_FILE));
 		fprintf(stderr,"*GCSORT*S501*ERROR: Cannot Open MMF file input : %s, %s\n", strfile, strerror(errno));
-		exit(OC_RTC_ERROR);
+		exit(GC_RTC_ERROR);
 		return 0;
 	}
 
@@ -198,7 +198,7 @@ int mmfio_Open(const unsigned char* strfile, enum OPENFLAGS oflags, int64_t maxs
 		CloseHandle(mmf->m_hFileMapping);
 		memcpy(mmf->m_strErrMsg, MMF_ERR_MAPVIEWOFFILE, sizeof(MMF_ERR_MAPVIEWOFFILE));
 		fprintf(stderr,"*GCSORT*S502*ERROR: Error Open File mmfio_Open\n");
-		exit(OC_RTC_ERROR);
+		exit(GC_RTC_ERROR);
 		return 0;
 	}
 
@@ -232,7 +232,7 @@ int mmfio_Open(const unsigned char* strfile, enum OPENFLAGS oflags, int64_t maxs
     if(mmf->m_pbFile == MAP_FAILED ) { 
 		memcpy(mmf->m_strErrMsg, MMF_ERR_MAPVIEWOFFILE, sizeof(MMF_ERR_MAPVIEWOFFILE));
 		fprintf(stderr,"*GCSORT*S503*ERROR: Error Next Map File mmfio_Open\n");
-		exit(OC_RTC_ERROR);
+		exit(GC_RTC_ERROR);
     }
 
 
@@ -256,7 +256,7 @@ int mmfio_Open(const unsigned char* strfile, enum OPENFLAGS oflags, int64_t maxs
    	if( mmf->m_pbFile == MAP_FAILED ) { 
 		memcpy(mmf->m_strErrMsg, MMF_ERR_MAPVIEWOFFILE, sizeof(MMF_ERR_MAPVIEWOFFILE));
 		fprintf(stderr,"*GCSORT*S504*ERROR: Error Open File mmfio_Open \n");
-		exit(OC_RTC_ERROR);
+		exit(GC_RTC_ERROR);
    	}
 	mmf->m_nCurPos = 0;
 	mmf->m_nViewBegin = 0;
@@ -333,7 +333,7 @@ int mmfio_SeekRead(void* pBuf, int64_t lOffset, int nCountIn, struct mmfio_t* mm
     if(mmf->m_pbFile == MAP_FAILED ) { 
 	memcpy(mmf->m_strErrMsg, MMF_ERR_MAPVIEWOFFILE, sizeof(MMF_ERR_MAPVIEWOFFILE));
 	fprintf(stderr,"*GCSORT*S505*ERROR: Next Map File mmfio_SeekRead\n");
-	exit(OC_RTC_ERROR);
+	exit(GC_RTC_ERROR);
     }
 
 
@@ -415,7 +415,7 @@ INLINE int mmfio_seek(int64_t lOffset, enum SEEKPOS eseekpos, struct mmfio_t** m
 		   	if((*mmf)->m_pbFile == MAP_FAILED ) { 
 				memcpy((*mmf)->m_strErrMsg, MMF_ERR_MAPVIEWOFFILE, sizeof(MMF_ERR_MAPVIEWOFFILE));
 				fprintf(stderr,"*GCSORT*S506*ERROR: Error Next Map File mmfio_seek\n");
-				exit(OC_RTC_ERROR);
+				exit(GC_RTC_ERROR);
 		   	}
 
 // linux debug printf("		(*mmf)->m_pbFile = mmap; after\n");

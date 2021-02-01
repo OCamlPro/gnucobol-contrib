@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include "libgcsort.h"
 #include <libcob.h>
 #include "gcsort.h"
 #include "job.h"
@@ -272,12 +271,12 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 			// check keys - for indexed file is mandatory
 			if (file->nNumKeys == 0) {
 				fprintf(stderr,"*GCSORT*S300*ERROR: KEY definitions are not specified for Indexed file. \n");
-				exit(OC_RTC_ERROR);
+				exit(GC_RTC_ERROR);
 			}
 			// check keys - for indexed file Primary is first definition 
 			if (tKeys->type != KEY_IDX_PRIMARY) {
 				fprintf(stderr,"*GCSORT*S301*ERROR: KEY specifications error. First field is not primary key.\n");
-				exit(OC_RTC_ERROR);
+				exit(GC_RTC_ERROR);
 			}
 
 			file->stFileDef->keys = (cob_file_key*)(malloc (sizeof (cob_file_key) * file->nNumKeys));
@@ -287,6 +286,8 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 					file->stFileDef->keys[k].field->data = file->stFileDef->record->data+tKeys->position;
                     file->stFileDef->keys[k].field->size = tKeys->length;
 					file->stFileDef->keys[k].flag = 0;		/* ASCENDING/DESCENDING (for SORT) */
+// s.m. 202101 start
+#if __LIBCOB_VERSION >= 3
 					file->stFileDef->keys[k].tf_duplicates = 0;
 					if (tKeys->type == KEY_IDX_ALTERNATIVE_DUP)
 						file->stFileDef->keys[k].tf_duplicates = 1;		// with duplicates
@@ -295,14 +296,18 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 					file->stFileDef->keys[k].char_suppress = 0;
 					file->stFileDef->keys[k].count_components = 0;// count_components
 					file->stFileDef->keys[k].component[0] = NULL;
+#endif
+// s.m. 202101 end
 					file->stFileDef->keys[k].offset = tKeys->position;
 					tKeys =  tKeys->next;
 			}
-			// s.m. 202101 start
+// s.m. 202101 start
+#if __LIBCOB_VERSION >= 3
 			file->stFileDef->flag_line_adv=0;
 			file->stFileDef->curkey=-1;
 			file->stFileDef->mapkey=-1;
-			// s.m. 202101 end
+#endif
+// s.m. 202101 end
 
             file->stFileDef->access_mode = COB_ACCESS_DYNAMIC;  
 			file->stFileDef->organization = COB_ORG_INDEXED;

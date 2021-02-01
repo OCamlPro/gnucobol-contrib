@@ -101,7 +101,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 23 "..\\..\\parser\\parser.y"
+#line 23 "parser.y"
  
 	int         number;
 	long        lnumber;
@@ -114,7 +114,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 118 "..\\..\\parser.h"
+#line 118 "parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

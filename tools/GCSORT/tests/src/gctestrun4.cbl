@@ -365,7 +365,9 @@
        set-value-env             section.
       *---------------------------------------------------------*
        sv-00.
-           inspect env-set-value replacing all chrsl by chrbs
+Win        if (ntype = 1)
+            inspect env-set-value replacing all chrsl by chrbs
+           end-if
 	       display env-set-name  upon ENVIRONMENT-NAME
            display env-set-value upon ENVIRONMENT-VALUE          
            if ( env-set-value not equal space )

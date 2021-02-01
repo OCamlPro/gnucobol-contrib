@@ -125,7 +125,7 @@ void GCSORT_Usage ( void )
     printf(" gcsort is a  program to sort, merge and copy records in a file into a specified order\n");
     printf("________________________________________________________________________________________\n");
     printf(" Syntax case insensitive                                                         \n");
-    printf(" Return code : 0 (ok) - 16 (error)                                                 \n");
+    printf(" Return code : 0 (ok) - 4 (warning) - 16 (error)                                 \n");
     printf("________________________________________________________________________________________\n");
     printf("Usage with file parameters  : gcsort <options> take filename   \n");
     printf("Usage from command line     : gcsort <options> <control statements> \n");

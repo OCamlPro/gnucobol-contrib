@@ -174,7 +174,7 @@ int condField_print(struct condField_t *condField) {
  
 int condField_test(struct condField_t *condField, unsigned char *record, struct job_t* job) {
 	int result;
-	int nVerify; 
+	int nVerify=0;
 	char szBufVLSCMP[MAX_RECSIZE+1];
 	int nTcmp = 0;
 	switch (condField->type) {
@@ -207,7 +207,7 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
 					if ((job->nVLSCMP == 0) && (job->nVLSHRT == 0)) {
 						fprintf(stderr,"*GCSORT*S100*ERROR: Record len:%ld < of condition(position):%d, condition(length):%d\n", job->LenCurrRek, condField->condition.position, condField->condition.length);
 						fprintf(stderr,"*GCSORT*S101* GCSORT - TERMINATED\n");
-						exit(OC_RTC_ERROR);
+						exit(GC_RTC_ERROR);
 					}
 					else
 						return 0;	// false condition
@@ -307,7 +307,7 @@ Field Format| BI| CH| ZD| PD| FI|
 
 int condField_compare(struct condField_t *condField, unsigned char *record) {
 
-	int nRtc = 0;
+	// int nRtc = 0;
 	int result;
 
 	condField->condition_field.cb_fd1->data = (unsigned char*) (record+condField->condition_field.position1 - 1);

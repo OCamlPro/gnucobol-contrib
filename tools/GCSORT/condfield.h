@@ -76,7 +76,7 @@ int condField_print(struct condField_t *condField);
 struct condField_t *condField_getNext(struct condField_t *condField);
 int condField_test(struct condField_t *condField, unsigned char *record, struct job_t* job);
 int condField_compare(struct condField_t *condField, unsigned char *record);
-int GetValueForType(struct condField_t *condField, unsigned char *record, unsigned char* ValueChar1, unsigned char* ValueChar2);
+// int GetValueForType(struct condField_t *condField, unsigned char *record, unsigned char* ValueChar1, unsigned char* ValueChar2);
 
 int condField_addDefinition(struct condField_t *condField);
 

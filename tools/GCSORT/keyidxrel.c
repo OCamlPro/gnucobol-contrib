@@ -22,7 +22,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libcob.h>
-// #include <libcob/common.h>
 #include "file.h"
 #include "keyidxrel.h"
 

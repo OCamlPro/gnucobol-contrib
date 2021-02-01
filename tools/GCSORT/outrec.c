@@ -97,7 +97,7 @@ struct outrec_t *outrec_constructor_padding(int nAbsPos, unsigned char *chfieldV
             {
                 fprintf(stderr,"*GCSORT*S500*ERROR: absolute position %d is minor of current position of field %d\n",
                 nAbsPos, nPosAbsRec+1);
-                exit(OC_RTC_ERROR);
+                exit(GC_RTC_ERROR);
             }
 	    outrec->change.fieldValue = fieldValue_constr_newF((char*) chfieldValue, szVal, TYPE_STRUCT_STD);
 	    outrec->change.posAbsRec = nAbsPos;

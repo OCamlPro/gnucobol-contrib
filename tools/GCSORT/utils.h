@@ -87,10 +87,12 @@
 
 //#ifdef _MSC_VER
 #if defined(_MSC_VER) 
-  #define INLINE __forceinline /* use __forceinline (VC++ specific) */
+  #define INLINE  __forceinline /* use __forceinline (VC++ specific) */
+  #define INLINE2 __forceinline /* use __forceinline (VC++ specific) */
 #else
 //fix for ubuntu envronment  #define INLINE __inline__ //			 inline        /* use standard inline */
   #define INLINE 
+  #define INLINE2   __inline__  //__attribute__((always_inline))
 #endif
 
 #include <libcob.h>
@@ -190,7 +192,6 @@ const char *utils_getCondOperationName(int operation);
 const char* utils_getKeyType(int nkeyType);
 int utils_SetOptionSort(char* optSort, struct outfil_t* outfil, int nValue);
 int utils_SetOptionSortNum(char* optSort, int64_t nNum);
-int utils_setFieldTypInt(char * strType);
 void util_print_time_elap( const  char* szMex );
 void util_covertToUpper(char *strIn, char* strOut);
 // Function for cob_field & cob_field_attrib
