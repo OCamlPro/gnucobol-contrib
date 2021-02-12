@@ -4,10 +4,10 @@
          | |__| (_) | |_) | (_) | | ___) | |_| | |___| | ||  __/ ___) |
           \____\___/|_.__/ \___/|_||____/ \__\_\_____|_|\__\___||____/
 
-                    An SQLite3 Interface for GnuCOBOL 2.2+
+                      An SQLite3 Interface for GnuCOBOL
 
-                           Copyright (c) 2017-2017
-                   Robert W.Mills <cobolmac@btinternet.com>
+                           Copyright (c) 2017-2021
+                    Robert W.Mills <rwm.cobol@gmail.com>
 
 --------------------------------------------------------------------------------
 
@@ -20,4 +20,4 @@
  There is a User Guide, in HTML format, containing full details of the Library.
 
 --------------------------------------------------------------------------------
-Last updated 20th September, 2017
+Last updated 2nd Feburary, 2021

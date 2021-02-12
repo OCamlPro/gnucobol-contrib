@@ -1,12 +1,41 @@
-Version A.00.00  September 2017 Robert W.Mills (CobolMac@btinternet.com)
+Version A.01.00 February 2021 Robert W.Mills (rwm.cobol@gmail.com)
 
-- Final release to GnuCOBOL Contributions.
+- This release requires that Version 3.14 (or greater) of the SQLite3 Library is installed.
+
+- The 'cobcrun ./CobolSQLite3 --version' command will display a warning message if the current SQLite3 Library needs to be updated.
+
+- Changed contact email address.
+
+- Fixed DBOPEN problem discovered by Laszlo Erdos.
+
+- Added section *1.3. SQLite3* to the User Guide documenting that SQLite is in the Public Domain.
+
+- Added the DBBIND function.
+
+- Added Mode 200 to DBINFO that will return a compiled SQL Statement with bind parameters expanded.
+
+- Increased size of DBINFO-BUFFER (in CobSQLite3 Working Storage) from 80 characters to 1024 characters. This is required because of the DBINFO Mode 200 addition. Error -17 will be returned if this buffer overflows.
+
+- Added a new section, *3. Reusing Compiled Statements*, to the User Guide documenting how the DBBIND function is used. **Note:** The number of the original section 3, and all following sections, has been increased by 1 (one).
+
+- *CobolSQLite3* now requires use of runtime-options to generate the Copylibrary modules instead of ask if it should create them. See section *6.2.* of the User Guide for further details.
+
+- Added a third Example/Test Program. Test-3.cob is a modified copy of Test-1.cob that demonstrates the DBBIND function and Reusing Compiled Statements.
+
+- Updated the User Guide to document the changes made.
+
+
+Version A.00.00 September 2017 Robert W.Mills (CobolMac@btinternet.com)
+
+- First production release to GnuCOBOL Contributions.
+
 
 Version X.03.00 [BETA] September 2017 Robert W.Mills (CobolMac@btinternet.com)
 
 - Created a User Guide that is in HTML format. The source text is held within the *CobolSQLite3* source file in ReStructuredText format. It is extracted by *ocdoc* and then passed to *Doccutils* which generates the HTML file. The *Modification History* and *Planned Enhancements* are held in external files (ChangeLog and ToDo) which are merged into the User Guide when *Docutils* generates it.
 
 - Added the DBGET function (replaces the DBGETSTR and DBGETINT functions).
+
 
 Version X.02.00 [BETA] September 2017 Robert W.Mills (CobolMac@btinternet.com)
 
@@ -21,9 +50,11 @@ Version X.02.00 [BETA] September 2017 Robert W.Mills (CobolMac@btinternet.com)
 
 - Cleaned up error messages (too many uses of the word 'the').
 
+
 Version X.01.00 [BETA] September 2017 Robert W.Mills (CobolMac@btinternet.com)
 
 - Initial release to GnuCOBOL Contributions.
+
 
 Version X.00.00 [ALPHA] August 2017 Robert W.Mills (CobolMac@btinternet.com)
 

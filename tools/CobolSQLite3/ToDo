@@ -1,8 +1,4 @@
-- Add optional parameter to DBERRMSG to return error message for any Status Code.
+- DBERRMSG: Add optional parameter to return error message for any Status Code.
 
-  Scheduled for A.01.00
-
-- Implement 'binding values to prepared statements' (aka Parameter Substitution).
-
-  Scheduled for A.01.00
+- DBINFO: Add Mode 300 (Check if specified table exists).
 
