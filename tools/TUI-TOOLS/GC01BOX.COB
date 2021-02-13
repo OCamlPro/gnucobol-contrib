@@ -1,4 +1,6 @@
-       >> SOURCE FORMAT IS FREE
+              >> SOURCE FORMAT IS FREE
+       REPLACE ==:BCOL:== BY ==with BACKGROUND-COLOR==
+               ==:FCOL:== BY      ==FOREGROUND-COLOR==.
 ID DIVISION.
 PROGRAM-ID. GC01BOX is initial.
 *> ***********************************************************************************
@@ -6,22 +8,16 @@ PROGRAM-ID. GC01BOX is initial.
 *> Purpose:    DISPLAY A BOX ON SCREEN WITH OPTIONS AND SPECIAL EFFECTS
 *> Tectonics:  cobc -m GC01BOX.COB  -lpdcurses (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      call GC01BOX using BOX-AREA
-*> Parameters: look at GC01BOX.CPY  (use with copy Version: 1.0 2016.06.15)
+*> Parameters: look at GC01BOX.CPY
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
-*> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2016.06.15
+*> License:    (c)2021 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
+*> Version:    2.0 2021.02.02
 *> Changelog:  1.0 first release.
+*>             2.0 now you can use also colors from 8 to 15 (see GC00COLORS.CPY)
 *> ***********************************************************************************
 DATA DIVISION.
 WORKING-STORAGE SECTION.
-01 black   constant as 0.
-01 blue    constant as 1.
-01 green   constant as 2.
-01 cyan    constant as 3.
-01 red     constant as 4.
-01 magenta constant as 5.
-01 yellow  constant as 6.  *> or Brown
-01 white   constant as 7.
+copy GC00COLORS.CPY.
 
 01  wInt        BINARY-SHORT.
 01  wChar   pic x  value space.
@@ -30,8 +26,12 @@ WORKING-STORAGE SECTION.
 01  k    pic 999.
 01  w    pic 999.
 01  t    pic 999.
-01  wTitleCol  pic 999.
 01  L    pic X(09) VALUE SPACE.
+01  wTitleCol    pic 999.
+01  wBox-bco     pic 9(02) value 07.
+01  wBox-fco     pic 9(02) value 07.
+01  wBox-titbco  pic 9(02) value 07.
+01  wBox-titfco  pic 9(02) value 07.
 
 01  BOX-CHARS.  *> UpLeft, UpCenter, UpRight, MiwCharleLeft, MC, MR, LowLeft, LC, LR
    *> DA C4 BF  SINGLE LINE BOX
@@ -69,7 +69,6 @@ PROCEDURE DIVISION using Box-Area.
 set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
 set environment 'COB_SCREEN_ESC'        TO 'Y'.
 
-
 if box-beep = 'Y' CALL X"E5"  END-IF *> ring the bell
 
 evaluate true
@@ -84,7 +83,7 @@ end-evaluate
 
 if Box-3D = "N"
 *> ***********************************************************************************
-*> display a non 3D box
+*> DISPLAY A NORMAL BOX (NOT 3D)
 *> ***********************************************************************************
  perform varying i from box-r1 by 1 until i > box-r2         *> write rows
    perform varying j from box-c1 by 1 until j > box-c2       *> write cols
@@ -101,7 +100,7 @@ if Box-3D = "N"
        when (i > box-r1 and i < box-r2) and j = box-c2                               *> right vertical line
                  *> display a shadow a right of the box if requested
                  if box-shadow = "Y" compute k = j + 1 end-compute
-                    display X"DB" at line i col k with background-color black foreground-color black end-display
+                    display X"DB" at line i col k :BCOL: black :FCOL: black end-display
                  end-if
                                                        move L(6:1) to wChar
        *> last box row
@@ -110,22 +109,19 @@ if Box-3D = "N"
        when i = box-r2 and j = box-c2                                                 *> lower right corner
                   *> display a shadow a right of the box if requested
                   if box-shadow = "Y" compute k = j + 1 end-compute
-                   display X"DB" at line i col k with background-color black foreground-color black end-display
+                   display X"DB" at line i col k :BCOL: black :FCOL: black end-display
                  end-if
                                                        move L(9:1) to wChar
      end-evaluate
 
-     if Box-fcoH = "Y"
-        display wChar at line i col j with background-color box-bco foreground-color box-fco highlight end-display
-     else
-        display wChar at line i col j with background-color box-bco foreground-color box-fco end-display
-     end-if
+     perform DisplayChar thru DisplayCharEx
+
    end-perform
  end-perform
 
 else
 *> ***********************************************************************************
-*> display a 3D box
+*> DISPLAY A 3D BOX (frame colors are always black & white)
 *> ***********************************************************************************
  perform   varying i from box-r1 by 1 until i > box-r2       *> write rows
    perform varying j from box-c1 by 1 until j > box-c2       *> write cols
@@ -150,7 +146,7 @@ else
        when (i > box-r1 and i < box-r2) and j = box-c2                                    *> right vertical line
                                 *> display a shadow a right of the box if requested
                                 if box-shadow = "Y" compute k = j + 1 end-compute
-                                   display X"DB" at line i col k with background-color black foreground-color black end-display
+                                   display X"DB" at line i col k :BCOL: black :FCOL: black end-display
                                 end-if
                                                                         move L(6:1) to wChar
                                if Box-3D = "R" move white to box-fco end-if
@@ -167,16 +163,16 @@ else
                                                                     move L(9:1) to wChar
                                *> display a shadow a right of the box if requested
                                if box-shadow = "Y" compute k = j + 1 end-compute
-                                  display X"DB" at line i col k with background-color black foreground-color black end-display
+                                  display X"DB" at line i col k :BCOL: black :FCOL: black end-display
                                end-if
                                if Box-3D = "R" move white to box-fco end-if
                                if Box-3D = "E" move black to box-fco end-if
      end-evaluate
 
      if box-fco = 7 *> display with highlight only if fore color is white (no highlight if black)
-        display wChar at line i col j with background-color box-bco foreground-color box-fco highlight end-display
+        display wChar at line i col j :BCOL: box-bco :FCOL: box-fco highlight end-display
      else
-        display wChar at line i col j with background-color box-bco foreground-color box-fco end-display
+        display wChar at line i col j :BCOL: box-bco :FCOL: box-fco end-display
      end-if
 
    end-perform
@@ -185,19 +181,20 @@ else
 end-if
 
 *> ***********************************************************************************
-*> DISPLAY A SHADOW AT BOTTOM OF THE BOX IF REQUESTED
+*> IF REQUESTED DISPLAY THE SHADOW AT BOTTOM OF THE BOX
 *> ***********************************************************************************
 if box-shadow = "Y" compute k = box-r2 + 1 end-compute  compute w = box-c1 + 1 end-compute
    perform varying j from w by 1 until j > box-c2 + 1       *> write cols
-      display X"DB" at line k col j with background-color black foreground-color black end-display
+      display X"DB" at line k col j :BCOL: black :FCOL: black end-display
    end-perform
 end-if
 
 *> ***********************************************************************************
-*> DISPLAY A BOX TITLE IF REQUESTED
+*> IF REQUESTED DISPLAY A BOX TITLE
 *> ***********************************************************************************
-     if Box-tit = "Y" go to TitleCount else go to TitleDisplayEx end-if.
-     move 0 to t.
+if Box-tit = "Y" go to TitleCount else go to TitleDisplayEx end-if
+move 0 to t.
+
 *> loop to count characters of title t= number of title chars to display title centered
 TitleCount.
      add 1 to t
@@ -210,16 +207,57 @@ TitleDisplayLoop.
      add 1 to wTitleCol
      add 1 to t
      if Box-titDes(t:1) = low-value go to TitleDisplayEx end-if.
-     if Box-titFcoH = 'Y'  *> title description in highlight ?
-        display Box-TitDes(t:1) at line Box-r1 col wTitleCol
-                 with background-color  Box-titBco foreground-color Box-titFco highlight end-display
-     else
-        display Box-TitDes(t:1) at line Box-r1 col wTitleCol
-                 with background-color  Box-titBco foreground-color Box-titFco end-display
-     end-if
+     perform DisplayCharTitle thru DisplayCharTitleEx
      go TitleDisplayLoop.
 TitleDisplayEx.
 
 GOBACK.
+
+*> ***********************************************************************************
+*>
+*> ***********************************************************************************
+DisplayChar.
+  evaluate true
+     when box-bco > 7 and box-fco >  7
+         compute wbox-bco = box-bco - 7
+         if Box-fcoH > 7 compute wbox-fco = box-fco - 7 end-if
+         display wChar at line i col j :BCOL: wbox-bco :FCOL: wbox-fco blink highlight
+     when box-bco > 7 and box-fco <=  7
+         compute wbox-bco = box-bco - 7
+         compute wbox-fco = box-fco
+         display wChar at line i col j :BCOL: wbox-bco :FCOL: wbox-fco blink
+     when box-bco <= 7 and box-fco >  7
+         compute wbox-bco = box-bco
+         compute wbox-fco = box-fco - 7
+         display wChar at line i col j :BCOL: wbox-bco :FCOL: wbox-fco highlight
+     when box-bco <= 7 and box-fco <=  7
+         compute wbox-bco = box-bco
+         compute wbox-fco = box-fco
+         display wChar at line i col j :BCOL: wbox-bco :FCOL: wbox-fco
+  end-evaluate
+  continue.
+DisplayCharEx. exit.
+
+DisplayCharTitle.
+  evaluate true
+     when box-titbco > 7 and box-titfco >  7
+         compute wbox-titbco = box-titbco - 7
+         compute wbox-titfco = box-titfco - 7
+         display Box-TitDes(t:1) at line Box-r1 col wTitleCol :BCOL: wbox-titbco :FCOL: wbox-titfco blink highlight
+     when box-titbco > 7 and box-titfco <=  7
+         compute wbox-titbco = box-titbco - 7
+         compute wbox-titfco = box-titfco
+         display Box-TitDes(t:1) at line Box-r1 col wTitleCol :BCOL: wbox-titbco :FCOL: wbox-titfco blink
+     when box-titbco <= 7 and box-titfco >  7
+         compute wbox-titbco = box-titbco
+         compute wbox-titfco = box-titfco - 7
+         display Box-TitDes(t:1) at line Box-r1 col wTitleCol :BCOL: wbox-titbco :FCOL: wbox-titfco highlight
+     when box-titbco <= 7 and box-titfco <=  7
+         compute wbox-titbco = box-titbco
+         compute wbox-titfco = box-titfco
+         display Box-TitDes(t:1) at line Box-r1 col wTitleCol :BCOL: wbox-titbco :FCOL: wbox-titfco
+  end-evaluate
+  continue.
+DisplayCharTitleEx. exit.
 
 End Program GC01BOX.
