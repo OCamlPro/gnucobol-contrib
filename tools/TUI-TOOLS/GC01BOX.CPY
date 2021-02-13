@@ -4,10 +4,12 @@
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    WORK-AREA FOR GC01BOX.COB - DISPLAY A BOX
 *> Usage:      call GC01BOX using BOX-AREA
-*> Author:     Eugenio Di Lorenzo - Italia (DILO)
-*> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.0 2016.06.15
+*> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
+*> License:    Copyright 2021 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
+*> Version:    2.0 2021.02.02
 *> Changelog:  1.0 first release.
+*>             2.0 back-fore colors from 9(01) to 9(02) to manage colors from 08 to 15.
+*>                 hilight field now i snot funcional (deprecated)
 *> ***********************************************************************************
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
@@ -15,6 +17,7 @@
 *> r2,c2     row & column of lower right corner  - DEFAULT: 25, 80
 *> bco,fco   box background & foreground (the frame) color
 *> hilight   Y= the foreground (the frame of the box) is highlighted
+*>           this field now is not functional because you can use colors fron 08 to 15
 *> style     S= Single line, D= Double line, 1,2=character box, 3=a solid frame (does'nt work!)
 *>           N= noline (to colour a zone), C= custom
 *> custom    if style=C, here are 9 chars to draw the box: UpLeft, UpCenter, UpRight, MiddleLeft, MC, MR, LowLeft, LC, LR
@@ -52,8 +55,8 @@
          07 Box-r2   pic 9(03) value 025.
          07 Box-c2   pic 9(03) value 080.
    03 Box-Parameters.
-      05 Box-bco     pic 9(01) value 7.           *> back color of the box
-      05 Box-fco     pic 9(01) value 7.           *> fore color of the box  (the frame)
+      05 Box-bco     pic 9(02) value 07.          *> back color of the box
+      05 Box-fco     pic 9(02) value 07.          *> fore color of the box  (the frame)
       05 Box-fcoH    pic X(01) value "Y".         *> Y = Hilight Foreground (the frame of the box)
       05 Box-style   pic X(01) value "D".         *> S, D, 1, 2, 3, N, C
       05 Box-custom  PIC X(09) VALUE "ABCDEFGHI". *> UL, UC, UR, ML, MC, MR, LL, LC, LR
@@ -63,7 +66,7 @@
       05 Box-add1c   pic x(01) value 'N'.         *> enlarge box for a better 3D effect
       05 Box-beep    pic x(01) value 'N'.         *> Y = ring the bell
       05 Box-tit     pic x(01) value 'N'.         *> Y = display a title at top of the box
-      05 Box-titBco  pic 9(01) value 7.           *> back color of titlebox
-      05 Box-titFco  pic 9(01) value 7.           *> fore color of titlebox
+      05 Box-titBco  pic 9(02) value 07.          *> back color of titlebox
+      05 Box-titFco  pic 9(02) value 07.          *> fore color of titlebox
       05 Box-titFcoH pic X(01) value "Y".         *> hiligth fore color of titlebox ?
       05 Box-titDes  pic x(80) value space.       *> string from 1 to 80 char, to be used as a box title
