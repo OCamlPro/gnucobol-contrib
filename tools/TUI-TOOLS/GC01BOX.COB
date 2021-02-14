@@ -219,16 +219,16 @@ GOBACK.
 DisplayChar.
   evaluate true
      when box-bco > 7 and box-fco >  7
-         compute wbox-bco = box-bco - 7
-         if Box-fcoH > 7 compute wbox-fco = box-fco - 7 end-if
+         compute wbox-bco = box-bco - 8
+         compute wbox-fco = box-fco - 8
          display wChar at line i col j :BCOL: wbox-bco :FCOL: wbox-fco blink highlight
      when box-bco > 7 and box-fco <=  7
-         compute wbox-bco = box-bco - 7
+         compute wbox-bco = box-bco - 8
          compute wbox-fco = box-fco
          display wChar at line i col j :BCOL: wbox-bco :FCOL: wbox-fco blink
      when box-bco <= 7 and box-fco >  7
          compute wbox-bco = box-bco
-         compute wbox-fco = box-fco - 7
+         compute wbox-fco = box-fco - 8
          display wChar at line i col j :BCOL: wbox-bco :FCOL: wbox-fco highlight
      when box-bco <= 7 and box-fco <=  7
          compute wbox-bco = box-bco
@@ -241,16 +241,16 @@ DisplayCharEx. exit.
 DisplayCharTitle.
   evaluate true
      when box-titbco > 7 and box-titfco >  7
-         compute wbox-titbco = box-titbco - 7
-         compute wbox-titfco = box-titfco - 7
+         compute wbox-titbco = box-titbco - 8
+         compute wbox-titfco = box-titfco - 8
          display Box-TitDes(t:1) at line Box-r1 col wTitleCol :BCOL: wbox-titbco :FCOL: wbox-titfco blink highlight
      when box-titbco > 7 and box-titfco <=  7
-         compute wbox-titbco = box-titbco - 7
+         compute wbox-titbco = box-titbco - 8
          compute wbox-titfco = box-titfco
          display Box-TitDes(t:1) at line Box-r1 col wTitleCol :BCOL: wbox-titbco :FCOL: wbox-titfco blink
      when box-titbco <= 7 and box-titfco >  7
          compute wbox-titbco = box-titbco
-         compute wbox-titfco = box-titfco - 7
+         compute wbox-titfco = box-titfco - 8
          display Box-TitDes(t:1) at line Box-r1 col wTitleCol :BCOL: wbox-titbco :FCOL: wbox-titfco highlight
      when box-titbco <= 7 and box-titfco <=  7
          compute wbox-titbco = box-titbco
