@@ -5,7 +5,7 @@ identification division.
 replace
 
     *> Set the Library Version (see the 'Developer Notes' below).
-    =="Version.Update.Fix"== by =="A.01.00"==
+    =="Version.Update.Fix"== by =="A.01.01"==
 
     *> Set the name for the EXTERNAL Database Status variable.
     ==:EXTERNAL-DBSTATUS:== by
@@ -41,7 +41,7 @@ replace
 *><*
 *><* :Author:   Robert W.Mills
 *><* :Date:     September 2017
-*><* :Rights:   Copyright Â© 2017-2021, Robert W.Mills.
+*><* :Rights:   Copyright © 2017-2021, Robert W.Mills.
 *><* :Email:    rwm.cobol@gmail.com
 *><* :Purpose:  An SQLite3 Interface Library for GnuCOBOL
 *><*
@@ -248,9 +248,6 @@ data division.
 
     01  sqlite3-temporary-pointer      usage pointer.
 
-    01  sqlite3-data                   pic x(128) based.
-          *> DO NOT WRITE TO THIS VARIABLE. *** THERE BE DRAGONS ***
-
 procedure division.
 
   CobolSQLite3-mainline.
@@ -312,15 +309,8 @@ procedure division.
                                  returning sqlite3-temporary-pointer
     end-call
 
-    set address of sqlite3-data to sqlite3-temporary-pointer
-
-    string
-      sqlite3-data delimited by low-value
-      into sqlite3-library-version
-    end-string
-
-    set address of sqlite3-data to NULL
-
+    move content-of(sqlite3-temporary-pointer) to sqlite3-library-version
+    
     display space end-display
     display "CobolSQLite3/", "Version.Update.Fix" end-display
     display "SQLite3 Interface Functions for GnuCOBOL" end-display
@@ -898,7 +888,7 @@ procedure division using sql-object, param-idx, param-value
 
     move ZERO to :EXTERNAL-DBSTATUS:, sqlite3-status, db-status
 
-    compute param-idx-wrk = numval(trim(param-idx)) end-compute
+    move numval(trim(param-idx)) to param-idx-wrk
     move trim(param-value) to param-value-wrk
     move length(trim(param-value-wrk, trailing)) to sql-num-bytes
 
@@ -1388,9 +1378,6 @@ data division.
 
     01  sqlite3-temporary-pointer      usage pointer.
 
-    01  sqlite3-data                   pic x(1024) based.
-          *> DO NOT WRITE TO THIS VARIABLE. *** THERE BE DRAGONS ***
-
     01  column-number                  usage binary-short unsigned.
 
     01  row-buffer-idx                 pic 9(018).
@@ -1469,19 +1456,15 @@ procedure division using sql-object, delims, row-buffer
                                       returning sqlite3-temporary-pointer
         end-call
 
-        set address of sqlite3-data to sqlite3-temporary-pointer
-
         string
-          sqlite3-data delimited by low-value
+          content-of(sqlite3-temporary-pointer) delimited by size,
           field-delimiter delimited by size
           into row-buffer with pointer row-buffer-idx
           on overflow
             move -16 to :EXTERNAL-DBSTATUS:
             goback
         end-string
-
-        set address of sqlite3-data to NULL
-
+        
       when 4 *> blob
 
         *> const void *sqlite3_column_blob(sqlite3_stmt*, int);
@@ -1491,18 +1474,14 @@ procedure division using sql-object, delims, row-buffer
                                       returning sqlite3-temporary-pointer
         end-call
 
-        set address of sqlite3-data to sqlite3-temporary-pointer
-
         string
-          sqlite3-data delimited by low-value
+          content-of(sqlite3-temporary-pointer) delimited by size,
           field-delimiter delimited by size
           into row-buffer with pointer row-buffer-idx
           on overflow
             move -16 to :EXTERNAL-DBSTATUS:
             goback
         end-string
-
-        set address of sqlite3-data to NULL
 
       when 5 *> null
 
@@ -1586,9 +1565,6 @@ data division.
 
     01  sqlite3-temporary-pointer      usage pointer.
 
-    01  sqlite3-data                   pic x(1024) based.
-          *> DO NOT WRITE TO THIS VARIABLE. *** THERE BE DRAGONS ***
-
   linkage section.
 
     01  dbinfo-mode                    pic 9(004).
@@ -1609,6 +1585,7 @@ procedure division using dbinfo-mode, db-object
   dbinfo-mainline.
 
     move ZERO to :EXTERNAL-DBSTATUS:
+    move spaces to dbinfo-buffer
 
     evaluate true
 
@@ -1630,18 +1607,13 @@ procedure division using dbinfo-mode, db-object
                                    returning sqlite3-temporary-pointer
         end-call
 
-        set address of sqlite3-data to sqlite3-temporary-pointer
-
-        move spaces to dbinfo-buffer
         string
-          sqlite3-data delimited by low-value
+          content-of(sqlite3-temporary-pointer) delimited by size
           into dbinfo-buffer
           on overflow
             move -17 to :EXTERNAL-DBSTATUS:
             goback
         end-string
-
-        set address of sqlite3-data to NULL
 
       when other *> invalid dbinfo mode
         move -13 to :EXTERNAL-DBSTATUS:
@@ -1728,9 +1700,6 @@ data division.
     01  sqlite3-error-message          pic x(256).
 
     01  sqlite3-temporary-pointer      usage pointer.
-
-    01  sqlite3-data                   pic x(1024) based.
-          *> DO NOT WRITE TO THIS VARIABLE. *** THERE BE DRAGONS ***
 
   linkage section.
 
@@ -1829,20 +1798,13 @@ procedure division returning error-message.
                                  returning sqlite3-temporary-pointer
         end-call
 
-        set address of sqlite3-data to sqlite3-temporary-pointer
-
-        move db-status to display-sqlite3-status
-
-        move spaces to error-message
         string
-          "SQLite3ERR " delimited by size
-          trim(display-sqlite3-status) delimited by size
-          ": " delimited by size
-          sqlite3-data delimited by low-value
+          "SQLite3ERR " delimited by size,
+          trim(display-sqlite3-status) delimited by size,
+          ": " delimited by size,
+          content-of(sqlite3-temporary-pointer) delimited by size
           into error-message
         end-string
-
-        set address of sqlite3-data to NULL
 
     end-evaluate
 
@@ -1918,7 +1880,7 @@ end function DBERRMSG.
 *><* 6.1. Requirements
 *><* ~~~~~~~~~~~~~~~~~
 *><*
-*><*   **GnuCOBOL:** Version 2.2 (or greater) installed and tested fully working.
+*><*   **GnuCOBOL:** Version 3.1 (or greater) installed and tested fully working.
 *><*
 *><*     See the documentation supplied with *GnuCOBOL*. You **must** have run both
 *><+     the sanity checks created by the test procedures included within the

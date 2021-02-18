@@ -1,3 +1,0 @@
-#!/bin/ksh93
-ocdoc CobolSQLite3.cob CobolSQLite3.rst CobolSQLite3.html rwmcug.css
-rm CobolSQLite3.rst

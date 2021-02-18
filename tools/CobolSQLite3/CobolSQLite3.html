@@ -653,7 +653,7 @@ cobc -F -Xref -T CobolSQLite3.lst CobolSQLite3.cob
 <div class="section" id="requirements">
 <h2><a class="toc-backref" href="#id92">6.1. Requirements</a></h2>
 <blockquote>
-<p><strong>GnuCOBOL:</strong> Version 2.2 (or greater) installed and tested fully working.</p>
+<p><strong>GnuCOBOL:</strong> Version 3.1 (or greater) installed and tested fully working.</p>
 <blockquote>
 See the documentation supplied with <em>GnuCOBOL</em>. You <strong>must</strong> have run both    the sanity checks created by the test procedures included within the    Cobol85 suite as well as the <em>make check</em> procedure.</blockquote>
 <p><strong>SQLite3:</strong> Version 3.14 (or greater).</p>
@@ -1601,6 +1601,13 @@ export COB_LIBRARY_PATH=/path/to/library
 <div class="section" id="modification-history">
 <h1><a class="toc-backref" href="#id97">9. Modification History</a></h1>
 <blockquote>
+<p>Version A.01.01 February 2021 Robert W.Mills (<a class="reference external" href="mailto:rwm.cobol&#64;gmail.com">rwm.cobol&#64;gmail.com</a>)</p>
+<ul class="simple">
+<li>We now use the CONTENT-OF function instead of a BASED variable and address manipulation to access the character data returned by an SQLite3 char function. See the call to <em>sqlite3_libversion</em> in the libraries outer block for an example of it's use.</li>
+<li>Added work-around for GnuCOBOL 3.1.2 COMPUTE bug in DBBIND. Should be fixed in 3.2.</li>
+<li>Added a makefile. Use the command 'make help' to list the available options.</li>
+<li>Removed the genhtml script (use the command 'make html' instead).</li>
+</ul>
 <p>Version A.01.00 February 2021 Robert W.Mills (<a class="reference external" href="mailto:rwm.cobol&#64;gmail.com">rwm.cobol&#64;gmail.com</a>)</p>
 <ul class="simple">
 <li>This release requires that Version 3.14 (or greater) of the SQLite3 Library is installed.</li>

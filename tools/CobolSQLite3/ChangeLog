@@ -1,3 +1,13 @@
+Version A.01.01 February 2021 Robert W.Mills (rwm.cobol@gmail.com)
+
+- We now use the CONTENT-OF function instead of a BASED variable and address manipulation to access the character data returned by an SQLite3 char function. See the call to *sqlite3_libversion* in the libraries outer block for an example of it's use.
+
+- Added work-around for GnuCOBOL 3.1.2 COMPUTE bug in DBBIND. Should be fixed in 3.2.
+
+- Added a makefile. Use the command 'make help' to list the available options.
+
+- Removed the genhtml script (use the command 'make html' instead).
+
 Version A.01.00 February 2021 Robert W.Mills (rwm.cobol@gmail.com)
 
 - This release requires that Version 3.14 (or greater) of the SQLite3 Library is installed.
