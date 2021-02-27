@@ -35,17 +35,23 @@ This function is mainly developed to be used by other following tools.
 
 GC02BOXMEX.COB - call it to display messages on screen, you can specify back/fore 
 colors, size, position, single/double/custom box borders, 3D effect and so on.
+Use mouse key to exit frome message box.
 
-GC03YESNO.COB - it display a BOX with a simple message and two big buttons 
+GC03YESNO.COB - it display a BOX with a message and two big buttons: 
 YES and NO on screen, you can specify back/fore colors, size, position, and so on.
+To select a button you can use also mouse key.
+
+GC05YESNOCANC.COB - it display a BOX with a message and 3 big buttons: 
+YES, NO and CANCEL on screen, you can specify back/fore colors, size, position, and so on.
+To select a button you can also use mouse key.
 
 GC09BUTTONS.COB - call it to display buttons on screen, you can specify number of 
 buttons, back/fore colors, size, position, text of buttons, hotkey and so on.
-2020: Mouse management was added.
+2020: Mouse management was added: use mouse to click on buttons.
 
 GC13CHECKBOX.COB - call it to display checkbox items (switches) on screen, you can 
 specify number of items, back/fore colors, size, position, symbol, brackets and so on.
-2020: Mouse management was added.
+2020: Mouse management was added: use mouse to select checkboxes.
 
 GC15OFFON.COB - call it to display OFF or ON items (switches) on screen, you can 
 specify number of items, back/fore colors, size, position, symbol, brackets and so on.
@@ -53,7 +59,7 @@ Mouse management in included to select items and to put switches ON or OFF.
 
 GC18RADIOBUTTON.COB - call it to display rediobutton items (options) on screen, you can 
 specify number of items, back/fore colors, size, position, symbol , brackets and so on.
-2020: Mouse management was added.
+2020: Mouse management was added: use mouse to select the options.
 
 GC21MENU.COB - call it to display menus on screen, you can manage bar menu, 
 dropdown menu, specify number of items, text and length of items, back/fore colors, 
@@ -70,6 +76,7 @@ User can browse days, months and years to pick-up a date.
 
 GC52COLORPICKER - Displays a colorpair map (back/foreground colors combination) 
 Let the user to browse on it and pick up a color pair 
+To select a COLOR pair you can also use mouse key.
 
 GC53CALENDAR.COB - call it to display a calendar on screen. three months on each row 
 User can scroll months and years to display month / year calendar.
@@ -92,8 +99,8 @@ size, position, single/double/custom borders, 3D effect and so on.
 
 GC61CALC.COB - call it to display a simple pocket calculator on screen.
 The user can enter numbers and operators. Returns the result of calculation to the caller .
-GC64CALCULATOR.COB - call it to display a calculator on screen.
-The user can also use the mouse to select digits and operators. 
+GC64CALCULATOR.COB - call it to display a more complete calculator on screen.
+The user can also select digits and operators with the mouse.
 Returns the result of calculation to the caller .
 
 GC71CRUDExxxx.COB - A complete "CRUDE" (Create, Read, Update, DElete) application. 
