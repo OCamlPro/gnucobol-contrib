@@ -4,13 +4,14 @@
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    WORK-AREA FOR GC56DATEPICKER.COB - DISPLAY A ONE MONTH CALENDAR
 *> Usage:      call GC56DATEPICKER using DatePicker-Area
-*> Author:     Eugenio Di Lorenzo - Italia (DILO)
-*> License:    Copyright 2015 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.5 2018.08.31
+*> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
+*> License:    (c) 2021 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
+*> Version:    2.0 2021.02.02
 *> Changelog:  1.0 first release.
 *>             1.1 modified Example below of the calendar, added Dtp-legend
 *>             1.4 added Dtp-Lan to manage 6 languages EN IT FR ES DE NL
 *>             1.5 added Dtp-Wait
+*>             2.0 mouse management, Dtp-Key from 9(8) to 9(4)
 *> ***********************************************************************************
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
@@ -28,9 +29,9 @@
 *> add1c     Y= box width expanded 1 col at left and 1 col at right.
 *>           improve appaerance of 3D box. (not yet implemented)
 *> beep      Y= sound a bell at first display
-*> tit       Y= display a title
-*> titDes    string to be displayed as title
-*> dim       Select B= Big Size Calendar(12x30 chars) or S= Small Size Calendar(12x23)
+*> tit       Y= display a box title
+*> titDes    string to be displayed as box title
+*> dim       Select B= Big Size Calendar(12x30 chars) or S= Standard/Small Size Calendar(12x23)
 *> legend    Y = display a small legend
 *> Lan       1=english, 2=Italian, 3=French, 4=Spanish, 5=German, 6=Ducth(Netherland)
 *> wait      Y= display datepicker and wait for a user keypress
@@ -50,8 +51,10 @@
 *>                                        +---------------------+
 *>                                        12345678901234567890123
 *>
-*>             F1/F2= change Fore/BackColor; F3=chgBorders type; F4/F5=Toggle Title/Shadow;
-*>             F6=Chg Language; F7= togge 3D borders; F8= toggle Legend
+*>        Cursor= change Day/Week, PgUp/Dn change Month, +/- = change YEAR, C = go current date
+*>        F1 = Help, ALT-F1/F2= chg Fore/BackColor; ALT-F3=chgBorders type;
+*>        ALT-F4/F5=Toggle Title/Shadow; ALT-F6=Chg Language;
+*>        ALT-F7= togge 3D borders; ALT-F8= toggle Legend
 *>
 *>                                       c1
 *>           Example               r1 ->  +--------- Calendar ---------+
@@ -64,13 +67,13 @@
 *>                                        | 12  13  14  15  16  17  18 |
 *>                                        | 19  29  21  22  23  24  25 |
 *>                                        | 26  27  28  29  30         |
-*>                --> legend              |         Cursor,PgUP/Dn,+/- |
+*>                --> legend              |         Cursor,PgUp/Dn,+/- |
 *>                                        +----------------------------+
 *>                                        123456789012345678901234567890
 *>
 *> Datesel   the date selected by the User is returned to caller YYYYMMDD.
-*>           if the caller set this Date, Datrepicker starts from this date
-*> Key       the key selectd by the user on exit (enter or escape)
+*>           if the caller set this Date, Datepicker starts from this date
+*> Key       the key code selectd by the user at exit (enter or escape or mousekey)
 *> ***********************************************************************************
    03 Dtp-rc.
       05 Dtp-r1c1.
@@ -101,4 +104,4 @@
 *> RETUNRS TO CALLER
 *> *************************************************************
    05 Dtp-DateSel pic  x(08) value space.   *> User has selected this Date YYYYMMDD
-   05 Dtp-Key     pic  9(08) value zero.    *> which Key to exit (enter or escape)
+   05 Dtp-Key     pic  9(04) value zero.    *> which Key to exit (enter or escape)
