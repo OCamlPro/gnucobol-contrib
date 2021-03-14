@@ -70,7 +70,7 @@ display '+ = next year; - = previuos year; C = jump to current date             
 display 'ALT-F1/F2= change fore/backcolor: ALT-F3= chg borders; ALT-F4= toggle title' at 1903 :BCOL:  Box-Bco :FCOL: blue highlight
 display 'ALT-F5= toggle shadow; ALT-F6= lang.EN/IT/FR/ES/DE/NL ALT-F7=chg 3D borders' at 2003 :BCOL:  Box-Bco :FCOL: blue highlight
 display 'ALT-F8= toggle legend, Enter= select date,return to caller; Esc= exit      ' at 2103 :BCOL:  Box-Bco :FCOL: blue highlight
-display 'F1= Help; mouse click on month or on year: left = next, right = previous   ' at 2203 :BCOL:  green   :FCOL: white highlight
+display 'F1= Help; mouseclick on month/year: left=next, right=prev. Click on a date ' at 2203 :BCOL:  green   :FCOL: white highlight
 
 *> first calendar. small size, start from currente date
 initialize DatePicker-Area ALL TO VALUE
