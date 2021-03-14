@@ -9,6 +9,8 @@ PROGRAM-ID. GC56DATEPICKER is initial.
 *>             F1 = Help, ALT-F1/F2= chg Fore/BackColor; ALT-F3=chgBorders type;
 *>             ALT-F4/F5=Toggle Title/Shadow; ALT-F6=Chg Language;
 *>             ALT-F7= togge 3D borders; ALT-F8= toggle Legend
+*>             mouse click on month or on year. Left/right = next or previous
+*>             mouse leftclick on a date. double click to exit.
 *> Tectonics:  cobc -m GC56DATEPICKER.COB  (use GnuCOBOL 3.1 or greater)
 *> Calls:      GC01BOX, GC02BOXMEX and curs_set, scr_dump, scr_restore from pdcurses library
 *> Usage:      call GC56DATEPICKER using DatePicker-Area
@@ -295,23 +297,6 @@ Accept-User-Action.
                 end-if
             end-perform
 
-                    *> if wCRT-STATUS = K-LEFT-PRESSED
-                       *> perform BigCursorDisplay thru BigCursorDisplayEx
-                    *> end-if
-
-                    *> if wCRT-STATUS = K-LEFT-DBL-CLICK
-                        *> perform BigCursorDisplay thru BigCursorDisplayEx
-                        *> *> small delay to show the "Big Cursor"
-                        *> call "CBL_GC_NANOSLEEP" USING 250000000 end-call *> pause 0.5 sec
-
-                        *> move wCRT-STATUS            to Cop-Key
-                        *> move wBackCol               to Cop-BackCol
-                        *> move wForeCol               to Cop-ForeCol
-                        *> move wColorPair-Ele(Ir, Ic) to Cop-ColorPair
-                        *> go to End-Program
-                    *> end-if
-
-
     *> set the cursor on next month
     when wCRT-STATUS  = K-PAGEDOWN
       or wCRT-STATUS  = K-TAB
@@ -470,6 +455,7 @@ Accept-User-Action.
          move wDate       to Dtp-DateSel
          move wCRT-STATUS to Dtp-Key
          go to End-Program
+
      when wCRT-STATUS = K-ESCAPE
          move wDate       to Dtp-DateSel
          move wCRT-STATUS to Dtp-Key
@@ -861,7 +847,7 @@ DisplayHelp.
             move z' + / -           year +1/-1 ' to Bxm-mex(y) add 1 to y
             move z' on month: left/right click ' to Bxm-mex(y) add 1 to y
             move z' on year:  left/right click ' to Bxm-mex(y) add 1 to y
-            move z' Home: goto current date    ' to Bxm-mex(y) add 1 to y
+            move z' C : goto current date      ' to Bxm-mex(y) add 1 to y
             move z' Enter/left dbleclk to exit ' to Bxm-mex(y) add 1 to y
             move z' (c)eugenio.dilo@gmail.com  ' to Bxm-mex(y) add 1 to y
             move z' enter/mouseclick: continue ' to Bxm-mex(y) add 1 to y
@@ -874,7 +860,7 @@ DisplayHelp.
             move z'+ / -       year +/-1' to Bxm-mex(y) add 1 to y
             move z'on month: lft/rgt clk' to Bxm-mex(y) add 1 to y
             move z'on year:  lft/rgt clk' to Bxm-mex(y) add 1 to y
-            move z'Home: go curr date   ' to Bxm-mex(y) add 1 to y
+            move z'C : go current date  ' to Bxm-mex(y) add 1 to y
             move z'Entr/lft dbleclk exit' to Bxm-mex(y) add 1 to y
             move z'eugenio.dilo@gmail.co' to Bxm-mex(y) add 1 to y
             move z'ent/mouseclk continue' to Bxm-mex(y) add 1 to y
