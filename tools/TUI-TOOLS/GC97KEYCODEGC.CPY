@@ -5,7 +5,7 @@
 *> VALUEs returned in CRT-STATUS field (or COB-CRT-STATUS)
 *> Author:     Eugenio Di Lorenzo (DILO) - Italia
 *> License:    Copyright 2021 E.Di Lorenzo - LGPL, 3.0 (or greater)
-*> Version:    2.1 2021.0101
+*> Version:    2.1 2021.01.01
 *> Changelog:  1.0 first release.
 *>             2.0 mouse keys added
 *>             2.1 ALT-Fxx keys added
@@ -153,6 +153,7 @@
 77  K-MAXFIELD    PIC 9(04) VALUE 9001.
 
 *>  mouse mask, apply to COB_MOUSE_FLAGS
+77  SET-MOUSE-FLAGS            PIC   9(04).
 78  SET-AUTO-MOUSE-HANDLING    VALUE 1.
 78  SET-LEFT-DOWN              VALUE 2.
 78  SET-LEFT-UP                VALUE 4.
@@ -164,4 +165,3 @@
 78  SET-RIGHT-UP               VALUE 256.
 78  SET-RIGHT-DOUBLE           VALUE 512.
 78  SET-MOUSE-MOVE             VALUE 1024.
-01  SET-MOUSE-FLAGS      PIC 9(04).
