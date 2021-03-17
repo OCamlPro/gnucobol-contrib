@@ -18,17 +18,20 @@ PROGRAM-ID. GC56DATEPICKER is initial.
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *>             - based on jrls (John Ellis) program
 *> License:    (c)2021 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    2.0 2021.02.02
+*> Version:    2.1 2021.02.02
 *> Changelog:  1.0 first release.
 *>             1.1 small enhancement (new field in copy Dtp-legend, F8 to toggle legend)
 *>             1.2 and 1.3 bug correction
 *>             1.4 added Dtp-Lan to manage other 6 languages EN IT FR ES DE NL
 *>             1.5 added Dtp-Wait management - just display calendar & exit
 *>             2.0 changed from call getch to accept dummy to add mouse management
+*>             2.1 click on arrows to browse months amd years
 *> ***********************************************************************************
 *>
 *>   Example   +------ Calendar -----+        +--------- Calendar ---------+
 *>             |JUNE             2016|        |JUNE                    2016|
+*>             /<September>    <2016>|        |<September>           <2016>|
+*>             /<   May   >    <2016>|        |< September >       < 2016 >|
 *>             |---------------------|        |----------------------------|
 *>             | Su Mo Tu We Th Fr Sa|        |Sun Mon Tue Wed Thu Fri Sat |
 *>             |---------------------|        |----------------------------|
@@ -54,6 +57,12 @@ DATA DIVISION.
 WORKING-STORAGE SECTION.
 copy 'GC00COLORS.CPY'.
 
+01  wCRT-STATUS  PIC 9(04) VALUE 9999.
+01  wCursorRowCol       PIC 9(06) value 0000.
+01  redefines wCursorRowCol .
+    05 wCursorRow       Pic 9(03).
+    05 wCursorCol       Pic 9(03).
+
 01  wDummy       PIC X(01) VALUE SPACE.
 01  wPrompt      PIC X(01) VALUE SPACE.
 
@@ -66,6 +75,11 @@ copy 'GC00COLORS.CPY'.
 01 wYY-Col1  pic 9(03) value 000.
 01 wYY-Col2  pic 9(03) value 000.
 
+01 wMM-L-Arr-col pic 9(03) value 000.
+01 wMM-R-Arr-col pic 9(03) value 000.
+01 wYY-L-Arr-col pic 9(03) value 000.
+01 wYY-R-Arr-col pic 9(03) value 000.
+
 01 wCP-row   pic 9(03) value 000.
 01 wCP-col   pic 9(03) value 000.
 01 wCP-Ind   pic 9(03) value 000.
@@ -75,18 +89,12 @@ copy 'GC00COLORS.CPY'.
       07 wCP-c1 pic 9(03).
       07 wCP-c2 pic 9(03).
 
-
 *> SAVE/RESTORE SCREEN VARIABLES
 01 wScreenName        PIC X(256).
 01 wiScrOk            BINARY-LONG.
+
 01  y                   pic 999 value zero.
 01  k                   PIC 9(3) value 0.
-
-01  wCRT-STATUS  PIC 9(04) VALUE 9999.
-01  wCursorRowCol       PIC 9(06) value 0000.
-01  redefines wCursorRowCol .
-    05 wCursorRow       Pic 9(03).
-    05 wCursorCol       Pic 9(03).
 
 01  w3D       pic x(03) value 'NRE'.      *> to loop between 3D borders
 01  w3        pic 9(01) value 0.
@@ -127,6 +135,8 @@ copy 'GC00COLORS.CPY'.
     05 ds-month       pic 99.
     05 ds-day         pic 99.
 
+01 wDs-year  pic x(08) value space.
+
 01  daysub pic 99.  *> from 1 to 42
 01  wksub  pic 9.   *> from 1 to 6
 
@@ -165,28 +175,29 @@ copy 'GC00COLORS.CPY'.
     *> 10 filler     pic x   value space.
 
 01  wMonths   pic x(180) value
-     "January        February       March          April          May            June           " &
-     "July           August         September      October        November       December       ".
+     "< January >    <February >    <  March  >    <  April  >    <   May   >    <  June   >    " &
+     "<  July   >    <  August >    <September>    < October >    <November >    <December >    ".
 01  wMonths2 redefines wMonths.
     05 wmonth        pic x(15) occurs 12 times.
+
 01  wMonths-IT pic x(180) value
-     "Gennaio        Febbraio       Marzo          Aprile         Maggio         Giugno         " &
-     "Luglio         Agosto         Settembre      Ottobre        Novembre       Dicembre       ".
+     "< Gennaio >    <Febbraio >    <  Marzo  >    < Aprile  >    < Maggio  >    < Giugno  >    " &
+     "< Luglio  >    < Agosto  >    <Settembre>    < Ottobre >    <Novembre >    <Dicembre >    ".
 01  wMonths-EN pic x(180) value
-     "January        February       March          April          May            June           " &
-     "July           August         September      October        November       December       ".
+     "< January >    <February >    <  March  >    <  April  >    <   May   >    <  June   >    " &
+     "<  July   >    <  August >    <September>    < October >    <November >    <December >    ".
 01  wMonths-FR pic x(180) value
-     "Janvier        Fevrier        Mars           Avril          Mai            Juin           " &
-     "Juillet        Aout           Septembre      Octobre        Novembre       Decembre       ".
+     "< Janvier >    < Fevrier >    <  Mars   >    <  Avril  >    <   Mai   >    <  Juin   >    " &
+     "< Juillet >    <  Aout   >    <Septembre>    < Octobre >    <Novembre >    <Decembre >    ".
 01  wMonths-ES pic x(180) value
-     "Enero          Febrero        Marzo          Abril          Mayo           Junio          " &
-     "Julio          Agosto         Septiembre     Octubre        Noviembre      Diciembre      ".
+     "<  Enero  >    < Febrero >    <  Marzo  >    <  Abril  >    <  Mayo   >    <  Junio  >    " &
+     "<  Julio  >    < Agosto  >    <Septiembr>    < Octubre >    <Noviembre>    <Diciembre>    ".
 01  wMonths-DE pic x(180) value
-     "Januar         Februar        Marz           April           Mai           Juni           " &
-     "Juli           August         September      Oktober         November      Dezember       ".
+     "< Januar  >    < Februar >    <  Marz   >    <  April  >    <   Mai   >    <  Juni   >    " &
+     "<  Juli   >    < August  >    <September>    < Oktober >    <November >    <Dezember >    ".
 01  wMonths-NL pic x(180) value
-     "Januari        Februari       Maart          April           Mei           Juni           " &
-     "Juli           Augustus       September      Oktober         November      December       ".
+     "< Januari >    <Februari >    <  Maart  >    <  April  >    <   Mei   >    <  Juni   >    " &
+     "<  Juli   >    <Augustus >    <September>    < Oktober >    <November >    <December >    ".
 *> Day description
 01  wDayDes     Pic x(28) value "Sun Mon Tue Wed Thu Fri Sat ".
 01  wDayDes-EN  Pic x(28) value "Sun Mon Tue Wed Thu Fri Sat ".
@@ -222,16 +233,25 @@ PROCEDURE DIVISION using DatePicker-Area.
   compute wDtp-r1 = Dtp-r1 + 10  *> for accept Dummy
   compute wDtp-c1 = Dtp-c1 +  1  *> for accept Dummy
 
-  *> compute month and year string postions to manage mouse click
+  *> compute month and year "arrows" position to detect mouse click on it
+  compute wMM-L-Arr-col = Dtp-c1 + 1
+  compute wMM-R-Arr-col = Dtp-c1 + 11
+  evaluate true
+    when Dtp-Dim = 'B' compute wYY-R-Arr-col = Dtp-c1 + 28
+    when Dtp-Dim = 'S' compute wYY-R-Arr-col = Dtp-c1 + 21
+  end-evaluate
+  compute wYY-L-Arr-col = wYY-R-Arr-col - 7
+
+  *> compute month and year string postions to detect mouse click on it
   compute wMM-Row  = Dtp-r1   + 1
-  compute wMM-Col1 = Dtp-c1   + 1
-  compute wMM-Col2 = wMM-Col1 + 9
+  compute wMM-Col1 = Dtp-c1   + 2
+  compute wMM-Col2 = wMM-Col1 + 8
   compute wYY-Row  = Dtp-r1   + 1
   evaluate true
-    when Dtp-Dim = 'B' compute wYY-Col2 = Dtp-c1 + 28
-    when Dtp-Dim = 'S' compute wYY-Col2 = Dtp-c1 + 21
+    when Dtp-Dim = 'B' compute wYY-Col2 = Dtp-c1 + 27
+    when Dtp-Dim = 'S' compute wYY-Col2 = Dtp-c1 + 20
   end-evaluate
-  compute wYY-Col1 = wYY-Col2 - 4
+  compute wYY-Col1 = wYY-Col2 - 5
 
   perform Load-CalendarPositions thru Load-CalendarPositionsEx
 
@@ -300,8 +320,12 @@ Accept-User-Action.
     *> set the cursor on next month
     when wCRT-STATUS  = K-PAGEDOWN
       or wCRT-STATUS  = K-TAB
-      or (wCRT-STATUS = K-LEFT-PRESSED *> if clicked on  month
+      or (wCRT-STATUS = K-RIGHT-PRESSED *> if clicked on  month
            and ( wCursorRow = wMM-Row and ( wCursorCol >= wMM-Col1 and wCursorCol <= wMM-Col2) ) )
+      or (wCRT-STATUS = K-RIGHT-PRESSED *> if right clicked on  Right MM arrow
+           and ( wCursorRow = wMM-Row and ( wCursorCol = wMM-R-Arr-col) ) )
+      or (wCRT-STATUS = K-LEFT-PRESSED *> if left clicked on  Right MM arrow
+           and ( wCursorRow = wMM-Row and ( wCursorCol = wMM-R-Arr-col) ) )
       *> or wDummy = space
          compute date-aRMM = date-aRMM + 1
          if date-aRMM > 12
@@ -311,8 +335,12 @@ Accept-User-Action.
     *> set the cursor on previous month
     when wCRT-STATUS  = K-PAGEUP
       or wCRT-STATUS  = K-BACKTAB
-      or (wCRT-STATUS = K-RIGHT-PRESSED *> if clicked on  month
+      or (wCRT-STATUS = K-LEFT-PRESSED *> if clicked on  month
            and ( wCursorRow = wMM-Row and ( wCursorCol >= wMM-Col1 and wCursorCol <= wMM-Col2) ) )
+      or (wCRT-STATUS = K-RIGHT-PRESSED *> if right clicked on  Left MM arrow
+           and ( wCursorRow = wMM-Row and ( wCursorCol = wMM-L-Arr-col) ) )
+      or (wCRT-STATUS = K-LEFT-PRESSED *> if left clicked on  Left MM arrow
+           and ( wCursorRow = wMM-Row and ( wCursorCol = wMM-L-Arr-col) ) )
          compute date-aRMM = date-aRMM - 1
          if date-aRMM < 1
             compute date-aRYYYY = date-aRYYYY - 1
@@ -362,16 +390,35 @@ Accept-User-Action.
            else
               compute date-aRDD = date-aRDD - 7
            end-if
+
      *> set cursor on next year
      when wDummy = '+'
-       or ( wCRT-STATUS = K-LEFT-PRESSED *> if clicked on  year
+      *> if clicked on  year
+      or  ( wCRT-STATUS = K-RIGHT-PRESSED
       and ( wCursorRow = wYY-Row and ( wCursorCol >= wYY-Col1 and wCursorCol <= wYY-Col2) ) )
+      *> if right clicked on  Left YY arrow
+       or (wCRT-STATUS = K-RIGHT-PRESSED
+           and ( wCursorRow = wYY-Row and ( wCursorCol = wYY-R-Arr-col) ) )
+       *> if left clicked on  Left YY arrow
+       or (wCRT-STATUS = K-LEFT-PRESSED
+           and ( wCursorRow = wYY-Row and ( wCursorCol = wYY-R-Arr-col) ) )
+
              compute date-aRYYYY = date-aRYYYY + 1
+
      *> set cursor on previous year
      when wDummy = '-'
-       or ( wCRT-STATUS = K-RIGHT-PRESSED *> if clicked on  year
+      *> if clicked on  year
+      or  ( wCRT-STATUS = K-LEFT-PRESSED
       and ( wCursorRow = wYY-Row and ( wCursorCol >= wYY-Col1 and wCursorCol <= wYY-Col2) ) )
+      *> if right clicked on  Left YY arrow
+      or  (wCRT-STATUS = K-RIGHT-PRESSED
+           and ( wCursorRow = wYY-Row and ( wCursorCol = wYY-L-Arr-col) ) )
+      *> if left clicked on  Left YY arrow
+      or  (wCRT-STATUS = K-LEFT-PRESSED
+           and ( wCursorRow = wYY-Row and ( wCursorCol = wYY-L-Arr-col) ) )
+
              compute date-aRYYYY = date-aRYYYY - 1
+
      *> "C" - set cursor on current date
      when wDummy = 'C' or 'c'
           move function current-date to wscurrent
@@ -618,8 +665,8 @@ Perf-Display-Variable-Data.
     compute date-s-ym = date-a / 100
     compute date-c = function integer-of-date(startdate)
     compute day-s  = function mod(date-c,7)
-    perform 0110-loadCalendar  thru 0110-loadCalendarEx
-    perform 0120-writeCalendar thru 0120-writeCalendarEx
+    perform 0110-loadCalendar    thru 0110-loadCalendarEx
+    perform 0120-DisplayCalendar thru 0120-DisplayCalendarEx
 
     *> ***********************************************************************************
     *> DISPLAY "CURSOR " ON CALENDAR DATE
@@ -761,7 +808,7 @@ Perf-Display-Variable-DataEx. exit.
     continue.
 0110-loadCalendarEx. exit.
 
-0120-writeCalendar.
+0120-DisplayCalendar.
 *> ***********************************************************************************
 *> Display variable data on screen
 *> ***********************************************************************************
@@ -772,8 +819,9 @@ Perf-Display-Variable-DataEx. exit.
     display wmonth(ds-month)    at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
 
     *> display year string
-    compute wCol = Box-c2 - 4
-    display ds-year             at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
+    compute wCol = Box-c2 - 8
+    string '< ' ds-year ' >' into wDs-year
+    display wDs-year            at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
 
     *> ********************************************************************************
     *> display 6 rows (weeks)
@@ -821,7 +869,7 @@ Perf-Display-Variable-DataEx. exit.
       end-evaluate
     end-if
     continue.
-0120-writeCalendarEx. exit.
+0120-DisplayCalendarEx. exit.
 
 DisplayHelp.
    perform ScreenSave thru ScreenSaveEx
