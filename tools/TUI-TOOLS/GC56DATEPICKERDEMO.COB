@@ -10,7 +10,7 @@ PROGRAM-ID. GC56DATEPICKERDEMO.
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *> License:    (C) 2021 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    1.1 2016.10.14
+*> Version:    2.0 2021.02.02
 *> Changelog:  1.0 first release.
 *>             1.1 small enhancement (legend , toggle legend)
 *>             1.4 ALT-F6 change language, set language on 2nd call
@@ -70,7 +70,7 @@ display '+ = next year; - = previuos year; C = jump to current date             
 display 'ALT-F1/F2= change fore/backcolor: ALT-F3= chg borders; ALT-F4= toggle title' at 1903 :BCOL:  Box-Bco :FCOL: blue highlight
 display 'ALT-F5= toggle shadow; ALT-F6= lang.EN/IT/FR/ES/DE/NL ALT-F7=chg 3D borders' at 2003 :BCOL:  Box-Bco :FCOL: blue highlight
 display 'ALT-F8= toggle legend, Enter= select date,return to caller; Esc= exit      ' at 2103 :BCOL:  Box-Bco :FCOL: blue highlight
-display 'F1= Help; mouseclick on month/year: left=next, right=prev. Click on a date ' at 2203 :BCOL:  green   :FCOL: white highlight
+display 'F1= Help; mouseclick on month/year: left=prev, right=next, Click on a date ' at 2203 :BCOL:  green   :FCOL: white highlight
 
 *> first calendar. small size, start from currente date
 initialize DatePicker-Area ALL TO VALUE
@@ -89,14 +89,14 @@ accept wDummy at 2479
 *> second calendar. big size, set a date from start the calendar (not using current date)
 initialize Box-area ALL TO VALUE
 initialize DatePicker-Area ALL TO VALUE
-move '20190907' to Dtp-DateSel
-MOVE 'N' to Dtp-shadow
-Move 'N' to Dtp-style
-MOVE 'B' to Dtp-dim      *> Big Size Calendar
-move 4 to Dtp-Lan        *> display in spanish
-move red  to Dtp-bco
+move '20190207' to Dtp-DateSel
+MOVE 'N'   to Dtp-shadow
+Move 'N'   to Dtp-style
+MOVE 'B'   to Dtp-dim      *> Big Size Calendar
+move 4     to Dtp-Lan      *> display in spanish
+move red   to Dtp-bco
 move brown to Dtp-fco
-Move 'N' to Dtp-tit
+Move 'N'   to Dtp-tit
 move x'B4' & ' Calendar '  & x'C3' & x'00' to Dtp-titDes
 move '003042' to Dtp-r1c1
 call   GC56DATEPICKER  using DatePicker-Area
