@@ -25,13 +25,11 @@ PROGRAM-ID. GC56DATEPICKER is initial.
 *>             1.4 added Dtp-Lan to manage other 6 languages EN IT FR ES DE NL
 *>             1.5 added Dtp-Wait management - just display calendar & exit
 *>             2.0 changed from call getch to accept dummy to add mouse management
-*>             2.1 click on arrows to browse months amd years
+*>             2.1 click on arrows to browse months amd years, color codes from 08 to 15
 *> ***********************************************************************************
 *>
 *>   Example   +------ Calendar -----+        +--------- Calendar ---------+
-*>             |JUNE             2016|        |JUNE                    2016|
-*>             /<September>    <2016>|        |<September>           <2016>|
-*>             /<   May   >    <2016>|        |< September >       < 2016 >|
+*>             /<   May   >  < 2016 >|        |< September >       < 2016 >|
 *>             |---------------------|        |----------------------------|
 *>             | Su Mo Tu We Th Fr Sa|        |Sun Mon Tue Wed Thu Fri Sat |
 *>             |---------------------|        |----------------------------|
@@ -57,7 +55,7 @@ DATA DIVISION.
 WORKING-STORAGE SECTION.
 copy 'GC00COLORS.CPY'.
 
-01  wCRT-STATUS  PIC 9(04) VALUE 9999.
+01  wCRT-STATUS         PIC 9(04) VALUE 9999.
 01  wCursorRowCol       PIC 9(06) value 0000.
 01  redefines wCursorRowCol .
     05 wCursorRow       Pic 9(03).
@@ -88,6 +86,9 @@ copy 'GC00COLORS.CPY'.
       07 wCP-r  pic 9(03).
       07 wCP-c1 pic 9(03).
       07 wCP-c2 pic 9(03).
+
+01 wBco pic 9(02) value zero.
+01 wFco pic 9(02) value zero.
 
 *> SAVE/RESTORE SCREEN VARIABLES
 01 wScreenName        PIC X(256).
@@ -271,21 +272,8 @@ Display-Fixed-Data.
 
 Display-Variable-Data.
      perform Perf-Display-Variable-Data thru Perf-Display-Variable-DataEx
-
-    *> ************************************************************************************************************
-    *> DISPLAY THE "CURSOR" ON CALENDAR
-    *> ************************************************************************************************************
-    compute wLin = Box-r1 + 4 + wLin + 1
-    evaluate true
-       when Dtp-Dim = 'B'
-            compute wCol = Box-c1 + ( (4 * wCol) - 3)
-            display wDateDDx      at line wLin col wCol :BCOL: Box-Fco :FCOL: red highlight
-       when Dtp-Dim = 'S'
-            compute wCol = Box-c1 + ( (3 * wCol) - 3) + 1
-            display wDateDDx(1:3) at line wLin col wCol :BCOL: Box-Fco :FCOL: red highlight
-    end-evaluate
-    continue.
-
+     perform Display-Cursor-on-Calendar thru Display-Cursor-on-CalendarEx
+     continue.
 Accept-User-Action.
     *> ***********************************************************************************
     *> WAIT FOR USER ACTION
@@ -293,8 +281,10 @@ Accept-User-Action.
     if Dtp-Wait  = 'Y'
       *> after displayed calendar on screen, wait for user action
        move space to wDummy
-       accept wDummy at line wDtp-r1 col wDtp-c1
-              auto-skip prompt character is wPrompt :BCOL: Dtp-bco :FCOL: Dtp-bco
+      *> use same forecolor  as backcolor to have invisible Accept
+       perform AcceptDummy thru AcceptDummyEx
+       *> accept wDummy at line wDtp-r1 col wDtp-c1
+              *> auto-skip prompt character is wPrompt :BCOL: Dtp-bco :FCOL: Dtp-bco
     else
        *> after displayed calendar on screen, return to caller without waiting for user action
        *> useful when you have just to display a one month calendar on screen
@@ -303,19 +293,32 @@ Accept-User-Action.
 
     EVALUATE TRUE
     *> if the mouse was on a calendar DAY set that day
-    when wCRT-STATUS = K-LEFT-PRESSED
+    when ( wCRT-STATUS = K-LEFT-PRESSED or wCRT-STATUS = K-LEFT-DBL-CLICK )
      and ( wCursorRow >= wCP-r(1)   and wCursorRow <= wCP-r(42)  )
      and ( wCursorCol >= wCP-c1(1)  and wCursorRow <= wCP-c2(42) )
             *> search which day has been clicked
             perform varying k from 1 by 1 until k > 42
-                if  (wCursorRow = wCP-r(k) )
-                and (wCursorCol >= wCP-c1(k) and wCursorCol <= wCP-c2(k) )
+                if  ( wCursorRow = wCP-r(k) )
+                and ( wCursorCol >= wCP-c1(k) and wCursorCol <= wCP-c2(k) )
                     if mDay(k) not = zero
                        move mDay(k) to cdate date-a
                        *> go to Display-Variable-Data
                     end-if
                 end-if
             end-perform
+
+           *> if Doubleclick select the day and return to caller
+           if wCRT-STATUS = K-LEFT-DBL-CLICK
+           and ( wCursorRow >= wCP-r(1)   and wCursorRow <= wCP-r(42)  )
+           and ( wCursorCol >= wCP-c1(1)  and wCursorRow <= wCP-c2(42) )
+               perform Perf-Display-Variable-Data thru Perf-Display-Variable-DataEx
+               perform Display-Cursor-on-Calendar thru Display-Cursor-on-CalendarEx
+               *> small delay to show the "Cursor"
+               call "CBL_GC_NANOSLEEP" USING 250000000 end-call *> pause 0.5 sec
+               move wDate       to Dtp-DateSel
+               move wCRT-STATUS to Dtp-Key
+               go to End-Program
+            end-if
 
     *> set the cursor on next month
     when wCRT-STATUS  = K-PAGEDOWN
@@ -426,21 +429,25 @@ Accept-User-Action.
      when wCRT-STATUS = K-F1              *> F1 HELP
             perform DisplayHelp thru DisplayHelpEx
             go to Display-Fixed-Data
+
      *> ALT-F1 change Foreground Color of calendar
      when wCRT-STATUS = K-ALT-F1
          add 1 to Dtp-Fco Dtp-titFco
-         If Dtp-Fco > 7 move 0 to Dtp-Fco Dtp-titFco end-if
+         If Dtp-Fco > 15 move 0 to Dtp-Fco Dtp-titFco end-if
          go to Display-Fixed-Data
+
      *> ALT-F2 change Background Color of calendar
      when wCRT-STATUS = K-ALT-F2
          add 1 to Dtp-Bco Dtp-titBco
-         If Dtp-Bco > 7 move 0 to Dtp-Bco Dtp-titBco end-if
+         If Dtp-Bco > 15 move 0 to Dtp-Bco Dtp-titBco end-if
          go to Display-Fixed-Data
+
      *> ALT-F3 change calendar border's type
      when wCRT-STATUS = K-ALT-F3
          add 1 to wB  if wB > 6 move 1 to wB end-if
          move wBorder (wB:1) to Dtp-Style
          go to Display-Fixed-Data
+
      *> ALT-F4 toggle on/off the calendar title
      when wCRT-STATUS = K-ALT-F4
          move Dtp-Bco to Dtp-titBco
@@ -453,6 +460,7 @@ Accept-User-Action.
             move "Y" to Dtp-tit
          end-if
          go to Display-Fixed-Data
+
      *> ALT-F5 toggle calendar shadow.
      *> (warning: not complete, to eliminate shadow you have to restore backgroud after saved !)
      when wCRT-STATUS = K-ALT-F5
@@ -471,21 +479,22 @@ Accept-User-Action.
          if Dtp-Lan > 6
             move 1 to Dtp-Lan
          end-if
-
          compute wlin = Box-r1 + 3
          compute wCol = Box-c1 + 1
          perform Set-Language thru Set-LanguageEx
-         evaluate true
-            when Dtp-Dim = 'B' display wDayDes  at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
-            when Dtp-Dim = 'S' display wDayDesS at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
-         end-evaluate
-         go to Display-Variable-Data
+         go to Display-Fixed-Data
+         *> evaluate true
+            *> when Dtp-Dim = 'B' perform Display-wDayDes  thru Display-wDayDesEx
+            *> when Dtp-Dim = 'S' perform Display-wDayDesS thru Display-wDayDesSEx
+         *> end-evaluate
+         *> go to Display-Variable-Data
 
      *> ALT-F7 toggle 3D box calendar borders
      when wCRT-STATUS = K-ALT-F7
          add 1 to w3  if w3 > 3 move 1 to w3 end-if
          move w3D(w3:1) to Dtp-3D
          go to Display-Fixed-Data
+
      *> ALT-F8 toggle on/off the calendar legend
      when wCRT-STATUS = K-ALT-F8
          if Dtp-legend = 'Y'
@@ -495,20 +504,14 @@ Accept-User-Action.
          end-if
          go to Display-Fixed-Data
 
-     *> Doubleclick and mouse on a calendar DAY
-     when wCRT-STATUS = K-LEFT-DBL-CLICK
-     and ( wCursorRow >= wCP-r(1)   and wCursorRow <= wCP-r(42)  )
-     and ( wCursorCol >= wCP-c1(1)  and wCursorRow <= wCP-c2(42) )
-         move wDate       to Dtp-DateSel
-         move wCRT-STATUS to Dtp-Key
-         go to End-Program
-
      when wCRT-STATUS = K-ESCAPE
          move wDate       to Dtp-DateSel
          move wCRT-STATUS to Dtp-Key
          go to End-Program
+
      *> select the date an return to caller
-     when wCRT-STATUS = K-ENTER
+     *> if user type a letter wCRT-STATUS is = Enter  = 0000 !
+     when wCRT-STATUS = K-ENTER and wDummy = space
          move wDate       to Dtp-DateSel
          move wCRT-STATUS to Dtp-Key
          go to End-Program
@@ -637,24 +640,27 @@ Perf-Display-Fixed-Data.
     move Dtp-titDes   to Box-titDes
     call GC01BOX using BOX-AREA
 
+    *> upper bar
     compute wCol = Box-c1 + 1
     compute wlin = Box-r1 + 2
     evaluate true
-       when Dtp-Dim = 'B' DISPLAY wBar       at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
-       when Dtp-Dim = 'S' DISPLAY wBar(1:21) at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
+       when Dtp-Dim = 'B' perform Display-wBarB thru Display-wBarBEx
+       when Dtp-Dim = 'S' perform Display-wBarS thru Display-wBarSEx
     end-evaluate
 
+    *> Days description
     perform Set-Language thru Set-LanguageEx
     compute wlin = Box-r1 + 3
     evaluate true
-       when Dtp-Dim = 'B' display wDayDes  at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
-       when Dtp-Dim = 'S' display wDayDesS at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight end-display
+      when Dtp-Dim = 'B' perform Display-wDayDes  thru Display-wDayDesEx
+      when Dtp-Dim = 'S' perform Display-wDayDesS thru Display-wDayDesSEx
     end-evaluate
 
+    *> lower bar
     compute wlin = Box-r1 + 4
     evaluate true
-       when Dtp-Dim = 'B' DISPLAY wBar       at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
-       when Dtp-Dim = 'S' DISPLAY wBar(1:21) at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
+       when Dtp-Dim = 'B' perform Display-wBarB thru Display-wBarBEx
+       when Dtp-Dim = 'S' perform Display-wBarS thru Display-wBarSEx
     end-evaluate
 
   continue.
@@ -790,7 +796,6 @@ end-search1.
   continue.
 Perf-Display-Variable-DataEx. exit.
 
-
 *> ***************************************************************************************************
 *> LOAD CALENDAR TABLE (42 YYYYMMDD ELEMENTS)
 *> ***************************************************************************************************
@@ -813,15 +818,15 @@ Perf-Display-Variable-DataEx. exit.
 *> Display variable data on screen
 *> ***********************************************************************************
 
-    *> display month descritpion
+    *> display month descritpion string
     compute wlin = Box-r1 + 1
     compute wCol = Box-c1 + 1
-    display wmonth(ds-month)    at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
+    perform Display-wMonth thru Display-wMonthEx
 
-    *> display year string
+    *> display year number string
     compute wCol = Box-c2 - 8
     string '< ' ds-year ' >' into wDs-year
-    display wDs-year            at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
+    perform Display-wDs-year thru Display-wDs-yearEx
 
     *> ********************************************************************************
     *> display 6 rows (weeks)
@@ -847,25 +852,26 @@ Perf-Display-Variable-DataEx. exit.
         *> DISPLAY 6 ROWS
         evaluate true
            when Dtp-Dim = 'B'
-                display out-week  at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
+                perform Display-out-week thru Display-out-weekEx
            when Dtp-Dim = 'S'
-                perform  varying wR from 1 by 1 until wR = 7
+                perform varying wR from 1 by 1 until wR = 7
                     move owday(wR) to owday2(wR)
                 end-perform
-                display out-week2 at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
+                perform Display-out-week2 thru Display-out-week2Ex
         end-evaluate
 
     end-perform
 
-
     if Dtp-legend = 'Y'
       evaluate true
       when Dtp-Dim = 'B' *> Big size
-            compute wCol1 = Box-C2 - 19
-            display 'Cursor,PgUP/Dn,+/-' at line wLin col wCol1 :BCOL: Box-Bco :FCOL: Box-Fco highlight
+            compute wCol = Box-C2 - 19
+            perform Display-LegendB thru Display-LegendBEx
+            *> display 'Cursor,PgUP/Dn,+/-' at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
       when Dtp-Dim = 'S'  *> Small Size
-            compute wCol1 = Box-C2 - 14
-            display 'Cur,PgUpDn,+/-'     at line wLin col wCol1 :BCOL: Box-Bco :FCOL: Box-Fco highlight
+            compute wCol = Box-C2 - 14
+            perform Display-LegendS thru Display-LegendSEx
+            *> display 'Cur,PgUpDn,+/-'     at line wLin col wCol :BCOL: Box-Bco :FCOL: Box-Fco highlight
       end-evaluate
     end-if
     continue.
@@ -893,8 +899,8 @@ DisplayHelp.
             move z' Curs down/up    week +1/-1 ' to Bxm-mex(y) add 1 to y
             move z' Page down/up   month +1/-1 ' to Bxm-mex(y) add 1 to y
             move z' + / -           year +1/-1 ' to Bxm-mex(y) add 1 to y
-            move z' on month: left/right click ' to Bxm-mex(y) add 1 to y
-            move z' on year:  left/right click ' to Bxm-mex(y) add 1 to y
+            move z' On month on year or arrows ' to Bxm-mex(y) add 1 to y
+            move z' left/right click to browse.' to Bxm-mex(y) add 1 to y
             move z' C : goto current date      ' to Bxm-mex(y) add 1 to y
             move z' Enter/left dbleclk to exit ' to Bxm-mex(y) add 1 to y
             move z' (c)eugenio.dilo@gmail.com  ' to Bxm-mex(y) add 1 to y
@@ -906,11 +912,11 @@ DisplayHelp.
             move z'Curs dn/up  week +/-1' to Bxm-mex(y) add 1 to y
             move z'PageDn/Up  month +/-1' to Bxm-mex(y) add 1 to y
             move z'+ / -       year +/-1' to Bxm-mex(y) add 1 to y
-            move z'on month: lft/rgt clk' to Bxm-mex(y) add 1 to y
-            move z'on year:  lft/rgt clk' to Bxm-mex(y) add 1 to y
+            move z'On month/year/arrows ' to Bxm-mex(y) add 1 to y
+            move z'lft/rgt clk to browse' to Bxm-mex(y) add 1 to y
             move z'C : go current date  ' to Bxm-mex(y) add 1 to y
             move z'Entr/lft dbleclk exit' to Bxm-mex(y) add 1 to y
-            move z'eugenio.dilo@gmail.co' to Bxm-mex(y) add 1 to y
+            move z'eugenio.dilo@gmail.com' to Bxm-mex(y) add 1 to y
             move z'ent/mouseclk continue' to Bxm-mex(y) add 1 to y
             move x'B4' & ' DATEPICKER - HELP '  & x'C3' & x'00' to Bxm-titDes
     end-evaluate
@@ -962,5 +968,268 @@ Load-CalendarPositions.
 
     continue.
 Load-CalendarPositionsEx. exit.
+
+Display-Cursor-on-Calendar.
+  *> ************************************************************************************************************
+  *> DISPLAY THE "CURSOR" ON CALENDAR
+  *> ************************************************************************************************************
+  compute wLin = Box-r1 + 4 + wLin + 1
+  evaluate true
+      when Dtp-Dim = 'B'
+          compute wCol = Box-c1 + ( (4 * wCol) - 3)
+          display wDateDDx      at line wLin col wCol :BCOL: Box-Fco :FCOL: red highlight
+      when Dtp-Dim = 'S'
+          compute wCol = Box-c1 + ( (3 * wCol) - 3) + 1
+          display wDateDDx(1:3) at line wLin col wCol :BCOL: Box-Fco :FCOL: red highlight
+  end-evaluate
+  continue.
+Display-Cursor-on-CalendarEx. exit.
+
+Display-wDayDes.
+  evaluate true
+     when Box-bco > 7 and Box-fco >  7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco - 8
+         display wDayDes at line wlin col wcol :BCOL: wBco :FCOL: wFco blink highlight
+      when Box-bco > 7 and Box-fco <= 7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco
+         display wDayDes at line wlin col wcol :BCOL: wBco :FCOL: wFco blink
+     when Box-bco <= 7 and Box-fco >  7
+         compute wBco = Box-bco
+         compute wFco = Box-fco - 8
+         display wDayDes at line wlin col wcol :BCOL: wBco :FCOL: wFco highlight
+     when Box-bco <= 7 and Box-fco <= 7
+         compute wBco = Box-bco
+         compute wFco = Box-fco
+         display wDayDes at line wlin col wcol :BCOL: wBco :FCOL: wFco
+  end-evaluate
+  continue.
+Display-wDayDesEx. exit.
+
+Display-wDayDesS.
+  evaluate true
+     when Box-bco > 7 and Box-fco >  7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco - 8
+         display wDayDesS at line wlin col wcol :BCOL: wBco :FCOL: wFco blink highlight
+      when Box-bco > 7 and Box-fco <= 7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco
+         display wDayDesS at line wlin col wcol :BCOL: wBco :FCOL: wFco blink
+     when Box-bco <= 7 and Box-fco >  7
+         compute wBco = Box-bco
+         compute wFco = Box-fco - 8
+         display wDayDesS at line wlin col wcol :BCOL: wBco :FCOL: wFco highlight
+     when Box-bco <= 7 and Box-fco <= 7
+         compute wBco = Box-bco
+         compute wFco = Box-fco
+         display wDayDesS at line wlin col wcol :BCOL: wBco :FCOL: wFco
+  end-evaluate
+  continue.
+Display-wDayDesSEx. exit.
+
+Display-wMonth.
+  evaluate true
+     when Box-bco > 7 and Box-fco >  7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco - 8
+         display wmonth(ds-month) at line wlin col wcol :BCOL: wBco :FCOL: wFco blink highlight
+      when Box-bco > 7 and Box-fco <= 7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco
+         display wmonth(ds-month) at line wlin col wcol :BCOL: wBco :FCOL: wFco blink
+     when Box-bco <= 7 and Box-fco >  7
+         compute wBco = Box-bco
+         compute wFco = Box-fco - 8
+         display wmonth(ds-month) at line wlin col wcol :BCOL: wBco :FCOL: wFco highlight
+     when Box-bco <= 7 and Box-fco <= 7
+         compute wBco = Box-bco
+         compute wFco = Box-fco
+         display wmonth(ds-month) at line wlin col wcol :BCOL: wBco :FCOL: wFco
+  end-evaluate
+  continue.
+Display-WMonthEx. exit.
+
+Display-wDs-year.
+  evaluate true
+     when Box-bco > 7 and Box-fco >  7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco - 8
+         display wDs-year at line wlin col wcol :BCOL: wBco :FCOL: wFco blink highlight
+      when Box-bco > 7 and Box-fco <= 7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco
+         display wDs-year at line wlin col wcol :BCOL: wBco :FCOL: wFco blink
+     when Box-bco <= 7 and Box-fco >  7
+         compute wBco = Box-bco
+         compute wFco = Box-fco - 8
+         display wDs-year at line wlin col wcol :BCOL: wBco :FCOL: wFco highlight
+     when Box-bco <= 7 and Box-fco <= 7
+         compute wBco = Box-bco
+         compute wFco = Box-fco
+         display wDs-year at line wlin col wcol :BCOL: wBco :FCOL: wFco
+  end-evaluate
+  continue.
+Display-wDs-yearEx. exit.
+
+Display-out-week.
+  evaluate true
+     when Box-bco > 7 and Box-fco >  7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco - 8
+         display out-week at line wlin col wcol :BCOL: wBco :FCOL: wFco blink highlight
+      when Box-bco > 7 and Box-fco <= 7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco
+         display out-week at line wlin col wcol :BCOL: wBco :FCOL: wFco blink
+     when Box-bco <= 7 and Box-fco >  7
+         compute wBco = Box-bco
+         compute wFco = Box-fco - 8
+         display out-week at line wlin col wcol :BCOL: wBco :FCOL: wFco highlight
+     when Box-bco <= 7 and Box-fco <= 7
+         compute wBco = Box-bco
+         compute wFco = Box-fco
+         display out-week at line wlin col wcol :BCOL: wBco :FCOL: wFco
+  end-evaluate
+  continue.
+Display-out-weekEx. exit.
+
+Display-out-week2.
+  evaluate true
+     when Box-bco > 7 and Box-fco >  7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco - 8
+         display out-week2 at line wlin col wcol :BCOL: wBco :FCOL: wFco blink highlight
+      when Box-bco > 7 and Box-fco <= 7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco
+         display out-week2 at line wlin col wcol :BCOL: wBco :FCOL: wFco blink
+     when Box-bco <= 7 and Box-fco >  7
+         compute wBco = Box-bco
+         compute wFco = Box-fco - 8
+         display out-week2 at line wlin col wcol :BCOL: wBco :FCOL: wFco highlight
+     when Box-bco <= 7 and Box-fco <= 7
+         compute wBco = Box-bco
+         compute wFco = Box-fco
+         display out-week2 at line wlin col wcol :BCOL: wBco :FCOL: wFco
+  end-evaluate
+  continue.
+Display-out-week2Ex. exit.
+
+Display-wBarB.
+  evaluate true
+     when Box-bco > 7 and Box-fco >  7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco - 8
+         display wBar at line wlin col wcol :BCOL: wBco :FCOL: wFco blink highlight
+      when Box-bco > 7 and Box-fco <= 7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco
+         display wBar at line wlin col wcol :BCOL: wBco :FCOL: wFco blink
+     when Box-bco <= 7 and Box-fco >  7
+         compute wBco = Box-bco
+         compute wFco = Box-fco - 8
+         display wBar at line wlin col wcol :BCOL: wBco :FCOL: wFco highlight
+     when Box-bco <= 7 and Box-fco <= 7
+         compute wBco = Box-bco
+         compute wFco = Box-fco
+         display wBar at line wlin col wcol :BCOL: wBco :FCOL: wFco
+  end-evaluate
+  continue.
+Display-wBarBEx. exit.
+
+Display-wBarS.
+  evaluate true
+     when Box-bco > 7 and Box-fco >  7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco - 8
+         display wBar(1:21) at line wlin col wcol :BCOL: wBco :FCOL: wFco blink highlight
+      when Box-bco > 7 and Box-fco <= 7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco
+         display wBar(1:21) at line wlin col wcol :BCOL: wBco :FCOL: wFco blink
+     when Box-bco <= 7 and Box-fco >  7
+         compute wBco = Box-bco
+         compute wFco = Box-fco - 8
+         display wBar(1:21) at line wlin col wcol :BCOL: wBco :FCOL: wFco highlight
+     when Box-bco <= 7 and Box-fco <= 7
+         compute wBco = Box-bco
+         compute wFco = Box-fco
+         display wBar(1:21) at line wlin col wcol :BCOL: wBco :FCOL: wFco
+  end-evaluate
+  continue.
+Display-wBarSEx. exit.
+
+Display-LegendB.
+  evaluate true
+     when Box-bco > 7 and Box-fco >  7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco - 8
+         display 'Cursor,PgUP/Dn,+/-' at line wlin col wcol :BCOL: wBco :FCOL: wFco blink highlight
+      when Box-bco > 7 and Box-fco <= 7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco
+         display 'Cursor,PgUP/Dn,+/-' at line wlin col wcol :BCOL: wBco :FCOL: wFco blink
+     when Box-bco <= 7 and Box-fco >  7
+         compute wBco = Box-bco
+         compute wFco = Box-fco - 8
+         display 'Cursor,PgUP/Dn,+/-' at line wlin col wcol :BCOL: wBco :FCOL: wFco highlight
+     when Box-bco <= 7 and Box-fco <= 7
+         compute wBco = Box-bco
+         compute wFco = Box-fco
+         display 'Cursor,PgUP/Dn,+/-' at line wlin col wcol :BCOL: wBco :FCOL: wFco
+  end-evaluate
+  continue.
+Display-LegendBEx. exit.
+
+Display-LegendS.
+  evaluate true
+     when Box-bco > 7 and Box-fco >  7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco - 8
+         display 'Cur,PgUpDn,+/-' at line wlin col wcol :BCOL: wBco :FCOL: wFco blink highlight
+      when Box-bco > 7 and Box-fco <= 7
+         compute wBco = Box-bco - 8
+         compute wFco = Box-fco
+         display 'Cur,PgUpDn,+/-' at line wlin col wcol :BCOL: wBco :FCOL: wFco blink
+     when Box-bco <= 7 and Box-fco >  7
+         compute wBco = Box-bco
+         compute wFco = Box-fco - 8
+         display 'Cur,PgUpDn,+/-' at line wlin col wcol :BCOL: wBco :FCOL: wFco highlight
+     when Box-bco <= 7 and Box-fco <= 7
+         compute wBco = Box-bco
+         compute wFco = Box-fco
+         display 'Cur,PgUpDn,+/-' at line wlin col wcol :BCOL: wBco :FCOL: wFco
+  end-evaluate
+  continue.
+Display-LegendSEx. exit.
+
+AcceptDummy.
+   *> use same fore & back color
+   evaluate true
+     when Dtp-bco > 7 and Dtp-fco >  7
+         compute wBco = Dtp-Bco - 8
+         compute wFco = Dtp-Fco - 8
+         accept wDummy at line wDtp-r1 col wDtp-c1
+              auto-skip prompt character is wPrompt :BCOL: wBco :FCOL: wBco blink highlight
+     when Dtp-bco > 7 and Dtp-fco <= 7
+         compute wBco = Dtp-Bco - 8
+         compute wFco = Dtp-Fco
+         accept wDummy at line wDtp-r1 col wDtp-c1
+              auto-skip prompt character is wPrompt :BCOL: wBco :FCOL: wBco blink
+     when Dtp-bco <= 7 and Dtp-fco > 7
+         compute wBco = Dtp-Bco
+         compute wFco = Dtp-Fco - 8
+         accept wDummy at line wDtp-r1 col wDtp-c1
+              auto-skip prompt character is wPrompt :BCOL: wBco :FCOL: wBco highlight
+     when Dtp-bco <= 7 and Dtp-fco <= 7
+         compute wBco = Dtp-Bco
+         compute wFco = Dtp-Fco
+         accept wDummy at line wDtp-r1 col wDtp-c1
+              auto-skip prompt character is wPrompt :BCOL: wBco :FCOL: wBco
+  end-evaluate
+  continue.
+AcceptDummyEx. exit.
 
 End Program GC56DATEPICKER.
