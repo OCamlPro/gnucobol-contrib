@@ -6,12 +6,13 @@
 *> Usage:      call GC56DATEPICKER using DatePicker-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *> License:    (c) 2021 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    2.0 2021.02.02
+*> Version:    2.1 2021.02.02
 *> Changelog:  1.0 first release.
 *>             1.1 modified Example below of the calendar, added Dtp-legend
 *>             1.4 added Dtp-Lan to manage 6 languages EN IT FR ES DE NL
 *>             1.5 added Dtp-Wait
 *>             2.0 mouse management, Dtp-Key from 9(8) to 9(4)
+*>             2.1 Bco & Fco from 9(01) to 9(02) to support color codes from 08 to 15
 *> ***********************************************************************************
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
@@ -81,8 +82,8 @@
          07 Dtp-c1   pic 9(03) value 025.
 
    03 Dtp-Parameters.
-      05 Dtp-bco     pic 9(01) value cyan.          *> back color of the calendar
-      05 Dtp-fco     pic 9(01) value white.         *> fore color of the calendar
+      05 Dtp-bco     pic 9(02) value Cyan.          *> back color of the calendar
+      05 Dtp-fco     pic 9(02) value LightWhite.    *> fore color of the calendar
       05 Dtp-fcoH    pic X(01) value "Y".           *> Hilight Foreground ?
       05 Dtp-style   pic X(01) value "S".           *> S, D, 1, 2, 3, N, C
       05 Dtp-custom  PIC X(09) VALUE "ABCDEFGHI".   *> UL, UC, UR, ML, MC, MR, LL, LC, LR
@@ -92,8 +93,8 @@
       05 Dtp-add1c   pic x(01) value 'N'.           *> enlarge box for a better 3D effect
       05 Dtp-beep    pic x(01) value 'N'.           *> Y = ring the bell
       05 Dtp-tit     pic x(01) value 'Y'.           *> Y = display a title at top of the box
-      05 Dtp-titBco  pic 9(01) value cyan.          *> back color of titleBox
-      05 Dtp-titFco  pic 9(01) value white.         *> fore color of titleBox
+      05 Dtp-titBco  pic 9(02) value cyan.          *> back color of titleBox
+      05 Dtp-titFco  pic 9(02) value white.         *> fore color of titleBox
       05 Dtp-titFcoH pic X(01) value "Y".           *> hiligth fore color of titleBox ?
       05 Dtp-titDes  pic x(80) value z' Calendar '. *> string from 1 to 80 char, to be used as a box title
       05 Dtp-dim     pic x(01) value 'B'.           *> B= big size, S= Small size
