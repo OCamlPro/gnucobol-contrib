@@ -10,11 +10,12 @@ PROGRAM-ID. GC56DATEPICKERDEMO.
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *> License:    (C) 2021 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    2.0 2021.02.02
+*> Version:    2.1 2021.02.02
 *> Changelog:  1.0 first release.
 *>             1.1 small enhancement (legend , toggle legend)
 *>             1.4 ALT-F6 change language, set language on 2nd call
-*>             2.0 from call getch to accept dummy, added mouse management
+*>             2.0 from call getch to accept dummy to add mouse management
+*>             2.1 arrows to browse MM and YY, Colors from 08 to 15
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -58,9 +59,9 @@ move '025080' to Box-r2c2
 move 'S'      to Box-style
 *> move "R" to Box-3D
 move 'Y' to Box-tit
-    move green   to Box-titBco
-    move white   to Box-titFco
-    move 'Y'     to Box-titFcoH
+move green   to Box-titBco
+move white   to Box-titFco
+move 'Y'     to Box-titFcoH
 move z' Date Picker DEMO (version with MOUSE MANAGEMENT) ' to Box-titDES
 perform callGC01BOX thru callGC01BOX-ex
 
@@ -70,9 +71,9 @@ display '+ = next year; - = previuos year; C = jump to current date             
 display 'ALT-F1/F2= change fore/backcolor: ALT-F3= chg borders; ALT-F4= toggle title' at 1903 :BCOL:  Box-Bco :FCOL: blue highlight
 display 'ALT-F5= toggle shadow; ALT-F6= lang.EN/IT/FR/ES/DE/NL ALT-F7=chg 3D borders' at 2003 :BCOL:  Box-Bco :FCOL: blue highlight
 display 'ALT-F8= toggle legend, Enter= select date,return to caller; Esc= exit      ' at 2103 :BCOL:  Box-Bco :FCOL: blue highlight
-display 'F1= Help; mouseclick on month/year: left=prev, right=next, Click on a date ' at 2203 :BCOL:  green   :FCOL: white highlight
+display 'F1=Help; mouseclick month/year/arrows to browse MM and YY, Click on a date ' at 2203 :BCOL:  green   :FCOL: white highlight
 
-*> first calendar. small size, start from currente date
+*> first calendar. small size, start from currente date, use default colors
 initialize DatePicker-Area ALL TO VALUE
 Move 'S' to Dtp-style
 move 'S' to Dtp-dim      *> Standard Size Calendar
@@ -94,8 +95,8 @@ MOVE 'N'   to Dtp-shadow
 Move 'N'   to Dtp-style
 MOVE 'B'   to Dtp-dim      *> Big Size Calendar
 move 4     to Dtp-Lan      *> display in spanish
-move red   to Dtp-bco
-move brown to Dtp-fco
+move LightMagenta   to Dtp-bco
+move Blue           to Dtp-fco
 Move 'N'   to Dtp-tit
 move x'B4' & ' Calendar '  & x'C3' & x'00' to Dtp-titDes
 move '003042' to Dtp-r1c1
