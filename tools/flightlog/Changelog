@@ -20,15 +20,18 @@
   the Flightlog program as displayed or printed.
 
   Data compatibility between versions will, where ever possible, always be the
-  same but if a change HAS to be made, a data conversion program will be supplied
-  with a name starting with 'xxxxconv' and this will need to be built
-  (if O/S version) then run, prior to running the latest Flightlog version
-  having saved your data files to a 'back up' directory in case of a problem
-   and this is vital that you do so before using such programs.
+  same but if a change HAS to be made, a data conversion program will be 
+  supplied with a name starting with 'xxxxconv' and this will need to be
+  built.
+  (if changing the O/S version say Windows to Linux) then run, prior to running
+  the latest Flightlog version having saved your data files to a 'back up' 
+  directory in case of a problem and this is vital that you do so before using 
+  such programs.
 
 ??/??/76 vbc - 0.nn    Original written in Basic.
 ??/??/8? vbc - 0.nn    Rewritten in Cobol for m/f and msdos.
-17/11/86 VBC - 1.00    PROG CREATION for MF workbench v3 - OS/2, Windows & Cromix.
+17/11/86 VBC - 1.00    PROG CREATION for MF workbench v3 - OS/2, Windows & 
+                       Cromix.
 18/01/87 VBC - 1.01e   SHORT PRINT
 21/04/87 VBC - 1.02e   TIDY UP PROG.
 22/05/87 VBC - 1.03e   SUPPORT FOR 'NEXT' IN AMEND/DELETE LOGBOOK.
@@ -40,10 +43,12 @@
                        Free format.
                        Start to use Screen Section for data entry / display etc,
                        but may well be scrapped subject to program logic.
-                       Increased Aircraft table size to 1000, i.e., double previous.
-                           and Airfield table size to 2000, i.e., double previous.
-                           Will cover the most ambitious pilot.
-                       Clean up and remove all tab chars in source code as kate
+
+                       Increased Aircraft table size to 1000, i.e., double 
+		       previous and Airfield table size to 2000, i.e., double 
+		       previous. Will cover the most ambitious pilot.
+		       
+		       Clean up and remove all tab chars in source code as kate
                        doesn't or any other editors tried.
                        FILE Layouts may well need changing / cleaning up.
                        This version will only support one pilot but another
@@ -51,20 +56,22 @@
                        organisation where time recording is processed to comply
                        with CAA, FAA (or other countries government aviation
                        departments) regulations.
-                   .02 Change log book entries to with update, time input using WSF
-                       so far. more needed.
+                   .02 Change log book entries to with update, time input 
+		   using WSF so far. more needed.
                    .05 Added Sort of Aircraft file after writing file from
                        Aircraft table. Airfield file is ISAM so already done.
-                       If sort fails then new deleted and backup file renamed back
-                          to main file. At least the Anal. report will look cleaner.
+                       If sort fails then new deleted and backup file renamed 
+		       back to main file. At least the Anal. report will look 
+		       cleaner.
 
 11/09/18 vbc - 1.26.06 Clean up anal heads and other stuff I have forgotten
                        Change format for all COMP fields in log file to display
-                       as space saved is minor but will help in future data migration
-                       if needed.
+                       as space saved is minor but will help in future data 
+		       migration if needed.
 
 13/09/18 vbc - 1.27.01 On error during sorts and file rebuild, restore original
-                       data file by copying *.bak to *.dat. See note for build .05.
+                       data file by copying *.bak to *.dat. See note for 
+		       build .05.
                    .02 Change top menu order with Enter log book as A and
                        Airfield data Edit as B as it is a sundry option.
                        Keeps in line with the second Log book menu anyway.
@@ -73,66 +80,80 @@
                        Entry sequ to use line 6 as gets overwritten with
                        Single/Twin etc.
                    .05 On afld From take last TO as a starter if not spaces.
-                   .06 Increased size of reg to 6, remarks to 32 JIC (Just in Case),
-                       changed analysis for more space for P1 / P2 night, added Multi
-                       and 'Inst' and this was not coded let alone correctly.
+                   .06 Increased size of reg to 6, remarks to 32 JIC (Just in 
+		   Case),
+                       changed analysis for more space for P1 / P2 night, added
+		       Multi and 'Inst' and this was not coded let alone 
+		       correctly.
                        Must remember to change the LATEST sources - assuming I
                        could have found it.
                    .07 Removed coding for reports when 1st 2 digits of AC-Reg is
                        numeric as now REG is 6 chars.
-                       NOTE for commercial flights use A/C reg NOT a flight number
-                       as by regs it should always be the A/CFT & flt no's change
-                       and will not match up and will be almost impossible to verify.
+                       NOTE for commercial flights use A/C reg NOT a flight 
+		       number as by regs it should always be the A/CFT & flt 
+		       no's change and will not match up and will be almost 
+		       impossible to verify.
                    .08 Print head lits not right for data.
                    .10 Prog name in reports and more head clean ups.
-                   .12 Only using 1st 5 digits of AC-REG but for Nth American A/C
-                       ignore the 'N' as it is inserted for printing.
-                   .13 initialise WST-AIRCRAFT-TABLE in fix up routine and else were.
+                   .12 Only using 1st 5 digits of AC-REG but for Nth American 
+		       A/C ignore the 'N' as it is inserted for printing.
+                   .13 initialise WST-AIRCRAFT-TABLE in fix up routine and 
+		       else were.
                    .14 Bad fix for .13 wrong to do 01 table, Der.
                    .15 Added reporting of Airfields with ICAO codes after flight
-                       times and before Aircraft analysis. Removes currently TODO
-                       as doing it within report is too wide for any paper width
-                       even using 160cc continuous stationery.
+                       times and before Aircraft analysis. Removes currently 
+		       TODO as doing it within report is too wide for any paper
+		       width even using 160cc continuous stationery.
                        Use full date for report heads in all cases (dd/mm/ccyy).
-                       Moved ws-user to a 77 level from within space-38 as looks
+		       Moved ws-user to a 77 level from within space-38 as looks
                        wrong when using spaces-38. Changed A B C Error-code from
                        3 to 4 digits JIC.
                    .16 Bug in above report airfields.
                    .18 With acft anal after airfield reporting doing
-                       CCA040-LBR-Subs thru CCA050 not needed as done before airfield.
-                   .19 Moved all open and close Print-File to start menu so just then
-                       one set of reporting that means that running a Airfield list then
-                       doing the same for logbook will all go to the same file/report.
-                    Consider addding report option to use airfield names in place of ICAO
-                      codes but will increase width of reports - 160+ col paper any one?
-                      Now producing a listing of airfields near end of report instead.
-                      This is now done as hidden options 3 & 4 replacing C & D in v2.02.
+                       CCA040-LBR-Subs thru CCA050 not needed as done before 
+		       airfield.
+                   .19 Moved all open and close Print-File to start menu so 
+		       just then one set of reporting that means that running a
+		       Airfield list then doing the same for logbook will all 
+		       go to the same file/report.
+		       Consider addding report option to use airfield names in 
+		       place of ICAO codes but will increase width of reports -
+		       160+ col paper any one?
+		       Now producing a listing of airfields near end of report 
+		       instead.  This is now done as hidden options 3 & 4 
+		       that can replace use of C & D in v2.02.
 
                1.27.20 Updated the copyright notices
 
-               1.28.00 Increased version number to 1.28 and resetting build number to 0.
+               1.28.00 Increased version number to 1.28 and resetting build 
+	               number to 0.
 
                    .01 Set COB_EXIT_WAIT false to stop the End of Program msg.
 
-                   .02 Moved error messages etc to literals with SY of FL prefixes.
-                       A few left as may well cause confusion, when reading code.
+                   .02 Moved error messages etc to literals with SY of FL 
+		       prefixes. A few left as may well cause confusion, when 
+		       reading code.
                        Removed the option of creating data files as now
-                       automatically done if not exist in current directory.
+		       automatically done if not exist in current directory.
                1.29.00 Changed log file date to ccyy from yy so all data entry
-                       amend routines changed including position on screen of data.
+                       amend routines changed including position on screen of 
+		       data.
                        NEED TO DO FULL TESTING FOR THIS ONE in case of mistakes.
-                       Although now fully supporting pre 2000 dates it may be some
-                       what clunky in data entry - testing will show, other wise
-                       revert back to yy entry and append to file the century
-                       depending if yy > 69 then cc from current year - 1
-                       other wise current century in todays date.
+                       Although now fully supporting pre 2000 dates it may be 
+		       some what clunky in data entry - testing will show, 
+		       other wise revert back to yy entry and append to file 
+		       the century depending if yy > 69 then cc from current 
+		       year - 1 other wise current century in todays date.
                    .01 On reporting dates to/from not using cc.
-                       Date in log reports now 2 over so move literal TYPE over 1
-                       over a space. Same with PR1 date & a/c type.
-                   .02 CCD000-Airfield-Lists now used for both airfield reports so
-                       BA000-LIST-AFLD can be removed (subject to testing) - Done.
+                       Date in log reports now 2 over so move literal TYPE 
+		       over 1 over a space. Same with PR1 date & a/c type.
+                   .02 CCD000-Airfield-Lists now used for both airfield reports
+		       so
+		       BA000-LIST-AFLD can be removed (subject to testing) - 
+		       Done.
                        Added get User/Pilot name lic no. at both menus but left
-                       in where existing code also request it if WS-User = spaces.
+                       in where existing code also request it if WS-User = 
+		       spaces.
                    .03 Changed aircraft/field menu order D & X wrong way round.
                    .04 Stopped reporting on Airfields for options F & G
                        Both menus accept character as auto (without return key).
@@ -141,9 +162,11 @@
                    .05 Added option of Start time in logbook reports so that new
                        flights can be filled after last prior report saving paper.
                    .06 Changes to load airfield code and its caller.
-                   .08 Updated to support swapout of screen data when F1 & F3 is pressed.
-                       Update logbk Entry code to support Amend and therefore removing
-                       the original amend code - reduces proc div code. I hope.
+                   .08 Updated to support swapout of screen data when F1 & F3 
+		       is pressed.
+		       Update logbk Entry code to support Amend and therefore 
+		       removing the original amend code - reduces proc div 
+		       code. I hope.
                    .09 Chgd D000-Setup-Datafiles to only be processed in
                        A000-Control  as was previously also in C000-EDIT-LOG-BOOK.
                        Cleaned up ZZA-Status tests removing the 'thru xyz' paras.

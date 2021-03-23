@@ -29,8 +29,8 @@ A. Copy prtpdf-sh-A4 or prtpdf.sh-Letter to prtpdf.sh depending on
 the paper size you use.
 
 It has been tested using a HP8600 inkjet
-using Linux distro's Mageia v6 X64 and Raspberry Pi 3B+ Debian.
-Where the Pi has an attached USB 1Tb hard drive linked to / via
+using Linux distro's Mageia v7 X64 and Raspberry Pi 3B+ Debian.
+Where the Pi has an attached USB 1Tb hard drive linked to via
 /etc/fstab.
 
 The font sizing for A4 paper has not been copied over to that for US Letter
@@ -115,14 +115,14 @@ with the latest at the end.
 
  TODO may be? (outstanding):
 
-  20/10/18            4. Consider using Mysql RDB for all data used on a per pilot
-                     basis. Worth doing ?.
-                     Would allow for extra statistics using SQL queries but again is
-                     this useful ?.
+  20/10/18            4. Consider using Mysql RDB for all data used on a per 
+                     pilot basis. Worth doing ?.
+                     Would allow for extra statistics using SQL queries but 
+                     again is this useful ?.
                      If application used as a web based system allows for multi
                      pilots by using one database per pilot by name via a login
                      facility.    Priority LOW / MEDIUM as would require users
-                     to install Mysql package, bit ITT for low exp. users.
+                     to install Mysql package, bit OTT for low exp. users.
                      Could consider using Sqlite but err, why ?
 
   07/11/18            6. Consider using a web browser interface for display
@@ -130,12 +130,13 @@ with the latest at the end.
                      THIS IS A HIGH TIME work load though, so unlikely.
                      Priority LOW.
 
-  17/12/18            8. Consider re-introducing on data entry day and night landings
-                     for T & G flights but there again it should be specified
-                     in Remarks so is it really needed for the 90 Day CoE ?.
+  17/12/18            8. Consider re-introducing on data entry day and night 
+                     landings for T & G flights but there again it should be 
+                     specified in Remarks so is it really needed for the 90 Day
+                     CoE ?.
                      CAA / FAA requirement ?
-                     The problem with it is that it is not used for commercial or
-                     military aircrew. Opions ?
+                     The problem with it is that it is not used for commercial 
+                     or  military aircrew. Opions ?
 
 
 End of README
@@ -145,3 +146,5 @@ End of README
 14/12/2018 vbc - More script updates and other content.
 17/12/2018 vbc - Minor clean up.
 31/12/2018 vbc - Updated for v2.02.03.
+23/03/2021 vbc - Clean up layouts of above and a typo.
+
