@@ -116,6 +116,7 @@ cobc -x -free %verbose% -I"%src_cobol_dir%" splitpane.cob         %* %COBCOBJ% %
 cobc -x -free %verbose% -I"%src_cobol_dir%" 2frames.cob           %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" tabbedpane.cob        %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" textfield.cob         %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" titledpanel.cob       %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" vumeter.cob           %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" window.cob            %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" windowlistener.cob    %* %COBCOBJ% %COBCLIB%

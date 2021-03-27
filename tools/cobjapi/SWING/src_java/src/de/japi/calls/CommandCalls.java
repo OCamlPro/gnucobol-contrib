@@ -28,6 +28,7 @@ import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
 import de.japi.components.Japi2FormattedTextField;
 import de.japi.components.Japi2InternalFrame;
+import de.japi.components.Japi2Table;
 import de.japi.components.Japi2Tree;
 import de.japi.components.Japi2Window;
 import de.japi.components.layout.Japi2FixLayout;
@@ -674,11 +675,51 @@ public class CommandCalls {
         session.log2("enableDoubleClick, tree {0}", tree);
         tree.disableDoubleClickAction();
     }
+
+    /*
+     * This method adds a row to a table.
+     */
+    public static void addRow(Japi2Session session, Japi2Table table) throws IOException {
+        String rowDataStr = session.readLine();
+        String [] rowData = rowDataStr.split("\\|");
+        
+        table.addRow(rowData);
+
+        session.log2("addRow TABLE (ID = {0})", table);
+        session.log2("addRow TABLE rowDataStr = {0}", rowDataStr);
+        for (int i=0; i < rowData.length; i++){
+            session.log2("addRow TABLE rowData[0] = {0}", rowData[i]);
+        }        
+    }
+
+    /*
+     * This clear all rows in a table.
+     */
+    public static void clearTable(Japi2Session session, Japi2Table table) throws IOException {
+        table.clear();
+
+        session.log2("clearTable TABLE (ID = {0})", table);
+    }
+
+    /*
+     * This method sets column widths for a table.
+     */
+    public static void setColumnWidths(Japi2Session session, Japi2Table table) throws IOException {
+        String columnWidthsStr = session.readLine();
+        String [] columnWidths = columnWidthsStr.split("\\|");
+        
+        table.setColumnWidths(columnWidths);
+
+        session.log2("setColumnWidths TABLE (ID = {0})", table);
+        session.log2("TABLE columnWidthsStr = {0}", columnWidthsStr);
+        for (int i=0; i < columnWidths.length; i++){
+            session.log2("TABLE columnWidths[0] = {0}", columnWidths[i]);
+        }        
+    }
     
     /*
      * These methods select an item in a list or a choiceBox/comoboBox.
      */
-    
     public static void select(Japi2Session session, Japi2List list) throws IOException {
         int item = session.readInt();
         session.log2("select in {0}: {1}", list, item);
@@ -705,8 +746,8 @@ public class CommandCalls {
             session.read(buffer, length);
             String text = new String(buffer);
             
-            session.log2("Set Text {0} length {1}", frame, length);
             frame.setTitle(text);
+            session.log2("Set Text {0} length {1}", frame, length);
         }       
     }
     
@@ -718,8 +759,8 @@ public class CommandCalls {
             session.read(buffer, length);
             String text = new String(buffer);
             
-            session.log2("Set Text {0} length {1}", dialog, length);
             dialog.setTitle(text);
+            session.log2("Set Text {0} length {1}", dialog, length);
         }       
     }
     
@@ -731,8 +772,8 @@ public class CommandCalls {
             session.read(buffer, length);
             String text = new String(buffer);
             
-            session.log2("Set Text {0} length {1}", button, length);
             button.setText(text);
+            session.log2("Set Text {0} length {1}", button, length);
         }       
     }
     
@@ -744,8 +785,8 @@ public class CommandCalls {
             session.read(buffer, length);
             String text = new String(buffer);
             
-            session.log2("Set Text {0} length {1}", label, length);
             label.setText(text);
+            session.log2("Set Text {0} length {1}", label, length);
         }       
     }
     
@@ -757,8 +798,8 @@ public class CommandCalls {
             session.read(buffer, length);
             String text = new String(buffer);
             
-            session.log2("Set Text {0} length {1}", menu, length);
             menu.setText(text);
+            session.log2("Set Text {0} length {1}", menu, length);
         }       
     }
     
@@ -770,8 +811,8 @@ public class CommandCalls {
             session.read(buffer, length);
             String text = new String(buffer);
             
-            session.log2("Set Text {0} length {1}", menuItem, length);
             menuItem.setText(text);
+            session.log2("Set Text {0} length {1}", menuItem, length);
         }       
     }
     
@@ -783,8 +824,8 @@ public class CommandCalls {
             session.read(buffer, length);
             String text = new String(buffer);
             
-            session.log2("Set Text {0} length {1}", checkMenuItem, length);
             checkMenuItem.setText(text);
+            session.log2("Set Text {0} length {1}", checkMenuItem, length);
         }       
     }
     
@@ -796,8 +837,8 @@ public class CommandCalls {
             session.read(buffer, length);
             String text = new String(buffer);
             
-            session.log2("Set Text {0} length {1}", textComponent, length);
             textComponent.setText(text);
+            session.log2("Set Text {0} length {1}", textComponent, length);
         }       
     }
     

@@ -3,6 +3,7 @@ package de.japi;
 import de.japi.components.Japi2AlertDialog;
 import de.japi.components.Japi2DebugWindow;
 import de.japi.components.Japi2SevenSegment;
+import java.awt.Color;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -16,6 +17,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import javax.swing.BorderFactory;
 import javax.swing.UIManager;
 
 /**
@@ -539,7 +541,6 @@ public class Japi2 {
                 Japi2Constants.APP_NAME);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            
             
 //            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
             

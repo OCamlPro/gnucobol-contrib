@@ -6,6 +6,7 @@ import de.japi.Japi2Session;
 import de.japi.components.Japi2Canvas;
 import de.japi.components.Japi2Frame;
 import de.japi.components.Japi2PrintJob;
+import de.japi.components.Japi2Table;
 import de.japi.components.Japi2Tree;
 import java.awt.Color;
 import java.awt.Component;
@@ -17,7 +18,9 @@ import java.awt.image.MemoryImageSource;
 import java.awt.image.PixelGrabber;
 import java.io.IOException;
 import java.net.URL;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 
 /**
  * This class contains all JAPI calls which are related to graphics.
@@ -44,6 +47,15 @@ public class GraphicCalls {
         session.log3("Set fg color (1) in {0}: {1}, {2}, {3}", frame, red, green, blue);
         frame.getContentPane().setForeground(new Color(red, green, blue));
     } 
+
+    public static void setFgColor(Japi2Session session, Japi2Table table) throws IOException {
+        int red = session.readByte();
+        int green = session.readByte();
+        int blue = session.readByte();
+  
+        session.log3("Set fg color (4) in {0}: {1}, {2}, {3}", table, red, green, blue);
+        table.getTable().setForeground(new Color(red, green, blue));
+    }
     
     public static void setFgColor(Japi2Session session, Component component) throws IOException {
         int red = session.readByte();
@@ -72,7 +84,7 @@ public class GraphicCalls {
         session.log3("Set fg color (4) in {0}: {1}, {2}, {3}", printJob, red, green, blue);
         printJob.getGraphics().setColor(new Color(red, green, blue));
     }
-    
+
     /*
      * These methods set the background color of a Component, Image or Print Job
      * to a given (r,g,b)-value. It is important to differentiate between Japi2Frame and
@@ -87,6 +99,15 @@ public class GraphicCalls {
 
         session.log3("Set backgroundcolor in {0}: {1}, {2}, {3}", frame, red, green, blue);
         frame.getContentPane().setBackground(new Color(red, green, blue));
+    }
+
+    public static void setBgColor(Japi2Session session, Japi2Table table) throws IOException {
+        int red = session.readByte();
+        int green = session.readByte();
+        int blue = session.readByte();
+
+        session.log3("Set backgroundcolor in {0}: {1}, {2}, {3}", table, red, green, blue);
+        table.getTable().setBackground(new Color(red, green, blue));
     }
     
     public static void setBgColor(Japi2Session session, Component component) throws IOException {
@@ -170,6 +191,34 @@ public class GraphicCalls {
 
         session.log3("Set backgroundNonSelectionColor in {0}: {1}, {2}, {3}", tree, red, green, blue);
         tree.setBackgroundNonSelectionColor(new Color(red, green, blue));
+    }
+
+    public static void setGridColor(Japi2Session session, Japi2Table table) throws IOException {
+        int red = session.readByte();
+        int green = session.readByte();
+        int blue = session.readByte();
+
+        session.log3("Set GridColor in {0}: {1}, {2}, {3}", table, red, green, blue);
+        table.getTable().setGridColor(new Color(red, green, blue));
+    }
+
+    public static void setHeaderColor(Japi2Session session, Japi2Table table) throws IOException {
+        int red = session.readByte();
+        int green = session.readByte();
+        int blue = session.readByte();
+
+        session.log3("Set HeaderColor in {0}: {1}, {2}, {3}", table, red, green, blue);
+        table.getTable().getTableHeader().setForeground(new Color(red, green, blue));
+    }
+
+    public static void setHeaderColorBg(Japi2Session session, Japi2Table table) throws IOException {
+        int red = session.readByte();
+        int green = session.readByte();
+        int blue = session.readByte();
+
+        session.log3("Set HeaderColorBg in {0}: {1}, {2}, {3}", table, red, green, blue);
+        table.getTable().getTableHeader().setBackground(new Color(red, green, blue));
+        table.setBackground(new Color(red, green, blue));
     }
     
     /*

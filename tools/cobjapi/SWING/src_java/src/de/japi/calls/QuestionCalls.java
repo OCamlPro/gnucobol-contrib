@@ -23,6 +23,7 @@ import de.japi.components.Japi2ScrollPane;
 import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
 import de.japi.components.Japi2FormattedTextField;
+import de.japi.components.Japi2Table;
 import de.japi.components.listeners.Japi2FocusListener;
 import de.japi.components.listeners.Japi2KeyListener;
 import de.japi.components.listeners.Japi2MouseListener;
@@ -445,7 +446,7 @@ public class QuestionCalls {
     
     /*
      * These methods return index of the currently slected item in a Japi2List or
-     * Japi2ChoiceBox.
+     * Japi2ChoiceBox or Japi2Table.
      */ 
     public static void getSelect(Japi2Session session, Japi2List list) throws IOException {
         session.log2("Get Selected Index");
@@ -455,6 +456,11 @@ public class QuestionCalls {
     public static void getSelect(Japi2Session session, Japi2Choice choice) throws IOException {
         session.log2("Get Selected Index");
         session.writeInt(choice.getSelectedIndex());
+    } 
+
+    public static void getSelect(Japi2Session session, Japi2Table table) throws IOException {
+        session.log2("Get Selected Index");
+        session.writeInt(table.getTable().getSelectedRow());
     } 
     
     /*

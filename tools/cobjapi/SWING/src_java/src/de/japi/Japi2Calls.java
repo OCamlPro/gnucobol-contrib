@@ -43,6 +43,9 @@ public class Japi2Calls {
     public static final int JAPI_SETTREEBORDERSELCOLOR = 1052;
     public static final int JAPI_SETTREETEXTNONSELCOLOR = 1053;
     public static final int JAPI_SETTREEBGNONSELCOLOR = 1054;
+    public static final int JAPI_SETGRIDCOLOR = 1055;
+    public static final int JAPI_SETHEADERCOLOR = 1056;
+    public static final int JAPI_SETHEADERCOLORBG = 1057;
     
     // JAPI_COMMANDS
     public static final int JAPI_COMMANDS = 2048;
@@ -118,6 +121,9 @@ public class Japi2Calls {
     public static final int JAPI_ADDNODE = 2118;
     public static final int JAPI_ENABLEDOUBLECLICK = 2119;
     public static final int JAPI_DISABLEDOUBLECLICK = 2120;
+    public static final int JAPI_ADDROW = 2121;
+    public static final int JAPI_CLEARTABLE = 2122;
+    public static final int JAPI_SETCOLUMNWIDTHS = 2123;
 
     // JAPI_QUESTIONS
     public static final int JAPI_QUESTIONS = 3072;
@@ -213,6 +219,8 @@ public class Japi2Calls {
     public static final int JAPI_TREE = 4140;
     public static final int JAPI_INTERNALFRAME = 4141;
     public static final int JAPI_DESKTOPPANE = 4142;
+    public static final int JAPI_TABLE = 4143;
+    public static final int JAPI_TITLEDCOLORPANEL = 4144;
 
     // JAPI_LISTENERS
     public static final int JAPI_LISTENERS = 5120;

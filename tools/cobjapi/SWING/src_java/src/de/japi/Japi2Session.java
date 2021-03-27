@@ -34,6 +34,7 @@ import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
 import de.japi.components.Japi2FormattedTextField;
 import de.japi.components.Japi2InternalFrame;
+import de.japi.components.Japi2Table;
 import de.japi.components.Japi2Tree;
 import de.japi.components.Japi2Window;
 import de.japi.components.listeners.Japi2FocusListener;
@@ -505,6 +506,8 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_FOREGROUNDCOLOR: 
                             if (obj instanceof Japi2Frame)
                                     GraphicCalls.setFgColor(this, (Japi2Frame) obj);
+                            else if (obj instanceof Japi2Table)
+                                    GraphicCalls.setFgColor(this, (Japi2Table) obj);
                             else if (obj instanceof Component)
                                     GraphicCalls.setFgColor(this, (Component) obj);
                             else if (obj instanceof Image)
@@ -517,6 +520,8 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_BACKGROUNDCOLOR: 
                             if (obj instanceof Japi2Frame)
                                     GraphicCalls.setBgColor(this, (Japi2Frame) obj);
+                            else if (obj instanceof Japi2Table)
+                                    GraphicCalls.setBgColor(this, (Japi2Table) obj);
                             else if (obj instanceof Component)
                                     GraphicCalls.setBgColor(this, (Component) obj);
                             else if (obj instanceof Image)
@@ -553,6 +558,24 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_SETTREEBGNONSELCOLOR: 
                             if (obj instanceof Japi2Tree)
                                     GraphicCalls.setTreeBgNonSelColor(this, (Japi2Tree) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                    case Japi2Calls.JAPI_SETGRIDCOLOR: 
+                            if (obj instanceof Japi2Table)
+                                    GraphicCalls.setGridColor(this, (Japi2Table) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                    case Japi2Calls.JAPI_SETHEADERCOLOR: 
+                            if (obj instanceof Japi2Table)
+                                    GraphicCalls.setHeaderColor(this, (Japi2Table) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                    case Japi2Calls.JAPI_SETHEADERCOLORBG: 
+                            if (obj instanceof Japi2Table)
+                                    GraphicCalls.setHeaderColorBg(this, (Japi2Table) obj);
                             else 
                                     throw new NotHandledException();
                             break;
@@ -1362,6 +1385,26 @@ public class Japi2Session implements Runnable {
                                     throw new NotHandledException();
                             break;
                             
+                    case Japi2Calls.JAPI_ADDROW: 
+                            if (obj instanceof Japi2Table)
+                                    CommandCalls.addRow(this, (Japi2Table) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+
+                    case Japi2Calls.JAPI_CLEARTABLE: 
+                            if (obj instanceof Japi2Table)
+                                    CommandCalls.clearTable(this, (Japi2Table) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+
+                    case Japi2Calls.JAPI_SETCOLUMNWIDTHS: 
+                            if (obj instanceof Japi2Table)
+                                    CommandCalls.setColumnWidths(this, (Japi2Table) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
                             
 // -----------------------------------------------------------------------------
 // QuestionCalls                            
@@ -1426,6 +1469,8 @@ public class Japi2Session implements Runnable {
                                     QuestionCalls.getSelect(this, (Japi2List) obj);
                             else if (obj instanceof Japi2Choice)
                                     QuestionCalls.getSelect(this, (Japi2Choice) obj);
+                            else if (obj instanceof Japi2Table)
+                                    QuestionCalls.getSelect(this, (Japi2Table) obj);
                             else 
                                     throw new NotHandledException();
                             break;
@@ -1781,6 +1826,12 @@ public class Japi2Session implements Runnable {
                             else 
                                     throw new NotHandledException();
                             break;
+                    case Japi2Calls.JAPI_TITLEDCOLORPANEL: 
+                            if (obj instanceof Container) 
+                                    ConstructionCalls.createTitledColorPanel(this, (Container) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
                     case Japi2Calls.JAPI_TABBEDPANE: 
                             if (obj instanceof Container) 
                                     ConstructionCalls.createTabbedPane(this, (Container) obj);
@@ -1799,6 +1850,12 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_INTERNALFRAME: 
                             if (obj instanceof Container) 
                                     ConstructionCalls.createInternalFrame(this, (Container) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
+                    case Japi2Calls.JAPI_TABLE: 
+                            if (obj instanceof Container) 
+                                    ConstructionCalls.createTable(this, (Container) obj);
                             else 
                                     throw new NotHandledException();
                             break;

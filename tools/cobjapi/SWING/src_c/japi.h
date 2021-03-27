@@ -67,6 +67,19 @@
 *>------------------------------------------------------------------------------
 *> 2020.12.22 Laszlo Erdos: 
 *>            - j_internalframe, j_desktoppane
+*>------------------------------------------------------------------------------
+*> 2020.12.30 Laszlo Erdos: 
+*>            - j_table, j_addrow, j_cleartable, j_setcolumnwidths
+*>            - j_setgridnamedcolor
+*>            - j_setheadernamedcolor
+*>            - j_setheadernamedcolorbg
+*>            - j_setgridcolor
+*>            - j_setheadercolor
+*>            - j_setheadercolorbg
+*>------------------------------------------------------------------------------
+*> 2021.03.21 Laszlo Erdos: 
+*>            - j_titledcolorpanel
+*>            - j_titlednamedcolorpanel
 *>******************************************************************************
 */
 
@@ -240,6 +253,8 @@
     extern  int   j_graphiclabel ( int , char*  );
     extern  int   j_canvas ( int , int , int  );
     extern  int   j_panel ( int  );
+    extern  int   j_titledcolorpanel( int , char* , int , int , int , int , int  );
+    extern  int   j_titlednamedcolorpanel( int , char* , int , int , int  );
     extern  int   j_tabbedpane ( int  );
     extern  int   j_addtab ( int , char*  );
     extern  int   j_addtabwithicon ( int , char* , char*  );
@@ -249,6 +264,10 @@
     extern  void  j_enabledoubleclick ( int  );
     extern  void  j_disabledoubleclick ( int  );
     extern  int   j_internalframe( int , char* , int , int , int , int  );
+    extern  int   j_table( int , char*  );
+    extern  void  j_addrow( int , char*  );
+    extern  void  j_cleartable( int  );
+    extern  void  j_setcolumnwidths( int , char*  );
     extern  int   j_borderpanel ( int , int  );
     extern  int   j_radiogroup ( int  );
     extern  int   j_radiobutton ( int , char*  );
@@ -438,6 +457,12 @@
     extern  void  j_settreeborderselcolor ( int , int , int , int  );
     extern  void  j_settreetextnonselcolor ( int , int , int , int  );
     extern  void  j_settreebgnonselcolor ( int , int , int , int  );
+    extern  void  j_setgridnamedcolor ( int , int  );
+    extern  void  j_setheadernamedcolor ( int , int  );
+    extern  void  j_setheadernamedcolorbg ( int , int  );
+    extern  void  j_setgridcolor ( int , int , int , int  );
+    extern  void  j_setheadercolor ( int , int , int , int  );
+    extern  void  j_setheadercolorbg ( int , int , int , int  );
     extern  int   j_loadimage ( char*  );
     extern  int   j_saveimage ( int , char* , int  );
     extern  void  j_sync ( void  );

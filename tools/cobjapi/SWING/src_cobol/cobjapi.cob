@@ -70,6 +70,19 @@
 *>------------------------------------------------------------------------------
 *> 2020.12.22 Laszlo Erdos: 
 *>            - J-INTERNALFRAME, J-DESKTOPPANE
+*>------------------------------------------------------------------------------
+*> 2020.12.30 Laszlo Erdos: 
+*>            - J-TABLE, J-ADDROW, J-CLEARTABLE, J-SETCOLUMNWIDTHS
+*>            - J-SETGRIDNAMEDCOLOR
+*>            - J-SETHEADERNAMEDCOLOR
+*>            - J-SETHEADERNAMEDCOLORBG
+*>            - J-SETGRIDCOLOR
+*>            - J-SETHEADERCOLOR
+*>            - J-SETHEADERCOLORBG
+*>------------------------------------------------------------------------------
+*> 2021.03.21 Laszlo Erdos: 
+*>            - J-TITLEDCOLORPANEL
+*>            - J-TITLEDNAMEDCOLORPANEL
 *>******************************************************************************
  
 *>------------------------------------------------------------------------------
@@ -704,6 +717,110 @@
 
 
 *>------------------------------------------------------------------------------
+*> int  j_titledcolorpanel( int arg0, char* arg1, int arg2, int arg3, int arg4, int arg5, int arg6)
+*> { return( japi_titledcolorpanel(arg0, arg1, arg2, arg3, arg4, arg5, arg6));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-TITLEDCOLORPANEL.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          PIC X ANY LENGTH.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-ARG-5                          BINARY-LONG.
+ 01 LNK-ARG-6                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY REFERENCE LNK-ARG-1
+                          BY VALUE     LNK-ARG-2
+                          BY VALUE     LNK-ARG-3
+                          BY VALUE     LNK-ARG-4
+                          BY VALUE     LNK-ARG-5
+                          BY VALUE     LNK-ARG-6
+                    RETURNING          LNK-RET.
+
+ MAIN-J-TITLEDCOLORPANEL SECTION.
+
+    CALL STATIC "japi_titledcolorpanel" 
+         USING BY VALUE LNK-ARG-0
+               BY CONTENT CONCATENATE(TRIM(LNK-ARG-1), X"00")
+               BY VALUE LNK-ARG-2
+               BY VALUE LNK-ARG-3
+               BY VALUE LNK-ARG-4
+               BY VALUE LNK-ARG-5
+               BY VALUE LNK-ARG-6
+         RETURNING LNK-RET 
+    END-CALL 
+ 
+    GOBACK
+
+    .
+ MAIN-J-TITLEDCOLORPANEL-EX.
+    EXIT.
+ END FUNCTION J-TITLEDCOLORPANEL.
+
+
+*>------------------------------------------------------------------------------
+*> int  j_titlednamedcolorpanel( int arg0, char* arg1, int arg2, int arg3, int arg4)
+*> { return( japi_titlednamedcolorpanel(arg0, arg1, arg2, arg3, arg4));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-TITLEDNAMEDCOLORPANEL.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          PIC X ANY LENGTH.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-ARG-4                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY REFERENCE LNK-ARG-1
+                          BY VALUE     LNK-ARG-2
+                          BY VALUE     LNK-ARG-3
+                          BY VALUE     LNK-ARG-4
+                    RETURNING          LNK-RET.
+
+ MAIN-J-TITLEDNAMEDCOLORPANEL SECTION.
+
+    CALL STATIC "japi_titlednamedcolorpanel" 
+         USING BY VALUE LNK-ARG-0
+               BY CONTENT CONCATENATE(TRIM(LNK-ARG-1), X"00")
+               BY VALUE LNK-ARG-2
+               BY VALUE LNK-ARG-3
+               BY VALUE LNK-ARG-4
+         RETURNING LNK-RET 
+    END-CALL 
+ 
+    GOBACK
+
+    .
+ MAIN-J-TITLEDNAMEDCOLORPANEL-EX.
+    EXIT.
+ END FUNCTION J-TITLEDNAMEDCOLORPANEL.
+
+
+*>------------------------------------------------------------------------------
 *> int  j_tabbedpane( int arg0)
 *> { return( japi_tabbedpane(arg0));  }
 *>------------------------------------------------------------------------------
@@ -1066,6 +1183,169 @@
  MAIN-J-INTERNALFRAME-EX.
     EXIT.
  END FUNCTION J-INTERNALFRAME.
+
+
+*>------------------------------------------------------------------------------
+*> int  j_table( int arg0, char* arg1)
+*> { return( japi_table(arg0, arg1));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-TABLE.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          PIC X ANY LENGTH.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY REFERENCE LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-TABLE SECTION.
+
+    CALL STATIC "japi_table" 
+         USING BY VALUE LNK-ARG-0
+               BY CONTENT CONCATENATE(TRIM(LNK-ARG-1), X"00")
+         RETURNING LNK-RET 
+    END-CALL 
+ 
+    GOBACK
+
+    .
+ MAIN-J-TABLE-EX.
+    EXIT.
+ END FUNCTION J-TABLE.
+
+
+*>------------------------------------------------------------------------------
+*> void  j_addrow( int arg0, char* arg1)
+*> { return( japi_addrow(arg0, arg1));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-ADDROW.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          PIC X ANY LENGTH.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY REFERENCE LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-ADDROW SECTION.
+
+    CALL STATIC "japi_addrow" 
+         USING BY VALUE LNK-ARG-0
+               BY CONTENT CONCATENATE(TRIM(LNK-ARG-1), X"00")
+         RETURNING LNK-RET 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+ 
+    GOBACK
+
+    .
+ MAIN-J-ADDROW-EX.
+    EXIT.
+ END FUNCTION J-ADDROW.
+
+
+*>------------------------------------------------------------------------------
+*> void  j_setcolumnwidths( int arg0, char* arg1)
+*> { return( japi_setcolumnwidths(arg0, arg1));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETCOLUMNWIDTHS.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          PIC X ANY LENGTH.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY REFERENCE LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETCOLUMNWIDTHS SECTION.
+
+    CALL STATIC "japi_setcolumnwidths" 
+         USING BY VALUE LNK-ARG-0
+               BY CONTENT CONCATENATE(TRIM(LNK-ARG-1), X"00")
+         RETURNING LNK-RET 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+ 
+    GOBACK
+
+    .
+ MAIN-J-SETCOLUMNWIDTHS-EX.
+    EXIT.
+ END FUNCTION J-SETCOLUMNWIDTHS.
+
+
+*>------------------------------------------------------------------------------
+*> void  j_cleartable( int arg0)
+*> { return( japi_cleartable(arg0));  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-CLEARTABLE.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                    RETURNING          LNK-RET.
+
+ MAIN-J-CLEARTABLE SECTION.
+
+    CALL STATIC "japi_cleartable" 
+         USING BY VALUE LNK-ARG-0
+         RETURNING LNK-RET 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+ 
+    GOBACK
+
+    .
+ MAIN-J-CLEARTABLE-EX.
+    EXIT.
+ END FUNCTION J-CLEARTABLE.
 
  
 *>------------------------------------------------------------------------------
@@ -9098,6 +9378,276 @@
  MAIN-J-SETTREEBGNONSELCOLOR-EX.
     EXIT.
  END FUNCTION J-SETTREEBGNONSELCOLOR.
+
+
+*>------------------------------------------------------------------------------
+*> void j_setgridnamedcolor( int arg0, int arg1)
+*> { japi_setgridnamedcolor(arg0, arg1);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETGRIDNAMEDCOLOR.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETGRIDNAMEDCOLOR SECTION.
+
+    CALL STATIC "japi_setgridnamedcolor" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETGRIDNAMEDCOLOR-EX.
+    EXIT.
+ END FUNCTION J-SETGRIDNAMEDCOLOR.
+
+
+*>------------------------------------------------------------------------------
+*> void j_setheadernamedcolor( int arg0, int arg1)
+*> { japi_setheadernamedcolor(arg0, arg1);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETHEADERNAMEDCOLOR.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETHEADERNAMEDCOLOR SECTION.
+
+    CALL STATIC "japi_setheadernamedcolor" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETHEADERNAMEDCOLOR-EX.
+    EXIT.
+ END FUNCTION J-SETHEADERNAMEDCOLOR.
+
+
+*>------------------------------------------------------------------------------
+*> void j_setheadernamedcolorbg( int arg0, int arg1)
+*> { japi_setheadernamedcolorbg(arg0, arg1);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETHEADERNAMEDCOLORBG.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETHEADERNAMEDCOLORBG SECTION.
+
+    CALL STATIC "japi_setheadernamedcolorbg" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETHEADERNAMEDCOLORBG-EX.
+    EXIT.
+ END FUNCTION J-SETHEADERNAMEDCOLORBG.
+
+
+*>------------------------------------------------------------------------------
+*> void j_setgridcolor( int arg0, int arg1, int arg2, int arg3)
+*> { japi_setgridcolor(arg0, arg1, arg2, arg3);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETGRIDCOLOR.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                          BY VALUE     LNK-ARG-2
+                          BY VALUE     LNK-ARG-3
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETGRIDCOLOR SECTION.
+
+    CALL STATIC "japi_setgridcolor" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+               BY VALUE LNK-ARG-2
+               BY VALUE LNK-ARG-3
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETGRIDCOLOR-EX.
+    EXIT.
+ END FUNCTION J-SETGRIDCOLOR.
+
+
+*>------------------------------------------------------------------------------
+*> void j_setheadercolor( int arg0, int arg1, int arg2, int arg3)
+*> { japi_setheadercolor(arg0, arg1, arg2, arg3);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETHEADERCOLOR.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                          BY VALUE     LNK-ARG-2
+                          BY VALUE     LNK-ARG-3
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETHEADERCOLOR SECTION.
+
+    CALL STATIC "japi_setheadercolor" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+               BY VALUE LNK-ARG-2
+               BY VALUE LNK-ARG-3
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETHEADERCOLOR-EX.
+    EXIT.
+ END FUNCTION J-SETHEADERCOLOR.
+
+
+*>------------------------------------------------------------------------------
+*> void j_setheadercolorbg( int arg0, int arg1, int arg2, int arg3)
+*> { japi_setheadercolorbg(arg0, arg1, arg2, arg3);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-SETHEADERCOLORBG.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-ARG-1                          BINARY-LONG.
+ 01 LNK-ARG-2                          BINARY-LONG.
+ 01 LNK-ARG-3                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                          BY VALUE     LNK-ARG-1
+                          BY VALUE     LNK-ARG-2
+                          BY VALUE     LNK-ARG-3
+                    RETURNING          LNK-RET.
+
+ MAIN-J-SETHEADERCOLORBG SECTION.
+
+    CALL STATIC "japi_setheadercolorbg" 
+         USING BY VALUE LNK-ARG-0
+               BY VALUE LNK-ARG-1
+               BY VALUE LNK-ARG-2
+               BY VALUE LNK-ARG-3
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-SETHEADERCOLORBG-EX.
+    EXIT.
+ END FUNCTION J-SETHEADERCOLORBG.
 
  
 *>------------------------------------------------------------------------------

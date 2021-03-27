@@ -77,6 +77,24 @@
 *> 2020.12.22 Laszlo Erdos: 
 *>            - JAPI_INTERNALFRAME, JAPI_DESKTOPPANE
 *>            - japi_internalframe, japi_desktoppane
+*>------------------------------------------------------------------------------
+*> 2020.12.30 Laszlo Erdos: 
+*>            - JAPI_TABLE, JAPI_ADDROW, JAPI_CLEARTABLE, JAPI_SETCOLUMNWIDTHS
+*>            - JAPI_SETGRIDCOLOR
+*>            - JAPI_SETHEADERCOLOR
+*>            - JAPI_SETHEADERCOLORBG
+*>
+*>            - japi_table, japi_addrow, japi_cleartable, japi_setcolumnwidths
+*>            - japi_setgridnamedcolor
+*>            - japi_setheadernamedcolor
+*>            - japi_setheadernamedcolorbg
+*>            - japi_setgridcolor
+*>            - japi_setheadercolor
+*>            - japi_setheadercolorbg
+*>------------------------------------------------------------------------------
+*> 2021.03.21 Laszlo Erdos: 
+*>            - JAPI_TITLEDCOLORPANEL, JAPI_TITLEDNAMEDCOLORPANEL
+*>            - japi_titledcolorpanel, japi_titlednamedcolorpanel
 *>******************************************************************************
 */
 
@@ -121,7 +139,9 @@
   #define JAPI_SETTREEBORDERSELCOLOR              1052
   #define JAPI_SETTREETEXTNONSELCOLOR             1053
   #define JAPI_SETTREEBGNONSELCOLOR               1054
-
+  #define JAPI_SETGRIDCOLOR                       1055
+  #define JAPI_SETHEADERCOLOR                     1056
+  #define JAPI_SETHEADERCOLORBG                   1057  
 
 
   /*   JAPI_COMMANDS  */
@@ -198,6 +218,9 @@
   #define JAPI_ADDNODE                            2118
   #define JAPI_ENABLEDOUBLECLICK                  2119
   #define JAPI_DISABLEDOUBLECLICK                 2120
+  #define JAPI_ADDROW                             2121
+  #define JAPI_CLEARTABLE                         2122
+  #define JAPI_SETCOLUMNWIDTHS                    2123
 
 
   /*   JAPI_QUESTIONS  */
@@ -296,6 +319,8 @@
   #define JAPI_TREE                               4140
   #define JAPI_INTERNALFRAME                      4141
   #define JAPI_DESKTOPPANE                        4142
+  #define JAPI_TABLE                              4143
+  #define JAPI_TITLEDCOLORPANEL                   4144
 
 
 
@@ -336,6 +361,8 @@
   extern  int   japi_graphiclabel ( int , char*  );
   extern  int   japi_canvas ( int , int , int  );
   extern  int   japi_panel ( int  );
+  extern  int   j_titledcolorpanel( int , char* , int , int , int , int , int  );
+  extern  int   j_titlednamedcolorpanel( int , char* , int , int , int  );
   extern  int   japi_tabbedpane ( int  );
   extern  int   japi_addtab ( int , char*  );
   extern  int   japi_addtabwithicon ( int , char* , char*  );
@@ -345,6 +372,10 @@
   extern  void  japi_enabledoubleclick ( int  );
   extern  void  japi_disabledoubleclick ( int  );
   extern  int   japi_internalframe( int , char* , int , int , int , int  );
+  extern  int   japi_table( int , char*  );
+  extern  void  japi_addrow( int , char*  );
+  extern  void  japi_cleartable( int  );
+  extern  void  japi_setcolumnwidths( int , char*  );
   extern  int   japi_borderpanel ( int , int  );
   extern  int   japi_radiogroup ( int  );
   extern  int   japi_radiobutton ( int , char*  );
@@ -534,6 +565,12 @@
   extern  void  japi_settreeborderselcolor ( int , int , int , int  );
   extern  void  japi_settreetextnonselcolor ( int , int , int , int  );
   extern  void  japi_settreebgnonselcolor ( int , int , int , int  );
+  extern  void  japi_setgridnamedcolor ( int , int  );
+  extern  void  japi_setheadernamedcolor ( int , int  );
+  extern  void  japi_setheadernamedcolorbg ( int , int  );
+  extern  void  japi_setgridcolor ( int , int , int , int  );
+  extern  void  japi_setheadercolor ( int , int , int , int  );
+  extern  void  japi_setheadercolorbg ( int , int , int , int  );
   extern  int   japi_loadimage ( char*  );
   extern  int   japi_saveimage ( int , char* , int  );
   extern  void  japi_sync (  );

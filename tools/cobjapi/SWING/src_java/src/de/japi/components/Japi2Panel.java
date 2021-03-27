@@ -1,13 +1,20 @@
 package de.japi.components;
 
 import de.japi.Japi2Constants;
+import static de.japi.Japi2Constants.J_BOTTOM;
+import static de.japi.Japi2Constants.J_CENTER;
+import static de.japi.Japi2Constants.J_LEFT;
+import static de.japi.Japi2Constants.J_RIGHT;
+import static de.japi.Japi2Constants.J_TOP;
 import de.japi.components.layout.Japi2FixLayout;
 import de.japi.components.listeners.Japi2ComponentListener;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 /**
  * Panel class to contruct a Panel based on JPanel.
@@ -17,7 +24,8 @@ public class Japi2Panel extends JPanel {
      /**
      * Private variable to represent a Component Listener.
      */
-    private Japi2ComponentListener japiListener;     
+    private Japi2ComponentListener japiListener;   
+    private TitledBorder titledBorder;
 
     Insets inset;
 
@@ -44,7 +52,41 @@ public class Japi2Panel extends JPanel {
             setBorder(new Japi2PanelBorder(getBackground(), type));
         }
     }
-   
+
+    /**
+     * Creates a new Panel, with a FixLayout.
+     * 
+     * @param title name of a default border.
+     * @param just text justify.
+     * @param pos text position.
+     * @param red color component of the border.
+     * @param green color component of the border.
+     * @param blue color component of the border.
+     */
+    public Japi2Panel(String title, int just, int pos, int red, int green, int blue) {
+        this.setOpaque(false);
+        this.setLayout(new Japi2FixLayout());
+
+        titledBorder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(red, green, blue)), title);    
+        titledBorder.setTitleColor(new Color(red, green, blue));
+        
+        if (just == J_LEFT ) {
+            titledBorder.setTitleJustification(TitledBorder.LEFT);
+        } else if (just == J_CENTER ) {
+            titledBorder.setTitleJustification(TitledBorder.CENTER);
+        } else if (just == J_RIGHT ) {
+            titledBorder.setTitleJustification(TitledBorder.RIGHT);
+        }
+
+        if (pos == J_TOP ) {
+            titledBorder.setTitlePosition(TitledBorder.TOP);
+        } else if (pos == J_BOTTOM ) {
+            titledBorder.setTitlePosition(TitledBorder.BOTTOM);
+        }
+        
+        setBorder(titledBorder);
+    }
+    
     /**
      * Enables all components inside the panel if b is true.
      * @param b 

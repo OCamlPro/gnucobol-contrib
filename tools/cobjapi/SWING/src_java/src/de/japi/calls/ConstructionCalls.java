@@ -35,6 +35,7 @@ import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
 import de.japi.components.Japi2FormattedTextField;
 import de.japi.components.Japi2InternalFrame;
+import de.japi.components.Japi2Table;
 import de.japi.components.Japi2Tree;
 import de.japi.components.listeners.Japi2ActionListener;
 import de.japi.components.listeners.Japi2AdjustmentListener;
@@ -47,7 +48,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -601,6 +604,33 @@ public class ConstructionCalls {
     }
 
     /*
+     * This method creates a TitledPanel, and adds an Item Listener to it.
+     */
+    public static void createTitledColorPanel(Japi2Session session, Container container) throws IOException {
+        String title = session.readLine();
+        int just = session.readInt();
+        int pos = session.readInt();
+        int red = session.readInt();
+        int green = session.readInt();
+        int blue = session.readInt();
+        
+        Japi2Panel panel = new Japi2Panel(title, just, pos, red, green, blue);
+        int oid = session.addObject(panel);
+        
+        if (!(container instanceof JSplitPane)) {
+            container.add(panel, BorderLayout.CENTER);
+        }
+        
+        //item listener
+        Japi2ComponentListener componentListener = new Japi2ComponentListener(session, oid, Japi2Constants.J_RESIZED);
+        panel.setJapiListener(componentListener);
+        panel.addComponentListener(componentListener);
+        
+        session.log1("TITLEDPANEL type {0} (ID = {1}) in ParentObject {2}", title, oid, container);
+        session.writeInt(oid);
+    }
+    
+    /*
      * This method creates a TabbedPane, and adds an Item Listener to it.
      */
    public static void createTabbedPane(Japi2Session session, Container container) throws IOException {
@@ -687,7 +717,35 @@ public class ConstructionCalls {
         // Write back the id
         session.writeInt(oid);
     }
-   
+
+    /*
+     * This method creates a Table, and adds an Item Listener to it.
+     */
+   public static void createTable(Japi2Session session, Container container) throws IOException {
+        String colNamesStr = session.readLine();
+        String [] columnNames = colNamesStr.split("\\|");
+        
+        Japi2Table table = new Japi2Table(session, columnNames);
+        int oid = session.addObject(table);
+        
+        if (!(container instanceof JSplitPane)) {
+//            JScrollPane scrollPane = new JScrollPane(table);
+//            scrollPane.getViewport().setViewPosition(new Point(0,0));
+//            table.getTable().setPreferredScrollableViewportSize(table.getPreferredSize());
+            table.getTable().setPreferredScrollableViewportSize(new Dimension(container.getWidth(), container.getHeight()));        
+            table.getTable().setFillsViewportHeight(false);             
+//            container.add(scrollPane, BorderLayout.CENTER);
+            container.add(table, BorderLayout.CENTER);
+        }
+        
+        session.log1("TABLE (ID = {0}) in ParentObject {1}", oid, container);
+        session.log1("TABLE colNamesStr = {0}", colNamesStr);
+        for (int i=0; i < columnNames.length; i++){
+            session.log1("TABLE columnNames[0] = {0}", columnNames[i]);
+        }        
+        session.writeInt(oid);
+    }
+    
     /*
      * This method creates a Label, to display text or image components.
      */

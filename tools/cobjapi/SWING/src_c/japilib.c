@@ -78,6 +78,19 @@
 *> 2020.12.22 Laszlo Erdos: 
 *>            - japi_internalframe, send_2int_string_4int_get_int
 *>            - japi_desktoppane
+*>------------------------------------------------------------------------------
+*> 2020.12.30 Laszlo Erdos: 
+*>            - japi_table, japi_addrow, japi_cleartable, j_setcolumnwidths
+*>            - japi_setgridnamedcolor
+*>            - japi_setheadernamedcolor
+*>            - japi_setheadernamedcolorbg
+*>            - japi_setgridcolor
+*>            - japi_setheadercolor
+*>            - japi_setheadercolorbg
+*>------------------------------------------------------------------------------
+*> 2021.03.21 Laszlo Erdos: 
+*>            - send_2int_string_5int_get_int
+*>            - japi_titledcolorpanel, japi_titlednamedcolorpanel
 *>******************************************************************************
 */
 
@@ -932,6 +945,16 @@ static int send_2int_string_4int_get_int(int c, int o, char* a, int v1, int v2, 
 	return(get_int(commandstream));
 }
 
+static int send_2int_string_5int_get_int(int c, int o, char* a, int v1, int v2, int v3, int v4, int v5)
+{
+	add_2int(c,o);
+	add_string(a);
+	add_4int(v1,v2,v3,v4);
+  	add_int(v5);
+	send_buf();
+	return(get_int(commandstream));
+}
+
 static int send_4int_get_int(int c, int o, int v1, int v2)
 {
 	send_4int(c,o,v1,v2);
@@ -1022,6 +1045,14 @@ int japi_canvas(int parent,int w, int h)
 int japi_panel(int parent)
 {	return(send_3int_get_int(JAPI_PANEL,parent,J_NONE)); }
 
+int japi_titledcolorpanel(int parent, string title, int just, int pos, int red, int green, int blue)
+{	return(send_2int_string_5int_get_int(JAPI_TITLEDCOLORPANEL,parent,title,just,pos,red,green,blue)); }
+
+int japi_titlednamedcolorpanel(int parent, string title, int just, int pos, int color)
+{	return(send_2int_string_5int_get_int(JAPI_TITLEDCOLORPANEL,parent,title,just,pos,cga_color[color%MAXNAMEDCOLORS][0],
+                                                                                     cga_color[color%MAXNAMEDCOLORS][1],
+                                                                                     cga_color[color%MAXNAMEDCOLORS][2])); }
+
 int japi_tabbedpane(int parent)
 {	return(send_2int_get_int(JAPI_TABBEDPANE,parent)); }
 
@@ -1054,6 +1085,18 @@ void japi_disabledoubleclick(int tree)
 
 int japi_internalframe(int parent, string title, int resizable, int closable, int maximizable, int iconifiable)
 {	return(send_2int_string_4int_get_int(JAPI_INTERNALFRAME,parent,title,resizable,closable,maximizable,iconifiable)); }
+
+int japi_table(int parent, string columnNames)
+{	return(send_2int_string_get_int(JAPI_TABLE,parent,columnNames)); }
+
+void japi_addrow(int table, string rowValues)
+{	return(send_2int_string(JAPI_ADDROW,table,rowValues)); }
+
+void japi_cleartable(int table)
+{	return(send_2int(JAPI_CLEARTABLE,table)); }
+
+void japi_setcolumnwidths(int table, string columnWidths)
+{	return(send_2int_string(JAPI_SETCOLUMNWIDTHS,table,columnWidths)); }
 
 int japi_borderpanel(int parent, int type)
 {	return(send_3int_get_int(JAPI_PANEL,parent,type)); }
@@ -1940,6 +1983,63 @@ void  japi_settreebgnonselnamedcolor (int component, int color)
     japi_settreebgnonselcolor(component,cga_color[color%MAXNAMEDCOLORS][0],
                                         cga_color[color%MAXNAMEDCOLORS][1],
                                         cga_color[color%MAXNAMEDCOLORS][2]);
+}
+
+void  japi_setgridcolor (int component, int red, int green, int blue)
+{
+	char c;
+	add_2int(JAPI_SETGRIDCOLOR,component);
+	c=(char)red;
+	add_char(c);
+	c=(char)green;
+	add_char(c);
+	c=(char)blue;
+	send_char(c);
+}
+
+void  japi_setheadercolor (int component, int red, int green, int blue)
+{
+	char c;
+	add_2int(JAPI_SETHEADERCOLOR,component);
+	c=(char)red;
+	add_char(c);
+	c=(char)green;
+	add_char(c);
+	c=(char)blue;
+	send_char(c);
+}
+
+void  japi_setheadercolorbg (int component, int red, int green, int blue)
+{
+	char c;
+	add_2int(JAPI_SETHEADERCOLORBG,component);
+	c=(char)red;
+	add_char(c);
+	c=(char)green;
+	add_char(c);
+	c=(char)blue;
+	send_char(c);
+}
+
+void  japi_setgridnamedcolor (int component, int color)
+{
+    japi_setgridcolor(component,cga_color[color%MAXNAMEDCOLORS][0],
+                                cga_color[color%MAXNAMEDCOLORS][1],
+                                cga_color[color%MAXNAMEDCOLORS][2]);
+}
+
+void  japi_setheadernamedcolor (int component, int color)
+{
+    japi_setheadercolor(component,cga_color[color%MAXNAMEDCOLORS][0],
+                                  cga_color[color%MAXNAMEDCOLORS][1],
+                                  cga_color[color%MAXNAMEDCOLORS][2]);
+}
+
+void  japi_setheadernamedcolorbg (int component, int color)
+{
+    japi_setheadercolorbg(component,cga_color[color%MAXNAMEDCOLORS][0],
+                                    cga_color[color%MAXNAMEDCOLORS][1],
+                                    cga_color[color%MAXNAMEDCOLORS][2]);
 }
 
 int japi_loadimage(string filename)

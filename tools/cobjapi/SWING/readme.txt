@@ -298,6 +298,13 @@ Program history, changes and bug fixes are listed in program headers.
 Date       Name / Change description
 ========== ==================================================================
 -----------------------------------------------------------------------------
+2021.03.21 Laszlo Erdos:
+           - New functions J-TITLEDNAMEDCOLORPANEL, 
+             J-TITLEDNAMEDCOLORPANEL added.
+-----------------------------------------------------------------------------
+2021.02.07 Laszlo Erdos:
+           - New functions for Table added.
+-----------------------------------------------------------------------------
 2020.12.22 Laszlo Erdos:
            - DesktopPane and InternalFrame added.
 -----------------------------------------------------------------------------
