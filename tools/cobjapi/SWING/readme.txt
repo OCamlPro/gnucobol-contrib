@@ -298,6 +298,10 @@ Program history, changes and bug fixes are listed in program headers.
 Date       Name / Change description
 ========== ==================================================================
 -----------------------------------------------------------------------------
+2021.03.31 Laszlo Erdos:
+           - frame2.cob example with J-GETSCREENWIDTH and 
+             J-GETSCREENHEIGHT added.
+-----------------------------------------------------------------------------
 2021.03.21 Laszlo Erdos:
            - New functions J-TITLEDNAMEDCOLORPANEL, 
              J-TITLEDNAMEDCOLORPANEL added.
