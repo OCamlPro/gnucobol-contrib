@@ -2,7 +2,7 @@
       *>
       *> this for the compiler version.
       *>
-      >>DEFINE CONSTANT COMP-VERS  AS 'GNUCOBOL 3.1 01JUL2020'
+       >>DEFINE CONSTANT COMP-VERS  AS 'GNUCOBOL 3.1.2 01JAN2021'
       *> LINEDRAW Set to:
       *>    0   To use spaces (no lines)
       *>    1   To use the line-drawing characterset (PC codepage 437)
