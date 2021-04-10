@@ -1,5 +1,8 @@
       *> CONFIGURATION SETTINGS: Set these switches before compiling:
       *>
+      *> this for the compiler version.
+      *>
+      >>DEFINE CONSTANT COMP-VERS  AS 'GNUCOBOL 3.1 01JUL2020'
       *> LINEDRAW Set to:
       *>    0   To use spaces (no lines)
       *>    1   To use the line-drawing characterset (PC codepage 437)
