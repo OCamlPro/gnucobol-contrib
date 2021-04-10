@@ -1,16 +1,7 @@
       >>SOURCE FORMAT IS FIXED
-      *>
-      *>*******************************************************************
-      *>**  Change the settings in the copy book const-set-1.cpy to reflect
-      *>    your system set up. This notes are also present there.
-      *>    This is to reduce the need to amend these every time a update
-      *>    for GCic occurs.
-      *>*******************************************************************
-      *>
+      *> CONFIGURATION SETTINGS: adjust const-set-1.cpy before
+      *> compiling GCic to adjust the way it works.
        copy "const-set-1.cpy".
-      *>
-      *> --------------------------------------------------------------
-      *> END CONFIGURATION SETTINGS
       /
        IDENTIFICATION DIVISION.
        PROGRAM-ID. GCic.
