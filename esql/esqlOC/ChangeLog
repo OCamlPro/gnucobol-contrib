@@ -1,3 +1,6 @@
+2021-04-14 Sergey Kashyrin <ska@kiska.net>
+	* Fix. WITH HOLD of cursor declaration was ignored
+
 2019-07-18 Sergey Kashyrin <ska@kiska.net>
 	* Fixed extremely heavy bug for EXEC SQL CALL with COMP-3 parameters
 

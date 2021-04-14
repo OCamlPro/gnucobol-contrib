@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2019 Sergey Kashyrin <ska@kiska.net>
+ * Copyright (C) 2006-2021 Sergey Kashyrin <ska@kiska.net>
  *               2012 enhanced by Doug Vogel <dv11674@gmail.com>
  *               2013 fixes and enhancements by Atilla Akarsular <030ati@gmail.com>
  *
@@ -39,7 +39,7 @@
 
 #include "vcache.h"
 
-static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCobol Version 2 (2019.02.26) Build " __DATE__ "\n";
+static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCobol Version 2 (2021.04.14) Build " __DATE__ "\n";
 /**  Version is present in SQLCA. Current is 02 */
 
 static bool bAPOST = true;		// use apostroph instead of quote
@@ -434,7 +434,7 @@ private:
 					throw buf;
 				}
 				bool bWH = false;
-				int opt = sqlu.indexof(" CURSOR WITH HOLD ");
+				int opt = sqlu.indexof(" WITH HOLD ");
 				if(opt > 0 && opt < x) {
 					bWH = true;
 				}
@@ -592,6 +592,9 @@ private:
 		if(a.size() == 0) return;
 
 		cobline * l = new cobline("      **********************************************************************");
+		src.add(l);
+		sprintf(buf, HEADER, "      *  ");
+		l = new cobline(buf);
 		src.add(l);
 		l = new cobline("      *******               EMBEDDED SQL VARIABLES USAGE             *******");
 		src.add(l);
