@@ -12,6 +12,8 @@ Errors:
 ****************************************************************************/
 /******************************************************************************
  +----------+-------+---------------------------------------------------------+
+ | 20210414 | 0.8.6 | Fixed INS/DEL keys, recognized now as changed source    |
+ +----------+-------+---------------------------------------------------------+
  | 20200921 | 0.8.5 | line commands c and m + a/b, del all nx/x               |
  +----------+-------+---------------------------------------------------------+
  | 20200520 | 0.8.4 | Bugfix for CC and A/D                                   |
@@ -28,8 +30,8 @@ Errors:
 # include <time.h>
 # include <signal.h>
 
-# define SHORTVERSION "pipEdit 0.8.5 2020-10-11"
-# define VERSION "pipEdit 0.8.5 - 2020-10-11 - c and m plus A/B del all nx/x"
+# define SHORTVERSION "pipEdit 0.8.6 2021-04-14"
+# define VERSION "pipEdit 0.8.6 - 2021-04-11 - INS/DEL keys change source"
 
 # ifdef __USE_PIPCURSES__
 	# include "pipcurses.c"
@@ -2921,6 +2923,7 @@ int process_input_field(int c, unsigned char *s, int startx, int len, int offx)
 							}
 							s[len-1]=' ';
 							s[len]=0;
+							source_changed=TRUE;
 							break;
 		case KEY_IC:   if(s[len-1]==' '){
 								for(t=len-1; t>(cursor_x-startx); t--){
@@ -2929,6 +2932,7 @@ int process_input_field(int c, unsigned char *s, int startx, int len, int offx)
 								s[cursor_x-startx]=' ';
 								s[len]=0;
 							}
+							source_changed=TRUE;
 							break;
 		default:
 			if(isprint(c)){
