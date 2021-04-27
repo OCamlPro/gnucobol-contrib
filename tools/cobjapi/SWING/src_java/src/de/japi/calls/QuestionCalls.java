@@ -527,7 +527,7 @@ public class QuestionCalls {
         session.log2("Get Item number {0} of {1}", number, list);
         String content = (String) list.getElement(number);
         
-        session.writeInt(content.length());
+        session.writeInt(content.getBytes().length);
         byte[] buf = content.getBytes();
         session.writeBytes(buf);
     }
@@ -537,7 +537,7 @@ public class QuestionCalls {
         session.log2("Get Item number {0} of {1}", number, choice);
         String content = (String) choice.getItemAt(number);
         
-        session.writeInt(content.length());
+        session.writeInt(content.getBytes().length);
         byte[] buf = content.getBytes();
         session.writeBytes(buf);
     }
@@ -547,7 +547,7 @@ public class QuestionCalls {
         session.log2("Get Item number {0} of {1}", number, menu);
         String content = menu.getItem(number).getText();
         
-        session.writeInt(content.length());
+        session.writeInt(content.getBytes().length);
         byte[] buf = content.getBytes();
         session.writeBytes(buf);
     }
@@ -557,7 +557,7 @@ public class QuestionCalls {
         session.log2("Get Item number {0} of {1}", number, menuBar);
         String content = menuBar.getMenu(number).getText();
         
-        session.writeInt(content.length());
+        session.writeInt(content.getBytes().length);
         byte[] buf = content.getBytes();
         session.writeBytes(buf);
     }
@@ -687,7 +687,7 @@ public class QuestionCalls {
      */
     private static void writeTextHelper(Japi2Session session, String content) throws IOException {
         session.log2("Get label or text READY");
-        session.writeInt(content.length());
+        session.writeInt(content.getBytes().length);
         session.writeBytes(content.getBytes());
     }
     

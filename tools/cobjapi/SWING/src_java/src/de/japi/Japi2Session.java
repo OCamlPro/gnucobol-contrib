@@ -2601,7 +2601,7 @@ public class Japi2Session implements Runnable {
             return;
         }
         
-        writeInt(str.length(), target);
+        writeInt(str.getBytes().length, target);
         if (target == TargetStream.COMMAND) {
             out.write(str.getBytes());
         } else {

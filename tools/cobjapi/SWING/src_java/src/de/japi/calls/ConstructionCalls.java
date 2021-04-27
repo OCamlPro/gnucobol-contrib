@@ -212,7 +212,7 @@ public class ConstructionCalls {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             String filename = f.getSelectedFile().getAbsolutePath();
             session.log1("File: {0}", filename);
-            session.writeInt(filename.length());  
+            session.writeInt(filename.getBytes().length);  
             session.writeBytes(filename.getBytes());
         } else {
             session.writeInt(0);
