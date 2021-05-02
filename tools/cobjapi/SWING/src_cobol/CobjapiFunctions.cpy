@@ -87,6 +87,9 @@
 *> 2021.03.21 Laszlo Erdos: 
 *>            - J-TITLEDCOLORPANEL
 *>            - J-TITLEDNAMEDCOLORPANEL
+*>------------------------------------------------------------------------------
+*> 2021.05.02 Laszlo Erdos: 
+*>            - J-INITIALIZE
 *>******************************************************************************
 
  FUNCTION J-ADD
@@ -191,6 +194,7 @@
  FUNCTION J-HIDE
  FUNCTION J-HSCROLLBAR
  FUNCTION J-IMAGE
+ FUNCTION J-INITIALIZE
  FUNCTION J-INSERT
  FUNCTION J-INSERTTEXT
  FUNCTION J-INTERNALFRAME

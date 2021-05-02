@@ -45,6 +45,9 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.23 Laszlo Erdos: 
 *>            - BINARY-INT replaced with BINARY-LONG.
+*>------------------------------------------------------------------------------
+*> 2021.05.02 Laszlo Erdos: 
+*>            - J-INITIALIZE added.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -74,6 +77,7 @@
  01 WS-QUIT                            BINARY-LONG.
  01 WS-EDIT                            BINARY-LONG.
  01 WS-SELALL                          BINARY-LONG.
+ 01 WS-DELALL                          BINARY-LONG.
  01 WS-CUT                             BINARY-LONG.
  01 WS-COPY                            BINARY-LONG.
  01 WS-PASTE                           BINARY-LONG.
@@ -139,6 +143,8 @@
     MOVE J-MENUITEM(WS-EDIT, "Cut")        TO WS-CUT
     MOVE J-MENUITEM(WS-EDIT, "Copy")       TO WS-COPY
     MOVE J-MENUITEM(WS-EDIT, "Paste")      TO WS-PASTE
+    MOVE J-SEPARATOR(WS-EDIT)              TO WS-RET
+    MOVE J-MENUITEM(WS-EDIT, "Delete All") TO WS-DELALL
 
     MOVE  4 TO WS-ROW                      
     MOVE 15 TO WS-COL                      
@@ -243,6 +249,11 @@
           END-IF
           
           MOVE J-SETCURPOS(WS-TEXT, WS-SELSTART) TO WS-RET
+       END-IF
+
+       IF WS-OBJ = WS-DELALL
+       THEN
+          MOVE J-INITIALIZE(WS-TEXT) TO WS-RET
        END-IF
     END-PERFORM
     

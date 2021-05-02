@@ -298,6 +298,10 @@ Program history, changes and bug fixes are listed in program headers.
 Date       Name / Change description
 ========== ==================================================================
 -----------------------------------------------------------------------------
+2021.05.02 Laszlo Erdos:
+           - J-INITIALIZE added.
+           - Japi2InternalFrameListener.java added.
+-----------------------------------------------------------------------------
 2021.04.27 Laszlo Erdos:
            - Correction in java part: wrong String length with special chars.
 -----------------------------------------------------------------------------

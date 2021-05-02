@@ -841,6 +841,24 @@ public class CommandCalls {
             session.log2("Set Text {0} length {1}", textComponent, length);
         }       
     }
+
+    /*
+     * The following methods allow to initialize the components.
+     */
+    public static void initialize(Japi2Session session, Japi2TextField textField) throws IOException {
+        textField.setText("");
+        session.log2("Initialize Japi2TextField {0}", textField);
+    }
+
+    public static void initialize(Japi2Session session, Japi2FormattedTextField formattedTextField) throws IOException {
+        formattedTextField.setText("");
+        session.log2("Initialize Japi2FormattedTextField {0}", formattedTextField);
+    }
+
+    public static void initialize(Japi2Session session, JTextComponent textComponent) throws IOException {
+        textComponent.setText("");
+        session.log2("Initialize JTextComponent {0}", textComponent);
+    }
     
     /*
      * This method sets the cursor image to the specific cursor. 

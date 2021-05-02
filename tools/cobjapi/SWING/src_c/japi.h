@@ -80,6 +80,9 @@
 *> 2021.03.21 Laszlo Erdos: 
 *>            - j_titledcolorpanel
 *>            - j_titlednamedcolorpanel
+*>------------------------------------------------------------------------------
+*> 2021.05.02 Laszlo Erdos: 
+*>            - j_initialize
 *>******************************************************************************
 */
 
@@ -362,6 +365,7 @@
     extern  void  j_appendtext ( int , char*  );
     extern  void  j_inserttext ( int , char* , int  );
     extern  void  j_settext ( int , char*  );
+    extern  void  j_initialize ( int  );
     extern  void  j_selectall ( int  );
     extern  void  j_selecttext ( int , int , int  );
     extern  int   j_getselstart ( int  );

@@ -58,6 +58,9 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.23 Laszlo Erdos: 
 *>            - BINARY-INT replaced with BINARY-LONG.
+*>------------------------------------------------------------------------------
+*> 2021.05.02 Laszlo Erdos: 
+*>            - J-INITIALIZE added.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -84,6 +87,8 @@
  01 WS-FTEXTFIELD-3                    BINARY-LONG.
  01 WS-FTEXTFIELD-4                    BINARY-LONG.
  01 WS-LABEL                           BINARY-LONG.
+ 01 WS-BUTTON-OK                       BINARY-LONG.
+ 01 WS-BUTTON-RESET                    BINARY-LONG.
  01 WS-OBJ                             BINARY-LONG.
  
 *> function args 
@@ -91,6 +96,8 @@
  01 WS-COLUMNS                         BINARY-LONG.
  01 WS-XPOS                            BINARY-LONG.
  01 WS-YPOS                            BINARY-LONG.
+ 01 WS-WIDTH                           BINARY-LONG.
+ 01 WS-HEIGHT                          BINARY-LONG.
  01 WS-CONTENT                         PIC X(256).
  01 WS-MASK-STR                        PIC X(30).
  01 WS-PLACE-HOLDER-CHAR               PIC X(1).
@@ -173,6 +180,21 @@
     MOVE 250 TO WS-XPOS
     MOVE 160 TO WS-YPOS
     MOVE J-SETPOS(WS-LABEL, WS-XPOS, WS-YPOS)         TO WS-RET
+
+    MOVE J-BUTTON(WS-FRAME, "OK") TO WS-BUTTON-OK
+    MOVE 80 TO WS-WIDTH
+    MOVE 20 TO WS-HEIGHT
+    MOVE J-SETSIZE(WS-BUTTON-OK, WS-WIDTH, WS-HEIGHT) TO WS-RET
+    MOVE 200 TO WS-XPOS
+    MOVE 200 TO WS-YPOS
+    MOVE J-SETPOS(WS-BUTTON-OK, WS-XPOS, WS-YPOS)     TO WS-RET
+    MOVE J-BUTTON(WS-FRAME, "Reset") TO WS-BUTTON-RESET
+    MOVE 80 TO WS-WIDTH
+    MOVE 20 TO WS-HEIGHT
+    MOVE J-SETSIZE(WS-BUTTON-RESET, WS-WIDTH, WS-HEIGHT) TO WS-RET
+    MOVE 300 TO WS-XPOS
+    MOVE 200 TO WS-YPOS
+    MOVE J-SETPOS(WS-BUTTON-RESET, WS-XPOS, WS-YPOS)     TO WS-RET
     
     MOVE J-SHOW(WS-FRAME) TO WS-RET
     MOVE J-PACK(WS-FRAME) TO WS-RET
@@ -186,37 +208,24 @@
           EXIT PERFORM
        END-IF
        
-*>     press enter after you edited the field
-       IF WS-OBJ = WS-FTEXTFIELD-1
+       IF WS-OBJ = WS-BUTTON-OK
        THEN
           MOVE J-GETTEXT(WS-FTEXTFIELD-1, WS-CONTENT) TO WS-RET
           DISPLAY "Text-1: " TRIM(WS-CONTENT) END-DISPLAY
-       END-IF
-
-*>     press enter after you edited the field
-       IF WS-OBJ = WS-FTEXTFIELD-2
-       THEN
           MOVE J-GETTEXT(WS-FTEXTFIELD-2, WS-CONTENT) TO WS-RET
           DISPLAY "Text-2: " TRIM(WS-CONTENT) END-DISPLAY
-       END-IF
-
-*>     press enter after you edited the field
-       IF WS-OBJ = WS-FTEXTFIELD-3
-       THEN
           MOVE J-GETTEXT(WS-FTEXTFIELD-3, WS-CONTENT) TO WS-RET
           DISPLAY "Text-3: " TRIM(WS-CONTENT) END-DISPLAY
-       END-IF
-
-*>     press enter after you edited the field
-       IF WS-OBJ = WS-FTEXTFIELD-4
-       THEN
           MOVE J-GETTEXT(WS-FTEXTFIELD-4, WS-CONTENT) TO WS-RET
           DISPLAY "Text-4: " TRIM(WS-CONTENT) END-DISPLAY
        END-IF
 
-       IF WS-CONTENT = "exit"
+       IF WS-OBJ = WS-BUTTON-RESET
        THEN
-          EXIT PERFORM
+          MOVE J-INITIALIZE(WS-FTEXTFIELD-1) TO WS-RET
+          MOVE J-INITIALIZE(WS-FTEXTFIELD-2) TO WS-RET
+          MOVE J-INITIALIZE(WS-FTEXTFIELD-3) TO WS-RET
+          MOVE J-INITIALIZE(WS-FTEXTFIELD-4) TO WS-RET
        END-IF
     END-PERFORM
     

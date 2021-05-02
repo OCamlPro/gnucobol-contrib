@@ -44,6 +44,7 @@ import de.japi.components.listeners.Japi2FocusListener;
 import de.japi.components.listeners.Japi2ItemListener;
 import de.japi.components.listeners.Japi2TextListener;
 import de.japi.components.listeners.Japi2WindowListener;
+import de.japi.components.listeners.Japi2InternalFrameListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -712,6 +713,13 @@ public class ConstructionCalls {
         Japi2InternalFrame internalFrame = new Japi2InternalFrame(title, resizableFlag, closableFlag, maximizableFlag, iconifiableFlag);
         int oid = session.addObject(internalFrame);
         container.add(internalFrame);
+
+        // Add window close listener
+        internalFrame.addInternalFrameListener(new Japi2InternalFrameListener(
+                session, 
+                oid, 
+                Japi2Constants.J_CLOSING
+        ));
         
         session.log1("INTERNALFRAME {0} (ID = {1}) in Parent Object {2}", title, oid, container);
         // Write back the id

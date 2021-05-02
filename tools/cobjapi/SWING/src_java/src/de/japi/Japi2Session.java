@@ -1405,6 +1405,19 @@ public class Japi2Session implements Runnable {
                             else 
                                     throw new NotHandledException();
                             break;
+
+                    case Japi2Calls.JAPI_INITIALIZE: 
+                            if (obj instanceof Japi2TextField)
+                                    CommandCalls.initialize(this, (Japi2TextField) obj);
+                            else if (obj instanceof Japi2FormattedTextField)
+                                    CommandCalls.initialize(this, (Japi2FormattedTextField) obj);
+                            else if (obj instanceof Japi2TextArea)
+                                    CommandCalls.initialize(this, ((Japi2TextArea) obj).getComponent());
+                            else if (obj instanceof JTextComponent) 
+                                    CommandCalls.initialize(this, (JTextComponent) obj);
+                            else                                
+                                    throw new NotHandledException();
+                            break;
                             
 // -----------------------------------------------------------------------------
 // QuestionCalls                            

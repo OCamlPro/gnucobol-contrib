@@ -83,6 +83,9 @@
 *> 2021.03.21 Laszlo Erdos: 
 *>            - J-TITLEDCOLORPANEL
 *>            - J-TITLEDNAMEDCOLORPANEL
+*>------------------------------------------------------------------------------
+*> 2021.05.02 Laszlo Erdos: 
+*>            - J-INITIALIZE
 *>******************************************************************************
  
 *>------------------------------------------------------------------------------
@@ -5226,6 +5229,45 @@
  MAIN-J-SETTEXT-EX.
     EXIT.
  END FUNCTION J-SETTEXT.
+
+
+*>------------------------------------------------------------------------------
+*> void j_initialize( int arg0)
+*> { japi_initialize(arg0);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-INITIALIZE.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                    RETURNING          LNK-RET.
+
+ MAIN-J-INITIALIZE SECTION.
+
+    CALL STATIC "japi_initialize" 
+         USING BY VALUE LNK-ARG-0
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-INITIALIZE-EX.
+    EXIT.
+ END FUNCTION J-INITIALIZE.
 
  
 *>------------------------------------------------------------------------------

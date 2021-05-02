@@ -124,6 +124,7 @@ public class Japi2Calls {
     public static final int JAPI_ADDROW = 2121;
     public static final int JAPI_CLEARTABLE = 2122;
     public static final int JAPI_SETCOLUMNWIDTHS = 2123;
+    public static final int JAPI_INITIALIZE = 2124;
 
     // JAPI_QUESTIONS
     public static final int JAPI_QUESTIONS = 3072;

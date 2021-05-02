@@ -91,6 +91,9 @@
 *> 2021.03.21 Laszlo Erdos: 
 *>            - send_2int_string_5int_get_int
 *>            - japi_titledcolorpanel, japi_titlednamedcolorpanel
+*>------------------------------------------------------------------------------
+*> 2021.05.02 Laszlo Erdos: 
+*>            - japi_initialize
 *>******************************************************************************
 */
 
@@ -1468,6 +1471,9 @@ void japi_settext(int obj, string text)
 	send_3int(JAPI_SETTEXT,obj,len);
 	send(commandstream,text,len,0);
 }
+
+void japi_initialize(int obj)
+{	send_2int(JAPI_INITIALIZE,obj); }
 
 void japi_selectall(int obj)
 {	send_2int(JAPI_SELECTALL,obj); }

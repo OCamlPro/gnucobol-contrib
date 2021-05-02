@@ -95,6 +95,9 @@
 *> 2021.03.21 Laszlo Erdos: 
 *>            - JAPI_TITLEDCOLORPANEL, JAPI_TITLEDNAMEDCOLORPANEL
 *>            - japi_titledcolorpanel, japi_titlednamedcolorpanel
+*>------------------------------------------------------------------------------
+*> 2021.05.02 Laszlo Erdos: 
+*>            - JAPI_INITIALIZE, japi_initialize.
 *>******************************************************************************
 */
 
@@ -221,6 +224,7 @@
   #define JAPI_ADDROW                             2121
   #define JAPI_CLEARTABLE                         2122
   #define JAPI_SETCOLUMNWIDTHS                    2123
+  #define JAPI_INITIALIZE                         2124
 
 
   /*   JAPI_QUESTIONS  */
@@ -470,6 +474,7 @@
   extern  void  japi_appendtext ( int , char*  );
   extern  void  japi_inserttext ( int , char* , int  );
   extern  void  japi_settext ( int , char*  );
+  extern  void  japi_initialize ( int  );
   extern  void  japi_selectall ( int  );
   extern  void  japi_selecttext ( int , int , int  );
   extern  int   japi_getselstart ( int  );
