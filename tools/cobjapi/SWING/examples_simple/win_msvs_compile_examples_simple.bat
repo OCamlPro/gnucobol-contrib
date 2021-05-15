@@ -81,6 +81,7 @@ cobc -x -free %verbose% -I"%src_cobol_dir%" dialog.cob            %* %COBCOBJ% %
 cobc -x -free %verbose% -I"%src_cobol_dir%" dialogmodal.cob       %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" filedialog.cob        %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" flowlayout.cob        %* %COBCOBJ% %COBCLIB% 
+cobc -x -free %verbose% -I"%src_cobol_dir%" flowlayout1.cob       %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" flowsimple.cob        %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" focuslistener.cob     %* %COBCOBJ% %COBCLIB% 
 cobc -x -free %verbose% -I"%src_cobol_dir%" font.cob              %* %COBCOBJ% %COBCLIB% 
