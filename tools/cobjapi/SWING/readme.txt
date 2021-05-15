@@ -298,6 +298,9 @@ Program history, changes and bug fixes are listed in program headers.
 Date       Name / Change description
 ========== ==================================================================
 -----------------------------------------------------------------------------
+2021.05.15 Erich Müller:
+           - Documentation Japi-install-02.odg and Japi-install-02.pdf added.
+-----------------------------------------------------------------------------
 2021.05.02 Laszlo Erdos:
            - J-INITIALIZE added.
            - Japi2InternalFrameListener.java added.
