@@ -1,3 +1,8 @@
+2021-05-18 Sergey Kashyrin <ska@kiska.net>
+	* Implementing "dynamic" cursors, i.e.
+	* EXEC SQL DECLARE L_CSR CURSOR FOR L_PREP
+	* EXEC SQL PREPARE L_PREP FROM :HOST-VAR
+
 2021-04-14 Sergey Kashyrin <ska@kiska.net>
 	* Fix. WITH HOLD of cursor declaration was ignored
 

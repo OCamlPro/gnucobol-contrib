@@ -1,3 +1,6 @@
+2021-05-18 Sergey Kashyrin <ska@kiska.net>
+	* Enhancement for "dynamic" cursors.
+
 2019-07-18 Sergey Kashyrin <ska@kiska.net>
 	* Fixed extremely heavy bug for EXEC SQL CALL with COMP-3 parameters
     * It's been implemented cordially wrong for DECIMAL

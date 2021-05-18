@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Sergey Kashyrin <ska@kiska.net>
+ * Copyright (C) 2006-2020 Sergey Kashyrin <ska@kiska.net>
  *               2012 enhanced by Doug Vogel <dv11674@gmail.com>
  *               2013 fixes and enhancements by Atilla Akarsular <030ati@gmail.com>
  *
@@ -107,9 +107,9 @@ void log(const char *format_str, ...)
 {
 	va_list ap;
 #ifdef _MSC_VER
-	fprintf(stderr, "%d ", GetTickCount());
+	fprintf(stderr, "%u ", GetTickCount());
 #else
-	fprintf(stderr, "%d ", time(NULL));
+	fprintf(stderr, "%u ", time(NULL));
 #endif
 	va_start(ap, format_str);
 	vfprintf(stderr, format_str, ap);
@@ -136,9 +136,9 @@ void logd(int level, const char *format_str, ...)
 	}
 	if(level > log_level) return;
 #ifdef _MSC_VER
-	fprintf(stderr, "%d ", GetTickCount());
+	fprintf(stderr, "%u ", GetTickCount());
 #else
-	fprintf(stderr, "%d ", time(NULL));
+	fprintf(stderr, "%u ", time(NULL));
 #endif
 	va_start(ap, format_str);
 	vfprintf(stderr, format_str, ap);
@@ -428,6 +428,8 @@ struct STMT {
 	short   SQL_PARMS;
 	short   SQL_STMLEN;
 	char    SQL_STMT[1];	// actually char[SQL_STMLEN]
+	char	SQL_VTYPE;
+	char *	SQL_VADDR;
 };
 
 
@@ -634,7 +636,7 @@ extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 	strcpy(connUPR, conn);
 	strupr(connUPR);
 	bool bDriverSet = (strstr(connUPR, "DRIVER=") != NULL);
-	delete connUPR;
+	delete [] connUPR;
 
 	if(!bDriverSet) { // connection string NOT with "Driver="
 		char * user = NULL;
@@ -685,7 +687,7 @@ extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 					if(E.OC_SQLCODE == 0) E.OC_SQLCODE = -9999;
 					SQLFreeConnect(hDBC);
 					SQLFreeEnv(hEnv);
-					delete conn;
+					delete [] conn;
 					return E.OC_SQLCODE;
 				}
 			}
@@ -699,14 +701,14 @@ extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 			if(E.OC_SQLCODE == 0) E.OC_SQLCODE = -9999;
 			SQLFreeConnect(hDBC);
 			SQLFreeEnv(hEnv);
-			delete conn;
+			delete [] conn;
 			return E.OC_SQLCODE;
 		}
 		if(rc == SQL_SUCCESS_WITH_INFO) {
 			prnerr(SQL_HANDLE_DBC, hDBC);	// print the error
 		}
 	}
-	delete conn;
+	delete [] conn;
 
 	// Allocate memory for the statement handle
 	rc = SQLAllocHandle(SQL_HANDLE_STMT , hDBC, &hStmt);
@@ -814,7 +816,9 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 			return 0;
 		}
 	}
-	logd(901, "OCSQL: PREPARE I/O %.*s", S.SQL_STMLEN, S.SQL_STMT);
+	if(S.SQL_OPT != 'd' && S.SQL_OPT != 'D') {
+		logd(901, "OCSQL: PREPARE I/O %.*s", S.SQL_STMLEN, S.SQL_STMT);
+	}
 	CS.put(&S);
 	void ** PARMADDR = & V.OC_SQL_ADDR[0];
 	int * PARMLEN  = (int *)(&PARMADDR[V.OC_SQL_ARRSZ]);
@@ -850,7 +854,7 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		return E.OC_SQLCODE;
 	}
 	// Options
-	if(S.SQL_OPT == 'H') {
+	if(S.SQL_OPT == 'H' || S.SQL_OPT == 'd') {
 #ifdef ESQL_DB2
 		rc = SQLSetStmtAttr(stmt, SQL_ATTR_CURSOR_HOLD, (SQLPOINTER)SQL_CURSOR_HOLD_ON, SQL_IS_INTEGER);
 #else
@@ -861,7 +865,22 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		}
 	}
 	// Prepare SQL statement
-	rc = SQLPrepare(stmt, (SQLCHAR *) S.SQL_STMT, S.SQL_STMLEN);
+	if(S.SQL_OPT == 'D' || S.SQL_OPT == 'd') {
+		if(S.SQL_VTYPE == 'X') {
+			logd(901, "OCSQL: PREPARE I/O %.*s", S.SQL_STMLEN, S.SQL_VADDR);
+			rc = SQLPrepare(stmt, (SQLCHAR*)S.SQL_VADDR, S.SQL_STMLEN);
+		} else if(S.SQL_VTYPE == 'V') {
+			short vlen = *(short*)S.SQL_VADDR;
+			logd(901, "OCSQL: PREPARE I/O %.*s", vlen, S.SQL_VADDR + 2);
+			rc = SQLPrepare(stmt, (SQLCHAR*)(S.SQL_VADDR + 2), vlen);
+		} else {	// VTYPE == 'L'
+			int vlen = *(int*)S.SQL_VADDR;
+			logd(901, "OCSQL: PREPARE I/O %.*s", vlen, S.SQL_VADDR + 4);
+			rc = SQLPrepare(stmt, (SQLCHAR*)(S.SQL_VADDR + 4), vlen);
+		}
+	} else {
+		rc = SQLPrepare(stmt, (SQLCHAR*)S.SQL_STMT, S.SQL_STMLEN);
+	}
 	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
 		prnerr(SQL_HANDLE_STMT, stmt, &E);
 		SQLFreeStmt(stmt, SQL_CLOSE);
@@ -1842,7 +1861,11 @@ extern "C" OCEXPORT int OCSQLOCU(STMT & S, OC_SQLCA & E)
 		notconn(E);
 		return E.OC_SQLCODE;
 	}
-	logd(901, "OCSQL: OPEN CURSOR %.*s", S.SQL_STMLEN, S.SQL_STMT);
+	if(S.SQL_OPT != 'd' && S.SQL_OPT != 'D') {
+		logd(901, "OCSQL: OPEN CURSOR %.*s", S.SQL_STMLEN, S.SQL_STMT);
+	} else {
+		logd(901, "OCSQL: OPEN DYNAMIC CURSOR");
+	}
 	if(S.SQL_PREP != 'Y' && S.SQL_PREP != 'P') {
 		if(S.SQL_PREP == 'X') {
 			S.SQL_PREP = 'N';
@@ -1952,7 +1975,11 @@ extern "C" OCEXPORT int OCSQLFTC(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		notconn(E);
 		return E.OC_SQLCODE;
 	}
-	logd(901, "OCSQL: FETCH %.*s", S.SQL_STMLEN, S.SQL_STMT);
+	if(S.SQL_OPT != 'd' && S.SQL_OPT != 'D') {
+		logd(901, "OCSQL: FETCH %.*s", S.SQL_STMLEN, S.SQL_STMT);
+	} else {
+		logd(901, "OCSQL: FETCH DYNAMIC");
+	}
 	SQLRETURN rc;
 	mysql * sql = (mysql *) S.SQL_IPTR;
 	SQLHANDLE stmt = (sql == NULL) ? (SQLHANDLE) 0 : *(sql->ST);
@@ -2175,7 +2202,11 @@ extern "C" OCEXPORT int OCSQLCCU(STMT & S, OC_SQLCA & E)
 		notconn(E);
 		return E.OC_SQLCODE;
 	}
-	logd(901, "OCSQL: CLOSE CURSOR %.*s", S.SQL_STMLEN, S.SQL_STMT);
+	if(S.SQL_OPT != 'd' && S.SQL_OPT != 'D') {
+		logd(901, "OCSQL: CLOSE CURSOR %.*s", S.SQL_STMLEN, S.SQL_STMT);
+	} else {
+		logd(901, "OCSQL: CLOSE DYNAMIC CURSOR");
+	}
 	mysql * msql = (mysql *) S.SQL_IPTR;
 	SQLHANDLE stmt = (msql == NULL) ? (SQLHANDLE) 0 : *(msql->ST);
 	if(stmt == 0) {
@@ -2189,6 +2220,9 @@ extern "C" OCEXPORT int OCSQLCCU(STMT & S, OC_SQLCA & E)
 	strcpy(E.OC_SQLSTATE, "00000");
 	E.OC_SQLCODE = 0;
 	SQLFreeStmt(stmt, SQL_CLOSE);
+	if(S.SQL_OPT == 'd' || S.SQL_OPT == 'D') {
+		S.SQL_PREP = 'N';
+	}
 	return E.OC_SQLCODE;
 }
 
@@ -2402,4 +2436,4 @@ static bool movecomp3(char * comp3, int bytelen, int precision, char * unpacked)
 	return true;
 }
 
-static const char * copyr = "Copyright (C) 2006-2019 Sergey Kashyrin <ska@kiska.net>";
+static const char * copyr = "Copyright (C) 2006-2020 Sergey Kashyrin <ska@kiska.net>";

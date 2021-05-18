@@ -39,7 +39,7 @@
 
 #include "vcache.h"
 
-static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCobol Version 2 (2021.04.14) Build " __DATE__ "\n";
+static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCobol Version 2 (2021.05.18) Build " __DATE__ "\n";
 /**  Version is present in SQLCA. Current is 02 */
 
 static bool bAPOST = true;		// use apostroph instead of quote
@@ -428,12 +428,27 @@ private:
 			sqlu = sqlu.substr(x + 1);
 			sql = sql.substr(x + 1);
 			if(sqlu.starts("CURSOR")) {
+				bool bDyn = false;
+				bool bWH = false;
+				varholder* vd = NULL;
 				x = sqlu.indexof("SELECT ");
 				if(x < 0) {
-					sprintf(buf, "line %d of %s: Incorrect SQL DECLARE: %s", cl.lineno, cl.fname, (const char *)sql);
-					throw buf;
+					x = sqlu.indexof(" FOR ");
+					if(x < 0) {
+						sprintf(buf, "line %d of %s: Incorrect SQL DECLARE: %s", cl.lineno, cl.fname, (const char*)sql);
+						throw buf;
+					}
+					string dvar = sqlu.substr(x + 5);
+					if(dvar.indexof(" ") >= 0) {
+						sprintf(buf, "line %d of %s: Incorrect SQL DECLARE: %s", cl.lineno, cl.fname, (const char*)sql);
+						throw buf;
+					}
+					bDyn = true;
+					vd = new varholder(dvar);
+					vd->type = 'Y';
+					sym.put(vd);
+					++x;
 				}
-				bool bWH = false;
 				int opt = sqlu.indexof(" WITH HOLD ");
 				if(opt > 0 && opt < x) {
 					bWH = true;
@@ -441,8 +456,12 @@ private:
 				sql = sql.substr(x);
 				cl.sqlnum = sqlcmd.add(sql);
 				varholder * v = new varholder(svar);
-				v->type = bWH ? 'c' : 'C';
+				v->type = bDyn ? (bWH ? 'd' : 'D') : (bWH ? 'c' : 'C');
 				v->size = cl.sqlnum;
+				if(vd != NULL) {
+					vd->size = cl.sqlnum;
+					vd->over = v;
+				}
 				sym.put(v);
 			} // else ignoring
 			cl.sqlaction = 12;
@@ -463,9 +482,11 @@ private:
 		} else if(sqlu.starts("CALL ")) {
 			cl.sqlnum = sqlcmd.add(sql);
 			cl.sqlaction = 18;
+		} else if(sqlu.starts("PREPARE ")) {
+			cl.sqlaction = 19;
 		} else if(bForceUnknown) {
 			cl.sqlnum = sqlcmd.add(sql);
-			cl.sqlaction = 19;
+			cl.sqlaction = 20;
 		} else {
 			sprintf(buf, "line %d of %s: unsupported SQL: %s", cl.lineno, cl.fname, (const char *)sql);
 			throw buf;
@@ -618,6 +639,12 @@ private:
 			return "CURSOR WITH HOLD";
 		case 'C':
 			return "CURSOR";
+		case 'd':
+			return "DYNAMIC CURSOR WITH HOLD";
+		case 'D':
+			return "DYNAMIC CURSOR";
+		case 'Y':
+			return "DYNAMIC STATEMENT";
 		case 'F':
 			return "DOUBLE FLOAT";
 		case 'i':
@@ -711,6 +738,9 @@ private:
 					processCALL(cl, n);
 					break;
 				case 19:
+					processPREPARE(cl, n);
+					break;
+				case 20:
 					processUNKNOWN(cl, n);
 					break;
 				default:
@@ -764,6 +794,21 @@ private:
 			string sql = (string)sqlcmd[i];
 			string sqlu(sql);
 			sqlu.toupper();
+			if(sqlu.starts("FOR ")) {
+				sprintf(buf, "       01 SQL-STMT-%d.", i);
+				addln(lineno++, buf);
+				addln(lineno++, "           05 SQL-IPTR   POINTER.");
+				sprintf(buf, "           05 SQL-PREP   PIC X VALUE %cN%c.", Q, Q);
+				addln(lineno++, buf);
+				addln(lineno++, "           05 SQL-OPT    PIC X VALUE SPACE.");
+				addln(lineno++, "           05 SQL-PARMS  PIC S9(4) COMP-5 VALUE 0.");
+				addln(lineno++, "           05 SQL-STMLEN PIC S9(4) COMP-5 VALUE 0.");
+				addln(lineno++, "           05 FILLER     PIC X.");
+				addln(lineno++, "           05 SQL-VTYPE  PIC X VALUE SPACE.");
+				addln(lineno++, "           05 SQL-VADDR  POINTER.");
+				addln(lineno++, "      **********************************************************************");
+				continue;
+			}
 			if(sqlu.starts("SELECT ")) {
 				int ix = sqlu.indexof(" INTO ");
 				if(ix > 0) {
@@ -2237,6 +2282,60 @@ private:
 		doWHENEVER(lineno);
 	}
 
+	void processPREPARE(cobline& cl, int& lineno)
+	{
+		int iv = 0;
+		string sql = cl.sql->substr(8);
+		sql.toupper();
+		int x = sql.indexof(" FROM ");
+		if(x <= 0) {
+			sprintf(buf, "line %d of %s: Incorrect PREPARE %s", cl.lineno, cl.fname, (const char*)sql);
+			throw buf;
+		}
+		string hvar = sql.substr(x + 6);
+		if(hvar.starts(":")) hvar = hvar.substr(1);
+		sql = sql.substr(0, x);
+		varholder* vd = sym[sql];
+		if(vd == NULL || vd->type != 'Y') {
+			sprintf(buf, "line %d of %s: Dynamic Statement not found: %s", cl.lineno, cl.fname, (const char*)sql);
+			throw buf;
+		}
+		varholder* vc = vd->over;
+		vd->inuse = true;
+		varholder* v = sym[hvar];
+		if(v == NULL) {
+			sprintf(buf, "line %d of %s: Host Variable not found: %s", cl.lineno, cl.fname, (const char*)hvar);
+			throw buf;
+		}
+		if(v->type != 'X' && v->type != 'L' && v->type != 'V') {
+			sprintf(buf, "line %d of %s: Unsupported Host Variable Type: %s", cl.lineno, cl.fname, (const char*)hvar);
+			throw buf;
+		}
+
+		int sqlnum = vd->size;
+		sprintf(buf, "           MOVE '%c' TO SQL-OPT OF SQL-STMT-%d", vc->type, sqlnum);
+		addln(lineno++, buf);
+		if(v->type == 'X') {
+			sprintf(buf, "           MOVE %d TO SQL-OPT OF SQL-STMT-%d", v->size, sqlnum);
+			addln(lineno++, buf);
+		}
+		sprintf(buf, "           MOVE '%c' TO SQL-VTYPE OF SQL-STMT-%d", v->type, sqlnum);
+		addln(lineno++, buf);
+		sprintf(buf, "           SET SQL-VADDR OF SQL-STMT-%d", sqlnum);
+		addln(lineno++, buf);
+		sprintf(buf, "             TO ADDRESS OF %s", (const char*)hvar);
+		addln(lineno++, buf);
+		addln(lineno++, "           MOVE 0 TO SQL-COUNT");
+		sprintf(buf, "           CALL %sOCSQLPRE%s USING SQLV", sSQ, sSQ);
+		addln(lineno++, buf);
+		sprintf(buf, "                                   SQL-STMT-%d", sqlnum);
+		addln(lineno++, buf);
+		sprintf(buf, "                                   SQLCA");
+		addln(lineno++, buf);
+		addln(lineno++, "           END-CALL");
+		doWHENEVER(lineno);
+	}
+
 	void processOPENCURSOR(cobline & cl, int & lineno)
 	{
 		int iv = 0;
@@ -2246,13 +2345,21 @@ private:
 		sql.toupper();
 		sarray moves;
 		varholder * v = sym[sql];
-		if(v == NULL || (v->type != 'C' && v->type != 'c')) {
+		if(v == NULL || (v->type != 'C' && v->type != 'c' && v->type != 'D' && v->type != 'd')) {
 			sprintf(buf, "line %d of %s: Cursor not found: %s", cl.lineno, cl.fname, (const char *)sql);
 			throw buf;
 		}
+		int sqlnum = v->size;
+		if(v->type == 'D' || v->type == 'd') {
+			sprintf(buf, "           CALL %sOCSQLOCU%s USING SQL-STMT-%d", sSQ, sSQ, sqlnum);
+			addln(lineno++, buf);
+			addln(lineno++, "                               SQLCA");
+			addln(lineno++, "           END-CALL");
+			doWHENEVER(lineno);
+			return;
+		}
 		bool bWH = (v->type == 'c');
 		v->inuse = true;
-		int sqlnum = v->size;
 		removeInQ(sql, sqlcmd[sqlnum]);
 		const char * shift = "              ";
 
@@ -2431,7 +2538,7 @@ private:
 		}
 		cname.toupper();
 		varholder * v = sym[cname];
-		if(v == NULL || (v->type != 'C' && v->type != 'c')) {
+		if(v == NULL || (v->type != 'C' && v->type != 'c' && v->type != 'D' && v->type != 'd')) {
 			sprintf(buf, "line %d of %s: Cursor not found: %s", cl.lineno, cl.fname, (const char *)sql);
 			throw buf;
 		}
@@ -2569,7 +2676,7 @@ private:
 		if(x > 0) sql = sql.substr(0, x);
 		sql.toupper();
 		varholder * v = sym[sql];
-		if(v == NULL || (v->type != 'C' && v->type != 'c')) {
+		if(v == NULL || (v->type != 'C' && v->type != 'c' && v->type != 'D' && v->type != 'd')) {
 			sprintf(buf, "line %d of %s: Cursor not found: %s", cl.lineno, cl.fname, (const char *)sql);
 			throw buf;
 		}
