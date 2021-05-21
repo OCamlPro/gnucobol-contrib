@@ -27,6 +27,7 @@
 #include <string.h>
 #include <math.h> 
 #ifdef _MSC_VER
+	#define _CRTDBG_MAP_ALLOC
 	#include <crtdbg.h>
 #endif
 
@@ -43,6 +44,10 @@
 #include "utils.h"
 #include "file.h"
 #include "gcshare.h"
+
+#include "exitroutines.h"
+#include "copyfile.h"
+
 
 
 /* Module initialization indicator */
@@ -62,6 +67,19 @@ struct cob_frame	*frame_overflow;
 struct cob_frame	*frame_ptr;
 struct cob_frame	frame_stack[255];
 
+static int		ioixpafix();
+static int		ioixpafix_(const int);
+
+static int
+ioixpafix()
+{
+	return ioixpafix_(0);
+}
+static int
+ioixpafix_(const int entry) {
+	return 0;
+}
+
 #define  COB_SOURCE_FILE		"gcsort.c"
 #define  COB_MODULE_FORMATTED_DATE	"gen 04 2021 18:46:15"
 #define  COB_MODULE_DATE		20210104
@@ -75,7 +93,6 @@ void yyset_debug(int ndbg);
 int main_prod(int argc, char **argv);
 int main(int argc, char **argv) 
 {
-	 
 	int rtc = 0;
 	g_retWarn = 0;
 	if (argc >= 2) 
@@ -117,7 +134,7 @@ int main(int argc, char **argv)
 
 	rtc = main_prod(argc,argv);
 //
-//-->>		 
+//-->>		
 #ifdef _DEBUG
 	#ifdef _MSC_VER
 		_CrtDumpMemoryLeaks();
@@ -128,20 +145,22 @@ int main(int argc, char **argv)
 		rtc = rtc + g_retWarn;	// verify warning
   	return rtc;
 }
-
-int main_prod(int argc, char **argv) {
-
+  
+int main_prod(int argc, char **argv) {	 
 	time_t timeStart;
-	struct job_t *job; 
+	struct job_t *job;
 	int nRC = -2;
 	time (&timeStart);
 	yydebug = 0; // 0; // no debug  // yydebug=1; // yes debug
-	yyset_debug(0); // 0);	// set debug scanner off
-
+	yyset_debug(0); // 0);	// set debug scanner off  
+	 
 	cob_init(argc, argv);
 	cob_module_enter(&module, &cob_glob_ptr, 0);
 
-	module->cob_procedure_params = cob_procedure_params;
+	cob_glob_ptr->cob_call_params = 0; ;
+	cob_glob_ptr->cob_stmt_exception = 0;
+
+
 
 	/* Set frame stack pointer */
 	frame_ptr = frame_stack;
@@ -196,6 +215,7 @@ int main_prod(int argc, char **argv) {
 	module->module_active++;
 	/* Save number of call params */
 	module->module_num_params = cob_glob_ptr->cob_call_params;
+	 
 	job=job_constructor();
 	if (job != NULL)
 	   	nRC = job_load(job, argc, argv);
@@ -204,26 +224,37 @@ int main_prod(int argc, char **argv) {
     if (nRC == 0){
 	// check SORT FIELDS=COPY
 	// in this case force MERGE 
+		/*
 		if ((job_GetTypeOp(job) == 'S') && (job_GetFieldCopy() == 1)){
 				job_SetTypeOP('M');
 				printf("Forced command MERGE for SORT FIELDS=COPY\n");
 		}
-	//
+		*/
+		if (job_GetFieldCopy() == 1)
+			job_SetTypeOP('C');		// Copy
+		//
 		if (nRC >= 0) 	
 			nRC = job_print(job);
 		if (nRC >= 0) {
 			nRC = job_check(job);
 		}
 		if (nRC >= 0)	
-			job_ReviewMemeAlloc(job);
+			job_ReviewMemAlloc(job);
 		if ((nRC >= 0) && (job_NormalOperations(job) == 1))   // 0 = Normal , 1 = Test command Line
 				printf("GCSORT - TEST COMMAND LINE PARAMETERS \n");
 		if ((nRC >= 0) && (job_NormalOperations(job) == 0)) {  // 0 = Normal , 1 = Test command Line
-				// check typeOP  'S' for Sort e 'M' for Merge
-				if (job_GetTypeOp(job) == 'M') 		
+				// check typeOP  'S' for Sort , 'M' for Merge and 'C' for Copy
+				switch (job_GetTypeOp(job)) {
+				case ('C'):
+					nRC = job_copy(job);
+					break;
+				case ('M'):
 					nRC = job_merge_files(job);
-				if (job_GetTypeOp(job) == 'S') 		
-					nRC = job_sort(job);				
+					break;
+				case ('S'):
+					nRC = job_sort(job);
+					break;
+				}
 				if (nRC >= 0)	
 					job_print_final(job, & timeStart);
 		}
@@ -233,32 +264,40 @@ int main_prod(int argc, char **argv) {
         if (job_GetTypeOp(job) == 'M') 		
 		    printf("GCSORT - Merge OK\n");
         else
-		    printf("GCSORT - Sort OK\n"); 
+			if (job_GetTypeOp(job) == 'C')
+				printf("GCSORT - Copy OK\n");
+			else
+				printf("GCSORT - Sort OK\n"); 
     }
 	else
 	{
         if (job_GetTypeOp(job) == 'M') 		
 		    printf("GCSORT - Merge ERROR\n");  
         else
-		    printf("GCSORT - Sort ERROR\n");  
+			if (job_GetTypeOp(job) == 'C')
+				printf("GCSORT - Copy ERROR\n");
+			else
+				printf("GCSORT - Sort ERROR\n");
 		nRC = GC_RTC_ERROR;
 	}
 
 //-->>	
 	job_destroy(job);
-//-->>		
+//-->>		 
     job_destructor(job);
+
+
     if (module->module_active) {
   	    module->module_active--;
     }
 	// printf("GCSORT - cob_module_leave\n");
 	/* Pop module stack */
-    cob_module_leave (module);
-	cob_module_free(&module);
+    //-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>cob_module_leave (module);
+	//-->>>>>>>>>>>>>>>>>>>>>cob_module_free(&module);
 	//	printf("GCSORT - cob_stop_run\n");
 	//	cob_stop_run(nRC);
 	//	cob_terminate_exec(nRC); 
-	//
+	// 
 	// printf("GCSORT - cob_stop_run after\n");
 	return nRC;
 }
@@ -267,8 +306,11 @@ int main_prod(int argc, char **argv) {
 void verify_options(int numargs, char** args)
 {
 	char* pch;
-	if ((numargs > 1) && (strlen(args[1]) > 0)) {
-		pch = strtok(args[1], " =");
+	char szOpt[1024];
+	memset(szOpt, 0x00, 1024);
+	strcpy(szOpt, args[1]);
+	if ((numargs > 1) && (strlen(szOpt) > 0)) {
+		pch = strtok(szOpt, " =");
 		if (pch != NULL) {
 			if (!strcasecmp(pch, "-fsign")) {
 				pch = strtok(NULL, " =");

@@ -1,4 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LocalDebuggerCommandArguments>SORT FIELDS=COPY     USE C:\GCSORT\GCSORT_relnew\tests\files\FDATE_YYMM.txt RECORD F,22 ORG LS     GIVE C:\GCSORT\GCSORT_relnew\tests\files\FDATE_YYMM.txt.srt RECORD F,22 ORG LS </LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerCommandArguments>FORMAT=Y2T SORT FIELDS=(19,4,Y2T,A)     USE C:\GCSORT\GCSORT_relnew\tests\files\FDATE_YYMM.txt RECORD V,1,22 ORG LS     GIVE C:\GCSORT\GCSORT_relnew\tests\files\FDATE_YYMM.txt.srt RECORD V,1,22 ORG LS OPTION Y2PAST=70 , MODS E15=(CE15DATE,70000), E35=(CE35DATE) </LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
 </Project>

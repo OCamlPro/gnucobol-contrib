@@ -296,6 +296,11 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 					file->stFileDef->keys[k].char_suppress = 0;
 					file->stFileDef->keys[k].count_components = 0;// count_components
 					file->stFileDef->keys[k].component[0] = NULL;
+
+					// s.m. 20210215
+					file->stFileDef->extfh_ptr = NULL;
+					file->stFileDef->linorkeyptr = NULL;
+					file->stFileDef->sort_collating = NULL;
 #endif
 // s.m. 202101 end
 					file->stFileDef->keys[k].offset = tKeys->position;

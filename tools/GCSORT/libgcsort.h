@@ -20,6 +20,10 @@
 #ifndef LIBGCSORT_H_INCLUDED
 #define LIBGCSORT_H_INCLUDED
 
+#define  COB_SOURCE_FILE		"gcsort.c"
+#define  COB_MODULE_FORMATTED_DATE	"gen 04 2021 18:46:15"
+#define  COB_MODULE_DATE		20210104
+#define  COB_MODULE_TIME		184615
 
 // -- #ifdef	_WIN32
 #if defined(_WIN32) && ( !defined(__MINGW32__) && !defined(__MINGW64__))

@@ -318,10 +318,12 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 				continue;
 
 		// check Include
-		if (pOutfil->outfil_includeCond !=NULL && condField_test(pOutfil->outfil_includeCond,(unsigned char*) recordBuffer+nSplitPosPnt, job)==0) 
+		// if retcode of condField_test is '0' cond is OK.
+		if (pOutfil->outfil_includeCond !=NULL && condField_test(pOutfil->outfil_includeCond,(unsigned char*) recordBuffer+nSplitPosPnt, job)==0)  // Cond KO
 				useRecord=0;
 		// check Omit
-		if (pOutfil->outfil_omitCond != NULL && condField_test(pOutfil->outfil_omitCond,(unsigned char*) recordBuffer+nSplitPosPnt, job)==1) 
+		//if (pOutfil->outfil_omitCond != NULL && condField_test(pOutfil->outfil_omitCond,(unsigned char*) recordBuffer+nSplitPosPnt, job)==1) 
+		if (pOutfil->outfil_omitCond != NULL && condField_test(pOutfil->outfil_omitCond,(unsigned char*) recordBuffer+nSplitPosPnt, job)!=0)		// Cond KO 
 				useRecord=0;
 // Verify Outfil- Outrek
 		if (pOutfil->outfil_outrec != NULL) {

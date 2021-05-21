@@ -172,6 +172,10 @@ int condField_print(struct condField_t *condField) {
 	return 0;
 }
  
+// Return code:
+//		= 0 - false = Condition is OK
+//     != 0 - true  = Condition si KO
+//
 int condField_test(struct condField_t *condField, unsigned char *record, struct job_t* job) {
 	int result;
 	int nVerify=0;
@@ -210,7 +214,7 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
 						exit(GC_RTC_ERROR);
 					}
 					else
-						return 0;	// false condition
+						return 0;	// false condition -- Is OK
 				}
 			}
 
@@ -238,6 +242,7 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
                 condField->condition.cb_fd->data = (unsigned char*) (szBufVLSCMP+condField->condition.position);
 				result=fieldValue_checkvalue((struct fieldValue_t *)condField->condition.fieldValue, condField->condition.cb_fd, condField->condition.length);
             }
+			/* OLD s.m. 20210516 
 			switch (condField->condition.condition) {
 				case COND_CONDITION_EQUAL:
 					nVerify = (result==0);
@@ -255,19 +260,77 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
 				default:
 					break;
 			}
+			*/
+			/* new */
+			/* 
+			switch (condField->condition.condition) {
+			case COND_CONDITION_EQUAL:					
+				nVerify = (result == 0);
+				return (result == 0);
+			case COND_CONDITION_GREATERTHAN:
+				return (result <= 0);
+			case COND_CONDITION_GREATEREQUAL:
+				return (result < 0);
+			case COND_CONDITION_LESSERTHAN:
+				return (result >= 0);
+			case COND_CONDITION_LESSEREQUAL:
+				return (result > 0);
+			case COND_CONDITION_NOTEQUAL:
+				return (result != 0);
+			default:
+				break;
+			}
+			*/
+			switch (condField->condition.condition) {
+			case COND_CONDITION_EQUAL:
+				if (result == 0)
+					return TRUE;
+				return FALSE;
+			case COND_CONDITION_GREATERTHAN:
+				if (result > 0)
+					return TRUE;
+				return FALSE;
+			case COND_CONDITION_GREATEREQUAL:
+				if (result >= 0)
+					return TRUE;
+				return FALSE;
+			case COND_CONDITION_LESSERTHAN:
+				if (result < 0)
+					return TRUE;
+				return FALSE;
+			case COND_CONDITION_LESSEREQUAL:
+				if (result <= 0)
+					return TRUE;
+				return FALSE;
+			case COND_CONDITION_NOTEQUAL:
+				if (result >= 0)
+					return TRUE;
+				return FALSE;
+			default:
+				break;
+			}
 			break;
 		case COND_TYPE_OPERATION:
 			switch (condField->operation.operation) {
 				case COND_OPERATION_AND:
-					return (condField_test(condField->operation.first,record, job) && condField_test(condField->operation.second,record, job));
+					if ((condField_test(condField->operation.first, record, job) == TRUE) &&
+						(condField_test(condField->operation.second, record, job) == TRUE))
+						return TRUE;
+					return FALSE;
+					//return (condField_test(condField->operation.first,record, job) && condField_test(condField->operation.second,record, job));
 				case COND_OPERATION_OR:
-					return (condField_test(condField->operation.first,record, job) || condField_test(condField->operation.second,record, job));
+					if ((condField_test(condField->operation.first, record, job) == TRUE) ||
+						(condField_test(condField->operation.second, record, job) == TRUE))
+						return TRUE;
+					return FALSE;
+					// return (condField_test(condField->operation.first,record, job) || condField_test(condField->operation.second,record, job));
 				default:
 					break;
 			}
 			break;
 		case COND_TYPE_COND_FIELDS:
 			result=condField_compare(condField, record);
+			/* s.m. 20210516
 			switch (condField->condition_field.condition) {
 				case COND_CONDITION_EQUAL:
 					return (result==0);
@@ -283,6 +346,69 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
 					return (result!=0);
 				default:
 					break;
+			}
+			*/
+		//	switch (condField->condition_field.condition) {
+		//		case COND_CONDITION_EQUAL:					
+		//			return (result==0);
+		//		case COND_CONDITION_GREATERTHAN:
+		//			return (result<=0);
+		//		case COND_CONDITION_GREATEREQUAL:
+		//			return (result<0);
+		//		case COND_CONDITION_LESSERTHAN:
+		//			return (result>=0);
+		//		case COND_CONDITION_LESSEREQUAL:
+		//			return (result>0);
+		//		case COND_CONDITION_NOTEQUAL:
+		//			return (result!=0);
+		//		default:
+		//			break;
+		//	}
+			/*
+			switch (condField->condition_field.condition) {
+			case COND_CONDITION_EQUAL:
+				return (result == 0);
+			case COND_CONDITION_GREATERTHAN:
+				return (result > 0);
+			case COND_CONDITION_GREATEREQUAL:
+				return (result >= 0);
+			case COND_CONDITION_LESSERTHAN:
+				return (result > 0);
+			case COND_CONDITION_LESSEREQUAL:
+				return (result >= 0);
+			case COND_CONDITION_NOTEQUAL:
+				return (result != 0);
+			default:
+				break;
+			}
+			*/
+			switch (condField->condition_field.condition) {
+			case COND_CONDITION_EQUAL:
+				if (result == 0)
+					return TRUE;
+				return FALSE;
+			case COND_CONDITION_GREATERTHAN:
+				if (result > 0)
+					return TRUE;
+				return FALSE;
+			case COND_CONDITION_GREATEREQUAL:
+				if (result >= 0)
+					return TRUE;
+				return FALSE;
+			case COND_CONDITION_LESSERTHAN:
+				if (result < 0)
+					return TRUE;
+				return FALSE;
+			case COND_CONDITION_LESSEREQUAL:
+				if (result <= 0)
+					return TRUE;
+				return FALSE;
+			case COND_CONDITION_NOTEQUAL:
+				if (result != 0)
+					return TRUE;
+				return FALSE;
+			default:
+				break;
 			}
 			break;
 		default:

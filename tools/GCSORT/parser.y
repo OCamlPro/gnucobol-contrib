@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2017 Sauro Menna
+    Copyright (C) 2016-2021 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -110,8 +110,11 @@
 %token				SUM						"SUM clause"
 %token				SPLIT					"SPLIT clause"
 %token				SPLITBY					"SPLITBY clause"
-%token				VLSCMP					"VLSCMP clause"
-%token				VLSHRT					"VLSHRT clause"
+%token       		VLSCMP					"VLSCMP clause"
+%token          	VLSHRT					"VLSHRT clause"
+%token              Y2PAST                  "Y2PAST clause"
+%token              MODS                    "MODS clause"
+%token <string>     EXROUT                  "EXROUT clause"
 %token 				BUILD					"BUILD instruction"
 %token 				FIELDS					"FIELDS instruction"
 %token 				OVERLAY					"OVERLAY instruction"
@@ -123,6 +126,7 @@
 %token 				USE						"USE clause"
 %token 				COPY					"COPY"
 %token <number>		DIGIT					"DIGIT"
+%token <number>		DIGITBIG		        "DIGITBIG"
 %token <string>		CHARTCOND  			    "CHARTCOND" 
 %token <string>		CHARTYPE				"CHARTYPE" 
 %token <string>		FILETYPE				"FILETYPE"
@@ -142,7 +146,7 @@
 %type <number>		condition
 %type <fieldValue>	fieldvaluerec
 %type <fieldValue>	fieldvaluecond
-%type <condField>	condfield
+%type <condField>	condfieldcond
 %type <condField>	allcondfield
 %type <SumField>	sumfield
 %type <SumField>	allsumfield
@@ -420,9 +424,10 @@ sortclause:
         strcpy(szMexToken, " sort clause ");
 }
     | SORT FIELDS COPY {
-        job_SetTypeOP('M');		// for Merge
+        job_SetTypeOP('C');		// for Merge
         job_SetFieldCopy(1);
         strcpy(szMexToken, " sort clause ");
+
 }
 
 mergeclause: 
@@ -436,7 +441,7 @@ mergeclause:
         strcpy(szMexToken, " merge clause ");
 }
     | MERGE FIELDS COPY {
-        job_SetTypeOP('M');
+        job_SetTypeOP('C');
         job_SetFieldCopy(1);
         strcpy(szMexToken, " merge clause ");
 }
@@ -469,7 +474,7 @@ formatclause:
 */
 ;
 allcondfield: 
-    condfield {
+    condfieldcond {
 		$$=$1;
 }
 	| '(' allcondfield ')' {
@@ -497,7 +502,7 @@ allcondfield:
 ;
 
 
-condfield: 	
+condfieldcond: 	
     /* #################################################################################################### */
     // pos1, len1, format1, operator, pos2, len2, format2 - 
     // check field in pos1 for len1 and format1 with field in pos2 for len2 and format2, apply operator   
@@ -715,6 +720,7 @@ inoutrec:
         default:
             break;
         }
+        free($3); // s.m. 202015
 		free($4); 
 }
    // new  20201211 end
@@ -939,6 +945,7 @@ inoutrec:
         default:
             break;
         }
+        free($1); // s.m. 202105
 }			
 
     /* ################################################## */
@@ -1398,6 +1405,50 @@ option:
     | VLSHRT {
         utils_SetOptionSort("VLSHRT", NULL, 0);
 		strcpy(szMexToken, " option VLSCMP clause ");
+}
+    | Y2PAST '=' DIGIT {
+        utils_SetOptionY2Past("Y2PAST", $3);
+		strcpy(szMexToken, " option y2past clause ");
+}
+    | ',' EXROUT '=' '(' STRING ')' 
+    {
+        utils_SetOptionExRoutine("MODS", $2, $5);
+		strcpy(szMexToken, " option MODS E15 clause 1");
+        free($2);
+        free($5);
+}
+    | MODS EXROUT '=' '(' STRING ')'
+    {
+        utils_SetOptionExRoutine("MODS", $2, $5);
+		strcpy(szMexToken, " option MODS E15 clause 1");
+        free($2);
+        free($5);
+}
+    | MODS EXROUT '=' '(' STRING ',' DIGITBIG ')' {
+        utils_SetOptionExRoutine("MODS", $2, $5);
+		strcpy(szMexToken, " option MODS E15 clause 2");
+        free($2);
+        free($5);
+}
+    | MODS EXROUT '=' '(' STRING ',' DIGITBIG ',' STRING ')' {
+        utils_SetOptionExRoutine("MODS", $2, $5);
+		strcpy(szMexToken, " option MODS E15 clause 3");
+        free($2);
+        free($5);
+        free($9);
+}
+    | MODS EXROUT '=' '(' STRING ',' DIGIT ')' {
+        utils_SetOptionExRoutine("MODS", $2, $5);
+		strcpy(szMexToken, " option MODS E15 clause 2");
+        free($2);
+        free($5);
+}
+    | MODS EXROUT '=' '(' STRING ',' DIGIT ',' STRING ')' {
+        utils_SetOptionExRoutine("MODS", $2, $5);
+		strcpy(szMexToken, " option MODS E15 clause 3");
+        free($2);
+        free($5);
+        free($9);
 }
 ;
 optionclause: 

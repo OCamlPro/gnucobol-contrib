@@ -170,8 +170,8 @@ void GCSORT_Usage ( void )
     printf("    INREC   FIELDS | INREC   BUILD =({FieldSpec})\n");                     
     printf("    INREC   OVERLAY =({FieldSpec})\n");
     printf("    OUTREC  FIELDS | OUTREC  BUILD =({FieldSpec})\n");
-    printf("    OUTREC  OVERLAY =({FieldSpec})\n");
-    printf("\n");
+    printf("    OUTREC  OVERLAY =({FieldSpec}) \n");
+    printf(" \n");
     printf("    OUTFIL                                                                         \n");
     printf("         INCLUDE | OMIT ({Condition})[,FORMAT={FormatType}]                            \n");
     printf("         OUTREC = ({FieldSpec})                                                   \n");
@@ -189,7 +189,9 @@ void GCSORT_Usage ( void )
     printf("                               missing compare field bytes with binary zeros        \n");
     printf("         VLSHRT           0 disabled , 1 = enabled -- treat any comparison       \n");
     printf("                               involving a short field as false                     \n");
-    printf("\n");
+    printf("         Y2PAST           (YY) - Sliding, (YYYY) century\n");
+    printf("         MODS E15=(<name>) [,]     <name>= Name E15 Cobol Program for input\n");
+    printf("              E35=(<name>)         <name>= Name E35 Cobol Program for ouput\n");
     printf("________________________________________________________________________________________\n");
     printf("___{Parameters}____________________________|___{Relational}_____________________________\n");
     printf("  {FileName} = Filename or Env. Variable   |  EQ = Equal                                \n");
@@ -222,6 +224,16 @@ void GCSORT_Usage ( void )
     printf("  CSL = Numeric sign leading separate      |  CST = Numeric sign trailing separate      \n");
     printf("  CST = Numeric sign trailing separate     |                                            \n");
     printf("___________________________________________|____________________________________________\n");
+    printf("_Format__Len__Type__Date field_____________|_Format__Len__Type__Date field______________\n");
+    printf(" Y2T    = 8   ZD    CCYYMMDD               |  Y2D   = 1   PD    YY      \n");
+    printf(" Y2T    = 4   ZD    YYXX                   |  Y2P   = 2   PD    YY      \n");
+    printf(" Y2T    = 2   ZD    YYX                    |  Y2U   = 3   PD    YYDDD      \n");
+    printf(" Y2T    = 3   ZD    YY                     |  Y2S   = 2   ZD    YY      \n");
+    printf(" Y2T    = 5   ZD    YYDDD                  |  Y2V   = 4   PD    YYMMDD      \n");
+    printf(" Y2T    = 6   ZD    YYMMDD                 |  Y2X   = 3   PD    DDDYY      \n");
+    printf(" Y2B    = 1   BI    YY                     |  Y2Y   = 4   PD    MMDDYY      \n");
+    printf(" Y2C    = 2   ZD    YY                     |  Y2Z   = 2   ZD    YY      \n");
+    printf("___________________________________________|____________________________________________\n");   
     printf("____{FieldSpec}___Field Specification___________________________________________________\n");
     printf("  pos, len           pos = position input record, len = length of field            \n");
     printf("  posOut:pos,len     posOut  = position output, pos = position input , len = length \n");

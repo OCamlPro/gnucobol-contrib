@@ -37,6 +37,7 @@
 #include "gcsort.h"
 #include "utils.h"
 #include "outfil.h"
+#include "exitroutines.h"
 #include "gcshare.h"
 
 // s.m.
@@ -133,8 +134,51 @@ int utils_parseFieldType(const char *type)
 		return FIELD_TYPE_NUMERIC_CSL;
 	} else if (!strcasecmp(type,"CSL")) {
 		return FIELD_TYPE_NUMERIC_CSL;
-//
+// Date
+	} else if (!strcasecmp(type, "Y2T")) {
+		return FIELD_TYPE_NUMERIC_Y2T;
+		//
+	}	else if (!strcasecmp(type, "Y2B")) {
+		return FIELD_TYPE_NUMERIC_Y2B;
+		//
+	}
+	else if (!strcasecmp(type, "Y2C")) {
+		return FIELD_TYPE_NUMERIC_Y2C;
+		//
+	}
+	else if (!strcasecmp(type, "Y2D")) {
+		return FIELD_TYPE_NUMERIC_Y2D;
+		//
+	}
+	else if (!strcasecmp(type, "Y2P")) {
+		return FIELD_TYPE_NUMERIC_Y2P;
+		//
+	}
+	else if (!strcasecmp(type, "Y2S")) {
+		return FIELD_TYPE_NUMERIC_Y2S;
+		//
+	}
+	else if (!strcasecmp(type, "Y2U")) {
+		return FIELD_TYPE_NUMERIC_Y2U;
+		//
+	}
+	else if (!strcasecmp(type, "Y2V")) {
+		return FIELD_TYPE_NUMERIC_Y2V;
+		//
+	}
+	else if (!strcasecmp(type, "Y2X")) {
+		return FIELD_TYPE_NUMERIC_Y2X;
+		//
+	}
+	else if (!strcasecmp(type, "Y2Y")) {
+		return FIELD_TYPE_NUMERIC_Y2Y;
+		//
+	}
+	else if (!strcasecmp(type, "Y2Z")) {
+		return FIELD_TYPE_NUMERIC_Y2Z;
+		//
 	} else {
+		fprintf(stderr, "*GCSORT*P002 - Error parsing datatye : %s invalid\n", type);
 		return -1;
 	}
 }
@@ -178,6 +222,41 @@ int utils_getFieldTypeInt(char* strType)
 	} else if (!strcasecmp(strType,"CSL")) {
 		return FIELD_TYPE_NUMERIC_CSL;
 	}
+	// date
+	else if (!strcasecmp(strType, "Y2T")) {
+		return FIELD_TYPE_NUMERIC_Y2T;
+	}
+	else if (!strcasecmp(strType, "Y2B")) {
+		return FIELD_TYPE_NUMERIC_Y2B;
+	}
+	else if (!strcasecmp(strType, "Y2C")) {
+		return FIELD_TYPE_NUMERIC_Y2C;
+	}
+	else if (!strcasecmp(strType, "Y2D")) {
+		return FIELD_TYPE_NUMERIC_Y2D;
+	}
+	else if (!strcasecmp(strType, "Y2P")) {
+		return FIELD_TYPE_NUMERIC_Y2P;
+	}
+	else if (!strcasecmp(strType, "Y2S")) {
+		return FIELD_TYPE_NUMERIC_Y2S;
+	}
+	else if (!strcasecmp(strType, "Y2U")) {
+		return FIELD_TYPE_NUMERIC_Y2U;
+	}
+	else if (!strcasecmp(strType, "Y2V")) {
+		return FIELD_TYPE_NUMERIC_Y2V;
+	}
+	else if (!strcasecmp(strType, "Y2X")) {
+		return FIELD_TYPE_NUMERIC_Y2X;
+	}
+	else if (!strcasecmp(strType, "Y2Y")) {
+		return FIELD_TYPE_NUMERIC_Y2Y;
+	}
+	else if (!strcasecmp(strType, "Y2Z")) {
+		return FIELD_TYPE_NUMERIC_Y2Z;
+	}
+	fprintf(stderr, "*GCSORT*P003 - Error parsing datatye : %s invalid\n", strType);
 	return -1;
 }
 
@@ -194,6 +273,8 @@ int utils_parseFieldValueType(const char type)
 			return FIELD_VALUE_TYPE_C;
 		case 'F':
 			return FIELD_VALUE_TYPE_F;
+		case 'Y':
+			return FIELD_VALUE_TYPE_Y;
 		default:
 			return -1;
 	}
@@ -321,6 +402,28 @@ int utils_getFieldTypeLIBCOBInt(int nInteralType, int nLen)
     case FIELD_TYPE_NUMERIC_CLO:       // sign leading
     case FIELD_TYPE_NUMERIC_CSL:       // sign leading separate
     case FIELD_TYPE_NUMERIC_CST:       // sign trailing separate
+// date
+	case FIELD_TYPE_NUMERIC_Y2T:       // sign trailing separate
+		return COB_TYPE_NUMERIC_DISPLAY;
+	case FIELD_TYPE_NUMERIC_Y2B:       
+		return COB_TYPE_NUMERIC_BINARY;
+	case FIELD_TYPE_NUMERIC_Y2C:       
+		return COB_TYPE_NUMERIC_DISPLAY;
+	case FIELD_TYPE_NUMERIC_Y2D:       
+		return COB_TYPE_NUMERIC_PACKED;
+	case FIELD_TYPE_NUMERIC_Y2P:
+		return COB_TYPE_NUMERIC_PACKED;
+	case FIELD_TYPE_NUMERIC_Y2S:
+		return COB_TYPE_NUMERIC_DISPLAY;
+	case FIELD_TYPE_NUMERIC_Y2U:
+		return COB_TYPE_NUMERIC_PACKED;
+	case FIELD_TYPE_NUMERIC_Y2V:
+		return COB_TYPE_NUMERIC_PACKED;
+	case FIELD_TYPE_NUMERIC_Y2X:
+		return COB_TYPE_NUMERIC_PACKED;
+	case FIELD_TYPE_NUMERIC_Y2Y:
+		return COB_TYPE_NUMERIC_PACKED;
+	case FIELD_TYPE_NUMERIC_Y2Z:
 		return COB_TYPE_NUMERIC_DISPLAY;
 	}
 	return -1;
@@ -357,7 +460,30 @@ int utils_getFieldTypeLIBCOBFlags(int nInteralType)
         return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_LEADING | COB_FLAG_SIGN_SEPARATE;      
     case  FIELD_TYPE_NUMERIC_CST:         // sign trailing separate
         return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_SEPARATE;      
-//
+//Date
+	case  FIELD_TYPE_NUMERIC_Y2T:         // sign trailing separate
+		// s.m. 20210513 return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_SEPARATE;
+		return COB_FLAG_HAVE_SIGN;
+	case  FIELD_TYPE_NUMERIC_Y2B:         
+		return COB_FLAG_BINARY_SWAP ;
+	case  FIELD_TYPE_NUMERIC_Y2C:
+		return 0;
+	case  FIELD_TYPE_NUMERIC_Y2D:
+		return COB_FLAG_NO_SIGN_NIBBLE; // new
+	case  FIELD_TYPE_NUMERIC_Y2P:
+		return 0;
+	case  FIELD_TYPE_NUMERIC_Y2S:
+		return COB_FLAG_HAVE_SIGN;
+	case  FIELD_TYPE_NUMERIC_Y2U:
+		return 0;
+	case  FIELD_TYPE_NUMERIC_Y2V:
+		return 0;
+	case  FIELD_TYPE_NUMERIC_Y2X:
+		return COB_FLAG_HAVE_SIGN;
+	case  FIELD_TYPE_NUMERIC_Y2Y:
+		return COB_FLAG_HAVE_SIGN;
+	case  FIELD_TYPE_NUMERIC_Y2Z:
+		return COB_FLAG_HAVE_SIGN;
 	}
 	return -1;
 }
@@ -403,6 +529,29 @@ PIC S9(n) COMP-3|PACKED-DECIMAL
 			return "CSL";
         case FIELD_TYPE_NUMERIC_CST:
 			return "CST";
+// Date
+		case FIELD_TYPE_NUMERIC_Y2T:
+			return "Y2T";
+		case FIELD_TYPE_NUMERIC_Y2B:
+			return "Y2B";
+		case FIELD_TYPE_NUMERIC_Y2C:
+			return "Y2C";
+		case FIELD_TYPE_NUMERIC_Y2D:
+			return "Y2D";
+		case FIELD_TYPE_NUMERIC_Y2P:
+			return "Y2P";
+		case FIELD_TYPE_NUMERIC_Y2S:
+			return "Y2S";
+		case FIELD_TYPE_NUMERIC_Y2U:
+			return "Y2U";
+		case FIELD_TYPE_NUMERIC_Y2V:
+			return "Y2V";
+		case FIELD_TYPE_NUMERIC_Y2X:
+			return "Y2X";
+		case FIELD_TYPE_NUMERIC_Y2Y:
+			return "Y2Y";
+		case FIELD_TYPE_NUMERIC_Y2Z:
+			return "Y2Z";
 
 		default:
 			fprintf(stderr, "* utils_getFieldTypeName*  : %d\n", type);
@@ -461,6 +610,8 @@ const char *utils_getFieldValueTypeName(int type) {
 			return "X";
 		case FIELD_VALUE_TYPE_C:
 			return "C";
+		case FIELD_VALUE_TYPE_Y:
+			return "Y";
 		default:
 			return " ";
 	};
@@ -540,7 +691,7 @@ int utils_SetOptionSort(char* optSort, struct outfil_t* outfil, int nValue)
     }
 
 	if (!strcasecmp(optSort,"COPY")) {
-			job_SetTypeOP('M');
+			job_SetTypeOP('C');
 			job_SetFieldCopy(1);
 		return 0;
 	} else if (!strcasecmp(optSort,"VLSCMP")) {
@@ -555,6 +706,61 @@ int utils_SetOptionSort(char* optSort, struct outfil_t* outfil, int nValue)
 	return -1;
 }
 
+int utils_SetOptionY2Past(char* optSort, int nNum)
+{
+	int nYear = nNum;
+	// verify len of nNum
+	// 00 - 99 : specifies the number of years DFSORT is to subtract from the current year to set the beginning of
+	// the sliding century window
+	// 1000 - 3000 : specifies the beginning of the fixed century window
+	//
+	// default of variable globalJob->nY2Past is current date
+	// int with 4 numbers
+	// 
+	if (strcasecmp(optSort, "Y2PAST") == 0) {
+		if ((nYear >= 0) && (nYear <= 99)) {
+			globalJob->nY2Past = nYear;
+			globalJob->nY2PastLimInf = globalJob->nY2Year - globalJob->nY2Past;											// YYYYY inf.
+			globalJob->nY2PastLimSup = globalJob->nY2Year + 99 - globalJob->nY2Past;
+			globalJob->nY2PastLimInfyy2 = globalJob->nY2PastLimInf - ((globalJob->nY2PastLimInf / 100) * 100);			// YY
+			globalJob->nY2PastLimInfyy3 = globalJob->nY2PastLimInf - ((globalJob->nY2PastLimInf / 1000) * 1000);		// YYY
+
+			//globalJob->nY2PastLimInfyy4 = globalJob->nY2PastLimInfyy2 * 100;
+			//globalJob->nY2PastLimInfyy5 = globalJob->nY2PastLimInfyy2 * 1000;
+		}
+		if ((nYear >= 1000) && (nYear <= 3000)) {
+			globalJob->nY2Past = nYear;
+			globalJob->nY2Year = nYear;
+			globalJob->nY2PastLimInf = globalJob->nY2Year;
+			globalJob->nY2PastLimSup = globalJob->nY2Year + 99;
+			globalJob->nY2PastLimInfyy2 = globalJob->nY2PastLimInf - ((globalJob->nY2PastLimInf / 100) * 100);
+			globalJob->nY2PastLimInfyy3 = globalJob->nY2PastLimInf - ((globalJob->nY2PastLimInf / 1000) * 1000);		// YYY
+			//globalJob->nY2PastLimInfyy4 = globalJob->nY2PastLimInfyy2 * 100;
+			//globalJob->nY2PastLimInfyy5 = globalJob->nY2PastLimInfyy2 * 1000;
+		}
+	}
+	return 0;
+}
+
+// Exit routine
+int utils_SetOptionExRoutine(char* optSort, char* szType, char* sCallName)
+{
+	if (strcasecmp(optSort, "MODS") == 0) {
+		if (strcmp(szType, "E15") == 0)
+		{
+			strcpy(globalJob->strCallNameE15, sCallName); // Call Name E15
+			globalJob->nExitRoutine= globalJob->nExitRoutine+1;	// code  0= no routine, 1=E15, 2=E35, 3=E15 and E35
+		//	globalJob->E15Routine = E15Call_constructor(globalJob->inputLength);
+		}
+		if (strcmp(szType, "E35") == 0)
+		{
+			strcpy(globalJob->strCallNameE35, sCallName); // Call Name E35
+			globalJob->nExitRoutine = globalJob->nExitRoutine+2;	// code  0= no routine, 1=E15, 2=E35, 3=E15 and E35
+			//globalJob->E35Routine = E35Call_constructor(globalJob->outputLength);
+		}
+	}
+	return 0;
+}
 void util_covertToUpper(char *strIn, char* strOut)
 {
     char* pIn;
@@ -567,6 +773,54 @@ void util_covertToUpper(char *strIn, char* strOut)
 		pOut++;
 	}
     return ;
+}
+
+cob_field* util_MakeAttrib_call(int type, int digits, int scale, int flags, int nLen, int nData)
+{
+	cob_field* field_ret;
+	cob_field_attr* attrArea;
+	attrArea = (cob_field_attr*)malloc(sizeof(cob_field_attr));
+	if (attrArea == NULL)
+		utl_abend_terminate(MEMORYALLOC, 11, ABEND_EXEC);
+	attrArea->type = type;
+	attrArea->digits = digits;
+	attrArea->scale = scale;
+	attrArea->flags = flags;
+	attrArea->pic = NULL;
+	field_ret = (cob_field*)malloc(sizeof(cob_field));
+	if (field_ret == NULL)
+		utl_abend_terminate(MEMORYALLOC, 12, ABEND_EXEC);
+	field_ret->attr = attrArea;
+	field_ret->data = NULL;
+	if (nData == ALLOCATE_DATA) {
+		field_ret->data = (unsigned char*)malloc((sizeof(unsigned char) * nLen) + 1);
+		if (field_ret->data == NULL)
+			utl_abend_terminate(MEMORYALLOC, 13, ABEND_EXEC);
+		memset(field_ret->data, 0x00, nLen);
+	}
+	field_ret->size = nLen;
+	// fix value for single type of field
+	attrArea->digits = digits;
+	switch (type) {
+	case COB_TYPE_ALPHANUMERIC_ALL:
+	case COB_TYPE_ALPHANUMERIC:
+		attrArea->scale = 0;
+		break;
+	case COB_TYPE_NUMERIC_BINARY:
+		attrArea->scale = 0;
+		// attrArea->flags = attrArea->flags | COB_FLAG_BINARY_TRUNC | COB_FLAG_BINARY_SWAP;
+		attrArea->flags = COB_FLAG_BINARY_TRUNC | COB_FLAG_BINARY_SWAP;
+		break;
+	case COB_TYPE_NUMERIC_DISPLAY:
+		attrArea->scale = 0;
+		attrArea->flags = attrArea->flags; // | COB_FLAG_HAVE_SIGN;
+		break;
+	default:
+		fprintf(stdout, "util_setAttrib - type not found %d \n", type);
+		exit(GC_RTC_ERROR);
+	}
+
+	return field_ret;
 }
 
 
@@ -618,6 +872,20 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
     	    attrArea->flags  = attrArea->flags | COB_FLAG_HAVE_SIGN;
 // s.m. 20201015
             break;
+			// date
+//		case DATE_TYPE_BINARY_PACKED:
+//			if (nLen <= 1)
+//				attrArea->digits = nLen * 2;
+//			else
+//			{
+//				if (nLen % 2 == 0)
+//					attrArea->digits = (nLen * 2) - 1; //(nLen-1)*2;
+//				else
+//					attrArea->digits = (nLen * 2) - 1;
+//			}
+//			attrArea->scale = 0;
+//		///	attrArea->flags = attrArea->flags;			// NO SIGN
+//			break;
 		default:
 			fprintf(stdout, "util_setAttrib - type not found %d \n", type);
 			exit(GC_RTC_ERROR);
@@ -626,6 +894,31 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
 
     return;//
 }
+
+// Reset flags only for data type Y2<x>
+void util_resetAttrib(cob_field_attr* attrArea, int type, int digits)
+{
+	// fix value for single type of field
+	switch (type) {
+	case COB_TYPE_NUMERIC_PACKED:
+		attrArea->flags = attrArea->flags >> COB_FLAG_HAVE_SIGN;
+	//-->> attenzione	
+		attrArea->flags = attrArea->flags | COB_FLAG_NO_SIGN_NIBBLE; // new
+		break;
+	case COB_TYPE_NUMERIC_DISPLAY:
+	//s.m.			
+		attrArea->flags = attrArea->flags >> COB_FLAG_HAVE_SIGN;
+		break;
+	default:
+		// no action
+		return;
+	}
+	if (digits >= 0)
+		attrArea->digits = digits;
+
+	return;//
+}
+
 
  cob_field* util_cob_field_make (int type, int digits, int scale, int flags, int nLen, int nData)
 {
@@ -646,7 +939,7 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
 	field_ret->data = NULL;
 	if (nData == ALLOCATE_DATA) {
 		field_ret->data = (unsigned char*) malloc((sizeof(unsigned char)*nLen)+1);
-        if (field_ret->data == NULL)
+		if (field_ret->data == NULL)
             utl_abend_terminate(MEMORYALLOC, 13, ABEND_EXEC);
 		memset(field_ret->data, 0x00, nLen);
 	}
@@ -659,9 +952,11 @@ void util_cob_field_del ( cob_field* field_ret, int nData)
 	if (field_ret!=NULL) {
 		if (field_ret->attr!=NULL)
 				free((void*)field_ret->attr); 
+		field_ret->attr = NULL;
 		if (nData == ALLOCATE_DATA) {
 			if (field_ret->data!=NULL)
 				free(field_ret->data); 
+			field_ret->data = NULL;
 		}
 		free(field_ret);  
 	}
@@ -673,7 +968,10 @@ void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate)
     case MEMORYALLOC:
         fprintf(stderr,"*GCSORT* ERROR: Aborting execution for problems with memory allocation. Code : %d\n", nCodeErr);
         break;
-    default:
+	case EXITROUTINE:
+		fprintf(stderr, "*GCSORT* ERROR: Aborting execution from E15 routine. Code : %d\n", nCodeErr);
+		break;
+	default:
         fprintf(stderr,"*GCSORT* ERROR: Aborting execution.  Code : %d\n", nCodeErr);
         break;
     }

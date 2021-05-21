@@ -25,8 +25,10 @@ endif
 TARGET=gcsort
 OBJS=\
 	condfield.o \
+    copyfile.o \
     gcsorthelp.o \
     gcsort.o \
+	exitroutines.o \
 	fieldvalue.o \
 	file.o \
 	keyidxrel.o \
@@ -74,6 +76,8 @@ scanner.c scanner.h: scanner.l
 	$(FLEX) --header-file=scanner.h -o scanner.c scanner.l
 
 condfield.o:condfield.h gcsort.h fieldvalue.h file.h gcshare.h job.h sortfield.h sumfield.h utils.h 
+copyfile.o:condfield.h copyfile.h file.h gcshare.h gcsort.h inrec.h  job.h libgcsort.h outfil.h outrec.h parser.h scanner.h sortfield.h sumfield.h utils.h 
+exitroutines.o:file.h exitroutines.h libgcsort.h utils.h
 fieldvalue.o:fieldvalue.h gcsort.h job.h libgcsort.h outrec.h  utils.h 
 file.o:file.h gcshare.h gcsort.h job.h utils.h 
 gcsort.o:file.h gcsort.h job.h libgcsort.h utils.h

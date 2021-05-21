@@ -66,6 +66,15 @@
     <ClInclude Include="..\..\utils.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\gcshare.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\exitroutines.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\copyfile.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\condfield.c">
@@ -114,6 +123,12 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="..\..\utils.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\exitroutines.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\copyfile.c">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

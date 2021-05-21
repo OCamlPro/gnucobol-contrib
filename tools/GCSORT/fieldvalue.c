@@ -35,6 +35,8 @@
 #include "job.h"
 #include "outrec.h"
 
+extern cob_field* g_ckfdate1;
+extern cob_field* g_ckfdate2;
 
 struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF) {
 	int i,j;
@@ -58,7 +60,7 @@ struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF)
 
 		switch (fieldValue->type) {
 		case FIELD_VALUE_TYPE_Z:
-				fieldValue->generated_length=fieldValue->occursion;
+			fieldValue->generated_length=fieldValue->occursion;
 				fieldValue->generated_length = strlen(value);
                 fieldValue->generated_value=(char *)malloc(sizeof(char)*fieldValue->generated_length+1);
                 if (fieldValue->generated_value == NULL)
@@ -75,6 +77,16 @@ struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF)
 					fieldValue->generated_value[fieldValue->generated_length]=0;
 					fieldValue->value64 = _atoi64(value);
 				}
+			break;
+		case FIELD_VALUE_TYPE_Y:
+			fieldValue->generated_length = fieldValue->occursion;
+			fieldValue->generated_length = strlen(value);
+			fieldValue->generated_value = (char*)malloc(sizeof(char) * fieldValue->generated_length + 1);
+			if (fieldValue->generated_value == NULL)
+				utl_abend_terminate(MEMORYALLOC, 1, ABEND_EXEC);
+			strcpy(fieldValue->generated_value, value);
+			fieldValue->generated_value[fieldValue->generated_length] = 0;
+			fieldValue->value64 = _atoi64(value);
 			break;
 		case FIELD_VALUE_TYPE_X:
 			if (strlen(value)==0) {
@@ -149,7 +161,8 @@ struct fieldValue_t *fieldValue_constr_newF(char *type, char *value, int nTypeF)
 
 	switch (fieldValue->type) {
 		case FIELD_VALUE_TYPE_Z:
-				fieldValue->generated_length=fieldValue->occursion;
+		case FIELD_VALUE_TYPE_Y:
+			fieldValue->generated_length=fieldValue->occursion;
 				// ?? fieldValue->generated_length = strlen(value);
                 fieldValue->generated_value=(char *)malloc(sizeof(char)*fieldValue->generated_length+1);
                 if (fieldValue->generated_value == NULL)
@@ -167,6 +180,7 @@ struct fieldValue_t *fieldValue_constr_newF(char *type, char *value, int nTypeF)
 					fieldValue->value64 = _atoi64(value);
 				}
 		break;
+		// Date
 		case FIELD_VALUE_TYPE_X:
 				fieldValue->generated_length=fieldValue->occursion;
 				fieldValue->generated_value=(char *)malloc(sizeof(char)*fieldValue->generated_length+1);
@@ -219,6 +233,8 @@ int fieldValue_print(struct fieldValue_t *fieldValue) {
  	return 0;
 }
 
+// first  parameter value from command
+// second parameter value from record 
 int fieldValue_checkvalue(struct fieldValue_t *fieldValue, cob_field* pField, int length) {
 	int used_length;
 	int result;
@@ -230,17 +246,41 @@ int fieldValue_checkvalue(struct fieldValue_t *fieldValue, cob_field* pField, in
 	used_length=(length<fieldValue->generated_length?length:fieldValue->generated_length);
 	switch (fieldValue->type) {
 		case FIELD_VALUE_TYPE_Z:
-            result = cob_cmp_llint(pField, fieldValue->value64);
-            result = result*-1;
+			mValue64 = fieldValue->value64;			// condition
+			int64_t t2 = cob_get_llint(pField);		// record
+			result = 0;
+			if (t2 > mValue64)
+				result = 1;
+			if (t2 < mValue64)
+				result = -1;
+			//result = cob_cmp_llint(pField, mValue64);
+			//result = cob_cmp_llint(pField, fieldValue->value64);
+//-->> s.m. 202105            			result = result*-1;
 		break;
+		// Date
+		// Y2T Fix len to working field - Zoned - size = digit = length
+		case FIELD_VALUE_TYPE_Y:
+			job_cob_field_reset(g_ckfdate1, COB_TYPE_NUMERIC_DISPLAY, length, length);
+			job_cob_field_reset(g_ckfdate2, COB_TYPE_NUMERIC_DISPLAY, length, length);
+			cob_set_int(g_ckfdate2, (int)fieldValue->value64);							// Command Condition				
+			cob_move(pField, g_ckfdate1);													// Record Value
+			//-->> s.m. 20210520 result = job_CheckTypeDate(FIELD_TYPE_NUMERIC_Y2T, (cob_field*)g_fdate1, (cob_field*)g_fdate2);
+			result = job_CheckTypeDate(FIELD_TYPE_NUMERIC_Y2T, (cob_field*)g_ckfdate1, (cob_field*)g_ckfdate2);
+ 			//result = result * -1;
+			break;
 
 		case FIELD_VALUE_TYPE_X:
-            result=memcmp((char*)fieldValue->generated_value,(char*)pField->data, used_length);
-             
-		break;
+            // result=memcmp((char*)fieldValue->generated_value,(char*)pField->data, used_length);
+			result = memcmp((char*)pField->data, (char*)fieldValue->generated_value, used_length);
+			//result = result * -1;
+			break;
+
 		case FIELD_VALUE_TYPE_C:
-            result=memcmp((char*)fieldValue->generated_value,(char*)pField->data, used_length);
-		break;
+            //result=memcmp((char*)fieldValue->generated_value,(char*)pField->data, used_length);
+			result=memcmp((char*)pField->data, (char*)fieldValue->generated_value, used_length);
+			//
+			//result = result * -1;
+			break;
 		default:
         fprintf(stdout,"*GCSORT*S202*ERROR: Field Value Type unknow %d\n", fieldValue->type);
         exit(GC_RTC_ERROR); 

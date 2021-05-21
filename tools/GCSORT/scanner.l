@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2017 Sauro Menna
+    Copyright (C) 2016-2021 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -81,10 +81,32 @@ TI / OT / CTO / ZD  Zoned decimal  - sign trailing
     /* FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL */
 	/* extended FORMATTYPE	 CH|BI|FI|FL|PD|ZD|TI|OT|CTO|LI|OL|CLO|CST|LS|CSL */
 
-FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL
-
+    /* released FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL */
+FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL|Y2T|Y2B|Y2C|Y2D|Y2P|Y2S|Y2U|Y2V|Y2X|Y2Y|Y2Z
+    /*
+  DataType	Len	Type
+    Y2T		8	ZD Y2T8 = Y4T8 (?) C'ccyymmdd' or Z'ccyymmdd'     
+    Y2T		4	ZD Y2T4 : C'yyxx' or Z'yyxx' 
+    Y2T		2	ZD Y2T2 'yy'
+    Y2T		3	ZD Y2T2 'yyx'
+    Y2T		5	ZD 5,Y2T: C'yyddd' or Z'yyddd'
+    Y2T		6	ZD 6,Y2T: C'yymmdd' or Z'yymmdd'     
+    Y4T		7	ZD 7,Y4T: C'ccyyddd' or Z'ccyyddd'    
+    Y2B		1	BI
+    Y2C		2	ZD
+    Y2D		1	PD
+    Y2P		2	PD
+    Y2S		2	ZD
+    Y2U		3	PD  P'yyddd'   
+    Y2V		4	PD  P'yymmdd'    
+    Y2X		3	PD  P'dddyy'    
+    Y2Y		4	PD  P'mmddyy'
+    Y2Z		2	ZD
+    */
+    
             /*  Char Type  for condition CharType = C(char) | X(hexdical) <String>    */
-CHARTCOND       C|X
+   /* prec CHARTCOND       C|X  */
+CHARTCOND       C|X|Y
             /*  Char Type  CharType = C(char) | X(hexdical) |Z(zero binary) <String>    */
 CHARTYPE        C|X|Z				
             /*  Order A = Ascending, D = Descending */
@@ -105,6 +127,8 @@ OPCOND          EQ|GT|GE|LT|LE|NE|SS
 	/* <CHSC>{CHARTYPE} */
 	/* <ORDK>{ORDER} */
 	/* <KEYV>{KEYTYPE} */
+    
+EXROUT          E15|E35
 
 %s KEYV
 %s ORDK
@@ -168,6 +192,9 @@ OPCOND          EQ|GT|GE|LT|LE|NE|SS
 "RECORD"	                    BEGIN(INITIAL); return RECORD;
 [,]*{BLANK}"SAVE"{BLANK}[,]*	                return SAVE;
 [,]*{BLANK}"SKIPREC"	                        return SKIPREC;
+[,]*{BLANK}"Y2PAST"	                            return Y2PAST;
+[,]*{BLANK}"MODS"                           	return MODS;
+"EXROUT"                                        return EXROUT;
 "SORT"		       nPhase = 1;  BEGIN(INITIAL); return SORT;
 [,]*{BLANK}"STARTREC"	                        return STARTREC;
 [,]*{BLANK}"STOPAFT"	                        return STOPAFT;
@@ -212,6 +239,7 @@ OPCOND          EQ|GT|GE|LT|LE|NE|SS
 
 {FORMATTYPE}		        yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  
 
+{EXROUT}                    yylval.string = _strdup(yytext) ;					return EXROUT; 	
   
    /* String C''';'   */
 "'"[^']*"'"	{yylval.string=malloc(strlen(yytext)-1);

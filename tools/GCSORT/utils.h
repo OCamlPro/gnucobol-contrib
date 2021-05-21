@@ -111,16 +111,32 @@
 #define FILE_ORGANIZATION_SEQUENTIALMF		5//4
 
 
-#define FIELD_TYPE_CHARACTER	0
-#define FIELD_TYPE_BINARY		1
-#define FIELD_TYPE_PACKED		2
-#define FIELD_TYPE_ZONED		3
-#define FIELD_TYPE_FIXED		4
-#define FIELD_TYPE_FLOAT        5
-#define FIELD_TYPE_NUMERIC_CLO  6       // sign leading
-#define FIELD_TYPE_NUMERIC_CSL  7       // sign leading separate
-#define FIELD_TYPE_NUMERIC_CST  8       // sign trailing separate
+#define FIELD_TYPE_CHARACTER		0
+#define FIELD_TYPE_BINARY			1
+#define FIELD_TYPE_PACKED			2
+#define FIELD_TYPE_ZONED			3
+#define FIELD_TYPE_FIXED			4
+#define FIELD_TYPE_FLOAT			5
+#define FIELD_TYPE_NUMERIC_CLO		6       // sign leading
+#define FIELD_TYPE_NUMERIC_CSL		7       // sign leading separate
+#define FIELD_TYPE_NUMERIC_CST		8       // sign trailing separate
+#define FIELD_TYPE_NUMERIC_Y2T	    20
+#define FIELD_TYPE_NUMERIC_Y2B		21
+#define FIELD_TYPE_NUMERIC_Y2C		22
+#define FIELD_TYPE_NUMERIC_Y2D		23
+#define FIELD_TYPE_NUMERIC_Y2P		24
+#define FIELD_TYPE_NUMERIC_Y2S		25
+#define FIELD_TYPE_NUMERIC_Y2U		26
+#define FIELD_TYPE_NUMERIC_Y2V		27
+#define FIELD_TYPE_NUMERIC_Y2X		28
+#define FIELD_TYPE_NUMERIC_Y2Y		29
+#define FIELD_TYPE_NUMERIC_Y2Z		30
 
+
+
+//#define DATE_TYPE_BINARY_PACKED     100
+#define FIELD_TYPE_DATE_MIN         20
+#define FIELD_TYPE_DATE_MAX         30
 
 #define SORT_DIRECTION_ASCENDING	0
 #define SORT_DIRECTION_DESCENDING	1
@@ -148,6 +164,7 @@
 #define FIELD_VALUE_TYPE_X	1
 #define FIELD_VALUE_TYPE_C	2
 #define FIELD_VALUE_TYPE_F	3 // FIXED
+#define FIELD_VALUE_TYPE_Y	4 // DATE
 
 #define MAX_SLOT_SEEKENV  48
 #define MAX_SLOT_SEEK	1
@@ -159,6 +176,7 @@
 
 
 #define MEMORYALLOC     1
+#define EXITROUTINE     2
 
 #define ABEND_SKIP      1
 #define ABEND_EXEC      2
@@ -171,6 +189,9 @@
 	#define charSep '/'
 	#define strSep  "/"
 #endif
+
+// check if value is date data type
+#define IsDateType(y)        ((y >= FIELD_TYPE_DATE_MIN) && (y <= FIELD_TYPE_DATE_MAX)) 
 
 
 int utils_parseFileFormat(const char *format);
@@ -192,6 +213,9 @@ const char *utils_getCondOperationName(int operation);
 const char* utils_getKeyType(int nkeyType);
 int utils_SetOptionSort(char* optSort, struct outfil_t* outfil, int nValue);
 int utils_SetOptionSortNum(char* optSort, int64_t nNum);
+int utils_SetOptionY2Past(char* optSort, int nNum);
+int utils_SetOptionExRoutine(char* optSort, char* szType, char* sCallName);
+
 void util_print_time_elap( const  char* szMex );
 void util_covertToUpper(char *strIn, char* strOut);
 // Function for cob_field & cob_field_attrib
@@ -199,7 +223,9 @@ cob_field* util_cob_field_make (int type, int digits, int scale, int flags, int 
 void util_cob_field_del (cob_field* field_ret, int nData);
 int utils_getFieldTypeLIBCOBInt(int nInteralType, int nLen);
 int utils_getFieldTypeLIBCOBFlags(int nInteralType);
+cob_field* util_MakeAttrib_call(int type, int digits, int scale, int flags, int nLen, int nData);
 void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen);
+void util_resetAttrib(cob_field_attr* attrArea, int type, int digits);
 void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate);
 
 

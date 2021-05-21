@@ -203,10 +203,85 @@ GIVE D:\GCSORTTEST\FilesT\FIL_OUTFIL_500_023.TXT.SRT ORG LS RECORD F,3000
  
 =====================================================   
 ***************************************************************************** 
+
+MERGE FIELDS=(8,5,CH,A) SUM FIELDS=(NONE) USE  c:\gcsort\gcsort_relnew\tests\files\fsqf01.dat  RECORD F,90 ORG SQ USE  c:\gcsort\gcsort_relnew\tests\files\fsqf02.dat  RECORD F,90 ORG SQ USE  c:\gcsort\gcsort_relnew\tests\files\fsqf03.dat  RECORD F,90 ORG SQ GIVE c:\gcsort\gcsort_relnew\tests\files\musesqf03_gcs.mrg  RECORD F,90 ORG SQ
+
+SORT FIELDS=(8,5,CH,A,13,3,BI,D,16,4,FI,A,20,8,FL,D,28,4,PD,A,32,7,ZD,D) USE  C:\GCSORT\GCSORT_relnew\tests\files\sqbig01.dat   RECORD F,90 ORG SQ GIVE C:\GCSORT\GCSORT_relnew\tests\files\sqbig01_out.dat  RECORD F,90 ORG SQ 
+
 =====================================================   
-Usage of INREC
+Usage of INREC BUILD
 Format input record
 INREC BUILD=(5,2,20:5,10,80:X,3C'ABC',X)
+
+sort fields"(1,10,CH,A)"  INREC BUILD=(5,2,20:5,10,80:X,3C'ABC',X) use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,80 org ls 
+
+=====================================================   
+Usage of INREC OVERLAY
+Format input record
+INREC OVERLAY=(5,2,20:5,10,80:X,3C'ABC',X)
+
+INREC OVERLAY=(25,2,11:C'A',15,3,C'**')
+ 
+
+-fsign=EBCDIC sort fields"(1,10,ZD,A)"    INREC OVERLAY=(5,2,20:5,10,80:X,3C'ABC',X)  use "c:\GCSORT\GCSORT_relnew\tests\files\sortin.txt" record f,10 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortout.txt" record f,10 org ls 
+
+
+-- INREC OVERLAY
+-- Verifiche different Lenght
+sort fields"(1,10,CH,A)"    INREC OVERLAY=(5,2,20:5,10,180:X,3C'ABC',X) use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,190 org ls 
+
+-- Verifiche different Lenght
+sort fields"(1,10,CH,A)"    INREC OVERLAY=(5,2,20:5,10,180:X,3C'ABC',X) use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,190 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,190 org ls 
+
+sort fields"(1,10,CH,A)"    INREC OVERLAY=(5,2,20:5,10,180:X,3C'ABC',X) use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,190 org ls 
+
+ sort fields"(1,10,CH,A)"    INREC OVERLAY=(5,2,20:5,10,60:X,3C'ABC',X) use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,80 org ls 
+
+ sort fields"(1,10,CH,A)"    INREC OVERLAY=(25,2,11:C'A',15,3,C'**')  use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,80 org ls 
+
+
+sort fields"(1,10,CH,A)"    INREC OVERLAY=(X) use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,80 org ls 
+sort fields"(1,10,CH,A)"    INREC OVERLAY=(10X) use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,80 org ls 
+
+USE C:\GCSORT\GCSORT_relnew\tests\files\INP002.txt ORG LS RECORD F,100 GIVE C:\GCSORT\GCSORT_relnew\tests\files\SEMESTR ORG SQ RECORD F,116 " SORT FIELDS=COPY OUTREC OVERLAY=(115:X'10',116:X'10') END"
+
+Subcase
+
+ sort fields"(1,10,CH,A)"    INREC OVERLAY=(25,2)  use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,80 org ls 
+ sort fields"(1,10,CH,A)"    INREC OVERLAY=(11:C'A')  use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,80 org ls 
+ sort fields"(1,10,CH,A)"    INREC OVERLAY=(15,3)  use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,80 org ls 
+ sort fields"(1,10,CH,A)"    INREC OVERLAY=(C'**')  use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,80 org ls 
+ sort fields"(1,10,CH,A)"    INREC OVERLAY=(15,3,C'**')  use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,80 org ls 
+
+ sort fields"(1,10,CH,A)"    INREC OVERLAY=(20:5,10) use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,80 org ls 
+ sort fields"(1,10,CH,A)"    INREC OVERLAY=(X) use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,80 org ls 
+
+ USE C:\GCSORT\GCSORT_relnew\tests\files\INP002.txt ORG SQ RECORD F,100 GIVE C:\GCSORT\GCSORT_relnew\tests\files\SEMESTR ORG SQ RECORD F,102 " SORT FIELDS=COPY INREC OVERLAY=(101:X'10',102:X'10') END"
+
+ 
+-- OUTREC OVERLAY
+-- Verifiche different Lenght
+sort fields"(1,10,CH,A)"    OUTREC OVERLAY=(5,2,20:5,10,180:X,3C'ABC',X) use "c:\GCSORT\GCSORT_relnew\tests\files\sortinOverlay.txt" record f,80 org ls give  "c:\GCSORT\GCSORT_relnew\tests\files\sortoutOverlay.txt" record f,190 org ls 
+ 
+
+USE C:\GCSORT\GCSORT_relnew\tests\files\INP002.txt ORG LS RECORD F,100 GIVE C:\GCSORT\GCSORT_relnew\tests\files\SEMESTR ORG SQ RECORD F,102 " SORT FIELDS=COPY INREC OVERLAY=(101:X'41',102:X'42') END"
+ 
+ 
+bbbbbbbbbbbbbbbbbbbbbbbbVVbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb b
+ccccccccccccccccccccccccVVccccccccccccccccccccccccccccccc c
+ddddddddddddddddddddddddVVddddddddddddddddddddddddddddddd d
+eeeeeeeeeeeeeeeeeeeeeeeeVVeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee e
+ffffffffffffffffffffffffVVfffffffffffffffffffffffffffffff f
+ggggggggggggggggggggggggVVggggggggggggggggggggggggggggggg g
+ 
+
+ USE     C:\GCSORT\GCSORT_relnew\tests\files\fil_outfil_100.txt             ORG LS RECORD F,3000  GIVE    C:\GCSORT\GCSORT_relnew\tests\files\fil_outfil_100_009.txt.srt     ORG LS RECORD F,3000  SORT FIELDS=COPY  INCLUDE COND=(46,9,EQ,C'000550400',OR,46,9,EQ,C'000552400',OR,46,9,EQ,C'000553200'),FORMAT=CH  OUTFIL OUTREC=(5,496),CONVERT
+
+ USE C:\GCSORT\GCSORT_relnew\tests\files\INP002.txt ORG LS RECORD F,100 GIVE C:\GCSORT\GCSORT_relnew\tests\files\SEMESTR ORG SQ RECORD F,102 " SORT FIELDS=COPY INREC OVERLAY=(101:X'10',102:X'10') END"
+ USE C:\GCSORT\GCSORT_relnew\tests\files\INP002.txt ORG LS RECORD F,100 GIVE C:\GCSORT\GCSORT_relnew\tests\files\SEMESTR ORG SQ RECORD F,102 " SORT FIELDS=COPY INREC OVERLAY=(101:X'41',102:X'42') END"
+ USE C:\GCSORT\GCSORT_relnew\tests\files\INP002.txt ORG LS RECORD F,100 GIVE C:\GCSORT\GCSORT_relnew\tests\files\SEMESTR ORG SQ RECORD F,102 " SORT FIELDS=COPY INREC OVERLAY=(101:X'10',102:X'10') END"
+ _-------------------------------
+ OUTREC 
  
 =====================================================   
 ***************************************************************************** 

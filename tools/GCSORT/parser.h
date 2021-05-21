@@ -68,31 +68,35 @@ extern int yydebug;
      SPLITBY = 277,
      VLSCMP = 278,
      VLSHRT = 279,
-     BUILD = 280,
-     FIELDS = 281,
-     OVERLAY = 282,
-     GIVE = 283,
-     MERGE = 284,
-     ORG = 285,
-     RECORD = 286,
-     SORT = 287,
-     USE = 288,
-     COPY = 289,
-     DIGIT = 290,
-     CHARTCOND = 291,
-     CHARTYPE = 292,
-     FILETYPE = 293,
-     FORMATTYPE = 294,
-     KEY = 295,
-     KEYTYPE = 296,
-     OCCURFILL = 297,
-     OPCOND = 298,
-     ORDER = 299,
-     RECTYPEFIX = 300,
-     RECTYPEVAR = 301,
-     STRING = 302,
-     TOKSKIP = 303,
-     SIGNDIGITBIG = 304
+     Y2PAST = 280,
+     MODS = 281,
+     EXROUT = 282,
+     BUILD = 283,
+     FIELDS = 284,
+     OVERLAY = 285,
+     GIVE = 286,
+     MERGE = 287,
+     ORG = 288,
+     RECORD = 289,
+     SORT = 290,
+     USE = 291,
+     COPY = 292,
+     DIGIT = 293,
+     DIGITBIG = 294,
+     CHARTCOND = 295,
+     CHARTYPE = 296,
+     FILETYPE = 297,
+     FORMATTYPE = 298,
+     KEY = 299,
+     KEYTYPE = 300,
+     OCCURFILL = 301,
+     OPCOND = 302,
+     ORDER = 303,
+     RECTYPEFIX = 304,
+     RECTYPEVAR = 305,
+     STRING = 306,
+     TOKSKIP = 307,
+     SIGNDIGITBIG = 308
    };
 #endif
 
@@ -101,7 +105,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 23 "parser.y"
+#line 23 "..\\..\\parser.y"
  
 	int         number;
 	long        lnumber;
@@ -114,7 +118,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 118 "parser.h"
+#line 122 "..\\..\\parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
