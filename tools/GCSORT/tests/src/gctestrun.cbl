@@ -32,19 +32,20 @@
       *
       *  array-name
        01    array-name.
-          03 ar-name-max-ele          pic 99  value 5.
+          03 ar-name-max-ele          pic 99  value 6.
           03 ar-ele-name.
             05 ar-ele-name-01         pic x(10) value 'gctestrun1'.
             05 ar-ele-name-02         pic x(10) value 'gctestrun2'.
             05 ar-ele-name-03         pic x(10) value 'gctestrun3'.
             05 ar-ele-name-04         pic x(10) value 'gctestrun4'.
             05 ar-ele-name-05         pic x(10) value 'gctestrun5'.
+            05 ar-ele-name-06         pic x(10) value 'gctestrun6'.
           03 ar-ele-vet redefines ar-ele-name
-                        occurs 5 times pic x(10).
+                        occurs 6 times pic x(10).
       **          
       *
        01       array-retcode-epilog-gr05.
-          03    ar-retcode-ele occurs 5 times.
+          03    ar-retcode-ele occurs 6 times.
            05   ar-tst-name           pic x(12).
            05   ar-tst-rtc01          pic 99.
       *

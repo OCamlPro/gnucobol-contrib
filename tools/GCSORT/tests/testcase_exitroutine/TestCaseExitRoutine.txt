@@ -1,0 +1,39 @@
+
+-- Testcase  Exit Routine
+
+cd /gcsort/tests/testcase_exitroutine/
+
+
+cobc -m CE15DATE.CBL
+cobc -m CE35DATE.CBL
+
+cp CE*.so ../bin
+
+
+-- E15
+-- module : CE15
+
+ --
+OMIT  COND=(19,4,GE,Y'9901',AND,19,4,LE,Y'0312'), 
+ FORMAT=Y2T SORT FIELDS=(19,4,Y2T,A) 
+    USE ../files/FDATE_YYMM.txt RECORD V,1,22 ORG LS 
+    GIVE ../files/FDATE_YYMM.txt.srt RECORD V,1,22 ORG LS 
+    OPTION Y2PAST=70 , MODS E15=(CE15DATE)
+    
+-- command line
+./gcsort     "OMIT  COND=(19,4,GE,Y'9901',AND,19,4,LE,Y'0312'),  FORMAT=Y2T SORT FIELDS=(19,4,Y2T,A)     USE ../files/FDATE_YYMM.txt RECORD V,1,22 ORG LS     GIVE ../files/FDATE_YYMM.txt.srt RECORD V,1,22 ORG LS     OPTION Y2PAST=70 , MODS E15=(CE15DATE)"
+    
+
+-- Testcase  Exit Routine
+-- E15/E35
+-- module : CE15/E35
+
+
+
+FORMAT=Y2T SORT FIELDS=(19,4,Y2T,A)     
+	USE ../files/FDATE_YYMM.txt RECORD V,1,22 ORG LS     
+	GIVE ../files/FDATE_YYMM.txt.srt RECORD V,1,22 ORG LS 
+	OPTION Y2PAST=70 , MODS E15=(CE15DATE), E35=(CE35DATE)   
+
+-- command line
+./gcsort     " FORMAT=Y2T SORT FIELDS=(19,4,Y2T,A)     	USE ../files/FDATE_YYMM.txt RECORD V,1,22 ORG LS     	GIVE ../files/FDATE_YYMM.txt.srt RECORD V,1,22 ORG LS 	OPTION Y2PAST=70 , MODS E15=(CE15DATE), E35=(CE35DATE)   "

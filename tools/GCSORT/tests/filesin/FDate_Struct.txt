@@ -1,0 +1,64 @@
+* Header : 1°char in column = '*' is comment
+*       2,Y2T: YY
+*       3,Y2T: C'yyx' or Z'yyx'
+*       4,Y2T: C'yyxx' or Z'yyxx'
+*       5,Y2T: C'yyddd' or Z'yyddd'
+*       6,Y2T: C'yymmdd' or Z'yymmdd'
+*       7,Y4T: C'ccyyddd' or Z'ccyyddd'
+*       8,Y4T: C'ccyymmdd' or Z'ccyymmdd'
+*       
+*       	Digit	Byte	Type
+*       Y2B	    2	1	Binary
+*       Y2C	    2	2	Char/Zoned
+*       Y2D	    2	1	Decimal
+*       Y2P	    2	2	Packed
+*       Y2S	    2	2	
+*       Y2Z	    2	2	
+*       Y2T	    3-8		
+* ========================================================================================================================
+*     pic 99 comp.		    Y2B	    Two-digit, one-byte binary year data.	
+*     pic 99.		        Y2C/Y2Z	Two-digit, two-byte year data, with optional trailing sign. PIC 99 or PIC S99.	
+*     pic 99 comp-6.		Y2D	    Two-digit, one-byte packed decimal year data. PIC 99 COMP-6.	
+*     pic 99 comp-3.		Y2P	    Two-digit, two-byte packed decimal year data. PIC 99 COMP-3.	
+*     pic 99.		        Y2S 	Two-digit, two-byte character year data with special indicators. 
+*                                              Binary zeros, blanks and binary ones are treated as special cases.	
+*     		                Y2T	Full date format, yyx...	
+*     pic s9(5) comp-3.		Y2U	Full date format, yyx..., COMP-3.	P'yyddd'
+*     pic s9(6) comp-3.		Y2V	Full date format, yyx..., COMP-3. Ignores first semi-byte.	P'yymmdd'
+*     		                Y2W	Full date format, x...yy.	
+*     pic s9(5) comp-3.		Y2X	Full date format, x...yy, COMP-3.	P'dddyy'
+*     pic  9(6) comp-3.		Y2Y	Full date format, x...yy, COMP-3. Ignores first semi-byte.	P'mmddyy'
+*     
+*  nnn = progressivo del giorno
+* File structure  - For time Stamp 
+*===========================================================================================================*
+*id rek |  Y2T8  |  Y2T4  |  Y2T2  |  Y2T3  |  Y2T5  |  Y2T6  |  Y2T7  | Y2B | Y2C | Y2D | Y2P | Y2S | Y2Z |
+*===========================================================================================================*
+*id rek |xxxxxxxx|  xxxx  |  xx    |  xxx   |  xxxxx | xxxxxx |xxxxxxx |  x  | xx  |  x  | xx  | xx  | xx  |  
+*===========================================================================================================*
+*0000001|19900520|  1990  |  90    |  90?   |  90240 | 199004 |1990nnn |     |     |     |     |     |     |
+*
+*  Date to generate values
+*   Date input            Date order asc
+ 19900520|009000         19511020|001000
+ 20000403|011000         19551118|002000
+ 19511020|001000         19610405|003000
+ 19700519|004002         19700506|004001
+ 19700520|004003         19700519|004002
+ 19551118|002000         19700520|004003
+ 19700506|004001         19851205|005000
+ 19610405|003000         19870210|006000
+ 19911012|010000         19881120|007000
+ 19851205|005000         19891011|008000
+ 20100608|012000         19900520|009000
+ 20201109|017000         19911012|010000
+ 20151030|014000         20000403|011000
+ 20120821|013000         20100608|012000
+ 20180320|015000         20120821|013000
+ 20190922|016000         20151030|014000
+ 19870210|006000         20180320|015000
+ 19881120|007000         20190922|016000
+ 19891011|008000         20201109|017000
+ 20211011|018000         20211011|018000
+ 20300820|019000         20300820|019000
+ 20310122|020000         20310122|020000

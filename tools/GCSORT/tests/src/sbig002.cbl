@@ -6,7 +6,7 @@
       *    Copyright 2016 Sauro Menna
       *    GNU Lesser General Public License, LGPL, 3.0 (or greater)
       * Purpose:   Sort COBOL module
-      * Instruction INCLUDE
+      * Instruction use,sum fields
       * *********************************************
       * option:
       * cobc -x -t ..\listing\%1.lst -I ..\copy -Wall -fbinary-size=1--8 
@@ -14,7 +14,7 @@
       * **********************************************************
       *-------------------------------------------------------------------------------*
        identification division.
-       program-id. somisqf11.
+       program-id. sbig002.
        environment division.
        configuration section.
        repository.
@@ -49,8 +49,8 @@
       * ============================= *
        01  save-record-sort              pic x(90).
       * ============================= *
-       77 record-counter-in              pic 9(7) value zero.
        77 record-counter-skip            pic 9(7) value zero.
+       77 record-counter-in              pic 9(7) value zero.
        77 record-counter-out             pic 9(7) value zero.
        77 bIsFirstTime                   pic 9    value zero.       
        77 bIsPending                     pic 9    value zero.       
@@ -67,15 +67,14 @@
       * ============================= *
        master-sort.
            display "*===============================================* "
-           display " Sort on ascending  key    srt-ch-field "                 ## on descending key    <modify key>               
+           display " Sort on ascending  key    srt-ch-field "                 
            display "*===============================================* "
       *
            copy prenvfield1.
       *        
-           
            sort file-sort
-                on ascending  key    srt-ch-field                          ## on descending key    <modify key>    
-                   with duplicates in  order                               ## DUPLICATES
+                on ascending  key    srt-ch-field         
+                   with duplicates in  order 
                     input procedure  is input-proc
                     output procedure is output-proc.
                     
@@ -111,18 +110,9 @@
       * ============================= *
            add 1 to record-counter-in
       ** filtering input record 
-      ** OMIT COND=(8,2,CH,LE,C'MM',AND,13,3,BI,GT,-10,OR,16,4,FI,GT,10,AND,20,8,FL,LE,40,OR,28,4,PD,LE,10,AND,32,7,ZD,GE,15)
-          if ((in-ch-field(1:2) <= "MM")  AND                                 ## filtering data    
-              (in-bi-field >  -10))       OR
-             ((in-fi-field >   10)        AND
-              (in-fl-field <=  40))       OR
-             ((in-pd-field <=  10)        AND
-              (in-zd-field >=  15))
-			   add 1 to record-counter-skip
-           else
-               release sort-data from infile-record
-           end-if
+           release sort-data from infile-record
            .
+      *
       * ============================= *
        output-proc.
       * ============================= *
@@ -150,7 +140,7 @@
       * ============================= *
       *
       * ## filtering data 
-      * ## NO filtering data 
+      *
            move sort-data        to outfile-record              
            write outfile-record 
            add 1 to record-counter-out
@@ -178,6 +168,8 @@
            move low-value           to outfile-record
            add  1                   to record-counter-out
            move save-record-sort    to outfile-record
+      *  copy   prtotout.cpy
+           copy   prtotout.
            move zero                to bIsPending
            write outfile-record 
            .
