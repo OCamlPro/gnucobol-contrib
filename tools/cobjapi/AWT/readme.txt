@@ -93,6 +93,9 @@ Screen-shots
 For every GnuCOBOL example program I have included screen-shots.
 See under cobjapi/examples_simple/screenshots.
 
+You can see an online screenshot gallery here: https://gnucobol.sourceforge.io/cobjapi.php
+
+
 Test
 ----
 This program was developed using GnuCOBOL 2.0.0.

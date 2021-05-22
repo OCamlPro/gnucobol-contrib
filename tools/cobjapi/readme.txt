@@ -11,3 +11,5 @@ COBJAPI a GnuCOBOL interface (wrapper) for JAPI
   modern GUI elements and features.
 
 For more information please read the readme.txt files under AWT and SWING.
+
+You can see an online screenshot gallery here: https://gnucobol.sourceforge.io/cobjapi.php
