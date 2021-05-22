@@ -174,6 +174,17 @@ public class CommandCalls {
         s.log2("Set insets to {0} for {1}", newInsets, f);
         f.setInsets(newInsets);
     }
+
+    public static void setInsets(Japi2Session s, Japi2InternalFrame f) throws IOException {
+        Insets newInsets = new Insets(
+                s.readInt(),
+                s.readInt(),
+                s.readInt(),
+                s.readInt()
+        );
+        s.log2("Set insets to {0} for {1}", newInsets, f);
+        f.setInsets(newInsets);
+    }
     
     public static void setInsets(Japi2Session s, Japi2Dialog d) throws IOException {
         Insets newInsets = new Insets(
@@ -750,6 +761,19 @@ public class CommandCalls {
             session.log2("Set Text {0} length {1}", frame, length);
         }       
     }
+
+    public static void setText(Japi2Session session, Japi2InternalFrame internalFrame) throws IOException {
+        int length = session.readInt();
+        
+        if(length > 0) {
+            byte[] buffer = new byte[length];
+            session.read(buffer, length);
+            String text = new String(buffer);
+            
+            internalFrame.setTitle(text);
+            session.log2("Set Text {0} length {1}", internalFrame, length);
+        }       
+    }
     
     public static void setText(Japi2Session session, Japi2Dialog dialog) throws IOException {
         int length = session.readInt();
@@ -1318,6 +1342,12 @@ public class CommandCalls {
         int value = session.readInt();
         session.log2("Set Resizable {0} to {1}", frame, value);
         frame.setResizable(value != Japi2Constants.J_FALSE);
+    }
+
+    public static void setResizable(Japi2Session session, Japi2InternalFrame internalFrame) throws IOException {
+        int value = session.readInt();
+        session.log2("Set Resizable {0} to {1}", internalFrame, value);
+        internalFrame.setResizable(value != Japi2Constants.J_FALSE);
     }
     
     public static void setResizable(Japi2Session session, Japi2Dialog dialog) throws IOException {

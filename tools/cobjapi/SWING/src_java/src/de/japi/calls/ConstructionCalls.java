@@ -237,7 +237,7 @@ public class ConstructionCalls {
         
         session.writeInt(oid);
     }
-    
+
     /*
      * This method creates a JWindow object.
      */
@@ -486,6 +486,15 @@ public class ConstructionCalls {
         frame.setJMenuBar(menuBar);
         
         session.log1("MENUBAR (ID = {0}) in Parent Object {1}", oid, frame);
+        session.writeInt(oid);
+    }
+
+    public static void createMenuBar(Japi2Session session, Japi2InternalFrame internalFrame) throws IOException {
+        Japi2MenuBar menuBar = new Japi2MenuBar();
+        int oid = session.addObject(menuBar);
+        internalFrame.setJMenuBar(menuBar);
+        
+        session.log1("MENUBAR (ID = {0}) in Parent Object {1}", oid, internalFrame);
         session.writeInt(oid);
     }
     

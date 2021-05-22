@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 
 /**
  * Adapted implementation of JDialog for the Japi2 Kernel.
@@ -17,7 +18,7 @@ public class Japi2Dialog extends JDialog {
         super(parent, title, false);
         this.setLayout(new Japi2FixLayout());
     }
-
+    
 //    @Override
 //    public void setResizable(boolean set) {
 //        resizable = set;

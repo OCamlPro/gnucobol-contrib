@@ -506,6 +506,8 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_FOREGROUNDCOLOR: 
                             if (obj instanceof Japi2Frame)
                                     GraphicCalls.setFgColor(this, (Japi2Frame) obj);
+                            else if (obj instanceof Japi2InternalFrame)
+                                    GraphicCalls.setFgColor(this, (Japi2InternalFrame) obj);
                             else if (obj instanceof Japi2Table)
                                     GraphicCalls.setFgColor(this, (Japi2Table) obj);
                             else if (obj instanceof Component)
@@ -520,6 +522,8 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_BACKGROUNDCOLOR: 
                             if (obj instanceof Japi2Frame)
                                     GraphicCalls.setBgColor(this, (Japi2Frame) obj);
+                            else if (obj instanceof Japi2InternalFrame)
+                                    GraphicCalls.setBgColor(this, (Japi2InternalFrame) obj);
                             else if (obj instanceof Japi2Table)
                                     GraphicCalls.setBgColor(this, (Japi2Table) obj);
                             else if (obj instanceof Component)
@@ -868,6 +872,8 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_SETINSETS: 
                             if (obj instanceof Japi2Frame)
                                     CommandCalls.setInsets(this, (Japi2Frame) obj);
+                            else if (obj instanceof Japi2InternalFrame)
+                                    CommandCalls.setInsets(this, (Japi2InternalFrame) obj);
                             else if (obj instanceof Japi2Dialog)
                                     CommandCalls.setInsets(this, (Japi2Dialog) obj);
                             else if (obj instanceof Japi2Window)
@@ -1190,6 +1196,8 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_SETTEXT: 
                             if (obj instanceof Japi2Frame)
                                     CommandCalls.setText(this, (Japi2Frame) obj);
+                            else if (obj instanceof Japi2InternalFrame)
+                                    CommandCalls.setText(this, (Japi2InternalFrame) obj);
                             else if (obj instanceof Japi2Dialog)
                                     CommandCalls.setText(this, (Japi2Dialog) obj);
                             else if (obj instanceof Japi2Button)
@@ -1269,6 +1277,8 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_SETRESIZABLE: 
                             if (obj instanceof Japi2Frame)
                                     CommandCalls.setResizable(this, (Japi2Frame) obj);
+                            else if (obj instanceof Japi2InternalFrame)
+                                    CommandCalls.setResizable(this, (Japi2InternalFrame) obj);
                             else if (obj instanceof Japi2Dialog)
                                     CommandCalls.setResizable(this, (Japi2Dialog) obj);
                             else 
@@ -1500,6 +1510,8 @@ public class Japi2Session implements Runnable {
                                     QuestionCalls.getText(this, ((Japi2TextArea) obj).getComponent());
                             else if (obj instanceof Japi2Frame)
                                     QuestionCalls.getText(this, (Japi2Frame) obj);
+                            else if (obj instanceof Japi2InternalFrame)
+                                    QuestionCalls.getText(this, (Japi2InternalFrame) obj);
                             else if (obj instanceof Japi2Dialog)
                                     QuestionCalls.getText(this, (Japi2Dialog) obj);
                             else if (obj instanceof Japi2Button)
@@ -1522,6 +1534,8 @@ public class Japi2Session implements Runnable {
                                     QuestionCalls.getLength(this, ((Japi2TextArea) obj).getComponent());
                             else if (obj instanceof Japi2Frame)
                                     QuestionCalls.getLength(this, (Japi2Frame) obj);
+                            else if (obj instanceof Japi2InternalFrame)
+                                    QuestionCalls.getLength(this, (Japi2InternalFrame) obj);
                             else if (obj instanceof Japi2Button)
                                     QuestionCalls.getLength(this, (Japi2Button) obj);
                             else if (obj instanceof Japi2Menu)
@@ -1698,6 +1712,8 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_ISRESIZABLE: 
                             if (obj instanceof Japi2Frame)
                                     QuestionCalls.isResizable(this, (Japi2Frame) obj);
+                            else if (obj instanceof Japi2InternalFrame)
+                                    QuestionCalls.isResizable(this, (Japi2InternalFrame) obj);
                             else if (obj instanceof Japi2Dialog)
                                     QuestionCalls.isResizable(this, (Japi2Dialog) obj);
                             else 
@@ -1796,6 +1812,8 @@ public class Japi2Session implements Runnable {
                     case Japi2Calls.JAPI_MENUBAR: 
                             if (obj instanceof Japi2Frame) 
                                     ConstructionCalls.createMenuBar(this, (Japi2Frame) obj);
+                            else if (obj instanceof Japi2InternalFrame) 
+                                    ConstructionCalls.createMenuBar(this, (Japi2InternalFrame) obj);
                             else 
                                     throw new NotHandledException();
                             break;

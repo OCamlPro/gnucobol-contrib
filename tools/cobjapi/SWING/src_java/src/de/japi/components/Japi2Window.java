@@ -23,7 +23,7 @@ public class Japi2Window extends JWindow {
         super(parent);
         this.setLayout(new Japi2FixLayout());
     }
-
+    
     @Override
     public void setEnabled(boolean b) {
         int i;

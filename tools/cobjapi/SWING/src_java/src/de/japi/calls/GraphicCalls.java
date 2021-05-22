@@ -5,6 +5,7 @@ import de.japi.Japi2Constants;
 import de.japi.Japi2Session;
 import de.japi.components.Japi2Canvas;
 import de.japi.components.Japi2Frame;
+import de.japi.components.Japi2InternalFrame;
 import de.japi.components.Japi2PrintJob;
 import de.japi.components.Japi2Table;
 import de.japi.components.Japi2Tree;
@@ -48,6 +49,15 @@ public class GraphicCalls {
         frame.getContentPane().setForeground(new Color(red, green, blue));
     } 
 
+    public static void setFgColor(Japi2Session session, Japi2InternalFrame internalFrame) throws IOException {
+        int red = session.readByte();
+        int green = session.readByte();
+        int blue = session.readByte();
+  
+        session.log3("Set fg color (1) in {0}: {1}, {2}, {3}", internalFrame, red, green, blue);
+        internalFrame.getContentPane().setForeground(new Color(red, green, blue));
+    } 
+    
     public static void setFgColor(Japi2Session session, Japi2Table table) throws IOException {
         int red = session.readByte();
         int green = session.readByte();
@@ -101,6 +111,15 @@ public class GraphicCalls {
         frame.getContentPane().setBackground(new Color(red, green, blue));
     }
 
+    public static void setBgColor(Japi2Session session, Japi2InternalFrame internalFrame) throws IOException {
+        int red = session.readByte();
+        int green = session.readByte();
+        int blue = session.readByte();
+
+        session.log3("Set backgroundcolor in {0}: {1}, {2}, {3}", internalFrame, red, green, blue);
+        internalFrame.getContentPane().setBackground(new Color(red, green, blue));
+    }
+    
     public static void setBgColor(Japi2Session session, Japi2Table table) throws IOException {
         int red = session.readByte();
         int green = session.readByte();

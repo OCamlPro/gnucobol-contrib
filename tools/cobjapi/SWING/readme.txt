@@ -300,6 +300,10 @@ Program history, changes and bug fixes are listed in program headers.
 Date       Name / Change description
 ========== ==================================================================
 -----------------------------------------------------------------------------
+2021.05.22 Laszlo Erdos:
+           - Internal frame improved. 
+           - tree_internal_frames example added.
+-----------------------------------------------------------------------------
 2021.05.15 Laszlo Erdos:
            - flowlayout1.cob example added.
 -----------------------------------------------------------------------------

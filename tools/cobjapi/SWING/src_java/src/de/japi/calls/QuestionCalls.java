@@ -23,6 +23,7 @@ import de.japi.components.Japi2ScrollPane;
 import de.japi.components.Japi2TextArea;
 import de.japi.components.Japi2TextField;
 import de.japi.components.Japi2FormattedTextField;
+import de.japi.components.Japi2InternalFrame;
 import de.japi.components.Japi2Table;
 import de.japi.components.listeners.Japi2FocusListener;
 import de.japi.components.listeners.Japi2KeyListener;
@@ -422,6 +423,11 @@ public class QuestionCalls {
         session.log2("Is {0} resizable?", frame);
         session.writeInt(frame.isResizable() ? Japi2Constants.J_TRUE : Japi2Constants.J_FALSE);
     } 
+
+    public static void isResizable(Japi2Session session, Japi2InternalFrame internalFrame) throws IOException {
+        session.log2("Is {0} resizable?", internalFrame);
+        session.writeInt(internalFrame.isResizable() ? Japi2Constants.J_TRUE : Japi2Constants.J_FALSE);
+    } 
     
     public static void isResizable(Japi2Session session, Japi2Dialog dialog) throws IOException {
         session.log2("Is {0} resizable?", dialog);
@@ -620,6 +626,12 @@ public class QuestionCalls {
         String content = t.getTitle();
         writeTextHelper(session,content);
     }
+
+    public static void getText(Japi2Session session, Japi2InternalFrame t) throws IOException {
+        session.log2("Get title of Japi2Frame {0}", t);
+        String content = t.getTitle();
+        writeTextHelper(session,content);
+    }
     
     /*
      * This method transfers the title of a {@link Japi2Dialog} object to the
@@ -706,6 +718,11 @@ public class QuestionCalls {
      * session.
      */
     public static void getLength(Japi2Session session, Japi2Frame f) throws IOException {
+        session.log2("Get length");
+        session.writeInt(f.getTitle().length());
+    }
+
+    public static void getLength(Japi2Session session, Japi2InternalFrame f) throws IOException {
         session.log2("Get length");
         session.writeInt(f.getTitle().length());
     }

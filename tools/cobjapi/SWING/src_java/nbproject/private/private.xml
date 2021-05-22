@@ -5,7 +5,7 @@
             <url>src/de/japi/Japi2Session.java</url>
             <bookmark id="1">
                 <name/>
-                <line>2621</line>
+                <line>2639</line>
                 <key/>
             </bookmark>
         </file>
@@ -15,9 +15,13 @@
             <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/Japi2Session.java</file>
             <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/components/Japi2TextArea.java</file>
             <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/Japi2Calls.java</file>
+            <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/calls/GraphicCalls.java</file>
+            <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/components/Japi2Window.java</file>
+            <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/components/Japi2Dialog.java</file>
             <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/calls/ConstructionCalls.java</file>
             <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/calls/CommandCalls.java</file>
             <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/calls/QuestionCalls.java</file>
+            <file>file:/C:/cygwin64/home/laszlo.erdoes/cobjapi/SWING/src_java/src/de/japi/components/layout/Japi2FixLayout.java</file>
         </group>
     </open-files>
 </project-private>
