@@ -1,3 +1,6 @@
+2021-05-29 Sergey Kashyrin <ska@kiska.net>
+	* Ignoring connection in EXEC SQL AT conn.
+
 2021-05-18 Sergey Kashyrin <ska@kiska.net>
 	* Implementing "dynamic" cursors, i.e.
 	* EXEC SQL DECLARE L_CSR CURSOR FOR L_PREP

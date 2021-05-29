@@ -39,7 +39,7 @@
 
 #include "vcache.h"
 
-static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCobol Version 2 (2021.05.18) Build " __DATE__ "\n";
+static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCobol Version 2 (2021.05.29) Build " __DATE__ "\n";
 /**  Version is present in SQLCA. Current is 02 */
 
 static bool bAPOST = true;		// use apostroph instead of quote
@@ -301,6 +301,13 @@ private:
 		sql.deblank();
 		string sqlu(sql);
 		sqlu.toupper();
+		if(sqlu.starts("AT ")) {
+			int ix = sql.indexof(' ', 3);
+			if(ix > 0) {
+				sql = sql.substr(ix + 1);
+				sqlu = sqlu.substr(ix + 1);
+			}
+		}
 		if(sqlu.starts("BEGIN DECLARE SECTION")) {
 			if(inside_declare == 0) {
 				cl.bSQL = true;
