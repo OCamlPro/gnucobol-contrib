@@ -109,7 +109,7 @@ void log(const char *format_str, ...)
 #ifdef _MSC_VER
 	fprintf(stderr, "%u ", GetTickCount());
 #else
-	fprintf(stderr, "%u ", time(NULL));
+	fprintf(stderr, "%ld ", time(NULL));
 #endif
 	va_start(ap, format_str);
 	vfprintf(stderr, format_str, ap);
@@ -138,7 +138,7 @@ void logd(int level, const char *format_str, ...)
 #ifdef _MSC_VER
 	fprintf(stderr, "%u ", GetTickCount());
 #else
-	fprintf(stderr, "%u ", time(NULL));
+	fprintf(stderr, "%ld ", time(NULL));
 #endif
 	va_start(ap, format_str);
 	vfprintf(stderr, format_str, ap);
@@ -239,9 +239,9 @@ public:
 	}
 	~DBS() {
 		for(int i = 0; i < dbct; ++i) {
-			delete db[i];
+			delete[] db[i];
 		}
-		delete db;
+		delete[] db;
 	}
 	int getCurrentDB() {
 		return dbcurr;
@@ -265,7 +265,7 @@ public:
 		if(dbct == cap) {
 			char ** db1 = new char *[cap+cap];
 			memcpy(db1, db, cap * (sizeof(char *)));
-			delete db;
+			delete[] db;
 			db = db1;
 			cap += cap;
 		}
@@ -292,8 +292,9 @@ public:
 	DBL() {
 		ct = DBN.getCount();
 		if(DBN.getMaxDBCount() > ct) ct = DBN.getMaxDBCount();
-		stmt = new SQLHANDLE[ct];
-		memset(stmt, 0, ct * sizeof(SQLHANDLE));
+		stmt = new SQLHANDLE[ct]();
+		//// Default initializer sets array members to zero. 
+		//// memset(stmt, 0, ct * sizeof(SQLHANDLE));
 	}
 	~DBL() {
 		for(int i = 0; i < ct; ++i) {
@@ -302,7 +303,7 @@ public:
 				SQLFreeHandle(SQL_HANDLE_STMT, stmt[i]);
 			}
 		}
-		delete stmt;
+		delete[] stmt;
 	}
 	bool checkall() {
 		if(ct != DBN.getMaxDBCount()) return false;
@@ -317,7 +318,7 @@ public:
 			SQLHANDLE * stmt1 = new SQLHANDLE[DBN.getCount()];
 			memcpy(stmt1, stmt, ct * (sizeof(SQLHANDLE)));
 			for(int i = ct; i < DBN.getCount(); ++i) stmt1[i] = 0;
-			delete stmt;
+			delete[] stmt;
 			stmt = stmt1;
 			ct = DBN.getCount();
 		}
@@ -327,10 +328,10 @@ public:
 	operator SQLHANDLE() {
 		int nc = DBN.getCurrentDB();
 		if(nc >= ct) {
-			SQLHANDLE * stmt1 = new SQLHANDLE[DBN.getCount()];
+			SQLHANDLE * stmt1 = new SQLHANDLE[DBN.getCount()]();
 			memcpy(stmt1, stmt, ct * (sizeof(SQLHANDLE)));
-			for(int i = ct; i < DBN.getCount(); ++i) stmt1[i] = 0;
-			delete stmt;
+			////for(int i = ct; i < DBN.getCount(); ++i) stmt1[i] = 0;
+			delete[] stmt;
 			stmt = stmt1;
 			ct = DBN.getCount();
 		}
@@ -393,31 +394,39 @@ public:
 		if(bufct == 0) {
 			pbuf = NULL;
 		} else {
-			pbuf = new char *[bufct];
-			for(int i = 0; i < bufct; ++i) pbuf[i] = NULL;
+			pbuf = new char *[bufct]();
+			////for(int i = 0; i < bufct; ++i) pbuf[i] = NULL;
 		}
 	}
 	~mysql() {
 		if(parmct != 0) {
-			delete parmlen;
+			delete[] parmlen;
 		}
 		if(columnct != 0) {
-			delete hostlen;
-			delete hostaddr;
-			delete hosttype;
+			delete[] hostlen;
+			delete[] hostaddr;
+			delete[] hosttype;
 		}
 		if(movect != 0) {
-			delete moves;
+			delete[] moves;
 		}
 		if(bufct != 0) {
 			for(int i = 0; i < bufct; ++i) {
-				if(pbuf[i] != NULL) delete pbuf[i];
+				if(pbuf[i] != NULL) delete[] pbuf[i];
 			}
-			delete pbuf;
+			delete[] pbuf;
 		}
 		if(ST != 0) {
 			delete ST;
 		}
+	}
+	mydec * pbuf_set( int bufct, short bytelen = 0, short precision = 0 ) {
+		if( pbuf[bufct] == NULL ) {
+			mydec md = { bytelen, precision };
+			pbuf[bufct] = new char[sizeof md];
+			*reinterpret_cast<mydec*>(pbuf[bufct]) = md;
+		}
+		return reinterpret_cast<mydec*>(pbuf[bufct]);
 	}
 };
 
@@ -461,8 +470,8 @@ private:
 public:
 	stmtcache(int sz = 1009) {
 		SZ = sz;
-		data = new stmtholder *[SZ];
-		for(int i = 0; i < SZ; ++i) data[i] = NULL;
+		data = new stmtholder *[SZ]();
+		////for(int i = 0; i < SZ; ++i) data[i] = NULL;
 		count = 0;
 	}
 	~stmtcache() {
@@ -917,15 +926,9 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		} else if(PARMTYPE[i] == '3') {
 			--ct;
 			--bufct;
-			mydec * md;
-			if(msql->pbuf[bufct] == NULL) {
-				md = new mydec;
-				md->bytelen = (int) PARMLEN[i];
-				md->precision = PARMPREC[i];
-				msql->pbuf[bufct] = (char *) md;
-			} else {
-				md = (mydec *) msql->pbuf[bufct];
-			}
+			mydec * md = msql->pbuf_set(bufct,
+						    PARMLEN[i],
+						    PARMPREC[i]);
 			smov[ct].movenumber = i;
 			smov[ct].movetype = -3;	// moving COMP-3 to DECIMAL.
 			smov[ct].movelen = bufct;
@@ -1048,15 +1051,9 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		} else if(PARMTYPE[i] == '3') {
 			--ct;
 			--bufct;
-			mydec * md;
-			if(msql->pbuf[bufct] == NULL) {
-				md = new mydec;
-				md->bytelen = (int) PARMLEN[i];
-				md->precision = PARMPREC[i];
-				msql->pbuf[bufct] = (char *) md;
-			} else {
-				md = (mydec *) msql->pbuf[bufct];
-			}
+			mydec * md = msql->pbuf_set(bufct,
+						    PARMLEN[i],
+						    PARMPREC[i]);
 			smov[ct].movenumber = i;
 			smov[ct].movetype = 3;	// moving DECIMAL to COMP-3.
 			smov[ct].movelen = bufct;
@@ -1438,15 +1435,9 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 			} else if(PARMTYPE[i] == '3') {
 				--ct;
 				--bufct;
-				mydec * md;
-				if(msql.pbuf[bufct] == NULL) {
-					md = new mydec;
-					md->bytelen = (int) PARMLEN[i];
-					md->precision = PARMPREC[i] & 0x3F;
-					msql.pbuf[bufct] = (char *) md;
-				} else {
-					md = (mydec *) msql.pbuf[bufct];
-				}
+				mydec * md = msql.pbuf_set(bufct,
+							   PARMLEN[i],
+							   PARMPREC[i] & 0x3F);
 				smov[ct].movenumber = i;
 				smov[ct].movetype = -3;	// moving COMP-3 to DECIMAL.
 				smov[ct].movelen = bufct;
@@ -1484,15 +1475,9 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 			} else if(PARMTYPE[i] == '3') {
 				if(!b_in) {
 					--bufct;
-					mydec * md;
-					if(msql.pbuf[bufct] == NULL) {
-						md = new mydec;
-						md->bytelen = (int) PARMLEN[i];
-						md->precision = PARMPREC[i] & 0x3F;
-						msql.pbuf[bufct] = (char *) md;
-					} else {
-						md = (mydec *) msql.pbuf[bufct];
-					}
+					mydec * md = msql.pbuf_set(bufct,
+								   PARMLEN[i],
+								   PARMPREC[i] & 0x3F);
 					PARMADDR[i] = & md->num;
 				}
 				--ct;
@@ -2047,13 +2032,7 @@ extern "C" OCEXPORT int OCSQLFTC(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		} else if(PARMTYPE[i] == '3') {
 			--ct;
 			--bufct;
-			mydec * md;
-			if(msql->pbuf[bufct] == NULL) {
-				md = new mydec;
-				msql->pbuf[bufct] = (char *) md;
-			} else {
-				md = (mydec *) msql->pbuf[bufct];
-			}
+			mydec * md = msql->pbuf_set(bufct);
 			md->bytelen = PARMLEN[i];
 			md->precision = PARMPREC[i];
 			smov[ct].movenumber = i;
@@ -2068,7 +2047,7 @@ extern "C" OCEXPORT int OCSQLFTC(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 			if(msql->pbuf[bufct] == NULL) {
 				msql->pbuf[bufct] = new char[PARMLEN[i] + 1];
 			} else if(smov[ct].movelen < PARMLEN[i]) {
-				delete msql->pbuf[bufct];
+				delete[] msql->pbuf[bufct];
 				msql->pbuf[bufct] = new char[PARMLEN[i] + 1];
 			}
 			smov[ct].movenumber = i;
