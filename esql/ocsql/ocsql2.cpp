@@ -81,6 +81,8 @@ static inline char * strupr(char * p) {
 
 #endif
 
+#include <algorithm>
+
 /////////////////////////////////////////////////////////////////////////
 // This is how runtime will behave in the case of switching the databases
 // It is very important to remember that if those definitions are not
@@ -264,7 +266,7 @@ public:
 		}
 		if(dbct == cap) {
 			char ** db1 = new char *[cap+cap];
-			memcpy(db1, db, cap * (sizeof(char *)));
+			std::copy(db, db + cap, db1);
 			delete[] db;
 			db = db1;
 			cap += cap;
@@ -315,9 +317,8 @@ public:
 	DBL & operator=(SQLHANDLE h) {
 		int nc = DBN.getCurrentDB();
 		if(nc >= ct) {
-			SQLHANDLE * stmt1 = new SQLHANDLE[DBN.getCount()];
-			memcpy(stmt1, stmt, ct * (sizeof(SQLHANDLE)));
-			for(int i = ct; i < DBN.getCount(); ++i) stmt1[i] = 0;
+			SQLHANDLE * stmt1 = new SQLHANDLE[DBN.getCount()]();
+			std::copy(stmt, stmt + ct, stmt1);
 			delete[] stmt;
 			stmt = stmt1;
 			ct = DBN.getCount();
@@ -329,8 +330,7 @@ public:
 		int nc = DBN.getCurrentDB();
 		if(nc >= ct) {
 			SQLHANDLE * stmt1 = new SQLHANDLE[DBN.getCount()]();
-			memcpy(stmt1, stmt, ct * (sizeof(SQLHANDLE)));
-			////for(int i = ct; i < DBN.getCount(); ++i) stmt1[i] = 0;
+			std::copy(stmt, stmt + ct, stmt1);
 			delete[] stmt;
 			stmt = stmt1;
 			ct = DBN.getCount();
