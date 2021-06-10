@@ -82,6 +82,7 @@ static inline char * strupr(char * p) {
 #endif
 
 #include <algorithm>
+#include <set>
 
 /////////////////////////////////////////////////////////////////////////
 // This is how runtime will behave in the case of switching the databases
@@ -466,7 +467,20 @@ private:
 	stmtholder ** data;
 	int			SZ;			// size of cache tables
 	int			count;
+	std::set<STMT*>		statements;
+	typedef std::set<STMT*>::iterator stmt_iterator;
 
+	class iptr_cmp {
+		const STMT *stmt;
+	public:
+		iptr_cmp( const STMT *stmt ) : stmt(stmt) {}
+		bool operator()( const STMT *stmt ) {
+		  if( stmt != this->stmt ) {
+			return stmt->SQL_IPTR == this->stmt->SQL_IPTR;
+		  }
+		  return false; // Not interesting if stmt matches itself
+		}
+	};
 public:
 	stmtcache(int sz = 1009) {
 		SZ = sz;
@@ -481,10 +495,24 @@ public:
 
 	int getCount() { return count;}
 
-	void clear()
-	{
+	void clear() {
 		for(int i = 0; i < SZ; ++i) {
 			for(stmtholder * h = data[i]; h != NULL;) {
+				logd(9, "stmtcache::clear: delete %p SQL_IPTR %p",
+				     h->stmt, h->stmt->SQL_IPTR);
+				stmt_iterator p =
+					std::find_if( statements.begin(),
+						      statements.end(),
+						      iptr_cmp(h->stmt) );
+				if( p != statements.end() ) {
+					logd(9,
+					     "stmtcache::clear: "
+					     "mysql->SQL_IPTR %p->%p "
+					     "already freed for mysql %p",
+					     h->stmt,
+					     h->stmt->SQL_IPTR,
+					     *p);
+				}
 				stmtholder * h2 = h;
 				h = h->next;
 				delete h2;
@@ -494,8 +522,11 @@ public:
 		count = 0;
 	}
 
-	void put(STMT * stmt)
-	{
+	void put(STMT * stmt) {
+		std::pair<stmt_iterator,bool> ret = statements.insert(stmt);
+		if( ret.second ) {
+			logd(9, "stmtcache::put: new %p", stmt);
+		}
 		int i = (int)(((unsigned long long)stmt) % SZ);
 		if(data[i] == NULL) {
 			stmtholder * v = new stmtholder(stmt);
