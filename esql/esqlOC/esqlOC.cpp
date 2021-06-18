@@ -2,17 +2,18 @@
  * Copyright (C) 2006-2021 Sergey Kashyrin <ska@kiska.net>
  *               2012 enhanced by Doug Vogel <dv11674@gmail.com>
  *               2013 fixes and enhancements by Atilla Akarsular <030ati@gmail.com>
+ *               2021 mf-compat by Simon Sobisch <simonsobisch@gnu.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
@@ -39,7 +40,7 @@
 
 #include "vcache.h"
 
-static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCobol Version 2 (2021.05.29) Build " __DATE__ "\n";
+static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCOBOL Version 2 (2021.06.04) Build " __DATE__ "\n";
 /**  Version is present in SQLCA. Current is 02 */
 
 static bool bAPOST = true;		// use apostroph instead of quote
@@ -67,11 +68,11 @@ static const char * sqlca[] = {
 	"              88  SQL-INVALID-CURSOR-STATE VALUE '24000'.", 
 	"           05 FILLER   PIC X.",
 	"           05 SQLVERSN PIC 99 VALUE 02.",
-	"           05 SQLCODE  PIC S9(9) COMP-5.",
+	"           05 SQLCODE  PIC S9(9) COMP-5 VALUE ZERO.",
 	"           05 SQLERRM.",
-	"               49 SQLERRML PIC S9(4) COMP-5.",
+	"               49 SQLERRML PIC S9(4) COMP-5 VALUE ZERO.",
 	"               49 SQLERRMC PIC X(486).",
-    "           05 SQLERRD OCCURS 6 TIMES PIC S9(9) COMP-5."
+    "           05 SQLERRD OCCURS 6 TIMES PIC S9(9) COMP-5 VALUE ZERO."
 };
 static const char * workst[] = {
 	"       77 OCSQL     PIC X(8) VALUE %cOCSQL%c.",
@@ -310,8 +311,8 @@ private:
 		}
 		if(sqlu.starts("BEGIN DECLARE SECTION")) {
 			if(inside_declare == 0) {
-				cl.bSQL = true;
-				cl.sqlaction = 2;	// start mark
+			cl.bSQL = true;
+			cl.sqlaction = 2;	// start mark
 			}
 			++inside_declare;
 			return;
@@ -321,8 +322,8 @@ private:
 				--inside_declare;
 			}
 			if(inside_declare == 0) {
-				cl.bSQL = true;
-				cl.sqlaction = 3;	// end mark
+			cl.bSQL = true;
+			cl.sqlaction = 3;	// end mark
 			}
 			return;
 		}
@@ -438,8 +439,8 @@ private:
 				bool bDyn = false;
 				bool bWH = false;
 				varholder* vd = NULL;
-				x = sqlu.indexof("SELECT ");
-				if(x < 0) {
+			x = sqlu.indexof("SELECT ");
+			if(x < 0) {
 					x = sqlu.indexof(" FOR ");
 					if(x < 0) {
 						sprintf(buf, "line %d of %s: Incorrect SQL DECLARE: %s", cl.lineno, cl.fname, (const char*)sql);
@@ -448,8 +449,8 @@ private:
 					string dvar = sqlu.substr(x + 5);
 					if(dvar.indexof(" ") >= 0) {
 						sprintf(buf, "line %d of %s: Incorrect SQL DECLARE: %s", cl.lineno, cl.fname, (const char*)sql);
-						throw buf;
-					}
+				throw buf;
+			}
 					bDyn = true;
 					vd = new varholder(dvar);
 					vd->type = 'Y';
@@ -457,19 +458,19 @@ private:
 					++x;
 				}
 				int opt = sqlu.indexof(" WITH HOLD ");
-				if(opt > 0 && opt < x) {
-					bWH = true;
-				}
-				sql = sql.substr(x);
-				cl.sqlnum = sqlcmd.add(sql);
-				varholder * v = new varholder(svar);
+			if(opt > 0 && opt < x) {
+				bWH = true;
+			}
+			sql = sql.substr(x);
+			cl.sqlnum = sqlcmd.add(sql);
+			varholder * v = new varholder(svar);
 				v->type = bDyn ? (bWH ? 'd' : 'D') : (bWH ? 'c' : 'C');
-				v->size = cl.sqlnum;
+			v->size = cl.sqlnum;
 				if(vd != NULL) {
 					vd->size = cl.sqlnum;
 					vd->over = v;
 				}
-				sym.put(v);
+			sym.put(v);
 			} // else ignoring
 			cl.sqlaction = 12;
 		} else if(sqlu.starts("OPEN ")) {
@@ -787,10 +788,10 @@ private:
 		addln(lineno++, "       01 SQLV.");
 		sprintf(buf, "           05 SQL-ARRSZ  PIC S9(9) COMP-5 VALUE %d.", maxparmnum);
 		addln(lineno++, buf);
-		addln(lineno++, "           05 SQL-COUNT  PIC S9(9) COMP-5.");
-		sprintf(buf, "           05 SQL-ADDR   POINTER OCCURS %d TIMES.", maxparmnum);
+		addln(lineno++, "           05 SQL-COUNT  PIC S9(9) COMP-5 VALUE ZERO.");
+		sprintf(buf, "           05 SQL-ADDR   POINTER OCCURS %d TIMES VALUE NULL.", maxparmnum);
 		addln(lineno++, buf);
-		sprintf(buf, "           05 SQL-LEN    PIC S9(9) COMP-5 OCCURS %d TIMES.", maxparmnum);
+		sprintf(buf, "           05 SQL-LEN    PIC S9(9) COMP-5 OCCURS %d TIMES VALUE ZERO.", maxparmnum);
 		addln(lineno++, buf);
 		sprintf(buf, "           05 SQL-TYPE   PIC X OCCURS %d TIMES.", maxparmnum);
 		addln(lineno++, buf);
@@ -804,7 +805,7 @@ private:
 			if(sqlu.starts("FOR ")) {
 				sprintf(buf, "       01 SQL-STMT-%d.", i);
 				addln(lineno++, buf);
-				addln(lineno++, "           05 SQL-IPTR   POINTER.");
+				addln(lineno++, "           05 SQL-IPTR   POINTER VALUE NULL.");
 				sprintf(buf, "           05 SQL-PREP   PIC X VALUE %cN%c.", Q, Q);
 				addln(lineno++, buf);
 				addln(lineno++, "           05 SQL-OPT    PIC X VALUE SPACE.");
@@ -812,7 +813,7 @@ private:
 				addln(lineno++, "           05 SQL-STMLEN PIC S9(4) COMP-5 VALUE 0.");
 				addln(lineno++, "           05 FILLER     PIC X.");
 				addln(lineno++, "           05 SQL-VTYPE  PIC X VALUE SPACE.");
-				addln(lineno++, "           05 SQL-VADDR  POINTER.");
+				addln(lineno++, "           05 SQL-VADDR  POINTER VALUE NULL.");
 				addln(lineno++, "      **********************************************************************");
 				continue;
 			}
@@ -884,7 +885,7 @@ private:
 			}
 			sprintf(buf, "       01 SQL-STMT-%d.", i);
 			addln(lineno++, buf);
-			addln(lineno++, "           05 SQL-IPTR   POINTER.");
+			addln(lineno++, "           05 SQL-IPTR   POINTER VALUE NULL.");
 			sprintf(buf, "           05 SQL-PREP   PIC X VALUE %cN%c.", Q, Q);
 			addln(lineno++, buf);
 			addln(lineno++, "           05 SQL-OPT    PIC X VALUE SPACE.");
@@ -1302,7 +1303,7 @@ private:
 										sc = "           COMP-5" + sc.substr(ix+4);
 										addln(lineno++, sc);
 									} else {
-										unhandled = true;
+				unhandled = true;
 										sc = "           " + sc;
 										addln(lineno++, sc);
 										fprintf(stderr, "WARNING: line %d of %s: unsupported %s at level 49\n", cl.lineno, cl.fname, (const char *)svar);
@@ -2699,8 +2700,8 @@ private:
 	void processCONNECT(cobline & cl, int & lineno)
 	{
 		string & sql = *cl.sql;
-		string sqlu(sql);
-		sqlu.toupper();
+			string sqlu(sql);
+			sqlu.toupper();
 		int ix = sql.indexof(':');
 		if(ix < 0 || sqlu.starts("DISCONNECT")) {
 			if(ixFull(sqlu, "RESET") > 0 || sqlu.starts("DISCONNECT")) {
@@ -2864,4 +2865,4 @@ int main(int argsLength, char ** args)
 	return rc;
 }
 
-static const char * copyr = "Copyright (C) 2006-2019 Sergey Kashyrin <ska@kiska.net>";
+static const char * copyr = "Copyright (C) 2006-2021 Sergey Kashyrin <ska@kiska.net>";
