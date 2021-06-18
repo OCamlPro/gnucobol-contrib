@@ -1,3 +1,9 @@
+
+2021-06-09 James K. Lowden <jklowden@symas.com>
+	* use std::copy instead of memcpy
+	* moved common code to reinterpret_cast in mysql
+	* use delete[] for arrays
+
 2021-05-18 Sergey Kashyrin <ska@kiska.net>
 	* Enhancement for "dynamic" cursors.
 
