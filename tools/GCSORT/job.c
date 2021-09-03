@@ -220,6 +220,9 @@ struct job_t *job_constructor( void ) {
 	job->nLastPosKey = 0;	// Last position of key
 	job->nTestCmdLine=0;
 	job->nMlt  = MAX_MLTP_BYTE;
+
+	job->job_typeOP = 'C';  // default Sort operation (Copy)
+
 // verify Environment variable for emulation
 // 0 = GCSORT normal operation
 // 1 = GCSORT emulates MFSORT 

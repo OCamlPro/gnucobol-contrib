@@ -1,3 +1,7 @@
+2021-09-03  Sauro Menna  <smenna@users.sourceforge.net>
+    * job.c - Integrated command with only INCLUDE COND condition
+    *         Example: gcsort INCLUDE COND=<condition>    USE <filein>   RECORD ...  GIVE <fileout> RECORD ...
+    
 2021-05-21  Sauro Menna  <smenna@users.sourceforge.net>
     * Fix problem in INCLUDE/OMIT condition
     * Fix script to compile parser/scanner
