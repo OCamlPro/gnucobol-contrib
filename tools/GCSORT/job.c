@@ -1919,6 +1919,9 @@ int job_loadFiles(struct job_t *job) {
 		int nLenVR2 = 0;
 		int nFSRead = 0;
 		int nNewLen = 0;
+		if (job->inputFile->nFileMaxSize == 0) {
+				bEOF = 1;
+		}
 		// ======================================================================================= //
 		while (bEOF == 0)
 		{

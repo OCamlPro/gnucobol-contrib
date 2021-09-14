@@ -1,3 +1,6 @@
+2021-09-14  Sauro Menna  <smenna@users.sourceforge.net>
+    * job.c - Fix problem with empty file
+    
 2021-09-03  Sauro Menna  <smenna@users.sourceforge.net>
     * job.c - Integrated command with only INCLUDE COND condition
     *         Example: gcsort INCLUDE COND=<condition>    USE <filein>   RECORD ...  GIVE <fileout> RECORD ...
