@@ -11,7 +11,7 @@ Author:       Laszlo Erdos - https://www.facebook.com/wortfee
 *>            - Small-prime test with parameter: max-small-prime <num>.
 *>            - Save / Load state parameter.
 *> 2021.10.07 Laszlo Erdos: 
-*>            - GMP functions in a separeted file.
+*>            - GMP functions in a separated file.
 *>******************************************************************************
 
 Licensed under the GNU Lesser General Public License as published by the

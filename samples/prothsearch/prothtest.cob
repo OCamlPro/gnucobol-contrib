@@ -44,7 +44,7 @@
 *>            - small-prime test with parameter.
 *>            - Save / Load state.
 *> 2021.10.07 Laszlo Erdos: 
-*>            GMP functions in a separeted file.
+*>            GMP functions in a separated file.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
