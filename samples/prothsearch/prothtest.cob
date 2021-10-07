@@ -43,11 +43,12 @@
 *>            - GMP mpz_powm() function replaced with other algorithm.
 *>            - small-prime test with parameter.
 *>            - Save / Load state.
+*> 2021.10.07 Laszlo Erdos: 
+*>            GMP functions in a separeted file.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
  PROGRAM-ID. prothtest.
- AUTHOR.     Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.
@@ -72,63 +73,63 @@
 *> gmp variables have a type of mpz_t struct
 *> 2^n
  01 WS-GMP-POW-2.
-   02 MP-ALLOC                         BINARY-INT SYNC.
-   02 MP-SIZE                          BINARY-INT SYNC.
+   02 MP-ALLOC                         BINARY-LONG SYNC.
+   02 MP-SIZE                          BINARY-LONG SYNC.
    02 MP-D                             USAGE POINTER SYNC.
 *> the Proth number: k*2^n + 1
  01 WS-GMP-PROTH-NUMBER.
-   02 MP-ALLOC                         BINARY-INT SYNC.
-   02 MP-SIZE                          BINARY-INT SYNC.
+   02 MP-ALLOC                         BINARY-LONG SYNC.
+   02 MP-SIZE                          BINARY-LONG SYNC.
    02 MP-D                             USAGE POINTER SYNC.
 *> equal with (ws-gmp-proth-nummer - 1) / 2   
  01 WS-GMP-PROTH-NUMBER-2.
-   02 MP-ALLOC                         BINARY-INT SYNC.
-   02 MP-SIZE                          BINARY-INT SYNC.
+   02 MP-ALLOC                         BINARY-LONG SYNC.
+   02 MP-SIZE                          BINARY-LONG SYNC.
    02 MP-D                             USAGE POINTER SYNC.
 *> for mpz_powm()   
  01 WS-GMP-POWM-BASE.
-   02 MP-ALLOC                         BINARY-INT SYNC.
-   02 MP-SIZE                          BINARY-INT SYNC.
+   02 MP-ALLOC                         BINARY-LONG SYNC.
+   02 MP-SIZE                          BINARY-LONG SYNC.
    02 MP-D                             USAGE POINTER SYNC.
  01 WS-GMP-POWM-RESULT.
-   02 MP-ALLOC                         BINARY-INT SYNC.
-   02 MP-SIZE                          BINARY-INT SYNC.
+   02 MP-ALLOC                         BINARY-LONG SYNC.
+   02 MP-SIZE                          BINARY-LONG SYNC.
    02 MP-D                             USAGE POINTER SYNC.
  01 WS-GMP-POWM-RESULT-LOAD.
-   02 MP-ALLOC                         BINARY-INT SYNC.
-   02 MP-SIZE                          BINARY-INT SYNC.
+   02 MP-ALLOC                         BINARY-LONG SYNC.
+   02 MP-SIZE                          BINARY-LONG SYNC.
    02 MP-D                             USAGE POINTER SYNC.
 *> for the Jacobi check
  01 WS-GMP-JACOBI-A.
-   02 MP-ALLOC                         BINARY-INT SYNC.
-   02 MP-SIZE                          BINARY-INT SYNC.
+   02 MP-ALLOC                         BINARY-LONG SYNC.
+   02 MP-SIZE                          BINARY-LONG SYNC.
    02 MP-D                             USAGE POINTER SYNC.
 *> square root of Proth number   
  01 WS-GMP-PROTH-NUMBER-SQRT.
-   02 MP-ALLOC                         BINARY-INT SYNC.
-   02 MP-SIZE                          BINARY-INT SYNC.
+   02 MP-ALLOC                         BINARY-LONG SYNC.
+   02 MP-SIZE                          BINARY-LONG SYNC.
    02 MP-D                             USAGE POINTER SYNC.
 *> for compare   
  01 WS-GMP-HELP-VAR.
-   02 MP-ALLOC                         BINARY-INT SYNC.
-   02 MP-SIZE                          BINARY-INT SYNC.
+   02 MP-ALLOC                         BINARY-LONG SYNC.
+   02 MP-SIZE                          BINARY-LONG SYNC.
    02 MP-D                             USAGE POINTER SYNC.
 *> for mod Proth number
  01 WS-GMP-A.
-   02 MP-ALLOC                         BINARY-INT SYNC.
-   02 MP-SIZE                          BINARY-INT SYNC.
+   02 MP-ALLOC                         BINARY-LONG SYNC.
+   02 MP-SIZE                          BINARY-LONG SYNC.
    02 MP-D                             USAGE POINTER SYNC.
  01 WS-GMP-B.
-   02 MP-ALLOC                         BINARY-INT SYNC.
-   02 MP-SIZE                          BINARY-INT SYNC.
+   02 MP-ALLOC                         BINARY-LONG SYNC.
+   02 MP-SIZE                          BINARY-LONG SYNC.
    02 MP-D                             USAGE POINTER SYNC.
  01 WS-GMP-Q.
-   02 MP-ALLOC                         BINARY-INT SYNC.
-   02 MP-SIZE                          BINARY-INT SYNC.
+   02 MP-ALLOC                         BINARY-LONG SYNC.
+   02 MP-SIZE                          BINARY-LONG SYNC.
    02 MP-D                             USAGE POINTER SYNC.
  01 WS-GMP-R.
-   02 MP-ALLOC                         BINARY-INT SYNC.
-   02 MP-SIZE                          BINARY-INT SYNC.
+   02 MP-ALLOC                         BINARY-LONG SYNC.
+   02 MP-SIZE                          BINARY-LONG SYNC.
    02 MP-D                             USAGE POINTER SYNC.
    
  01 WS-GMP-INIT-FLAG                   PIC 9(1).
@@ -194,10 +195,10 @@
  01 WS-COUNTDOWN-START-DISP            PIC 9(10).
  
 *> function return value 
- 01 WS-RET-1                           BINARY-INT.
+ 01 WS-RET-1                           BINARY-LONG.
  01 WS-RET-2                           BINARY-LONG UNSIGNED.
- 01 WS-CMP-RET-1                       BINARY-INT.
- 01 WS-CMP-RET-2                       BINARY-INT.
+ 01 WS-CMP-RET-1                       BINARY-LONG.
+ 01 WS-CMP-RET-2                       BINARY-LONG.
  
 *> for div test 
  01 WS-DIVIDEND                        BINARY-LONG UNSIGNED.
@@ -251,20 +252,20 @@
 *> file name
  01 WS-LOG-FILE-NAME                   PIC X(32).
  01 WS-LOG-FILE-NAME-R REDEFINES WS-LOG-FILE-NAME.
-   02 WS-LOG-FILE-NAME-K               PIC X(05) VALUE "LOG-K".
+   02 WS-LOG-FILE-NAME-K               PIC X(05).
    02 WS-LOG-FILE-NAME-K-NUM           PIC 9(10).
-   02 WS-LOG-FILE-NAME-SPLIT           PIC X(01) VALUE "-".
-   02 WS-LOG-FILE-NAME-N               PIC X(01) VALUE "N".
+   02 WS-LOG-FILE-NAME-SPLIT           PIC X(01).
+   02 WS-LOG-FILE-NAME-N               PIC X(01).
    02 WS-LOG-FILE-NAME-N-NUM           PIC 9(10).
-   02 WS-LOG-FILE-NAME-TYP             PIC X(04) VALUE ".txt".
+   02 WS-LOG-FILE-NAME-TYP             PIC X(04).
 *> end of string                       
-   02 WS-LOG-FILE-NAME-EOS             PIC X(01) VALUE X"00".
+   02 WS-LOG-FILE-NAME-EOS             PIC X(01).
  
 *> file-status
- 01 WS-LOG-FILE-STATUS                 PIC 9(02).
-    88 V-LOG-FILE-OK                   VALUE 00.
-    88 V-LOG-FILE-OPTIONAL             VALUE 05.
-    88 V-LOG-FILE-EOF                  VALUE 10.
+ 01 WS-LOG-FILE-STATUS                 PIC X(02).
+    88 V-LOG-FILE-OK                   VALUE "00".
+    88 V-LOG-FILE-OPTIONAL             VALUE "05".
+    88 V-LOG-FILE-EOF                  VALUE "10".
 
  01 WS-LOG-PTEST-TEXT                  PIC X(45).
 
@@ -436,79 +437,79 @@
 *>  beginning. It doesn’t matter if a size set with mpz_init2 is too small, 
 *>  since all functions in GMP will do a further reallocation if necessary. But 
 *>  repeatedly realloced memory could be quite slow or could fragment memory.
-    CALL STATIC "mpz_init2" 
+    CALL "gmp_fn_mpz_init2" 
          USING BY REFERENCE WS-GMP-POW-2
                BY VALUE     400000000
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_init2" 
+    CALL "gmp_fn_mpz_init2" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER
                BY VALUE     400000000
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_init2" 
+    CALL "gmp_fn_mpz_init2" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER-2
                BY VALUE     400000000
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_init2" 
+    CALL "gmp_fn_mpz_init2" 
          USING BY REFERENCE WS-GMP-POWM-BASE
                BY VALUE     80
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_init2" 
+    CALL "gmp_fn_mpz_init2" 
          USING BY REFERENCE WS-GMP-POWM-RESULT
                BY VALUE     400000000
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_init2" 
+    CALL "gmp_fn_mpz_init2" 
          USING BY REFERENCE WS-GMP-POWM-RESULT-LOAD
                BY VALUE     400000000
          RETURNING OMITTED
     END-CALL     
     
-    CALL STATIC "mpz_init2" 
+    CALL "gmp_fn_mpz_init2" 
          USING BY REFERENCE WS-GMP-JACOBI-A
                BY VALUE     80
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_init2" 
+    CALL "gmp_fn_mpz_init2" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER-SQRT
                BY VALUE     400000000
          RETURNING OMITTED
     END-CALL     
     
-    CALL STATIC "mpz_init2" 
+    CALL "gmp_fn_mpz_init2" 
          USING BY REFERENCE WS-GMP-HELP-VAR
                BY VALUE     80
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_init2" 
+    CALL "gmp_fn_mpz_init2" 
          USING BY REFERENCE WS-GMP-A
                BY VALUE     400000000
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_init2" 
+    CALL "gmp_fn_mpz_init2" 
          USING BY REFERENCE WS-GMP-B
                BY VALUE     400000000
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_init2" 
+    CALL "gmp_fn_mpz_init2" 
          USING BY REFERENCE WS-GMP-Q
                BY VALUE     400000000
          RETURNING OMITTED
     END-CALL     
     
-    CALL STATIC "mpz_init2" 
+    CALL "gmp_fn_mpz_init2" 
          USING BY REFERENCE WS-GMP-R
                BY VALUE     400000000
          RETURNING OMITTED
@@ -521,7 +522,7 @@
 *>------------------------------------------------------------------------------
 
 *>  compute the PROTH number: k*2^n + 1
-    CALL STATIC "mpz_ui_pow_ui" 
+    CALL "gmp_fn_mpz_ui_pow_ui" 
          USING BY REFERENCE WS-GMP-POW-2
                BY VALUE     2
                BY VALUE     LNK-N OF LNK-PROTHTEST
@@ -529,14 +530,14 @@
     END-CALL     
 
 *>  prepare compare, move K to help-var    
-    CALL STATIC "mpz_set_ui" 
+    CALL "gmp_fn_mpz_set_ui" 
          USING BY REFERENCE WS-GMP-HELP-VAR
                BY VALUE     LNK-K OF LNK-PROTHTEST
          RETURNING OMITTED
     END-CALL     
 
 *>  compare: k < 2^n
-    CALL STATIC "mpz_cmp" 
+    CALL "gmp_fn_mpz_cmp" 
          USING BY REFERENCE WS-GMP-POW-2
                BY REFERENCE WS-GMP-HELP-VAR
          RETURNING WS-RET-1
@@ -549,14 +550,14 @@
        SET V-K-GE-2-POWER-N OF LNK-RESULT-FLAG OF LNK-PROTHTEST TO TRUE
     END-IF
     
-    CALL STATIC "mpz_mul_ui" 
+    CALL "gmp_fn_mpz_mul_ui" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER
                BY REFERENCE WS-GMP-POW-2
                BY VALUE     LNK-K OF LNK-PROTHTEST
          RETURNING OMITTED
     END-CALL     
     
-    CALL STATIC "mpz_add_ui" 
+    CALL "gmp_fn_mpz_add_ui" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER
                BY REFERENCE WS-GMP-PROTH-NUMBER
                BY VALUE     1
@@ -564,21 +565,21 @@
     END-CALL     
 
 *> compute (proth-nummer - 1) / 2   
-    CALL STATIC "mpz_sub_ui" 
+    CALL "gmp_fn_mpz_sub_ui" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER-2
                BY REFERENCE WS-GMP-PROTH-NUMBER
                BY VALUE     1
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_tdiv_q_ui" 
+    CALL "gmp_fn_mpz_tdiv_q_ui" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER-2
                BY REFERENCE WS-GMP-PROTH-NUMBER-2
                BY VALUE     2
          RETURNING WS-RET-2
     END-CALL     
     
-    CALL STATIC "mpz_sizeinbase" 
+    CALL "gmp_fn_mpz_sizeinbase" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER
                BY VALUE     10
          RETURNING WS-RET-2
@@ -586,7 +587,7 @@
 
     MOVE WS-RET-2 TO LNK-PROTHTEST-DIGITS
     
-    CALL STATIC "mpz_sizeinbase" 
+    CALL "gmp_fn_mpz_sizeinbase" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER-2
                BY VALUE     2
          RETURNING WS-RET-2
@@ -605,7 +606,7 @@
       UNTIL WS-IND > C-A-TAB-MAX-LINE
 
 *>     prepare Jacobi check, move WS-A(WS-IND) to WS-GMP-JACOBI-A   
-       CALL STATIC "mpz_set_ui" 
+       CALL "gmp_fn_mpz_set_ui" 
             USING BY REFERENCE WS-GMP-JACOBI-A
                   BY VALUE     WS-A(WS-IND)
             RETURNING OMITTED
@@ -613,7 +614,7 @@
       
 *>     Compute the Jacobi symbol (a/p). The p is the Proth number.
 *>     The Jacobi symbol is defined only for p odd.
-       CALL STATIC "mpz_jacobi" 
+       CALL "gmp_fn_mpz_jacobi" 
             USING BY REFERENCE WS-GMP-JACOBI-A
                   BY REFERENCE WS-GMP-PROTH-NUMBER
             RETURNING WS-RET-1
@@ -637,13 +638,13 @@
 *>------------------------------------------------------------------------------
 
 *>  compare: Proth number >= 5 ?
-    CALL STATIC "mpz_set_ui" 
+    CALL "gmp_fn_mpz_set_ui" 
          USING BY REFERENCE WS-GMP-HELP-VAR
                BY VALUE     5
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_cmp" 
+    CALL "gmp_fn_mpz_cmp" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER
                BY REFERENCE WS-GMP-HELP-VAR
          RETURNING WS-RET-1
@@ -656,7 +657,7 @@
     END-IF
 
 *>  the sequence 6*j-1 and 6*j+1 includes all primes   
-    CALL STATIC "mpz_sub_ui" 
+    CALL "gmp_fn_mpz_sub_ui" 
          USING BY REFERENCE WS-GMP-HELP-VAR
                BY REFERENCE WS-GMP-PROTH-NUMBER
                BY VALUE     1
@@ -664,13 +665,13 @@
     END-CALL     
 
 *>  return non-zero if the number is exactly divisible     
-    CALL STATIC "mpz_divisible_ui_p" 
+    CALL "gmp_fn_mpz_divisible_ui_p" 
          USING BY REFERENCE WS-GMP-HELP-VAR
                BY VALUE     6
          RETURNING WS-CMP-RET-1
     END-CALL     
 
-    CALL STATIC "mpz_add_ui" 
+    CALL "gmp_fn_mpz_add_ui" 
          USING BY REFERENCE WS-GMP-HELP-VAR
                BY REFERENCE WS-GMP-PROTH-NUMBER
                BY VALUE     1
@@ -678,7 +679,7 @@
     END-CALL     
 
 *>  return non-zero if the number is exactly divisible     
-    CALL STATIC "mpz_divisible_ui_p" 
+    CALL "gmp_fn_mpz_divisible_ui_p" 
          USING BY REFERENCE WS-GMP-HELP-VAR
                BY VALUE     6
          RETURNING WS-CMP-RET-2
@@ -698,14 +699,14 @@
 *>------------------------------------------------------------------------------
 
 *>  square root of Proth number
-    CALL STATIC "mpz_sqrt" 
+    CALL "gmp_fn_mpz_sqrt" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER-SQRT
                BY REFERENCE WS-GMP-PROTH-NUMBER
          RETURNING OMITTED
     END-CALL     
 
 *>  add 1 to square root of Proth number    
-    CALL STATIC "mpz_add_ui" 
+    CALL "gmp_fn_mpz_add_ui" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER-SQRT
                BY REFERENCE WS-GMP-PROTH-NUMBER-SQRT
                BY VALUE     1
@@ -784,14 +785,14 @@
 *>------------------------------------------------------------------------------
 
 *>  prepare compare, move small prime to help-var
-    CALL STATIC "mpz_set_ui" 
+    CALL "gmp_fn_mpz_set_ui" 
          USING BY REFERENCE WS-GMP-HELP-VAR
                BY VALUE     WS-SMALL-PRIME
          RETURNING OMITTED
     END-CALL     
     
 *>  compare: small prime >= square root of Proth number + 1
-    CALL STATIC "mpz_cmp" 
+    CALL "gmp_fn_mpz_cmp" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER-SQRT
                BY REFERENCE WS-GMP-HELP-VAR
          RETURNING WS-RET-1
@@ -807,7 +808,7 @@
     END-IF
 
 *>  return non-zero if the proth number is exactly divisible     
-    CALL STATIC "mpz_divisible_ui_p" 
+    CALL "gmp_fn_mpz_divisible_ui_p" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER
                BY VALUE     WS-SMALL-PRIME
          RETURNING WS-RET-1
@@ -826,13 +827,13 @@
  PROTH-PRIMALITY-TEST SECTION.
 *>------------------------------------------------------------------------------
 
-    CALL STATIC "mpz_set_ui" 
+    CALL "gmp_fn_mpz_set_ui" 
          USING BY REFERENCE WS-GMP-POWM-BASE
                BY VALUE     WS-POWM-BASE
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_set_ui" 
+    CALL "gmp_fn_mpz_set_ui" 
          USING BY REFERENCE WS-GMP-POWM-RESULT
                BY VALUE     WS-POWM-BASE
          RETURNING OMITTED
@@ -866,7 +867,7 @@
        IF V-LOAD-SUCCESS-YES OF WS-LOAD-SUCCESS-FLAG
        THEN
           MOVE WS-COUNTDOWN-START-LOAD TO WS-COUNTDOWN-START
-          CALL STATIC "mpz_set" 
+          CALL "gmp_fn_mpz_set" 
                USING BY REFERENCE WS-GMP-POWM-RESULT
                      BY REFERENCE WS-GMP-POWM-RESULT-LOAD
                RETURNING OMITTED
@@ -935,13 +936,13 @@
           END-IF
        END-IF
        
-       CALL STATIC "mpz_tstbit" 
+       CALL "gmp_fn_mpz_tstbit" 
             USING BY REFERENCE WS-GMP-PROTH-NUMBER-2
                   BY VALUE     WS-COUNTDOWN-IND
             RETURNING WS-RET-1
        END-CALL     
       
-       CALL STATIC "mpz_mul" 
+       CALL "gmp_fn_mpz_mul" 
             USING BY REFERENCE WS-GMP-POWM-RESULT
                   BY REFERENCE WS-GMP-POWM-RESULT
                   BY REFERENCE WS-GMP-POWM-RESULT
@@ -958,7 +959,7 @@
        
        IF WS-RET-1 = 1
        THEN
-          CALL STATIC "mpz_mul" 
+          CALL "gmp_fn_mpz_mul" 
                USING BY REFERENCE WS-GMP-POWM-RESULT
                      BY REFERENCE WS-GMP-POWM-RESULT
                      BY REFERENCE WS-GMP-POWM-BASE
@@ -970,7 +971,7 @@
       
           IF WS-CMP-RET-1 >= ZEROES
           THEN 
-             CALL STATIC "mpz_mod" 
+             CALL "gmp_fn_mpz_mod" 
                   USING BY REFERENCE WS-GMP-POWM-RESULT
                         BY REFERENCE WS-GMP-POWM-RESULT
                         BY REFERENCE WS-GMP-PROTH-NUMBER
@@ -987,7 +988,7 @@
 
 *>  the function mpz_powm() can not give back -1, 
 *>  therefore we have to add 1, and compare the result with the Proth number    
-    CALL STATIC "mpz_add_ui" 
+    CALL "gmp_fn_mpz_add_ui" 
          USING BY REFERENCE WS-GMP-POWM-RESULT
                BY REFERENCE WS-GMP-POWM-RESULT
                BY VALUE     1
@@ -1037,7 +1038,7 @@
 *>------------------------------------------------------------------------------
 
 *>  compare    
-    CALL STATIC "mpz_cmp" 
+    CALL "gmp_fn_mpz_cmp" 
          USING BY REFERENCE WS-GMP-POWM-RESULT
                BY REFERENCE WS-GMP-PROTH-NUMBER
          RETURNING WS-CMP-RET-1
@@ -1049,21 +1050,21 @@
  COMPUTE-MOD-PROTH-NUMBER SECTION.
 *>------------------------------------------------------------------------------
 
-    CALL STATIC "mpz_tdiv_q_2exp" 
+    CALL "gmp_fn_mpz_tdiv_q_2exp" 
          USING BY REFERENCE WS-GMP-A
                BY REFERENCE WS-GMP-POWM-RESULT
                BY VALUE     LNK-N OF LNK-PROTHTEST
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_tdiv_r_2exp" 
+    CALL "gmp_fn_mpz_tdiv_r_2exp" 
          USING BY REFERENCE WS-GMP-B
                BY REFERENCE WS-GMP-POWM-RESULT
                BY VALUE     LNK-N OF LNK-PROTHTEST
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_tdiv_qr_ui" 
+    CALL "gmp_fn_mpz_tdiv_qr_ui" 
          USING BY REFERENCE WS-GMP-Q
                BY REFERENCE WS-GMP-R
                BY REFERENCE WS-GMP-A
@@ -1071,14 +1072,14 @@
          RETURNING WS-RET-2
     END-CALL     
     
-    CALL STATIC "mpz_mul" 
+    CALL "gmp_fn_mpz_mul" 
          USING BY REFERENCE WS-GMP-HELP-VAR
                BY REFERENCE WS-GMP-R
                BY REFERENCE WS-GMP-POW-2
          RETURNING OMITTED
     END-CALL     
     
-    CALL STATIC "mpz_add" 
+    CALL "gmp_fn_mpz_add" 
          USING BY REFERENCE WS-GMP-HELP-VAR
                BY REFERENCE WS-GMP-HELP-VAR
                BY REFERENCE WS-GMP-B
@@ -1086,7 +1087,7 @@
     END-CALL     
 
 *>  compare    
-    CALL STATIC "mpz_cmp" 
+    CALL "gmp_fn_mpz_cmp" 
          USING BY REFERENCE WS-GMP-Q
                BY REFERENCE WS-GMP-HELP-VAR
          RETURNING WS-CMP-RET-2
@@ -1094,7 +1095,7 @@
     
     IF WS-CMP-RET-2 >= ZEROES
     THEN 
-       CALL STATIC "mpz_add" 
+       CALL "gmp_fn_mpz_add" 
             USING BY REFERENCE WS-GMP-HELP-VAR
                   BY REFERENCE WS-GMP-HELP-VAR
                   BY REFERENCE WS-GMP-PROTH-NUMBER
@@ -1102,7 +1103,7 @@
        END-CALL     
     END-IF
 
-    CALL STATIC "mpz_sub" 
+    CALL "gmp_fn_mpz_sub" 
          USING BY REFERENCE WS-GMP-POWM-RESULT
                BY REFERENCE WS-GMP-HELP-VAR
                BY REFERENCE WS-GMP-Q
@@ -1138,14 +1139,14 @@
     MOVE X"00"                  TO WS-FILE-NAME-EOS
 
 *>  get a file stream pointer    
-    CALL STATIC "fopen" 
+    CALL "gmp_fn_fopen" 
          USING BY CONTENT   WS-FILE-NAME
                BY CONTENT   z"w" 
          RETURNING          WS-FILE-POINTER
     END-CALL     
 
 *>  write Proth number in a file    
-    CALL STATIC "gmp_fprintf" 
+    CALL "gmp_fn_gmp_fprintf" 
          USING BY VALUE     WS-FILE-POINTER
                   CONTENT   z"%Zd" 
                BY REFERENCE WS-GMP-PROTH-NUMBER
@@ -1161,7 +1162,7 @@
     END-IF
 
 *>  close file stream    
-    CALL STATIC "fclose" 
+    CALL "gmp_fn_fclose" 
          USING BY VALUE     WS-FILE-POINTER
          RETURNING WS-RET-1
     END-CALL     
@@ -1230,14 +1231,14 @@
     END-IF
     
 *>  get a file stream pointer    
-    CALL STATIC "fopen" 
+    CALL "gmp_fn_fopen" 
          USING BY CONTENT   WS-SAVE-FILE-NAME
                BY CONTENT   z"w" 
          RETURNING          WS-SAVE-FILE-POINTER
     END-CALL     
 
 *>  write save number in a file    
-    CALL STATIC "gmp_fprintf" 
+    CALL "gmp_fn_gmp_fprintf" 
          USING BY VALUE     WS-SAVE-FILE-POINTER
                   CONTENT   z"%Zd" 
                BY REFERENCE WS-GMP-POWM-RESULT
@@ -1253,7 +1254,7 @@
     END-IF
 
 *>  close file stream    
-    CALL STATIC "fclose" 
+    CALL "gmp_fn_fclose" 
          USING BY VALUE     WS-SAVE-FILE-POINTER
          RETURNING WS-RET-1
     END-CALL     
@@ -1371,14 +1372,14 @@
     END-IF
     
 *>  get a file stream pointer    
-    CALL STATIC "fopen" 
+    CALL "gmp_fn_fopen" 
          USING BY CONTENT   WS-SAVE-FILE-NAME
                BY CONTENT   z"r" 
          RETURNING          WS-SAVE-FILE-POINTER
     END-CALL     
     
 *>  read saved number from a file    
-    CALL STATIC "gmp_fscanf" 
+    CALL "gmp_fn_gmp_fscanf" 
          USING BY VALUE     WS-SAVE-FILE-POINTER
                   CONTENT   z"%Zd" 
                BY REFERENCE WS-GMP-POWM-RESULT-LOAD
@@ -1393,7 +1394,7 @@
     END-IF
 
 *>  close file stream    
-    CALL STATIC "fclose" 
+    CALL "gmp_fn_fclose" 
          USING BY VALUE     WS-SAVE-FILE-POINTER
          RETURNING WS-RET-1
     END-CALL     
@@ -1569,67 +1570,67 @@
 *>------------------------------------------------------------------------------
 
 *>  free memory
-    CALL STATIC "mpz_clear" 
+    CALL "gmp_fn_mpz_clear" 
          USING BY REFERENCE WS-GMP-POW-2
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_clear" 
+    CALL "gmp_fn_mpz_clear" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_clear" 
+    CALL "gmp_fn_mpz_clear" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER-2
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_clear" 
+    CALL "gmp_fn_mpz_clear" 
          USING BY REFERENCE WS-GMP-POWM-BASE
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_clear" 
+    CALL "gmp_fn_mpz_clear" 
          USING BY REFERENCE WS-GMP-POWM-RESULT
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_clear" 
+    CALL "gmp_fn_mpz_clear" 
          USING BY REFERENCE WS-GMP-POWM-RESULT-LOAD
          RETURNING OMITTED
     END-CALL     
     
-    CALL STATIC "mpz_clear" 
+    CALL "gmp_fn_mpz_clear" 
          USING BY REFERENCE WS-GMP-JACOBI-A
          RETURNING OMITTED
     END-CALL     
     
-    CALL STATIC "mpz_clear" 
+    CALL "gmp_fn_mpz_clear" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER-SQRT
          RETURNING OMITTED
     END-CALL     
     
-    CALL STATIC "mpz_clear" 
+    CALL "gmp_fn_mpz_clear" 
          USING BY REFERENCE WS-GMP-HELP-VAR
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_clear" 
+    CALL "gmp_fn_mpz_clear" 
          USING BY REFERENCE WS-GMP-A
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_clear" 
+    CALL "gmp_fn_mpz_clear" 
          USING BY REFERENCE WS-GMP-B
          RETURNING OMITTED
     END-CALL     
 
-    CALL STATIC "mpz_clear" 
+    CALL "gmp_fn_mpz_clear" 
          USING BY REFERENCE WS-GMP-Q
          RETURNING OMITTED
     END-CALL     
     
-    CALL STATIC "mpz_clear" 
+    CALL "gmp_fn_mpz_clear" 
          USING BY REFERENCE WS-GMP-R
          RETURNING OMITTED
     END-CALL     

@@ -40,11 +40,12 @@
 *>            - max-small-prime <num>
 *>            - save <num>
 *>            - load
+*> 2021.10.07 Laszlo Erdos: 
+*>            Some small changes.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
  PROGRAM-ID. prothsearch.
- AUTHOR.     Laszlo Erdos.
 
  ENVIRONMENT DIVISION.
  CONFIGURATION SECTION.

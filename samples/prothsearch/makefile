@@ -1,14 +1,17 @@
-COBCEXE = cobc -x -free -O3
-COBCOBJ = cobc -c -free -O3 -fno-gen-c-decl-static-call
+COBCEXE = cobc -x -free -Wall
+COBCOBJ = cobc -c -free -Wall
 
 all : prothsearch.exe
 
 # compile
-prothsearch.exe : prothsearch.cob prothtest.o
-	$(COBCEXE) prothsearch.cob prothtest.o
+prothsearch.exe : prothsearch.cob prothtest.o gmp_fn_calls.o
+	$(COBCEXE) prothsearch.cob prothtest.o gmp_fn_calls.o -lgmp
 
 prothtest.o : prothtest.cob
 	$(COBCOBJ) prothtest.cob 
+
+gmp_fn_calls.o : gmp_fn_calls.c
+	$(COBCOBJ) gmp_fn_calls.c 
 	
 # clean
 clean :

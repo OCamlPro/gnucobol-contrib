@@ -10,6 +10,8 @@ Author:       Laszlo Erdos - https://www.facebook.com/wortfee
 *>            - GMP mpz_powm() function replaced with other algorithm.
 *>            - Small-prime test with parameter: max-small-prime <num>.
 *>            - Save / Load state parameter.
+*> 2021.10.07 Laszlo Erdos: 
+*>            - GMP functions in a separeted file.
 *>******************************************************************************
 
 Licensed under the GNU Lesser General Public License as published by the
