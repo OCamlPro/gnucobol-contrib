@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
@@ -40,8 +40,8 @@
 
 #include "vcache.h"
 
-static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCOBOL Version 2 (2021.06.04) Build " __DATE__ "\n";
-/**  Version is present in SQLCA. Current is 02 */
+static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCOBOL Version 3 (2021.11.09) Build " __DATE__ "\n";
+/**  Version is present in SQLCA. Current is 03 */
 
 static bool bAPOST = true;		// use apostroph instead of quote
 static char Q = '\'';
@@ -67,12 +67,14 @@ static const char * sqlca[] = {
 	"              88  SQL-NULL-NO-IND       VALUE '22002'.",
 	"              88  SQL-INVALID-CURSOR-STATE VALUE '24000'.", 
 	"           05 FILLER   PIC X.",
-	"           05 SQLVERSN PIC 99 VALUE 02.",
+	"           05 SQLVERSN PIC 99 VALUE 03.",
 	"           05 SQLCODE  PIC S9(9) COMP-5 VALUE ZERO.",
 	"           05 SQLERRM.",
 	"               49 SQLERRML PIC S9(4) COMP-5 VALUE ZERO.",
 	"               49 SQLERRMC PIC X(486).",
-    "           05 SQLERRD OCCURS 6 TIMES PIC S9(9) COMP-5 VALUE ZERO."
+	"           05 SQLERRD OCCURS 6 TIMES PIC S9(9) COMP-5 VALUE ZERO.",
+	"           05 FILLER   PIC X(4).",
+	"           05 SQL-HCONN USAGE POINTER VALUE NULL."
 };
 static const char * workst[] = {
 	"       77 OCSQL     PIC X(8) VALUE %cOCSQL%c.",
@@ -302,17 +304,10 @@ private:
 		sql.deblank();
 		string sqlu(sql);
 		sqlu.toupper();
-		if(sqlu.starts("AT ")) {
-			int ix = sql.indexof(' ', 3);
-			if(ix > 0) {
-				sql = sql.substr(ix + 1);
-				sqlu = sqlu.substr(ix + 1);
-			}
-		}
 		if(sqlu.starts("BEGIN DECLARE SECTION")) {
 			if(inside_declare == 0) {
-			cl.bSQL = true;
-			cl.sqlaction = 2;	// start mark
+				cl.bSQL = true;
+				cl.sqlaction = 2;	// start mark
 			}
 			++inside_declare;
 			return;
@@ -322,8 +317,8 @@ private:
 				--inside_declare;
 			}
 			if(inside_declare == 0) {
-			cl.bSQL = true;
-			cl.sqlaction = 3;	// end mark
+				cl.bSQL = true;
+				cl.sqlaction = 3;	// end mark
 			}
 			return;
 		}
@@ -406,6 +401,14 @@ private:
 			cl.sqlaction = 4;	// variable description
 			return;
 		}
+		if(sqlu.starts("AT :")) {
+			int ix = sql.indexof(' ', 4);
+			if(ix > 0) {
+				cl.conname = new string(sql.substr(4, ix - 4));
+				sql = sql.substr(ix + 1);
+				sqlu = sqlu.substr(ix + 1);
+			}
+		}
 		if(sqlu.starts("SELECT ")) {
 			cl.sqlnum = sqlcmd.add(sql);
 			cl.sqlaction = 5;
@@ -439,8 +442,8 @@ private:
 				bool bDyn = false;
 				bool bWH = false;
 				varholder* vd = NULL;
-			x = sqlu.indexof("SELECT ");
-			if(x < 0) {
+				x = sqlu.indexof("SELECT ");
+				if(x < 0) {
 					x = sqlu.indexof(" FOR ");
 					if(x < 0) {
 						sprintf(buf, "line %d of %s: Incorrect SQL DECLARE: %s", cl.lineno, cl.fname, (const char*)sql);
@@ -449,8 +452,8 @@ private:
 					string dvar = sqlu.substr(x + 5);
 					if(dvar.indexof(" ") >= 0) {
 						sprintf(buf, "line %d of %s: Incorrect SQL DECLARE: %s", cl.lineno, cl.fname, (const char*)sql);
-				throw buf;
-			}
+						throw buf;
+					}
 					bDyn = true;
 					vd = new varholder(dvar);
 					vd->type = 'Y';
@@ -458,19 +461,31 @@ private:
 					++x;
 				}
 				int opt = sqlu.indexof(" WITH HOLD ");
-			if(opt > 0 && opt < x) {
-				bWH = true;
-			}
-			sql = sql.substr(x);
-			cl.sqlnum = sqlcmd.add(sql);
-			varholder * v = new varholder(svar);
+				if(opt > 0 && opt < x) {
+					bWH = true;
+				}
+				sql = sql.substr(x);
+				sqlu = sqlu.substr(x);
+				x = sqlu.indexof(" FOR UPDATE OF ");
+				while(x > 0) {
+					if(sqlu.indexof(' ', x + 15) >= 0) {
+						x = sqlu.indexof(" FOR UPDATE OF ", x + 10);
+						continue;
+					}
+					sql = sql.substr(0, x);
+					sqlu = sqlu.substr(0, x);
+					break;
+				}
+				sql = "*CUR*" + svar + ' ' + sql;
+				cl.sqlnum = sqlcmd.add(sql);
+				varholder * v = new varholder(svar);
 				v->type = bDyn ? (bWH ? 'd' : 'D') : (bWH ? 'c' : 'C');
-			v->size = cl.sqlnum;
+				v->size = cl.sqlnum;
 				if(vd != NULL) {
 					vd->size = cl.sqlnum;
 					vd->over = v;
 				}
-			sym.put(v);
+				sym.put(v);
 			} // else ignoring
 			cl.sqlaction = 12;
 		} else if(sqlu.starts("OPEN ")) {
@@ -800,6 +815,12 @@ private:
 		addln(lineno++, "      **********************************************************************");
 		for(int i = 0; i < sqlcmd.size(); ++i) {
 			string sql = (string)sqlcmd[i];
+			string cname;
+			if(sql.starts("*CUR*")) {
+				int x = sql.indexof(' ');
+				cname = sql.substr(5, x - 5);
+				sql = sql.substr(x + 1);
+			}
 			string sqlu(sql);
 			sqlu.toupper();
 			if(sqlu.starts("FOR ")) {
@@ -808,12 +829,17 @@ private:
 				addln(lineno++, "           05 SQL-IPTR   POINTER VALUE NULL.");
 				sprintf(buf, "           05 SQL-PREP   PIC X VALUE %cN%c.", Q, Q);
 				addln(lineno++, buf);
-				addln(lineno++, "           05 SQL-OPT    PIC X VALUE SPACE.");
+				sprintf(buf, "           05 SQL-OPT    PIC X VALUE %cC%c.", Q, Q);
+				addln(lineno++, buf);
 				addln(lineno++, "           05 SQL-PARMS  PIC S9(4) COMP-5 VALUE 0.");
 				addln(lineno++, "           05 SQL-STMLEN PIC S9(4) COMP-5 VALUE 0.");
 				addln(lineno++, "           05 FILLER     PIC X.");
 				addln(lineno++, "           05 SQL-VTYPE  PIC X VALUE SPACE.");
 				addln(lineno++, "           05 SQL-VADDR  POINTER VALUE NULL.");
+				sprintf(buf, "           05 SQL-CNAME  PIC X(%d) VALUE %c%s%c.", cname.length(), Q, (const char *) cname, Q);
+				cname = buf;
+				processfmt(lineno, cname);
+				addln(lineno++, "           05 FILLER     PIC X VALUE LOW-VALUE.");
 				addln(lineno++, "      **********************************************************************");
 				continue;
 			}
@@ -888,7 +914,12 @@ private:
 			addln(lineno++, "           05 SQL-IPTR   POINTER VALUE NULL.");
 			sprintf(buf, "           05 SQL-PREP   PIC X VALUE %cN%c.", Q, Q);
 			addln(lineno++, buf);
-			addln(lineno++, "           05 SQL-OPT    PIC X VALUE SPACE.");
+			if(cname.length() != 0) {
+				sprintf(buf, "           05 SQL-OPT    PIC X VALUE %cC%c.", Q, Q);
+				addln(lineno++, buf);
+			} else {
+				addln(lineno++, "           05 SQL-OPT    PIC X VALUE SPACE.");
+			}
 			sprintf(buf, "           05 SQL-PARMS  PIC S9(4) COMP-5 VALUE %d.", parmnum);
 			addln(lineno++, buf);
 			sprintf(buf, "           05 SQL-STMLEN PIC S9(4) COMP-5 VALUE %d.", sql.length());
@@ -907,6 +938,12 @@ private:
 			fl += Q;
 			fl += '.';
 			processfmt(lineno, fl);
+			if(cname.length() != 0) {
+				sprintf(buf, "           05 SQL-CNAME  PIC X(%d) VALUE %c%s%c.", cname.length(), Q, (const char*)cname, Q);
+				cname = buf;
+				processfmt(lineno, cname);
+				addln(lineno++, "           05 FILLER     PIC X VALUE LOW-VALUE.");
+			}
 			addln(lineno++, "      **********************************************************************");
 		}
 	}
@@ -1303,7 +1340,7 @@ private:
 										sc = "           COMP-5" + sc.substr(ix+4);
 										addln(lineno++, sc);
 									} else {
-				unhandled = true;
+										unhandled = true;
 										sc = "           " + sc;
 										addln(lineno++, sc);
 										fprintf(stderr, "WARNING: line %d of %s: unsupported %s at level 49\n", cl.lineno, cl.fname, (const char *)svar);
@@ -1583,6 +1620,17 @@ private:
 			sqltest = sqltest.substr(ib);
 		}
 
+		if(cl.conname != NULL) {
+			varholder * vi = sym[*cl.conname];
+			if(vi == NULL) {
+				sprintf(buf, "line %d of %s: connection variable not found: %s", cl.lineno, cl.fname, (const char*)*cl.conname);
+				throw buf;
+			}
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
+		}
+
 		if(bWasInd) {
 			sprintf(buf, "           MOVE %cA%c TO SQL-PREP OF SQL-STMT-%d", Q, Q, cl.sqlnum);
 			addln(lineno++, buf);
@@ -1715,9 +1763,17 @@ private:
 		addln(lineno++, buf);
 		sprintf(buf, "%s                     SQLCA", shift);
 		addln(lineno++, buf);
+		sprintf(buf, "%s SET SQL-HCONN OF SQLCA TO NULL", shift);
+		addln(lineno++, buf);
 		doWHENEVER(lineno);
 		if(!bWasInd) {
 			addln(lineno++, "           END-IF");
+		}
+		if(cl.conname != NULL) {
+			varholder* vi = sym[*cl.conname];
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
 		}
 		for(int i = 0; i < moves.size(); ++i) {
 			addln(lineno++, moves[i]);
@@ -1725,6 +1781,9 @@ private:
 		sprintf(buf, "           CALL %sOCSQLEXE%s USING SQL-STMT-%d", sSQ, sSQ, cl.sqlnum);
 		addln(lineno++, buf);
 		addln(lineno++, "                               SQLCA");
+		if(cl.conname != NULL) {
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+		}
 		doWHENEVER(lineno);
 	}
 
@@ -1736,6 +1795,17 @@ private:
 		const char * shift = "          ";
 		string sqlu = sql;
 		sqlu.toupper();
+
+		if(cl.conname != NULL) {
+			varholder* vi = sym[*cl.conname];
+			if(vi == NULL) {
+				sprintf(buf, "line %d of %s: connection variable not found: %s", cl.lineno, cl.fname, (const char*)*cl.conname);
+				throw buf;
+			}
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
+		}
 
 		sarray movesin;
 		sarray movesout;
@@ -1925,6 +1995,9 @@ private:
 		for(int i = 0; i < movesout.size(); ++i) {
 			addln(lineno++, movesout[i]);
 		}
+		if(cl.conname != NULL) {
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+		}
 		doWHENEVER(lineno);
 	}
 
@@ -1934,6 +2007,17 @@ private:
 		string sql;
 		removeInQ(sql, sqlcmd[cl.sqlnum]);
 		const char * shift = "              ";
+
+		if(cl.conname != NULL) {
+			varholder* vi = sym[*cl.conname];
+			if(vi == NULL) {
+				sprintf(buf, "line %d of %s: connection variable not found: %s", cl.lineno, cl.fname, (const char*)*cl.conname);
+				throw buf;
+			}
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
+		}
 
 		// Check for indicator variables
 		bool bWasInd = false;
@@ -2114,9 +2198,17 @@ private:
 		addln(lineno++, buf);
 		sprintf(buf, "%s                     SQLCA", shift);
 		addln(lineno++, buf);
+		sprintf(buf, "%s SET SQL-HCONN OF SQLCA TO NULL", shift);
+		addln(lineno++, buf);
 		doWHENEVER(lineno);
 		if(!bWasInd) {
 			addln(lineno++, "           END-IF");
+		}
+		if(cl.conname != NULL) {
+			varholder* vi = sym[*cl.conname];
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
 		}
 		for(int i = 0; i < movesin.size(); ++i) {
 			addln(lineno++, movesin[i]);
@@ -2127,33 +2219,82 @@ private:
 		for(int i = 0; i < movesout.size(); ++i) {
 			addln(lineno++, movesout[i]);
 		}
+		if(cl.conname != NULL) {
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+		}
 		doWHENEVER(lineno);
 	}
 
 	void processCOMMIT(cobline & cl, int & lineno)
 	{
+		if(cl.conname != NULL) {
+			varholder* vi = sym[*cl.conname];
+			if(vi == NULL) {
+				sprintf(buf, "line %d of %s: connection variable not found: %s", cl.lineno, cl.fname, (const char*)*cl.conname);
+				throw buf;
+			}
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
+		}
+
 		sprintf(buf, "           CALL %sOCSQLCMT%s USING SQLCA END-CALL", sSQ, sSQ);
 		addln(lineno++, buf);
+		if(cl.conname != NULL) {
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+		}
 		doWHENEVER(lineno);
 		string sqlu(*cl.sql);
 		sqlu.toupper();
 		if(ixFull(sqlu, "RELEASE") > 0) {
+			if(cl.conname != NULL) {
+				varholder* vi = sym[*cl.conname];
+				addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+				sprintf(buf, "               %s", (const char*)vi->name);
+				addln(lineno++, buf);
+			}
 			sprintf(buf, "           CALL %sOCSQLDIS%s USING SQLCA END-CALL", sSQ, sSQ);
 			addln(lineno++, buf);
+			if(cl.conname != NULL) {
+				addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+			}
 			doWHENEVER(lineno);
 		}
 	}
 
 	void processROLLBACK(cobline & cl, int & lineno)
 	{
+		if(cl.conname != NULL) {
+			varholder* vi = sym[*cl.conname];
+			if(vi == NULL) {
+				sprintf(buf, "line %d of %s: connection variable not found: %s", cl.lineno, cl.fname, (const char*)*cl.conname);
+				throw buf;
+			}
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
+		}
+
 		sprintf(buf, "           CALL %sOCSQLRBK%s USING SQLCA END-CALL", sSQ, sSQ);
 		addln(lineno++, buf);
+		if(cl.conname != NULL) {
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+		}
 		doWHENEVER(lineno);
 		string sqlu(*cl.sql);
 		sqlu.toupper();
 		if(ixFull(sqlu, "RELEASE") > 0) {
+			if(cl.conname != NULL) {
+				varholder* vi = sym[*cl.conname];
+				addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+				sprintf(buf, "               %s", (const char*)vi->name);
+				addln(lineno++, buf);
+			}
 			sprintf(buf, "           CALL %sOCSQLDIS%s USING SQLCA END-CALL", sSQ, sSQ);
 			addln(lineno++, buf);
+			if(cl.conname != NULL) {
+				addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+			}
 			doWHENEVER(lineno);
 		}
 	}
@@ -2244,6 +2385,17 @@ private:
 
 	void processEXECUTEIMMED(cobline & cl, int & lineno)
 	{
+		if(cl.conname != NULL) {
+			varholder* vi = sym[*cl.conname];
+			if(vi == NULL) {
+				sprintf(buf, "line %d of %s: connection variable not found: %s", cl.lineno, cl.fname, (const char*)*cl.conname);
+				throw buf;
+			}
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
+		}
+
 		string & sql = *cl.sql;
 		int ix = sql.indexof(':');
 		if(ix < 0) {
@@ -2275,11 +2427,25 @@ private:
 		addln(lineno++, "                               SQL-LEN(1)");
 		addln(lineno++, "                               SQLCA");
 		addln(lineno++, "           END-CALL");
+		if(cl.conname != NULL) {
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+		}
 		doWHENEVER(lineno);
 	}
 
 	void processUNKNOWN(cobline & cl, int & lineno)
 	{
+		if(cl.conname != NULL) {
+			varholder* vi = sym[*cl.conname];
+			if(vi == NULL) {
+				sprintf(buf, "line %d of %s: connection variable not found: %s", cl.lineno, cl.fname, (const char*)*cl.conname);
+				throw buf;
+			}
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
+		}
+
 		sprintf(buf, "           MOVE %d TO SQL-LEN(1)", (int)strlen(sqlcmd[cl.sqlnum]));
 		addln(lineno++, buf);
 		sprintf(buf, "           CALL %sOCSQLIMM%s USING SQL-STMT-%d", sSQ, sSQ, cl.sqlnum);
@@ -2287,11 +2453,25 @@ private:
 		addln(lineno++, "                               SQL-LEN(1)");
 		addln(lineno++, "                               SQLCA");
 		addln(lineno++, "           END-CALL");
+		if(cl.conname != NULL) {
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+		}
 		doWHENEVER(lineno);
 	}
 
 	void processPREPARE(cobline& cl, int& lineno)
 	{
+		if(cl.conname != NULL) {
+			varholder* vi = sym[*cl.conname];
+			if(vi == NULL) {
+				sprintf(buf, "line %d of %s: connection variable not found: %s", cl.lineno, cl.fname, (const char*)*cl.conname);
+				throw buf;
+			}
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
+		}
+
 		int iv = 0;
 		string sql = cl.sql->substr(8);
 		sql.toupper();
@@ -2324,7 +2504,7 @@ private:
 		sprintf(buf, "           MOVE '%c' TO SQL-OPT OF SQL-STMT-%d", vc->type, sqlnum);
 		addln(lineno++, buf);
 		if(v->type == 'X') {
-			sprintf(buf, "           MOVE %d TO SQL-OPT OF SQL-STMT-%d", v->size, sqlnum);
+			sprintf(buf, "           MOVE %d TO SQL-STMLEN OF SQL-STMT-%d", v->size, sqlnum);
 			addln(lineno++, buf);
 		}
 		sprintf(buf, "           MOVE '%c' TO SQL-VTYPE OF SQL-STMT-%d", v->type, sqlnum);
@@ -2341,11 +2521,25 @@ private:
 		sprintf(buf, "                                   SQLCA");
 		addln(lineno++, buf);
 		addln(lineno++, "           END-CALL");
+		if(cl.conname != NULL) {
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+		}
 		doWHENEVER(lineno);
 	}
 
 	void processOPENCURSOR(cobline & cl, int & lineno)
 	{
+		if(cl.conname != NULL) {
+			varholder* vi = sym[*cl.conname];
+			if(vi == NULL) {
+				sprintf(buf, "line %d of %s: connection variable not found: %s", cl.lineno, cl.fname, (const char*)*cl.conname);
+				throw buf;
+			}
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
+		}
+
 		int iv = 0;
 		string sql = cl.sql->substr(5);
 		int x = sql.indexof(' ');
@@ -2363,6 +2557,9 @@ private:
 			addln(lineno++, buf);
 			addln(lineno++, "                               SQLCA");
 			addln(lineno++, "           END-CALL");
+			if(cl.conname != NULL) {
+				addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+			}
 			doWHENEVER(lineno);
 			return;
 		}
@@ -2517,9 +2714,19 @@ private:
 		addln(lineno++, buf);
 		sprintf(buf, "%s                     SQLCA", shift);
 		addln(lineno++, buf);
+		if(cl.conname != NULL) {
+			sprintf(buf, "%s SET SQL-HCONN OF SQLCA TO NULL", shift);
+			addln(lineno++, buf);
+		}
 		doWHENEVER(lineno);
 		if(!bWasInd) {
 			addln(lineno++, "           END-IF");
+		}
+		if(cl.conname != NULL) {
+			varholder* vi = sym[*cl.conname];
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
 		}
 		for(int i = 0; i < moves.size(); ++i) {
 			addln(lineno++, moves[i]);
@@ -2528,11 +2735,24 @@ private:
 		addln(lineno++, buf);
 		addln(lineno++, "                               SQLCA");
 		addln(lineno++, "           END-CALL");
+		if(cl.conname != NULL) {
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+		}
 		doWHENEVER(lineno);
 	}
 
 	void processFETCH(cobline & cl, int & lineno)
 	{
+		if(cl.conname != NULL) {
+			varholder* vi = sym[*cl.conname];
+			if(vi == NULL) {
+				sprintf(buf, "line %d of %s: connection variable not found: %s", cl.lineno, cl.fname, (const char*)*cl.conname);
+				throw buf;
+			}
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
+		}
 		string sql = cl.sql->substr(6);
 		int x = sql.indexof(' ');
 		string cname;
@@ -2674,11 +2894,24 @@ private:
 		for(int i = 0; i < moves.size(); ++i) {
 			addln(lineno++, moves[i]);
 		}
+		if(cl.conname != NULL) {
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+		}
 		doWHENEVER(lineno);
 	}
 
 	void processCLOSECURSOR(cobline & cl, int & lineno)
 	{
+		if(cl.conname != NULL) {
+			varholder* vi = sym[*cl.conname];
+			if(vi == NULL) {
+				sprintf(buf, "line %d of %s: connection variable not found: %s", cl.lineno, cl.fname, (const char*)*cl.conname);
+				throw buf;
+			}
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
+		}
 		string sql = cl.sql->substr(6);
 		int x = sql.indexof(' ');
 		if(x > 0) sql = sql.substr(0, x);
@@ -2694,19 +2927,35 @@ private:
 		sprintf(buf, "           CALL %sOCSQLCCU%s USING SQL-STMT-%d", sSQ, sSQ, sqlnum);
 		addln(lineno++, buf);
 		addln(lineno++, "                               SQLCA");
+		if(cl.conname != NULL) {
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+		}
 		doWHENEVER(lineno);
 	}
 
 	void processCONNECT(cobline & cl, int & lineno)
 	{
+		if(cl.conname != NULL) {
+			varholder* vi = sym[*cl.conname];
+			if(vi == NULL) {
+				sprintf(buf, "line %d of %s: connection variable not found: %s", cl.lineno, cl.fname, (const char*)*cl.conname);
+				throw buf;
+			}
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO ADDRESS OF");
+			sprintf(buf, "               %s", (const char*)vi->name);
+			addln(lineno++, buf);
+		}
 		string & sql = *cl.sql;
-			string sqlu(sql);
-			sqlu.toupper();
+		string sqlu(sql);
+		sqlu.toupper();
 		int ix = sql.indexof(':');
 		if(ix < 0 || sqlu.starts("DISCONNECT")) {
 			if(ixFull(sqlu, "RESET") > 0 || sqlu.starts("DISCONNECT")) {
 				sprintf(buf, "           CALL %sOCSQLDIS%s USING SQLCA END-CALL", sSQ, sSQ);
 				addln(lineno++, buf);
+				if(cl.conname != NULL) {
+					addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+				}
 				doWHENEVER(lineno);
 				return;
 			}
@@ -2737,6 +2986,9 @@ private:
 		addln(lineno++, "                               SQL-LEN(1)");
 		addln(lineno++, "                               SQLCA");
 		addln(lineno++, "           END-CALL");
+		if(cl.conname != NULL) {
+			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
+		}
 		doWHENEVER(lineno);
 	}
 

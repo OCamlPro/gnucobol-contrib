@@ -79,7 +79,7 @@ protected:
 	}
 	~GC() {
 		clear();
-		delete data;
+		delete [] data;
 		dontremove = true;
 	}
 	void clear();
@@ -159,7 +159,7 @@ public:
 	}
 	~string() {
 		gc.remove(this);
-		if(v != NULL) delete v;
+		if(v != NULL) delete [] v;
 	}
 
 	int length() { return Length;}
@@ -176,7 +176,7 @@ public:
 	string & operator +=(string & s) {
 		if(s.Length == 0) return *this;
 		if(Length == 0) {
-			if(v != NULL) delete v;
+			if(v != NULL) delete [] v;
 			v = new char[s.Length + 1];
 			memcpy(v, s.v, s.Length+1);
 			Length = s.Length;
@@ -187,7 +187,7 @@ public:
 		memcpy(v, ss, Length);
 		memcpy(v+Length, s.v, s.Length + 1);
 		Length += s.Length;
-		delete ss;
+		delete [] ss;
 		return *this;
 	}
 
@@ -196,7 +196,7 @@ public:
 		sprintf(buf, "%d", n);
 		int l = (int) strlen(buf);
 		if(Length == 0) {
-			if(v != NULL) delete v;
+			if(v != NULL) delete [] v;
 			v = new char[l + 1];
 			memcpy(v, buf, l+1);
 			Length = l;
@@ -207,13 +207,13 @@ public:
 		memcpy(v, ss, Length);
 		memcpy(v+Length, buf, l + 1);
 		Length += l;
-		delete ss;
+		delete [] ss;
 		return *this;
 	}
 
 	string & operator +=(char c) {
 		if(Length == 0) {
-			if(v != NULL) delete v;
+			if(v != NULL) delete [] v;
 			v = new char[2];
 			v[0] = c;
 			v[1] = 0;
@@ -225,7 +225,7 @@ public:
 		memcpy(v, ss, Length);
 		v[Length++] = c;
 		v[Length] = 0;
-		delete ss;
+		delete [] ss;
 		return *this;
 	}
 
@@ -233,7 +233,7 @@ public:
 		int l = (int) strlen(s);
 		if(l == 0) return *this;
 		if(Length == 0) {
-			if(v != NULL) delete v;
+			if(v != NULL) delete [] v;
 			v = new char[l + 1];
 			memcpy(v, s, l+1);
 			Length = l;
@@ -244,12 +244,12 @@ public:
 		memcpy(v, ss, Length);
 		memcpy(v+Length, s, l + 1);
 		Length += l;
-		delete ss;
+		delete [] ss;
 		return *this;
 	}
 
 	string & operator =(string & s) {
-		if(v != NULL) delete v;
+		if(v != NULL) delete [] v;
 		Length = s.Length;
 		if(Length == 0) {
 			v = NULL;
@@ -261,7 +261,7 @@ public:
 	}
 
 	string & operator =(const char * s) {
-		if(v != NULL) delete v;
+		if(v != NULL) delete [] v;
 		Length = (int) strlen(s);
 		if(Length == 0) {
 			v = NULL;
@@ -273,7 +273,7 @@ public:
 	}
 
 	string & operator =(char c) {
-		if(v != NULL) delete v;
+		if(v != NULL) delete [] v;
 		v = new char[2];
 		v[0] = c;
 		v[1] = 0;
@@ -448,7 +448,7 @@ private:
 	void increase() {
 		char ** v = new char *[asz + asz];
 		memcpy(v, value, asz * (sizeof(char *)));
-		delete value;
+		delete [] value;
 		value = v;
 		asz *= 2;
 	}
@@ -467,8 +467,8 @@ public:
 		value = new char *[szinit];
 	}
 	~sarray() {
-		for(int i = 0; i < sz; ++i) delete value[i];
-		delete value;
+		for(int i = 0; i < sz; ++i) delete [] value[i];
+		delete [] value;
 	}
 	int add(const char * s) {
 		if(sz == asz) increase();
@@ -519,6 +519,7 @@ public:
 	int sqlnum;
 	string * sql;
 	char * fname;
+	string * conname;
 
 	cobline(const char * s) : line(s)
 	{
@@ -529,9 +530,11 @@ public:
 		sqlnum = -1;
 		sql = NULL;
 		fname = NULL;
+		conname = NULL;
 	}
 	~cobline() {
 		if(sql != NULL) delete sql;
+		if(conname != NULL) delete conname;
 	}
 };
 
@@ -546,7 +549,7 @@ private:
 	void increase() {
 		cobline ** v = new cobline *[asz + asz];
 		memcpy(v, value, asz * (sizeof(void *)));
-		delete value;
+		delete [] value;
 		value = v;
 		asz *= 2;
 	}
@@ -560,7 +563,7 @@ public:
 	}
 	~clarray() {
 		for(int i = 0; i < sz; ++i) delete value[i];
-		delete value;
+		delete [] value;
 	}
 	int add(cobline * s) {
 		if(sz == asz) increase();
@@ -617,13 +620,12 @@ private:
 public:
 	varcache(int sz = 1009) {
 		SZ = sz;
-		data = new varholder *[SZ];
-		for(int i = 0; i < SZ; ++i) data[i] = NULL;
+		data = new varholder *[SZ]();
 		count = 0;
 	}
 	~varcache() {
 		clear();
-		delete data;
+		delete [] data;
 	}
 
 private:

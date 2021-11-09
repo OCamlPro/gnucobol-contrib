@@ -155,15 +155,7 @@ void logd(int level, const char *format_str, ...)
 #endif	// NO_LOG
 #endif	// EXTERNAL_LOG
 
-static bool closed = true;
-static bool bNTS = false;
-static char dbname[OC_DBNAME_LENGTH];
-static SQLHANDLE	hEnv;		// Env Handle from SQLAllocEnv
-static SQLHANDLE	hDBC;		// Connection handle
-static SQLHANDLE	hStmt;		// just a statement to use
-
-extern "C" OCEXPORT SQLHANDLE getOCDBCHandle() { return hDBC;}		// Hook to my system to use the same connection
-extern "C" OCEXPORT const char * getOCCurDBName() { return dbname;}	// Another hook to my system
+struct sConn;
 
 struct OC_SQLCA {
 	char  OC_SQLSTATE[6];
@@ -172,6 +164,8 @@ struct OC_SQLCA {
 	short OC_SQLERRML;
 	char  OC_SQLERRMC[486];
 	int   OC_SQLERRD[6];
+	int   FILLER1;
+	sConn ** hConn;
 };
 
 ////////////////////////////////////////////////////////////////////
@@ -242,9 +236,9 @@ public:
 	}
 	~DBS() {
 		for(int i = 0; i < dbct; ++i) {
-			delete[] db[i];
+			delete [] db[i];
 		}
-		delete[] db;
+		delete [] db;
 	}
 	int getCurrentDB() {
 		return dbcurr;
@@ -268,7 +262,7 @@ public:
 		if(dbct == cap) {
 			char ** db1 = new char *[cap+cap];
 			std::copy(db, db + cap, db1);
-			delete[] db;
+			delete [] db;
 			db = db1;
 			cap += cap;
 		}
@@ -280,10 +274,47 @@ public:
 };
 #endif	// USE_NOT_USED
 
-static DBS DBN(MAX_DB_COUNT);
+static SQLHANDLE	hEnv = 0;		// Env Handle from SQLAllocEnv
+struct sConn {
+	bool closed;
+	bool bNTS;
+	char dbname[OC_DBNAME_LENGTH];
+	SQLHANDLE	hDBC;		// Connection handle
+	SQLHANDLE	hStmt;		// just a statement to use
+	DBS DBN;
+	sConn() : DBN(MAX_DB_COUNT), bNTS(false), closed(true) {}
+};
+struct connholder {
+	connholder* next;
+	sConn* conn;
+	connholder(sConn* c) {
+		conn = c;
+		next = NULL;
+	}
+	~connholder() {
+		clear();
+	}
+	void put(sConn* c) {
+		connholder* ch = this;
+		while(ch->next != NULL) {
+			ch = ch->next;
+		}
+		ch->next = new connholder(c);
+	}
+	void clear() {
+		if(next != NULL) {
+			delete next;
+		}
+	}
+};
+static sConn MConn;
+static connholder * AConn = NULL;
+static int nConn = 0;
 
+extern "C" OCEXPORT SQLHANDLE getOCDBCHandle() { return MConn.hDBC; }		// Hook to my system to use the same connection
+extern "C" OCEXPORT const char* getOCCurDBName() { return MConn.dbname; }	// Another hook to my system
 extern "C" int OCEXPORT OCSQLMAX(int ct) {
-	DBN.setMaxDBCount(ct);
+	MConn.DBN.setMaxDBCount(ct);
 	return 0;
 }
 
@@ -291,13 +322,12 @@ class DBL {
 private:
 	int ct;
 	SQLHANDLE * stmt;
+	DBS & DBN;
 public:
-	DBL() {
+	DBL(DBS & pDBN) : DBN(pDBN) {
 		ct = DBN.getCount();
 		if(DBN.getMaxDBCount() > ct) ct = DBN.getMaxDBCount();
-		stmt = new SQLHANDLE[ct]();
-		//// Default initializer sets array members to zero. 
-		//// memset(stmt, 0, ct * sizeof(SQLHANDLE));
+		stmt = new SQLHANDLE[ct](); // 0-initialized
 	}
 	~DBL() {
 		for(int i = 0; i < ct; ++i) {
@@ -306,7 +336,7 @@ public:
 				SQLFreeHandle(SQL_HANDLE_STMT, stmt[i]);
 			}
 		}
-		delete[] stmt;
+		delete [] stmt;
 	}
 	bool checkall() {
 		if(ct != DBN.getMaxDBCount()) return false;
@@ -320,7 +350,7 @@ public:
 		if(nc >= ct) {
 			SQLHANDLE * stmt1 = new SQLHANDLE[DBN.getCount()]();
 			std::copy(stmt, stmt + ct, stmt1);
-			delete[] stmt;
+			delete [] stmt;
 			stmt = stmt1;
 			ct = DBN.getCount();
 		}
@@ -332,7 +362,7 @@ public:
 		if(nc >= ct) {
 			SQLHANDLE * stmt1 = new SQLHANDLE[DBN.getCount()]();
 			std::copy(stmt, stmt + ct, stmt1);
-			delete[] stmt;
+			delete [] stmt;
 			stmt = stmt1;
 			ct = DBN.getCount();
 		}
@@ -396,33 +426,32 @@ public:
 			pbuf = NULL;
 		} else {
 			pbuf = new char *[bufct]();
-			////for(int i = 0; i < bufct; ++i) pbuf[i] = NULL;
 		}
 	}
 	~mysql() {
 		if(parmct != 0) {
-			delete[] parmlen;
+			delete [] parmlen;
 		}
 		if(columnct != 0) {
-			delete[] hostlen;
-			delete[] hostaddr;
-			delete[] hosttype;
+			delete [] hostlen;
+			delete [] hostaddr;
+			delete [] hosttype;
 		}
 		if(movect != 0) {
-			delete[] moves;
+			delete [] moves;
 		}
 		if(bufct != 0) {
 			for(int i = 0; i < bufct; ++i) {
-				if(pbuf[i] != NULL) delete[] pbuf[i];
+				if(pbuf[i] != NULL) delete [] pbuf[i];
 			}
-			delete[] pbuf;
+			delete [] pbuf;
 		}
 		if(ST != 0) {
 			delete ST;
 		}
 	}
-	mydec * pbuf_set( int bufct, short bytelen = 0, short precision = 0 ) {
-		if( pbuf[bufct] == NULL ) {
+	mydec * pbuf_set(int bufct, short bytelen = 0, short precision = 0) {
+		if(pbuf[bufct] == NULL) {
 			mydec md = { bytelen, precision };
 			pbuf[bufct] = new char[sizeof md];
 			*reinterpret_cast<mydec*>(pbuf[bufct]) = md;
@@ -447,17 +476,13 @@ class stmtholder {
 	friend class stmtcache;
 private:
 	stmtholder * next;
-	STMT *		 stmt;
-	stmtholder(STMT * s) {
+	mysql *		 stmt;
+	stmtholder(mysql * s) {
 		stmt = s;
 		next = NULL;
 	}
 	~stmtholder() {
-		if(stmt->SQL_IPTR != NULL) {
-			delete stmt->SQL_IPTR;
-		}
-		stmt->SQL_IPTR = NULL;
-		stmt->SQL_PREP = 'N';
+		delete stmt;
 	}
 };
 
@@ -472,7 +497,6 @@ public:
 	stmtcache(int sz = 1009) {
 		SZ = sz;
 		data = new stmtholder *[SZ]();
-		////for(int i = 0; i < SZ; ++i) data[i] = NULL;
 		count = 0;
 	}
 	~stmtcache() {
@@ -495,7 +519,7 @@ public:
 		count = 0;
 	}
 
-	void put(STMT * stmt)
+	void put(mysql * stmt)
 	{
 		int i = (int)(((unsigned long long)stmt) % SZ);
 		if(data[i] == NULL) {
@@ -518,13 +542,39 @@ public:
 			h = &((*h)->next);
 		}
 	}
+	void remove(mysql* stmt)
+	{
+		int i = (int)(((unsigned long long)stmt) % SZ);
+		stmtholder* hCurr = data[i];
+		if(hCurr == NULL) {
+			return;
+		}
+		stmtholder* hPrev = NULL;
+		for(;;) {
+			if(hCurr->stmt == stmt) {
+				--count;
+				if(hPrev == NULL) {
+					data[i] = hCurr->next;
+				} else {
+					hPrev->next = hCurr->next;
+				}
+				delete hCurr;
+				return;
+			}
+			if(hCurr->next == NULL) {
+				return;
+			}
+			hPrev = hCurr;
+			hCurr = hCurr->next;
+		}
+	}
 };
 
 static stmtcache CS;
 
 static int strim(char * buf);
 static void prnerr(SQLSMALLINT ht, SQLHANDLE h, OC_SQLCA * E = NULL);
-static bool getcurrdb(char * db, OC_SQLCA & E);
+static bool getcurrdb(sConn * C, OC_SQLCA & E);
 static bool movecomp3(char * comp3, int bytelen, int precision, char * unpacked);
 
 static void notconn(OC_SQLCA & E)
@@ -555,7 +605,20 @@ static const char * Drivers [] = {
 
 extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 {
-	if(!closed) {
+	// Figure out connection handle
+	sConn * C;
+	if(memcmp(E.OC_SQLVERSION, "03", 2) >= 0 && E.hConn != 0) {
+		C = new sConn();
+		*E.hConn = C;
+		if(AConn == NULL) {
+			AConn = new connholder(C);
+		} else {
+			AConn->put(C);
+		}
+	} else {
+		C = &MConn;
+	}
+	if(!C->closed) {
 		log("OCSQL: DB Already Connected");
 		strcpy(E.OC_SQLSTATE, "08002");
 		E.OC_SQLCODE = 8002;
@@ -565,31 +628,33 @@ extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 	strcpy(E.OC_SQLSTATE, "00000");
 	E.OC_SQLCODE = 0;
 
-	// Allocate ODBC Environment handle
-	SQLRETURN rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &hEnv);
-	if(rc != SQL_SUCCESS) {
-		log("OCSQL: Can't allocate SQL Handle");
-		strcpy(E.OC_SQLSTATE, "08001");
-		E.OC_SQLCODE = -8001;
-		strcpy(E.OC_SQLERRMC, "Can't allocate SQL Handle.");
-		E.OC_SQLERRML = (short) strlen(E.OC_SQLERRMC);
-		return E.OC_SQLCODE;
-	}
+	if(hEnv == 0) {
+		// Allocate ODBC Environment handle
+		SQLRETURN rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &hEnv);
+		if(rc != SQL_SUCCESS) {
+			log("OCSQL: Can't allocate SQL Handle");
+			strcpy(E.OC_SQLSTATE, "08001");
+			E.OC_SQLCODE = -8001;
+			strcpy(E.OC_SQLERRMC, "Can't allocate SQL Handle.");
+			E.OC_SQLERRML = (short)strlen(E.OC_SQLERRMC);
+			return E.OC_SQLCODE;
+		}
 
-	// set ODBC3 version but ignore the error
-	rc = SQLSetEnvAttr(hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3, 0);
-	if(rc != SQL_SUCCESS) {
-		prnerr(SQL_HANDLE_ENV, hEnv);
-	}
+		// set ODBC3 version but ignore the error
+		rc = SQLSetEnvAttr(hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, 0);
+		if(rc != SQL_SUCCESS) {
+			prnerr(SQL_HANDLE_ENV, hEnv);
+		}
 
-	// set NTS if possible to avoid extra moves
-	rc = SQLSetEnvAttr(hEnv, SQL_ATTR_OUTPUT_NTS , (SQLPOINTER) SQL_FALSE, 0);
-	if(rc == SQL_SUCCESS) {
-		bNTS = true;
+		// set NTS if possible to avoid extra moves
+		rc = SQLSetEnvAttr(hEnv, SQL_ATTR_OUTPUT_NTS, (SQLPOINTER)SQL_FALSE, 0);
+		if(rc == SQL_SUCCESS) {
+			C->bNTS = true;
+		}
 	}
 
 	// Allocate connection handle
-	rc = SQLAllocHandle(SQL_HANDLE_DBC, hEnv, &hDBC);
+	SQLRETURN rc = SQLAllocHandle(SQL_HANDLE_DBC, hEnv, &C->hDBC);
 	if(rc != SQL_SUCCESS) {
 		prnerr(SQL_HANDLE_ENV, hEnv, &E);
 		return E.OC_SQLCODE;
@@ -597,16 +662,16 @@ extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 
 #if !defined(ESQL_DB2)
 	// disable connection timeout but ignore the error
-	rc = SQLSetConnectAttr(hDBC, SQL_ATTR_CONNECTION_TIMEOUT, 0, 0);
+	rc = SQLSetConnectAttr(C->hDBC, SQL_ATTR_CONNECTION_TIMEOUT, 0, 0);
 	if(rc != SQL_SUCCESS) {
-		prnerr(SQL_HANDLE_DBC, hDBC);
+		prnerr(SQL_HANDLE_DBC, C->hDBC);
 	}
 
 #ifdef MSSQL
 	// enable multiple cursors
-	rc = SQLSetConnectAttr(hDBC, SQL_COPT_SS_MARS_ENABLED, (SQLPOINTER)SQL_MARS_ENABLED_YES, SQL_IS_UINTEGER);
+	rc = SQLSetConnectAttr(C->hDBC, SQL_COPT_SS_MARS_ENABLED, (SQLPOINTER)SQL_MARS_ENABLED_YES, SQL_IS_UINTEGER);
 	if(rc != SQL_SUCCESS) {
-		prnerr(SQL_HANDLE_DBC, hDBC);
+		prnerr(SQL_HANDLE_DBC, C->hDBC);
 	}
 
 	// enable ANSI NULLs
@@ -614,10 +679,10 @@ extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 #define SQL_COPT_SS_ANSI_NPW                            (SQL_COPT_SS_BASE+18) // Enable/Disable ANSI NULL, Padding and Warnings
 #define SQL_AD_ON 1L
 #endif
-	rc = SQLSetConnectAttr(hDBC, SQL_COPT_SS_ANSI_NPW, (SQLPOINTER)SQL_AD_ON, SQL_IS_INTEGER); 
+	rc = SQLSetConnectAttr(C->hDBC, SQL_COPT_SS_ANSI_NPW, (SQLPOINTER)SQL_AD_ON, SQL_IS_INTEGER);
 	if(rc != SQL_SUCCESS) {
 		log("OCSQL: SQL_COPT_SS_ANSI_NPW");
-		prnerr(SQL_HANDLE_DBC, hDBC);
+		prnerr(SQL_HANDLE_DBC, C->hDBC);
 	}
 
 	// disable cursor close on commit
@@ -625,14 +690,14 @@ extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 #define SQL_COPT_SS_PRESERVE_CURSORS                    (SQL_COPT_SS_BASE+4) // Preserve server cursors after SQLTransact
 #define SQL_PC_ON 1L
 #endif
-	rc = SQLSetConnectAttr(hDBC, SQL_COPT_SS_PRESERVE_CURSORS, (SQLPOINTER)SQL_PC_ON, SQL_IS_INTEGER); 
+	rc = SQLSetConnectAttr(C->hDBC, SQL_COPT_SS_PRESERVE_CURSORS, (SQLPOINTER)SQL_PC_ON, SQL_IS_INTEGER);
 	if(rc != SQL_SUCCESS) {
 		log("OCSQL: SQL_COPT_SS_PRESERVE_CURSORS");
-		prnerr(SQL_HANDLE_DBC, hDBC);
+		prnerr(SQL_HANDLE_DBC, C->hDBC);
 	}
 #endif	// MSSQL
 	// it looks we can't set isolation level as a connection attribute
-	//rc = SQLSetConnectAttr(hDBC, SQL_ATTR_TXN_ISOLATION, (SQLPOINTER)ISOLATIONLEVEL_SNAPSHOT, 0);
+	//rc = SQLSetConnectAttr(*pDBC, SQL_ATTR_TXN_ISOLATION, (SQLPOINTER)ISOLATIONLEVEL_SNAPSHOT, 0);
 #else	// ESQL_DB2
 	// z/OS DB2 ODBC does not have control over timeout
 #endif	// ESQL_DB2
@@ -662,12 +727,12 @@ extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 		logd(9, "OCSQL: DB connect to DSN '%s' user = '%s'", alias, user);
 		// Connect
 		if(user != NULL) {
-			rc = SQLConnect (hDBC, (SQLCHAR *)alias, SQL_NTS, (SQLCHAR *)user, SQL_NTS, (SQLCHAR *)pass, SQL_NTS);
+			rc = SQLConnect (C->hDBC, (SQLCHAR *)alias, SQL_NTS, (SQLCHAR *)user, SQL_NTS, (SQLCHAR *)pass, SQL_NTS);
 		} else {
-			rc = SQLConnect (hDBC, (SQLCHAR *)alias, SQL_NTS, 0, 0, 0, 0);
+			rc = SQLConnect (C->hDBC, (SQLCHAR *)alias, SQL_NTS, 0, 0, 0, 0);
 		}
 		if(rc != SQL_SUCCESS) {
-			prnerr(SQL_HANDLE_DBC, hDBC);	// ignore the error so far
+			prnerr(SQL_HANDLE_DBC, C->hDBC);	// ignore the error so far
 			if(rc != SQL_SUCCESS_WITH_INFO) {
 				bool bConnected = false;
 #ifdef MSSQL
@@ -680,12 +745,12 @@ extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 						sprintf((char *)ConnStr, Drivers[id*3+2], alias);
 					}
 					SQLSMALLINT sz = 0;
-					rc = SQLDriverConnect(hDBC, NULL, ConnStr, SQL_NTS, NULL, 0, &sz, SQL_DRIVER_NOPROMPT);
+					rc = SQLDriverConnect(C->hDBC, NULL, ConnStr, SQL_NTS, NULL, 0, &sz, SQL_DRIVER_NOPROMPT);
 					if(rc == SQL_SUCCESS) {
 						bConnected = true;
 						break;
 					}
-					prnerr(SQL_HANDLE_DBC, hDBC);	// print the error
+					prnerr(SQL_HANDLE_DBC, C->hDBC);	// print the error
 					if(rc == SQL_SUCCESS_WITH_INFO) {
 						bConnected = true;
 						break;
@@ -693,10 +758,13 @@ extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 				}
 #endif
 				if(!bConnected) {
-					prnerr(SQL_HANDLE_DBC, hDBC, &E);
+					prnerr(SQL_HANDLE_DBC, C->hDBC, &E);
 					if(E.OC_SQLCODE == 0) E.OC_SQLCODE = -9999;
-					SQLFreeConnect(hDBC);
-					SQLFreeEnv(hEnv);
+					SQLFreeConnect(C->hDBC);
+					if(C == &MConn) {
+						SQLFreeEnv(hEnv);
+						hEnv = 0;
+					}
 					delete [] conn;
 					return E.OC_SQLCODE;
 				}
@@ -705,61 +773,70 @@ extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 	} else { // long connection string contains "Driver="
 		logd(9, "OCSQL: DB connecting using SQLDriverConnect");
 		SQLSMALLINT sz = 0;
-		rc = SQLDriverConnect(hDBC, NULL, (SQLCHAR *)conn, SQL_NTS, NULL, 0, &sz, SQL_DRIVER_NOPROMPT);
+		rc = SQLDriverConnect(C->hDBC, NULL, (SQLCHAR *)conn, SQL_NTS, NULL, 0, &sz, SQL_DRIVER_NOPROMPT);
 		if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
-			prnerr(SQL_HANDLE_DBC, hDBC, &E);
+			prnerr(SQL_HANDLE_DBC, C->hDBC, &E);
 			if(E.OC_SQLCODE == 0) E.OC_SQLCODE = -9999;
-			SQLFreeConnect(hDBC);
-			SQLFreeEnv(hEnv);
+			SQLFreeConnect(C->hDBC);
+			if(C == &MConn) {
+				SQLFreeEnv(hEnv);
+				hEnv = 0;
+			}
 			delete [] conn;
 			return E.OC_SQLCODE;
 		}
 		if(rc == SQL_SUCCESS_WITH_INFO) {
-			prnerr(SQL_HANDLE_DBC, hDBC);	// print the error
+			prnerr(SQL_HANDLE_DBC, C->hDBC);	// print the error
 		}
 	}
 	delete [] conn;
 
 	// Allocate memory for the statement handle
-	rc = SQLAllocHandle(SQL_HANDLE_STMT , hDBC, &hStmt);
+	rc = SQLAllocHandle(SQL_HANDLE_STMT, C->hDBC, &C->hStmt);
 	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
-		prnerr(SQL_HANDLE_DBC, hDBC, &E);
-		SQLDisconnect(hDBC);
-		SQLFreeConnect(hDBC);
-		SQLFreeEnv(hEnv);
+		prnerr(SQL_HANDLE_DBC, C->hDBC, &E);
+		SQLDisconnect(C->hDBC);
+		SQLFreeConnect(C->hDBC);
+		if(C == &MConn) {
+			SQLFreeEnv(hEnv);
+			hEnv = 0;
+		}
 		log("OCSQL: DB Get Statement Handle error");
 		return E.OC_SQLCODE;
 	}
 #if defined(SNAPSHOT)
 	// force SNAPSHOT isolation
-	rc = SQLExecDirect(hStmt, (SQLCHAR *) "SET TRANSACTION ISOLATION LEVEL SNAPSHOT", SQL_NTS);
+	rc = SQLExecDirect(C->hStmt, (SQLCHAR*)"SET TRANSACTION ISOLATION LEVEL SNAPSHOT", SQL_NTS);
 	if(rc != SQL_SUCCESS) {
-		prnerr(SQL_HANDLE_STMT, hStmt);
+		prnerr(SQL_HANDLE_STMT, C->hStmt);
 	}
-	SQLFreeStmt(hStmt, SQL_CLOSE);
+	SQLFreeStmt(C->hStmt, SQL_CLOSE);
 #endif
 
 #if defined(MSSQL) && !defined(_MSC_VER)
 	// force CURSOR WITH HOLD
-	rc = SQLExecDirect(hStmt, (SQLCHAR *) "SET CURSOR_CLOSE_ON_COMMIT OFF", SQL_NTS);
+	rc = SQLExecDirect(C->hStmt, (SQLCHAR*)"SET CURSOR_CLOSE_ON_COMMIT OFF", SQL_NTS);
 	if(rc != SQL_SUCCESS) {
 		log("OCSQL: SET CURSOR_CLOSE_ON_COMMIT OFF");
-		prnerr(SQL_HANDLE_STMT, hStmt);
+		prnerr(SQL_HANDLE_STMT, C->hStmt);
 	}
-	SQLFreeStmt(hStmt, SQL_CLOSE);
+	SQLFreeStmt(C->hStmt, SQL_CLOSE);
 #endif
 
 	// try to set AUTOCOMMIT OFF
-	rc = SQLSetConnectAttr(hDBC, SQL_ATTR_AUTOCOMMIT, SQL_AUTOCOMMIT_OFF, 0);
+	rc = SQLSetConnectAttr(C->hDBC, SQL_ATTR_AUTOCOMMIT, SQL_AUTOCOMMIT_OFF, 0);
 	if(rc != SQL_SUCCESS) {
 		log("OCSQL: SEVERE ERROR: Can't turn autocommit OFF. Error = %d", rc);
-		prnerr(SQL_HANDLE_DBC, hDBC);
+		prnerr(SQL_HANDLE_DBC, C->hDBC);
 	}
 
-	if(!getcurrdb(dbname, E)) {
-		SQLDisconnect(hDBC);
-		SQLFreeConnect(hDBC);
-		SQLFreeEnv(hEnv);
+	if(!getcurrdb(C, E)) {
+		SQLDisconnect(C->hDBC);
+		SQLFreeConnect(C->hDBC);
+		if(C == &MConn) {
+			SQLFreeEnv(hEnv);
+			hEnv = NULL;
+		}
 #if defined(MSSQL) || defined(MYSQL) || defined(MARIADB)
 		log("OCSQL: DB Can't get current Database name");
 #else
@@ -767,42 +844,57 @@ extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 #endif
 		return E.OC_SQLCODE;
 	}
-	DBN.setCurrentDB(dbname);
+	C->DBN.setCurrentDB(C->dbname);
 #if defined(MSSQL) || defined(MYSQL) || defined(MARIADB)
-	logd(1, "OCSQL: DB Connected, Database is '%s'", dbname);
+	logd(1, "OCSQL: DB Connected, Database is '%s'", C->dbname);
 #else
 	logd(1, "OCSQL: DB Connected, Schema is '%s'", dbname);
 #endif
-	closed = false;
+	C->closed = false;
+	++nConn;
 	return 0;
 }
 
 extern "C" OCEXPORT int OCSQLDIS(OC_SQLCA & E)
 {
-	if(closed) {
+	sConn * C = (memcmp(E.OC_SQLVERSION, "03", 2) >= 0 && E.hConn != 0) ? *E.hConn : &MConn;
+	if(C->closed) {
 		notconn(E);
 		return E.OC_SQLCODE;
 	}
-	SQLRETURN rc = SQLEndTran(SQL_HANDLE_DBC, hDBC, SQL_COMMIT);
+	SQLRETURN rc = SQLEndTran(SQL_HANDLE_DBC, C->hDBC, SQL_COMMIT);
 	if(rc != SQL_SUCCESS) {
-		prnerr(SQL_HANDLE_DBC, hDBC, &E);
+		prnerr(SQL_HANDLE_DBC, C->hDBC, &E);
 	} else {
 		strcpy(E.OC_SQLSTATE, "00000");
 		E.OC_SQLCODE = 0;
 	}
-	CS.clear();
-	SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
-	SQLDisconnect(hDBC);
-	SQLFreeConnect(hDBC);
-	SQLFreeEnv(hEnv);
-	closed = true;
-	logd(1, "OCSQL: DB Closed");
+	--nConn;
+	if(nConn == 0) {
+		CS.clear();
+		if(AConn != NULL) {
+			delete AConn;
+			AConn = NULL;
+		}
+	}
+	SQLFreeHandle(SQL_HANDLE_STMT, C->hStmt);
+	SQLDisconnect(C->hDBC);
+	SQLFreeConnect(C->hDBC);
+	if(nConn == 0) {
+		SQLFreeEnv(hEnv);
+		logd(1, "OCSQL: Last DB Connection Closed");
+	} else {
+		logd(1, "OCSQL: DB Connection Closed");
+	}
+	C->closed = true;
 	return E.OC_SQLCODE;
 }
 
 extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 {
-	if(closed) {
+	bool vers3 = (memcmp(E.OC_SQLVERSION, "03", 2) >= 0);
+	sConn * C = (vers3 && E.hConn != 0) ? *E.hConn : &MConn;
+	if(C->closed) {
 		notconn(E);
 		return E.OC_SQLCODE;
 	}
@@ -811,7 +903,7 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		if(S.SQL_IPTR != NULL) {
 			mysql * msql = (mysql *) S.SQL_IPTR;
 			S.SQL_IPTR = NULL;
-			delete msql;
+			CS.remove(msql); // that will delete msql
 		}
 	}
 	if(S.SQL_PREP != 'N') return 0;	// already prepared
@@ -826,10 +918,14 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 			return 0;
 		}
 	}
-	if(S.SQL_OPT != 'd' && S.SQL_OPT != 'D') {
-		logd(901, "OCSQL: PREPARE I/O %.*s", S.SQL_STMLEN, S.SQL_STMT);
+	SQLCHAR * cname = NULL; // Cursor name
+	if(vers3) {
+		if(S.SQL_OPT == 'd' || S.SQL_OPT == 'D') {
+			cname = (SQLCHAR*)(&S.SQL_VADDR + 1);
+		} else if(S.SQL_OPT == 'C' || S.SQL_OPT == 'H') {
+			cname = (SQLCHAR*)S.SQL_STMT + S.SQL_STMLEN;
+		}
 	}
-	CS.put(&S);
 	void ** PARMADDR = & V.OC_SQL_ADDR[0];
 	int * PARMLEN  = (int *)(&PARMADDR[V.OC_SQL_ARRSZ]);
 	char * PARMTYPE  = (char *)(&PARMLEN[V.OC_SQL_ARRSZ]);
@@ -837,7 +933,7 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 	int ct = 0;
 	int bufct = 0;
 	for(int i = 0; i < V.OC_SQL_COUNT; ++i) {
-		if(!bNTS && i < V.OC_SQL_COUNT - S.SQL_PARMS &&
+		if(!C->bNTS && i < V.OC_SQL_COUNT - S.SQL_PARMS &&
 			(PARMTYPE[i] == 'X' || PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L'))
 		{
 			++ct;
@@ -852,15 +948,16 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 	}
 	if(msql == NULL) {
 		msql = new mysql(V.OC_SQL_COUNT, V.OC_SQL_COUNT - S.SQL_PARMS, ct, bufct);
-		msql->ST = new DBL();
+		msql->ST = new DBL(C->DBN);
+		CS.put(msql);
 		S.SQL_IPTR = msql;
 	}
 	mov * smov = msql->moves;
 	// Allocate memory for the statement handle
 	SQLHANDLE stmt;
-	SQLRETURN rc = SQLAllocHandle(SQL_HANDLE_STMT , hDBC, &stmt);
+	SQLRETURN rc = SQLAllocHandle(SQL_HANDLE_STMT , C->hDBC, &stmt);
 	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
-		prnerr(SQL_HANDLE_DBC, hDBC, &E);
+		prnerr(SQL_HANDLE_DBC, C->hDBC, &E);
 		return E.OC_SQLCODE;
 	}
 	// Options
@@ -874,21 +971,28 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 			prnerr(SQL_HANDLE_STMT, stmt, &E);
 		}
 	}
+	if(cname != NULL) {
+		rc = SQLSetCursorName(stmt, cname, (SQLSMALLINT) strlen((char *)cname));
+		if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
+			prnerr(SQL_HANDLE_STMT, stmt, &E);
+		}
+	}
 	// Prepare SQL statement
 	if(S.SQL_OPT == 'D' || S.SQL_OPT == 'd') {
 		if(S.SQL_VTYPE == 'X') {
-			logd(901, "OCSQL: PREPARE I/O %.*s", S.SQL_STMLEN, S.SQL_VADDR);
+			logd(901, "OCSQL: PREPARE %.*s", S.SQL_STMLEN, S.SQL_VADDR);
 			rc = SQLPrepare(stmt, (SQLCHAR*)S.SQL_VADDR, S.SQL_STMLEN);
 		} else if(S.SQL_VTYPE == 'V') {
 			short vlen = *(short*)S.SQL_VADDR;
-			logd(901, "OCSQL: PREPARE I/O %.*s", vlen, S.SQL_VADDR + 2);
+			logd(901, "OCSQL: PREPARE %.*s", vlen, S.SQL_VADDR + 2);
 			rc = SQLPrepare(stmt, (SQLCHAR*)(S.SQL_VADDR + 2), vlen);
 		} else {	// VTYPE == 'L'
 			int vlen = *(int*)S.SQL_VADDR;
-			logd(901, "OCSQL: PREPARE I/O %.*s", vlen, S.SQL_VADDR + 4);
+			logd(901, "OCSQL: PREPARE %.*s", vlen, S.SQL_VADDR + 4);
 			rc = SQLPrepare(stmt, (SQLCHAR*)(S.SQL_VADDR + 4), vlen);
 		}
 	} else {
+		logd(901, "OCSQL: PREPARE %.*s", S.SQL_STMLEN, S.SQL_STMT);
 		rc = SQLPrepare(stmt, (SQLCHAR*)S.SQL_STMT, S.SQL_STMLEN);
 	}
 	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
@@ -927,9 +1031,7 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		} else if(PARMTYPE[i] == '3') {
 			--ct;
 			--bufct;
-			mydec * md = msql->pbuf_set(bufct,
-						    PARMLEN[i],
-						    PARMPREC[i]);
+			mydec* md = msql->pbuf_set(bufct, PARMLEN[i], PARMPREC[i]);
 			smov[ct].movenumber = i;
 			smov[ct].movetype = -3;	// moving COMP-3 to DECIMAL.
 			smov[ct].movelen = bufct;
@@ -1052,16 +1154,14 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		} else if(PARMTYPE[i] == '3') {
 			--ct;
 			--bufct;
-			mydec * md = msql->pbuf_set(bufct,
-						    PARMLEN[i],
-						    PARMPREC[i]);
+			mydec * md = msql->pbuf_set(bufct, PARMLEN[i], PARMPREC[i]);
 			smov[ct].movenumber = i;
 			smov[ct].movetype = 3;	// moving DECIMAL to COMP-3.
 			smov[ct].movelen = bufct;
 			smov[ct].moveto = PARMADDR[i];
 			PARMADDR[i] = & md->num;
 		}
-		if(!bNTS && (PARMTYPE[i] == 'X' || PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L')) {
+		if(!C->bNTS && (PARMTYPE[i] == 'X' || PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L')) {
 			--ct;
 			--bufct;
 			if(msql->pbuf[bufct] == NULL) {
@@ -1109,7 +1209,7 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		case 'X':
 		case 'V':
 		case 'L':
-			if(!bNTS) ++BufferLength;
+			if(!C->bNTS) ++BufferLength;
 			ValueType = SQL_C_CHAR;
 			break;
 		case 'B':
@@ -1140,7 +1240,8 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 
 extern "C" OCEXPORT int OCSQLEXE(STMT & S, OC_SQLCA & E)
 {
-	if(closed) {
+	sConn* C = (memcmp(E.OC_SQLVERSION, "03", 2) >= 0 && E.hConn != 0) ? *E.hConn : &MConn;
+	if(C->closed) {
 		notconn(E);
 		return E.OC_SQLCODE;
 	}
@@ -1323,7 +1424,8 @@ extern "C" OCEXPORT int OCSQLEXE(STMT & S, OC_SQLCA & E)
 
 extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 {
-	if(closed) {
+	sConn* C = (memcmp(E.OC_SQLVERSION, "03", 2) >= 0 && E.hConn != 0) ? *E.hConn : &MConn;
+	if(C->closed) {
 		notconn(E);
 		return E.OC_SQLCODE;
 	}
@@ -1341,7 +1443,7 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		bool b_out = (PARMPREC[i] & 0x80) != 0;
 		if(b_in) ++n_in;
 		if(b_out) ++n_out;
-		if(!bNTS && b_out &&
+		if(!C->bNTS && b_out &&
 			(PARMTYPE[i] == 'X' || PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L'))
 		{
 			++ct;
@@ -1369,9 +1471,9 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 	mov * smov = msql.moves;
 	// Allocate memory for the statement handle
 	SQLHANDLE stmt;
-	SQLRETURN rc = SQLAllocHandle(SQL_HANDLE_STMT , hDBC, &stmt);
+	SQLRETURN rc = SQLAllocHandle(SQL_HANDLE_STMT , C->hDBC, &stmt);
 	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
-		prnerr(SQL_HANDLE_DBC, hDBC, &E);
+		prnerr(SQL_HANDLE_DBC, C->hDBC, &E);
 		return E.OC_SQLCODE;
 	}
 	// Bind parameters
@@ -1397,7 +1499,7 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 				smov[ct].movetype = -2;	// moving short to SQLLEN.
 				smov[ct].movelen = (int) PARMLEN[i];
 				smov[ct].moveto = parm;
-				if(!bNTS && b_out && PARMTYPE[i] == 'V') {
+				if(!C->bNTS && b_out && PARMTYPE[i] == 'V') {
 					--ct;
 					--bufct;
 					if(msql.pbuf[bufct] == NULL) {
@@ -1418,7 +1520,7 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 				smov[ct].movetype = -4;	// moving int to SQLLEN.
 				smov[ct].movelen = (int) PARMLEN[i];
 				smov[ct].moveto = parm;
-				if(!bNTS && b_out && PARMTYPE[i] == 'L') {
+				if(!C->bNTS && b_out && PARMTYPE[i] == 'L') {
 					--ct;
 					--bufct;
 					if(msql.pbuf[bufct] == NULL) {
@@ -1436,15 +1538,13 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 			} else if(PARMTYPE[i] == '3') {
 				--ct;
 				--bufct;
-				mydec * md = msql.pbuf_set(bufct,
-							   PARMLEN[i],
-							   PARMPREC[i] & 0x3F);
+				mydec * md = msql.pbuf_set(bufct, PARMLEN[i], PARMPREC[i] & 0x3F);
 				smov[ct].movenumber = i;
 				smov[ct].movetype = -3;	// moving COMP-3 to DECIMAL.
 				smov[ct].movelen = bufct;
 				smov[ct].moveto = parm;
 				PARMADDR[i] = md->num;
-			} else if(!bNTS && b_out && PARMTYPE[i] == 'X') {
+			} else if(!C->bNTS && b_out && PARMTYPE[i] == 'X') {
 				--ct;
 				--bufct;
 				if(msql.pbuf[bufct] == NULL) {
@@ -1476,9 +1576,7 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 			} else if(PARMTYPE[i] == '3') {
 				if(!b_in) {
 					--bufct;
-					mydec * md = msql.pbuf_set(bufct,
-								   PARMLEN[i],
-								   PARMPREC[i] & 0x3F);
+					mydec* md = msql.pbuf_set(bufct, PARMLEN[i], PARMPREC[i] & 0x3F);
 					PARMADDR[i] = & md->num;
 				}
 				--ct;
@@ -1487,7 +1585,7 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 				smov[ct].movelen = bufct;
 				smov[ct].moveto = parm;
 			}
-			if(!bNTS && (PARMTYPE[i] == 'X' || PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L')) {
+			if(!C->bNTS && (PARMTYPE[i] == 'X' || PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L')) {
 				--ct;
 				smov[ct].movenumber = i;
 				smov[ct].movetype = 1;	// moving bytes.
@@ -1744,47 +1842,50 @@ extern "C" OCEXPORT int OCSQLCAL(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 
 extern "C" OCEXPORT int OCSQLRBK(OC_SQLCA & E)
 {
-	if(closed) {
+	sConn* C = (memcmp(E.OC_SQLVERSION, "03", 2) >= 0 && E.hConn != 0) ? *E.hConn : &MConn;
+	if(C->closed) {
 		notconn(E);
 		return E.OC_SQLCODE;
 	}
 	logd(901, "OCSQL: ROLLBACK");
 	strcpy(E.OC_SQLSTATE, "00000");
 	E.OC_SQLCODE = 0;
-	SQLRETURN rc = SQLEndTran(SQL_HANDLE_DBC, hDBC, SQL_ROLLBACK);
+	SQLRETURN rc = SQLEndTran(SQL_HANDLE_DBC, C->hDBC, SQL_ROLLBACK);
 	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
-		prnerr(SQL_HANDLE_DBC, hDBC, &E);
+		prnerr(SQL_HANDLE_DBC, C->hDBC, &E);
 	}
 	return E.OC_SQLCODE;
 }
 
 extern "C" OCEXPORT int OCSQLCMT(OC_SQLCA & E)
 {
-	if(closed) {
+	sConn* C = (memcmp(E.OC_SQLVERSION, "03", 2) >= 0 && E.hConn != 0) ? *E.hConn : &MConn;
+	if(C->closed) {
 		notconn(E);
 		return E.OC_SQLCODE;
 	}
 	logd(901, "OCSQL: COMMIT");
 	strcpy(E.OC_SQLSTATE, "00000");
 	E.OC_SQLCODE = 0;
-	SQLRETURN rc = SQLEndTran(SQL_HANDLE_DBC, hDBC, SQL_COMMIT);
+	SQLRETURN rc = SQLEndTran(SQL_HANDLE_DBC, C->hDBC, SQL_COMMIT);
 	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
-		prnerr(SQL_HANDLE_DBC, hDBC, &E);
+		prnerr(SQL_HANDLE_DBC, C->hDBC, &E);
 	}
 	return E.OC_SQLCODE;
 }
 
 extern "C" OCEXPORT int OCSQLIMM(SQLCHAR * S, int & slen, OC_SQLCA & E)
 {
-	if(closed) {
+	sConn* C = (memcmp(E.OC_SQLVERSION, "03", 2) >= 0 && E.hConn != 0) ? *E.hConn : &MConn;
+	if(C->closed) {
 		notconn(E);
 		return E.OC_SQLCODE;
 	}
 	logd(901, "OCSQL: EXECUTE IMMEDIATE %.*s", slen, S);
 	SQLHANDLE stmt;
-	SQLRETURN rc = SQLAllocHandle(SQL_HANDLE_STMT , hDBC, &stmt);
+	SQLRETURN rc = SQLAllocHandle(SQL_HANDLE_STMT , C->hDBC, &stmt);
 	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
-		prnerr(SQL_HANDLE_DBC, hDBC, &E);
+		prnerr(SQL_HANDLE_DBC, C->hDBC, &E);
 		return E.OC_SQLCODE;
 	}
 	strcpy(E.OC_SQLSTATE, "00000");
@@ -1805,34 +1906,34 @@ extern "C" OCEXPORT int OCSQLIMM(SQLCHAR * S, int & slen, OC_SQLCA & E)
 #ifndef USE_NOT_USED
 	// This need to be tweaked for each type of the database
 #if defined(MSSQL) || defined(MYSQL) || defined(MARIADB)
-	if(0 == strncasecmp((char *)S, "USE ", 4)) {
-		if(!getcurrdb(dbname, E)) {
+	if(0 == strncasecmp((char*)S, "USE ", 4)) {
+		if(!getcurrdb(C, E)) {
 			log("OCSQL: DB Can't get current Database name");
 			return E.OC_SQLCODE;
 		}
-		DBN.setCurrentDB(dbname);
+		C->DBN.setCurrentDB(C->dbname);
 	}
 #else
-	if(0 == strncasecmp((char *)S, "SET ", 4)) {
-		char * p = (char *)(S + 4);
+	if(0 == strncasecmp((char*)S, "SET ", 4)) {
+		char* p = (char*)(S + 4);
 		while(*p == ' ') ++p;
 		if(0 == strncasecmp(p, "CURRENT ", 8)) {
 			p += 8;
 			while(*p == ' ') ++p;
 			if(0 == strncasecmp(p, "SCHEMA", 6)) {
-				if(!getcurrdb(dbname, E)) {
+				if(!getcurrdb(C, E)) {
 					log("OCSQL: DB Can't get current Schema");
 					return E.OC_SQLCODE;
 				}
-				DBN.setCurrentDB(dbname);
+				C->DBN.setCurrentDB(C->dbname);
 			}
 		} else {
 			if(0 == strncasecmp(p, "SCHEMA", 6)) {
-				if(!getcurrdb(dbname, E)) {
+				if(!getcurrdb(C, E)) {
 					log("OCSQL: DB Can't get current Schema");
 					return E.OC_SQLCODE;
 				}
-				DBN.setCurrentDB(dbname);
+				C->DBN.setCurrentDB(C->dbname);
 			}
 		}
 	}
@@ -1843,7 +1944,8 @@ extern "C" OCEXPORT int OCSQLIMM(SQLCHAR * S, int & slen, OC_SQLCA & E)
 
 extern "C" OCEXPORT int OCSQLOCU(STMT & S, OC_SQLCA & E)
 {
-	if(closed) {
+	sConn* C = (memcmp(E.OC_SQLVERSION, "03", 2) >= 0 && E.hConn != 0) ? *E.hConn : &MConn;
+	if(C->closed) {
 		notconn(E);
 		return E.OC_SQLCODE;
 	}
@@ -1957,7 +2059,8 @@ extern "C" OCEXPORT int OCSQLOCU(STMT & S, OC_SQLCA & E)
 
 extern "C" OCEXPORT int OCSQLFTC(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 {
-	if(closed) {
+	sConn* C = (memcmp(E.OC_SQLVERSION, "03", 2) >= 0 && E.hConn != 0) ? *E.hConn : &MConn;
+	if(C->closed) {
 		notconn(E);
 		return E.OC_SQLCODE;
 	}
@@ -1986,7 +2089,7 @@ extern "C" OCEXPORT int OCSQLFTC(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 	int ct = 0;
 	int bufct = 0;
 	for(int i = 0; i < V.OC_SQL_COUNT; ++i) {
-		if(!bNTS && (PARMTYPE[i] == 'X' || PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L'))
+		if(!C->bNTS && (PARMTYPE[i] == 'X' || PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L'))
 		{
 			++ct;
 			++bufct;
@@ -2042,13 +2145,13 @@ extern "C" OCEXPORT int OCSQLFTC(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 			smov[ct].moveto = PARMADDR[i];
 			PARMADDR[i] = & md->num;
 		}
-		if(!bNTS && (PARMTYPE[i] == 'X' || PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L')) {
+		if(!C->bNTS && (PARMTYPE[i] == 'X' || PARMTYPE[i] == 'V' || PARMTYPE[i] == 'L')) {
 			--ct;
 			--bufct;
 			if(msql->pbuf[bufct] == NULL) {
 				msql->pbuf[bufct] = new char[PARMLEN[i] + 1];
 			} else if(smov[ct].movelen < PARMLEN[i]) {
-				delete[] msql->pbuf[bufct];
+				delete [] msql->pbuf[bufct];
 				msql->pbuf[bufct] = new char[PARMLEN[i] + 1];
 			}
 			smov[ct].movenumber = i;
@@ -2093,7 +2196,7 @@ extern "C" OCEXPORT int OCSQLFTC(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		case 'X':
 		case 'V':
 		case 'L':
-			if(!bNTS) ++BufferLength;
+			if(!C->bNTS) ++BufferLength;
 			ValueType = SQL_C_CHAR;
 			break;
 		case 'B':
@@ -2178,7 +2281,8 @@ extern "C" OCEXPORT int OCSQLFTC(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 
 extern "C" OCEXPORT int OCSQLCCU(STMT & S, OC_SQLCA & E)
 {
-	if(closed) {
+	sConn* C = (memcmp(E.OC_SQLVERSION, "03", 2) >= 0 && E.hConn != 0) ? *E.hConn : &MConn;
+	if(C->closed) {
 		notconn(E);
 		return E.OC_SQLCODE;
 	}
@@ -2275,51 +2379,51 @@ static void prnerr(SQLSMALLINT ht, SQLHANDLE h, OC_SQLCA * E)
 	}
 }
 
-static bool getcurrdb(char * db, OC_SQLCA & E)
+static bool getcurrdb(sConn * C, OC_SQLCA & E)
 {
 #if !defined(ESQL_DB2)
 	SQLSMALLINT buflength = OC_DBNAME_LENGTH;
 	// SQLGetInfo() (ODBC 1.0) we could also use SQLGetConnectAttr() with SQL_ATTR_CURRENT_CATALOG (ODBC 3.0)
-	SQLRETURN rc = SQLGetInfo(hDBC, SQL_DATABASE_NAME, db, buflength, &buflength);
+	SQLRETURN rc = SQLGetInfo(C->hDBC, SQL_DATABASE_NAME, C->dbname, buflength, &buflength);
 	if(rc == SQL_SUCCESS || rc == SQL_SUCCESS_WITH_INFO) {
 		return true;
 	}
 #ifdef MSSQL
-	rc = SQLPrepare (hStmt, (SQLCHAR *) "SELECT DB_NAME()", SQL_NTS);
+	rc = SQLPrepare (C->hStmt, (SQLCHAR *) "SELECT DB_NAME()", SQL_NTS);
 #else
-	rc = SQLPrepare (hStmt, (SQLCHAR *) "SELECT DATABASE()", SQL_NTS);
+	rc = SQLPrepare (C->hStmt, (SQLCHAR *) "SELECT DATABASE()", SQL_NTS);
 #endif	// MSSQL
 #else	// ESQL_DB2
-	SQLRETURN rc = SQLPrepare (hStmt, (SQLCHAR *) "SELECT CURRENT SCHEMA FROM SYSIBM.SYSDUMMY1", SQL_NTS);
+	SQLRETURN rc = SQLPrepare (C->hStmt, (SQLCHAR *) "SELECT CURRENT SCHEMA FROM SYSIBM.SYSDUMMY1", SQL_NTS);
 #endif	// ESQL_DB2
 	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
-		prnerr(SQL_HANDLE_STMT, hStmt, &E);
-		SQLFreeStmt(hStmt, SQL_CLOSE);
+		prnerr(SQL_HANDLE_STMT, C->hStmt, &E);
+		SQLFreeStmt(C->hStmt, SQL_CLOSE);
 		return false;
 	}
 	SQLLEN slen = OC_DBNAME_LENGTH;
-	rc = SQLBindCol(hStmt, 1, SQL_C_CHAR, db, OC_DBNAME_LENGTH, &slen);
+	rc = SQLBindCol(C->hStmt, 1, SQL_C_CHAR, C->dbname, OC_DBNAME_LENGTH, &slen);
 	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
-		prnerr(SQL_HANDLE_STMT, hStmt, &E);
-		SQLFreeStmt(hStmt, SQL_CLOSE);
+		prnerr(SQL_HANDLE_STMT, C->hStmt, &E);
+		SQLFreeStmt(C->hStmt, SQL_CLOSE);
 		return false;
 	}
-	rc = SQLExecute(hStmt);
+	rc = SQLExecute(C->hStmt);
 	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
-		prnerr(SQL_HANDLE_STMT, hStmt, &E);
-		SQLFreeStmt(hStmt, SQL_CLOSE);
+		prnerr(SQL_HANDLE_STMT, C->hStmt, &E);
+		SQLFreeStmt(C->hStmt, SQL_CLOSE);
 		return false;
 	}
-	rc = SQLFetch(hStmt);
+	rc = SQLFetch(C->hStmt);
 	if(rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
-		prnerr(SQL_HANDLE_STMT, hStmt, &E);
-		SQLFreeStmt(hStmt, SQL_CLOSE);
+		prnerr(SQL_HANDLE_STMT, C->hStmt, &E);
+		SQLFreeStmt(C->hStmt, SQL_CLOSE);
 		return false;
 	}
 	if(rc == SQL_SUCCESS_WITH_INFO) {
-		prnerr(SQL_HANDLE_STMT, hStmt);
+		prnerr(SQL_HANDLE_STMT, C->hStmt);
 	}
-	SQLFreeStmt(hStmt, SQL_CLOSE);
+	SQLFreeStmt(C->hStmt, SQL_CLOSE);
 	return true;
 }
 
