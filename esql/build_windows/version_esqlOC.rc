@@ -18,8 +18,8 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 #endif
 
 VS_VERSION_INFO    VERSIONINFO
-  FILEVERSION      2,0,0,0
-  PRODUCTVERSION   2,0,0,0
+  FILEVERSION      2021,11,09,1
+  PRODUCTVERSION   3,0,0,0
 
   FILEOS           VOS_NT_WINDOWS32
 
@@ -34,12 +34,12 @@ VS_VERSION_INFO    VERSIONINFO
   {
     BLOCK "040904E4" // Lang=US English, CharSet=Windows Multilingual
     {
-      // VALUE "Comments",         "Free for personal use only.\0"
-      // VALUE "CompanyName",      "Fake Company\0"
+      // VALUE "Comments",         "Free for general use, including commercial (distribution bound to GPL).\0"
+      // VALUE "CompanyName",      "No Company\0"
       VALUE "FileDescription",  PACKAGE_NAME " SQL Precompiler"
-      VALUE "FileVersion",      "2.0.0"
+      VALUE "FileVersion",      "2021.11.09"
       VALUE "InternalName",     "esqlOC"
-      VALUE "LegalCopyright",   "Copyright (C) 2006-2016 Sergey Kashyrin and Contributors"
+      VALUE "LegalCopyright",   "Copyright (C) 2006-2021 Sergey Kashyrin and Contributors"
       VALUE "LegalTrademarks",  "GNU General Public License v3 - see COPYING"
       VALUE "OriginalFilename", "esqlOC.exe"
       VALUE "ProductName",      PACKAGE_NAME " Precompiler"
@@ -50,7 +50,7 @@ VS_VERSION_INFO    VERSIONINFO
       VALUE "SpecialBuild",     ""
 
       /* Non-Standard entries */
-      VALUE "Build",            "Oct 2017"
+      VALUE "Build",            "Nov 2021"
       VALUE "Developer",        "Sergey Kashyrin and Contributors (see AUTHORS)"
       VALUE "Support",          "http://www.kiska.net/opencobol/esql"
       VALUE "Users",            "Unlimited."

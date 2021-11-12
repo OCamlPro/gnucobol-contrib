@@ -848,7 +848,7 @@ extern "C" OCEXPORT int OCSQL(SQLCHAR * S, int & slen, OC_SQLCA & E)
 #if defined(MSSQL) || defined(MYSQL) || defined(MARIADB)
 	logd(1, "OCSQL: DB Connected, Database is '%s'", C->dbname);
 #else
-	logd(1, "OCSQL: DB Connected, Schema is '%s'", dbname);
+	logd(1, "OCSQL: DB Connected, Schema is '%s'", C->dbname);
 #endif
 	C->closed = false;
 	++nConn;

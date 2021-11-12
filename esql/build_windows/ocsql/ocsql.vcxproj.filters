@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="../../ocsql/ocsql2.cpp">
+    <ClCompile Include="..\..\ocsql\ocsql2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

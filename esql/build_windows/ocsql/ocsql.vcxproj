@@ -170,7 +170,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="../../ocsql/ocsql2.cpp" />
+    <ClCompile Include="..\..\ocsql\ocsql2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\config.h" />

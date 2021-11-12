@@ -1,4 +1,6 @@
+
 2021-08-16 Sergey Kashyrin <ska@kiska.net>
+
 	* Implementing UPDATE/DELETE WHERE CURRENT OF cursor.
 	* Implementing multiple connections.
 	* Handling difference of version 2 and 3.
@@ -9,23 +11,29 @@
 	* use delete[] for arrays
 
 2021-05-18 Sergey Kashyrin <ska@kiska.net>
+
 	* Enhancement for "dynamic" cursors.
 
 2019-07-18 Sergey Kashyrin <ska@kiska.net>
+
 	* Fixed extremely heavy bug for EXEC SQL CALL with COMP-3 parameters
-    * It's been implemented cordially wrong for DECIMAL
-    * It is still the issue for INOUT parameters at least for SQL Server 2012
-    * I hope Microsoft resolved that in the latest versions, but I can't confirm.
-    * Also fixed BufferSize issue for VARCHAR (both OUTPUT and INOUT).
+	  It's been implemented cordially wrong for DECIMAL
+	  It is still the issue for INOUT parameters at least for SQL Server 2012
+	  I hope Microsoft resolved that in the latest versions, but I can't confirm.
+	* Also fixed BufferSize issue for VARCHAR (both OUTPUT and INOUT).
 
 2019-07-03 Sergey Kashyrin <ska@kiska.net>
+
 	* Small fix for statements caching
 
 2019-07-02 Sergey Kashyrin <ska@kiska.net>
+
 	* Fix for DISCONNECT - Cleanup everything correctly
 
 2019-02-26 Sergey Kashyrin <ska@kiska.net>
+
 	* Attempt to implement EXEC SQL CALL for stored procedures
 
 2018-08-08  Sergey Kashyrin <ska@kiska.net>
+
 	* Fixing SIGSEGV when trying to FETCH the cursor which was not open
