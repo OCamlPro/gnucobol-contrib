@@ -223,7 +223,7 @@
      03  SdSortKey         pic x(104).   *> 12/5/19 dataname chgd to 64.
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v2.02.03".
+ 77  Prog-Name             pic x(13) value "Xref v2.02.04".
  77  Page-No               Binary-long  value zero.
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
@@ -555,8 +555,8 @@
      03  filler pic x(24) value "LINKAGE SECTION.        ".
      03  filler pic x(24) value "COMMUNICATION SECTION.  ".   *> #5 replace with CALL routines ?
      03  filler pic x(24) value "REPORT SECTION.         ".
-     03  filler pic x(24) value "SCREEN SECTION.         ".
-     03  filler pic x(24) value "PROCEDURE DIVISION.     ".
+     03  filler pic x(24) value "SCREEN SECTION.         ".   *> #9 = Functions
+     03  filler pic x(24) value "PROCEDURE DIVISION.     ".   *> could use another for CDF zero may be ?
  01  filler   redefines Section-Names-Table.
      03  Full-Section-Name          occurs 8.
 *>                  ascending key Section-Name indexed by Full-Section-Name-Idx. *> cant use as its NOT sorted
@@ -3365,6 +3365,7 @@
 *>   and matches cobc
 *>
      perform  varying d from 1 by 1 until d > 250 or SourceInWS (d:2) = "*>"
+              continue
      end-perform
      if       d > 1 and < 250
          and  SourceInWS (d:2) = "*>"
@@ -3555,6 +3556,7 @@
         and   (wsf2-1 not = quote and not = "'")
               perform  varying z from 256 by -1  until wsFoundWord2 (z:1) not = space
                                                  or z < 2
+                       continue
               end-perform
               move z to Word-Length
               go to zz110-Get-A-Word-Copy-Check
@@ -3577,6 +3579,7 @@
      if       Word-Delimit not = Word-Delimit2
               perform  varying z from 256 by -1 until wsFoundWord2 (z:1) not = space  *> was 1024
                                                  or z < 2
+                       continue
               end-perform
               add 1 to z
      else
@@ -3629,6 +3632,7 @@
 *>
      perform  varying d from 256 by -1 until SourceInWS (d:1) not = space
                                        or d < 2
+              continue
      end-perform
      if       d < 1                   *> Blank line found
               go to zz120-Exit.
@@ -3963,11 +3967,13 @@
               goback.
 *>
      move     1 to String-Pointer String-Pointer2.
-     perform  varying a from 128 by -1 until Sourcefilename (a:1) not = space
+     perform  varying a from 64 by -1 until Sourcefilename (a:1) not = space
+              continue
      end-perform
      move     a to b.
   *>
      perform  varying b from b by -1 until b < 2 or SourceFileName (b:1) = "."
+              continue
      end-perform
      if       b not < 2
               subtract 1 from b
@@ -4035,7 +4041,7 @@
               display " extra information for testing"
               move "Y" to sw-5.
 *>
-*> Check v6 if we are are doing Lower case reports insted of upper
+*> Check v6 if we are are doing Lower case reports instead of upper
 *>
      if       "-L" = Arg-Value (2) or Arg-Value (3)
            or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
@@ -5176,7 +5182,7 @@
 *>   This loop for main source file and copy files as well
 *>
      if       Fht-Table-Size = zero
-               perform  bd000-Test-For-Messages
+              perform  bd000-Test-For-Messages
               go to ba999-exit                              *> EOJ
      end-if
      perform  zz600-Read-File thru zz600-Exit.
@@ -5212,6 +5218,7 @@
      perform  varying IR-Buffer-Data-Size from WS-End by -1 until
                            IR-Buffer (IR-Buffer-Data-Size:1) not = " "
                         or IR-Buffer-Data-Size < 2
+              continue
      end-perform
      if       IR-Buffer (IR-Buffer-Data-Size:1) = x"0D" or x"00"
               subtract 1 from IR-Buffer-Data-Size
@@ -5280,6 +5287,7 @@
                                 until IR-Buffer (WS-P1:1) = quote
                                   or "'"
                                   or WS-P1 > IR-Buffer-Data-Size - 7
+              continue
               end-perform                                      *> loose the literal or line
               if   WS-P1 > IR-Buffer-Data-Size - 7
                    go to ba000-Process
@@ -5327,6 +5335,7 @@
      if       WS-CRT-Copy-Lib-Found
               perform varying WS-P17 from 510 by -1
                       until WS-CRT-Copy-Library (WS-P17:1) not = space
+              continue
               end-perform
               move    1    to WS-P18
               if      WS-CRT-Copy-Library (1:1) = quote or = "'"
@@ -5507,6 +5516,7 @@
 *>
      inspect  Input-Record replacing all x"09" by space   *> TAB
                                          X"0D" by space   *> CR
+                                         X"0A" by space   *> LF (when running under windows) 14/12/21
                                          x"00" by space   *> null
                                          " ; " by "   "
                                          " , " by "   "
@@ -5646,11 +5656,14 @@
      perform  varying IR-Buffer-Data-Size from WS-End by -1
                       until  IR-Buffer (IR-Buffer-Data-Size:1) not = " "
                           or IR-Buffer-Data-Size < 2
+              continue
      end-perform
      perform  varying IR-Buffer-Data-Size from IR-Buffer-Data-Size by -1
               until IR-Buffer (IR-Buffer-Data-Size:1) not = X"0D"
+                                                  and not = X"0A"   *> For windows 14/12/21
                                                   and not = X"00"
                           or IR-Buffer-Data-Size < 2
+              continue
      end-perform
 *>
      Move     Input-Record To PL-Text.
@@ -5706,6 +5719,7 @@
                       perform varying WS-P3 from WS-P3 by 1              *> skip leading spaces
                                  until Input-Buffer (WS-P3:1) not = " "
                                     or WS-P3 not < IB-Size
+                              continue
                       end-perform
                       if      WS-P3 not < IB-Size
                               exit perform
@@ -5842,6 +5856,7 @@
                       end-if
                       perform  varying ws-P3 from Ws-P3 by 1 until Input-Buffer (WS-P3:1) not = " "
                                                                or WS-P3 not < IB-Size
+                               continue
                       end-perform
                       if       WS-P3 not < IB-Size                           *> chgd 28/2/19
                                exit perform cycle
@@ -5851,6 +5866,7 @@
                       end-if
                       perform  varying ws-P3 from Ws-P3 by 1 until Input-Buffer (WS-P3:1) not = " "
                                                                or  WS-P3 not < IB-Size
+                               continue
                       end-perform
                       if       Input-Buffer (WS-P3:2) = "=="
                                add 2 to WS-P3
@@ -5990,7 +6006,8 @@
 *>
 *>  WARNING IF DEBUG ON, NEXT LINE WILL FAIL !!!
 *>
-     move CRT-Instance (Fht-Table-Size + 1) to WS-CRT-Instance.    *> copy file closed so sames as fht ???
+     if       Fht-Table-Size > 1
+              move CRT-Instance (Fht-Table-Size + 1) to WS-CRT-Instance.    *> copy file closed so sames as fht ???
      if       WS-CRT-Replacing-Count = zero
               go to bc999-Exit.
      perform  varying WS-P11 from 1 by 1 until WS-P11 > WS-CRT-Replacing-Count
@@ -6121,6 +6138,7 @@
 *>
      perform  varying WS-P21 from 255 by -1              *> get size of Input-Record
                   until Input-Record (WS-P21:1) not = space
+              continue
      end-perform.
  *>    move   WS-P21 to ws-disp3.
  *>    display "IR size = " ws-disp3.
@@ -6145,6 +6163,7 @@
 *>
      perform  varying WS-P30 from 1 by 1
                until Input-Record (WS-P30:1) not = space
+              continue
      end-perform.
  *>      display "IR2 = " Input-Record (WS-P30:WS-P21 - (WS-P30 - 1)).
      perform  test after varying WS-P30 from WS-P30 by 1   *> WS-P30 by 1
@@ -6443,6 +6462,7 @@
                        perform varying WS-P6 from WS-P6 by 1 until IR-Buffer (WS-P6:1) = quote
                                                                 or = "'"
                                                                 or WS-P6 > IR-Buffer-Data-Size - 7
+                               continue
                        end-perform                     *> loose the literal or line
                        if   WS-P6 > IR-Buffer-Data-Size - 7
                             move zero to WS-P6
@@ -6818,6 +6838,7 @@
                        perform varying WS-P14 from 1 by 1
                               until Input-Record (WS-P14:2) = "*>"
                                            or WS-P14 not < IR-Buffer-Data-Size
+                              continue
                        end-perform
                        if       WS-P14 < IR-Buffer-Data-Size
                                 subtract 1 from WS-P14

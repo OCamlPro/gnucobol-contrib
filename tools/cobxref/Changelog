@@ -1,3 +1,21 @@
+2021-12-14  Vincent B Coen <vbcoen@btconnect.com>
+       (v2.02.04    Bug found by David Wall in  zz180-Check-For-Param-Errors where
+                    a perform search was using 128 for a field that is only 64 chars
+                    that produced a runtime out of bounds. At some point I changed
+                    the size but not found in all other testing but may be he
+                    had -g (runtime checks) set for compile. Thanks David.
+
+                    In  bc000-Test-For-Missing-Replace and when running with -g
+                    produces a runtime failure so now check if not > 1 in
+                    bc000-Test-For-Missing-Replace. {Incident waiting to happen]
+
+                    Added test for X"0A" along with the test for X"0D" in case
+                    running under Windows - needs testing though.
+
+                    Added 'continue in empty perform - end-perform blocks
+                    if nothing else will get rid of the silly warning regarding
+                    'warning: inline PERFORM without imperative statement used'.
+
 2019-12-08  Vincent B Coen <vbcoen@btconnect.com>
        (v2.02.03)   Added extra tests for line starting with >>SOURCE as a sample
                     program this started in cc9 by using TRIM to strip out
