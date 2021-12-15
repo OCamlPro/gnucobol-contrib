@@ -1,5 +1,5 @@
 This README is superceded by the PDF manual and this includes all changes for
-version v2.02.03 that runs under *nix, Linux etc with the GnuCOBOL compiler.
+version v2.02.04 that runs under *nix, Linux etc with the GnuCOBOL compiler.
 
 This version supports both fixed and free format Cobol source files creating
 Cobol cross references listings.
@@ -10,6 +10,7 @@ program and modules to 63 characters if using the latest GnuCobol code base v3.
 It has been tested against production sources - well in excess of
 1000 programs as well as various test source programs.
 
+I have not tested it with Windows.
 
 This project area (cobxref) also has the current version for the
 IBM MVS Ansi Cobol at:
@@ -28,5 +29,5 @@ of MVS bug.
 
 
 Vincent B. Coen
- 8th Dec 2019.
+ 15th Dec 2021.
 
