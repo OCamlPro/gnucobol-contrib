@@ -259,6 +259,7 @@ cob_field* job_cob_field_create ( void );
 void job_cob_field_set (cob_field* field_ret, int type, int digits, int scale, int flags, int nLen);
 void job_cob_field_reset(cob_field* field_ret, int type, int size, int digits);
 void job_cob_field_destroy ( cob_field* field_ret);
+void job_cob_field_destroy_NOData(cob_field* field_ret);
 void job_print_error_file(cob_file* stFileDef, int nLenRecOut);
 
 void job_checkslash(char* str);	

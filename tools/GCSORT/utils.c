@@ -23,6 +23,7 @@
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <time.h>
+#include <sys/stat.h>
 // #ifdef _WIN32
 #if	defined(_MSC_VER) // s.m. 20201021 || defined(__MINGW32__) || defined(__MINGW64__)
 	#include <windows.h>
@@ -36,6 +37,7 @@
 #include "libgcsort.h"
 #include "gcsort.h"
 #include "utils.h"
+#include "file.h"
 #include "outfil.h"
 #include "exitroutines.h"
 #include "gcshare.h"
@@ -978,4 +980,28 @@ void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate)
     if (nTerminate == ABEND_EXEC)
         exit(GC_RTC_ERROR);       
     return;
+}
+int utl_GetFileSizeEnvName(struct file_t* file) {
+	char* pEnv;
+	struct stat filestatus;
+	char szname[GCSORT_SIZE_FILENAME];
+	snprintf(szname, (size_t)COB_FILE_MAX, "%s", (const char*)file->stFileDef->assign->data);
+	pEnv = getenv(szname);
+	if (pEnv != NULL) {
+		stat(pEnv, &filestatus);
+		return filestatus.st_size;
+	}
+	snprintf(szname, (size_t)COB_FILE_MAX, "DD_%s", (const char*)file->stFileDef->assign->data);
+	pEnv = getenv(szname);
+	if (pEnv != NULL) {
+		stat(pEnv, &filestatus);
+		return filestatus.st_size;
+	}
+	snprintf(szname, (size_t)COB_FILE_MAX, "dd_%s", (const char*)file->stFileDef->assign->data);
+	pEnv = getenv(szname);
+	if (pEnv != NULL) {
+		stat(pEnv, &filestatus);
+		return filestatus.st_size;
+	}
+	return 0;
 }

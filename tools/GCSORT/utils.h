@@ -227,6 +227,7 @@ cob_field* util_MakeAttrib_call(int type, int digits, int scale, int flags, int 
 void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen);
 void util_resetAttrib(cob_field_attr* attrArea, int type, int digits);
 void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate);
+int utl_GetFileSizeEnvName(struct file_t* file);
 
 
 //#ifndef _WIN32

@@ -1,3 +1,7 @@
+2021-12-27  Sauro Menna  <smenna@users.sourceforge.net>
+    * copyfile.c - Fixed problem with file name when name is environment variable
+    * job.c - Fixed problem with variables used to compare fields - 
+    * gcsorthelp.c - Modified option '--version' with new info 'gcsort 64bit-mode'
 2021-09-14  Sauro Menna  <smenna@users.sourceforge.net>
     * job.c - Fix problem with empty file
     

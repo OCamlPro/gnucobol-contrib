@@ -242,15 +242,15 @@ struct job_t *job_constructor( void ) {
 	pEnvMemSize = getenv ("GCSORT_MEMSIZE");
 	if (pEnvMemSize!=NULL)
 	{
-		job->ulMemSizeAlloc = atol(pEnvMemSize);
+		job->ulMemSizeAlloc = _atoi64(pEnvMemSize);
 		if (job->ulMemSizeAlloc == 0) {
 			job->ulMemSizeAllocSort = GCSORT_ALLOCATE_MEMSIZE/100*10;
 			job->ulMemSizeAlloc = GCSORT_ALLOCATE_MEMSIZE - job->ulMemSizeAllocSort;
 		} 
 		else
 		{
-			job->ulMemSizeAllocSort = job->ulMemSizeAlloc/100*10;
-			job->ulMemSizeAlloc = job->ulMemSizeAlloc - job->ulMemSizeAllocSort ;
+		//-->> s.m. 20211109	job->ulMemSizeAllocSort = job->ulMemSizeAlloc/100*10;
+		//-->> s.m. 20211109	job->ulMemSizeAlloc = job->ulMemSizeAlloc - job->ulMemSizeAllocSort ;
 		}
 	}
 
@@ -1586,10 +1586,11 @@ int job_destroy(struct job_t *job) {
 	job_cob_field_destroy(g_ckfdate2);
 
 	//-->> only reference no allocation   
-	job_cob_field_destroy(g_fd1);
+	job_cob_field_destroy_NOData(g_fd1);
 	//-->> only reference no allocation   
-	job_cob_field_destroy(g_fd2);
+	//-->>>>>>	job_cob_field_destroy(g_fd2);
 
+	job_cob_field_destroy_NOData(g_fd2);
 	/*
 	job_cob_field_destroy(g_fdate1D);
 	job_cob_field_destroy(g_fdate2D);
@@ -1789,12 +1790,16 @@ int job_loadFiles(struct job_t *job) {
 
 
 	szVectorRead1 = (unsigned char*)calloc((size_t)GCSORT_MAX_BUFF_REK, sizeof(unsigned char));
-	if (szVectorRead1 == 0)
+	if (szVectorRead1 == 0) {
 		fprintf(stderr, "*GCSORT*S325*ERROR: Cannot Allocate szVectorRead1 : %s\n", strerror(errno));
+		return -1;
+	}
 	memset(szVectorRead1, 0x00, GCSORT_MAX_BUFF_REK);
 	szVectorRead2 = (unsigned char*)calloc((size_t)GCSORT_MAX_BUFF_REK, sizeof(unsigned char));
-	if (szVectorRead2 == 0)
+	if (szVectorRead2 == 0) {
 		fprintf(stderr, "*GCSORT*S326*ERROR: Cannot Allocate szVectorRead2 : %s\n", strerror(errno));
+		return -1;
+	}
 	memset(szVectorRead2, 0x00, GCSORT_MAX_BUFF_REK);
 
 	memset(vSortBuf, 0x00, GCSORT_MAX_BUFF_REK);
@@ -1810,8 +1815,16 @@ int job_loadFiles(struct job_t *job) {
 // perf.		
 			// 
 		job->recordData=(unsigned char *)calloc((size_t)job->ulMemSizeAlloc, sizeof(unsigned char));
+		if (job->recordData == 0) {
+			fprintf(stderr, "*GCSORT*S424*ERROR: Cannot Allocate job->recordData , size "CB_FMT_LLD" byte - %s\n", (long long)job->ulMemSizeAlloc, strerror(errno));
+			return -1;
+		}
 			// 
 		job->buffertSort=(unsigned char *)calloc((size_t)job->ulMemSizeAllocSort, sizeof(unsigned char));
+		if (job->buffertSort == 0) {
+			fprintf(stderr, "*GCSORT*S425*ERROR: Cannot Allocate job->buffertSort, size "CB_FMT_LLD" byte - %s\n", (long long)job->ulMemSizeAllocSort, strerror(errno));
+			return -1;
+		}
 // perf.	
 		job->nLenKeys = job_GetLenKeys();
 		job->lPosAbsRead = 0;
@@ -1844,6 +1857,9 @@ int job_loadFiles(struct job_t *job) {
 			struct stat filestatus;
 		    stat( file_getName(file), &filestatus );
 			job->inputFile->nFileMaxSize = filestatus.st_size;
+			if (job->inputFile->nFileMaxSize == 0) {
+				job->inputFile->nFileMaxSize = utl_GetFileSizeEnvName(file);
+			}
 // perf.
 /*
         printf (" ------------------------------------- job->inputFile->nFileMaxSize %d \n", job->inputFile->nFileMaxSize );
@@ -4717,6 +4733,15 @@ void job_cob_field_destroy ( cob_field* field_ret)
 				free((void*)field_ret->attr);
 		if (field_ret->data != NULL)
 			free((void*)field_ret->data);
+		free(field_ret);
+		field_ret = NULL;
+	}
+}
+void job_cob_field_destroy_NOData(cob_field* field_ret)
+{
+	if (field_ret != NULL) {
+		if (field_ret->attr != NULL)
+			free((void*)field_ret->attr);
 		free(field_ret);
 		field_ret = NULL;
 	}

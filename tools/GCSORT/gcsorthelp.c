@@ -64,7 +64,7 @@ void GCSORT_Config ( void )
 //
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-	fprintf(stdout,"Copyright (C) 2009-2020 Cedric ISSALY / Sauro Menna\n");
+	fprintf(stdout,"Copyright (C) 2009-2021 Cedric ISSALY / Sauro Menna\n");
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"\n");
 //-->>	fprintf(stdout,"GCSORT_BYTEORDER             : %d", job->nByteOrder);
@@ -114,8 +114,17 @@ void GCSORT_Config ( void )
 void GCSORT_Version ( void ) 
 {
 	printf("gcsort Version %s\n", GCSORT_VERSION); 
-	printf("Copyright (C) 2009-2020 Cedric ISSALY / Sauro Menna\n");
+	printf("Copyright (C) 2009-2021 Cedric ISSALY / Sauro Menna\n");
 	printf("Packaged  %s\n", GCSORT_TAR_DATE);
+   //-->> printf("libcob version %s\n", libcob_version());
+#if __LIBCOB_VERSION >= 3
+    print_version_summary();
+#endif
+    if (sizeof(void*) > 4U) 
+    printf("gcsort 64bit-mode %s\n", "yes");
+    else
+    printf("gcsort 64bit-mode %s\n", "no");
+
 	return;
 } 
 void GCSORT_Usage ( void ) 
@@ -224,15 +233,15 @@ void GCSORT_Usage ( void )
     printf("  CSL = Numeric sign leading separate      |  CST = Numeric sign trailing separate      \n");
     printf("  CST = Numeric sign trailing separate     |                                            \n");
     printf("___________________________________________|____________________________________________\n");
-    printf("_Format__Len__Type__Date field_____________|_Format__Len__Type__Date field______________\n");
-    printf(" Y2T    = 8   ZD    CCYYMMDD               |  Y2D   = 1   PD    YY      \n");
-    printf(" Y2T    = 4   ZD    YYXX                   |  Y2P   = 2   PD    YY      \n");
-    printf(" Y2T    = 2   ZD    YYX                    |  Y2U   = 3   PD    YYDDD      \n");
-    printf(" Y2T    = 3   ZD    YY                     |  Y2S   = 2   ZD    YY      \n");
-    printf(" Y2T    = 5   ZD    YYDDD                  |  Y2V   = 4   PD    YYMMDD      \n");
-    printf(" Y2T    = 6   ZD    YYMMDD                 |  Y2X   = 3   PD    DDDYY      \n");
-    printf(" Y2B    = 1   BI    YY                     |  Y2Y   = 4   PD    MMDDYY      \n");
-    printf(" Y2C    = 2   ZD    YY                     |  Y2Z   = 2   ZD    YY      \n");
+    printf("_Format_Len_Type__Date field_______________|_Format_Len_Type__Date field________________\n");
+    printf("  Y2T = 8   ZD    CCYYMMDD                 |  Y2D = 1   PD    YY                        \n");
+    printf("  Y2T = 4   ZD    YYXX                     |  Y2P = 2   PD    YY                        \n");
+    printf("  Y2T = 2   ZD    YYX                      |  Y2U = 3   PD    YYDDD                     \n");
+    printf("  Y2T = 3   ZD    YY                       |  Y2S = 2   ZD    YY                        \n");
+    printf("  Y2T = 5   ZD    YYDDD                    |  Y2V = 4   PD    YYMMDD                    \n");
+    printf("  Y2T = 6   ZD    YYMMDD                   |  Y2X = 3   PD    DDDYY                     \n");
+    printf("  Y2B = 1   BI    YY                       |  Y2Y = 4   PD    MMDDYY                    \n");
+    printf("  Y2C = 2   ZD    YY                       |  Y2Z = 2   ZD    YY                        \n");
     printf("___________________________________________|____________________________________________\n");   
     printf("____{FieldSpec}___Field Specification___________________________________________________\n");
     printf("  pos, len           pos = position input record, len = length of field            \n");
