@@ -219,7 +219,7 @@
 *>  Waiting for actions
     PERFORM FOREVER
 *>     returns the next event, or 0 if no event available       
-       MOVE J-GETACTION() TO WS-OBJ
+       MOVE J-NEXTACTION() TO WS-OBJ
 
        IF (WS-OBJ = WS-QUIT) OR (WS-OBJ = WS-FRAME)
        THEN
@@ -227,16 +227,19 @@
        END-IF
        
 *>     check click on a node
-       MOVE WS-OBJ TO WS-NODE-SEARCH
-       PERFORM SEARCH-NODE-ID
-
-*>     create internal frame
-       IF  V-NODE-FOUND-YES OF WS-NODE-SEARCH-FLAG
-       AND V-LEAF-YES OF WS-LEAF-FLAG(WS-IND-1)
-       AND V-NO OF WS-IFRAME-CREATED(WS-IND-1)
+       IF WS-OBJ NOT = 0
        THEN
-          PERFORM CALL-IFRAME
-       END-IF       
+          MOVE WS-OBJ TO WS-NODE-SEARCH
+          PERFORM SEARCH-NODE-ID
+
+*>        create internal frame
+          IF  V-NODE-FOUND-YES OF WS-NODE-SEARCH-FLAG
+          AND V-LEAF-YES OF WS-LEAF-FLAG(WS-IND-1)
+          AND V-NO OF WS-IFRAME-CREATED(WS-IND-1)
+          THEN
+             PERFORM CALL-IFRAME
+          END-IF       
+       END-IF   
 
 *>     go thrue all created internal frames and process theire events
        PERFORM VARYING WS-IND-1 FROM 1 BY 1
