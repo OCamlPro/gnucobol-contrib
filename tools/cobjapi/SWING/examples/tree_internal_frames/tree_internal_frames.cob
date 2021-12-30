@@ -89,6 +89,7 @@
  01 WS-XPOS                            BINARY-LONG.
  01 WS-YPOS                            BINARY-LONG.
  01 WS-POS                             BINARY-LONG.
+ 01 WS-MSEC                            BINARY-LONG.
 
 *> RGB color
  01 WS-R                               BINARY-LONG.
@@ -255,6 +256,10 @@
                )
             TO WS-RET                    
        END-IF
+
+       MOVE J-SYNC() TO WS-RET
+       MOVE 10 TO WS-MSEC
+       MOVE J-SLEEP(WS-MSEC) TO WS-RET
     END-PERFORM
 
     EXIT SECTION .
