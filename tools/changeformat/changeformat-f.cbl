@@ -602,11 +602,6 @@
                END-IF
            END-IF
 
-      *  output a blank record
-           IF RECORD-TYPE = 'BLANK'
-               PERFORM INCREMENT-WOUTX-MAX
-           END-IF
-
       * at this point we have removed comments, removed debug markers
       * and put an empty input-record
 
