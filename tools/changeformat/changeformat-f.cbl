@@ -123,6 +123,16 @@
       *            2) disabled 2014-10-20 2) as the indent must
       *               stay in existing lines with area A
       *               not un-indent lines without it
+      *
+      * 2022-01-01 - .04 - Chuck Haatvedt
+      *            1) change the CONVERT-TO-FIXED paragraph
+      *               to move the check for a blank line to the
+      *               beginning of the paragraph and if it is a
+      *               blank line, then process it and
+      *               EXIT PARAGRAPH.
+      *
+      *               This avoids falling in a zero subscript
+      *               problem in the next if statement.
       *=======================================================
 
        ENVIRONMENT DIVISION.
@@ -543,6 +553,19 @@
       * """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
       *                """""""""""""""""""""""""""""""""" to test-record
       * end embedded test
+
+      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+      *                                                               *
+      *    IF THE INPUT RECORD IS A BLANK RECORD THEN PROCESS IT      *
+      *    AND EXIT THE PARAGRAPH.                                    *
+      *                                                               *
+      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+      *  output a blank record
+           IF RECORD-TYPE = 'BLANK'
+               PERFORM INCREMENT-WOUTX-MAX
+               EXIT PARAGRAPH
+           END-IF.
 
       *  convert and remove any comment from input-record
       *                                 free comment
