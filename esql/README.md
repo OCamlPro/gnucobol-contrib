@@ -16,7 +16,7 @@ Installation
 
 For Windows, a very complete setup article can be found at
 
-[ati setup guide](https://open-cobol.sourceforge.io/faq/index.html#getting-started-with-esqloc)
+[ati setup guide](https://gnucobol.sourceforge.io/faq/index.html#getting-started-with-esqloc)
 
 ### Pre-requisites
 esqlOC requires a C++ compiler.
@@ -26,17 +26,20 @@ For GNU/Linux apt that is as simple as
     prompt$ sudo apt install g++
 
 ### Get
-Either copy the files from here, or pull a copy from Sergey's upstream site
+Either copy the files from here and run autogen.sh, or get the tarball
 
-    prompt$ wget http://www.kiska.net/opencobol/esql/gnu-cobol-sql-2.0.tar.gz
+    prompt$ wget https://gnucobol.sourceforge.io/downloads/esql/gnucobol-sql-3.0.tar.gz
+
+You may also want to check [Sergey's upstream site](http://www.kiska.net/opencobol/esql) for updates.
+	
 
 ### Extract
 
-    prompt$ tar xvf gnu-cobol-sql-2.0.tar.gz
+    prompt$ tar xvf gnucobol-sql-3.0.tar.gz
 
 ### Build
 
-    prompt$ cd gnu-cobol-sql-2.0
+    prompt$ cd gnucobol-sql-3.0
     prompt$ ./configure
     prompt$ make
     prompt$ sudo make install

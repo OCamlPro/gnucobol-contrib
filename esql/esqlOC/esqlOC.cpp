@@ -2472,7 +2472,6 @@ private:
 			addln(lineno++, buf);
 		}
 
-		int iv = 0;
 		string sql = cl.sql->substr(8);
 		sql.toupper();
 		int x = sql.indexof(" FROM ");

@@ -20,8 +20,11 @@
 /* Database is Microsoft SQL Server */
 #define MSSQL
 
+/* Disable debug log */
+/* #undef NO_LOG */
+
 /* Name of package */
-#define PACKAGE "gnu-cobol-sql"
+#define PACKAGE "gnucobol-sql"
 
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT "gnucobol-users@gnu.org"
@@ -29,17 +32,17 @@
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "ESQL for GnuCOBOL"
 
+/* Define to the version of this package. */
+#define PACKAGE_VERSION "3.0"
+
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "ESQL for GnuCOBOL 2.0"
+#define PACKAGE_STRING PACKAGE_NAME " " PACKAGE_VERSION
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "gnu-cobol-sql"
+#define PACKAGE_TARNAME "gnucobol-sql"
 
 /* Define to the home page for this package. */
 #define PACKAGE_URL "http://www.kiska.net/opencobol/esql"
-
-/* Define to the version of this package. */
-#define PACKAGE_VERSION "2.0"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -47,11 +50,5 @@
 /* Use multiple schemas/databases (default) */
 /* #undef USE_NOT_USED */
 
-/* Version number of package */
-#define VERSION "2.0"
-
 #define LITTLE_ENDIAN
-
-/* Turn on debugging mode */
-/* #undef _DEBUG */
 

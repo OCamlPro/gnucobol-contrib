@@ -1,32 +1,38 @@
-#                                                       -*- Autoconf -*-
-# Process this file with autoconf to produce a configure script.
-#
-# Copyright (C) 2006-2013 Sergey Kashyrin <ska@kiska.net>
-#                    2017 Simon Sobisch <simonsobisch@gnu.org>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with this software; see the file COPYING.  If not, write to
-# the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA 02111-1307 USA
-#
+dnl                                                       -*- Autoconf -*-
+dnl Process this file with autoconf to produce a configure script.
+dnl
+dnl Copyright (C) 2015      Sergey Kashyrin <ska@kiska.net>
+dnl               2017,2022 Simon Sobisch <simonsobisch@gnu.org>
+dnl
+dnl This program is free software; you can redistribute it and/or modify
+dnl it under the terms of the GNU General Public License as published by
+dnl the Free Software Foundation; either version 2, or (at your option)
+dnl any later version.
+dnl 
+dnl This program is distributed in the hope that it will be useful,
+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+dnl GNU General Public License for more details.
+dnl 
+dnl You should have received a copy of the GNU General Public License
+dnl along with this software; see the file COPYING.  If not, write to
+dnl the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+dnl Boston, MA 02111-1307 USA
+dnl
 
 AC_PREREQ(2.68)
 
 AC_INIT([ESQL for GnuCOBOL],
-	[2.0],
+	[3.0],
 	[gnucobol-users@gnu.org],
-	[gnu-cobol-sql],
+	[gnucobol-sql],
 	[http://www.kiska.net/opencobol/esql]) 
+AC_REVISION([GnuCOBOL ESQL snapshot $Revision: 988 $])
+AC_COPYRIGHT([This file is part of ESQL for GnuCOBOL.
+
+Copyright (C) 2015           Sergey Kashyrin <ska@kiska.net>
+              2017,2021-2022 Simon Sobisch <simonsobisch@gnu.org>
+])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_TESTDIR([tests])
 AC_CONFIG_MACRO_DIR([m4])
@@ -37,19 +43,19 @@ AM_CONDITIONAL([DISABLE_ESQL],  [test "$enable_esql" = no])
 AM_CONDITIONAL([DISABLE_OCSQL], [test "$enable_ocsql" = no])
 
 # Note for SUN Solaris (gcc)
-# export/setenv CFLAGS "-m64 -mptr64"
-# export/setenv LDFLAGS "-m64 -mptr64 -L/usr/local/lib/sparcv9"
-# ./configure --libdir=/usr/local/lib/sparcv9
+#  option to configure/export/setenv: CXX="g++ -m64 --libdir=/usr/local/lib/sparcv9"
+# or:
+#  option to configure/export/setenv: CXXFLAGS=-m64 and LDFLAGS="-m64 -L/usr/local/lib/sparcv9"
 #
 # Hack for AIX 64 bit (gcc)
 # Required -
-# export/setenv CFLAGS=-maix64
-# export/setenv LDFLAGS=-maix64
+#  option to configure/export/setenv: CXX=g++ -maix64
+# or:
+#  option to configure/export/setenv: CXXFLAGS=-maix64 and LDFLAGS=-maix64
+# Note: AIX commonly uses -Lpath like GNU/Linux would use -Lpath -Rpath
 
-if echo $CFLAGS | grep 'aix64' 1>/dev/null 2>&1
-then
-	if test -f /usr/ccs/bin/ar
-	then
+if echo "$CXX$CXXFLAGS" | grep 'aix64' 1>/dev/null 2>&1; then
+	if test -f /usr/ccs/bin/ar; then
 		AR="/usr/ccs/bin/ar -X64"
 	else
 		AR="ar -X64"
@@ -57,7 +63,10 @@ then
 	NM="/usr/ccs/bin/nm -X64 -B"
 fi
 
-AM_INIT_AUTOMAKE([gnu no-texinfo.tex])
+dnl We don't want to have the full list of automatic defines from automake,
+dnl and take care of the one we want explicit AC_DEFINE_UNQUOTED.
+AM_INIT_AUTOMAKE([gnu no-texinfo.tex no-define])
+AC_DEFINE_UNQUOTED([PACKAGE], ["$PACKAGE"], [Name of package])  # used in .rc-files
 AM_MAINTAINER_MODE
 
 # Autoheader templates
@@ -65,7 +74,7 @@ AH_TEMPLATE([MSSQL], [Database is Microsoft SQL Server])
 AH_TEMPLATE([ESQL_DB2], [Database is DB2])
 AH_TEMPLATE([USE_NOT_USED], [Use multiple schemas/databases (default)])
 AH_TEMPLATE([EXTERNAL_LOG], [Use external log functions])
-AH_TEMPLATE([_DEBUG], [Turn on debugging mode])
+AH_TEMPLATE([NO_LOG], [Disable debug log])
 AH_TEMPLATE([LOGLEVEL], [Debugging log level])
 
 # Basic capability tests
@@ -137,13 +146,12 @@ USE_DEBUG=no
 AC_ARG_WITH(debug,
   [  --with-debug            Turn on debugging mode with level (default 999)],
   [case $with_debug in
-	yes)		AC_DEFINE(_DEBUG)
-				USE_DEBUG="999"
+	yes)		USE_DEBUG="999"
 				;;
-	no)
+	no)			AC_DEFINE(NO_LOG)
+				
 				;;
-	[[0-9]]*)	AC_DEFINE(_DEBUG)
-				AC_DEFINE_UNQUOTED([LOGLEVEL], [$with_debug])
+	[[0-9]]*)	AC_DEFINE_UNQUOTED([LOGLEVEL], [$with_debug])
 				USE_DEBUG="$with_debug"
 				;;
 	*)			AC_MSG_ERROR([[You must use a numeric level value]])

@@ -1,4 +1,11 @@
 
+2022-03-01  Simon Sobisch <simonosobisch@gnu.org>
+
+	* configure.ac: changed package-name to gnucobol-sql;
+	  bumped version to 3.0 (as per package);
+	  fixed --without-debug to not have debug log enabled
+	* autogen.sh: new file to create files not in the repository
+
 2017-04-27  Simon Sobisch <simonosobisch@gnu.org>
 
 	* configure.ac, Makefile.am: added --disable-esql and --disable-ocsql
