@@ -1,3 +1,5 @@
+2022-01-03 Sergey Kashyrin <ska@kiska.net>
+	* Fix. Always prepare dynamic cursor.
 
 2021-11-09 Sergey Kashyrin <ska@kiska.net>
 	* retrofit following change:

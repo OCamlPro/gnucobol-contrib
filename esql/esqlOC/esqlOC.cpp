@@ -40,7 +40,7 @@
 
 #include "vcache.h"
 
-static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCOBOL Version 3 (2021.11.09) Build " __DATE__ "\n";
+static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCOBOL Version 3 (2022.01.03) Build " __DATE__ "\n";
 /**  Version is present in SQLCA. Current is 03 */
 
 static bool bAPOST = true;		// use apostroph instead of quote
@@ -2500,13 +2500,15 @@ private:
 		}
 
 		int sqlnum = vd->size;
-		sprintf(buf, "           MOVE '%c' TO SQL-OPT OF SQL-STMT-%d", vc->type, sqlnum);
+		sprintf(buf, "           MOVE %c%c%c TO SQL-OPT OF SQL-STMT-%d", Q, vc->type, Q, sqlnum);
 		addln(lineno++, buf);
 		if(v->type == 'X') {
 			sprintf(buf, "           MOVE %d TO SQL-STMLEN OF SQL-STMT-%d", v->size, sqlnum);
 			addln(lineno++, buf);
 		}
-		sprintf(buf, "           MOVE '%c' TO SQL-VTYPE OF SQL-STMT-%d", v->type, sqlnum);
+		sprintf(buf, "           MOVE %c%c%c TO SQL-VTYPE OF SQL-STMT-%d", Q, v->type, Q, sqlnum);
+		addln(lineno++, buf);
+		sprintf(buf, "           MOVE %cA%c TO SQL-PREP OF SQL-STMT-%d", Q, Q, sqlnum);
 		addln(lineno++, buf);
 		sprintf(buf, "           SET SQL-VADDR OF SQL-STMT-%d", sqlnum);
 		addln(lineno++, buf);

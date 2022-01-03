@@ -1,3 +1,14 @@
+2022-01-03 Sergey Kashyrin <ska@kiska.net>
+
+	* Memory leak fix introduced on 2021-11-14.
+
+2021-11-14 Sergey Kashyrin <ska@kiska.net>
+
+	* We need to clear the reference to prepared statement from COBOL memory (SQL_IPTR)
+	*  in order to be able to handle reconnect when connection was lost (switch to failover).
+	* Otherwise we will have invalid reference to prepared statement.
+	* In this case we can not CANCEL COBOL ESQL programs as the reference to COBOL memory will be invalid.
+	* So define CANCEL_IS_USED if you need to CANCEL COBOL ESQL programs, which is highly NOT recommended.
 
 2021-08-16 Sergey Kashyrin <ska@kiska.net>
 
@@ -6,6 +17,7 @@
 	* Handling difference of version 2 and 3.
 
 2021-06-09 James K. Lowden <jklowden@symas.com>
+
 	* use std::copy instead of memcpy
 	* moved common code to reinterpret_cast in mysql
 	* use delete[] for arrays
@@ -17,9 +29,9 @@
 2019-07-18 Sergey Kashyrin <ska@kiska.net>
 
 	* Fixed extremely heavy bug for EXEC SQL CALL with COMP-3 parameters
-	  It's been implemented cordially wrong for DECIMAL
-	  It is still the issue for INOUT parameters at least for SQL Server 2012
-	  I hope Microsoft resolved that in the latest versions, but I can't confirm.
+	* It's been implemented cordially wrong for DECIMAL
+	* It is still the issue for INOUT parameters at least for SQL Server 2012
+	* I hope Microsoft resolved that in the latest versions, but I can't confirm.
 	* Also fixed BufferSize issue for VARCHAR (both OUTPUT and INOUT).
 
 2019-07-03 Sergey Kashyrin <ska@kiska.net>

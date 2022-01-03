@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2021 Sergey Kashyrin <ska@kiska.net>
+ * Copyright (C) 2006-2022 Sergey Kashyrin <ska@kiska.net>
  *               2012 enhanced by Doug Vogel <dv11674@gmail.com>
  *               2013 fixes and enhancements by Atilla Akarsular <030ati@gmail.com>
  *               2021 adjustments by James K. Lowden <jklowden@symas.com>
@@ -232,6 +232,7 @@ public:
 		maxdb = maxdbnum;
 		db = new char *[100];
 		dbct = 0;
+		dbcurr = 0;
 		cap = 100;
 	}
 	~DBS() {
@@ -396,6 +397,7 @@ public:
 	char *   hosttype;
 	char **  pbuf;
 	struct mov * moves;
+	mysql ** COBREF;
 
 	mysql(int pct, int cct, int mct, int bct) {
 		parmct = pct;
@@ -403,6 +405,7 @@ public:
 		movect = mct;
 		bufct = bct;
 		ST = NULL;
+		COBREF = NULL;
 		if(parmct == 0) {
 			parmlen = NULL;
 		} else {
@@ -449,6 +452,9 @@ public:
 		if(ST != 0) {
 			delete ST;
 		}
+		if(COBREF != NULL) {
+			*COBREF = NULL;
+		}
 	}
 	mydec * pbuf_set(int bufct, short bytelen = 0, short precision = 0) {
 		if(pbuf[bufct] == NULL) {
@@ -494,7 +500,7 @@ private:
 	int			count;
 
 public:
-	stmtcache(int sz = 1009) {
+	stmtcache(int sz = 10009) {
 		SZ = sz;
 		data = new stmtholder *[SZ]();
 		count = 0;
@@ -568,6 +574,23 @@ public:
 			hCurr = hCurr->next;
 		}
 	}
+	bool exist(mysql* stmt)
+	{
+		int i = (int)(((unsigned long long)stmt) % SZ);
+		stmtholder* hCurr = data[i];
+		if(hCurr == NULL) {
+			return false;
+		}
+		for(;;) {
+			if(hCurr->stmt == stmt) {
+				return true;
+			}
+			if(hCurr->next == NULL) {
+				return false;
+			}
+			hCurr = hCurr->next;
+		}
+	}
 };
 
 static stmtcache CS;
@@ -586,8 +609,11 @@ static void notconn(OC_SQLCA & E)
 }
 
 #ifdef MSSQL
-static const int nDrivers = 4;
+static const int nDrivers = 5;
 static const char * Drivers [] = {
+	"ODBC Driver 17 for SQL Server",
+	"Server=%s;UID=%s;PWD=%s;AnsiNPW=yes;APP=OpenCobol;AutoTranslate=no;Driver={ODBC Driver 17 for SQL Server};QuotedId=yes;MARS_Connection=yes;",
+	"Server=%s;Trusted_Connection=yes;AnsiNPW=yes;APP=OpenCobol;AutoTranslate=no;Driver={ODBC Driver 17 for SQL Server};QuotedId=yes;MARS_Connection=yes;",
 	"SQL Server Native Client 11.0",
 	"Server=%s;UID=%s;PWD=%s;AnsiNPW=yes;APP=OpenCobol;AutoTranslate=no;Driver={SQL Server Native Client 11.0};QuotedId=yes;MARS_Connection=yes;",
 	"Server=%s;Trusted_Connection=yes;AnsiNPW=yes;APP=OpenCobol;AutoTranslate=no;Driver={SQL Server Native Client 11.0};QuotedId=yes;MARS_Connection=yes;",
@@ -882,6 +908,7 @@ extern "C" OCEXPORT int OCSQLDIS(OC_SQLCA & E)
 	SQLFreeConnect(C->hDBC);
 	if(nConn == 0) {
 		SQLFreeEnv(hEnv);
+		hEnv = 0;
 		logd(1, "OCSQL: Last DB Connection Closed");
 	} else {
 		logd(1, "OCSQL: DB Connection Closed");
@@ -898,10 +925,20 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		notconn(E);
 		return E.OC_SQLCODE;
 	}
+#ifdef CANCEL_IS_USED
+	if(S.SQL_IPTR != NULL && !CS.exist(S.SQL_IPTR)) {
+		S.SQL_IPTR = NULL;
+		S.SQL_PREP = 'N';
+	}
+#else
+	if(S.SQL_IPTR == NULL) {
+		S.SQL_PREP = 'N';
+	}
+#endif
 	if(S.SQL_PREP == 'A') {
 		S.SQL_PREP = 'N';
 		if(S.SQL_IPTR != NULL) {
-			mysql * msql = (mysql *) S.SQL_IPTR;
+			mysql * msql = S.SQL_IPTR;
 			S.SQL_IPTR = NULL;
 			CS.remove(msql); // that will delete msql
 		}
@@ -912,8 +949,8 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 	E.OC_SQLCODE = 0;
 	mysql * msql = NULL;
 	if(S.SQL_IPTR != NULL) {
-		msql = (mysql *) S.SQL_IPTR;
-		if(0 != (SQLHANDLE) *(msql->ST)) {
+		msql = S.SQL_IPTR;
+		if(0 != (SQLHANDLE) * (msql->ST)) {
 			S.SQL_PREP = 'P';
 			return 0;
 		}
@@ -951,6 +988,9 @@ extern "C" OCEXPORT int OCSQLPRE(OC_SQLV & V, STMT & S, OC_SQLCA & E)
 		msql->ST = new DBL(C->DBN);
 		CS.put(msql);
 		S.SQL_IPTR = msql;
+#ifndef CANCEL_IS_USED
+		msql->COBREF = &S.SQL_IPTR;
+#endif
 	}
 	mov * smov = msql->moves;
 	// Allocate memory for the statement handle
@@ -2520,4 +2560,4 @@ static bool movecomp3(char * comp3, int bytelen, int precision, char * unpacked)
 	return true;
 }
 
-static const char * copyr = "Copyright (C) 2006-2021 Sergey Kashyrin <ska@kiska.net>";
+static const char * copyr = "Copyright (C) 2006-2022 Sergey Kashyrin <ska@kiska.net>";
