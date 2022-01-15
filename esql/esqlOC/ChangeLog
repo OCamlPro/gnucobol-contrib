@@ -1,3 +1,6 @@
+2022-01-15 Sergey Kashyrin <ska@kiska.net>
+	* Fix for DECLARE CURSOR and DECLARE TABLE inside DECLARE SECTION.
+
 2022-01-03 Sergey Kashyrin <ska@kiska.net>
 	* Fix. Always prepare dynamic cursor.
 

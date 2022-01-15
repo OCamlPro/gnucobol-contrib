@@ -40,7 +40,7 @@
 
 #include "vcache.h"
 
-static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCOBOL Version 3 (2022.01.03) Build " __DATE__ "\n";
+static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCOBOL Version 3 (2022.01.15) Build " __DATE__ "\n";
 /**  Version is present in SQLCA. Current is 03 */
 
 static bool bAPOST = true;		// use apostroph instead of quote
@@ -537,7 +537,9 @@ private:
 						inside = false;
 						continue;
 					}
-					processvar(cl, n);
+					if(cl.sqlaction != 12) {
+						processvar(cl, n);
+					}
 				} else {
 					if(cl.bComment) {
 						continue;
