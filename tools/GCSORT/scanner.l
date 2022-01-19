@@ -62,6 +62,9 @@ STRING		    [a-zA-Z0-9_.]*
 
 BLANK		    [ \t]*  
 
+            /* Separator Date/Time */
+DATESEP         [-\\/.]{1}
+
             /* File type */
 FILETYPE	    LS|SQ|IX|RL
 
@@ -130,6 +133,9 @@ OPCOND          EQ|GT|GE|LT|LE|NE|SS
     
 EXROUT          E15|E35
 
+            /* Num +/- for date */
+/* ADDSUBNUM   [0-9]{1,3}          */
+
 %s KEYV
 %s ORDK
 %s CHSC
@@ -139,6 +145,8 @@ EXROUT          E15|E35
 %%
 
 "BUILD"[=]*{BLANK}                              return BUILD;
+"CHANGE"[=]*{BLANK}                             return CHANGE;
+"NOMATCH"[=]*{BLANK}                            return NOMATCH;
 "COND"                          BEGIN(TCOND);   return COND; 
 [(]{BLANK}"COPY"{BLANK}[)]                      return COPY; 
 "COPY"                                          return COPY; 
@@ -170,8 +178,15 @@ EXROUT          E15|E35
                             }else {	                  
                                 BEGIN(CHSC);          
                            } return OVERLAY;          
-                                                      
-[,]*{BLANK}"FILES"{BLANK}[,]*                   return FNAMES; //return FILES;
+                                                
+
+            /* {SIGN}{ADDSUBNUM}	            yylval.number = strtol(yytext, &pEnd, 10) ;			return ADDSUBNUM; */
+                                                
+"DATE1"                                      return DATE1;
+"DATE2"                                      return DATE2;
+"DATE3"                                      return DATE3;
+"DATE4"                                      return DATE4;
+[,]*{BLANK}"FILES"{BLANK}[,]*                   return FNAMES; /*   return FILES;   */
 [,]*{BLANK}"FNAMES"{BLANK}[,]*	                return FNAMES;
 [,]*{BLANK}"FORMAT"{BLANK}[,]*                  return FORMAT;
 "GIVE"		                    BEGIN(INITIAL); return GIVE;
@@ -179,6 +194,7 @@ EXROUT          E15|E35
 "INREC"		                    BEGIN(CHSC);    return INREC;		
 "OUTREC"		                BEGIN(CHSC);    return OUTREC;		
 "KEY"	                        BEGIN(KEYV);    return KEY;
+[,]*{BLANK}"LENGTH"{BLANK}[=]{BLANK}            return LENGTH;
 "MERGE"		       nPhase = 1;  BEGIN(INITIAL); return MERGE;
 [(]*{BLANK}"NONE"{BLANK}[)]*	                return NONE;
 [,]*{BLANK}"OMIT"		        BEGIN(TCOND);   return OMIT; 
@@ -188,31 +204,32 @@ EXROUT          E15|E35
 "OUTFIL"	                                    return OUTFIL;
 "OUTFILE"                                       return OUTFIL;
 [,]*{BLANK}"OUTREC"	            BEGIN(CHSC);    return OUTREC;		
-    /* "RECORD"	                         return RECORD; */
-"RECORD"	                    BEGIN(INITIAL); return RECORD;
 [,]*{BLANK}"SAVE"{BLANK}[,]*	                return SAVE;
 [,]*{BLANK}"SKIPREC"	                        return SKIPREC;
-[,]*{BLANK}"Y2PAST"	                            return Y2PAST;
-[,]*{BLANK}"MODS"                           	return MODS;
 "EXROUT"                                        return EXROUT;
+[,]*{BLANK}"MODS"                           	return MODS;
+    /* "RECORD"	                         return RECORD; */
+"RECORD"	                    BEGIN(INITIAL); return RECORD;
 "SORT"		       nPhase = 1;  BEGIN(INITIAL); return SORT;
 [,]*{BLANK}"STARTREC"	                        return STARTREC;
 [,]*{BLANK}"STOPAFT"	                        return STOPAFT;
 [,]*{BLANK}"SPLIT"                              return SPLIT;
 [,]*{BLANK}"SPLITBY"{BLANK}[=]{BLANK}           return SPLITBY;
 "SUM"		                                    return SUM;
+"TYPE"{BLANK}[=]{BLANK}                         return TYPE;
 "USE"		                    BEGIN(INITIAL); return USE;
 [,]*{BLANK}"VLSCMP"                             return VLSCMP;
 [,]*{BLANK}"VLSHRT"	                            return VLSHRT;
+[,]*{BLANK}"Y2PAST"	                            return Y2PAST;
 
-"REMOVECC"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
-",REMOVECC"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
-"CONVERT"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
-",CONVERT"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP;
-"EQUALS"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
-",EQUALS"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
-"NODETAIL"   printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
-",NODETAIL"  printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); // return TOKSKIP; 
+"REMOVECC"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
+",REMOVECC"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
+"CONVERT"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
+",CONVERT"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
+"EQUALS"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
+",EQUALS"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
+"NODETAIL"   printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
+",NODETAIL"  printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
 
 
 ","{BLANK}"AND"{BLANK}","	return AND;

@@ -21,18 +21,13 @@
 
 #ifndef CONDFIELD_H_INCLUDED
 #define CONDFIELD_H_INCLUDED
-// #include <stdint.h>
-// #include <stdio.h>
-
 
 #define COND_TYPE_OPERATION		0
 #define COND_TYPE_CONDITION		1
 #define COND_TYPE_PARENTHESIS	2
-#define COND_TYPE_COND_FIELDS	3	// 156,15,CH,LT,141,15,CH
+#define COND_TYPE_COND_FIELDS	3	/* 156,15,CH,LT,141,15,CH   */
 
 #include <libcob.h>
-//
-// #include "libgcsort.h"
 
 struct condField_t;
 struct fieldValue_t;
@@ -44,15 +39,16 @@ struct condField_t {
 			int operation;
 			struct condField_t *first;
 			struct condField_t *second;
-		} operation;                                    //COND_TYPE_OPERATION
+		} operation;                                    /* COND_TYPE_OPERATION */
 		struct {
 			int position;
 			int length;
 			int type;
 			int condition;
 			cob_field* cb_fd;
+			int isDateValue;
 			struct fieldValue_t *fieldValue;
-		} condition;                                    //COND_TYPE_CONDITION	
+		} condition;                                    /* COND_TYPE_CONDITION	*/
 		struct {
 			int position1;
 			int length1;
@@ -63,7 +59,7 @@ struct condField_t {
 			int length2;
 			int type2;
 			cob_field* cb_fd2;
-		} condition_field;                              //COND_TYPE_COND_FIELDS
+		} condition_field;                              /* COND_TYPE_COND_FIELDS */
 	};
 	struct condField_t *next;
 };
@@ -71,12 +67,12 @@ struct condField_t {
 struct condField_t *condField_constructor_condition(int position, int length, int type, int condition, struct fieldValue_t *fieldValue);
 struct condField_t *condField_constructor_operation(int operation, struct condField_t *first, struct condField_t *second);
 struct condField_t *condField_constructor_conditionfield(int position1, int length1, int type1, int condition, int position2, int length2, int type2);
+struct condField_t* condField_constructor_condition4Date(int position, int length, int type, int condition, struct fieldValue_t* fieldValue);
 void condField_destructor(struct condField_t *condField);
 int condField_print(struct condField_t *condField);
 struct condField_t *condField_getNext(struct condField_t *condField);
 int condField_test(struct condField_t *condField, unsigned char *record, struct job_t* job);
 int condField_compare(struct condField_t *condField, unsigned char *record);
-// int GetValueForType(struct condField_t *condField, unsigned char *record, unsigned char* ValueChar1, unsigned char* ValueChar2);
 
 int condField_addDefinition(struct condField_t *condField);
 
@@ -88,4 +84,4 @@ int condField_setFormatFieldsTypeAll(int nTypeFormat, int nVal);
 int condField_setFormat(struct condField_t *condField, int nVal);
 
 
-#endif // CONDFIELD_H_INCLUDED
+#endif /* CONDFIELD_H_INCLUDED */

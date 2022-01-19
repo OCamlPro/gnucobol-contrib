@@ -17,10 +17,10 @@
  *  along with GCSORT.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-//
-// Structure for Key definition Indexed File
-// Input and Output
-//
+/*
+   Structure for Key definition Indexed File
+   Input and Output
+*/
 
 #ifndef EXITROUTINES_H_INCLUDED
 #define EXITROUTINES_H_INCLUDED
@@ -29,8 +29,6 @@
 #include <libcob.h>
 
 /* Global variables */
-// #include "M1.c.h"
-// START
 /* Module path */
 static const char		*cob_module_path2 = NULL;
 
@@ -46,38 +44,38 @@ static const cob_field_attr cobfattr_4 =	{0x21,   0,   0, 0x1000, NULL};
 */
 
 /* Constants */
-//static const cob_field c_1	= {18, (cob_u8_ptr)" returne-code = 16", &cobfattr_4};
+/* static const cob_field c_1	= {18, (cob_u8_ptr)" returne-code = 16", &cobfattr_4}; */
 
 
 struct E15Call_t {
-	cob_field* pCallE15;		// Call Name
-	cob_field* pRecFlag;		// Record Flag			PIC 9(8) BINARY
-	cob_field* pSendRec;		// Record Send			PIC X(n)
-	cob_field* pReceiveRec;		// Record Receive		PIC X(n)
-	cob_field* pUnused1;		// UNUSED1				PIC 9(8) BINARY
-	cob_field* pUnused2;		// UNUSED2				PIC 9(8) BINARY
-	cob_field* pNewRecLen;		// NEW-REC-LEN			PIC 9(8) BINARY	(Fixed / Variable Length)
-	cob_field* pReturnRecLen;	// RETURN-REC-LEN		PIC 9(8) BINARY (Fixed / Variable Length)
-	cob_field* pUnused5;		// UNUSED5				PIC 9(8) BINARY
-	cob_field* pExitAreaLen;	// pEXITAREA_LEN		PIC 9(4) COMP
-	cob_field* pExitArea;		// pEXITAREA			PIC X(n)
+	cob_field* pCallE15;		/* Call Name                                                            */
+	cob_field* pRecFlag;		/* Record Flag			PIC 9(8) BINARY                                 */
+	cob_field* pSendRec;		/* Record Send			PIC X(n)                                        */
+	cob_field* pReceiveRec;		/* Record Receive		PIC X(n)                                        */
+	cob_field* pUnused1;		/* UNUSED1				PIC 9(8) BINARY                                 */
+	cob_field* pUnused2;		/* UNUSED2				PIC 9(8) BINARY                                 */
+	cob_field* pNewRecLen;		/* NEW-REC-LEN			PIC 9(8) BINARY	(Fixed / Variable Length)       */
+	cob_field* pReturnRecLen;	/* RETURN-REC-LEN		PIC 9(8) BINARY (Fixed / Variable Length)       */
+	cob_field* pUnused5;		/* UNUSED5				PIC 9(8) BINARY                                 */
+	cob_field* pExitAreaLen;	/* pEXITAREA_LEN		PIC 9(4) COMP                                   */
+	cob_field* pExitArea;		/* pEXITAREA			PIC X(n)                                        */
 	int		   nRekID;
 
 
 };
 
 struct E35Call_t {
-	cob_field* pCallE35;		// Call Name
-	cob_field* pRecFlag;		// Record Flag			PIC 9(8) BINARY
-	cob_field* pSendRec;		// Record Send			PIC X(n)
-	cob_field* pReceiveRec;		// Record Receive		PIC X(n)
-	cob_field* pOutputRec;		// Record Output		PIC X(n)
-	cob_field* pUnused1;		// UNUSED2				PIC 9(8) BINARY
-	cob_field* pNewRecLen;		// NEW-REC-LEN			PIC 9(8) BINARY	(Fixed / Variable Length)
-	cob_field* pReturnRecLen;	// RETURN-REC-LEN		PIC 9(8) BINARY (Fixed / Variable Length)
-	cob_field* pOutputRecLen;	// OUTPUT-REC-LEN		PIC 9(8) BINARY
-	cob_field* pExitAreaLen;	// pEXITAREA_LEN		PIC 9(4) COMP
-	cob_field* pExitArea;		// pEXITAREA			PIC X(n)
+	cob_field* pCallE35;		/* Call Name                                                            */
+	cob_field* pRecFlag;		/* Record Flag			PIC 9(8) BINARY                                 */
+	cob_field* pSendRec;		/* Record Send			PIC X(n)                                        */
+	cob_field* pReceiveRec;		/* Record Receive		PIC X(n)                                        */
+	cob_field* pOutputRec;		/* Record Output		PIC X(n)                                        */
+	cob_field* pUnused1;		/* UNUSED2				PIC 9(8) BINARY                                 */
+	cob_field* pNewRecLen;		/* NEW-REC-LEN			PIC 9(8) BINARY	(Fixed / Variable Length)       */
+	cob_field* pReturnRecLen;	/* RETURN-REC-LEN		PIC 9(8) BINARY (Fixed / Variable Length)       */
+	cob_field* pOutputRecLen;	/* OUTPUT-REC-LEN		PIC 9(8) BINARY                                 */
+	cob_field* pExitAreaLen;	/* pEXITAREA_LEN		PIC 9(4) COMP                                   */
+	cob_field* pExitArea;		/* pEXITAREA			PIC X(n)                                        */
 	int		   nRekID;
 
 
@@ -97,4 +95,4 @@ int	E35Run(const int entry, struct E35Call_t* pE35C, int nRecFlag, int nLen, uns
 void E35ResetParams(int* nrekE35, int* nrekFlagE35, int nLastRecord);
 
 
-#endif // EXITROUTINES_H_INCLUDED
+#endif /* EXITROUTINES_H_INCLUDED  */

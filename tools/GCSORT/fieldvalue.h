@@ -25,13 +25,13 @@
 #include <stdio.h>
 
 #include <libcob.h>
-//
 #include "libgcsort.h"
 
 
 struct fieldValue_t {
 	int occursion;
 	int type;
+	int datetype;					/* Date Type */
 	char *value;
 	int64_t value64;
 	int generated_length;
@@ -40,8 +40,8 @@ struct fieldValue_t {
 	cob_field	  pCobField;
 };
 
-struct fieldValue_t* fieldValue_constructor( char *type,  char *value, int nTypeF);
-struct fieldValue_t* fieldValue_constr_newF(char *type,  char *value, int nTypeF);
+struct fieldValue_t* fieldValue_constructor( char *type,  char *value, int nTypeF, int datetype);
+struct fieldValue_t* fieldValue_constr_newF(char *type,  char *value, int nTypeF, int datetype);
 void fieldValue_destructor(struct fieldValue_t *fieldValue);
 int fieldValue_print(struct fieldValue_t *fieldValue);
 int fieldValue_checkvalue(struct fieldValue_t *fieldValue, cob_field* pField, int length);
@@ -50,4 +50,4 @@ char *fieldValue_getGeneratedValue(struct fieldValue_t *fieldValue);
 int fieldValue_checksubstring(struct fieldValue_t *fieldValue, cob_field* pField, int length);
 int fieldValue_ss_array(struct fieldValue_t *fieldValue, cob_field* pField, int length);
 int fieldValue_ss_value(struct fieldValue_t *fieldValue, cob_field* pField, int length);
-#endif // FIELDVALUE_H_INCLUDED
+#endif /* FIELDVALUE_H_INCLUDED */

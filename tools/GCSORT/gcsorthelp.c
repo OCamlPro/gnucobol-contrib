@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2021 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -19,13 +19,12 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
-//-->>## aix #if	defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
+/* -->>## aix #if	defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__) */
 #if	(defined(__GNUC__) || defined(__xlc__))&& !defined(__MINGW32__) && !defined(__MINGW64__)
     #include <inttypes.h>
 #endif
 #include "gcsort.h"
 #include "job.h"
-// #include "libgcsort.h"
 
 void GCSORT_Config ( void ) 
 {
@@ -36,7 +35,7 @@ void GCSORT_Config ( void )
 	GetSystemInfo(&sinf);
 	page_size = sinf.dwAllocationGranularity;
 #else
-// linux debug printf("long page_size \n");
+/* linux debug printf("long page_size \n"); */
 	long page_size ;
 	page_size = sysconf (_SC_PAGESIZE);
 #endif
@@ -44,7 +43,7 @@ void GCSORT_Config ( void )
 	/*
 	fprintf(stdout,"__________________________________________________________________________________________________________\n");
 	fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-	fprintf(stdout,"Copyright (C) 2009-2020 Cedric ISSALY / Sauro Menna\n");
+	fprintf(stdout,"Copyright (C) 2009-2021 Cedric ISSALY / Sauro Menna\n");
 	fprintf(stdout,"__________________________________________________________________________________________________________\n");
 	fprintf(stdout,"\n");
 	fprintf(stdout,"GCSORT_BYTEORDER  - 0 for NATIVE, 1 for BIGENDIAN                              : %ld\n", job->nByteOrder);
@@ -56,22 +55,15 @@ void GCSORT_Config ( void )
 	fprintf(stdout,"                                                              System page size : %7ld\n", page_size);
 	fprintf(stdout,"                                                    MemoryMappedFile page size : %7.2f MByte\n", (double)(job->nMlt * page_size)/1024000);
 	fprintf(stdout,"GCSORT_PATHTMP    - Pathname for temporary files                               : %s\n",  job->strPathTempFile);
-//	fprintf(stdout,"GCSORT_SLOT       - Numbers of slot for MemoryMappedFile                       : %ld\n", job->nSlot);
 	fprintf(stdout,"GCSORT_STATISTICS - 0 Minimal informations, 1 for Summary, 2 for Details       : %ld\n", job->nStatistics);
 	fprintf(stdout,"GCSORT_TESTCMD    - 0 for normal operations, 1 for ONLY test command line      : %ld\n", job->nTestCmdLine);
 	fprintf(stdout,"__________________________________________________________________________________________________________\n");
 	*/
-//
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
 	fprintf(stdout,"Copyright (C) 2009-2021 Cedric ISSALY / Sauro Menna\n");
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"\n");
-//-->>	fprintf(stdout,"GCSORT_BYTEORDER             : %d", job->nByteOrder);
-//-->>	if (job->nByteOrder == 0)
-//-->>		fprintf(stdout," - Native\n");
-//-->>	else
-//-->>		fprintf(stdout," - Bigendian\n");
 	fprintf(stdout,"GCSORT_DEBUG                 : %d", job->ndeb);
 	if (job->ndeb == 0) {
 		fprintf(stdout," - No info debug\n");
@@ -90,7 +82,6 @@ void GCSORT_Config ( void )
 	fprintf(stdout,"  MemoryMappedFile page size : %7.2f MByte\n", (double)(job->nMlt * page_size)/1024000);
 	fprintf(stdout,"            System page size : %7ld Bytes\n", page_size);
 	fprintf(stdout,"GCSORT_PATHTMP               : %s\n",  job->strPathTempFile);
-//	fprintf(stdout,"GCSORT_SLOT       - Numbers of slot for MemoryMappedFile                       : %ld\n", job->nSlot);
 	fprintf(stdout,"GCSORT_STATISTICS            : %d", job->nStatistics);
 	if (job->nStatistics == 0) 
 		fprintf(stdout," - Statistics Minimal informations\n");
@@ -106,7 +97,6 @@ void GCSORT_Config ( void )
 		fprintf(stdout," - ONLY test command line, NO SORT/MERGE operation\n");      
 	fprintf(stdout,"________________________________________________________________________\n");
 
-//
 	job_destructor(job);
 	return;
 }
@@ -116,16 +106,16 @@ void GCSORT_Version ( void )
 	printf("gcsort Version %s\n", GCSORT_VERSION); 
 	printf("Copyright (C) 2009-2021 Cedric ISSALY / Sauro Menna\n");
 	printf("Packaged  %s\n", GCSORT_TAR_DATE);
-   //-->> printf("libcob version %s\n", libcob_version());
+
 #if __LIBCOB_VERSION >= 3
-    print_version_summary();
+    print_version_summary();        /* GnuCOBOL Version */
 #endif
     if (sizeof(void*) > 4U) 
-    printf("gcsort 64bit-mode %s\n", "yes");
+        printf("gcsort 64bit-mode %s\n", "yes");
     else
-    printf("gcsort 64bit-mode %s\n", "no");
+        printf("gcsort 64bit-mode %s\n", "no");
 
-	return;
+    return;
 } 
 void GCSORT_Usage ( void ) 
 {
@@ -145,10 +135,11 @@ void GCSORT_Usage ( void )
     printf("gcsort control statements\n");
     printf("Notations: '{name}' = parameters , '|' = Alternative format of control statement\n");
     printf("________________________________________________________________________________________\n");
-    printf(" SORT | MERGE FIELDS Control statement for Sort or Merge file(s)\n");
+    printf(" SORT | MERGE | COPY FIELDS Control statement for Sort or Merge file(s)\n");
     printf(" USE                 Declare input file(s)\n");
     printf(" GIVE                Declare output file\n");
     printf(" [ SUM FIELDS ]      Sum fields for same record key, or eliminate duplicate keys)\n");
+    printf(" [ RECORD     ]      Record control statement \n");
     printf(" [ INCLUDE    ]      Select input records that respect include condition(s)\n");
     printf(" [ OMIT       ]      Omit input records that respect include condition(s)\n");
     printf(" [ INREC      ]      Reformat input record Before sort, merge or copy operation\n");
@@ -157,10 +148,10 @@ void GCSORT_Usage ( void )
     printf(" [ OPTION     ]      Specifies option for control statements\n");
     printf("________________________________________________________________________________________\n");
     printf("gcsort\n");
-    printf("    SORT | MERGE                                                                   \n");
+    printf("    SORT | MERGE | COPY                                                        \n");
     printf("         FIELDS({Pos},{Len},{FormatType},{Order}, ...)          |              \n");
     printf("         FIELDS({Pos},{Len},{Order}, ...),FORMAT={FormatType}   |              \n");
-    printf("         FIELDS=COPY                                                               \n");
+    printf("         FIELDS=COPY                                                           \n");
     printf("\n");
     printf("    USE  {Filename} \n");
     printf("         ORG {Org}\n");
@@ -173,6 +164,9 @@ void GCSORT_Usage ( void )
     printf("                 [({Pos},{Len}, ...)],FORMAT={FormatType2}  |\n");
     printf("                 [NONE] | [(NONE)]\n");
     printf("\n");
+    printf("    RECORD [TYPE=[{V}(Variable-length)/{F}(Fixed-length)]],[LENGTH=[{len}(L1-Input record length)]\n");
+    printf("                                                                ','[{len}(L2-Record length)]\n");
+    printf("                                                                ','[{len}(L3-Output record length)]\n");
     printf("    INCLUDE | OMIT\n");
     printf("            COND=({Condition})[,FORMAT={FormatType}]                     \n");
     printf("\n");
@@ -215,6 +209,11 @@ void GCSORT_Usage ( void )
     printf("  Format 1  - (Pos,Len,{FormatType},{Relational},[AND|OR],Pos,Len,{FormatType})         \n");
     printf("  Format 2  - (Pos,Len,{FormatType},{Relational},[X|C'[value]'] | numeric value)]       \n");
     printf("  Format 3  - ( {Condition} ,[AND|OR],{Condition} )                                     \n");
+    printf("  Format 4  - ( Pos,Len,{FormatType},{Relational}, [DATE1][(+/-)num] | [DATE2][(+/-)num]\n");
+    printf("                                                   [DATE3][(+/-)num] | [DATE4][(+/-)num]\n");
+    printf("       DATE - Currente Date : DATE1 (C'yyyymmdd'), DATE2 (C'yyyymm'),                   \n");
+    printf("                              DATE3 (C'yyyyddd'),  DATE4 (C'yyyy-mm-dd') (no Timestamp) \n");
+    printf("       [(+/-)num]  [+num] future date, [-num] past date) only for DATE1,DATE2,DATE3     \n");
     printf("________________________________________________________________________________________\n");
     printf("___{Org}___File Organization_______________|___{KeyType}____Mandatory for ORG = IX______\n");
     printf("  LS  = Line Sequential                    |  P  = Primary Key                          \n");
@@ -256,6 +255,8 @@ void GCSORT_Usage ( void )
     printf("  nZ                 repeat n times Binary (0x00) character.  \n");
     printf("  X'hh....hh'        hexdecimal characters.                   \n");
     printf("  nX'hh...hh'        repeat n times hexdecimal characters.    \n");
+    printf("  CHANGE=(vlen,[C | X]'<valueFind>',[C | X]'<valueSet>',.....),NOMATCH=([C | X]'<valueSet>)    \n");
+    printf("  CHANGE=(vlen,[C | X]'<valueFind>', posIn, lenIn), NOMATCH = (posIn, posLen)\n");
     printf("________________________________________________________________________________________\n");
     printf("Environment Variables                                                                   \n");
     printf("________________________________________________________________________________________\n");

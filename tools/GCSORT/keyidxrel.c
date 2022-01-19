@@ -37,20 +37,20 @@ struct KeyIdx_t *KeyIdx_constructor(int position, int length, int type)
 	    KeyIdx->pCobFieldKey = (cob_field *)malloc(sizeof(cob_field));
         if (KeyIdx->pCobFieldKey == NULL) 
             return NULL;
-   	    KeyIdx->position=position-1;	// Position -1
+   	    KeyIdx->position=position-1;	/* Position -1  */
 	    KeyIdx->length=length;
-	    KeyIdx->type=type;          //     0=P Primary, 
-                                    //     1=A Alternative, 
-                                    //     2=AD Alternative with duplicates, 
-                                    //     3=C Continue previous definition
+	    KeyIdx->type=type;              /*     0=P Primary,                         */
+                                        /*     1=A Alternative,                     */
+                                        /*     2=AD Alternative with duplicates,    */
+                                        /*     3=C Continue previous definition     */
 	    KeyIdx->next=NULL;
-    // Attribute    
-        pCobFAttrKey->type = COB_TYPE_ALPHANUMERIC; //type;       
-	    pCobFAttrKey->digits = length;				// len = digit
-        pCobFAttrKey->scale = 0;					// fix
-        pCobFAttrKey->flags = 0;					// COB_FLAG_HAVE_SIGN;
+    /* Attribute    */
+        pCobFAttrKey->type = COB_TYPE_ALPHANUMERIC; /* type;                */   
+	    pCobFAttrKey->digits = length;				/* len = digit          */
+        pCobFAttrKey->scale = 0;					/* fix                  */
+        pCobFAttrKey->flags = 0;					/* COB_FLAG_HAVE_SIGN;  */
         pCobFAttrKey->pic = NULL;
-    // Field 
+    /* Field        */
         KeyIdx->pCobFieldKey->size = length;
 	    KeyIdx->pCobFieldKey->data = NULL;
  	    KeyIdx->pCobFieldKey->attr =  pCobFAttrKey;
@@ -70,10 +70,10 @@ void KeyIdx_destructor(struct KeyIdx_t *KeyIdx)
 	 free(KeyIdx->pCobFieldKey);
 }
 
-// Set pointer to buffer record for input/output
+/* Set pointer to buffer record for input/output    */
 void KeyIdx_setDataForKey(struct KeyIdx_t *KeyIdx, unsigned char* szBuf) 
 {
-    KeyIdx->pCobFieldKey->data = szBuf+KeyIdx->position;  // Position into principal buffer of record
+    KeyIdx->pCobFieldKey->data = szBuf+KeyIdx->position;  /* Position into principal buffer of record   */
 }
 
 struct KeyIdx_t *KeyIdx_getNext(struct KeyIdx_t *KeyIdx) 
@@ -102,7 +102,7 @@ int KeyIdx_addQueue(struct KeyIdx_t **KeyIdx, struct KeyIdx_t *KeyIdxToAdd) {
 } 
 int KeyIdx_addDefinition(struct KeyIdx_t *KeyIdx, struct file_t *fkey) {
 	KeyIdx_addQueue(&fkey->stKeys, KeyIdx);
-	fkey->nNumKeys++;	// increment number of key for file
+	fkey->nNumKeys++;	/* increment number of key for file */
 	return 0;
 }
 

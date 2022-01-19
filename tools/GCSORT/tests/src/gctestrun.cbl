@@ -18,6 +18,8 @@
        data division.
        file section.
        working-storage section.
+       77 numchars1             pic 9(3).
+       77 numchars2             pic 9(3).
        77 chrsl                 pic x value '/'.
        77 chrbs                 pic x value '\'.
 	   01 cmd-string            pic x(250).
@@ -47,7 +49,7 @@
        01       array-retcode-epilog-gr05.
           03    ar-retcode-ele occurs 6 times.
            05   ar-tst-name           pic x(12).
-           05   ar-tst-rtc01          pic 99.
+           05   ar-tst-rtc01          USAGE BINARY-LONG.
       *
        77   ntype               BINARY-LONG .
        77   cmd-go              pic x(80) value space.
@@ -99,15 +101,15 @@
       *---------------------------------------------------------*
        eprt-00.
       * 
-           display '---------------------------------------'
-           display '|   Test id      | retcode |  status  |'
-           display '---------------------------------------'
+           display '------------------------------------------------'
+           display '|   Test id      |      retcode     |  status  |'
+           display '------------------------------------------------'
       
            perform epilog-view-gr05 
                varying idx from 1 by 1
                   until idx > ar-name-max-ele
 
-           display '---------------------------------------'
+           display '------------------------------------------------'
            . 
        eprt-99.
            exit.
@@ -118,13 +120,13 @@
        epvw-00.
            add ar-tst-rtc01(idx) to retcode-sum
            if (ar-tst-rtc01(idx) = zero) 
-              move  " Test OK "   to status-test
-           else
-              move " Test KO "    to status-test
+              move "   OK    "    to status-test
+           else 
+              move " ---> KO "    to status-test
            end-if
            display "|   " ar-tst-name(idx)    " |    "
                           ar-tst-rtc01(idx)   "   | "
-                          status-test "|"
+                          status-test         "|"
            .
        epvw-99.
            exit.
@@ -160,7 +162,22 @@ Win        if (ntype = 1)
               inspect env-set-value replacing all chrsl by chrbs
            end-if
 	       display env-set-name  upon ENVIRONMENT-NAME
+            move zero to numchars1
+            inspect env-set-name tallying numchars1
+                    for characters before initial space
+            move zero to numchars2
+            inspect env-set-value tallying numchars2
+                    for characters before initial space
+
            display env-set-value upon ENVIRONMENT-VALUE          
+           if ( env-set-value not equal space )
+             if (ntype = 1)
+               display 'set 'env-set-name(1:numchars1) '=' 
+                       env-set-value(1:numchars2)
+             else
+               display 'export 'env-set-name(1:numchars1) '=' 
+                       env-set-value(1:numchars2)             
+           end-if   
            .
        sv-99.
            exit.
@@ -189,6 +206,11 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            end-if            
            call  'SYSTEM' using cmd-go
            move  RETURN-CODE  to ar-tst-rtc01(idx)           
+      ** Check return code [Problem in Linux environment]     
+           if (ar-tst-rtc01(idx) > 256)
+                divide ar-tst-rtc01(idx) by 256
+                giving ar-tst-rtc01(idx)
+           end-if
       D    display  'RETURN-CODE Value : ' RETURN-CODE
       * reset 
            .

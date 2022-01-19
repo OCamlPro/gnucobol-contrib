@@ -28,16 +28,34 @@
 #include "job.h"
 #include "outrec.h"
 #include "gcshare.h"
+#include "changefield.h"
 
 
+void outrec_initialize(struct outrec_t* outrec) {
+	outrec->nIsOverlay = 0;
+	outrec->type = 0;
+	outrec->next = NULL;
+	outrec->range.position = 0;
+	outrec->range.length = 0;
+	outrec->range.posAbsRec = 0;
+	outrec->range.fieldValue = NULL;
+	outrec->range.type = 0;
+	outrec->range.changeCmdOpt = NULL;
+	outrec->szChangeBufIn = NULL;
+	outrec->szChangeBufOut = NULL;
+	outrec->szChangeBufNoMatch = NULL;
+}
 struct outrec_t *outrec_constructor_range(int position, int length) 
 {
 	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
     if (outrec != NULL) {
+		outrec_initialize(outrec);
 	    outrec->type=OUTREC_TYPE_RANGE;
 	    outrec->range.position=position-1;
 	    outrec->range.length=length;
 	    outrec->next=NULL;
+		outrec->changeCmd.changeCmdOpt = NULL;
+		
     }
 	return outrec;
 }
@@ -58,11 +76,13 @@ struct outrec_t *outrec_constructor_change(struct fieldValue_t *fieldValue)
 {
 	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
     if (outrec != NULL) {
-	    outrec->type=OUTREC_TYPE_CHANGE;
+		outrec_initialize(outrec);
+		outrec->type=OUTREC_TYPE_CHANGE;
 	    outrec->change.fieldValue=fieldValue;
 	    outrec->change.posAbsRec = -1;
 	    outrec->change.type = 0x00;
 	    outrec->next=NULL;
+		outrec->changeCmd.changeCmdOpt = NULL;
     }
 	return outrec;
 }
@@ -70,12 +90,14 @@ struct outrec_t *outrec_constructor_range_position(int posAbsRec, int position, 
 {
 	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
     if (outrec != NULL) {
-	    outrec->type=OUTREC_TYPE_RANGE_POSITION;
-	    outrec->range_position.posAbsRec=posAbsRec-1;		// position rec out (start from posAbsRec
+		outrec_initialize(outrec);
+		outrec->type=OUTREC_TYPE_RANGE_POSITION;
+	    outrec->range_position.posAbsRec=posAbsRec-1;		/* position rec out (start from posAbsRec   */
 	    outrec->range_position.position=position-1;
 	    outrec->range_position.length=length;
 	    outrec->next=NULL;
-    }
+		outrec->changeCmd.changeCmdOpt = NULL;
+	}
 	return outrec;
 }
 struct outrec_t *outrec_constructor_padding(int nAbsPos, unsigned char *chfieldValue, int nPosAbsRec) 
@@ -85,7 +107,8 @@ struct outrec_t *outrec_constructor_padding(int nAbsPos, unsigned char *chfieldV
 	char szVal[12];
 	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
     if (outrec != NULL) {
-	    outrec->type=OUTREC_TYPE_CHANGE;
+		outrec_initialize(outrec);
+		outrec->type=OUTREC_TYPE_CHANGE;
 	    memset(szVal, 0x00, 12);
 	    if (nPosAbsRec <= 0)
 		    sprintf((char*) szVal,"%05d", (nAbsPos));
@@ -99,11 +122,12 @@ struct outrec_t *outrec_constructor_padding(int nAbsPos, unsigned char *chfieldV
                 nAbsPos, nPosAbsRec+1);
                 exit(GC_RTC_ERROR);
             }
-	    outrec->change.fieldValue = fieldValue_constr_newF((char*) chfieldValue, szVal, TYPE_STRUCT_STD);
+	    outrec->change.fieldValue = fieldValue_constr_newF((char*) chfieldValue, szVal, TYPE_STRUCT_STD, 0);
 	    outrec->change.posAbsRec = nAbsPos;
 	    outrec->change.type = *chfieldValue;
 	    outrec->next=NULL;
-    }
+		outrec->changeCmd.changeCmdOpt = NULL;
+	}
 	return outrec;
 }
  
@@ -115,20 +139,22 @@ struct outrec_t *outrec_constructor_subst(unsigned char *chfieldValue)
 	char szSubstValue[128];
 	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
     if (outrec != NULL) {
-	    outrec->type=OUTREC_TYPE_CHANGE;
+		outrec_initialize(outrec);
+		outrec->type=OUTREC_TYPE_CHANGE;
 	    nsp = strlen((char*)chfieldValue)-1;
 	    memset(szSubstValue, 0x00, nsp+1);
 	    memset(szSubstType, 0x00,  2);
 	    memcpy(szSubstValue, chfieldValue, nsp);
 	
 	    memcpy((char*)szSubstValue, chfieldValue, nsp);
-	    memcpy(szSubstType, (char*)chfieldValue+nsp, 1);	// TYpe
-	    outrec->change.fieldValue = fieldValue_constr_newF((char*)szSubstType, (char*)szSubstValue, TYPE_STRUCT_STD);
-	    outrec->change.posAbsRec = -2;	// For print
+	    memcpy(szSubstType, (char*)chfieldValue+nsp, 1);	/* Type */
+	    outrec->change.fieldValue = fieldValue_constr_newF((char*)szSubstType, (char*)szSubstValue, TYPE_STRUCT_STD, 0);
+	    outrec->change.posAbsRec = -2;	/* For print    */
 	    outrec->change.type = 0x00;
 
 	    outrec->next=NULL;
-    }
+		outrec->changeCmd.changeCmdOpt = NULL;
+	}
 	return outrec;
 }
  
@@ -136,12 +162,14 @@ struct outrec_t *outrec_constructor_substnchar(unsigned char* ntch, unsigned cha
 {
 	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
     if (outrec != NULL) {
-	    outrec->type=OUTREC_TYPE_CHANGE;
-	    outrec->change.fieldValue = fieldValue_constructor((char*)ntch, (char*)chfieldValue, TYPE_STRUCT_STD);
+		outrec_initialize(outrec);
+		outrec->type=OUTREC_TYPE_CHANGE;
+	    outrec->change.fieldValue = fieldValue_constructor((char*)ntch, (char*)chfieldValue, TYPE_STRUCT_STD, 0);
 	    outrec->change.posAbsRec = -2; 
 	    outrec->change.type = 0x00;
 	    outrec->next=NULL;
-    }
+		outrec->changeCmd.changeCmdOpt = NULL;
+	}
 	return outrec;
 
 }
@@ -149,11 +177,13 @@ struct outrec_t *outrec_constructor_substnchar(unsigned char* ntch, unsigned cha
 struct outrec_t* outrec_constructor_possubstnchar(int npos, unsigned char* ntch, unsigned char* chfieldValue) {
 	struct outrec_t* outrec = (struct outrec_t*)malloc(sizeof(struct outrec_t));
 	if (outrec != NULL) {
-		outrec->type = OUTREC_TYPE_CHANGE_ABSPOS; //OUTREC_TYPE_CHANGE;
-		outrec->change.fieldValue = fieldValue_constructor((char*)ntch, (char*)chfieldValue, TYPE_STRUCT_STD);
-		outrec->change.posAbsRec = npos - 1; // ?? -1;
+		outrec_initialize(outrec);
+		outrec->type = OUTREC_TYPE_CHANGE_ABSPOS; /*    OUTREC_TYPE_CHANGE; */
+		outrec->change.fieldValue = fieldValue_constructor((char*)ntch, (char*)chfieldValue, TYPE_STRUCT_STD, 0);
+		outrec->change.posAbsRec = npos - 1; /* ?? -1;  */
 		outrec->change.type = 0x00;
 		outrec->next = NULL;
+		outrec->changeCmd.changeCmdOpt = NULL;
 	}
 	return outrec;
 }
@@ -173,6 +203,12 @@ void outrec_destructor(struct outrec_t *outrec)
 				fieldValue_destructor(outrec->change.fieldValue);
 			}
 			break;
+		case OUTREC_TYPE_CHANGE_CMDOPT:
+			if (outrec->changeCmd.changeCmdOpt != NULL) {
+				change_destructor(outrec->changeCmd.changeCmdOpt);
+				free(outrec->szChangeBufIn);
+				free(outrec->szChangeBufOut);
+			}		
 		default:
 			break;
 	}
@@ -222,6 +258,9 @@ int outrec_print(struct outrec_t *outrec) {
 			fprintf(stdout, "%d:", outrec->change.posAbsRec);
 			fieldValue_print(outrec->change_position.fieldValue);
 			break;
+		case OUTREC_TYPE_CHANGE_CMDOPT:
+			fprintf(stdout, "%d,%d", outrec->range.position + 1, outrec->range.length);
+			change_print(outrec->changeCmd.changeCmdOpt);
 		default:
 			break;
 	}
@@ -248,6 +287,8 @@ int outrec_getLength(struct outrec_t *outrec) {
 			case OUTREC_TYPE_RANGE_POSITION:
 				length+=o->range_position.length;
 				break;
+			case OUTREC_TYPE_CHANGE_CMDOPT:
+				length += o->changeCmd.changeCmdOpt->vlen;
 			default:
 				break;
 		}
@@ -260,11 +301,11 @@ int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *i
 	int nSplit = 0;
 	struct outrec_t *o;
 	int nORangeLen = 0;
-	if (nIsMF == 1)  // EMUALTE MFSORT  position is 1 for DFSORT position is +4 
-	if (job_EmuleMFSort() == 2) // DFSort   // 0 Normal yes shift, 1 MF no shift
+	if (nIsMF == 1)             /* EMUALTE MFSORT  position is 1 for DFSORT position is +4  */
+	if (job_EmuleMFSort() == 2) /* DFSort    0 Normal yes shift, 1 MF no shift            */
 	{
 		if (nFileFormat == FILE_TYPE_VARIABLE)
-			nSplit = -4;		// Postion 
+			nSplit = -4;		/* Position */
 	}
 	for (o=outrec;o!=NULL;o=o->next) {
 		switch (o->type) {
@@ -275,7 +316,7 @@ int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *i
 				if ((o->range.position+nSplit+ nORangeLen) <= inputLength)
 					memcpy(output+position+nSplitPos+nSplit, input+o->range.position+nSplitPos+nSplit, nORangeLen);
 				else
-					// copy only chars present in input for max len input
+					/* copy only chars present in input for max len input   */
 					memcpy(output+position+nSplitPos+nSplit, input+o->range.position+nSplitPos+nSplit, abs(inputLength - (o->range.position+nSplit)));
 				position+=nORangeLen;
 				break;
@@ -287,51 +328,94 @@ int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *i
 				memcpy(output+position+nSplitPos+nSplit, fieldValue_getGeneratedValue(o->change.fieldValue),fieldValue_getGeneratedLength(o->change.fieldValue));
 				position+=fieldValue_getGeneratedLength(o->change.fieldValue);
 				break;
-				// new 202012
+				/* new 202012   */
 			case OUTREC_TYPE_CHANGE_ABSPOS:
 				memcpy(output + o->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(o->change.fieldValue), fieldValue_getGeneratedLength(o->change.fieldValue));
 				position = o->range.position + fieldValue_getGeneratedLength(o->change.fieldValue);
 				break;
 			case OUTREC_TYPE_RANGE_POSITION:
 				nORangeLen = o->range_position.length;
-				if (nORangeLen == -1)		// outrec pos, -1  (for variable)
+				if (nORangeLen == -1)		/* outrec pos, -1  (for variable)   */
 					nORangeLen = inputLength - o->range_position.position - nSplit;
 				
 				if ((o->range_position.position+nSplitPos+nSplit+nORangeLen) <= inputLength)
                     memcpy(output+o->range_position.posAbsRec+nSplitPos+nSplit, input+o->range_position.position+nSplitPos+nSplit, nORangeLen);
 				else
-					// copy only char present in input for max len input
+					/* copy only char present in input for max len input    */
                     memcpy(output+o->range_position.posAbsRec+nSplitPos+nSplit, input+o->range_position.position+nSplitPos+nSplit, abs(inputLength - (o->range_position.position+nSplit)));
 				position = (o->range_position.posAbsRec+nORangeLen);
 				break;
+			case OUTREC_TYPE_CHANGE_CMDOPT:
+				nORangeLen = o->range.length;
+				if (nORangeLen == -1)		/* outrec pos, -1  (for variable)   */
+					nORangeLen = inputLength - o->range.position - nSplit;
+				/* Change Option search & replace */
+				if (o->changeCmd.changeCmdOpt != NULL) {
+					/* Reset buffer in and buffer out */
+					memset(o->szChangeBufIn, 0x00, COB_FILE_BUFF);
+					memset(o->szChangeBufOut, 0x00, COB_FILE_BUFF);
+					gc_memcpy(o->szChangeBufIn, input + o->range.position + nSplitPos + nSplit, nORangeLen);
+					/* Nomatch with pos, len */
+					if (o->changeCmd.changeCmdOpt->nomatchLen > 0) {
+						memset(o->szChangeBufNoMatch, 0x00, COB_FILE_BUFF);
+						gc_memcpy(o->szChangeBufNoMatch, input + o->changeCmd.changeCmdOpt->nomatchPos + nSplitPos + nSplit, o->changeCmd.changeCmdOpt->nomatchLen);
+					}
+					if (change_search_replace(o->changeCmd.changeCmdOpt, o->szChangeBufIn, o->szChangeBufOut, nORangeLen, o->changeCmd.changeCmdOpt->vlen, input + nSplitPos) == 0) { /* False */
+						/* If NOMATCH not present  ABEND (Look manual DFSORT)*/
+						if (o->changeCmd.changeCmdOpt->sNoMatch == NULL) {
+							if (o->changeCmd.changeCmdOpt->nomatchLen == 0)
+								utl_abend_terminate(NOMATCH_FOUND, 635, 16);
+							else
+								/* NOMATCH with pos, len */
+								gc_memcpy(o->szChangeBufOut, o->szChangeBufNoMatch, o->changeCmd.changeCmdOpt->vlen);
+						}
+						else
+							/* Force NOMATCH*/
+							gc_memcpy(o->szChangeBufOut, o->changeCmd.changeCmdOpt->sNoMatch->generated_value, o->changeCmd.changeCmdOpt->vlen);
+					}
+					/* Force len output */
+					nORangeLen = o->changeCmd.changeCmdOpt->vlen;		
+					if ((o->range.position + nSplit + nORangeLen) <= inputLength)
+						memcpy(output + position + nSplitPos + nSplit, o->szChangeBufOut, nORangeLen);
+					else
+						memcpy(output + position + nSplitPos + nSplit, o->szChangeBufOut, nORangeLen);
+					/* copy only chars present in input for max len input   */
+					/* memcpy(output + position + nSplitPos + nSplit, o->szChangeBufOut, abs(inputLength - (o->range.position + nSplit))); */
+					position += nORangeLen;
+				}
+				else
+				{
+					utl_abend_terminate(CHANGE_ERR, 16, ABEND_EXEC);
+				}
+			break;
 			default:
 				break;
 		}
 	}
-	return position;  // position contains a first position of buffer
+	return position;  /* position contains a first position of buffer   */
 }
-// 20201211 -  OVERLAY OUTREC
+/* 20201211 -  OVERLAY OUTREC   */
 int outrec_copy_overlay(struct outrec_t* outrec, unsigned char* output, unsigned char* input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos) {
 	int position = 0;
 	int nSplit = 0;
 	struct outrec_t* o;
 	int nORangeLen = 0;
-	if (nIsMF == 1)  // EMUALTE MFSORT  position is 1 for DFSORT position is +4 
-		if (job_EmuleMFSort() == 2) // DFSort   // 0 Normal yes shift, 1 MF no shift
+	if (nIsMF == 1)     /* EMUALTE MFSORT  position is 1 for DFSORT position is +4  */
+		if (job_EmuleMFSort() == 2) /* DFSort    0 Normal yes shift, 1 MF no shift    */
 		{
 			if (nFileFormat == FILE_TYPE_VARIABLE)
-				nSplit = -4;		// Position 
+				nSplit = -4;		/* Position */
 		}
 	for (o = outrec; o != NULL; o = o->next) {
 		switch (o->type) {
 		case OUTREC_TYPE_RANGE:
 			nORangeLen = o->range.length;
-			if (nORangeLen == -1)		// outrec pos, -1  (for variable)
+			if (nORangeLen == -1)		/* outrec pos, -1  (for variable)   */
 				nORangeLen = inputLength - o->range.position - nSplit;
 			if ((o->range.position + nSplit + nORangeLen) <= inputLength)
 				memcpy(output + position + nSplitPos + nSplit, input + o->range.position + nSplitPos + nSplit, nORangeLen);
 			else
-				// copy only chars present in input for max len input
+				/* copy only chars present in input for max len input   */
 				memcpy(output + position + nSplitPos + nSplit, input + o->range.position + nSplitPos + nSplit, abs(inputLength - (o->range.position + nSplit)));
 			position += nORangeLen;
 			break;
@@ -341,34 +425,64 @@ int outrec_copy_overlay(struct outrec_t* outrec, unsigned char* output, unsigned
 			break;
 		case OUTREC_TYPE_CHANGE:
 			memcpy(output + position + nSplitPos + nSplit, fieldValue_getGeneratedValue(o->change.fieldValue), fieldValue_getGeneratedLength(o->change.fieldValue));
-			// -- >> 
 			position += fieldValue_getGeneratedLength(o->change.fieldValue);
 			break;
-			// new 202012
+			/* new 202012   */
 		case OUTREC_TYPE_CHANGE_ABSPOS:
 			memcpy(output + o->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(o->change.fieldValue), fieldValue_getGeneratedLength(o->change.fieldValue));
-			// 
 			position = o->range.position + fieldValue_getGeneratedLength(o->change.fieldValue);
 			break;
 		case OUTREC_TYPE_RANGE_POSITION:
-			// 20160408 record input len 
+			/* 20160408 record input len    */
 			nORangeLen = o->range_position.length;
-			if (nORangeLen == -1)		// outrec pos, -1  (for variable)
+			if (nORangeLen == -1)		/* outrec pos, -1  (for variable)   */
 				nORangeLen = inputLength - o->range_position.position - nSplit;
 
 			if ((o->range_position.position + nSplitPos + nSplit + nORangeLen) <= inputLength)
 				memcpy(output + o->range_position.posAbsRec + nSplitPos + nSplit, input + o->range_position.position + nSplitPos + nSplit, nORangeLen);
 			else
-				// copy only char present in input for max len input
+				/* copy only char present in input for max len input    */
 				memcpy(output + o->range_position.posAbsRec + nSplitPos + nSplit, input + o->range_position.position + nSplitPos + nSplit, abs(inputLength - (o->range_position.position + nSplit)));
 			position = (o->range_position.posAbsRec + nORangeLen);
+			break;
+		case OUTREC_TYPE_CHANGE_CMDOPT:			
+			nORangeLen = o->range.length;
+			if (nORangeLen == -1)		/* outrec pos, -1  (for variable)   */
+				nORangeLen = inputLength - o->range.position - nSplit;
+			/* Change Option search & replace */
+			if (o->changeCmd.changeCmdOpt != NULL) {
+				/* Reset buffer in and buffer out */
+				memset(o->szChangeBufIn, 0x00, COB_FILE_BUFF);
+				memset(o->szChangeBufOut, 0x00, COB_FILE_BUFF);
+				gc_memcpy(o->szChangeBufIn, input + o->range.position + nSplitPos + nSplit, nORangeLen);
+
+				if (change_search_replace(o->changeCmd.changeCmdOpt, o->szChangeBufIn, o->szChangeBufOut, nORangeLen, o->changeCmd.changeCmdOpt->vlen, input + nSplitPos) == 0) { /* False */
+					/* If NOMATCH not present  ABEND (Look manual DFSORT)*/
+					if (o->changeCmd.changeCmdOpt->sNoMatch == NULL) {
+						utl_abend_terminate(NOMATCH_FOUND, 636, 16);
+					}
+					/* Force NOMATCH*/
+					gc_memcpy(o->szChangeBufOut, o->changeCmd.changeCmdOpt->sNoMatch->generated_value, o->changeCmd.changeCmdOpt->vlen);
+				}
+				/* Force len output */
+				nORangeLen = o->changeCmd.changeCmdOpt->vlen;
+				if ((o->range.position + nSplit + nORangeLen) <= inputLength)
+					memcpy(output + position + nSplitPos + nSplit, o->szChangeBufOut, nORangeLen);
+				else
+					/* copy only chars present in input for max len input   */
+					memcpy(output + position + nSplitPos + nSplit, o->szChangeBufOut, nORangeLen);
+				position += nORangeLen;
+			}
+			else
+			{
+				utl_abend_terminate(CHANGE_ERR, 16, ABEND_EXEC);
+			}
 			break;
 		default:
 			break;
 		}
 	}
-	//	return position; 
-	return position - 1;  // position contains a first position of buffer
+	return position;  /* position contains a first position of buffer   */
 }
 
 int outrec_addDefinition(struct outrec_t *outrec) 
@@ -377,13 +491,24 @@ int outrec_addDefinition(struct outrec_t *outrec)
 	return 0;
 }
 
-// Set Overlay flag
+/* Set Overlay flag */
 int outrec_SetOverlay(struct outrec_t* Outrec, int nOverlay) {
 	struct outrec_t* outrec;
 	for (outrec = globalJob->outrec; outrec != NULL; outrec = outrec_getNext(outrec)) {
-		//-->> force value for all elements	
+		/*  -->> force value for all elements	*/
 		outrec->nIsOverlay = nOverlay;
-		//-->> force value for all elements
+		/*  -->> force value for all elements   */
+	}
+	return 0;
+}
+int outrec_SetChangeCmdOpt(struct outrec_t* Outrec, struct change_t* chg)
+{
+	if ((Outrec != NULL) && (chg != NULL)) {
+		Outrec->changeCmd.changeCmdOpt = chg;
+		Outrec->type = OUTREC_TYPE_CHANGE_CMDOPT;
+		Outrec->szChangeBufIn = malloc(COB_FILE_BUFF);
+		Outrec->szChangeBufOut = malloc(COB_FILE_BUFF);
+		Outrec->szChangeBufNoMatch = malloc(COB_FILE_BUFF);
 	}
 	return 0;
 }

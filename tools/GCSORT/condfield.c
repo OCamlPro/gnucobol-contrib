@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2021 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include <libcob.h>
 #include "file.h"
 #include "job.h"
 #include "condfield.h"
@@ -43,13 +42,37 @@ struct condField_t *condField_constructor_condition(int position, int length, in
         condField->condition.type=type;
         condField->condition.condition=condition;
         condField->condition.fieldValue=fieldValue;
-        condField->condition.cb_fd = util_cob_field_make (utils_getFieldTypeLIBCOBInt(type, length), length, 0,
+		condField->condition.isDateValue = 0;
+		condField->condition.cb_fd = util_cob_field_make (utils_getFieldTypeLIBCOBInt(type, length), length, 0,
 	        utils_getFieldTypeLIBCOBFlags(type), length, NOALLOCATE_DATA);
 
         condField->next=NULL; 
     }
 	return condField;
 } 
+struct condField_t* condField_constructor_condition4Date(int position, int length, int type, int condition, struct fieldValue_t* fieldValue) {
+	struct condField_t* condField = (struct condField_t*)malloc(sizeof(struct condField_t));
+
+
+	if (condField != NULL) {
+		condField->type = COND_TYPE_CONDITION;
+		condField->condition.position = position - 1;
+		condField->condition.length = length;
+		/* Force len o field*/
+		if (length > 8)
+			condField->condition.length = 8;
+		/* forced len */
+		condField->condition.type = type;
+		condField->condition.condition = condition;
+		condField->condition.fieldValue = fieldValue;
+		condField->condition.isDateValue = 1;
+		condField->condition.cb_fd = util_cob_field_make(utils_getFieldTypeLIBCOBInt(type, length), length, 0,
+			utils_getFieldTypeLIBCOBFlags(type), length, NOALLOCATE_DATA);
+
+		condField->next = NULL;
+	}
+	return condField;
+}
 struct condField_t *condField_constructor_operation(int operation, struct condField_t *first, struct condField_t *second) {
 	struct condField_t *condField=(struct condField_t *)malloc(sizeof(struct condField_t));
     if (condField != NULL) {
@@ -90,7 +113,6 @@ void condField_destructor(struct condField_t *condField) {
 
 	struct fieldValue_t *fieldValue;
 	struct condField_t  *condFieldTemp;
-//
 	if (condField->type == COND_TYPE_CONDITION) {
 		fieldValue = condField->condition.fieldValue;
 		util_cob_field_del(condField->condition.cb_fd, NOALLOCATE_DATA);
@@ -109,7 +131,6 @@ void condField_destructor(struct condField_t *condField) {
 		util_cob_field_del(condField->condition_field.cb_fd1, NOALLOCATE_DATA);
 		util_cob_field_del(condField->condition_field.cb_fd2, NOALLOCATE_DATA);
 	}
-//
 	free(condField);
 }
  
@@ -172,10 +193,10 @@ int condField_print(struct condField_t *condField) {
 	return 0;
 }
  
-// Return code:
-//		= 0 - false = Condition is OK
-//     != 0 - true  = Condition si KO
-//
+/* Return code:
+ 		= 0 - false = Condition is OK
+      != 0 - true  = Condition si KO
+*/
 int condField_test(struct condField_t *condField, unsigned char *record, struct job_t* job) {
 	int result;
 	int nVerify=0;
@@ -183,22 +204,21 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
 	int nTcmp = 0;
 	switch (condField->type) {
 		case COND_TYPE_CONDITION:
-//
-// check for option VLSCMP and VLSHRT 
-// VLSCMP tells DFSORT that you want to temporarily replace any missing compare field bytes 
-//		  with binary zeros, thus allowing the short fields to be validly compared 
-//		  (the zeros are not kept for the output records). 
-// OPTION COPY,VLSCMP
-//  INCLUDE COND=(21,8,CH,EQ,C'Type 200')
-// In this example, records less than 28 bytes are not included because the binary zeros 
-//			added for the missing bytes in the field prevent it from being equal to 'Type 200'.
-//
-// VLSHRT tells DFSORT to treat any comparison involving a short field as false. 
-//   OPTION COPY,VLSHRT
-//  INCLUDE COND=(21,8,CH,EQ,C'Type 200')
-// In this example, any records less than 28 bytes are not included.
-//
-			//
+/*
+   check for option VLSCMP and VLSHRT 
+   VLSCMP tells DFSORT that you want to temporarily replace any missing compare field bytes 
+  		  with binary zeros, thus allowing the short fields to be validly compared 
+  		  (the zeros are not kept for the output records). 
+   OPTION COPY,VLSCMP
+    INCLUDE COND=(21,8,CH,EQ,C'Type 200')
+   In this example, records less than 28 bytes are not included because the binary zeros 
+  			added for the missing bytes in the field prevent it from being equal to 'Type 200'.
+  
+   VLSHRT tells DFSORT to treat any comparison involving a short field as false. 
+     OPTION COPY,VLSHRT
+    INCLUDE COND=(21,8,CH,EQ,C'Type 200')
+   In this example, any records less than 28 bytes are not included.
+*/
 			nTcmp = 0;
 			if (file_getOrganization(job->inputFile) != FILE_ORGANIZATION_LINESEQUENTIAL){
 				if ((unsigned long)(condField->condition.position+condField->condition.length) > job->LenCurrRek) {
@@ -214,11 +234,11 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
 						exit(GC_RTC_ERROR);
 					}
 					else
-						return 0;	// false condition -- Is OK
+						return 0;	/* false condition -- Is OK  */
 				}
 			}
 
-            // substring
+            /* substring */
             if (condField->condition.condition == COND_CONDITION_SUBSTRING) {
                 if (nTcmp == 0) {
                     condField->condition.cb_fd->data = (unsigned char*) (record+condField->condition.position);
@@ -232,7 +252,7 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
                     return (result==0);
                 }
             }
-            //
+            
 			if (nTcmp == 0) {
                 condField->condition.cb_fd->data = (unsigned char*) (record+condField->condition.position);
 				result=fieldValue_checkvalue((struct fieldValue_t *)condField->condition.fieldValue, condField->condition.cb_fd, condField->condition.length);
@@ -242,45 +262,6 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
                 condField->condition.cb_fd->data = (unsigned char*) (szBufVLSCMP+condField->condition.position);
 				result=fieldValue_checkvalue((struct fieldValue_t *)condField->condition.fieldValue, condField->condition.cb_fd, condField->condition.length);
             }
-			/* OLD s.m. 20210516 
-			switch (condField->condition.condition) {
-				case COND_CONDITION_EQUAL:
-					nVerify = (result==0);
-					return (result==0);
-				case COND_CONDITION_GREATERTHAN:
-					return (result<0);
-				case COND_CONDITION_GREATEREQUAL:
-					return (result<=0);
-				case COND_CONDITION_LESSERTHAN:
-					return (result>0);
-				case COND_CONDITION_LESSEREQUAL:
-					return (result>=0);
-				case COND_CONDITION_NOTEQUAL:
-					return (result!=0);
-				default:
-					break;
-			}
-			*/
-			/* new */
-			/* 
-			switch (condField->condition.condition) {
-			case COND_CONDITION_EQUAL:					
-				nVerify = (result == 0);
-				return (result == 0);
-			case COND_CONDITION_GREATERTHAN:
-				return (result <= 0);
-			case COND_CONDITION_GREATEREQUAL:
-				return (result < 0);
-			case COND_CONDITION_LESSERTHAN:
-				return (result >= 0);
-			case COND_CONDITION_LESSEREQUAL:
-				return (result > 0);
-			case COND_CONDITION_NOTEQUAL:
-				return (result != 0);
-			default:
-				break;
-			}
-			*/
 			switch (condField->condition.condition) {
 			case COND_CONDITION_EQUAL:
 				if (result == 0)
@@ -317,71 +298,19 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
 						(condField_test(condField->operation.second, record, job) == TRUE))
 						return TRUE;
 					return FALSE;
-					//return (condField_test(condField->operation.first,record, job) && condField_test(condField->operation.second,record, job));
+					/* -- old -- return (condField_test(condField->operation.first,record, job) && condField_test(condField->operation.second,record, job)); */
 				case COND_OPERATION_OR:
 					if ((condField_test(condField->operation.first, record, job) == TRUE) ||
 						(condField_test(condField->operation.second, record, job) == TRUE))
 						return TRUE;
 					return FALSE;
-					// return (condField_test(condField->operation.first,record, job) || condField_test(condField->operation.second,record, job));
+					/* -- old -- return (condField_test(condField->operation.first,record, job) || condField_test(condField->operation.second,record, job)); */
 				default:
 					break;
 			}
 			break;
 		case COND_TYPE_COND_FIELDS:
 			result=condField_compare(condField, record);
-			/* s.m. 20210516
-			switch (condField->condition_field.condition) {
-				case COND_CONDITION_EQUAL:
-					return (result==0);
-				case COND_CONDITION_GREATERTHAN:
-					return (result<0);
-				case COND_CONDITION_GREATEREQUAL:
-					return (result<=0);
-				case COND_CONDITION_LESSERTHAN:
-					return (result>0);
-				case COND_CONDITION_LESSEREQUAL:
-					return (result>=0);
-				case COND_CONDITION_NOTEQUAL:
-					return (result!=0);
-				default:
-					break;
-			}
-			*/
-		//	switch (condField->condition_field.condition) {
-		//		case COND_CONDITION_EQUAL:					
-		//			return (result==0);
-		//		case COND_CONDITION_GREATERTHAN:
-		//			return (result<=0);
-		//		case COND_CONDITION_GREATEREQUAL:
-		//			return (result<0);
-		//		case COND_CONDITION_LESSERTHAN:
-		//			return (result>=0);
-		//		case COND_CONDITION_LESSEREQUAL:
-		//			return (result>0);
-		//		case COND_CONDITION_NOTEQUAL:
-		//			return (result!=0);
-		//		default:
-		//			break;
-		//	}
-			/*
-			switch (condField->condition_field.condition) {
-			case COND_CONDITION_EQUAL:
-				return (result == 0);
-			case COND_CONDITION_GREATERTHAN:
-				return (result > 0);
-			case COND_CONDITION_GREATEREQUAL:
-				return (result >= 0);
-			case COND_CONDITION_LESSERTHAN:
-				return (result > 0);
-			case COND_CONDITION_LESSEREQUAL:
-				return (result >= 0);
-			case COND_CONDITION_NOTEQUAL:
-				return (result != 0);
-			default:
-				break;
-			}
-			*/
 			switch (condField->condition_field.condition) {
 			case COND_CONDITION_EQUAL:
 				if (result == 0)
@@ -431,11 +360,9 @@ Field Format| BI| CH| ZD| PD| FI|
 */
 
 
-int condField_compare(struct condField_t *condField, unsigned char *record) {
-
-	// int nRtc = 0;
+int condField_compare(struct condField_t *condField, unsigned char *record) 
+{
 	int result;
-
 	condField->condition_field.cb_fd1->data = (unsigned char*) (record+condField->condition_field.position1 - 1);
 	condField->condition_field.cb_fd2->data = (unsigned char*) (record+condField->condition_field.position2 - 1);
 
@@ -482,27 +409,27 @@ int condField_setFormat(struct condField_t *condField, int nVal) {
 }
 
 
-// FORMAT=xx set or all conditions
+/* FORMAT=xx set or all conditions  */
 int condField_setCondFieldsTypeAll( int nTypeCond, int nVal) {
 	struct condField_t *condField;
-	if (nTypeCond == 1) { // Include
+	if (nTypeCond == 1) { /* Include  */
 		if (globalJob->includeCondField != NULL) {
 			for (condField=globalJob->includeCondField; condField!=NULL; condField=condField_getNext(condField)) {
-				if (condField->type == COND_TYPE_CONDITION) // new for problem FORMAT=CH
+				if (condField->type == COND_TYPE_CONDITION) /* new for problem FORMAT=CH  */
 					condField->condition.type = nVal;
 			}
 		}
 	}
-	if (nTypeCond == 2) { // Omit
+	if (nTypeCond == 2) { /* Omit */
 		if (globalJob->omitCondField != NULL) {
 			for (condField=globalJob->omitCondField; condField!=NULL; condField=condField_getNext(condField)) {
-				if (condField->type == COND_TYPE_CONDITION) { // new for problem FORMAT=nn
+				if (condField->type == COND_TYPE_CONDITION) { /* new for problem FORMAT=nn */
                     condField->condition.type = nVal;
                 }
-				if (condField->type == COND_TYPE_OPERATION) { // new for problem FORMAT=nn
+				if (condField->type == COND_TYPE_OPERATION) { /* new for problem FORMAT=nn */
                     condField_setFormat(condField, nVal);
                 }
-				if (condField->type == COND_TYPE_COND_FIELDS) { // new for problem FORMAT=nn
+				if (condField->type == COND_TYPE_COND_FIELDS) { /* new for problem FORMAT=nn */
                     condField_setFormat(condField, nVal);
                 }
 			}
@@ -511,11 +438,12 @@ int condField_setCondFieldsTypeAll( int nTypeCond, int nVal) {
 	return 0;
 }
 
-// FORMAT=xx set or all Fields SORT / MERGE
+/* FORMAT=xx set or all Fields SORT / MERGE */
 int condField_setFormatFieldsTypeAll( int nTypeFormat, int nVal) {
-//-->>nTypeFormat;			// 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields
-//-->>nTypeIncludeOmit;		// 0= Nothing, 1 = Include, 2 = Omit
-
+/*
+    nTypeFormat;		0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields
+    nTypeIncludeOmit;	0= Nothing, 1 = Include, 2 = Omit
+*/
 	struct sortField_t *sortField;
 	struct SumField_t  *SumField;
 
@@ -524,7 +452,7 @@ int condField_setFormatFieldsTypeAll( int nTypeFormat, int nVal) {
 			sortField->type = nVal;
 		}
 	}
-	if (nTypeFormat == 3) // SumFields
+	if (nTypeFormat == 3) /* SumFields */
 	{
 		for (SumField=globalJob->SumField; SumField!=NULL; SumField=SumField_getNext(SumField)) {
 				SumField_setType(SumField, nVal);

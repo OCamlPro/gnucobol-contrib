@@ -127,6 +127,7 @@
            open output outfile.
            if fs-outfile not = "00"
                 display "outfile file status error : " fs-outfile
+                move 25 to RETURN-CODE
                 stop run
            end-if
       *    
@@ -136,6 +137,7 @@
            open input infile.
            if fs-outfile not = "00"
                 display "outfile file status error : " fs-outfile
+                move 25 to RETURN-CODE
                 stop run
            end-if
       *
@@ -230,4 +232,3 @@
              goback
            end-if
            .           
-      

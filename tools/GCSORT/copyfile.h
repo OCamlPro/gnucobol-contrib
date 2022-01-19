@@ -27,9 +27,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <errno.h>
-// linux 
-
-//#ifndef _WIN32
 
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	#include <io.h>
@@ -46,9 +43,9 @@
 #include "utils.h"
 #include "mmfioc.h"
 
-#define MAX_FILES_INPUT 16	// Number of max files in input for merge and temporary files
+#define MAX_FILES_INPUT 16	/* Number of max files in input for merge and temporary files */
 
-// future use #define EM_MFSORT 1	// Emulate MFSORT
+/* future use #define EM_MFSORT 1	 Emulate MFSORT  */ 
 
 struct file_t;
 struct sortField_t;
@@ -65,4 +62,4 @@ int job_copy (struct job_t* job);
 int job_copyFile(struct job_t *job); 
 
 
-#endif // COPYFILE_H_INCLUDED
+#endif /* COPYFILE_H_INCLUDED */

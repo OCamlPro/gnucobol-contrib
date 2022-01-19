@@ -31,7 +31,7 @@
 	#include <crtdbg.h>
 #endif
 
-//#ifdef	_WIN32
+/* #ifdef	_WIN32  */
 #ifdef _MSC_VER
 	#include <Windows.h>
 #else
@@ -47,14 +47,14 @@
 
 #include "exitroutines.h"
 #include "copyfile.h"
-
+#include "datediff.h"
 
 
 /* Module initialization indicator */
 static unsigned int	initialized = 0;
 
 /* Module structure pointer */
-//
+
 static cob_module	*module = NULL;
 /* Global variable pointer */
 cob_global		*cob_glob_ptr;
@@ -95,6 +95,59 @@ int main(int argc, char **argv)
 {
 	int rtc = 0;
 	g_retWarn = 0;
+
+#if defined(GCSORT_NEWFEATURES) 
+
+	int in1 = 20210520;
+	int in2 = 20200522;
+	int sRes = 0;
+	int retCode = 0;
+	int sDays = 0;
+	retCode = gcDateDiff(in1, in2, &sRes);
+	retCode = gcDateDiff(in2, in1, &sRes);
+	in1 = 20210520;
+	retCode = gcDate2Ord(in1, &sRes);
+	in1 = sRes;
+	gcOrd2Date(in1, &sRes);
+
+	in1 = 20210120;
+	retCode = gcDate2Ord(in1, &sRes);
+
+	in1 = sRes;
+	gcOrd2Date(in1, &sRes);
+
+	in1 = 20210520;
+	sRes = 0;
+	gcDateAddMonths(in1, &sRes, -3);
+
+	in1 = 20210520;
+	sRes = 0;
+	gcDateAddMonths(in1, &sRes, -27);
+
+	in1 = 20210820;
+	sRes = 0;
+	gcDateAddYears(in1, &sRes, -5);
+
+	in1 = 20210820;
+	sRes = 0;
+	gcDateAddYears(in1, &sRes, +15);
+
+ 
+	/* aggiunge giorni alla data    */
+	in1 = 20210520;
+	sDays = 1;
+	retCode = gcDateAddDays(in1, &in2, sDays);
+	sDays = 30;
+	retCode = gcDateAddDays(in1, &in2, sDays);
+	sDays = -21;
+	retCode = gcDateAddDays(in1, &in2, sDays);
+
+#endif	/* GCSORT_NEWFEATURES 	*/
+
+	/*
+	 check date - End
+	*/
+
 	if (argc >= 2) 
 	{
 		if (strstr(argv[1], "--help") != NULL) {
@@ -133,16 +186,13 @@ int main(int argc, char **argv)
 	}
 
 	rtc = main_prod(argc,argv);
-//
-//-->>		
 #ifdef _DEBUG
 	#ifdef _MSC_VER
 		_CrtDumpMemoryLeaks();
 	#endif
 #endif 
-//  
 	if (rtc == 0)
-		rtc = rtc + g_retWarn;	// verify warning
+		rtc = rtc + g_retWarn;	/* verify warning   */
   	return rtc;
 }
   
@@ -151,8 +201,8 @@ int main_prod(int argc, char **argv) {
 	struct job_t *job;
 	int nRC = -2;
 	time (&timeStart);
-	yydebug = 0; // 0; // no debug  // yydebug=1; // yes debug
-	yyset_debug(0); // 0);	// set debug scanner off  
+	yydebug = 0;            /* 0;   // no debug  // yydebug=1; // yes debug    */
+	yyset_debug(0);         /* 0);	// set debug scanner off                   */
 	 
 	cob_init(argc, argv);
 	cob_module_enter(&module, &cob_glob_ptr, 0);
@@ -166,16 +216,15 @@ int main_prod(int argc, char **argv) {
 	frame_ptr = frame_stack;
 	frame_ptr->perform_through = 0;
 
-	//-->> s.m. 202101 s.m.  
+	/* s.m. 202101 s.m.  */
 	frame_overflow = frame_ptr + 255 - 1;
 	cob_module_path = cob_glob_ptr->cob_main_argv0;
-//-->>
 /* Initialize module structure */
 	module->module_name = "gcsort";
 	module->module_formatted_date = COB_MODULE_FORMATTED_DATE;
 	module->module_source = COB_SOURCE_FILE;
-	module->module_entry.funcptr = NULL;      // (void *(*)())ioixpafix;
-	module->module_cancel.funcptr = NULL;     // (void *(*)())ioixpafix_;
+	module->module_entry.funcptr = NULL;      /* (void *(*)())ioixpafix;    */
+	module->module_cancel.funcptr = NULL;     /* (void *(*)())ioixpafix_;   */
 	module->module_ref_count = NULL;
 	module->module_path = &cob_module_path;
 	module->module_active = 0;
@@ -183,7 +232,7 @@ int main_prod(int argc, char **argv) {
 	module->module_time = COB_MODULE_TIME;
 	module->module_type = 0;
 	module->module_param_cnt = 0;
-	// s.m.20201015 module->ebcdic_sign = 0;
+	/* s.m.20201015 module->ebcdic_sign = 0;    */
 	module->ebcdic_sign = g_cb_ebcdic_sign;
 	module->decimal_point = '.';
 	module->currency_symbol = '$';
@@ -216,23 +265,22 @@ int main_prod(int argc, char **argv) {
 	/* Save number of call params */
 	module->module_num_params = cob_glob_ptr->cob_call_params;
 	 
+
 	job=job_constructor();
 	if (job != NULL)
 	   	nRC = job_load(job, argc, argv);
 	else	
     	nRC = -1;
     if (nRC == 0){
-	// check SORT FIELDS=COPY
-	// in this case force MERGE 
-		/*
-		if ((job_GetTypeOp(job) == 'S') && (job_GetFieldCopy() == 1)){
-				job_SetTypeOP('M');
-				printf("Forced command MERGE for SORT FIELDS=COPY\n");
-		}
-		*/
+	/* check SORT FIELDS=COPY in this case force MERGE */
+    /*
+    if ((job_GetTypeOp(job) == 'S') && (job_GetFieldCopy() == 1)){
+            job_SetTypeOP('M');
+            printf("Forced command MERGE for SORT FIELDS=COPY\n");
+    }
+    */
 		if (job_GetFieldCopy() == 1)
-			job_SetTypeOP('C');		// Copy
-		//
+			job_SetTypeOP('C');		/* Copy */
 		if (nRC >= 0) 	
 			nRC = job_print(job);
 		if (nRC >= 0) {
@@ -240,10 +288,10 @@ int main_prod(int argc, char **argv) {
 		}
 		if (nRC >= 0)	
 			job_ReviewMemAlloc(job);
-		if ((nRC >= 0) && (job_NormalOperations(job) == 1))   // 0 = Normal , 1 = Test command Line
+		if ((nRC >= 0) && (job_NormalOperations(job) == 1))         /* 0 = Normal , 1 = Test command Line   */
 				printf("GCSORT - TEST COMMAND LINE PARAMETERS \n");
-		if ((nRC >= 0) && (job_NormalOperations(job) == 0)) {  // 0 = Normal , 1 = Test command Line
-				// check typeOP  'S' for Sort , 'M' for Merge and 'C' for Copy
+		if ((nRC >= 0) && (job_NormalOperations(job) == 0)) {       /* 0 = Normal , 1 = Test command Line   */
+				/* check typeOP  'S' for Sort , 'M' for Merge and 'C' for Copy  */
 				switch (job_GetTypeOp(job)) {
 				case ('C'):
 					nRC = job_copy(job);
@@ -281,24 +329,24 @@ int main_prod(int argc, char **argv) {
 		nRC = GC_RTC_ERROR;
 	}
 
-//-->>	
 	job_destroy(job);
-//-->>		 
     job_destructor(job);
 
 
     if (module->module_active) {
   	    module->module_active--;
     }
-	// printf("GCSORT - cob_module_leave\n");
+	/* printf("GCSORT - cob_module_leave\n");   */
 	/* Pop module stack */
-    //-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>cob_module_leave (module);
-	//-->>>>>>>>>>>>>>>>>>>>>cob_module_free(&module);
-	//	printf("GCSORT - cob_stop_run\n");
-	//	cob_stop_run(nRC);
-	//	cob_terminate_exec(nRC); 
-	// 
-	// printf("GCSORT - cob_stop_run after\n");
+    /*
+    -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>cob_module_leave (module);
+	-->>>>>>>>>>>>>>>>>>>>>cob_module_free(&module);
+		printf("GCSORT - cob_stop_run\n");
+		cob_stop_run(nRC);
+		cob_terminate_exec(nRC); 
+	 
+	 printf("GCSORT - cob_stop_run after\n");
+     */
 	return nRC;
 }
 
@@ -330,3 +378,4 @@ void verify_options(int numargs, char** args)
 	}
 	return;
 }
+

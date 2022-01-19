@@ -17,30 +17,29 @@
  *  along with GCSORT.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-//
-// Structure for Key definition Indexed File
-// Input and Output
-//
+/*
+    Structure for Key definition Indexed File
+    Input and Output
+*/
 
 #ifndef KEYIDXREL_H_INCLUDED
 #define KEYIDXREL_H_INCLUDED
 
 #include <stdint.h>
 #include <libcob.h>
-// #include <libcob/common.h>
 
 struct file_t;
 struct KeyIdx_t {
-    int             position;       // Position extract from instruction KEY
-    int             length;         // Len extract from instruction KEY
-    int             type;           // Type extract from instruction KEY  
-                                    //     0 = P  Primary, 
-                                    //     1 = A  Alternative, 
-                                    //     2 = AD Alternative with duplicates, 
-                                    //     3 = C  Continue previous definition
-    cob_field* pCobFieldKey;    // Field
-    struct KeyIdx_t* next;          // Next
-}; // KeyIdx;
+    int             position;       /* Position extract from instruction KEY        */
+    int             length;         /* Len extract from instruction KEY             */
+    int             type;           /* Type extract from instruction KEY            */
+                                    /*     0 = P  Primary,                          */
+                                    /*     1 = A  Alternative,                      */
+                                    /*     2 = AD Alternative with duplicates,      */
+                                    /*     3 = C  Continue previous definition      */
+    cob_field* pCobFieldKey;        /* Field                                        */
+    struct KeyIdx_t* next;          /* Next                                         */
+}; /* KeyIdx;   */
 
 
 struct KeyIdx_t *KeyIdx_constructor(int position, int length, int type);
@@ -52,4 +51,4 @@ int KeyIdx_addQueue(struct KeyIdx_t **KeyIdx, struct KeyIdx_t *KeyIdxToAdd);
 int KeyIdx_addDefinition(struct KeyIdx_t *KeyIdx, struct file_t *fkey);
 
 
-#endif // KEYIDXREL_H_INCLUDED
+#endif /* KEYIDXREL_H_INCLUDED  */

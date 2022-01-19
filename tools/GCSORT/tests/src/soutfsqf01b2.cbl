@@ -91,6 +91,10 @@
        input-proc.
       * ============================= *
            open input sortin.
+           if fs-infile NOT equal "00"
+                MOVE 25 TO RETURN-CODE
+                GOBACK
+           end-if
            perform inputrec-proc until fs-infile not equal "00"
            close sortin
            .
@@ -120,6 +124,10 @@
        output-proc.
       * ============================= *
            open output sortout.
+           if fs-sort NOT equal "00"
+                MOVE 25 TO RETURN-CODE
+                GOBACK
+           end-if
            perform outrec-proc-dett until fs-sort  
                    not equal "00".
            if (bIsPending = 1)

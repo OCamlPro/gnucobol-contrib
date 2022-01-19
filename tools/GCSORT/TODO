@@ -12,5 +12,14 @@ GCSORT TODO						-*- outline -*-
     4.1 Add other data type      
 
 5 Help Document
-    4.1 Review documentation
+    5.1 Review documentation
 
+6 New Statements and options
+ ToDo | IFTHEN overlay      | INREC  IFTHEN =(WHEN=(10,1,CH,EQ'C'),OVERLAY(10:C'+'),HIT=NEXT) 
+ ToDo | Different formats   | FIELDS=(1,4,X,5,4,BI,TO=ZD,LENGTH=6,X,9,4,BI,TO=ZD,LENGTH=6)    
+ ToDo | Editing fields      | … 31,7,PD,EDIT=(SI,III,III,IIT.TTT),SIGNS=(,-),…                
+ ToDo | PARSE fields        | PARSE=(%00=(ABSPOS=21,STARTAFT=BLANKS,ENDBEFR=C',',FIXLEN=5)    
+ ToDo | FINDREP  fields     | FINDREP=(IN=C'Goodbye',OUT=C'Bye')                              
+ ToDo | Substring           | FORMAT=SS,COND=(11,6000,EQ,C'OK',OR,5,3,EQ,C'J69,L92,J82')      
+ ToDo | Y2TP (PackedDecimal)| OUTFIL BUILD=(11,3,Y2XP,X,21,4,Y2WP)        
+ ToDo | JOIN                | JOINKEYS FILE=F1,FIELDS=(1,6,A) JOINKEYS FILE=F2,FIELDS=(1,6,A) 

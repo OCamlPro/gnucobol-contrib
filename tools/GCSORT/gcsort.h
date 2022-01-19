@@ -24,7 +24,7 @@
 
 #define _CRT_NONSTDC_NO_DEPRECATE 
 
-// x64 ini
+/* x64 ini  */
 #ifdef	_MSC_VER
 #ifdef VBISAM_LIB
 _LIB
@@ -47,36 +47,38 @@ _LIB
 #define DLL_EXPIMP extern
 #endif
 #endif
-// x64 end
+/* x64 end */
 
+#define GCSORT_NEWFEATURES              /* 0=Disable, 1=Enable - DISABLE release */
+#undef  GCSORT_NEWFEATURES             
+
+/* GCSDEBUG   used to view info details Scanner-Parser - DISABLE release*/
+#define GCSDEBUG 
+#undef  GCSDEBUG
 
 
 #define GCSORT_ALLOCATE				50
-//s.m. 
 #define GCSORT_ALLOCATE_MEMSIZE		512000000 
-// for debug #define GCSORT_ALLOCATE_MEMSIZE		512000 
+/* to debug #define GCSORT_ALLOCATE_MEMSIZE		512000  */
 
 #define GCSORT_MAX_BUFF_REK			32768+SZPOSPNT
 
 #define GCSORT_KEY_MAX              1024
 #define GCSORT_SIZE_FILENAME        1024
 
-// value 1 : generate temp file fixed name : cob17, cob18, cob19, cob1a, cob1b
-#define GCSORT_DEBUG                0  // 0 no debug - 1 debug
+/* value 1 : generate temp file fixed name : cob17, cob18, cob19, cob1a, cob1b  */
+#define GCSORT_DEBUG   0        /* 0 no debug - 1 debug */
 #define GCSORT_TESTCMD 0
-#define GCSORT_VERSION "01.03.01"
-#define GCSORT_TAR_DATE "Dic 27 2021 14:00:00 UTC"
+#define GCSORT_VERSION "01.03.02"
+#define GCSORT_TAR_DATE "Jan 14 2022 15:00:00 UTC"
 
-// Return Code
+/* Return Code */
 #define GC_RTC_OK	 0
-// s.m. 202101
 #define GC_RTC_WARN	 4
 #define GC_RTC_ERROR 16
 
 
-// Variables char szMexToken[260];
-
-#if	!defined(_MSC_VER) // defined(__MINGW32__) || defined(__MINGW64__)
+#if	!defined(_MSC_VER) /* defined(__MINGW32__) || defined(__MINGW64__)  */
 #define strtok_s __strtok_r
 #endif
 
@@ -85,4 +87,5 @@ void GCSORT_Usage ( void ) ;
 void GCSORT_Version( void ) ;
 void verify_options(int numargs, char** args);
 
-#endif // GCSORT_H_INCLUDED
+
+#endif /* GCSORT_H_INCLUDED */

@@ -10,7 +10,7 @@
       * CMD line to compile program
       *  cobc -x  -std=default -debug -Wall  -o gctestrun3 gctestrun3.cbl 
       ****************************************************************
- 	   identification division.
+       identification division.
        program-id.  gctestrun3.
        environment division.
        input-output section.
@@ -18,6 +18,16 @@
        data division.
        file section.
        working-storage section.
+       77 numchars1             pic 9(3).
+       77 numchars2             pic 9(3).
+       01  MYPOINTER    USAGE POINTER.       
+       >>IF P64 IS SET
+       01 size-mod CONSTANT AS 18.
+       >>ELSE
+       01 size-mod CONSTANT AS 8.
+       >>END-IF
+
+       01 c-size-t   PIC 9(size-mod) COMP-5.       
        77 chrsl                 pic x value '/'.
        77 chrbs                 pic x value '\'.
        77 wk-cmd-sort           pic x(12) value
@@ -25,7 +35,7 @@
        77 wk-dir-take           pic x(12) value
                 '../takefile/'.
        77 wk-fcmd               pic x(128).
-	   01 cmd-string            pic x(250).
+       01 cmd-string            pic x(250).
        01 cmd-string-tmp        pic x(250).
        01 env-set-name          pic x(25).
        01 env-set-value         pic x(250).
@@ -42,8 +52,7 @@
        01       array-retcode-epilog-gr03.
           03    ar-retcode-ele occurs 49 times.
            05   ar-tst-name           pic x(15).
-           05   ar-tst-rtc01          pic 99.
-      
+           05   ar-tst-rtc01          USAGE BINARY-LONG.      
       ***
        01  ele-cmd-take-group.
            05 ele-cmd-take-exec-num       pic 9(3) value 49.
@@ -335,22 +344,20 @@
        epilog-gr03                section.
       *---------------------------------------------------------*
        eprt-00.
-           display '----------------------------------'
-                   '---------'
-           display '|                   | '
-                   'retcode |'
-                   '           |'
-           display '| Test id           | ' 
-                   'gcsort  |'         
-                   '   status  |' 
-           display '----------------------------------'
-                   '---------'
+           display '--------------------------------------------'
+                   '--------'
+           display '|                   |     retcode      |    '
+                   '       |'
+           display '| Test id           |     gcsort       |   s'
+                   'tatus  |'
+           display '--------------------------------------------'
+                   '--------'
            perform epilog-view-gr03 
                varying idx from 1 by 1
                   until idx > ele-cmd-take-exec-num
 
-           display '----------------------------------'
-                   '---------'
+           display '--------------------------------------------'
+                   '--------'
            . 
        eprt-99.
            exit.
@@ -361,9 +368,9 @@
       *---------------------------------------------------------*
        epvw-00.
            if (ar-tst-rtc01(idx) = zero) 
-              move " Test OK "   to status-test
+              move  "   OK    "   to status-test
            else
-              move " Test KO "   to status-test
+              move  " ---> KO "    to status-test
            end-if
            display "| " ar-tst-name(idx)    "   |    "
                         ar-tst-rtc01(idx)   "   | "
@@ -402,15 +409,25 @@
       *---------------------------------------------------------*
        sv-00.
 Win        if (ntype = 1)
-              inspect env-set-value replacing all chrsl by chrbs
+               inspect env-set-value replacing all chrsl by chrbs
            end-if
 	       display env-set-name  upon ENVIRONMENT-NAME
-           display env-set-value upon ENVIRONMENT-VALUE          
+            move zero to numchars1
+            inspect env-set-name tallying numchars1
+                    for characters before initial space
+            move zero to numchars2
+            inspect env-set-value tallying numchars2
+                    for characters before initial space
+           
+           display env-set-value upon ENVIRONMENT-VALUE 
            if ( env-set-value not equal space )
-               display '****************************************'           
-               display env-set-name '=' env-set-value          
-               display '****************************************'           
-           end-if    
+             if (ntype = 1)
+               display 'set 'env-set-name(1:numchars1) '=' 
+                       env-set-value(1:numchars2)
+             else
+               display 'export 'env-set-name(1:numchars1) '=' 
+                       env-set-value(1:numchars2)             
+           end-if 
            .
        sv-99.
            exit.
@@ -461,7 +478,7 @@ Win        if (ntype = 1)
                move ele-cmd-take-exec-cmd(idx-take)  to cmd-string-tmp
            end-if
            if (ele-cmd-take-exec-type(idx-take) = 'setval  ')
-               move cmd-string-tmp             to env-set-name                     
+               move cmd-string-tmp             to env-set-name
                move ele-cmd-take-exec-cmd(idx-take) to env-set-value  
                perform set-value-env
            end-if
@@ -475,7 +492,7 @@ Win        if (ntype = 1)
                       wk-dir-take                delimited by size
                       ele-cmd-take-exec-cmd(idx-take) delimited by space
                             into cmd-string
-      D        display  "cmd-string : " cmd-string
+               display  "cmd-string : " cmd-string
 Win            if (ntype = 1)
                    inspect cmd-string replacing all chrsl by chrbs
                    move cmd-string to cmd-go
@@ -492,14 +509,19 @@ TEST00***               display ' cmd:>' cmd-go  '<'
                end-if             
              end-if            
                display ' cmd line : ' cmd-go
-               call "SYSTEM" using    cmd-go
+               call 'SYSTEM' using    cmd-go
                move  RETURN-CODE  to ar-tst-rtc01(idx-err)  
-               display 'ar-tst-rtc01(idx-err)  ' ar-tst-rtc01(idx-err)
+TEST00**               display 'ar-tst-rtc01(idx-err)  ' ar-tst-rtc01(idx-err)
+      ** Check return code [Problem in Linux environment]     
+           if (ar-tst-rtc01(idx) > 256)
+                divide ar-tst-rtc01(idx) by 256
+                giving ar-tst-rtc01(idx)
+           end-if
                if (ar-tst-rtc01(idx-err)  = 4)
                  move zero to ar-tst-rtc01(idx-err)
                  display ' Forced zero to retcode - There is a warning.'
                end-if
-      D        display  "RETURN-CODE Value : " RETURN-CODE
+               display  "RETURN-CODE Value : " RETURN-CODE               
 TEST00**               CALL "CBL_OC_NANOSLEEP" USING 1000000000               
            end-if
            .

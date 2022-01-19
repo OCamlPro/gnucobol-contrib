@@ -1,7 +1,18 @@
+2022-01-19  Sauro Menna  <smenna@users.sourceforge.net>
+    * Modified MAKEFILE project
+    * New option RECORD CONTROL STATEMENT
+    * New Date : DATE1, DATE2, DATE3, DATE4 with (+/-)days/month
+    * New for INREC/OUTREC option CHANGE Lookup table and set with value or input field
+    * Review comment style from '//' to '/*  ... */'
+    * Fixed problems with TestCase modules
+    * Update Help (gcsort --help) and documentation
+    * Fixed memory leaks on some options and under certain conditions
+
 2021-12-27  Sauro Menna  <smenna@users.sourceforge.net>
     * copyfile.c - Fixed problem with file name when name is environment variable
     * job.c - Fixed problem with variables used to compare fields - 
     * gcsorthelp.c - Modified option '--version' with new info 'gcsort 64bit-mode'
+
 2021-09-14  Sauro Menna  <smenna@users.sourceforge.net>
     * job.c - Fix problem with empty file
     

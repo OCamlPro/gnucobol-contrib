@@ -27,9 +27,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <errno.h>
-// linux 
-
-//#ifndef _WIN32
 
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	#include <io.h>
@@ -46,9 +43,9 @@
 #include "utils.h"
 #include "mmfioc.h"
 
-#define MAX_FILES_INPUT 16	// Number of max files in input for merge and temporary files
+#define MAX_FILES_INPUT 16	/* Number of max files in input for merge and temporary files   */
 
-// future use #define EM_MFSORT 1	// Emulate MFSORT
+/* future use #define EM_MFSORT 1	// Emulate MFSORT   */
 
 struct file_t;
 struct sortField_t;
@@ -67,8 +64,8 @@ struct job_t;
 
 #define MAX_RECSIZE			32752 
 #define MAX_HANDLE_TEMPFILE	16
-#define SIZEINT				sizeof(int)     // 4
-#define SIZEINT64			sizeof(int64_t) // 8
+#define SIZEINT				sizeof(int)     /* 4    */
+#define SIZEINT64			sizeof(int64_t) /* 8    */
 
 #define SZPOSPNT            SIZEINT64
 #define SZLENREC            SIZEINT
@@ -77,43 +74,41 @@ struct job_t;
 
 #define MAXFIELDSORT        50
 
-#define	MAX_SIZE_CACHE_WRITE		65536*62 //65536*62*2   //62
-#define	MAX_SIZE_CACHE_WRITE_FINAL	65536*62 //65536*62*2   //62
+#define	MAX_SIZE_CACHE_WRITE		65536*62 /* 65536*62*2   //62   */
+#define	MAX_SIZE_CACHE_WRITE_FINAL	65536*62 /* 65536*62*2   //62   */
 
 #define MAXFILEIN 100
 
 
 struct job_t {
-//-->>	char arrayFileInCmdLine[256][FILENAME_MAX];
-//-->>		char arrayFileOutCmdLine[256][FILENAME_MAX];
 	char arrayFileInCmdLine[MAXFILEIN][FILENAME_MAX];
     char arrayFileOutCmdLine[MAXFILEIN][FILENAME_MAX];
 	char array_FileTmpName[MAX_HANDLE_TEMPFILE][FILENAME_MAX];
-	char job_typeOP;				// 'S' for sort, 'M' for Merge, 'C' for Copy
-	char strPathTempFile[FILENAME_MAX]; // path temporary file
-	char szCmdLineCommand[8192];	// Copy from command line
-	char szTakeFileName[8192];	// Take FileName
+	char job_typeOP;				        /* 'S' for sort, 'M' for Merge, 'C' for Copy    */
+	char strPathTempFile[FILENAME_MAX];     /* path temporary file                          */
+	char szCmdLineCommand[8192];	        /* Copy from command line                       */
+	char szTakeFileName[8192];	            /* Take FileName                                */
 	int	 array_FileTmpHandle[MAX_HANDLE_TEMPFILE];
-	int	 bIsFieldCopy;		// SORT-MERGE FIELDS=COPY
-	int	 bIsPresentSegmentation;		// File segmentation
+	int	 bIsFieldCopy;		                /* SORT-MERGE FIELDS=COPY                       */
+	int	 bIsPresentSegmentation;		    /* File segmentation                            */
 	int	 m_SeekOrder;
 	int	 nCurrFileInput;
 	int	 nMlt;
 	int	 nNumTmpFile;
 	int	 nStatistics;
-	int	 nTestCmdLine;	// 0 normal, 1 test command line
-	int	 nTypeEmul;		// 0 stardard OC, 1 emulate MFSORT
-// Option
-	int	 nVLSCMP;   // 0 disabled , 1 = enabled -- temporarily replace any missing compare field bytes with binary zeros
-	int	 nVLSHRT;   // 0 disabled , 1 = enabled -- treat any comparison involving a short field as false
-	// Date
+	int	 nTestCmdLine;	/* 0 normal, 1 test command line    */
+	int	 nTypeEmul;		/* 0 stardard OC, 1 emulate MFSORT  */
+/* Option   */
+	int	 nVLSCMP;   /* 0 disabled , 1 = enabled -- temporarily replace any missing compare field bytes with binary zeros    */
+	int	 nVLSHRT;   /* 0 disabled , 1 = enabled -- treat any comparison involving a short field as false                    */
+	/* Date */
 	int  nY2Year;
 	int  nY2Past;
 	int  nY2PastLimInf;
 	int  nY2PastLimSup;
-	int  nY2PastLimInfyy2;		// 2 digit yy
-	int  nY2PastLimInfyy3;		// 3 digit yyy
-	int  nOutFileSameOutFile;	// when OutFil use OutFile
+	int  nY2PastLimInfyy2;		/* 2 digit yy               */
+	int  nY2PastLimInfyy3;		/* 3 digit yyy              */
+	int  nOutFileSameOutFile;	/* when OutFil use OutFile  */
 	int	 ndeb; 
 	int	 sumFields;
 	int  bIsTake;
@@ -133,9 +128,9 @@ struct job_t {
 	int64_t	recordNumberTotal;
 	int64_t	recordWriteOutTotal;
 	int64_t	recordWriteSortTotal;
-	int64_t	ulMemSizeAlloc;		// Max size mem 
-	int64_t	ulMemSizeAllocSort;		// Max size mem 
-	int64_t	ulMemSizeRead;		// Current size mem after read
+	int64_t	ulMemSizeAlloc;		        /* Max size mem                 */
+	int64_t	ulMemSizeAllocSort;		    /* Max size mem                 */
+	int64_t	ulMemSizeRead;		        /* Current size mem after read  */
 	int64_t	ulMemSizeSort;
 	int64_t recordNumber;
 	int64_t recordNumberAllocated;
@@ -146,7 +141,7 @@ struct job_t {
 	struct file_t*      inputFile;
 	struct file_t*      outputFile;
 	struct inrec_t*     inrec;
-// Outfil
+/* Outfil   */
 	struct outfil_t*	outfil;
 	struct outfil_t*	pLastOutfil_Split;
 	struct outfil_t*	pSaveOutfil;
@@ -156,20 +151,29 @@ struct job_t {
 	unsigned char*  buffertSort;
 	unsigned char*  recordData;
 	unsigned int inputLength;
-	unsigned int ncob_varseq_type;		// 0   means 2 byte record length (big-endian),			1   means 4 byte record length (big-endian)        
-	                                 	// 2   means 4 byte record length (local machine int),  3   means 2 byte record length (local machine short)
+	unsigned int ncob_varseq_type;		/* 0   means 2 byte record length (big-endian),			1   means 4 byte record length (big-endian)             */      
+	                                 	/* 2   means 4 byte record length (local machine int),  3   means 2 byte record length (local machine short)    */
 	unsigned int	outputLength;
 	unsigned long   LenCurrRek;
 
-	char strCallNameE15[FILENAME_MAX]; // Call Name E15
-	char strCallNameE35[FILENAME_MAX]; // Call Name E35
-	unsigned int   nExitRoutine;	// code  0= no routine, 1=E15, 2=E35
+	char strCallNameE15[FILENAME_MAX];  /* Call Name E15                        */
+	char strCallNameE35[FILENAME_MAX];  /* Call Name E35                        */
+	unsigned int   nExitRoutine;	    /* code  0= no routine, 1=E15, 2=E35    */
 	struct E15Call_t* E15Routine;
 	struct E35Call_t* E35Routine;
+	/*  Record Control Statement*/
+	int		nTypeRecordFormat;		/* TYPE Record Format */
+	int		nLenInputL1;
+	int		nLenE15L2;
+	int		nLenOutputL3;
+	int		nLenMinLenL4;
+	int		nLenAvgLenL5;
+	int		nLenFutureUseL6;
+	int		nLenFutureUseL7;
 
 };
 
-// ok ok ok struct job_t* globalJob;
+/* ok ok ok struct job_t* globalJob;    */
 
 struct job_t *job_constructor( void );
 void job_destructor(struct job_t *job);
@@ -192,7 +196,6 @@ INLINE int job_ReadFileTemp(struct mmfio_t* descTmp, int* nLR, unsigned char* sz
 int job_print(struct job_t *job);
 int job_GetTypeOp(struct job_t *job);
 
-// INLINE2 int job_GetKeys(const void *szBufferIn, void *szKeyOut);
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	static INLINE int job_GetKeys(unsigned char* szBufferIn, unsigned char* szKeyOut);
 #else
@@ -236,7 +239,7 @@ void job_CloneFileForOutfilSet(struct job_t *job, struct file_t* file);
 int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen);
 int	job_scanCmdSpecialChar(char* bufnew);
 int	job_RescanCmdSpecialChar(char* bufnew);
-// void job_SetRecLen(struct job_t *job, int recordsize, unsigned char* szHR);
+/* void job_SetRecLen(struct job_t *job, int recordsize, unsigned char* szHR);  */
 void job_ReviewMemAlloc ( struct job_t *job  );
 int job_MakeExitRoutines(struct job_t* job);
 
@@ -263,7 +266,7 @@ void job_cob_field_destroy_NOData(cob_field* field_ret);
 void job_print_error_file(cob_file* stFileDef, int nLenRecOut);
 
 void job_checkslash(char* str);	
-// Date
+/* Date */
 int job_CheckTypeDate(int nTypeGC, cob_field* fk1, cob_field* fk2);
 int job_compare_date_YY(cob_field* fk2, cob_field* fk1);
 int job_compare_date_YYMMDD(cob_field* fk2, cob_field* fk1);
@@ -276,26 +279,26 @@ int job_compare_date_Y2Y(cob_field* fk2, cob_field* fk1);
 int job_SetPosLenKeys(int* arPosLen);
 
 
-//#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+/*  #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)   */
 /*
 #else
 */
 #define FASTCOPY
-// #undef FASTCOPY
+/* #undef FASTCOPY  */
 #ifdef FASTCOPY
-  #define gc_memcpy  memmove   // memmove //memcpy 
-  #define gc_memmove memmove   // memmove //memcpy 
+  #define gc_memcpy  memmove   /* // memmove //memcpy  */
+  #define gc_memmove memmove   /* // memmove //memcpy  */
 #else
 unsigned int i_idx;
-//static INLINE2 unsigned char* gc_memcpy(unsigned char* dst, unsigned char* src, size_t n)
+/*  static INLINE2 unsigned char* gc_memcpy(unsigned char* dst, unsigned char* src, size_t n)   */
 static INLINE2 void gc_memcpy(unsigned char* dst, unsigned char* src, size_t n)
 {
-	// g_src = src;
-	// g_dst = dst;
-	// unsigned int i;
+	/* g_src = src;         */
+	/* g_dst = dst;         */
+	/* unsigned int i;      */
 	for (i_idx = 0; i_idx < n; ++i_idx)
 		dst[i_idx] = src[i_idx];
-	return; //  dst;
+	return; /*  dst;    */
 }
 #endif
 /**/
@@ -359,4 +362,4 @@ static INLINE int write_buffered_final (int  desc,
 }
 
 
-#endif // JOB_H_INCLUDED
+#endif /* JOB_H_INCLUDED    */

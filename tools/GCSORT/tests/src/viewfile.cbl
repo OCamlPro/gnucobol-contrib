@@ -79,6 +79,8 @@
            open input sortcbl.
            if fs-infile1 not = "00"
                 display "view file error file input fs = " fs-infile1
+                MOVE 25 TO RETURN-CODE
+                GOBACK
            end-if
            
            perform view-data until  fs-infile1 not equal "00" 

@@ -36,12 +36,12 @@ struct file_t {
 	unsigned char* pHeaderMF;
 	int bIsSeqMF;
 	int64_t file_length;
-	int nTypeNameFile; // Outfile
+	int nTypeNameFile;          /* Outfile  */
 	int handleFile;
 	int nFileMaxSize;
 	int nNumKeys;
-	cob_file* stFileDef;		// info for cob_open, cob_read, cob_write, cob_close
-	int opt; // option for write
+	cob_file* stFileDef;        /* info for cob_open, cob_read, cob_write, cob_close    */
+	int opt;                    /* option for write */
     int nCountRow;
 	struct KeyIdx_t* stKeys;
 	struct file_t *next;
@@ -63,9 +63,8 @@ unsigned int file_getMaxLength(struct file_t *file);
 int file_getOrganization(struct file_t *file);
 int file_SetMF(struct file_t *file);
 int file_GetMF(struct file_t *file);
-//int file_getOrgType(struct file_t *file);
 int file_setOutputFile(struct file_t *file);
 int file_setInputFile(struct file_t *file);
 int file_SetInfoForFile(struct file_t* fkey, int nMode);
 
-#endif // FILE_H_INCLUDED
+#endif /* FILE_H_INCLUDED   */

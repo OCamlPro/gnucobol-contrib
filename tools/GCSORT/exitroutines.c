@@ -46,7 +46,7 @@ struct cob_frame	    E35frame_stack[255];
 static int	            E35ex_retcode;	/* RETURN-CODE */
 /* Function prototypes */
  
-// START Routine E15
+/* START Routine E15 */
 static void		E15CALL_module_init (cob_module *module);
 
 struct E15Call_t* E15Call_constructor(int nLenRecSize)
@@ -58,7 +58,6 @@ struct E15Call_t* E15Call_constructor(int nLenRecSize)
     }        
     pE15c->pCallE15 = util_MakeAttrib_call(COB_TYPE_ALPHANUMERIC, FILENAME_MAX, 0, 0, FILENAME_MAX, ALLOCATE_DATA);
     memset(pE15c->pCallE15->data, 0x00, FILENAME_MAX);
-    //pE15c->pRecFlag = util_cob_field_make(COB_TYPE_NUMERIC_BINARY, 8, 0, 0, 4, ALLOCATE_DATA);
     pE15c->pRecFlag = util_MakeAttrib_call(COB_TYPE_NUMERIC_BINARY, 8, 0, 0, 4, ALLOCATE_DATA);
     memset(pE15c->pRecFlag->data, 0x00, 4);
 
@@ -79,11 +78,10 @@ struct E15Call_t* E15Call_constructor(int nLenRecSize)
     pE15c->pExitAreaLen = util_MakeAttrib_call(COB_TYPE_NUMERIC_BINARY, 4, 0, 0, 2, ALLOCATE_DATA);
     memset(pE15c->pExitAreaLen->data, 0x00, 2);
     pE15c->pExitArea = util_MakeAttrib_call(COB_TYPE_ALPHANUMERIC, 256, 0, 0, 256, ALLOCATE_DATA);
-    memset(pE15c->pExitArea->data, 0x20, 256);      // Set space in area
+    memset(pE15c->pExitArea->data, 0x20, 256);      /* Set space in area    */
    /* Check initialized, check module allocated, */
-    /* set global pointer, */
-    /* push module stack, save call parameter count */
-   // if (cob_module_global_enter(&module, &cob_glob_ptr, 0, entry, 0))
+   /* set global pointer, */
+   /* push module stack, save call parameter count */
     int entry = 0;
     if (cob_module_global_enter(&E15module, &E15cob_glob_ptr, 0, entry, 0))
         return NULL;
@@ -102,7 +100,6 @@ struct E15Call_t* E15Call_constructor(int nLenRecSize)
 
     E15module->module_active++;
 
-    //
     return pE15c;
 }
 
@@ -120,7 +117,6 @@ void E15Call_destructor(struct E15Call_t* pE15C)
     util_cob_field_del(pE15C->pUnused5, ALLOCATE_DATA);
     util_cob_field_del(pE15C->pExitAreaLen, ALLOCATE_DATA);
     util_cob_field_del(pE15C->pExitArea, ALLOCATE_DATA);
-    //
     if (E15module->module_active) {
         E15module->module_active--;
     }
@@ -129,10 +125,8 @@ void E15Call_destructor(struct E15Call_t* pE15C)
     cob_module_leave(E15module);
 
     /* Program return */
-    //  
     if (!E15initialized)
         return;
-    // 
     if (E15module && E15module->module_active)
         cob_fatal_error(COB_FERROR_CANCEL);
     E15ex_retcode = 0;
@@ -140,7 +134,6 @@ void E15Call_destructor(struct E15Call_t* pE15C)
 
     E15initialized = 0;
 
-    //
     return;
 }
 
@@ -154,19 +147,19 @@ void E15ResetParams(int* nrekE15, int* nrekFlagE15, int nLastRecord)
         8 indicates the last record passed.
     */
     if (*nrekE15 == 1)
-        *nrekFlagE15 = 4;	// Middle record
+        *nrekFlagE15 = 4;	/* Middle record   */
     if (*nrekE15 == 0) {
-        *nrekE15 = 1;		// First record
+        *nrekE15 = 1;		/* First record    */
         *nrekFlagE15 = 0;
     }
     if (nLastRecord == 1)
-        *nrekFlagE15 = 8;	// End record
+        *nrekFlagE15 = 8;	/* End record      */
     return;
 }
 
 int E15Call_SetCallName (struct E15Call_t* pE15C, char * szCallName)
 {
-    strcpy(pE15C->pCallE15->data, szCallName);  // set CALL Name
+    strcpy(pE15C->pCallE15->data, szCallName);  /* set CALL Name */
     return 0;
 }
 
@@ -197,7 +190,7 @@ int	E15Run(const int entry, struct E15Call_t* pE15C, int nRecFlag, int nLen, uns
 
   cob_set_int(pE15C->pRecFlag, nRecFlag);
   memmove(pE15C->pSendRec->data, pSendRec, nLen);
-  cob_set_int(pE15C->pNewRecLen, nLen); // set length
+  cob_set_int(pE15C->pNewRecLen, nLen); /* set length   */
   cob_set_int(pE15C->pExitAreaLen, 256);
 
 
@@ -212,7 +205,7 @@ int	E15Run(const int entry, struct E15Call_t* pE15C, int nRecFlag, int nLen, uns
   E15cob_procedure_params[8] = pE15C->pExitAreaLen;
   E15cob_procedure_params[9] = pE15C->pExitArea;
 
-  E15cob_glob_ptr->cob_call_params = 10; // 3;
+  E15cob_glob_ptr->cob_call_params = 10; /* 3;  */
   E15cob_glob_ptr->cob_stmt_exception = 0;
 
   if (unlikely((E15cob_glob_ptr->cob_exception_code & 0x0b00) == 0x0b00)) E15cob_glob_ptr->cob_exception_code = 0;
@@ -221,11 +214,11 @@ int	E15Run(const int entry, struct E15Call_t* pE15C, int nRecFlag, int nLen, uns
   E15ex_retcode = ((int (*)(void*, void*, void*, void*, void*, void*, void*, void*, void*, void* ))E15cob_unifunc.funcint)
       (pE15C->pRecFlag->data, pE15C->pSendRec->data, pE15C->pReceiveRec->data, 0, 0, pE15C->pNewRecLen->data, pE15C->pReturnRecLen->data, 0, pE15C->pExitAreaLen->data, pE15C->pExitArea->data);
 
-  // set new record or modified record in return record
+  /* set new record or modified record in return record */
   if ((E15ex_retcode == 12) || (E15ex_retcode == 20)) {
-      memmove(pReceiveRec, pE15C->pReceiveRec->data, nLen);     // modify/new record
+      memmove(pReceiveRec, pE15C->pReceiveRec->data, nLen);     /* modify/new record    */
       if (nIsFileVariable == 1)
-          *newLen = cob_get_int(pE15C->pReceiveRec);                // Get new len only for Variable File
+          *newLen = cob_get_int(pE15C->pReceiveRec);            /* Get new len only for Variable File   */
   }
   /* Program return */
   return E15ex_retcode;
@@ -264,12 +257,12 @@ static void E15CALL_module_init (cob_module *module)
       module->flag_dump_ready = 0;
       module->module_stmt = 0;
       module->module_sources = NULL;
-#endif //__LIBCOB_VERSION >= 3
+#endif /* __LIBCOB_VERSION >= 3  */
 
 }
-// END Routine E15
+/* END Routine E15 */
 
-// START Routine E35
+/* START Routine E35 */
 static void		E35CALL_module_init(cob_module* module);
 
 struct E35Call_t* E35Call_constructor(int nLenRecSize)
@@ -281,7 +274,7 @@ struct E35Call_t* E35Call_constructor(int nLenRecSize)
     }
     pE35c->pCallE35 = util_MakeAttrib_call(COB_TYPE_ALPHANUMERIC, FILENAME_MAX, 0, 0, FILENAME_MAX, ALLOCATE_DATA);
     memset(pE35c->pCallE35->data, 0x00, FILENAME_MAX);
-    //pE35c->pRecFlag = util_cob_field_make(COB_TYPE_NUMERIC_BINARY, 8, 0, 0, 4, ALLOCATE_DATA);
+    /* pE35c->pRecFlag = util_cob_field_make(COB_TYPE_NUMERIC_BINARY, 8, 0, 0, 4, ALLOCATE_DATA);   */
     pE35c->pRecFlag = util_MakeAttrib_call(COB_TYPE_NUMERIC_BINARY, 8, 0, 0, 4, ALLOCATE_DATA);
     memset(pE35c->pRecFlag->data, 0x00, 4);
 
@@ -302,13 +295,12 @@ struct E35Call_t* E35Call_constructor(int nLenRecSize)
     pE35c->pExitAreaLen = util_MakeAttrib_call(COB_TYPE_NUMERIC_BINARY, 4, 0, 0, 2, ALLOCATE_DATA);
     memset(pE35c->pExitAreaLen->data, 0x30, 2);
     pE35c->pExitArea = util_MakeAttrib_call(COB_TYPE_ALPHANUMERIC, 256, 0, 0, 256, ALLOCATE_DATA);
-    memset(pE35c->pExitArea->data, 0x20, 256);      // Set space in area
-//
+    memset(pE35c->pExitArea->data, 0x20, 256);      /* Set space in area    */
+
    /* Check initialized, check module allocated, */
-    /* set global pointer, */
+   /* set global pointer, */
     /* push module stack, save call parameter count */
-   // if (cob_module_global_enter(&module, &cob_glob_ptr, 0, entry, 0))
-    int entry = 0;
+   int entry = 0;
    if (cob_module_global_enter(&E35module, &E35cob_glob_ptr, 0, entry, 0))
         return NULL;
  
@@ -318,14 +310,14 @@ struct E35Call_t* E35Call_constructor(int nLenRecSize)
     /* Set frame stack pointer */
    E35frame_ptr = E35frame_stack;
    E35frame_ptr->perform_through = 0;
-//
-// P_initialize:
-
+/*
+ P_initialize:
+*/
     E35CALL_module_init(E35module);
-    //da inserire nella destructor    module->crt_status = NULL;
+    /*  da inserire nella destructor    module->crt_status = NULL; */
 
     /* Initialize cancel callback */
-  //da inserire nella destructor   cob_set_cancel(module);
+  /*da inserire nella destructor   cob_set_cancel(module); */
 
     /* Initialize WORKING-STORAGE */
     E35ex_retcode = 0;
@@ -333,7 +325,6 @@ struct E35Call_t* E35Call_constructor(int nLenRecSize)
     
     E35module->module_active++;
 
-//
     return pE35c;
 }
 
@@ -350,7 +341,7 @@ void E35Call_destructor(struct E35Call_t* pE35C)
     util_cob_field_del(pE35C->pOutputRecLen, ALLOCATE_DATA);
     util_cob_field_del(pE35C->pExitAreaLen, ALLOCATE_DATA);
     util_cob_field_del(pE35C->pExitArea, ALLOCATE_DATA);
-//
+
     if (E35module->module_active) {
         E35module->module_active--;
     }
@@ -359,10 +350,9 @@ void E35Call_destructor(struct E35Call_t* pE35C)
     cob_module_leave(E35module);
 
     /* Program return */
-    //  
     if (!E35initialized)
         return;
-    // 
+
     if (E35module && E35module->module_active)
         cob_fatal_error(COB_FERROR_CANCEL);
     E35ex_retcode = 0;
@@ -370,7 +360,6 @@ void E35Call_destructor(struct E35Call_t* pE35C)
 
     E35initialized = 0;
 
-//
     return;
 }
 
@@ -383,19 +372,19 @@ void E35ResetParams(int* nrekE35, int* nrekFlagE35, int nLastRecord)
         8 indicates the last record passed.
     */
     if (*nrekE35 == 1)
-        *nrekFlagE35 = 4;	// Middle record
+        *nrekFlagE35 = 4;	/* Middle record  */
     if (*nrekE35 == 0) {
-        *nrekE35 = 1;		// First record
+        *nrekE35 = 1;		/* First record   */
         *nrekFlagE35 = 0;
     }
     if (nLastRecord == 1)
-        *nrekFlagE35 = 8;	// End record
+        *nrekFlagE35 = 8;	/* End record     */
     return;
 }
 
 int E35Call_SetCallName(struct E35Call_t* pE35C, char* szCallName)
 {
-    strcpy(pE35C->pCallE35->data, szCallName);  // set CALL Name
+    strcpy(pE35C->pCallE35->data, szCallName);  /* set CALL Name */
     return 0;
 }
 
@@ -433,16 +422,16 @@ int	E35Run(const int entry, struct E35Call_t* pE35C, int nRecFlag, int nLen, uns
     cob_set_int(pE35C->pRecFlag, nRecFlag);
     memmove(pE35C->pSendRec->data, pSendRec, nLen);
     memmove(pE35C->pOutputRec->data, pOutRec, *nOutLen);
-    cob_set_int(pE35C->pNewRecLen, 0);       // set length
-    cob_set_int(pE35C->pNewRecLen, 0);       // set length
-    cob_set_int(pE35C->pReturnRecLen, 0);    // set length
-    cob_set_int(pE35C->pOutputRecLen, *nOutLen);    // set length
+    cob_set_int(pE35C->pNewRecLen, 0);               /* set length  */
+    cob_set_int(pE35C->pNewRecLen, 0);               /* set length  */
+    cob_set_int(pE35C->pReturnRecLen, 0);            /* set length  */
+    cob_set_int(pE35C->pOutputRecLen, *nOutLen);     /* set length  */
     cob_set_int(pE35C->pExitAreaLen, 256);
 
     E35cob_procedure_params[0] = pE35C->pRecFlag;
-    E35cob_procedure_params[1] = pE35C->pSendRec;           // new record
-    E35cob_procedure_params[2] = pE35C->pReceiveRec;        // modified record
-    E35cob_procedure_params[3] = pE35C->pOutputRec;         // previous record
+    E35cob_procedure_params[1] = pE35C->pSendRec;           /* new record           */
+    E35cob_procedure_params[2] = pE35C->pReceiveRec;        /* modified record      */
+    E35cob_procedure_params[3] = pE35C->pOutputRec;         /* previous record      */
     E35cob_procedure_params[4] = pE35C->pUnused1;
     E35cob_procedure_params[5] = pE35C->pNewRecLen;
     E35cob_procedure_params[6] = pE35C->pReturnRecLen;
@@ -450,7 +439,7 @@ int	E35Run(const int entry, struct E35Call_t* pE35C, int nRecFlag, int nLen, uns
     E35cob_procedure_params[8] = pE35C->pExitAreaLen;
     E35cob_procedure_params[9] = pE35C->pExitArea;
 
-    E35cob_glob_ptr->cob_call_params = 10; // 3;
+    E35cob_glob_ptr->cob_call_params = 10; 
     E35cob_glob_ptr->cob_stmt_exception = 0;
 
     if (unlikely((E35cob_glob_ptr->cob_exception_code & 0x0b00) == 0x0b00)) E35cob_glob_ptr->cob_exception_code = 0;
@@ -459,16 +448,16 @@ int	E35Run(const int entry, struct E35Call_t* pE35C, int nRecFlag, int nLen, uns
     E35ex_retcode = ((int (*)(void*, void*, void*, void*, void*, void*, void*, void*, void*, void*))E35cob_unifunc.funcint)
         (pE35C->pRecFlag->data, pE35C->pSendRec->data, pE35C->pReceiveRec->data, pE35C->pOutputRec->data, pE35C->pUnused1->data, pE35C->pNewRecLen->data, pE35C->pReturnRecLen->data, pE35C->pOutputRecLen->data, pE35C->pExitAreaLen->data, pE35C->pExitArea->data);
 
-    // set new record or modified record in return record
+    /* set new record or modified record in return record   */
     if (E35ex_retcode == 12)  {
-        memmove(pReceiveRec, pE35C->pReceiveRec->data, nLen);     // modify/new record
+        memmove(pReceiveRec, pE35C->pReceiveRec->data, nLen);     /* modify/new record  */
         if (nIsFileVariable == 1)
-            *newLen = cob_get_int(pE35C->pReceiveRec);            // Get new len only for Variable File
+            *newLen = cob_get_int(pE35C->pReceiveRec);            /* Get new len only for Variable File */
     }
     if (E35ex_retcode == 20) {
-        memmove(pReceiveRec, pE35C->pOutputRec->data, nLen);     // modify/new record
+        memmove(pReceiveRec, pE35C->pOutputRec->data, nLen);      /* modify/new record  */
         if (nIsFileVariable == 1)
-            *newLen = cob_get_int(pE35C->pOutputRecLen);            // Get new len only for Variable File
+            *newLen = cob_get_int(pE35C->pOutputRecLen);          /* Get new len only for Variable File */
     }
 
     return E35ex_retcode;
@@ -509,8 +498,8 @@ static void E35CALL_module_init(cob_module* module)
         module->flag_dump_ready = 0;
         module->module_stmt = 0;
         module->module_sources = NULL;
-#endif //__LIBCOB_VERSION >= 3
+#endif /* __LIBCOB_VERSION >= 3 */
 }
 
-// END   Routine E35
+/* END   Routine E35 */
 /* End functions */

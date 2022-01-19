@@ -28,8 +28,6 @@
 
 #include "gcsort.h"
 #include "libgcsort.h"
-// #include <libcob.h>
-// #include <libcob/common.h>
 #include "fieldvalue.h"
 #include "utils.h"
 #include "job.h"
@@ -38,10 +36,11 @@
 extern cob_field* g_ckfdate1;
 extern cob_field* g_ckfdate2;
 
-struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF) {
+struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF, int datetype) {
 	int i,j;
 	unsigned char buffer[3];
 	struct fieldValue_t *fieldValue=(struct fieldValue_t *)malloc(sizeof(struct fieldValue_t));
+	fieldValue->datetype = datetype;
 	fieldValue->type=utils_parseFieldValueType(type[strlen(type)-1]);
 	if (strlen(type)>1) {
 		type[strlen(type)-1]=0;
@@ -65,14 +64,14 @@ struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF)
                 fieldValue->generated_value=(char *)malloc(sizeof(char)*fieldValue->generated_length+1);
                 if (fieldValue->generated_value == NULL)
                     utl_abend_terminate(MEMORYALLOC, 1, ABEND_EXEC);
-				if (nTypeF == TYPE_STRUCT_STD) {            // NULL value
+				if (nTypeF == TYPE_STRUCT_STD) {            /* NULL value */
 					for(i=0;i<fieldValue->occursion;i++) {
-						fieldValue->generated_value[i]=0;	// original is OK from DFSORT Manual
+						fieldValue->generated_value[i]=0;	/* original is OK from DFSORT Manual */
 					}
 					fieldValue->generated_value[fieldValue->generated_length]=0;
 				}
 				else
-				{   // TYPE_STRUCT_NEW  get value from param
+				{   /* TYPE_STRUCT_NEW  get value from param */
 					strcpy(fieldValue->generated_value, value);
 					fieldValue->generated_value[fieldValue->generated_length]=0;
 					fieldValue->value64 = _atoi64(value);
@@ -86,6 +85,7 @@ struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF)
 				utl_abend_terminate(MEMORYALLOC, 1, ABEND_EXEC);
 			strcpy(fieldValue->generated_value, value);
 			fieldValue->generated_value[fieldValue->generated_length] = 0;
+			/* TODO delete characters separator*/
 			fieldValue->value64 = _atoi64(value);
 			break;
 		case FIELD_VALUE_TYPE_X:
@@ -133,21 +133,22 @@ struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF)
 	return fieldValue;
 }
  
-struct fieldValue_t *fieldValue_constr_newF(char *type, char *value, int nTypeF) {
+struct fieldValue_t *fieldValue_constr_newF(char *type, char *value, int nTypeF, int datetype) {
 	int i;
 	char szB1 [256];
 	struct fieldValue_t *fieldValue=(struct fieldValue_t *)malloc(sizeof(struct fieldValue_t));
-    if (fieldValue == NULL)
+	fieldValue->datetype = datetype;
+	if (fieldValue == NULL)
         utl_abend_terminate(MEMORYALLOC, 6, ABEND_EXEC);
 	fieldValue->type=utils_parseFieldValueType(type[strlen(type)-1]);
 	memset(szB1, 0x00, sizeof(szB1));
 	if (strlen(type) > 1) {
-		memcpy(szB1, type, strlen(type)-1);	//36C'xx'
+		memcpy(szB1, type, strlen(type)-1);	/* 36C'xx' */
 		fieldValue->occursion=atoi(szB1);
 	}
 	else	
 	{
-		fieldValue->occursion=atoi(value);	// 80:X		(padding blank record fix reclen = 80)
+		fieldValue->occursion=atoi(value);	/* 80:X		(padding blank record fix reclen = 80)  */
 	}
 	fieldValue->value=strdup(value);
 	if (strlen(fieldValue->value) > 0) {
@@ -163,13 +164,12 @@ struct fieldValue_t *fieldValue_constr_newF(char *type, char *value, int nTypeF)
 		case FIELD_VALUE_TYPE_Z:
 		case FIELD_VALUE_TYPE_Y:
 			fieldValue->generated_length=fieldValue->occursion;
-				// ?? fieldValue->generated_length = strlen(value);
                 fieldValue->generated_value=(char *)malloc(sizeof(char)*fieldValue->generated_length+1);
                 if (fieldValue->generated_value == NULL)
                     utl_abend_terminate(MEMORYALLOC, 7, ABEND_EXEC);
 				if (nTypeF == 0) {
 					for(i=0;i<fieldValue->occursion;i++) {
-						fieldValue->generated_value[i]=0;	// original is OK from DFSORT Manual
+						fieldValue->generated_value[i]=0;	/* original is OK from DFSORT Manual    */
 					}
 					fieldValue->generated_value[fieldValue->generated_length]=0;
 				}
@@ -180,7 +180,7 @@ struct fieldValue_t *fieldValue_constr_newF(char *type, char *value, int nTypeF)
 					fieldValue->value64 = _atoi64(value);
 				}
 		break;
-		// Date
+		/* Date */
 		case FIELD_VALUE_TYPE_X:
 				fieldValue->generated_length=fieldValue->occursion;
 				fieldValue->generated_value=(char *)malloc(sizeof(char)*fieldValue->generated_length+1);
@@ -211,7 +211,7 @@ struct fieldValue_t *fieldValue_constr_newF(char *type, char *value, int nTypeF)
 	return fieldValue;
 }
 
-void fieldValue_destructor(struct fieldValue_t *fieldValue) {
+void fieldValue_destructor(struct fieldValue_t* fieldValue) {
 
 	if (fieldValue->generated_value != NULL)
 		free(fieldValue->generated_value);
@@ -233,8 +233,10 @@ int fieldValue_print(struct fieldValue_t *fieldValue) {
  	return 0;
 }
 
-// first  parameter value from command
-// second parameter value from record 
+/*
+    first  parameter value from command
+    second parameter value from record 
+*/    
 int fieldValue_checkvalue(struct fieldValue_t *fieldValue, cob_field* pField, int length) {
 	int used_length;
 	int result;
@@ -242,44 +244,35 @@ int fieldValue_checkvalue(struct fieldValue_t *fieldValue, cob_field* pField, in
     int                         mValueint=0;
 	int lenFieldSize	= 0;
 	int lenFieldDigit	= 0;
-	// checktype of field for compare 
+	/* checktype of field for compare */
 	used_length=(length<fieldValue->generated_length?length:fieldValue->generated_length);
 	switch (fieldValue->type) {
 		case FIELD_VALUE_TYPE_Z:
-			mValue64 = fieldValue->value64;			// condition
-			int64_t t2 = cob_get_llint(pField);		// record
+			mValue64 = fieldValue->value64;			/* condition    */
+			int64_t t2 = cob_get_llint(pField);		/* record       */
 			result = 0;
 			if (t2 > mValue64)
 				result = 1;
 			if (t2 < mValue64)
 				result = -1;
-			//result = cob_cmp_llint(pField, mValue64);
-			//result = cob_cmp_llint(pField, fieldValue->value64);
-//-->> s.m. 202105            			result = result*-1;
 		break;
-		// Date
-		// Y2T Fix len to working field - Zoned - size = digit = length
+		/* Date
+		   Y2T Fix len to working field - Zoned - size = digit = length
+        */ 
 		case FIELD_VALUE_TYPE_Y:
 			job_cob_field_reset(g_ckfdate1, COB_TYPE_NUMERIC_DISPLAY, length, length);
 			job_cob_field_reset(g_ckfdate2, COB_TYPE_NUMERIC_DISPLAY, length, length);
-			cob_set_int(g_ckfdate2, (int)fieldValue->value64);							// Command Condition				
-			cob_move(pField, g_ckfdate1);													// Record Value
-			//-->> s.m. 20210520 result = job_CheckTypeDate(FIELD_TYPE_NUMERIC_Y2T, (cob_field*)g_fdate1, (cob_field*)g_fdate2);
+			cob_set_int(g_ckfdate2, (int)fieldValue->value64);							/* Command Condition				*/
+			cob_move(pField, g_ckfdate1);											    /* Record Value                     */
 			result = job_CheckTypeDate(FIELD_TYPE_NUMERIC_Y2T, (cob_field*)g_ckfdate1, (cob_field*)g_ckfdate2);
- 			//result = result * -1;
 			break;
 
 		case FIELD_VALUE_TYPE_X:
-            // result=memcmp((char*)fieldValue->generated_value,(char*)pField->data, used_length);
 			result = memcmp((char*)pField->data, (char*)fieldValue->generated_value, used_length);
-			//result = result * -1;
 			break;
 
 		case FIELD_VALUE_TYPE_C:
-            //result=memcmp((char*)fieldValue->generated_value,(char*)pField->data, used_length);
 			result=memcmp((char*)pField->data, (char*)fieldValue->generated_value, used_length);
-			//
-			//result = result * -1;
 			break;
 		default:
         fprintf(stdout,"*GCSORT*S202*ERROR: Field Value Type unknow %d\n", fieldValue->type);
@@ -290,17 +283,17 @@ int fieldValue_checkvalue(struct fieldValue_t *fieldValue, cob_field* pField, in
 	return result;
 }
 
-//
-// case A
-// verify if value of buffer is one of array
-// Array is [value1,value2,value3,...]
-// len of single element is equal length parameter
-//
+/*
+   case A
+   verify if value of buffer is one of array
+   Array is [value1,value2,value3,...]
+   len of single element is equal length parameter
+*/  
 int fieldValue_ss_array(struct fieldValue_t *fieldValue, cob_field* pField, int length) {
     int n, nLenValue, nElements;
     int res, bFound;
-    nLenValue = strlen((char*)fieldValue->generated_value); // len of array
-    nElements = (nLenValue / (length+1))+1; // num of elements
+    nLenValue = strlen((char*)fieldValue->generated_value);     /* len of array     */
+    nElements = (nLenValue / (length+1))+1;                     /* num of elements  */
     bFound=0;
     for(n=0; n < nElements; n++) {
         res = memcmp((char*)pField->data, (char*)fieldValue->generated_value+(n*(length+1)), length);
@@ -311,10 +304,10 @@ int fieldValue_ss_array(struct fieldValue_t *fieldValue, cob_field* pField, int 
     }
     return res;
 }
-//
-// case B
-// search generated value into record
-//
+/*
+   case B
+   search generated value into record
+*/
 int fieldValue_ss_value(struct fieldValue_t *fieldValue, cob_field* pField, int length) {
     int bFound, nLenBufA, nLenBufB;
     int n, res;
@@ -323,7 +316,7 @@ int fieldValue_ss_value(struct fieldValue_t *fieldValue, cob_field* pField, int 
     nLenBufB = strlen((char*)fieldValue->generated_value);
     bFound=0;
     for(n=0; n<nLenBufA;n++){
-        if (pField->data[n] != fieldValue->generated_value[0])      // verify single char
+        if (pField->data[n] != fieldValue->generated_value[0])      /* verify single char   */
             continue;
         if (n+nLenBufB > nLenBufA)
             break;
@@ -344,9 +337,9 @@ int fieldValue_checksubstring(struct fieldValue_t *fieldValue, cob_field* pField
 	int lenFieldDigit	= 0;
 
     if (fieldValue->generated_length > length)      
-        result = fieldValue_ss_array(fieldValue, pField, length);                                        // search value
+        result = fieldValue_ss_array(fieldValue, pField, length);                                        /* search value */
     else
-        result = fieldValue_ss_value(fieldValue, pField, length);                                        // search array
+        result = fieldValue_ss_value(fieldValue, pField, length);                                        /* search array */
     return result;
 }
 

@@ -100,6 +100,10 @@
       *                
            
            open input sortcbl.
+           if fs-infile1 NOT equal "00"
+                MOVE 25 TO RETURN-CODE
+                GOBACK
+           end-if
            
            perform view-data until  fs-infile1 not equal "00" 
            close sortcbl

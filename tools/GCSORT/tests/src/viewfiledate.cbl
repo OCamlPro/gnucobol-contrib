@@ -114,7 +114,8 @@
            open input infile.
            if fs-infile not = "00"
                 display "outfile file status error : " fs-infile
-                stop run
+                MOVE 25 TO RETURN-CODE
+                GOBACK
            end-if
       *
            move zero          to count-value.
@@ -181,4 +182,3 @@
              goback
            end-if
            .           
-      

@@ -26,20 +26,17 @@
 #include <stddef.h>
 #include <stdint.h>
 
-//#ifndef _WIN32
-//#ifndef _MSC_VER
-//-->>#if	!defined(__MINGW32__) && !defined(__MINGW64__)
 #if	defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 	#include <unistd.h>
 	#include <time.h>
 	#include <strings.h>
-	#define NUMCHAREOL 1		// UNIX
+	#define NUMCHAREOL 1		/* UNIX */
 	typedef unsigned long DWORD;
 	typedef unsigned short WORD;
 	typedef unsigned int UNINT32;
 
 	typedef unsigned char       BYTE;
-	//typedef BYTE far            *LPBYTE;
+	/*typedef BYTE far            *LPBYTE;  */
 	typedef BYTE             *LPBYTE;
 	typedef BYTE             *PBYTE;
 	typedef const char 	    *LPCSTR, *PCSTR;
@@ -75,7 +72,7 @@
 	#define _strdup  strdup
 
 #else
-	#define NUMCHAREOL 2		// WINDOWS
+	#define NUMCHAREOL 2		/* WINDOWS  */
 
 #endif
 
@@ -85,30 +82,29 @@
 	#include <sys/stat.h>
 #endif
 
-//#ifdef _MSC_VER
 #if defined(_MSC_VER) 
   #define INLINE  __forceinline /* use __forceinline (VC++ specific) */
   #define INLINE2 __forceinline /* use __forceinline (VC++ specific) */
 #else
-//fix for ubuntu envronment  #define INLINE __inline__ //			 inline        /* use standard inline */
+/*  fix for ubuntu envronment  #define INLINE __inline__ //			 inline         use standard inline */
   #define INLINE 
-  #define INLINE2   __inline__  //__attribute__((always_inline))
+  #define INLINE2   __inline__  /* __attribute__((always_inline))   */
 #endif
 
 #include <libcob.h>
 #include "job.h"
 #include "outfil.h"
 
-
+ 
 #define FILE_TYPE_FIXED			0
 #define FILE_TYPE_VARIABLE		1
 
-#define FILE_ORGANIZATION_TEMP				0//0
-#define FILE_ORGANIZATION_INDEXED			1//0
-#define FILE_ORGANIZATION_RELATIVE			2//1
-#define FILE_ORGANIZATION_SEQUENTIAL		3//2
-#define FILE_ORGANIZATION_LINESEQUENTIAL	4//3
-#define FILE_ORGANIZATION_SEQUENTIALMF		5//4
+#define FILE_ORGANIZATION_TEMP				0
+#define FILE_ORGANIZATION_INDEXED			1
+#define FILE_ORGANIZATION_RELATIVE			2
+#define FILE_ORGANIZATION_SEQUENTIAL		3
+#define FILE_ORGANIZATION_LINESEQUENTIAL	4
+#define FILE_ORGANIZATION_SEQUENTIALMF		5
 
 
 #define FIELD_TYPE_CHARACTER		0
@@ -117,9 +113,9 @@
 #define FIELD_TYPE_ZONED			3
 #define FIELD_TYPE_FIXED			4
 #define FIELD_TYPE_FLOAT			5
-#define FIELD_TYPE_NUMERIC_CLO		6       // sign leading
-#define FIELD_TYPE_NUMERIC_CSL		7       // sign leading separate
-#define FIELD_TYPE_NUMERIC_CST		8       // sign trailing separate
+#define FIELD_TYPE_NUMERIC_CLO		6       /* sign leading             */
+#define FIELD_TYPE_NUMERIC_CSL		7       /* sign leading separate    */
+#define FIELD_TYPE_NUMERIC_CST		8       /* sign trailing separate   */
 #define FIELD_TYPE_NUMERIC_Y2T	    20
 #define FIELD_TYPE_NUMERIC_Y2B		21
 #define FIELD_TYPE_NUMERIC_Y2C		22
@@ -134,7 +130,7 @@
 
 
 
-//#define DATE_TYPE_BINARY_PACKED     100
+/*  #define DATE_TYPE_BINARY_PACKED     100 */
 #define FIELD_TYPE_DATE_MIN         20
 #define FIELD_TYPE_DATE_MAX         30
 
@@ -163,8 +159,8 @@
 #define FIELD_VALUE_TYPE_Z	0
 #define FIELD_VALUE_TYPE_X	1
 #define FIELD_VALUE_TYPE_C	2
-#define FIELD_VALUE_TYPE_F	3 // FIXED
-#define FIELD_VALUE_TYPE_Y	4 // DATE
+#define FIELD_VALUE_TYPE_F	3 /* FIXED  */
+#define FIELD_VALUE_TYPE_Y	4 /* DATE   */
 
 #define MAX_SLOT_SEEKENV  48
 #define MAX_SLOT_SEEK	1
@@ -177,6 +173,8 @@
 
 #define MEMORYALLOC     1
 #define EXITROUTINE     2
+#define NOMATCH_FOUND	3
+#define CHANGE_ERR		4
 
 #define ABEND_SKIP      1
 #define ABEND_EXEC      2
@@ -190,7 +188,7 @@
 	#define strSep  "/"
 #endif
 
-// check if value is date data type
+/* check if value is date data type */
 #define IsDateType(y)        ((y >= FIELD_TYPE_DATE_MIN) && (y <= FIELD_TYPE_DATE_MAX)) 
 
 
@@ -218,7 +216,7 @@ int utils_SetOptionExRoutine(char* optSort, char* szType, char* sCallName);
 
 void util_print_time_elap( const  char* szMex );
 void util_covertToUpper(char *strIn, char* strOut);
-// Function for cob_field & cob_field_attrib
+/* Function for cob_field & cob_field_attrib    */
 cob_field* util_cob_field_make (int type, int digits, int scale, int flags, int nLen, int nData);
 void util_cob_field_del (cob_field* field_ret, int nData);
 int utils_getFieldTypeLIBCOBInt(int nInteralType, int nLen);
@@ -228,12 +226,15 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen);
 void util_resetAttrib(cob_field_attr* attrArea, int type, int digits);
 void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate);
 int utl_GetFileSizeEnvName(struct file_t* file);
+void utils_SetRecordOptionSortType(char* szType);
+void utils_SetRecordOptionSortLen(int l1, int l2, int l3, int l4, int l5, int l6, int l7);
 
 
-//#ifndef _WIN32
 #if defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 	unsigned long  GetTickCount(void);  
 #endif
 
+int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut);
+int utl_replace_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut);
 
-#endif // UTILS_H_INCLUDED
+#endif /* UTILS_H_INCLUDED  */

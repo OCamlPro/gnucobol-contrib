@@ -102,8 +102,9 @@
            03   filler                pic 9(2).
            03   wk-yymmdd             pic 9(6).
       *
-       77 env-pgm                       pic x(50).
-       77 env-var-value                 pic x(1024).        
+       77 env-pgm                     pic x(50).
+       77 env-var-value               pic x(1024).
+       77 header-disp                 pic x(10).       
       *============================================*
        procedure division.
       *============================================*
@@ -120,6 +121,7 @@
            open input infile.
            if fs-infile not = "00"
                 display "infile file status error : " fs-infile
+                move 25 to RETURN-CODE
                 stop run
            end-if
       *
@@ -136,11 +138,28 @@
            end-if
            if seq-record  <  count-value
                 display '*checkfdate* ERROR sequence error '
-                display " Current record "
+           display  
+           '*=========================================================='
+           '==========================================================='
+           '=====*'
+           display 
+           '  Record  |id rek |  Y2T8  |Y2T4|Y2T2|Y2T3|Y2T5 | Y2T'
+           '6 |  Y2T7  |Y2B |Y2C|Y2D|Y2P |Y2S|  Y2U   |'
+           '  Y2V   |  Y2X  | Y2Y  |Y2Z|'
+           display 
+           '*=========================================================='
+           '==========================================================='
+           '=====*'
+                move " Current  "       to header-disp
                 perform        display-value-rek   
                 move rec-prev  to infile-record
-                display " Previous record "
+                move " Previous "   to header-disp
                 perform        display-value-rek   
+           display 
+           '*=========================================================='
+           '==========================================================='
+           '=====*'
+                move 25 to RETURN-CODE
                 go lb-90
            end-if
            move infile-record  to rec-prev
@@ -186,28 +205,47 @@
        10.
            add 1 to count-value
       *
-           display ' ------------------------------------------------'
-           display ' seq-record pic 9(07)         '   seq-record 
-           display ' Y2T8       pic 9(8)          '   Y2T8       
-           display ' Y2T4       pic 9(4)          '   Y2T4       
-           display ' Y2T2       pic 9(2)          '   Y2T2       
-           display ' Y2T3       pic 9(3)          '   Y2T3       
-           display ' Y2T5       pic 9(5)          '   Y2T5       
-           display ' Y2T6       pic 9(6)          '   Y2T6       
-           display ' Y4T7       pic 9(7)          '   Y4T7       
-           display ' Y2B        pic 99 comp       '   Y2B        
-           display ' Y2C        pic 99            '   Y2C        
-           display ' Y2D        pic 99 comp-6     '   Y2D        
-           display ' Y2P        pic 99 comp-3     '   Y2P        
-           display ' Y2S        pic 99            '   Y2S        
-           display ' Y2U        pic s9(5) comp-3  '   Y2U        
-           display ' Y2V        pic s9(6) comp-3  '   Y2V        
-           display ' Y2X        pic s9(5) comp-3  '   Y2X        
-           display ' Y2Y        pic  9(6) comp-3  '   Y2Y        
-           display ' Y2Z        pic 99            '   Y2Z        
-           display ' ------------------------------------------------'
-                     .
+           display     header-disp '|'
+           seq-record   '|'
+           Y2T8         '|'
+           Y2T4         '|'
+           Y2T2         '  |'
+           Y2T3         ' |'
+           Y2T5         '|'
+           Y2T6         '|'
+           Y4T7         ' |'
+           Y2B          ' |'
+           Y2C          ' |'
+           Y2D          ' |'
+           Y2P          '  |'
+           Y2S          ' |'
+           Y2U          '  |'
+           Y2V          ' |'
+           Y2X          ' |'
+           Y2Y          '|'
+           Y2Z          ' |'
+            .
+      **      display ' ------------------------------------------------'
+      **      display ' seq-record pic 9(07)         '   seq-record 
+      **      display ' Y2T8       pic 9(8)          '   Y2T8       
+      **      display ' Y2T4       pic 9(4)          '   Y2T4       
+      **      display ' Y2T2       pic 9(2)          '   Y2T2       
+      **      display ' Y2T3       pic 9(3)          '   Y2T3       
+      **      display ' Y2T5       pic 9(5)          '   Y2T5       
+      **      display ' Y2T6       pic 9(6)          '   Y2T6       
+      **      display ' Y4T7       pic 9(7)          '   Y4T7       
+      **      display ' Y2B        pic 99 comp       '   Y2B        
+      **      display ' Y2C        pic 99            '   Y2C        
+      **      display ' Y2D        pic 99 comp-6     '   Y2D        
+      **      display ' Y2P        pic 99 comp-3     '   Y2P        
+      **      display ' Y2S        pic 99            '   Y2S        
+      **      display ' Y2U        pic s9(5) comp-3  '   Y2U        
+      **      display ' Y2V        pic s9(6) comp-3  '   Y2V        
+      **      display ' Y2X        pic s9(5) comp-3  '   Y2X        
+      **      display ' Y2Y        pic  9(6) comp-3  '   Y2Y        
+      **      display ' Y2Z        pic 99            '   Y2Z        
+      **      display ' ------------------------------------------------'
+      **             .
        90.
            exit.
       *
-      

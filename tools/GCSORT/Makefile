@@ -24,8 +24,10 @@ endif
 
 TARGET=gcsort
 OBJS=\
+    changefield.o \
 	condfield.o \
     copyfile.o \
+    datediff.o \
     gcsorthelp.o \
     gcsort.o \
 	exitroutines.o \
@@ -75,19 +77,21 @@ scanner.c scanner.h: scanner.l
 ## 		# 
 	$(FLEX) --header-file=scanner.h -o scanner.c scanner.l
 
+changefield.o:changefield.h gcsort.h fieldvalue.h utils.h
 condfield.o:condfield.h gcsort.h fieldvalue.h file.h gcshare.h job.h sortfield.h sumfield.h utils.h 
 copyfile.o:condfield.h copyfile.h file.h gcshare.h gcsort.h inrec.h  job.h libgcsort.h outfil.h outrec.h parser.h scanner.h sortfield.h sumfield.h utils.h 
 exitroutines.o:file.h exitroutines.h libgcsort.h utils.h
+datediff.o:gcsort.h job.h libgcsort.h utils.h datediff.h
 fieldvalue.o:fieldvalue.h gcsort.h job.h libgcsort.h outrec.h  utils.h 
 file.o:file.h gcshare.h gcsort.h job.h utils.h 
 gcsort.o:file.h gcsort.h job.h libgcsort.h utils.h
 gcsorthelp.o:gcsort.h job.h
-inrec.o:fieldvalue.h gcshare.h gcsort.h inrec.h job.h utils.h 
+inrec.o:fieldvalue.h gcshare.h gcsort.h inrec.h job.h utils.h changefield.h
 job.o:condfield.h file.h gcshare.h gcsort.h inrec.h  job.h libgcsort.h mmfioc.h outfil.h outrec.h parser.h scanner.h sortfield.h sumfield.h utils.h 
 keyidxrel.o: keyidxrel.h file.h
 mmfioc.o:gcshare.h gcsort.h mmfioc.h job.h utils.h
 outfil.o:condfield.h file.h gcshare.h gcsort.h job.h outfil.h outrec.h parser.h scanner.h sortfield.h sumfield.h utils.h 
-outrec.o:gcshare.h gcsort.h fieldvalue.h job.h outrec.h utils.h 
+outrec.o:gcshare.h gcsort.h fieldvalue.h job.h outrec.h utils.h changefield.h
 parser.o:condfield.h fieldvalue.h file.h file.h inrec.h job.h gcshare.h gcsort.h keyidxrel.h outrec.h outfil.h sortfield.h sumfield.h parser.y scanner.l utils.h 
 scanner.o:gcsort.h parser.h utils.h parser.y scanner.l 
 sortfield.o:gcshare.h gcsort.h job.h sortfield.h sumfield.h utils.h

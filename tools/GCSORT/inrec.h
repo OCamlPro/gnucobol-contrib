@@ -26,12 +26,14 @@
 
 struct inrec_t;
 struct fieldValue_t;
+struct change_t;
 
 #define INREC_TYPE_RANGE			0
 #define INREC_TYPE_CHANGE_POSITION	1
 #define INREC_TYPE_CHANGE			2
 #define INREC_TYPE_RANGE_POSITION	3
 #define INREC_TYPE_CHANGE_ABSPOS	4
+#define INREC_TYPE_CHANGE_CMDOPT	5
 
 struct inrec_t {
 	int nIsOverlay;
@@ -40,25 +42,52 @@ struct inrec_t {
 		struct {
 			int position;
 			int length;
-		} range;				//0	INREC_TYPE_RANGE
+			int posAbsRec;
+			struct fieldValue_t* fieldValue;
+			char type;
+			struct change_t* changeCmdOpt;
+		} range;				/* 0	INREC_TYPE_RANGE    */
 		struct {
 			int position;
-			struct fieldValue_t *fieldValue;
-		} change_position;		//1	INREC_TYPE_CHANGE_POSITION
-		struct {
+			int length;
 			int posAbsRec;
 			struct fieldValue_t *fieldValue;
 			char type;
-		} change;				//2	INREC_TYPE_CHANGE
-		struct {		
-			int posAbsRec;
+			struct change_t* changeCmdOpt;
+		} change_position;		/*  1	INREC_TYPE_CHANGE_POSITION  */
+		struct {
 			int position;
 			int length;
-		} range_position;		//3	INREC_TYPE_RANGE_POSITION
+			int posAbsRec;
+			struct fieldValue_t *fieldValue;
+			char type;
+			struct change_t* changeCmdOpt;
+		} change;				/*  2	INREC_TYPE_CHANGE   */
+		struct {		
+			int position;
+			int length;
+			int posAbsRec;
+			struct fieldValue_t* fieldValue;
+			char type;
+			struct change_t* changeCmdOpt;
+		} range_position;		/*  3	INREC_TYPE_RANGE_POSITION   */
+		struct {
+			int position;
+			int length;
+			int posAbsRec;
+			struct fieldValue_t* fieldValue;
+			char type;
+			struct change_t* changeCmdOpt;
+		} changeCmd;			/*  5	INREC_TYPE_CHANGE_CMDOPT   */
 	};
+	unsigned char* szChangeBufIn;
+	unsigned char* szChangeBufOut;
+	unsigned char* szChangeBufNoMatch;
+
 	struct inrec_t *next;
 };
 
+void inrec_initialize(struct inrec_t* inrec);
 struct inrec_t *inrec_constructor_range(int position, int length);
 struct inrec_t *inrec_constructor_change_position(int position, struct fieldValue_t *fieldValue);
 struct inrec_t *inrec_constructor_change(struct fieldValue_t *fieldValue);
@@ -76,8 +105,8 @@ int inrec_getLength(struct inrec_t *inrec);
 int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos);
 int inrec_copy_overlay(struct inrec_t* inrec, unsigned char* output, unsigned char* input, int outputLength, int inputLength, int nFileFormat, int nIsMF, struct job_t* job, int nSplitPos);
 int inrec_SetOverlay(struct inrec_t* Inrec, int nOverlay);
-
+int inrec_SetChangeCmdOpt(struct inrec_t* inrec, struct change_t* chg);
 int inrec_addDefinition(struct inrec_t *Inrec);
 
-#endif // INREC_H_INCLUDED
+#endif /* INREC_H_INCLUDED  */
 

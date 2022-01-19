@@ -24,8 +24,8 @@
 #include <stdlib.h> 
 #include <time.h>
 #include <sys/stat.h>
-// #ifdef _WIN32
-#if	defined(_MSC_VER) // s.m. 20201021 || defined(__MINGW32__) || defined(__MINGW64__)
+/* #ifdef _WIN32    */
+#if	defined(_MSC_VER) /* s.m. 20201021 || defined(__MINGW32__) || defined(__MINGW64__)  */
 	#include <windows.h>
 #else
 	#include <limits.h>
@@ -42,10 +42,9 @@
 #include "exitroutines.h"
 #include "gcshare.h"
 
-// s.m.
-// inserita funzione per gestione del test case sensitive
+/* s.m.                                                     */
+/* inserita funzione per gestione del test case sensitive   */
 
-// #ifdef _WIN32
 /*
 #ifdef _MSC_VER
 int strcasecmp ( const char *str1, const char *str2) {
@@ -73,15 +72,15 @@ int utils_parseFileOrganization(const char *organization)
 		return FILE_ORGANIZATION_SEQUENTIAL;
 	} else if (!strcasecmp(organization,"LS")) {
 		return FILE_ORGANIZATION_LINESEQUENTIAL;
-//future use	} else if (!strcasecmp(organization,"SQMF")) {		//SEQ MF
-//future use		return FILE_ORGANIZATION_SEQUENTIALMF;
+/* future use	} else if (!strcasecmp(organization,"SQMF")) {		//SEQ MF    */
+/* future use		return FILE_ORGANIZATION_SEQUENTIALMF;                      */
 	} else {
 		fprintf(stderr,"*GCSORT*P001 - Error parsing organization : %s invalid\n", organization);
 		return -1;
 	}
 }
 
-// ==================================================== //
+/* ==================================================== */
 /*  Format Type Field   */
 /*
                 CH  Char            
@@ -95,7 +94,7 @@ TI / OT / CTO / ZD  Zoned decimal  - sign trailing
            LS / CSL Signed Numeric - leading separate sign
              ???  FS / CSF Signed Numeric - with optional leading floating sign  (PIC +++9, PIC ----,...)
 */
-// ==================================================== //
+/* ==================================================== */
 int utils_parseFieldType(const char *type) 
 {
 	if (!strcasecmp(type,"CH")) {
@@ -108,7 +107,7 @@ int utils_parseFieldType(const char *type)
 		return FIELD_TYPE_FLOAT;
 	} else if (!strcasecmp(type,"PD")) {
 		return FIELD_TYPE_PACKED;
-// TI / OT / CTO / ZD  Zoned decimal  - sign trailing
+/* TI / OT / CTO / ZD  Zoned decimal  - sign trailing   */
 	} else if (!strcasecmp(type,"ZD")) {
 		return FIELD_TYPE_ZONED;
 	} else if (!strcasecmp(type,"TI")) {
@@ -117,68 +116,66 @@ int utils_parseFieldType(const char *type)
 		return FIELD_TYPE_ZONED;
 	} else if (!strcasecmp(type,"CTO")) {
 		return FIELD_TYPE_ZONED;
-// LI / OL / CLO Signed Numeric - sign lealing 
+/* LI / OL / CLO Signed Numeric - sign lealing  */
 	} else if (!strcasecmp(type,"CLO")) {
 		return FIELD_TYPE_NUMERIC_CLO;
 	} else if (!strcasecmp(type,"LI")) {
 		return FIELD_TYPE_NUMERIC_CLO;
 	} else if (!strcasecmp(type,"OL")) {
 		return FIELD_TYPE_NUMERIC_CLO;
-//
-// CST Signed Numeric - trailing separate sign
+/* CST Signed Numeric - trailing separate sign  */
 	} else if (!strcasecmp(type,"CST")) {
 		return FIELD_TYPE_NUMERIC_CST;
 	} else if (!strcasecmp(type,"TS")) {
 		return FIELD_TYPE_NUMERIC_CST;
-// 
-//  LS / CSL Signed Numeric - leading separate sign
+/*  LS / CSL Signed Numeric - leading separate sign */
 	} else if (!strcasecmp(type,"LS")) {
 		return FIELD_TYPE_NUMERIC_CSL;
 	} else if (!strcasecmp(type,"CSL")) {
 		return FIELD_TYPE_NUMERIC_CSL;
-// Date
+/* Date */
 	} else if (!strcasecmp(type, "Y2T")) {
 		return FIELD_TYPE_NUMERIC_Y2T;
-		//
+		
 	}	else if (!strcasecmp(type, "Y2B")) {
 		return FIELD_TYPE_NUMERIC_Y2B;
-		//
+		
 	}
 	else if (!strcasecmp(type, "Y2C")) {
 		return FIELD_TYPE_NUMERIC_Y2C;
-		//
+		
 	}
 	else if (!strcasecmp(type, "Y2D")) {
 		return FIELD_TYPE_NUMERIC_Y2D;
-		//
+		
 	}
 	else if (!strcasecmp(type, "Y2P")) {
 		return FIELD_TYPE_NUMERIC_Y2P;
-		//
+		
 	}
 	else if (!strcasecmp(type, "Y2S")) {
 		return FIELD_TYPE_NUMERIC_Y2S;
-		//
+		
 	}
 	else if (!strcasecmp(type, "Y2U")) {
 		return FIELD_TYPE_NUMERIC_Y2U;
-		//
+		
 	}
 	else if (!strcasecmp(type, "Y2V")) {
 		return FIELD_TYPE_NUMERIC_Y2V;
-		//
+		
 	}
 	else if (!strcasecmp(type, "Y2X")) {
 		return FIELD_TYPE_NUMERIC_Y2X;
-		//
+		
 	}
 	else if (!strcasecmp(type, "Y2Y")) {
 		return FIELD_TYPE_NUMERIC_Y2Y;
-		//
+		
 	}
 	else if (!strcasecmp(type, "Y2Z")) {
 		return FIELD_TYPE_NUMERIC_Y2Z;
-		//
+		
 	} else {
 		fprintf(stderr, "*GCSORT*P002 - Error parsing datatye : %s invalid\n", type);
 		return -1;
@@ -197,7 +194,7 @@ int utils_getFieldTypeInt(char* strType)
 		return FIELD_TYPE_FLOAT;
 	} else if (!strcasecmp(strType,"PD")) {
 		return FIELD_TYPE_PACKED;
-// TI / OT / CTO / ZD  Zoned decimal  - sign trailing
+/* TI / OT / CTO / ZD  Zoned decimal  - sign trailing   */
 	} else if (!strcasecmp(strType,"ZD")) {
 		return FIELD_TYPE_ZONED;
 	} else if (!strcasecmp(strType,"TI")) {
@@ -206,25 +203,23 @@ int utils_getFieldTypeInt(char* strType)
 		return FIELD_TYPE_ZONED;
 	} else if (!strcasecmp(strType,"CTO")) {
 		return FIELD_TYPE_ZONED;
-// LI / OL / CLO Signed Numeric - sign lealing 
+/* LI / OL / CLO Signed Numeric - sign lealing */
 	} else if (!strcasecmp(strType,"CLO")) {
 		return FIELD_TYPE_NUMERIC_CLO;
 	} else if (!strcasecmp(strType,"LI")) {
 		return FIELD_TYPE_NUMERIC_CLO;
 	} else if (!strcasecmp(strType,"OL")) {
 		return FIELD_TYPE_NUMERIC_CLO;
-//
-// CST Signed Numeric - trailing separate sign
+/* CST Signed Numeric - trailing separate sign  */
 	} else if (!strcasecmp(strType,"CST")) {
 		return FIELD_TYPE_NUMERIC_CST;
-// 
-//  LS / CSL Signed Numeric - leading separate sign
+/*  LS / CSL Signed Numeric - leading separate sign */
 	} else if (!strcasecmp(strType,"LS")) {
 		return FIELD_TYPE_NUMERIC_CSL;
 	} else if (!strcasecmp(strType,"CSL")) {
 		return FIELD_TYPE_NUMERIC_CSL;
 	}
-	// date
+	/* date */
 	else if (!strcasecmp(strType, "Y2T")) {
 		return FIELD_TYPE_NUMERIC_Y2T;
 	}
@@ -376,8 +371,8 @@ const char *utils_getFileOrganizationName(int organization)
 			return "SQ";
 		case FILE_ORGANIZATION_LINESEQUENTIAL:
 			return "LS";
-//FUTURE USE		case FILE_ORGANIZATION_SEQUENTIALMF:
-//FUTURE USE			return "SQMF";
+/*  FUTURE USE		case FILE_ORGANIZATION_SEQUENTIALMF:    */
+/*  FUTURE USE			return "SQMF";                      */    
 		default:
 			return "";
 	}
@@ -401,11 +396,11 @@ int utils_getFieldTypeLIBCOBInt(int nInteralType, int nLen)
 	case FIELD_TYPE_PACKED:
 		return COB_TYPE_NUMERIC_PACKED;
 	case FIELD_TYPE_ZONED:
-    case FIELD_TYPE_NUMERIC_CLO:       // sign leading
-    case FIELD_TYPE_NUMERIC_CSL:       // sign leading separate
-    case FIELD_TYPE_NUMERIC_CST:       // sign trailing separate
-// date
-	case FIELD_TYPE_NUMERIC_Y2T:       // sign trailing separate
+    case FIELD_TYPE_NUMERIC_CLO:       /* sign leading              */
+    case FIELD_TYPE_NUMERIC_CSL:       /* sign leading separate     */
+    case FIELD_TYPE_NUMERIC_CST:       /* sign trailing separate    */
+/* date */
+	case FIELD_TYPE_NUMERIC_Y2T:       /* sign trailing separate    */
 		return COB_TYPE_NUMERIC_DISPLAY;
 	case FIELD_TYPE_NUMERIC_Y2B:       
 		return COB_TYPE_NUMERIC_BINARY;
@@ -431,7 +426,7 @@ int utils_getFieldTypeLIBCOBInt(int nInteralType, int nLen)
 	return -1;
 }
 
-// From internal type get flags for create/setting cob_field
+/* From internal type get flags for create/setting cob_field    */
 int utils_getFieldTypeLIBCOBFlags(int nInteralType) 
 {
 	switch (nInteralType) {
@@ -439,39 +434,38 @@ int utils_getFieldTypeLIBCOBFlags(int nInteralType)
 		return 0;
 	case FIELD_TYPE_BINARY:
         return COB_FLAG_BINARY_SWAP;
-		// 20160914 return 0;
+		/* 20160914 return 0;   */
 	case FIELD_TYPE_FIXED:
         return COB_FLAG_HAVE_SIGN | COB_FLAG_BINARY_SWAP;
-		// 20160914 return COB_FLAG_HAVE_SIGN ;
+		/* 20160914 return COB_FLAG_HAVE_SIGN ; */
 	case FIELD_TYPE_FLOAT:
 		return COB_FLAG_HAVE_SIGN;
-        // s.m. 20160925
-        // return COB_FLAG_HAVE_SIGN | COB_FLAG_IS_FP;
+        /* s.m. 20160925    */
+        /* return COB_FLAG_HAVE_SIGN | COB_FLAG_IS_FP;  */
 
 	case FIELD_TYPE_PACKED:
         return COB_FLAG_HAVE_SIGN;    
 	case FIELD_TYPE_ZONED:
-		//-->> s.m. 20160914 return COB_FLAG_HAVE_SIGN;
-        // Zoned for number 00001, +00001,-000001
-        //-->>return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_SEPARATE | COB_FLAG_SIGN_LEADING;      // s.m. 20160914 insert COB_FLAG_SIGN_LEADING
-        return COB_FLAG_HAVE_SIGN ;      // s.m. 20160914 insert COB_FLAG_SIGN_LEADING problem with +/n zoned
-//
-    case  FIELD_TYPE_NUMERIC_CLO:         // sign leading
+		/*-->> s.m. 20160914 return COB_FLAG_HAVE_SIGN; */
+        /* Zoned for number 00001, +00001,-000001       */
+        /*-->>return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_SEPARATE | COB_FLAG_SIGN_LEADING;      // s.m. 20160914 insert COB_FLAG_SIGN_LEADING    */
+        return COB_FLAG_HAVE_SIGN ;      /* s.m. 20160914 insert COB_FLAG_SIGN_LEADING problem with +/n zoned   */
+    case  FIELD_TYPE_NUMERIC_CLO:         /* sign leading   */
         return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_LEADING;      
-    case  FIELD_TYPE_NUMERIC_CSL:         // sign leading separate
+    case  FIELD_TYPE_NUMERIC_CSL:         /* sign leading separate  */
         return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_LEADING | COB_FLAG_SIGN_SEPARATE;      
-    case  FIELD_TYPE_NUMERIC_CST:         // sign trailing separate
+    case  FIELD_TYPE_NUMERIC_CST:         /* sign trailing separate */
         return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_SEPARATE;      
-//Date
-	case  FIELD_TYPE_NUMERIC_Y2T:         // sign trailing separate
-		// s.m. 20210513 return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_SEPARATE;
+/*  Date    */
+	case  FIELD_TYPE_NUMERIC_Y2T:         /* sign trailing separate */
+		/* s.m. 20210513 return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_SEPARATE;    */
 		return COB_FLAG_HAVE_SIGN;
 	case  FIELD_TYPE_NUMERIC_Y2B:         
 		return COB_FLAG_BINARY_SWAP ;
 	case  FIELD_TYPE_NUMERIC_Y2C:
 		return 0;
 	case  FIELD_TYPE_NUMERIC_Y2D:
-		return COB_FLAG_NO_SIGN_NIBBLE; // new
+		return COB_FLAG_NO_SIGN_NIBBLE; /* new  */
 	case  FIELD_TYPE_NUMERIC_Y2P:
 		return 0;
 	case  FIELD_TYPE_NUMERIC_Y2S:
@@ -511,10 +505,9 @@ PIC S9(n) COMP-3|PACKED-DECIMAL
 */
 		case FIELD_TYPE_PACKED:
 			return "PD";
-// s.m.
+/* s.m. */
 		case FIELD_TYPE_ZONED:
-			return "ZD";
-// 
+			return "ZD"; 
 /* FI Fixed 
 	PIC S9(n) COMP|BINARY|COMP-4|COMP-5
 		n = 1 to 4	len 2 FI
@@ -531,7 +524,7 @@ PIC S9(n) COMP-3|PACKED-DECIMAL
 			return "CSL";
         case FIELD_TYPE_NUMERIC_CST:
 			return "CST";
-// Date
+/* Date */
 		case FIELD_TYPE_NUMERIC_Y2T:
 			return "Y2T";
 		case FIELD_TYPE_NUMERIC_Y2B:
@@ -656,8 +649,6 @@ void util_print_time_elap( const char* szMex )
    fprintf(stdout,"%s - %s", szMex, asctime(info));
    return;
 }
-// #ifndef _WIN32
-
 #if	defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 unsigned long GetTickCount(void) {
 	if (globalJob->ndeb > 0) {
@@ -711,24 +702,21 @@ int utils_SetOptionSort(char* optSort, struct outfil_t* outfil, int nValue)
 int utils_SetOptionY2Past(char* optSort, int nNum)
 {
 	int nYear = nNum;
-	// verify len of nNum
-	// 00 - 99 : specifies the number of years DFSORT is to subtract from the current year to set the beginning of
-	// the sliding century window
-	// 1000 - 3000 : specifies the beginning of the fixed century window
-	//
-	// default of variable globalJob->nY2Past is current date
-	// int with 4 numbers
-	// 
+	/* verify len of nNum                                                                                           */
+	/* 00 - 99 : specifies the number of years DFSORT is to subtract from the current year to set the beginning of  */
+	/* the sliding century window                                                                                   */
+	/* 1000 - 3000 : specifies the beginning of the fixed century window                                            */
+	/*                                                                                                              */
+	/* default of variable globalJob->nY2Past is current date                                                       */
+	/* int with 4 numbers                                                                                           */
+	/*                                                                                                              */
 	if (strcasecmp(optSort, "Y2PAST") == 0) {
 		if ((nYear >= 0) && (nYear <= 99)) {
 			globalJob->nY2Past = nYear;
-			globalJob->nY2PastLimInf = globalJob->nY2Year - globalJob->nY2Past;											// YYYYY inf.
+			globalJob->nY2PastLimInf = globalJob->nY2Year - globalJob->nY2Past;											/* YYYYY inf.   */
 			globalJob->nY2PastLimSup = globalJob->nY2Year + 99 - globalJob->nY2Past;
-			globalJob->nY2PastLimInfyy2 = globalJob->nY2PastLimInf - ((globalJob->nY2PastLimInf / 100) * 100);			// YY
-			globalJob->nY2PastLimInfyy3 = globalJob->nY2PastLimInf - ((globalJob->nY2PastLimInf / 1000) * 1000);		// YYY
-
-			//globalJob->nY2PastLimInfyy4 = globalJob->nY2PastLimInfyy2 * 100;
-			//globalJob->nY2PastLimInfyy5 = globalJob->nY2PastLimInfyy2 * 1000;
+			globalJob->nY2PastLimInfyy2 = globalJob->nY2PastLimInf - ((globalJob->nY2PastLimInf / 100) * 100);			/* YY   */
+			globalJob->nY2PastLimInfyy3 = globalJob->nY2PastLimInf - ((globalJob->nY2PastLimInf / 1000) * 1000);		/* YYY  */
 		}
 		if ((nYear >= 1000) && (nYear <= 3000)) {
 			globalJob->nY2Past = nYear;
@@ -736,29 +724,27 @@ int utils_SetOptionY2Past(char* optSort, int nNum)
 			globalJob->nY2PastLimInf = globalJob->nY2Year;
 			globalJob->nY2PastLimSup = globalJob->nY2Year + 99;
 			globalJob->nY2PastLimInfyy2 = globalJob->nY2PastLimInf - ((globalJob->nY2PastLimInf / 100) * 100);
-			globalJob->nY2PastLimInfyy3 = globalJob->nY2PastLimInf - ((globalJob->nY2PastLimInf / 1000) * 1000);		// YYY
-			//globalJob->nY2PastLimInfyy4 = globalJob->nY2PastLimInfyy2 * 100;
-			//globalJob->nY2PastLimInfyy5 = globalJob->nY2PastLimInfyy2 * 1000;
+			globalJob->nY2PastLimInfyy3 = globalJob->nY2PastLimInf - ((globalJob->nY2PastLimInf / 1000) * 1000);		/* YYY  */
 		}
 	}
 	return 0;
 }
 
-// Exit routine
+/* Exit routine */
 int utils_SetOptionExRoutine(char* optSort, char* szType, char* sCallName)
 {
 	if (strcasecmp(optSort, "MODS") == 0) {
 		if (strcmp(szType, "E15") == 0)
 		{
-			strcpy(globalJob->strCallNameE15, sCallName); // Call Name E15
-			globalJob->nExitRoutine= globalJob->nExitRoutine+1;	// code  0= no routine, 1=E15, 2=E35, 3=E15 and E35
-		//	globalJob->E15Routine = E15Call_constructor(globalJob->inputLength);
+			strcpy(globalJob->strCallNameE15, sCallName);           /* Call Name E15  */
+			globalJob->nExitRoutine= globalJob->nExitRoutine+1;	    /* code  0= no routine, 1=E15, 2=E35, 3=E15 and E35 */
+		/*	globalJob->E15Routine = E15Call_constructor(globalJob->inputLength);    */
 		}
 		if (strcmp(szType, "E35") == 0)
 		{
-			strcpy(globalJob->strCallNameE35, sCallName); // Call Name E35
-			globalJob->nExitRoutine = globalJob->nExitRoutine+2;	// code  0= no routine, 1=E15, 2=E35, 3=E15 and E35
-			//globalJob->E35Routine = E35Call_constructor(globalJob->outputLength);
+			strcpy(globalJob->strCallNameE35, sCallName);           /* Call Name E35    */
+			globalJob->nExitRoutine = globalJob->nExitRoutine+2;	/* code  0= no routine, 1=E15, 2=E35, 3=E15 and E35 */
+		/*  globalJob->E35Routine = E35Call_constructor(globalJob->outputLength);   */
 		}
 	}
 	return 0;
@@ -801,7 +787,7 @@ cob_field* util_MakeAttrib_call(int type, int digits, int scale, int flags, int 
 		memset(field_ret->data, 0x00, nLen);
 	}
 	field_ret->size = nLen;
-	// fix value for single type of field
+	/* fix value for single type of field   */
 	attrArea->digits = digits;
 	switch (type) {
 	case COB_TYPE_ALPHANUMERIC_ALL:
@@ -810,12 +796,12 @@ cob_field* util_MakeAttrib_call(int type, int digits, int scale, int flags, int 
 		break;
 	case COB_TYPE_NUMERIC_BINARY:
 		attrArea->scale = 0;
-		// attrArea->flags = attrArea->flags | COB_FLAG_BINARY_TRUNC | COB_FLAG_BINARY_SWAP;
+		/* attrArea->flags = attrArea->flags | COB_FLAG_BINARY_TRUNC | COB_FLAG_BINARY_SWAP;    */
 		attrArea->flags = COB_FLAG_BINARY_TRUNC | COB_FLAG_BINARY_SWAP;
 		break;
 	case COB_TYPE_NUMERIC_DISPLAY:
 		attrArea->scale = 0;
-		attrArea->flags = attrArea->flags; // | COB_FLAG_HAVE_SIGN;
+		attrArea->flags = attrArea->flags; /* | COB_FLAG_HAVE_SIGN;     */
 		break;
 	default:
 		fprintf(stdout, "util_setAttrib - type not found %d \n", type);
@@ -828,7 +814,7 @@ cob_field* util_MakeAttrib_call(int type, int digits, int scale, int flags, int 
 
 void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
 {
-// fix value for single type of field
+/* fix value for single type of field   */
 	switch (type) {
         case COB_TYPE_ALPHANUMERIC_ALL:
         case COB_TYPE_ALPHANUMERIC:
@@ -837,11 +823,11 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
             break;
 	    case COB_TYPE_NUMERIC_BINARY:
             if (nLen <= 2)
-                attrArea->digits = 4;   //        
+                attrArea->digits = 4;           
             if ((nLen > 2) && (nLen <= 4))
-                attrArea->digits = 9;   //        
+                attrArea->digits = 9;           
             if (nLen > 4) 
-                attrArea->digits = 18;   //       
+                attrArea->digits = 18;         
             attrArea->scale = 0;
             break;
 	    case COB_TYPE_NUMERIC_DOUBLE:
@@ -860,7 +846,7 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
              else
              {
                 if (nLen % 2 == 0)
-    		    	attrArea->digits = (nLen*2)-1; //(nLen-1)*2;
+    		    	attrArea->digits = (nLen*2)-1;  
 			    else
 	    	    	attrArea->digits = (nLen*2)-1;
              }
@@ -868,57 +854,58 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
     	    attrArea->flags  = attrArea->flags | COB_FLAG_HAVE_SIGN;
             break;
         case COB_TYPE_NUMERIC_DISPLAY:
-            //s.m. 20210121 attrArea->digits = 0;
+            /*  s.m. 20210121 attrArea->digits = 0; */
             attrArea->scale = 0;
-// s.m. 20201015
+/* s.m. 20201015    */
     	    attrArea->flags  = attrArea->flags | COB_FLAG_HAVE_SIGN;
-// s.m. 20201015
+/* s.m. 20201015    */
             break;
-			// date
-//		case DATE_TYPE_BINARY_PACKED:
-//			if (nLen <= 1)
-//				attrArea->digits = nLen * 2;
-//			else
-//			{
-//				if (nLen % 2 == 0)
-//					attrArea->digits = (nLen * 2) - 1; //(nLen-1)*2;
-//				else
-//					attrArea->digits = (nLen * 2) - 1;
-//			}
-//			attrArea->scale = 0;
-//		///	attrArea->flags = attrArea->flags;			// NO SIGN
-//			break;
+			/* date */
+/*            
+            case DATE_TYPE_BINARY_PACKED:
+                if (nLen <= 1)
+                    attrArea->digits = nLen * 2;
+                else
+                {
+                    if (nLen % 2 == 0)
+                        attrArea->digits = (nLen * 2) - 1; //(nLen-1)*2;
+                    else
+                        attrArea->digits = (nLen * 2) - 1;
+                }
+                attrArea->scale = 0;
+            ///	attrArea->flags = attrArea->flags;			// NO SIGN
+                break;
+*/
 		default:
 			fprintf(stdout, "util_setAttrib - type not found %d \n", type);
 			exit(GC_RTC_ERROR);
 			return ;
 	}
 
-    return;//
+    return;
 }
 
-// Reset flags only for data type Y2<x>
+/* Reset flags only for data type Y2<x> */
 void util_resetAttrib(cob_field_attr* attrArea, int type, int digits)
 {
-	// fix value for single type of field
+	/* fix value for single type of field   */
 	switch (type) {
 	case COB_TYPE_NUMERIC_PACKED:
 		attrArea->flags = attrArea->flags >> COB_FLAG_HAVE_SIGN;
-	//-->> attenzione	
-		attrArea->flags = attrArea->flags | COB_FLAG_NO_SIGN_NIBBLE; // new
+	/*  -->> attenzione	    */
+		attrArea->flags = attrArea->flags | COB_FLAG_NO_SIGN_NIBBLE; /* new */
 		break;
 	case COB_TYPE_NUMERIC_DISPLAY:
-	//s.m.			
 		attrArea->flags = attrArea->flags >> COB_FLAG_HAVE_SIGN;
 		break;
 	default:
-		// no action
+		/* no action    */
 		return;
 	}
 	if (digits >= 0)
 		attrArea->digits = digits;
 
-	return;//
+	return;
 }
 
 
@@ -973,6 +960,9 @@ void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate)
 	case EXITROUTINE:
 		fprintf(stderr, "*GCSORT* ERROR: Aborting execution from E15 routine. Code : %d\n", nCodeErr);
 		break;
+	case NOMATCH_FOUND:
+		fprintf(stderr, "*GCSORT* ERROR: Aborting execution from CHANGE statement. NOMATCH found. Code : %d\n", nCodeErr);
+		break;
 	default:
         fprintf(stderr,"*GCSORT* ERROR: Aborting execution.  Code : %d\n", nCodeErr);
         break;
@@ -1003,5 +993,72 @@ int utl_GetFileSizeEnvName(struct file_t* file) {
 		stat(pEnv, &filestatus);
 		return filestatus.st_size;
 	}
+	return 0;
+}
+
+void utils_SetRecordOptionSortType (char* szType)
+{
+	int nType = utils_parseFileFormat(szType);
+
+	globalJob->nTypeRecordFormat = nType;
+
+	return;
+}
+ 
+void utils_SetRecordOptionSortLen(int l1, int l2, int l3, int l4, int l5, int l6, int l7)
+{
+	globalJob->nLenInputL1 = l1;
+	globalJob->nLenE15L2 = l2;
+	globalJob->nLenOutputL3 = l3;
+	globalJob->nLenMinLenL4 = l4;
+	globalJob->nLenAvgLenL5 = l5;
+	globalJob->nLenFutureUseL6 = l6;
+	globalJob->nLenFutureUseL7 = l7;
+	return;
+}
+
+int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut)
+{
+	int nS = 0;
+	int nT = 0;
+	unsigned char* pCheck = malloc(COB_FILE_BUFF);
+	if (pCheck == NULL) {
+		utl_abend_terminate(MEMORYALLOC, 16, ABEND_EXEC);
+	}
+	memset(pCheck, 0x00, COB_FILE_BUFF);
+	if (strlen(str) > 0 ) {
+		strcpy(pCheck, str);
+		/* do { */
+			nS = utl_replace_str(pCheck, find, set, result, lenIn, lenOut);
+			if (nS == 0) {
+				// strncpy(pCheck, result, (strlen(str) + (lenIn - lenOut)));
+				strncpy(pCheck, result, lenOut);
+				nT++;
+			}
+		/*  } while (nS == 0); */
+	}
+	free(pCheck);
+	if (nT > 0)
+		return 1;
+	return 0;
+}
+
+int utl_replace_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut)
+{
+	unsigned char buffer[COB_FILE_BUFF];
+	memset(buffer, 0x00, COB_FILE_BUFF);
+	unsigned char* p;
+	if (!(p = strstr(str, find))) {
+		strcpy(result, str);
+		return 1;
+	}
+
+	gc_memcpy(result, set, lenOut);
+	/*
+	strncpy(buffer, str, p - str);
+	buffer[p - str] = '\0';
+	sprintf(buffer + (p - str), "%s%s", set, p + lenIn);
+	strcpy(result, buffer);
+	*/
 	return 0;
 }

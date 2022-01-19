@@ -29,6 +29,7 @@
 	struct condField_t  *condField;
 	struct fieldValue_t *fieldValue;
 	struct SumField_t   *SumField;
+    struct changefield_t *changefield;
 };
 %code {
 	#include <stdio.h>
@@ -40,6 +41,7 @@
 		#include <stdlib.h> 
 		#include <unistd.h>
 	#endif
+    #include <time.h>
 	#include "gcsort.h"
 	#include "file.h"
 	#include "keyidxrel.h"
@@ -53,21 +55,24 @@
 	#include "sumfield.h"
 	#include "utils.h"
     #include "gcshare.h"
+    #include "datediff.h"
+    #include "changefield.h"
 
 	#define  INREC_CASE		1
 	#define  OUTREC_CASE	2
 
-    //-->> extern char szMexToken[260];
+    /* -->> extern char szMexToken[260];    */
 
 	int yylex    (void);
 	void yyerror (char const *);
 
-	struct file_t*		current_file=NULL;
-	struct outfil_t*	current_outfil=NULL;
-	struct condField_t*	condField=NULL;
-    struct inrec_t *    inrec=NULL;
-    struct outrec_t *   outrec=NULL;
-
+	struct file_t*		  current_file=NULL;
+	struct outfil_t*	  current_outfil=NULL;
+	struct condField_t*	  condField=NULL;
+    struct inrec_t *      inrec=NULL;
+    struct outrec_t *     outrec=NULL;
+    struct changefield_t* current_changefield=NULL;
+    int    pntChange = 0;  /* 1 = Inrec , 2 = Inrec */
 
 	int nRecCase=0;
 	int nTypeFile=0;
@@ -80,19 +85,24 @@
 	int nRtc=0;
 	int nCountGroupFiles=0;
 	char* pszInt;
+    
+    int nDateType=-1;
+    int nDateCheck=0;
+    int nDateNew=0;
+    char szBuf[30];
 
 	extern int nTypeFieldsCmd;
 	char szTmp[5];
 	int	 nIntTmp;
-	int  nTypeFormat;			// 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields
-	int  nTypeIncludeOmit;		// 0= Nothing, 1 = Include, Omit=2
+	int  nTypeFormat;			/* 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields  */
+	int  nTypeIncludeOmit;		/* 0= Nothing, 1 = Include, Omit=2                              */
 	int  nstate_outfil = 0;
 
 }
 %token				AND						"AND clause"
 %token				COND					"COND clause"
 %token				ENDREC					"ENDREC clause"
-    //  %token				FILES					"FILES  clause"
+    /*  %token				FILES					"FILES  clause" */
 %token				FNAMES					"FNAMES clause"
 %token				FORMAT					"FORMAT clause"
 %token				INCLUDE					"INCLUDE clause"
@@ -125,8 +135,17 @@
 %token 				SORT					"SORT clause"
 %token 				USE						"USE clause"
 %token 				COPY					"COPY"
+%token 				TYPE                    "TYPE"
+%token 				LENGTH                  "LENGTH"
+%token 				DATE1                   "DATE1"
+%token 				DATE2                   "DATE2"
+%token 				DATE3                   "DATE3"
+%token 				DATE4                   "DATE4"
+%token              CHANGE                  "CHANGE"
+%token              NOMATCH                 "NOMATCH"
 %token <number>		DIGIT					"DIGIT"
 %token <number>		DIGITBIG		        "DIGITBIG"
+        /* %token <number>     ADDSUBNUM               "ADDSUBNUM" */
 %token <string>		CHARTCOND  			    "CHARTCOND" 
 %token <string>		CHARTYPE				"CHARTYPE" 
 %token <string>		FILETYPE				"FILETYPE"
@@ -146,12 +165,16 @@
 %type <number>		condition
 %type <fieldValue>	fieldvaluerec
 %type <fieldValue>	fieldvaluecond
+%type <fieldValue>	datetype
 %type <condField>	condfieldcond
 %type <condField>	allcondfield
 %type <SumField>	sumfield
 %type <SumField>	allsumfield
 %type <fieldValue>	fieldvalueconst
 %type <string>      filesgroup
+%type <changefield> changepair
+%type <changefield> changepairdet
+%type <fieldValue>  changeCmdOpt      
 %left OR
 %left AND
 %%
@@ -160,7 +183,8 @@
 beginning:
 		| clause beginning
 ;
-clause:   sortclause {}
+clause:   recordclause {}
+		| sortclause {}
 		| mergeclause {}
         | useclause {}
 		| giveclause {}
@@ -177,7 +201,7 @@ clause:   sortclause {}
 		| outfilincludeclause {}
 		| outfilomitclause {}
 		| fnamesclause {}
-            // | filesclause {}
+            /* | filesclause {} */
 		| saveclause {}
 		| optionclause {}
 ;
@@ -195,7 +219,7 @@ useclause:
         nTypeFile=0;
         free($2);
     } recordorginstruction {
-        file_SetInfoForFile(current_file, COB_OPEN_INPUT); // Input
+        file_SetInfoForFile(current_file, COB_OPEN_INPUT); /* Input */
         current_file=NULL;
 }
 ;
@@ -212,14 +236,27 @@ giveclause:
         nTypeFile=0;
         free($2);
 } recordorginstruction {
-        file_SetInfoForFile(current_file, COB_OPEN_OUTPUT); //Output
+        file_SetInfoForFile(current_file, COB_OPEN_OUTPUT); /*  Output  */
         current_file=NULL;
 };
 
 recordorginstruction: 
     { 	
         strcat(szMexToken, " record org instruction "); 
+    }
+    /*
+	| ORG FILETYPE  {  
+        strcpy(szMexToken, " org file type ");
+   
+        if (current_file!=NULL) {
+            nRtc = file_setOrganization(current_file,utils_parseFileOrganization($2));
+            if (nRtc == -1)
+                exit(GC_RTC_ERROR);
+            nTypeFile = utils_parseFileOrganization($2);
+        }
+        free($2);    
 }
+    */
 	| ORG FILETYPE recordorginstruction {  
         strcpy(szMexToken, " org file type ");
    
@@ -269,6 +306,7 @@ recordorginstruction:
 
 	| KEY '(' allkeyfield ')' recordorginstruction {
 }
+
 ;
 
  allkeyfield: 
@@ -292,7 +330,7 @@ recordorginstruction:
         free($5);
  }
 ;
-    // key clause - END
+    /* key clause - END */
 fieldtype: 
       FORMATTYPE {
 		$$=utils_parseFieldType($1);
@@ -320,7 +358,7 @@ fieldvaluecond:
     /*  C'-' or X'hh...hh'        */
     /* ########################## */
       CHARTCOND  STRING  { 
-		$$=fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD);
+		$$=fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD, 0);
 		if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 104, ABEND_SKIP);
 			YYABORT;
@@ -335,7 +373,7 @@ fieldvaluerec:
     /*  C'-' or X'hh...hh' or Z'nn' */
     /* ########################## */
       CHARTYPE  STRING  { 
-		$$=fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD);
+		$$=fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD, 0);
 		if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 105, ABEND_SKIP);
 			YYABORT;
@@ -347,12 +385,12 @@ fieldvaluerec:
 
 fieldvalueconst:  
     /* #################################################################################################### */
-    // DIGIT = Numeric value max [+/-] 5 digit
+    /* DIGIT = Numeric value max [+/-] 5 digit  */
     /* #################################################################################################### */
       DIGIT {
 		pszInt = (char*) malloc(32);		 
 		sprintf(pszInt, "%d", $1);
-		$$=(struct fieldValue_t *) fieldValue_constructor((char*)"Z", pszInt, TYPE_STRUCT_NEW);
+		$$=(struct fieldValue_t *) fieldValue_constructor((char*)"Z", pszInt, TYPE_STRUCT_NEW, 0);
 		if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 106, ABEND_SKIP);
 			YYABORT;
@@ -360,7 +398,7 @@ fieldvalueconst:
 		free(pszInt); 
 }
     /* #################################################################################################### */
-    // DIGIT = Numeric value DIGIT from [+/-] 6 to n digit
+    /* DIGIT = Numeric value DIGIT from [+/-] 6 to n digit  */
     /* #################################################################################################### */
     | SIGNDIGITBIG  {
 		char szType[] = "Z";
@@ -370,8 +408,8 @@ fieldvalueconst:
 		#else
 			sprintf(pszInt, CB_FMT_LLD , $1);
 		#endif
-		//-->> 20160914 $$=(struct fieldValue_t *) fieldValue_constructor((char*)szType, pszInt, TYPE_STRUCT_STD);
-		$$=(struct fieldValue_t *) fieldValue_constructor((char*)szType, pszInt, TYPE_STRUCT_NEW);
+		/*  -->> 20160914 $$=(struct fieldValue_t *) fieldValue_constructor((char*)szType, pszInt, TYPE_STRUCT_STD);    */
+		$$=(struct fieldValue_t *) fieldValue_constructor((char*)szType, pszInt, TYPE_STRUCT_NEW, 0);
 		if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 107, ABEND_SKIP);
 			YYABORT;
@@ -410,7 +448,7 @@ sortfield:
 				YYABORT;
 			}
             sortField_addDefinition(sortField);
-            //-->> nTypeFormat = 1; // Format external token
+            /*  -->> nTypeFormat = 1; // Format external token  */
 			}
 }
 ;
@@ -420,11 +458,11 @@ sortclause:
         current_sortField=1;
         } allsortfield ')' {
         current_sortField=0;
-        job_SetTypeOP('S');		// for Sort
+        job_SetTypeOP('S');		/* for Sort */
         strcpy(szMexToken, " sort clause ");
 }
     | SORT FIELDS COPY {
-        job_SetTypeOP('C');		// for Merge
+        job_SetTypeOP('C');		/* for Merge    */
         job_SetFieldCopy(1);
         strcpy(szMexToken, " sort clause ");
 
@@ -436,7 +474,7 @@ mergeclause:
         strcpy(szMexToken, " merge clause ");
         } allsortfield ')' {
         current_sortField=0;
-        // typeOP = 'M'; // for Merge
+        /* typeOP = 'M'; // for Merge   */
         job_SetTypeOP('M');
         strcpy(szMexToken, " merge clause ");
 }
@@ -448,8 +486,8 @@ mergeclause:
 ;
 
 /* #################################################################################################### */
-//-->>nTypeFormat;			// 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields
-//-->>nTypeIncludeOmit;		// 0= Nothing, 1 = Include, 2 = Omit
+/* -->>nTypeFormat;			// 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields  */
+/* -->>nTypeIncludeOmit;		// 0= Nothing, 1 = Include, 2 = Omit                        */
 /* #################################################################################################### */
 formatclause: 
       FORMAT '=' fieldtype {
@@ -458,7 +496,7 @@ formatclause:
 			condField_setFormatFieldsTypeAll(nTypeFormat, $3);
 		if (nTypeFormat == 2)
 			condField_setCondFieldsTypeAll(nTypeIncludeOmit, $3);
-		if (nTypeFormat == 3)	// for SumFields
+		if (nTypeFormat == 3)	/* for SumFields    */
 			condField_setFormatFieldsTypeAll(nTypeFormat, $3);
 }
 /* s.m. 20160914
@@ -504,12 +542,12 @@ allcondfield:
 
 condfieldcond: 	
     /* #################################################################################################### */
-    // pos1, len1, format1, operator, pos2, len2, format2 - 
-    // check field in pos1 for len1 and format1 with field in pos2 for len2 and format2, apply operator   
-    // (156,15,CH,LT,141,15,CH)
+    /* pos1, len1, format1, operator, pos2, len2, format2 -                                                 */
+    /* check field in pos1 for len1 and format1 with field in pos2 for len2 and format2, apply operator     */
+    /* (156,15,CH,LT,141,15,CH)                                                                             */
     /* #################################################################################################### */
       DIGIT ',' DIGIT ',' fieldtype ',' condition ',' DIGIT ',' DIGIT ',' fieldtype {
-        nTypeFormat = 2; // Format external token
+        nTypeFormat = 2; /* Format external token   */
         condField=condField_constructor_conditionfield($1,$3,$5,$7,$9,$11,$13);
         $$=condField;
         strcat(szMexToken, " condition field ");
@@ -520,12 +558,12 @@ condfieldcond:
 }
 
     /* #################################################################################################### */
-    // pos1, len1, format1, operator, pos2, len2, format2 - 
-    // check field in pos1 for len1 with field in pos2 for len2 and apply operator, mandatory FORMAT=nn
-    // (156,15,LT,141,15),FORMAT=CH
+    /* pos1, len1, format1, operator, pos2, len2, format2 -                                                 */
+    /* check field in pos1 for len1 with field in pos2 for len2 and apply operator, mandatory FORMAT=nn     */
+    /* (156,15,LT,141,15),FORMAT=CH                                                                         */
     /* #################################################################################################### */
     |  DIGIT ',' DIGIT ',' condition ',' DIGIT ',' DIGIT  {
-        nTypeFormat = 2; // Format external token
+        nTypeFormat = 2; /* Format external token   */
         condField=condField_constructor_conditionfield($1,$3,0,$5,$7,$9,0);
         $$=condField;
         strcat(szMexToken, " condition field ");
@@ -535,8 +573,8 @@ condfieldcond:
 		}
 }
     /* #################################################################################################### */
-    // pos, len, operator, format, condition, value 
-    // case 1,6,CH,EQ,C'String'  field in position 1 with length 6 equal 'String'
+    /* pos, len, operator, format, condition, value                                 */    
+    /* case 1,6,CH,EQ,C'String'  field in position 1 with length 6 equal 'String'   */
     /* #################################################################################################### */
     | DIGIT ',' DIGIT ',' fieldtype ',' condition ',' fieldvaluecond  {    
 		$$=condField_constructor_condition($1,$3,$5,$7,$9);
@@ -547,8 +585,8 @@ condfieldcond:
 		} 
 }
     /* #################################################################################################### */
-    // pos, len, type field, operator, value numeric 
-    // case 88,13,ZD,LT,-10  field ZD in position 88 with length 13 must be less then -10
+    /* pos, len, type field, operator, value numeric    */
+    /* case 88,13,ZD,LT,-10  field ZD in position 88 with length 13 must be less then -10   */
     /* #################################################################################################### */
     | DIGIT ',' DIGIT ',' fieldtype ',' condition ',' fieldvalueconst {
         $$=condField_constructor_condition($1,$3,$5,$7,$9);
@@ -559,12 +597,12 @@ condfieldcond:
 		}
 }
     /* #################################################################################################### */
-    // pos, len, operator, value numeric .   Mandatory FORMAT= for type
-    // case 88,13,LT,-10  field in position 88 with length 13 less then -10
+    /* pos, len, operator, value numeric .   Mandatory FORMAT= for type     */
+    /* case 88,13,LT,-10  field in position 88 with length 13 less then -10 */
     /* #################################################################################################### */
     | DIGIT ',' DIGIT ',' condition ',' fieldvalueconst  {    
         condField=condField_constructor_condition($1,$3,0,$5,(struct fieldValue_t *)$7);
-        nTypeFormat = 2; // Format external token
+        nTypeFormat = 2; /* Format external token   */
         $$=condField;
         strcat(szMexToken, " condition field ");
 		if ($$ == NULL) {
@@ -573,12 +611,12 @@ condfieldcond:
 		}
 }
     /* #################################################################################################### */
-    // pos, len, operator, value numeric .   Mandatory FORMAT= for type
-    // case 45,6,LE,C'999999'  field in position 45 with length 6 less then '999999'
+    /* pos, len, operator, value numeric .   Mandatory FORMAT= for type     */
+    /* case 45,6,LE,C'999999'  field in position 45 with length 6 less then '999999'    */
     /* #################################################################################################### */
     | DIGIT ',' DIGIT ',' condition ',' fieldvaluecond  {    
         condField=condField_constructor_condition($1,$3,0,$5,(struct fieldValue_t *)$7);
-        nTypeFormat = 2; // Format external token
+        nTypeFormat = 2; /* Format external token   */
         $$=condField;
         strcat(szMexToken, " condition field ");
 		if ($$ == NULL) {
@@ -586,6 +624,172 @@ condfieldcond:
 			YYABORT;
 		}
 }
+    /* #################################################################################################### */
+    /* pos, len, operator, date .   DATE1/DATE2/DATE3/DATE4                 */
+    /* case INCLUDE COND=(1,13,CH,GT,DATE4)                                                   */
+    /* #################################################################################################### */
+    | DIGIT ',' DIGIT ','  fieldtype ','condition ',' datetype  {    
+        condField=condField_constructor_condition4Date($1,$3,$5,$7,(struct fieldValue_t *)$9);
+        nTypeFormat = 2; /* Format external token   */
+        $$=condField;
+        strcat(szMexToken, " condition field ");
+		if ($$ == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 141, ABEND_SKIP);
+			YYABORT;
+		}
+}
+
+ /* datetype: Constant Date currente date  */
+datetype: 
+    /* ########################## */
+    /*  DATETYPE -->  DATE1/2/3/4 */
+    /* ########################## */
+    /* All date type Y2T field len define rappresentation */
+    /* DATE1    C'yyyymmdd'    C'20010419' */
+       DATE1  { 
+		nDateType = 1;
+        time_t t = time(NULL);
+        struct tm tm = *localtime(&t);
+        /* Current Date */
+        nDateCheck = (tm.tm_year + 1900) * 10000 + (tm.tm_mon + 1) * 100 + tm.tm_mday;
+        memset(szBuf, 0x00, 30);
+        /* current date into string */
+        sprintf(szBuf, "%d", nDateCheck);   
+        $$=fieldValue_constructor( "Y", szBuf, TYPE_STRUCT_STD, FIELD_TYPE_NUMERIC_Y2T);
+		if ($$ == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 142, ABEND_SKIP);
+			YYABORT;
+		}
+}
+    /* DATE1    C'yyyymmdd'    C'20010419' */
+    /* |   DATE1 ADDSUBNUM { */
+    |   DATE1 DIGIT { 
+		nDateType = 1;
+        time_t t = time(NULL);
+        struct tm tm = *localtime(&t);
+        /* Current Date */
+        nDateCheck = (tm.tm_year + 1900) * 10000 + (tm.tm_mon + 1) * 100 + tm.tm_mday;
+        /* check range */
+        if ($2 > 366) {
+            utl_abend_terminate(0, 142, ABEND_SKIP);
+			YYABORT;
+        }
+        /* Add/Sub days to date */
+        gcDateAddDays(nDateCheck, &nDateNew, $2);
+        nDateCheck = nDateNew;
+
+        memset(szBuf, 0x00, 30);
+        sprintf(szBuf, "%d", nDateCheck);   /* current date into string */
+        $$=fieldValue_constructor( "Y", szBuf, TYPE_STRUCT_STD, FIELD_TYPE_NUMERIC_Y2T);
+		if ($$ == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 142, ABEND_SKIP);
+			YYABORT;
+		}
+}
+    /* DATE2    C'yyyymm'      C'200104'  */
+    |  DATE2  {             /* Problem ++ to define datetype */
+		nDateType = 2;
+        time_t t = time(NULL);
+        struct tm tm = *localtime(&t);
+        /* Current Date */
+        nDateCheck = (tm.tm_year + 1900) * 100 + (tm.tm_mon + 1);
+        memset(szBuf, 0x00, 30);
+        sprintf(szBuf, "%d", nDateCheck);   /* current date into string */
+        $$=fieldValue_constructor( "Y", szBuf, TYPE_STRUCT_STD, FIELD_TYPE_NUMERIC_Y2T);
+		if ($$ == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 143, ABEND_SKIP);
+			YYABORT;
+		}
+}
+    /* DATE2    C'yyyymm'      C'200104'  */
+    /* |  DATE2 ADDSUBNUM { */            /* Problem ++ to define datetype */
+    |  DATE2 DIGIT {             /* Problem ++ to define datetype */
+		nDateType = 2;
+        time_t t = time(NULL);
+        struct tm tm = *localtime(&t);
+        /* Current Date */
+        nDateCheck = (tm.tm_year + 1900) * 100 + (tm.tm_mon + 1);
+        /* check range */
+        if ($2 > 12) {
+            utl_abend_terminate(0, 142, ABEND_SKIP);
+			YYABORT;
+        }
+        /* Add/Sub months to date */
+        /* from YYYYMM  to YYYYMMDD */
+        nDateCheck = nDateCheck * 100 + 1 ;
+        /* add Month to date*/
+        gcDateAddMonths(nDateCheck, &nDateNew, $2);
+        /* from YYYYMMDD  to YYYYMM */
+        nDateCheck = (nDateNew / 100);
+        memset(szBuf, 0x00, 30);
+        sprintf(szBuf, "%d", nDateCheck);   /* current date into string */
+        $$=fieldValue_constructor( "Y", szBuf, TYPE_STRUCT_STD, FIELD_TYPE_NUMERIC_Y2T);
+		if ($$ == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 143, ABEND_SKIP);
+			YYABORT;
+		}
+}
+    /* DATE3    C'yyyyddd'     C'2001109' */
+    |  DATE3  { 
+		nDateType = 3;
+        time_t t = time(NULL);
+        struct tm tm = *localtime(&t);
+        /* Current Date */
+        nDateCheck = (tm.tm_year + 1900) * 10000 + (tm.tm_mon + 1) * 100 + tm.tm_mday;
+        /* Convert date from YYMMAA  to YYDDD */
+        gcDate2Ord(nDateCheck, &nDateNew);
+        memset(szBuf, 0x00, 30);
+        sprintf(szBuf, "%d", nDateNew);   /* current date into string with format yyyyddd */
+        $$=fieldValue_constructor( "Y", szBuf, TYPE_STRUCT_STD, FIELD_TYPE_NUMERIC_Y2T);
+		if ($$ == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 144, ABEND_SKIP);
+			YYABORT;
+		}
+}
+    /* DATE3    C'yyyyddd'     C'2001109' */
+    /* |  DATE3 ADDSUBNUM { */
+    |  DATE3 DIGIT { 
+		nDateType = 3;
+        time_t t = time(NULL);
+        struct tm tm = *localtime(&t);
+        /* Current Date */
+        nDateCheck = (tm.tm_year + 1900) * 10000 + (tm.tm_mon + 1) * 100 + tm.tm_mday;
+        /* Convert date from YYMMAA  to YYDDD */
+        /* check range */
+        if ($2 > 366) {
+            utl_abend_terminate(0, 142, ABEND_SKIP);
+			YYABORT;
+        }
+        /* Add/Sub days to date */
+        gcDateAddDays(nDateCheck, &nDateNew, $2);
+        gcDate2Ord(nDateNew, &nDateCheck);
+        memset(szBuf, 0x00, 30);
+        sprintf(szBuf, "%d", nDateCheck);   /* current date into string with format yyyyddd */
+        $$=fieldValue_constructor( "Y", szBuf, TYPE_STRUCT_STD, FIELD_TYPE_NUMERIC_Y2T);
+		if ($$ == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 144, ABEND_SKIP);
+			YYABORT;
+		}
+}
+     /* DATE4    C'yyyy-mm-dd-hh.mm.ss' */
+    |  DATE4  { 
+		nDateType = 4;
+        time_t t = time(NULL);
+        struct tm tm = *localtime(&t);
+        /* Current Datetime */
+        memset(szBuf, 0x00, 30);
+        /* Problem with timestamp force to Y2T8 8 bytes  CCYYMMAA without time */
+        /* TODO timestamp */
+        /* sprintf(szBuf, "%0.4d-%0.2d-%0.2d-%0.2d.%0.2d.%0.2d", tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);  */ /* current datetime into string */
+        /* prepare date like CCYYMMDD */
+        sprintf(szBuf, "%04d%02d%02d", tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday);  
+        $$=fieldValue_constructor( "Y", szBuf, TYPE_STRUCT_STD, FIELD_TYPE_NUMERIC_Y2T);
+		if ($$ == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 145, ABEND_SKIP);
+			YYABORT;
+		}
+}
+
 
 omitclause: 
       OMIT COND allcondfield  {
@@ -626,15 +830,18 @@ allinoutrec:
 ;
 inoutrec: 
     /* #################################################################################################### */
-    // pos , len of  input
-    // case 10,5  copy field from position 10 for len 5 from input, into actual position of output record 
+    /* pos , len of  input      */
+    /* case 10,5  copy field from position 10 for len 5 from input, into actual position of output record   */
     /* #################################################################################################### */
+    /*     int    pntChange = 0; 1 = Inrec , 2 = Inrec */
+
       DIGIT ',' DIGIT {
         switch(nRecCase) {
         case OUTREC_CASE :
             strcpy(szMexToken, " outrec clause ");
             if (current_outrec==1) {
-                struct outrec_t *outrec=outrec_constructor_range($1,$3);
+                /* struct outrec_t * */
+                outrec=outrec_constructor_range($1,$3);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 117, ABEND_SKIP);
                     YYABORT;
@@ -645,10 +852,12 @@ inoutrec:
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec += outrec->range.length;
+                pntChange = 2; 
             }
             else
             {
-                struct outrec_t *outrec=outrec_constructor_range($1,$3);
+                /* struct outrec_t * */
+                outrec=outrec_constructor_range($1,$3);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 118, ABEND_SKIP);
                     YYABORT;
@@ -660,12 +869,13 @@ inoutrec:
                     outrec_addDefinition(outrec);
                 }
                 nPosAbsRec += outrec->range.length;
+                pntChange = 2; 
             }
             break;
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                    // struct inrec_t *
+                    /* struct inrec_t * */
                     inrec=inrec_constructor_range($1,$3);
                     if (inrec == NULL) {
                         utl_abend_terminate(MEMORYALLOC, 119, ABEND_SKIP);
@@ -674,22 +884,25 @@ inoutrec:
                     nPosAbsRec += inrec->range.length;
                     inrec->nIsOverlay=inrec_overlay;
                     inrec_addDefinition(inrec);
+                    /* save pointer CHANGE option */
+                    pntChange = 1; 
             }
             break;
         default:
             break;
         }
 } 
-   // new  20201211 start
+    /* new  20201211 start  */
     /* ######################################################################################## */
-    // case 11:C'A'  (from position 11 output, copy character 'A')
+    /* case 11:C'A'  (from position 11 output, copy character 'A')  */
     /* ######################################################################################## */
     | DIGIT ':' CHARTYPE STRING {
         switch(nRecCase) {
         case OUTREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_outrec==1) {
-                struct outrec_t *outrec=outrec_constructor_possubstnchar($1, $3, $4);
+                /* struct outrec_t * */
+                outrec=outrec_constructor_possubstnchar($1, $3, $4);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 124, ABEND_SKIP);
                     YYABORT;
@@ -706,7 +919,7 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
+                /* struct inrec_t * */
                 inrec=inrec_constructor_possubstnchar($1, $3, $4);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 125, ABEND_SKIP);
@@ -720,20 +933,21 @@ inoutrec:
         default:
             break;
         }
-        free($3); // s.m. 202015
+        free($3); /* s.m. 202015    */
 		free($4); 
 }
-   // new  20201211 end
+    /* new  20201211 end    */
     /* ######################################################################################## */
-    // (pos 20 output), (pos 10, len 5 input)
-    // case 20:10,5  (from position 20 output, copy field position 10 for len 5 from input)
+    /* (pos 20 output), (pos 10, len 5 input)       */
+    /* case 20:10,5  (from position 20 output, copy field position 10 for len 5 from input)     */
     /* ######################################################################################## */
     | DIGIT ':' DIGIT ',' DIGIT {
         switch(nRecCase) {
         case OUTREC_CASE :
             strcpy(szMexToken, " outrec clause ");
             if (current_outrec==1) {
-                struct outrec_t *outrec=outrec_constructor_range_position($1, $3, $5);
+                /* struct outrec_t * */
+                outrec=outrec_constructor_range_position($1, $3, $5);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 120, ABEND_SKIP);
                     YYABORT;
@@ -750,7 +964,7 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
+                /* struct inrec_t * */
                 inrec=inrec_constructor_range_position($1, $3, $5);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 121, ABEND_SKIP);
@@ -763,18 +977,19 @@ inoutrec:
             break;
        }
 }
-    // ######################################################################################## 
-    // [0-9]{1,5}[C|X|Z]{1}
-    // nZ  n times of binary zero 
-    // nX  n times of blank, 
-    // case : 50X  (repeat 50 times blank)
-    // ######################################################################################## 
+    /* ######################################################################################## */ 
+    /* [0-9]{1,5}[C|X|Z]{1}                                                                     */
+    /* nZ  n times of binary zero                                                               */
+    /* nX  n times of blank,                                                                    */
+    /* case : 50X  (repeat 50 times blank)                                                      */
+    /* ######################################################################################## */
     | OCCURFILL {
         switch(nRecCase) {
         case OUTREC_CASE :
             strcpy(szMexToken, " outrec clause ");
             if (current_outrec==1) {
-                struct outrec_t *outrec=outrec_constructor_subst($1);
+                /* struct outrec_t * */
+                outrec=outrec_constructor_subst($1);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 122, ABEND_SKIP);
                     YYABORT;
@@ -791,7 +1006,7 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
+                /* struct inrec_t * */
                 inrec=inrec_constructor_subst($1);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 123, ABEND_SKIP);
@@ -807,17 +1022,18 @@ inoutrec:
         }
 		free($1);
 }
-    // ####################################################### 
-    // [0-9]{1,5}[C|X|Z]{1} <string>                           
-    // nC'string'  n times of string						   
-    // 5C'XYZ'	-> XYZXYZXYZXYZXYZ   						   
-    // ####################################################### 
+    /* #######################################################  */
+    /* [0-9]{1,5}[C|X|Z]{1} <string>                            */
+    /* nC'string'  n times of string						    */
+    /* 5C'XYZ'	-> XYZXYZXYZXYZXYZ   						    */
+    /* #######################################################  */
     | OCCURFILL STRING {
         switch(nRecCase) {
         case OUTREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_outrec==1) {
-                struct outrec_t *outrec=outrec_constructor_substnchar($1,$2);
+                /* struct outrec_t * */
+                outrec=outrec_constructor_substnchar($1,$2);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 124, ABEND_SKIP);
                     YYABORT;
@@ -834,7 +1050,7 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
+                /* struct inrec_t * */
                 inrec=inrec_constructor_substnchar($1,$2);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 125, ABEND_SKIP);
@@ -851,16 +1067,17 @@ inoutrec:
 		free($1); 
 		free($2); 
 }
-    // ######################################################## 
-    // position absolute (output) : (C|X|Z) CharType	
-    // case 80:X
-    // ######################################################## 
+    /* ######################################################## */    
+    /* position absolute (output) : (C|X|Z) CharType	        */
+    /* case 80:X                                                */
+    /* ######################################################## */
     | DIGIT ':' CHARTYPE {
         switch(nRecCase) {
         case OUTREC_CASE :
             strcpy(szMexToken, " outrec clause ");
             if (current_outrec==1) {
-                struct outrec_t *outrec=outrec_constructor_padding($1, $3, nPosAbsRec);
+                /* struct outrec_t * */
+                outrec=outrec_constructor_padding($1, $3, nPosAbsRec);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 126, ABEND_SKIP);
                     YYABORT;
@@ -878,14 +1095,14 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
+                /* struct inrec_t * */
                 inrec=inrec_constructor_padding($1, $3, nPosAbsRec);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 127, ABEND_SKIP);
                     YYABORT;
                 }
                 if ($1 > nPosAbsRec) 
-                    nPosAbsRec = $1;		// - inrec->change_position.fieldValue->generated_length;
+                    nPosAbsRec = $1;		/* - inrec->change_position.fieldValue->generated_length;   */
                 inrec->nIsOverlay=inrec_overlay;
                 inrec_addDefinition(inrec);
             }
@@ -895,21 +1112,22 @@ inoutrec:
         }
         free($3); 
 }
-    // ######################################################## 
-    // (C|X|Z) CharType	
-    // case X or Z 
-    // ######################################################## 
+    /* ######################################################## */
+    /* (C|X|Z) CharType	                                        */
+    /* case X or Z                                              */
+    /* ######################################################## */
     | CHARTYPE {
         switch(nRecCase) {
         case OUTREC_CASE :
             strcpy(szMexToken, " outrec clause ");
             if (current_outrec==1) {
-       //         struct outrec_t *outrec=outrec_constructor_subst($1);
+       /*         struct outrec_t *outrec=outrec_constructor_subst($1); */
                 char szType01[3];
                 memset(szType01, 0x00, 3);
                 szType01[0]='1';
                 strcat(szType01, $1);
-                struct outrec_t *outrec=outrec_constructor_subst(szType01);
+                /* struct outrec_t * */
+                outrec=outrec_constructor_subst(szType01);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 128, ABEND_SKIP);
                     YYABORT;
@@ -926,8 +1144,8 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
-        //                inrec=inrec_constructor_subst($1);
+                /* struct inrec_t * */
+        /*                inrec=inrec_constructor_subst($1);    */
                 char szType01[3];
                 memset(szType01, 0x00, 3);
                 szType01[0]='1';
@@ -945,7 +1163,7 @@ inoutrec:
         default:
             break;
         }
-        free($1); // s.m. 202105
+        free($1); /* s.m. 202105    */
 }			
 
     /* ################################################## */
@@ -957,7 +1175,7 @@ inoutrec:
         case OUTREC_CASE :
             strcpy(szMexToken, " outrec clause ");
             if (current_outrec==1) {
-                struct outrec_t *outrec;
+                /* struct outrec_t * outrec; */
                 outrec=outrec_constructor_change($1);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 130, ABEND_SKIP);
@@ -975,7 +1193,7 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
+                /* struct inrec_t * */
                 inrec=inrec_constructor_change($1);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 131, ABEND_SKIP);
@@ -991,13 +1209,14 @@ inoutrec:
         }
 	}
 	
-// condizione di posizione di partenza senza lunghezza per i file variabili
+/* condizione di posizione di partenza senza lunghezza per i file variabili */
     | DIGIT ',' {
         switch(nRecCase) {
         case OUTREC_CASE :
             strcpy(szMexToken, " outrec clause ");
             if (current_outrec==1) {
-                struct outrec_t *outrec=outrec_constructor_range($1,-1);
+                /* struct outrec_t * */
+                outrec=outrec_constructor_range($1,-1);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 132, ABEND_SKIP);
                     YYABORT;
@@ -1011,7 +1230,8 @@ inoutrec:
             }
             else
             {
-                struct outrec_t *outrec=outrec_constructor_range($1,-1);
+                /* struct outrec_t * */ 
+                outrec=outrec_constructor_range($1,-1);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 133, ABEND_SKIP);
                     YYABORT;
@@ -1028,7 +1248,7 @@ inoutrec:
         case INREC_CASE :
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
-                // struct inrec_t *
+                /* struct inrec_t * */
                 inrec=inrec_constructor_range($1,-1);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 134, ABEND_SKIP);
@@ -1042,7 +1262,136 @@ inoutrec:
             break;
         }
 }
+    /* CHANGE OPTION */
+    /*  pos, len,  CHANGE=( v , find, set ) , NOMATCH=(set) */
+    /* | CHANGE '(' DIGIT ',' changepair ')' ',' NOMATCH '(' fieldvaluecond ')' { */        
+    /* CHANGE=(1,C'22',X'51',C'88',X'58',C'44',X'52',C'66',X'53'),NOMATCH=(X'77') */
+     | CHANGE '(' DIGIT ',' changepair ')' ',' NOMATCH '(' changeCmdOpt ')' { 
+        /* define struct for change field */
+        
+        struct change_t* chg = change_constructor($3);
+        change_setNoMatch(chg, $10);  
+        change_setpairs(chg, $5);
+        /*    int    pntChange = 0 - 1 = Inrec , 2 = Inrec */
+         if (pntChange == 1) {       /* InRec */
+            inrec_SetChangeCmdOpt(inrec, chg);  /* setting INREC_TYPE_CHANGE_CMDOPT; */
+         } else 
+             if (pntChange == 2) {       /* OutRec */
+                outrec_SetChangeCmdOpt(outrec, chg);  /* setting OUTREC_TYPE_CHANGE_CMDOPT; */
+             } else {
+                 utl_abend_terminate(100, 234, ABEND_SKIP);
+                 YYABORT;
+         }
+         /* adjust position */
+         nPosAbsRec += $3;       /* len output change */
+}
+        /* CHANGE=(6,C'2',28,6),NOMATCH=(2,6) */
+     | CHANGE '(' DIGIT ',' changepair ')' ',' NOMATCH '(' DIGIT ',' DIGIT ')' { 
+        /* define struct for change field */
+        
+        struct change_t* chg = change_constructor($3);
+        change_setNoMatchPosLen(chg, $10, $12);  
+        change_setpairs(chg, $5);
+        /*    int    pntChange = 0 - 1 = Inrec , 2 = Inrec */
+         if (pntChange == 1) {       /* InRec */
+            inrec_SetChangeCmdOpt(inrec, chg);  /* setting INREC_TYPE_CHANGE_CMDOPT; */
+         } else 
+             if (pntChange == 2) {       /* OutRec */
+                outrec_SetChangeCmdOpt(outrec, chg);  /* setting OUTREC_TYPE_CHANGE_CMDOPT; */
+             } else {
+                 utl_abend_terminate(100, 234, ABEND_SKIP);
+                 YYABORT;
+         }
+         /* adjust position */
+         nPosAbsRec += $3;       /* len output change */
+}
 ;
+
+changepair: 
+      changepairdet { 
+        strcat(szMexToken, " changepairdet instruction ");
+        $$=$1;
+}
+    | changepairdet ',' changepair {}
+ ;
+
+changepairdet: 
+    /* #################################################################################################### */
+    /*  find, set  */
+    /*   C'STR',C'String' */
+    /* #################################################################################################### */
+      CHARTYPE  STRING ',' CHARTYPE  STRING { 
+		/* $$=changefield_constructor((char*) $2, $5); */
+        /* verify      CHARTCOND  vs CHARTYPE */     
+        struct fieldValue_t* fv1 = fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD, 0);
+		if (fv1 == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 218, ABEND_SKIP);
+			YYABORT;
+		}
+        struct fieldValue_t* fv2 = fieldValue_constructor((char*) $4, $5, TYPE_STRUCT_STD, 0);
+		if (fv2 == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 218, ABEND_SKIP);
+			YYABORT;
+		}
+        
+        struct changefield_t* pcf = changefield_constructor(fv1, fv2);
+		if (pcf == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 215, ABEND_SKIP);
+			YYABORT;
+		}
+        if (current_changefield == NULL)
+			changefield_t_addQueue(&current_changefield, pcf); 
+		else 
+			changefield_t_addQueue(&current_changefield, pcf); 
+		current_changefield = pcf; 
+		free($1); 
+		free($2); 
+        free($4);
+		free($5); 
+        $$=pcf;
+}
+        /* CHANGE=(6,C'2',28,6) */
+   |   CHARTYPE  STRING ',' DIGIT ',' DIGIT  { 
+        /* verify      CHARTCOND  vs CHARTYPE */     
+        struct fieldValue_t* fv1 = fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD, 0);
+		if (fv1 == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 218, ABEND_SKIP);
+			YYABORT;
+		}
+        struct changefield_t* pcf = changefield_constructorPosLen(fv1, $4, $6);
+		if (pcf == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 215, ABEND_SKIP);
+			YYABORT;
+		}
+        if (current_changefield == NULL)
+			changefield_t_addQueue(&current_changefield, pcf); 
+		else 
+			changefield_t_addQueue(&current_changefield, pcf); 
+		current_changefield = pcf; 
+		free($1); 
+		free($2); 
+        $$=pcf;
+};
+
+changeCmdOpt:
+    /* #################################################################################################### */
+    /*  Deault Value for no match  */
+    /*   C'STR'  */
+    /* #################################################################################################### */
+    /* NOMATCH=(X'77') */
+    CHARTYPE  STRING { 
+        /* $$=changefield_constructor((char*) $2, $5); */
+		$$=fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD, 0);
+		if ($$ == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 104, ABEND_SKIP);
+			YYABORT;
+		}
+		free($1); 
+		free($2);         
+}
+;
+            
+
 outrecclause: 
 /* s.m. 20160915 */
       OUTREC FIELDS '=' '(' {
@@ -1205,8 +1554,7 @@ inrecclause:
 /* =================================================================================== */
 
 
-// OUTFIL
-
+/* OUTFIL   */
 allsumfield: sumfield {}
 		| sumfield ',' allsumfield {}
 ;
@@ -1217,7 +1565,7 @@ sumfield:
             utl_abend_terminate(MEMORYALLOC, 135, ABEND_SKIP);
 			YYABORT;
 		}
-        nTypeFormat=3;			// for SumFields Format=
+        nTypeFormat=3;			/* for SumFields Format=    */
         SumField_addDefinition(SumField); 
         strcpy(szMexToken, " sum fields clause ");
 }
@@ -1229,12 +1577,12 @@ sumfield:
 				YYABORT;
 			}
 			if (SumField2 == NULL) {
-                utl_abend_terminate(MEMORYALLOC, 103, ABEND_SKIP);
+                utl_abend_terminate(MEMORYALLOC, 140, ABEND_SKIP);
 				YYABORT;
 			}
-			nTypeFormat=3;			// for SumFields Format=
+			nTypeFormat=3;			/* for SumFields Format=    */
  			SumField_addDefinition(SumField1); 
-			nTypeFormat=3;			// for SumFields Format=
+			nTypeFormat=3;			/* for SumFields Format=    */
  			SumField_addDefinition(SumField2); 
 		strcpy(szMexToken, " sum fields clause ");
 }
@@ -1262,7 +1610,7 @@ sumclause:
 /* ============================================== */
 tokskipclause: 
        TOKSKIP {
-		//printf("GCSORT: Warning Token skipped : %s\n",yylval.string);
+		/*  printf("GCSORT: Warning Token skipped : %s\n",yylval.string);   */
 }
 ;
 
@@ -1374,7 +1722,7 @@ saveclause: SAVE {
 
 alloption: 
       option {}
-        //| option ',' alloption {}
+        /*  | option ',' alloption {}   */
     | option  alloption {}
 ;
 option: 
@@ -1456,6 +1804,107 @@ optionclause:
 } alloption {
 };
 
+/* RECORD CONTROL STATEMENT */
+/*
+allrecordoption: 
+      recordoption {}
+    | recordoption  allrecordoption {}
+;
+*/
+recordoption: 
+      RECTYPEFIX {
+/*        utils_SetOptionSort("COPY", NULL, 0); */
+		strcpy(szMexToken, " record option clause ");
+        free($1);
+}
+    /* TYPE = F, LENGTH=(<num> */
+    | RECTYPEFIX  LENGTH  '(' DIGIT ')' {
+        utils_SetRecordOptionSortType($1);
+        utils_SetRecordOptionSortLen($4, -1, -1, -1, -1, -1, -1);
+		strcpy(szMexToken, "  record option clause ");
+        free($1);
+}
+    | RECTYPEFIX  LENGTH  '(' DIGIT ',' DIGIT ')' {
+        utils_SetRecordOptionSortType($1);
+        utils_SetRecordOptionSortLen($4, $6, -1, -1, -1, -1, -1);
+		strcpy(szMexToken, "  record option clause ");
+        free($1);
+}
+    | RECTYPEFIX  LENGTH  '(' ',' DIGIT ')' {
+        utils_SetRecordOptionSortType($1);
+        utils_SetRecordOptionSortLen(-1, $5, -1, -1, -1, -1, -1);
+		strcpy(szMexToken, "  record option clause ");
+        free($1);
+}
+    | RECTYPEFIX  LENGTH  '(' DIGIT ',' DIGIT ',' DIGIT ')' {
+        utils_SetRecordOptionSortType($1);
+        utils_SetRecordOptionSortLen($4, $6, $8, -1, -1, -1, -1);
+		strcpy(szMexToken, "  record option clause ");
+        free($1);
+}
+    | RECTYPEFIX  LENGTH  '('  ','  ',' DIGIT ')' {
+        utils_SetRecordOptionSortType($1);
+        utils_SetRecordOptionSortLen(-1, -1, $6, -1, -1, -1, -1);
+		strcpy(szMexToken, "  record option clause ");
+        free($1);
+}
+    | RECTYPEFIX  LENGTH  '(' DIGIT ','  ',' DIGIT ')' {
+        utils_SetRecordOptionSortType($1);
+        utils_SetRecordOptionSortLen($4, -1, $7, -1, -1, -1, -1);
+		strcpy(szMexToken, "  record option clause ");
+        free($1);
+}
+    /* TYPE = V, LENGTH=(<num> */
+     | RECTYPEVAR {
+/*        utils_SetOptionSort("COPY", NULL, 0); */
+		strcpy(szMexToken, " record option clause ");
+        free($1);
+}
+    /* TYPE = F, LENGTH=(<num> */
+    | RECTYPEVAR  LENGTH '(' DIGIT ')' {
+        utils_SetRecordOptionSortType($1);
+        utils_SetRecordOptionSortLen($4, -1, -1, -1, -1, -1, -1);
+		strcpy(szMexToken, "  record option clause ");
+        free($1);
+}
+    | RECTYPEVAR  LENGTH  '(' DIGIT ',' DIGIT ')' {
+        utils_SetRecordOptionSortType($1);
+        utils_SetRecordOptionSortLen($4, $6, -1, -1, -1, -1, -1);
+		strcpy(szMexToken, "  record option clause ");
+        free($1);
+}
+    | RECTYPEVAR  LENGTH '(' ',' DIGIT ')' {
+        utils_SetRecordOptionSortType($1);
+        utils_SetRecordOptionSortLen(-1, $5, -1, -1, -1, -1, -1);
+		strcpy(szMexToken, "  record option clause ");
+        free($1);
+}
+    | RECTYPEVAR  LENGTH  '(' DIGIT ',' DIGIT ',' DIGIT ')' {
+        utils_SetRecordOptionSortType($1);
+        utils_SetRecordOptionSortLen($4, $6, $8, -1, -1, -1, -1);
+		strcpy(szMexToken, "  record option clause ");
+        free($1);
+}
+    | RECTYPEVAR  LENGTH  '('  ','  ',' DIGIT ')' {
+        utils_SetRecordOptionSortType($1);
+        utils_SetRecordOptionSortLen(-1, -1, $6, -1, -1, -1, -1);
+		strcpy(szMexToken, "  record option clause ");
+        free($1);
+}
+    | RECTYPEVAR LENGTH '(' DIGIT ','  ',' DIGIT ')' {
+        utils_SetRecordOptionSortType($1);
+        utils_SetRecordOptionSortLen($4, -1, $7, -1, -1, -1, -1);
+		strcpy(szMexToken, "  record option clause ");
+        free($1);
+}
+
+
+;
+
+recordclause: 
+       RECORD TYPE recordoption {
+    /*} allrecordoption { */
+};
 
 
 %%

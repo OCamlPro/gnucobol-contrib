@@ -23,6 +23,8 @@
        fd  fcmd.
        01  r-cmd        pic x(1024).
        working-storage section.
+       77 numchars1             pic 9(3).
+       77 numchars2             pic 9(3).
        77 chrsl                 pic x value '/'.
        77 chrbs                 pic x value '\'.
        77 wk-fcmd               pic x(128).
@@ -40,9 +42,9 @@
        01       array-retcode-epilog-gr01.
           03    ar-retcode-ele occurs 18 times.
            05   ar-tst-name           pic x(10).
-           05   ar-tst-rtc01          pic 99.
-           05   ar-tst-rtc02          pic 99.
-           05   ar-tst-rtc03          pic 99.
+           05   ar-tst-rtc01          USAGE BINARY-LONG.
+           05   ar-tst-rtc02          USAGE BINARY-LONG.
+           05   ar-tst-rtc03          USAGE BINARY-LONG.
       *  array-name
        01    array-name.
           03 ar-name-max-ele        pic 99  value 18.
@@ -773,23 +775,25 @@
       *            "   " status-test
       *
            display '----------------------------------'
-                   '---------------------'
-           display '|              | '
-                   '        retcode'
-                   '           |          |'
-           display '| Test id      | cobol |' 
-                   ' gcsort |'         
-                   ' diffile '       
-                   ' |  status  |' 
+                   '----------------------------------'
+                   '--------------'
+           display '|              |                       '
+                   'retcode                        |          |'
+                   
+           display '| Test id      |     cobol      | '
+                   '     gcsort     |     diffil'
+                   'e       |  status  |'
            display '----------------------------------'
-                   '---------------------'
+                   '----------------------------------'
+                   '--------------'
       
            perform epilog-view-gr01 
                varying idx from 1 by 1
                   until idx > ar-name-max-ele
 
            display '----------------------------------'
-                   '---------------------'
+                   '----------------------------------'
+                   '--------------'
            . 
        eprt-99.
            exit.
@@ -804,9 +808,9 @@
            if (ar-tst-rtc01(idx) = zero) and
               (ar-tst-rtc02(idx) = zero) and
               (ar-tst-rtc03(idx) = zero)
-              move  " Test OK "   to status-test
+              move  "   OK    "   to status-test
            else
-              move " Test KO "    to status-test
+              move  " ---> KO "    to status-test
            end-if
            display "| " ar-tst-name(idx)    "   |  "
                         ar-tst-rtc01(idx)   "   |   "
@@ -853,12 +857,22 @@ Win        if (ntype = 1)
                inspect env-set-value replacing all chrsl by chrbs
            end-if
 	       display env-set-name  upon ENVIRONMENT-NAME
+            move zero to numchars1
+            inspect env-set-name tallying numchars1
+                    for characters before initial space
+            move zero to numchars2
+            inspect env-set-value tallying numchars2
+                    for characters before initial space
+           
            display env-set-value upon ENVIRONMENT-VALUE 
            if ( env-set-value not equal space )
-               display '****************************************'           
-               display env-set-name '=' env-set-value          
-               display '****************************************'           
-           end-if    
+             if (ntype = 1)
+               display 'set 'env-set-name(1:numchars1) '=' 
+                       env-set-value(1:numchars2)
+             else
+               display 'export 'env-set-name(1:numchars1) '=' 
+                       env-set-value(1:numchars2)             
+           end-if 
            .
        sv-99.
            exit.
@@ -887,7 +901,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
                  goback
              end-if             
            end-if            
-           display ' cmd line : '  cmd-go
+           display  cmd-go
            call     'SYSTEM' using cmd-go
       D    display  'RETURN-CODE Value : ' RETURN-CODE
       * reset 
@@ -945,11 +959,16 @@ TEST00***               display ' cmd:>' cmd-go  '<'
                  goback
              end-if             
            end-if            
-           display ' cmd line : ' cmd-go
+           display cmd-go
            call 'SYSTEM' using cmd-go
       *
            move  RETURN-CODE  to ar-tst-rtc01(idx)
       D    display  "RETURN-CODE Value : " RETURN-CODE
+      ** Check return code [Problem in Linux environment]     
+           if (ar-tst-rtc01(idx) > 256)
+                divide ar-tst-rtc01(idx) by 256
+                giving ar-tst-rtc01(idx)
+           end-if
       * reset 
            move 'dd_infile'      to env-set-name
            move space            to env-set-value
@@ -1019,10 +1038,15 @@ TEST00***               display ' cmd:>' cmd-go  '<'
                  goback
              end-if             
            end-if            
-           display ' cmd line : ' cmd-go
+           display cmd-go
            call     'SYSTEM' using cmd-go
       *
            move  RETURN-CODE  to ar-tst-rtc02(idx)
+      ** Check return code [Problem in Linux environment]     
+           if (ar-tst-rtc02(idx) > 256)
+                divide ar-tst-rtc02(idx) by 256
+                giving ar-tst-rtc02(idx)
+           end-if
            if (ar-tst-rtc02(idx)  = 4)
                 move zero to ar-tst-rtc02(idx)
                 display ' Force zero to retcode - There is a warning.'
@@ -1097,11 +1121,16 @@ TEST00***               display ' cmd:>' cmd-go  '<'
                  goback
              end-if             
            end-if            
-           display ' cmd line : '  cmd-go
+           display cmd-go
            call     "SYSTEM" using cmd-go
       *
            move  RETURN-CODE  to ar-tst-rtc03(idx)
       D    display  "RETURN-CODE Value : " RETURN-CODE
+      ** Check return code [Problem in Linux environment]     
+           if (ar-tst-rtc03(idx) > 256)
+                divide ar-tst-rtc03(idx) by 256
+                giving ar-tst-rtc03(idx)
+           end-if
       ** set rtc2=%errorlevel%
       * reset 
       ** set dd_incobol=

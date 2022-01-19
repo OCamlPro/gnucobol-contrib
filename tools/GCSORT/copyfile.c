@@ -25,7 +25,6 @@
 #include <ctype.h>
 
 #include "libgcsort.h"
-//#ifdef	_WIN32
 #if defined(_MSC_VER) ||  defined(__MINGW32__) || defined(__MINGW64__)
 	#include <share.h>
 	#include <fcntl.h> 
@@ -92,7 +91,7 @@ int job_copy (struct job_t* job)
 
 int job_copyFile(struct job_t *job) 
 {
-//--------------------
+/* -------------------- */
 	int	bSkip = 0;
 	int	nSplitPosPnt = 0;
 	int	retcode_func = 0;
@@ -100,7 +99,6 @@ int job_copyFile(struct job_t *job)
 	int nNumBytes = 0;
 	unsigned int recordBufferLength;
 	int useRecord;
-	// unsigned char  szKeyFirst[1024+SZPOSPNT];
 	unsigned char* recordBuffer;			
 	unsigned char* szBuffRek;				
 	unsigned char* szBuffOut;				
@@ -111,16 +109,17 @@ int job_copyFile(struct job_t *job)
 	unsigned int   nLenRecOut=0;
 	unsigned int   nLenRek = 0;
 	unsigned int   nbyteOvl = 0;
-	//
-	// ======================================================================================= //
-	// Record buffered 
-	//  for E35
+	/*
+	 ======================================================================================= 
+	 Record buffered 
+	  for E35
+    */
 	int nFS = 0;
-	int nLastRecord = 0;  // 0 no, 1 yes is last record input
-	int nInsE35 = 0;      // 0 no record from E35, 1 record from E35
+	int nLastRecord = 0;  /* 0 no, 1 yes is last record input           */
+	int nInsE35 = 0;      /* 0 no record from E35, 1 record from E35    */
 	int nState = 0;
-	int nPosArray = 0;	  // 1 = Position 1(szVectorRead1) 
-						  // 2 = Position 2(szVectorRead2)
+	int nPosArray = 0;	  /* 1 = Position 1(szVectorRead1)              */
+						  /* 2 = Position 2(szVectorRead2)              */
 	int nLenVR1 = 0;
 	int nLenVR2 = 0;
 	int nFSRead = 0;
@@ -131,10 +130,7 @@ int job_copyFile(struct job_t *job)
 	int rc = 0;
 	int nIsFileVariable = 0;
 	int nOutLen = 0;
-	// ======================================================================================= //
 
-
-//--------------------
 	int bEOF, nEOFFileIn;
 	int bIsFirstTime=1;
     int bIsFirstLoop=0;    
@@ -151,8 +147,8 @@ int job_copyFile(struct job_t *job)
 	unsigned char* pBufRek;
 	unsigned char* pBufData;
 
-	unsigned char* szVectorRead1;		// record input file 
-	unsigned char* szVectorRead2;		// record input file 
+	unsigned char* szVectorRead1;		/* record input file    */
+	unsigned char* szVectorRead2;		/* record input file    */
     
  	recordBuffer = (unsigned char*)calloc((size_t)GCSORT_MAX_BUFF_REK, sizeof(unsigned char));
  	if (recordBuffer == 0)
@@ -210,18 +206,16 @@ int job_copyFile(struct job_t *job)
 	nIdxFileIn = -1;
 	job->nLastPosKey = job_GetLastPosKeys();
 	if (job->nLastPosKey <= NUMCHAREOL)
-		job->nLastPosKey = NUMCHAREOL;	// problem into memchr
+		job->nLastPosKey = NUMCHAREOL;	/* problem into memchr */
 	nEOFFileIn = 0;
     
-    //
 	if (job->outfil != NULL) {
 		if (outfil_open_files(job) < 0) {
 			retcode_func = -1;
 			goto job_save_exit;
 		}
 	}
-	// Outfil == NULL, standard output file
-    //if (job->outfil == NULL) {
+	/* Outfil == NULL, standard output file */
 	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) {
 		cob_open(job->outputFile->stFileDef,  COB_OPEN_OUTPUT, 0, NULL);
 		if (atol((char *)job->outputFile->stFileDef->file_status) != 0) {
@@ -231,13 +225,12 @@ int job_copyFile(struct job_t *job)
 			goto job_save_exit;
 		}
 		if (job->outputFile->stFileDef->variable_record)
-			nIsFileVariable = 1; // File is Variable Length
+			nIsFileVariable = 1; /* File is Variable Length */
 	}    
     
-    //
 	for (file=job->inputFile; file!=NULL; file=file_getNext(file)) {
 		nIdxFileIn++;
-		if (job->nCurrFileInput > nIdxFileIn)	// bypass previous file readed
+		if (job->nCurrFileInput > nIdxFileIn)	/* bypass previous file readed  */
 			continue;
 
 		if ((job->bIsPresentSegmentation == 0) || (nEOFFileIn == 1))
@@ -245,6 +238,7 @@ int job_copyFile(struct job_t *job)
 			struct stat filestatus;
 		    stat( file_getName(file), &filestatus );
 			job->inputFile->nFileMaxSize = filestatus.st_size;
+			/* check if filename is a environment variable */
 			if (job->inputFile->nFileMaxSize == 0)
 				job->inputFile->nFileMaxSize=utl_GetFileSizeEnvName(file);
 			cob_open(file->stFileDef,  COB_OPEN_INPUT, 0, NULL);
@@ -255,10 +249,9 @@ int job_copyFile(struct job_t *job)
 			}
 			nEOFFileIn=0;
 			if (file->stFileDef->variable_record)
-				nIsFileVariable = 1; // File is Variable Length
+				nIsFileVariable = 1; /* File is Variable Length */
 		}
 		bEOF = 0;
-//		nLenMemory = file_getMaxLength(file);
 		nLenRek = file_getRecordLength(file);
 		nbyteRead=0;
 		pBufRek=job->buffertSort;
@@ -279,26 +272,26 @@ int job_copyFile(struct job_t *job)
 		if (job->inrec != NULL)
 			ninrec = 1;
 
-		//
-		// ======================================================================================= //
-		// Record buffered 
-		//  for E15
+		/*
+		 ======================================================================================= 
+		 Record buffered 
+		  for E15
+        */
 		int nFS = 0;
-		int nLastRecord = 0;  // 0 no, 1 yes is last record input
-		int nInsE15 = 0;      // 0 no record from E15, 1 record from E15
+		int nLastRecord = 0;  /* 0 no, 1 yes is last record input           */
+		int nInsE15 = 0;      /* 0 no record from E15, 1 record from E15    */
 		int nState = 0;
-		int nPosArray = 0;	  // 1 = Position 1(szVectorRead1) 
-		                      // 2 = Position 2(szVectorRead2)
+		int nPosArray = 0;	  /* 1 = Position 1(szVectorRead1)              */
+		                      /* 2 = Position 2(szVectorRead2)              */
 		int nLenVR1 = 0;
 		int nLenVR2 = 0;
 		int nFSRead = 0;
 		int nNewLen = 0;
-		// ======================================================================================= //
+		/* ======================================================================================= */
 		while (bEOF == 0)
 		{
-//			if ((job->nExitRoutine == 0) || (job->nExitRoutine == 2)) {		// 0=normal , 1=E15, 2=E35 , 3=E15+E35 only with 1 call read for E15
- 			if (job->nExitRoutine == 0) {					// 0=normal , 1=E15, 2=E35 , 3=E15+E35 only with 1 call read for E15
-				// Read normal without exit routines
+ 			if (job->nExitRoutine == 0) {					/* 0=normal , 1=E15, 2=E35 , 3=E15+E35 only with 1 call read for E15  */
+				/* Read normal without exit routines */
 				cob_read_next(file->stFileDef, NULL, COB_READ_NEXT);
 				nFSRead = job_checkFS(file->stFileDef);
 				if (nFSRead != 0) {
@@ -308,7 +301,7 @@ int job_copyFile(struct job_t *job)
 						continue;
 					}
 					if (nFSRead == -1)
-						return -1; //exit(GC_RTC_ERROR);
+						return -1; /*   exit(GC_RTC_ERROR); */
 				}				
 			}
 			else 
@@ -328,15 +321,14 @@ int job_copyFile(struct job_t *job)
 			nRecCount++;
 			job->recordNumberTotal++;
 			job->LenCurrRek = nLenRek;
-// check SKIPREC
+/* check SKIPREC */
 			if (job->nSkipRec > 0)
                 if (nRecCount <= job->nSkipRec)
 					continue;
 
 			useRecord=1;
 
-			// Start Exit Routine E15
-			/*
+			/* Start Exit Routine E15
 			Return Code	Meaning
 				0	No action required.
 				4	Delete the current record.For E15, the record is not sorted.For E35, the record is not written to the output data set.
@@ -345,28 +337,28 @@ int job_copyFile(struct job_t *job)
 				16	Terminate sort operation.The job step is terminated with the condition code set to 16.
 				20	Alter the current record.For E15, the altered record is passed to the sort.For E35, the altered record is written to the output data set.
 			*/
-			if ((job->nExitRoutine == 1) || (job->nExitRoutine == 3)) {		// Call E15			
-				if (rc != 12 ) {				// is rc = 12 last call for insert record
+			if ((job->nExitRoutine == 1) || (job->nExitRoutine == 3)) {		/* Call E15			*/
+				if (rc != 12 ) {				/* is rc = 12 last call for insert record */
 					E15ResetParams(&nrekE15, &nrekFlagE15, nLastRecord);
 					if (nrekE15 != 8) {
 						rc = E15Run(0, job->E15Routine, nrekFlagE15, nLenRek, szBuffRek, szBuffReceive, &nNewLen, nIsFileVariable);
 						switch (rc) {
-						case 0:			// Nothing
+						case 0:			/* Nothing */
 							break;
-						case 4:			// Skip record
+						case 4:			/* Skip record */
 							useRecord = 0;
 							break;
-						case 8:			// No call again E15
+						case 8:			/* No call again E15 */
 							nrekE15 = 8;
 							break;
-						case 12:		// Insert new Record into buffer before record readed
+						case 12:		/* Insert new Record into buffer before record readed */
 							memmove(szBuffRek, szBuffReceive, nLenRek);
-							nState = nState + 5;   // Set nState to +5 value to skip next read and move saved buffer 
+							nState = nState + 5;   /* Set nState to +5 value to skip next read and move saved buffer */
 							break;
-						case 16:		// Abend
+						case 16:		/* Abend */
 							utl_abend_terminate(EXITROUTINE, 16, ABEND_EXEC);
 							break;
-						case 20:		// Use record received from E15
+						case 20:		/* Use record received from E15 */
 							memmove(szBuffRek, szBuffReceive, nLenRek);
 							break;
 						}
@@ -377,35 +369,33 @@ int job_copyFile(struct job_t *job)
 					rc = 0;
 				}
 			}
-			// End   Exit Routine E15 check skip record
+			/* End   Exit Routine E15 check skip record */
 			if (useRecord == 0)
 				continue;
 
 			if (includecondfield == 1)
 				if  (condField_test(job->includeCondField,(unsigned char*) szBuffRek, job)== FALSE) {
-					useRecord=0;	// if condition for include is false skip record
+					useRecord=0;	/* if condition for include is false skip record  */
 			}
 			if (nomitcondfield == 1) {
 				if (condField_test(job->omitCondField,(unsigned char*) szBuffRek, job)==TRUE) {	
-					useRecord = 0;	// if condition for omit is true skip record
+					useRecord = 0;	/* if condition for omit is true skip record */
 				}
 			}
 			if (useRecord==0)
 				continue;
 
-// check STOPAFT
+            /* check STOPAFT */
 			if (job->nStopAft > 0)
                 if (job->recordNumber >= job->nStopAft) {
 					nbyteRead=0;
 					break;
 			}
-//
-
-// INREC
-// If INREC is present made a new area record.
-// Only in this point
-// Before all command
-			//if (job->inrec!=NULL) {
+/* INREC
+ If INREC is present made a new area record.
+ Only in this point
+ Before all command
+*/
 			if (ninrec == 1) {
 				if (job->inrec->nIsOverlay == 0) {
 					memset(recordBuffer, 0x20, sizeof(recordBuffer));
@@ -414,12 +404,12 @@ int job_copyFile(struct job_t *job)
 					nLenRek = nbyteRead;
 				}
 				else
-				{		// Overlay
+				{	/* Overlay */
 					memset(recordBuffer, 0x20, sizeof(recordBuffer));
-					memmove(recordBuffer, szBuffRek, file_getMaxLength(file));	// copy input record
+					memmove(recordBuffer, szBuffRek, file_getMaxLength(file));	/* copy input record    */
 					nbyteRead = inrec_copy_overlay(job->inrec, recordBuffer, szBuffRek, job->outputLength, file_getMaxLength(file), file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, 0);
 					nbyteRead++;
-					// copy all data record
+					/* copy all data record */
 					if (nbyteRead < job->inputLength)
 						nbyteRead = job->inputLength;
 					memmove(szBuffRek, recordBuffer, nbyteRead);
@@ -428,14 +418,12 @@ int job_copyFile(struct job_t *job)
 			}
 			job->LenCurrRek = nLenRek;
             job->recordNumber++;
-// End of input read
-//
-// Start output
+/* End of input read */
 
-		
-		// E35 End
-		gc_memmove(szBuffOut, szBuffRek, nLenRek );		// save previous record for E35
-		nOutLen = nLenRek;											// save len
+/* Start output */
+		/* E35 End  */
+		gc_memmove(szBuffOut, szBuffRek, nLenRek );		/* save previous record for E35    */
+		nOutLen = nLenRek;								/* save len                        */
 
 		byteRead = nLenRek + nSplitPosPnt;
 		nNumBytes = nNumBytes + byteRead;
@@ -443,33 +431,31 @@ int job_copyFile(struct job_t *job)
 		nLenRecOut = job->outputLength;
 
 		if (job->outrec != NULL) {
-			// check overlay
+			/* check overlay    */
 			if (job->outrec->nIsOverlay == 0) {
 				memset(szBuffRek, 0x20, recordBufferLength);
 				nLenRek = outrec_copy(job->outrec, szBuffRek, recordBuffer, job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
-				memset(recordBuffer, 0x20, recordBufferLength); // s.m. 202101
+				memset(recordBuffer, 0x20, recordBufferLength); /* s.m. 202101  */
 				gc_memcpy(recordBuffer, szBuffRek, nLenRek + nSplitPosPnt);
 				nLenRecOut = nLenRek;
 			}
 			else
-			{		// Overlay
+			{		/* Overlay  */
 				memset(szBuffRek, 0x20, recordBufferLength);
-				gc_memcpy((unsigned char*)szBuffRek, recordBuffer, nLenRek + nSplitPosPnt);	// s.m. 202101 copy record
+				gc_memcpy((unsigned char*)szBuffRek, recordBuffer, nLenRek + nSplitPosPnt);	/* s.m. 202101 copy record  */
 				nbyteOvl = outrec_copy_overlay(job->outrec, szBuffRek, recordBuffer, job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 				nbyteOvl++;
 				if (nbyteOvl < nLenRek)
 					nbyteOvl = nLenRek;
 				if (recordBufferLength < nbyteOvl)
 					recordBuffer = (unsigned char*)realloc(recordBuffer, nbyteOvl + 1);
-				memset(recordBuffer, 0x20, recordBufferLength); // s.m. 202101
+				memset(recordBuffer, 0x20, recordBufferLength); /* s.m. 202101  */
 				gc_memcpy(recordBuffer + nSplitPosPnt, szBuffRek + nSplitPosPnt, nbyteOvl);
 				nLenRecOut = nbyteOvl;
 			}
 		}
-// E35 Start after OUTREC
-//
-		// E35 Start
-		/*
+        /* E35 Start after OUTREC */
+		/* E35 Start
 		Return Code	Meaning
 			0	No action required.
 			4	Delete the current record. For E35, the record is not written to the output data set.
@@ -478,34 +464,30 @@ int job_copyFile(struct job_t *job)
 			16	Terminate sort operation.The job step is terminated with the condition code set to 16.
 			20	Alter the current record. For E35, the altered record is written to the output data set.
 		*/
-		if ((job->nExitRoutine == 2) || (job->nExitRoutine == 3)) {		// Call E35		
+		if ((job->nExitRoutine == 2) || (job->nExitRoutine == 3)) {		/* Call E35		*/
 			gc_memmove(szBuffRekE35, recordBuffer, nLenRek);
-			// nLastRecord = 1 set for EOF ;			// set EOF for sorted data
-			if (rc != 12) {					// is rc = 12 last call for insert record
+			if (rc != 12) {					/* is rc = 12 last call for insert record */
 				E35ResetParams(&nrekE35, &nrekFlagE35, nLastRecord);
 				if (nrekE35 != 8) {
 					rc = E35Run(0, job->E35Routine, nrekFlagE35, nLenRek, szBuffRekE35, szBuffReceive, szBuffOut, &nNewLen, &nOutLen, nIsFileVariable);
 					switch (rc) {
-					case 0:			// Nothing
+					case 0:			/* Nothing */
 						break;
-					case 4:			// Skip record
+					case 4:			/* Skip record */
 						useRecord = 0;
 						break;
-					case 8:			// No call again E35
+					case 8:			/* No call again E35 */
 						nrekE35 = 8;
 						break;
-					case 12:		// Insert new Record into buffer before record readed
+					case 12:		/* Insert new Record into buffer before record readed */
 						memmove(recordBuffer, szBuffReceive, nLenRek);
-						//
-						//i = i - 1; // insert record and reset pointer record
-						// Check - Is ok for E15 , verify for E35
-						nState = nState + 5;   // Set nState to +5 value to skip next read and move saved buffer 
-						//
+						/* Check - Is ok for E15 , verify for E35 */
+						nState = nState + 5;   /* Set nState to +5 value to skip next read and move saved buffer */
 						break;
-					case 16:		// Abend
+					case 16:		/* Abend  */
 						utl_abend_terminate(EXITROUTINE, 16, ABEND_EXEC);
 						break;
-					case 20:		// Use record received from E35
+					case 20:		/* Use record received from E35 */
 						memmove(recordBuffer, szBuffReceive, nLenRek);
 						break;
 					}
@@ -516,14 +498,12 @@ int job_copyFile(struct job_t *job)
 				rc = 0;
 			}
 		}
-		// End   Exit Routine E35 check skip record
+		/* End   Exit Routine E35 check skip record */
 		if (useRecord == 0)
 			continue;
-
-//
-// E35 End
+/* E35 End */
 		if ((nLenRek > 0) && (job->outfil == NULL)){
-			job_set_area(job, job->outputFile, recordBuffer+nSplitPosPnt, nLenRecOut);	// Len output
+			job_set_area(job, job->outputFile, recordBuffer+nSplitPosPnt, nLenRecOut);	/* Len output   */
 			cob_write (job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
 			if (atol((char *)job->outputFile->stFileDef->file_status) != 0) {
 			    fprintf(stderr,"*GCSORT*S627*ERROR: Cannot write to file %s - File Status (%c%c)\n",file_getName(job->outputFile),
@@ -534,8 +514,8 @@ int job_copyFile(struct job_t *job)
             job->recordWriteOutTotal++;
 		}
 
-// OUTFIL
-// Make output for OUTFIL
+/* OUTFIL */
+/* Make output for OUTFIL */
 		if ((nLenRek > 0) && (job->outfil != NULL)){
 			if (outfil_write_buffer(job, recordBuffer, nLenRek, szBuffRek, nSplitPosPnt) < 0){
 					retcode_func = -1;
@@ -543,15 +523,12 @@ int job_copyFile(struct job_t *job)
 			}
 			job->recordWriteOutTotal++;
 		}
-	}	//end of cycle
+	}	/*  end of cycle    */
 
-// End output
-// 
-
-		//}
+/* End output */ 
 
 		if (nbyteRead==0) {
-			// End of file
+			/* End of file */
             } else if (nbyteRead==-1) {
 			fprintf(stderr,"*GCSORT*S719*ERROR: Cannot read file %s : %s\n",file_getName(file),strerror(errno));
 			return -1;
@@ -559,10 +536,9 @@ int job_copyFile(struct job_t *job)
 			fprintf(stderr,"Wrong record length in file %s\n",file_getName(file));
 			return -1;
 		}
-//		cob_close (file->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
 		nEOFFileIn=1;
         
-	} //for (file=job->inputFile; file!=NULL; file=file_getNext(file))
+	} /*for (file=job->inputFile; file!=NULL; file=file_getNext(file)) */
 job_save_exit:
 
 	cob_close (job->outputFile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);

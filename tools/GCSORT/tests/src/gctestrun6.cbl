@@ -11,7 +11,7 @@
       *  cobc -x  -std=default -debug -Wall  -o gctestrun1 gctestrun1.cbl 
       ****************************************************************
  	   identification division.
-       program-id.  gctestrun1.
+       program-id.  gctestrun6.
        environment division.
        input-output section.
        file-control.
@@ -23,6 +23,8 @@
        fd  fcmd.
        01  r-cmd        pic x(1024).
        working-storage section.
+       77 numchars1             pic 9(3).
+       77 numchars2             pic 9(3).
        77 chrsl                 pic x value '/'.
        77 chrbs                 pic x value '\'.
        77 wk-fcmd               pic x(128).
@@ -35,14 +37,14 @@
        77 idx                   pic 9(3).
        77 idx-take              pic 9(3).
        77 status-test           pic x(9).
-       77 retcode-sum           pic 9(10) value zero.
+       77 retcode-sum           USAGE BINARY-LONG value zero.
       *
        01       array-retcode-epilog-gr06.
           03    ar-retcode-ele occurs 17 times.
            05   ar-tst-name           pic x(10).
-           05   ar-tst-rtc01          pic 99.
-           05   ar-tst-rtc02          pic 99.
-           05   ar-tst-rtc03          pic 99.
+           05   ar-tst-rtc01          USAGE BINARY-LONG.
+           05   ar-tst-rtc02          USAGE BINARY-LONG.
+           05   ar-tst-rtc03          USAGE BINARY-LONG.
       *  array-name
        01    array-name.
           03 ar-name-max-ele        pic 99  value 16.
@@ -108,7 +110,7 @@
                 'GIVE ../files/FDate.dat.Y2T8.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-01007      pic x(10) value 'Y2T8  '.
             07 ar-ele-take-row-01008      pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *         
             07 ar-ele-take-row-02001    pic x(10) value 'Y2T4 '.
             07 ar-ele-take-row-02002    pic x(80) value
@@ -121,7 +123,7 @@
                 'GIVE ../files/FDate.dat.Y2T4.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-02007    pic x(10) value 'Y2T4 '.
             07 ar-ele-take-row-02008    pic x(80) value
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       * 
             07 ar-ele-take-row-03001    pic x(10) value 'Y2T2 '.
             07 ar-ele-take-row-00302    pic x(80) value
@@ -134,7 +136,7 @@
                 'GIVE ../files/FDate.dat.Y2T2.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-03007    pic x(10) value 'Y2T2 '.
             07 ar-ele-take-row-03008    pic x(80) value
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       * 
             07 ar-ele-take-row-04001    pic x(10) value 'Y2T3 '.
             07 ar-ele-take-row-04002    pic x(80) value 
@@ -147,7 +149,7 @@
                 'GIVE ../files/FDate.dat.Y2T3.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-04007    pic x(10) value 'Y2T3 '.
             07 ar-ele-take-row-04008    pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *                     
             07 ar-ele-take-row-05001    pic x(10) value 'Y2T5 '.
             07 ar-ele-take-row-05002    pic x(80) value 
@@ -160,7 +162,7 @@
                 'GIVE ../files/FDate.dat.Y2T5.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-05007    pic x(10) value 'Y2T5 '.
             07 ar-ele-take-row-05008    pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *                     
             07 ar-ele-take-row-06001    pic x(10) value 'Y2T6 '.
             07 ar-ele-take-row-06002    pic x(80) value 
@@ -173,7 +175,7 @@
                 'GIVE ../files/FDate.dat.Y2T6.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-06007    pic x(10) value 'Y2T6 '.
             07 ar-ele-take-row-06008    pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *                     
             07 ar-ele-take-row-07001    pic x(10) value 'Y4T7 '.
             07 ar-ele-take-row-07002    pic x(80) value 
@@ -186,7 +188,7 @@
                 'GIVE ../files/FDate.dat.Y4T7.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-07007    pic x(10) value 'Y4T7 '.
             07 ar-ele-take-row-07008    pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *                     
             07 ar-ele-take-row-08001    pic x(10) value 'Y2B '.
             07 ar-ele-take-row-08002    pic x(80) value 
@@ -199,7 +201,7 @@
                 'GIVE ../files/FDate.dat.Y2B.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-08007    pic x(10) value 'Y2B '.
             07 ar-ele-take-row-08008    pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *                     
             07 ar-ele-take-row-09001    pic x(10) value 'Y2C '.
             07 ar-ele-take-row-09002    pic x(80) value 
@@ -212,7 +214,7 @@
                 'GIVE ../files/FDate.dat.Y2C.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-09007    pic x(10) value 'Y2C '.
             07 ar-ele-take-row-09008    pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *        
             07 ar-ele-take-row-10001    pic x(10) value 'Y2D '.
             07 ar-ele-take-row-10002    pic x(80) value 
@@ -225,7 +227,7 @@
                 'GIVE ../files/FDate.dat.Y2D.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-10007    pic x(10) value 'Y2D '.
             07 ar-ele-take-row-10008    pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *        
             07 ar-ele-take-row-11001    pic x(10) value 'Y2P '.
             07 ar-ele-take-row-11002    pic x(80) value 
@@ -238,7 +240,7 @@
                 'GIVE ../files/FDate.dat.Y2P.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-11007    pic x(10) value 'Y2P '.
             07 ar-ele-take-row-11008    pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *        
             07 ar-ele-take-row-12001    pic x(10) value 'Y2S '.
             07 ar-ele-take-row-12002    pic x(80) value 
@@ -251,7 +253,7 @@
                 'GIVE ../files/FDate.dat.Y2S.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-12007    pic x(10) value 'Y2S '.
             07 ar-ele-take-row-12008    pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *        
             07 ar-ele-take-row-13001    pic x(10) value 'Y2U '.
             07 ar-ele-take-row-13002    pic x(80) value 
@@ -264,7 +266,7 @@
                 'GIVE ../files/FDate.dat.Y2U.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-13007    pic x(10) value 'Y2U '.
             07 ar-ele-take-row-13008    pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *        
             07 ar-ele-take-row-14001    pic x(10) value 'Y2V '.
             07 ar-ele-take-row-14002    pic x(80) value 
@@ -277,7 +279,7 @@
                 'GIVE ../files/FDate.dat.Y2V.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-14007    pic x(10) value 'Y2V '.
             07 ar-ele-take-row-14008    pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *        
             07 ar-ele-take-row-15001    pic x(10) value 'Y2X '.
             07 ar-ele-take-row-15002    pic x(80) value 
@@ -290,7 +292,7 @@
                 'GIVE ../files/FDate.dat.Y2X.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-15007    pic x(10) value 'Y2X '.
             07 ar-ele-take-row-15008    pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *        
             07 ar-ele-take-row-16001    pic x(10) value 'Y2Y '.
             07 ar-ele-take-row-16002    pic x(80) value 
@@ -303,7 +305,7 @@
                 'GIVE ../files/FDate.dat.Y2Y.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-16007    pic x(10) value 'Y2Y '.
             07 ar-ele-take-row-16008    pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *        
             07 ar-ele-take-row-17001    pic x(10) value 'Y2Z '.
             07 ar-ele-take-row-17002    pic x(80) value 
@@ -316,7 +318,7 @@
                 'GIVE ../files/FDate.dat.Y2Z.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-17007    pic x(10) value 'Y2Z '.
             07 ar-ele-take-row-17008    pic x(80) value 
-                ' OPTION Y2PAST=70 '. 
+                ' OPTION Y2PAST=80 '. 
       *      
           03 filler redefines ar-ele-take-rows 
                occurs 68 times.
@@ -393,23 +395,25 @@
       *            "   " status-test
       *
            display '----------------------------------'
-                   '---------------------'
-           display '|              | '
-                   '        retcode'
-                   '           |          |'
-           display '| Test id      | cobol |' 
-                   ' gcsort |'         
-                   ' diffile '       
-                   ' |  status  |' 
+                   '----------------------------------'
+                   '--------------'
+           display '|              |                       '
+                   'retcode                        |          |'
+                   
+           display '| Test id      |     cobol      | '
+                   '     gcsort     |     diffil'
+                   'e       |  status  |'
            display '----------------------------------'
-                   '---------------------'
+                   '----------------------------------'
+                   '--------------'
       
            perform epilog-view-gr06 
                varying idx from 1 by 1
                   until idx > ar-name-max-ele
 
            display '----------------------------------'
-                   '---------------------'
+                   '----------------------------------'
+                   '--------------'
            . 
        eprt-99.
            exit.
@@ -424,9 +428,9 @@
            if (ar-tst-rtc01(idx) = zero) and
               (ar-tst-rtc02(idx) = zero) and
               (ar-tst-rtc03(idx) = zero)
-              move  " Test OK "   to status-test
+              move  "   OK    "   to status-test
            else
-              move " Test KO "    to status-test
+              move  " ---> KO "    to status-test
            end-if
            display "| " ar-tst-name(idx)    "   |  "
                         ar-tst-rtc01(idx)   "   |   "
@@ -473,12 +477,23 @@ Win        if (ntype = 1)
                inspect env-set-value replacing all chrsl by chrbs
            end-if
 	       display env-set-name  upon ENVIRONMENT-NAME
+
+            move zero to numchars1
+            inspect env-set-name tallying numchars1
+                    for characters before initial space
+            move zero to numchars2
+            inspect env-set-value tallying numchars2
+                    for characters before initial space
+           
            display env-set-value upon ENVIRONMENT-VALUE 
            if ( env-set-value not equal space )
-               display '****************************************'           
-               display env-set-name '=' env-set-value          
-               display '****************************************'           
-           end-if    
+             if (ntype = 1)
+               display 'set 'env-set-name(1:numchars1) '=' 
+                       env-set-value(1:numchars2)
+             else
+               display 'export 'env-set-name(1:numchars1) '=' 
+                       env-set-value(1:numchars2)             
+           end-if   
            .
        sv-99.
            exit.
@@ -504,13 +519,13 @@ Linux        if (ntype = 2) or (ntype = 3)
                  string './'   delimited by size 
                     cmd-string delimited by size
                           into cmd-go
-TEST00***               display ' cmd:>' cmd-go  '<'
+TEST00           display cmd-go
              else
                  display ' SYSTEM call problem '
                  goback
              end-if             
            end-if            
-           display ' cmd line : '  cmd-go
+           display  cmd-go
            call     'SYSTEM' using cmd-go
       D    display  'RETURN-CODE Value : ' RETURN-CODE
       * reset 
@@ -570,16 +585,21 @@ Linux        if (ntype = 2) or (ntype = 3)
                  string './'   delimited by size 
                     cmd-string delimited by size
                           into cmd-go
-TEST00***               display ' cmd:>' cmd-go  '<'
+TEST00               display ' cmd:' cmd-go  
              else
                  display ' SYSTEM call problem '
                  goback
              end-if             
            end-if            
-           display ' cmd line : ' cmd-go
+           display  cmd-go
            call     'SYSTEM' using cmd-go
       *
            move  RETURN-CODE  to ar-tst-rtc02(idx)
+      ** Check return code [Problem in Linux environment]     
+           if (ar-tst-rtc02(idx) > 256)
+                divide ar-tst-rtc02(idx) by 256
+                giving ar-tst-rtc02(idx)
+           end-if
            if (ar-tst-rtc02(idx)  = 4)
                 move zero to ar-tst-rtc02(idx)
                 display ' Force zero to retcode - There is a warning.'
@@ -647,10 +667,15 @@ TEST00***               display ' cmd:>' cmd-go  '<'
                  goback
              end-if             
            end-if            
-           display ' cmd line : '  cmd-go
+           display   cmd-go
            call     "SYSTEM" using cmd-go
       *
            move  RETURN-CODE  to ar-tst-rtc03(idx)
+      ** Check return code [Problem in Linux environment]     
+           if (ar-tst-rtc03(idx) > 256)
+                divide ar-tst-rtc03(idx) by 256
+                giving ar-tst-rtc03(idx)
+           end-if
       D    display  "RETURN-CODE Value : " RETURN-CODE
       ** set rtc2=%errorlevel%
       * reset 

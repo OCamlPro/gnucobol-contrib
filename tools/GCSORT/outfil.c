@@ -27,14 +27,13 @@
 #include <limits.h>
 #include <malloc.h>
 #include <time.h>
-//-->> 
 #include "libgcsort.h"
 #include <string.h>
 #include <stddef.h>
 #include <string.h>
 #include <math.h>
 
-//#ifdef _WIN32
+/*  #ifdef _WIN32   */
 #ifdef _MSC_VER
 	#include <io.h> 
 	#include <windows.h>
@@ -42,8 +41,6 @@
 	#include <share.h>
 #endif
 
-//
-//-->> #include "oclib.h"
 #include "gcsort.h"
 #include "job.h"
 #include "file.h"
@@ -66,27 +63,23 @@
 
 struct outfil_t *outfil_constructor( void) 
 {
-//-->>	
 	struct outfil_t *outfil=(struct outfil_t *)malloc(sizeof(struct outfil_t));
     if (outfil != NULL) {
-	    // in questa parte è da creare il riferimento al file o ai files
-	    // creazione della struttura file_t per poi assegnare il nome del file
-	    // la tipologia di flusso dove è dichiarata ?
+	    /* in questa parte è da creare il riferimento al file o ai files        */
+	    /* creazione della struttura file_t per poi assegnare il nome del file  */
+	    /* la tipologia di flusso dove è dichiarata ?                           */
 	    outfil->outfil_File=NULL;
-	    outfil->outfil_nStartRec=-1;		// StartRek for outfil
-	    outfil->outfil_nEndRec=-1;			// EndRek for outfil
+	    outfil->outfil_nStartRec=-1;		/* StartRek for outfil  */
+	    outfil->outfil_nEndRec=-1;			/* EndRek for outfil    */
 	    outfil->outfil_includeCond=NULL;
 	    outfil->outfil_omitCond=NULL;
 	    outfil->nSave=0;
-
 	    outfil->outfil_outrec=NULL;
-
-	    outfil->nSplit=0;			// (SPLIT SPLITBY -SPLIT1R=n-)	
+	    outfil->nSplit=0;			/* (SPLIT SPLITBY -SPLIT1R=n-)	*/
         outfil->nRecSplit=0;
         outfil->nRecTmp=1;
         outfil->pLastFileSplit= NULL;
-	    // new
-	    outfil->bIsCopy=0;		// SORT-MERGE FIELDS=COPY
+	    outfil->bIsCopy=0;		    /* SORT-MERGE FIELDS=COPY   */
 	    outfil->recordWriteOutTotal=0;
 	    outfil->recordNumber=0;
 	    outfil->next=NULL;
@@ -102,7 +95,6 @@ void outfil_destructor(struct outfil_t *outfil)
 		free(outfil->outfil_omitCond);
 	if (outfil->outfil_outrec != NULL)
 		free(outfil->outfil_outrec);
-//	free(file);
 }
 
 int outfil_SetStartRec(struct outfil_t *outfil, int64_t nStartRec) 
@@ -165,10 +157,10 @@ int setOutfilFiles(struct outfil_t *outfil, struct file_t * file)
 	return 0;
 }
 
-// Save insert into output record that don't satisfy prec conditions
+/* Save insert into output record that don't satisfy prec conditions    */
 int outfil_SetSave(struct outfil_t *outfil) 
 {
-	outfil->nSave = 1;		// Save
+	outfil->nSave = 1;		/* Save */
 	return 0;
 }
 
@@ -191,16 +183,17 @@ int outfil_setOutfilFiles(struct outfil_t *outfil, struct file_t * file)
 }
 int outfil_open_files( struct job_t *job ) 
 {
-	// check if present SAVE e memorize pointer
+
+	/* check if present SAVE e memorize pointer */
 	struct outfil_t *pOutfil;
 	struct file_t  *file;
 	char* pEnvFileName = NULL;
 	int nbyteRead=0;
 	for (pOutfil=job->outfil; pOutfil != NULL; pOutfil=outfil_getNext(pOutfil)) {
 		for (file=pOutfil->outfil_File; file != NULL; file=file_getNext(file)) {
-			// clone info from GIVE outfile  
+			/* clone info from GIVE outfile  */
 			outfile_clone_output(job, file);
-            strcpy((char*) file->stFileDef->assign->data, (char*) file_getName(file));  //new
+            strcpy((char*) file->stFileDef->assign->data, (char*) file_getName(file));  
 			cob_open(file->stFileDef,  COB_OPEN_OUTPUT, 0, NULL);
 			if (atol((char *)file->stFileDef->file_status) != 0) {
 				fprintf(stderr,"*GCSORT*S401*ERROR: Cannot open file %s - File Status (%c%c) \n",file_getName(file), 
@@ -213,26 +206,27 @@ int outfil_open_files( struct job_t *job )
 	return 0;
 }
 
-// Clone information for outfile from job outputfile
+/* Clone information for outfile from job outputfile    */
 int outfile_clone_output(struct job_t* job, struct file_t* file)
 {
 	struct KeyIdx_t* tKeys;
 	int nP=0;
 
-	// check outfil without FNAME/FILE
-	if (file->stFileDef == NULL) {
-		// 
+	/* check outfil without FNAME/FILE  */
+	if (file->stFileDef == NULL) { 
 		file_SetInfoForFile(file, COB_OPEN_OUTPUT);
 		fprintf(stderr,"*GCSORT*W680* WARNING : OUTFIL without FILES/FNAMES, forced GIVE definition %s\n",file_getName(file));
-		job->nOutFileSameOutFile = 1; // In this case Output file skipped, name is used for OutFil
+		job->nOutFileSameOutFile = 1; /* In this case Output file skipped, name is used for OutFil  */
         g_retWarn=4;
 		return 0;
 	}
-	file->nNumKeys = job->outputFile->nNumKeys;  
 	file->stFileDef->record_min = job->outputFile->recordLength;                         
 	file->stFileDef->record_max = job->outputFile->maxLength;            
+	file->nNumKeys = job->outputFile->nNumKeys;
 	if (file->stFileDef->record != NULL)
 		free(file->stFileDef->record->data);
+	if (file->stFileDef->record_max > 0)
+		file->stFileDef->record = util_cob_field_make(COB_TYPE_ALPHANUMERIC, file->maxLength, 0, 0, file->maxLength, ALLOCATE_DATA);
 	file->stFileDef->record->data = (unsigned char*) malloc((sizeof(unsigned char)*job->outputFile->maxLength)+1);
 	if (file->format == FILE_TYPE_VARIABLE)
 		file->stFileDef->variable_record = util_cob_field_make( COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA);
@@ -248,11 +242,38 @@ int outfile_clone_output(struct job_t* job, struct file_t* file)
 					tKeys->pCobFieldKey->attr->scale, tKeys->pCobFieldKey->attr->flags, tKeys->pCobFieldKey->size, NOALLOCATE_DATA);
 				file->stFileDef->keys[nP].field->data = file->stFileDef->record->data+tKeys->position;
 				file->stFileDef->keys[nP].flag = 0;
+				/* s.m. 202101 start    */
+#if __LIBCOB_VERSION >= 3
+				file->stFileDef->keys[nP].tf_duplicates = 0;
 				if (tKeys->type == KEY_IDX_ALTERNATIVE_DUP)
-					file->stFileDef->keys[nP].flag = 1;		// with duplicates
+					file->stFileDef->keys[nP].tf_duplicates = 1;		/* with duplicates  */
+				file->stFileDef->keys[nP].tf_ascending = 0;
+				file->stFileDef->keys[nP].tf_suppress = 0;
+				file->stFileDef->keys[nP].char_suppress = 0;
+				file->stFileDef->keys[nP].count_components = 0;      /* count_components */
+				file->stFileDef->keys[nP].component[0] = NULL;
+
+				/* s.m. 20210215    */
+				file->stFileDef->extfh_ptr = NULL;
+				file->stFileDef->linorkeyptr = NULL;
+				file->stFileDef->sort_collating = NULL;
+#endif
+				/* s.m. 202101 end  */
+				if (tKeys->type == KEY_IDX_ALTERNATIVE_DUP)
+					file->stFileDef->keys[nP].flag = 1;		/* with duplicates  */
 				file->stFileDef->keys[nP].offset = tKeys->position;
 				tKeys =  tKeys->next;
 		}
+		/* s.m. 202101 start    */
+#if __LIBCOB_VERSION >= 3
+		file->stFileDef->flag_line_adv = 0;
+		file->stFileDef->curkey = -1;
+		file->stFileDef->mapkey = -1;
+#endif
+		/* s.m. 202101 end  */
+
+		file->stFileDef->access_mode = COB_ACCESS_DYNAMIC;
+		file->stFileDef->organization = COB_ORG_INDEXED;
 	}
 	if (job->outputFile->organization == FILE_ORGANIZATION_RELATIVE) {
 		tKeys =  job->outputFile->stKeys;
@@ -267,7 +288,7 @@ int outfile_clone_output(struct job_t* job, struct file_t* file)
 }
 int outfil_close_files(  struct job_t *job  ) 
 {
-	// check if present SAVE e memorize pointer
+	/* check if present SAVE e memorize pointer */
 	struct outfil_t *pOutfil;
 	struct file_t  *file;
 	int nbyteRead=0;
@@ -279,8 +300,8 @@ int outfil_close_files(  struct job_t *job  )
 	return 0;
 }
 
-// Write for OUTFIL NO Split
-// don't use buffered
+/* Write for OUTFIL NO Split    */
+/* don't use buffered           */
 int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsigned int  byteRead, unsigned char* szBuffRek, int nSplitPosPnt) 
 {
 
@@ -288,7 +309,7 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 	int useRecord;
 	int nNumWrite;
 	unsigned int nLenRecOut=0;
-	// check if present SAVE e memorize pointer
+	/* check if present SAVE e memorize pointer */
 	if (job->pSaveOutfil == NULL){
 		for (pOutfil=job->outfil; pOutfil != NULL; pOutfil=outfil_getNext(pOutfil)) 
 		{
@@ -305,41 +326,39 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 	{
 		nLenRecOut = job->outputLength;
 		useRecord = 1;
-		// 
-		if (job->pSaveOutfil == pOutfil)	// skip
+		 
+		if (job->pSaveOutfil == pOutfil)	/* skip */
 			continue;
 
 		if (pOutfil->outfil_nStartRec >= 0)
-			// if (job->recordNumberTotal < pOutfil->outfil_nStartRec)
             if (job->recordWriteOutTotal+1 < pOutfil->outfil_nStartRec)
 				continue;
 		if (pOutfil->outfil_nEndRec >= 0)
 			if (job->recordWriteOutTotal+1 > pOutfil->outfil_nEndRec)
 				continue;
 
-		// check Include
-		// if retcode of condField_test is '0' cond is OK.
-		if (pOutfil->outfil_includeCond !=NULL && condField_test(pOutfil->outfil_includeCond,(unsigned char*) recordBuffer+nSplitPosPnt, job)==0)  // Cond KO
+		/* check Include                                    */
+		/* if retcode of condField_test is '0' cond is OK.  */
+		if (pOutfil->outfil_includeCond !=NULL && condField_test(pOutfil->outfil_includeCond,(unsigned char*) recordBuffer+nSplitPosPnt, job)==0)  /* Cond KO   */
 				useRecord=0;
-		// check Omit
-		//if (pOutfil->outfil_omitCond != NULL && condField_test(pOutfil->outfil_omitCond,(unsigned char*) recordBuffer+nSplitPosPnt, job)==1) 
-		if (pOutfil->outfil_omitCond != NULL && condField_test(pOutfil->outfil_omitCond,(unsigned char*) recordBuffer+nSplitPosPnt, job)!=0)		// Cond KO 
+		/* check Omit   */
+		if (pOutfil->outfil_omitCond != NULL && condField_test(pOutfil->outfil_omitCond,(unsigned char*) recordBuffer+nSplitPosPnt, job)!=0)	    /* Cond KO  */
 				useRecord=0;
-// Verify Outfil- Outrek
+/* Verify Outfil- Outrek    */
 		if (pOutfil->outfil_outrec != NULL) {
 			memset(szBuffRek, 0x00, pOutfil->outfil_File->maxLength);
 			byteRead = outrec_copy(pOutfil->outfil_outrec, szBuffRek, recordBuffer, pOutfil->outfil_File->maxLength, byteRead, file_getFormat(pOutfil->outfil_File), file_GetMF(pOutfil->outfil_File), job, nSplitPosPnt);
             memcpy(recordBuffer, szBuffRek, byteRead+nSplitPosPnt);
-			nLenRecOut = byteRead ;		// For outrec force length of record copy
+			nLenRecOut = byteRead ;		/* For outrec force length of record copy   */
 		}
-		// write record
+		/* write record */
 		if (useRecord == 1)
 		{
 			if (byteRead > 0)
 			{
-	// Padding or truncate record output
-    // From manual SORT
-	// OUTFIL not check LRECL for padding and truncating
+	/* Padding or truncate record output                    */
+    /* From manual SORT                                     */
+	/* OUTFIL not check LRECL for padding and truncating    */
                 if (pOutfil->nSplit == 0) {
 				    outfil_set_area(pOutfil->outfil_File, recordBuffer+nSplitPosPnt, nLenRecOut);
 				    cob_write (pOutfil->outfil_File->stFileDef, pOutfil->outfil_File->stFileDef->record, pOutfil->outfil_File->opt, NULL, 0);
@@ -350,7 +369,7 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
             		    return -1;
 				    }
 				    pOutfil->recordWriteOutTotal++;
-					pOutfil->outfil_File->nCountRow++;  // for single file
+					pOutfil->outfil_File->nCountRow++;  /* for single file  */
 				    nNumWrite++;
                 }
                 else
@@ -380,15 +399,15 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 	return 0;
 }
 
-// Write for OUTFIL Split
-// don't use buffered
+/* Write for OUTFIL Split   */
+/* don't use buffered       */
 int outfil_write_buffer_split ( struct job_t *job, struct outfil_t* outfil, unsigned char* recordBuffer, unsigned int  byteRead, unsigned char* szBuffRek, int nSplitPosPnt) 
 {
     struct file_t* file;	
 	int useRecord;
 	int nNumWrite;
 	unsigned int nLenRecOut=0;
-    // get istance of file
+    /* get istance of file  */
 	if (outfil->pLastFileSplit != NULL) {
 		file = outfil->pLastFileSplit;
         outfil->nRecTmp++;
@@ -399,7 +418,7 @@ int outfil_write_buffer_split ( struct job_t *job, struct outfil_t* outfil, unsi
     }
 	else
 		file = outfil->outfil_File;	
-    if (file == NULL)        // reset first element
+    if (file == NULL)        /* reset first element */
 	    file = outfil->outfil_File;	
 
 	nNumWrite=0;
@@ -415,7 +434,7 @@ int outfil_write_buffer_split ( struct job_t *job, struct outfil_t* outfil, unsi
         return -1;
 	}
 	outfil->recordWriteOutTotal++;
-    file->nCountRow++;  // for single file
+    file->nCountRow++;  /* for single file  */
 	nNumWrite++;
     outfil->pLastFileSplit = file;
 
@@ -425,7 +444,7 @@ int outfil_write_buffer_split ( struct job_t *job, struct outfil_t* outfil, unsi
 int outfil_set_area (struct file_t* file, unsigned char* szBuf, int nLen )
 {
 
-	// set area data
+	/* set area data    */
 	memcpy(file->stFileDef->record->data, szBuf, nLen);
 	if (file->format == FILE_TYPE_VARIABLE){
 		file->stFileDef->record->size = nLen;
@@ -435,9 +454,9 @@ int outfil_set_area (struct file_t* file, unsigned char* szBuf, int nLen )
 	{
 		file->stFileDef->record->size = nLen;
 	}
-	// s.m. 202101 Start
+	/* s.m. 202101 Start    */
 	if (file->organization == FILE_ORGANIZATION_LINESEQUENTIAL)
 		file->stFileDef->record->size = file->stFileDef->record_max;
-	// s.m. 202101 End
+	/* s.m. 202101 End  */
 	return 0 ;
 }

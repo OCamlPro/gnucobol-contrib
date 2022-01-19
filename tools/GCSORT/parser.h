@@ -81,22 +81,30 @@ extern int yydebug;
      SORT = 290,
      USE = 291,
      COPY = 292,
-     DIGIT = 293,
-     DIGITBIG = 294,
-     CHARTCOND = 295,
-     CHARTYPE = 296,
-     FILETYPE = 297,
-     FORMATTYPE = 298,
-     KEY = 299,
-     KEYTYPE = 300,
-     OCCURFILL = 301,
-     OPCOND = 302,
-     ORDER = 303,
-     RECTYPEFIX = 304,
-     RECTYPEVAR = 305,
-     STRING = 306,
-     TOKSKIP = 307,
-     SIGNDIGITBIG = 308
+     TYPE = 293,
+     LENGTH = 294,
+     DATE1 = 295,
+     DATE2 = 296,
+     DATE3 = 297,
+     DATE4 = 298,
+     CHANGE = 299,
+     NOMATCH = 300,
+     DIGIT = 301,
+     DIGITBIG = 302,
+     CHARTCOND = 303,
+     CHARTYPE = 304,
+     FILETYPE = 305,
+     FORMATTYPE = 306,
+     KEY = 307,
+     KEYTYPE = 308,
+     OCCURFILL = 309,
+     OPCOND = 310,
+     ORDER = 311,
+     RECTYPEFIX = 312,
+     RECTYPEVAR = 313,
+     STRING = 314,
+     TOKSKIP = 315,
+     SIGNDIGITBIG = 316
    };
 #endif
 
@@ -115,10 +123,11 @@ typedef union YYSTYPE
 	struct condField_t  *condField;
 	struct fieldValue_t *fieldValue;
 	struct SumField_t   *SumField;
+    struct changefield_t *changefield;
 
 
 /* Line 2058 of yacc.c  */
-#line 122 "..\\..\\parser.h"
+#line 131 "..\\..\\parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -206,6 +206,11 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
                    perform set-command-line
                    call 'SYSTEM' using cmd-def
                    move RETURN-CODE   to retcode
+      ** Check return code [Problem in Linux environment]     
+                   if (retcode > 256)
+                        divide retcode by 256
+                        giving retcode
+                   end-if
                    if retcode not = zero
                         add 1 to count-errors
                    end-if
@@ -222,6 +227,11 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
                    perform set-command-line
                    call 'SYSTEM' using cmd-def
                    move RETURN-CODE   to retcode
+      ** Check return code [Problem in Linux environment]     
+                   if (retcode > 256)
+                        divide retcode by 256
+                        giving retcode
+                   end-if
                    if retcode not = zero
                         add 1 to count-errors
                    end-if
@@ -248,6 +258,11 @@ TEST00***               display ' cmd:>' cmd-go  '<'
                    end-if
                               
                    move RETURN-CODE   to retcode
+      ** Check return code [Problem in Linux environment]     
+                   if (retcode > 256)
+                        divide retcode by 256
+                        giving retcode
+                   end-if
                    if retcode not = zero
                         add 1 to count-errors
                    end-if
@@ -256,6 +271,11 @@ TEST00***               display ' cmd:>' cmd-go  '<'
                            TRIM(r-param1, TRAILING) 
                            TRIM(r-param2, TRAILING) 
                    move RETURN-CODE   to retcode
+      ** Check return code [Problem in Linux environment]     
+                   if (retcode > 256)
+                        divide retcode by 256
+                        giving retcode
+                   end-if
                    if retcode not = zero
                         add 1 to count-errors
                    end-if

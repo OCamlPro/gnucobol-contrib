@@ -1,6 +1,5 @@
 /*
-	Copyright (C) 2016-2020 Sauro Menna
-	Copyright (C) 2009 Cedric ISSALY
+    Copyright (C) 2016-2021 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -18,26 +17,19 @@
  *  along with GCSORT.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-/* 
- Shared variables
-*/ 
-#include "gcsort.h"
-#include "job.h"
-#ifndef SHAREFILE_INCLUDED
-	#define SHAREFILE_INCLUDED
-	#ifdef  MAIN_FILE
-		char	szMexToken[260]; 
-		char	cob_tmp_buff[COB_MEDIUM_BUFF];
-		char	cob_tmp_temp[FILENAME_MAX+8];
-		struct job_t* globalJob;
-		int     g_retWarn;
 
-	#else
-		extern char szMexToken[260];
-		extern char	cob_tmp_buff[COB_MEDIUM_BUFF];
-		extern char	cob_tmp_temp[FILENAME_MAX+8];
-		extern struct job_t* globalJob;
-		extern int  g_retWarn;
+#ifndef DATEDIFF_H_INCLUDED
+#define DATEDIFF_H_INCLUDED
 
-	#endif
-#endif  /* SHAREFILE_INCLUDED   */
+#include <libcob.h>
+
+int gcDateDiff(int sDate1,  int sDate2,  int* sNumDays);
+int checkparams(int* sDate);
+int gcDate2Ord(int sDate1, int* sDate2);
+int gcDateAddDays(int sDate, int* sDateOut, int nDays);
+int gcOrd2Date(int sDate, int* sDateOut);
+int gcDateAddMonths(int sDate1, int* sDate2, int nMonths);
+int gcDateAddYears(int sDate1, int* sDate2, int nYears);
+
+#endif /* DATEDIFF_H_INCLUDED */
+

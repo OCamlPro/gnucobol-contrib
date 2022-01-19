@@ -25,7 +25,7 @@
 #define  COB_MODULE_DATE		20210104
 #define  COB_MODULE_TIME		184615
 
-// -- #ifdef	_WIN32
+/* -- #ifdef	_WIN32  */
 #if defined(_WIN32) && ( !defined(__MINGW32__) && !defined(__MINGW64__))
 
 	#ifdef	_MSC_VER
@@ -51,4 +51,4 @@ extern "C" {
 #endif
 #endif 
 
-#endif // LIBGCSORT_H_INCLUDED
+#endif /* LIBGCSORT_H_INCLUDED  */

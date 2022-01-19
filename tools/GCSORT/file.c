@@ -42,8 +42,6 @@ struct file_t *file_constructor(char *name) {
         file->bIsSeqMF = 0;
         file->nFileMaxSize=0;
         file->next=NULL;
-//        file->nOrgType=0;
-
         file->opt = 0;
         file->nCountRow=0;
 
@@ -54,7 +52,6 @@ struct file_t *file_constructor(char *name) {
 	return file;
 }
 void file_destructor(struct file_t *file) {
-//
 	int k,j;
 	struct KeyIdx_t *ki;
 	struct KeyIdx_t *ARKeyIdx[128];
@@ -75,12 +72,12 @@ void file_destructor(struct file_t *file) {
 	if (file->stFileDef != NULL) {
 			free(file->stFileDef->file_status);  
 
-			// cob_field
+			/* cob_field    */
 			util_cob_field_del(file->stFileDef->assign, ALLOCATE_DATA);
 			util_cob_field_del(file->stFileDef->record, ALLOCATE_DATA);
             if (file->stFileDef->variable_record != NULL)
 			    util_cob_field_del(file->stFileDef->variable_record, ALLOCATE_DATA);
-            if (file->organization == FILE_ORGANIZATION_RELATIVE)  // delete field for relative 
+            if (file->organization == FILE_ORGANIZATION_RELATIVE)  /* delete field for relative */
             	    util_cob_field_del(file->stFileDef->keys[0].field, ALLOCATE_DATA);
  			for (k=0; k<file->nNumKeys;k++) {
                  if (file->stFileDef->keys != NULL)
@@ -91,7 +88,6 @@ void file_destructor(struct file_t *file) {
 			free(file->stFileDef); 
 	}
 
-//
 	if (file->name != NULL)
 		free(file->name);
 	if (file->bIsSeqMF == 1) {
@@ -152,7 +148,6 @@ int file_addQueue(struct file_t **file, struct file_t *fileToAdd) {
 
 int file_setFormat(struct file_t *file, int format) {
 	file->format=format;
-//	file->nOrgType = file->format + file->organization * 10;
 	return 0;
 }
 int file_setRecordLength(struct file_t *file, int recordLength) {
@@ -167,7 +162,6 @@ int file_setOrganization(struct file_t *file, int organization) {
 	if (organization == -1)
 		return -1;
 	file->organization=organization;
-//	file->nOrgType = file->format + file->organization * 10;
 	return 0;
 }
 char *file_getName(struct file_t *file) {
@@ -217,9 +211,15 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 
 	file->stFileDef->select_name = (const char *)"masterseqfile";
 	file->stFileDef->assign = util_cob_field_make( COB_TYPE_ALPHANUMERIC, strlen(file->name), 0, 0, strlen(file->name), ALLOCATE_DATA);
-	file->stFileDef->record = util_cob_field_make( COB_TYPE_ALPHANUMERIC, file->maxLength, 0, 0, file->maxLength, ALLOCATE_DATA);
+
+	file->stFileDef->record = NULL;
+
+	/* new option Record Control Statement */
+	if (file->maxLength > 0)
+		file->stFileDef->record = util_cob_field_make( COB_TYPE_ALPHANUMERIC, file->maxLength, 0, 0, file->maxLength, ALLOCATE_DATA);
+
 	if (file->format == FILE_TYPE_VARIABLE)
-		file->stFileDef->variable_record = util_cob_field_make( COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA);
+		file->stFileDef->variable_record = util_cob_field_make(COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA); 
 	else
 		file->stFileDef->variable_record = NULL;
 
@@ -230,7 +230,7 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 	file->stFileDef->file = NULL;  
 	file->stFileDef->fd = -1;  
 	file->stFileDef->access_mode = COB_ACCESS_SEQUENTIAL;
-	file->stFileDef->lock_mode = 0; // COB_LOCK_AUTOMATIC; // 	COB_FILE_EXCLUSIVE; //0;
+	file->stFileDef->lock_mode = 0; /* COB_LOCK_AUTOMATIC;   	COB_FILE_EXCLUSIVE;  0; */
 	file->stFileDef->open_mode = COB_OPEN_CLOSED;
 	file->stFileDef->flag_optional = 0;
 	file->stFileDef->last_open_mode = 0;
@@ -245,7 +245,14 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 	file->stFileDef->flag_needs_top = 0;           
 	file->stFileDef->file_version = 1;
 
-    // default:
+
+#if __LIBCOB_VERSION >= 3
+	file->stFileDef->linorkeyptr = NULL;
+	file->stFileDef->sort_collating = NULL;
+	file->stFileDef->extfh_ptr = NULL;
+#endif
+
+    /* default: */
     file->stFileDef->organization = COB_ORG_SEQUENTIAL;
 
 	switch(file->organization) {
@@ -268,12 +275,12 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 			break;
 		case FILE_ORGANIZATION_INDEXED:
 			tKeys =  file->stKeys;
-			// check keys - for indexed file is mandatory
+			/* check keys - for indexed file is mandatory   */
 			if (file->nNumKeys == 0) {
 				fprintf(stderr,"*GCSORT*S300*ERROR: KEY definitions are not specified for Indexed file. \n");
 				exit(GC_RTC_ERROR);
 			}
-			// check keys - for indexed file Primary is first definition 
+			/* check keys - for indexed file Primary is first definition    */
 			if (tKeys->type != KEY_IDX_PRIMARY) {
 				fprintf(stderr,"*GCSORT*S301*ERROR: KEY specifications error. First field is not primary key.\n");
 				exit(GC_RTC_ERROR);
@@ -286,38 +293,37 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 					file->stFileDef->keys[k].field->data = file->stFileDef->record->data+tKeys->position;
                     file->stFileDef->keys[k].field->size = tKeys->length;
 					file->stFileDef->keys[k].flag = 0;		/* ASCENDING/DESCENDING (for SORT) */
-// s.m. 202101 start
+/* s.m. 202101 start    */
 #if __LIBCOB_VERSION >= 3
 					file->stFileDef->keys[k].tf_duplicates = 0;
 					if (tKeys->type == KEY_IDX_ALTERNATIVE_DUP)
-						file->stFileDef->keys[k].tf_duplicates = 1;		// with duplicates
+						file->stFileDef->keys[k].tf_duplicates = 1;		/* with duplicates  */
 					file->stFileDef->keys[k].tf_ascending=0;
 					file->stFileDef->keys[k].tf_suppress=0;
 					file->stFileDef->keys[k].char_suppress = 0;
-					file->stFileDef->keys[k].count_components = 0;// count_components
+					file->stFileDef->keys[k].count_components = 0;      /* count_components */
 					file->stFileDef->keys[k].component[0] = NULL;
 
-					// s.m. 20210215
+					/* s.m. 20210215    */
 					file->stFileDef->extfh_ptr = NULL;
 					file->stFileDef->linorkeyptr = NULL;
 					file->stFileDef->sort_collating = NULL;
 #endif
-// s.m. 202101 end
+/* s.m. 202101 end  */
 					file->stFileDef->keys[k].offset = tKeys->position;
 					tKeys =  tKeys->next;
 			}
-// s.m. 202101 start
+/* s.m. 202101 start    */
 #if __LIBCOB_VERSION >= 3
 			file->stFileDef->flag_line_adv=0;
 			file->stFileDef->curkey=-1;
 			file->stFileDef->mapkey=-1;
 #endif
-// s.m. 202101 end
+/* s.m. 202101 end  */
 
             file->stFileDef->access_mode = COB_ACCESS_DYNAMIC;  
 			file->stFileDef->organization = COB_ORG_INDEXED;
 			break;
 	}
 	return 0;
-//
 }

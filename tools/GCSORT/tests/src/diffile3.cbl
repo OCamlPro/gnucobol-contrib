@@ -114,6 +114,7 @@
            open input sortcbl.
            if fs-infile1 not = "00"
                 display "sortcbl file status error : " fs-infile1
+                move 25 to RETURN-CODE
                 stop run
            end-if
 
@@ -121,6 +122,7 @@
            if fs-infile2 not = "00"
                 display "sortgcs file status error : " fs-infile2
                 close sortcbl
+                move 25 to RETURN-CODE
                 stop run
            end-if
            
