@@ -16,7 +16,7 @@
        WORKING-STORAGE SECTION.
       *> the following 
        01 stdout-name pic x(30) value z'+DISP.out'.
-       01 stderr-name pic x(30) value 'DISP.err' & x'00'.
+       01 stderr-name pic x(30) value 'DISP.$$.err' & x'00'.
        PROCEDURE DIVISION.
            DISPLAY 'STDOUT HERE'
            DISPLAY 'SYSERR HERE' UPON SYSERR
