@@ -331,8 +331,10 @@ int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *inpu
 				break;
 				/* new 202012   */
 			case INREC_TYPE_CHANGE_ABSPOS:
-				memcpy(output + i->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(i->change.fieldValue), fieldValue_getGeneratedLength(i->change.fieldValue));
-				position = i->range.position + fieldValue_getGeneratedLength(i->change.fieldValue);
+				/* s.m. 20220215 memcpy(output + i->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(i->change.fieldValue), fieldValue_getGeneratedLength(i->change.fieldValue)); */
+				/* s.m. 20220215 position = i->range.position + fieldValue_getGeneratedLength(i->change.fieldValue); */
+				memcpy(output + i->change.posAbsRec + nSplitPos + nSplit, fieldValue_getGeneratedValue(i->change.fieldValue), fieldValue_getGeneratedLength(i->change.fieldValue));
+				position = i->change.posAbsRec + fieldValue_getGeneratedLength(i->change.fieldValue);
 				break;
 			case INREC_TYPE_RANGE_POSITION:
 /* 20160408 record input len */
@@ -432,8 +434,10 @@ int inrec_copy_overlay(struct inrec_t* inrec, unsigned char* output, unsigned ch
 			break;
 			/* new 202012 */
 		case INREC_TYPE_CHANGE_ABSPOS:
-			memcpy(output + i->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(i->change.fieldValue), fieldValue_getGeneratedLength(i->change.fieldValue));
-			position = i->range.position + fieldValue_getGeneratedLength(i->change.fieldValue);
+			/* s.m. 20220215 memcpy(output + i->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(i->change.fieldValue), fieldValue_getGeneratedLength(i->change.fieldValue)); */
+			/* s.m. 20220215 position = i->range.position + fieldValue_getGeneratedLength(i->change.fieldValue); */
+			memcpy(output + i->change.posAbsRec + nSplitPos + nSplit, fieldValue_getGeneratedValue(i->change.fieldValue), fieldValue_getGeneratedLength(i->change.fieldValue));
+			position = i->change.posAbsRec + fieldValue_getGeneratedLength(i->change.fieldValue);
 			break;
 		case INREC_TYPE_RANGE_POSITION:
 			/* 20160408 record input len    */

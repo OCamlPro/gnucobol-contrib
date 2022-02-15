@@ -330,8 +330,10 @@ int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *i
 				break;
 				/* new 202012   */
 			case OUTREC_TYPE_CHANGE_ABSPOS:
-				memcpy(output + o->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(o->change.fieldValue), fieldValue_getGeneratedLength(o->change.fieldValue));
-				position = o->range.position + fieldValue_getGeneratedLength(o->change.fieldValue);
+				/*  s.m. 20220215 memcpy(output + o->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(o->change.fieldValue), fieldValue_getGeneratedLength(o->change.fieldValue)); */
+				/*  s.m. 20220215 position = o->range.position + fieldValue_getGeneratedLength(o->change.fieldValue);	*/
+				memcpy(output + o->change.posAbsRec + nSplitPos + nSplit, fieldValue_getGeneratedValue(o->change.fieldValue), fieldValue_getGeneratedLength(o->change.fieldValue));
+				position = o->change.posAbsRec + fieldValue_getGeneratedLength(o->change.fieldValue);
 				break;
 			case OUTREC_TYPE_RANGE_POSITION:
 				nORangeLen = o->range_position.length;
@@ -429,8 +431,10 @@ int outrec_copy_overlay(struct outrec_t* outrec, unsigned char* output, unsigned
 			break;
 			/* new 202012   */
 		case OUTREC_TYPE_CHANGE_ABSPOS:
-			memcpy(output + o->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(o->change.fieldValue), fieldValue_getGeneratedLength(o->change.fieldValue));
-			position = o->range.position + fieldValue_getGeneratedLength(o->change.fieldValue);
+			/*  s.m. 20220215 memcpy(output + o->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(o->change.fieldValue), fieldValue_getGeneratedLength(o->change.fieldValue)); */
+			/*  s.m. 20220215 position = o->range.position + fieldValue_getGeneratedLength(o->change.fieldValue);	*/
+			memcpy(output + o->change.posAbsRec + nSplitPos + nSplit, fieldValue_getGeneratedValue(o->change.fieldValue), fieldValue_getGeneratedLength(o->change.fieldValue));
+			position = o->change.posAbsRec + fieldValue_getGeneratedLength(o->change.fieldValue);
 			break;
 		case OUTREC_TYPE_RANGE_POSITION:
 			/* 20160408 record input len    */
