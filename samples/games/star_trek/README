@@ -1,3 +1,5 @@
+Readme file for star_trek.cob.
+
 GnuCOBOL version of ctrek.cob
 =============================
 
@@ -18,6 +20,13 @@ THRU performs. The code also requires -free or a
 
 setting, as it contains long source lines.
 
+Michael F Gleason March 2022 updated the code a little more completing the 
+conversion to free format and coding to remove the overlapping exit points.
+Three command options were added to aid in testing the code. Testing is turned
+on by logging in as either <mica> or <test>. A few small bugs were found and 
+corrected.  New Tectonics:
+   cobc -x star_trek.cob -t star_trek.lst
+
 The objective
 -------------
 Star fleet is under attack from a Klingon invasion force.
@@ -37,7 +46,7 @@ Commands include
 
 - tor, Torpedo.  Fires a photon torpedo.
 
-- def, Shields.  Prompts for shield power level
+- she, Shields.  Prompts for shield power level
   dependent on available fuel.
 
 - doc, Dock.     Attempt to dock the ship at a nearby star base
@@ -56,7 +65,13 @@ Commands include
     answer "yes" for a list of computer functions.
 
 - invalid commands with cause a prompt asking if assistance is required,
-  answer "yes" for a list of valid commands.
+  answer "yes" for a list of valid commands. The program now accept <y> 
+  for [yes]. Note that <no> is the default to all inputs requests.
+  Commands may be shortened to single letter; n for vav, t for tor, s for sheilds...
+  Long form commands may be supplemented with their numeric parameters;
+  For example the com command could be com3 which will give a long range scan
+  vs turning on the com computer then choosing option 3. command nav71 
+  would navigate west at warp 1.
 
 Navigation
 ----------
