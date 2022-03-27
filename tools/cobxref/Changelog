@@ -1,9 +1,72 @@
+2022-03-26  Vincent B Coen <vbcoen@btconnect.com>
+       (v2.03.04)   A minor bug, clear duplicate refno reporting on same line
+                    where variable used more than once. Found yet another bug
+                    with internal xref as missed a variable in cobxref (CWS).
+                    Version Released.
+
+2022-03-17  Vincent B Coen <vbcoen@btconnect.com>
+       (v2.03.00)   Update to support CDF >>DEFINE CONSTANT:
+                    Deduct 4 from COMPILER-LINE-CNT if LTZ-USA valid.
+                    Start coding for CDF changes to PD fields to 99,
+                    CDF will support for
+                    >>DEFINE CONSTANT cdf-variable-1 (the rest ignored)
+                    >>SET CONSTANT cdf-variable-1 ( the rest ignored)
+
+                    Note that $DEFINE directive is ignored as 'CONSTANT' is not
+                    used within this directive and does not appear to be a
+                    match.
+
+                    As CDF .. CONSTANT are Global values in that they also apply
+                    to all Nested program modules they details have to go into
+                    the GIT (Global) tables for use by all nested source code.
+                    Now I did think this was going to be straight forward?
+                    do a test using internal xref to see if that does do it.
+
+                    No it does not in fact it ignores all CDF directives - just
+                    another defect in a long list.
+
+                    Changed all references to var e to E2 and E3. see comment
+                    for PrintCbl next block as to why.
+
+                    Change all lines in THIS file to a 80 char limit.
+
+                    Make temp Sort files in and out unique to each nested
+                    program/module in sources named Partnn.tmp where
+                    nn = 1 & 2 incremented by 2 for every extra nested program.
+                    Will help in testing.
+
+                    Added new Parameter to cobxref -BOTH - This will produce a
+                    Group xref ( see -G) and the normal one broken down by
+                    sections and report groupings after.
+                    More for testing but can be useful to some programmers.
+
+                    To aid testing, added occurrence count for each variable other
+                    than in unreferenced blocks and increase count from 8 to 12
+                    as the Page number is just before it and clear leading zeros.
+
+                    Now to look for bug that causing missing vars when in the form:
+                    and  VARS (vars2:nn)  vars2 not found.
+                    Found on a line that the next made a comment line which had
+                    a full stop and the new last did not have it.  Like I said
+                    a small bug
+
+                    Fix previously caused the new one - what else is new ?
+                    version updated to v2.03.03 - not released.
+
+2022-03-22  Vincent B Coen <vbcoen@btconnect.com>
+(v2.01.38)   PrintCbl changed vars e to E2 as E is a reserved word and it will
+                    confuse cobc creating bugs that cobc did not find. Can't be
+                    bothered to create a bug report for it and there are others
+                    for the internal cross ref tool, including no support for
+                    CDF as have enough to do trying to fix cobxref.
+
 2021-12-14  Vincent B Coen <vbcoen@btconnect.com>
-       (v2.02.04    Bug found by David Wall in  zz180-Check-For-Param-Errors where
-                    a perform search was using 128 for a field that is only 64 chars
-                    that produced a runtime out of bounds. At some point I changed
-                    the size but not found in all other testing but may be he
-                    had -g (runtime checks) set for compile. Thanks David.
+       (v2.02.04)   Bug found by David Wall in  zz180-Check-For-Param-Errors
+                    where a perform search was using 128 for a field that is
+                    only 64 chars that produced a runtime out of bounds. At some
+                    point I changed the size but not found in all other testing
+                    but may be had -g (runtime checks) set for compile.
+                    Thanks David.
 
                     In  bc000-Test-For-Missing-Replace and when running with -g
                     produces a runtime failure so now check if not > 1 in
@@ -17,17 +80,17 @@
                     'warning: inline PERFORM without imperative statement used'.
 
 2019-12-08  Vincent B Coen <vbcoen@btconnect.com>
-       (v2.02.03)   Added extra tests for line starting with >>SOURCE as a sample
-                    program this started in cc9 by using TRIM to strip out
-                    leading spaces in zz100-Get-A-Source-Record as previous
+       (v2.02.03)   Added extra tests for line starting with >>SOURCE as a
+                    sample program this started in cc9 by using TRIM to strip
+                    out leading spaces in zz100-Get-A-Source-Record as previous
                     version was missing the '>>SOURCE' and failing with msg2.
                     Needless to say cobc accepts this incorrectly placed
                     >>SOURCE error.
 
 2019-06-24  Vincent B Coen <vbcoen@btconnect.com>
        (v2.02.02)   Added print line o/p for display in bb100-scan4-colon
-                    for testing a suspected error. Also one for XTERNAL processing
-                    Ongoing.
+                    for testing a suspected error. Also one for XTERNAL
+                    processing Ongoing.
 
 2019-05-13  Vincent B Coen <vbcoen@btconnect.com>
        (v2.02.01)   Released.
@@ -71,9 +134,9 @@
                     program sources.
                     activated by param -AX  ----- NOT YET ADDED.
                  D. In place of testing mode support output of generated
-                    source file same as cobc -E but without comment or blank lines
-                    to stop using test mode when wishing to look at the actual
-                    source that cobxref processes - Useful during testing
+                    source file same as cobc -E but without comment or blank
+                    lines to stop using test mode when wishing to look at the
+                    actual source that cobxref processes - Useful during testing
                     available with new program option parameter -E.
 
                     Updated version number to v2.01.00.
@@ -106,8 +169,8 @@
                     so replacing ==ABC== by ==DEF== does all instances of 'ABC'.
                     The other two variations literals or words just does it once
                     per line.
-                    NEXT - Sort out funnies with copy lib file names as only working
-                    if using quotes.
+                    NEXT - Sort out funnies with copy lib file names as only
+                    working if using quotes.
                     return-code not set before entry to zz400-Check-File-Exists
                     so it was not being processed.
                     ReTesting for Fixed format now working as well as FREE.
@@ -120,8 +183,8 @@
 
               36  * Bugs fixes up to COPY verb processing
                     within printcbl module and generating listings and xref.
-                    Issues with COPY replacing - a mess with poor to non existent
-                    replacing for free format.
+                    Issues with COPY replacing - a mess with poor to non
+                    existent replacing for free format.
                     Replacing works using vars by var-2 in and out of order
                     of source but ==xxx== etc is not working.
                     Fixed not yet tested.
@@ -129,7 +192,8 @@
               34  * Found-copy not set to zero in after o/p
 
         v1.99.33  * Testing starting on COPY verb processing.
-                    FREE format 1st. - Broken producing *>>>A at and next COPY verb!!
+                    FREE format 1st. - Broken producing *>>>A at and next COPY
+                    verb!!
 
         v1.99.30  * More CALL coding no reporting yet. Testing.
               32  * Testing completed for Free format only so far.
@@ -274,7 +338,8 @@
         v1.01.07.   More looking needed.
 
 2011-10-02  Vincent B Coen <vbcoen@btconnect.com>
-        v1.01.08  * Global-Current-Level to use 99 instead of high-values for GC v2.0
+        v1.01.08  * Global-Current-Level to use 99 instead of high-values for
+                    GC v2.0.
                     No I have no idea why I should need to as highest value on a
                     numeric field is 99.
 
