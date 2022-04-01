@@ -3,6 +3,9 @@ Readme file for star_trek.cob.
 GnuCOBOL version of ctrek.cob
 =============================
 
+There is also a *star_trek.COB* update posted here, by Micheal F. Gleason.
+Simpler compile, `cobc -x star_trek.COB`.
+
 Originally written in 1979 for COBOL on Multics, by Kurt Wilhelm.
 
 It was ported to OpenCOBOL 1.1 by Harald Arnesen in 2010.
