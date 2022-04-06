@@ -32,7 +32,12 @@
 struct file_t *file_constructor(char *name) {
 	struct file_t *file=(struct file_t *)malloc(sizeof(struct file_t));
     if (file != NULL) {
-        file->name = _strdup(name);
+        /* s.m. 202202 file->name = _strdup(name); */
+		file->name = ((unsigned char*)malloc((sizeof(unsigned char) * GCSORT_SIZE_FILENAME)));
+		if (file->name == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1, ABEND_EXEC);
+		else
+			strcpy(file->name, name);
         file->handleFile=0;
         file->format=FILE_TYPE_FIXED;
         file->organization=FILE_ORGANIZATION_SEQUENTIAL;
@@ -210,7 +215,8 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 	memset (file->stFileDef->file_status, 0x00, 3);
 
 	file->stFileDef->select_name = (const char *)"masterseqfile";
-	file->stFileDef->assign = util_cob_field_make( COB_TYPE_ALPHANUMERIC, strlen(file->name), 0, 0, strlen(file->name), ALLOCATE_DATA);
+	/* Problem with Join file name //-->>file->stFileDef->assign = util_cob_field_make( COB_TYPE_ALPHANUMERIC, strlen(file->name), 0, 0, strlen(file->name), ALLOCATE_DATA); */
+	file->stFileDef->assign = util_cob_field_make( COB_TYPE_ALPHANUMERIC, strlen(file->name), 0, 0, GCSORT_SIZE_FILENAME, ALLOCATE_DATA);
 
 	file->stFileDef->record = NULL;
 
@@ -264,8 +270,14 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 		case FILE_ORGANIZATION_LINESEQUENTIAL:
 			file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 			file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
+			cob_putenv("COB_LS_FIXED=OFF");	/* change value of environment value GnuCOBOL*/
 			break;
-		case FILE_ORGANIZATION_RELATIVE:		
+		case FILE_ORGANIZATION_LINESEQUFIXED:
+			file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
+			file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
+			cob_putenv("COB_LS_FIXED=ON");	/* change value of environment value GnuCOBOL*/
+			break;
+		case FILE_ORGANIZATION_RELATIVE:
 			tKeys =  file->stKeys;
 			file->stFileDef->keys = (cob_file_key*)(malloc (sizeof (cob_file_key) * 1));
 			file->stFileDef->keys[0].field = util_cob_field_make( COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA);
@@ -325,5 +337,22 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 			file->stFileDef->organization = COB_ORG_INDEXED;
 			break;
 	}
+	return 0;
+}
+int file_clone(struct file_t* fout, struct file_t* fin) {
+	fout->bIsSeqMF = fin->bIsSeqMF;
+	fout->file_length = fin->file_length;
+	fout->format = fin->format;
+	fout->maxLength = fin->maxLength;
+	fout->next = NULL;
+	fout->nFileMaxSize = fin->nFileMaxSize;
+	fout->nNumKeys = 0;
+	fout->nTypeNameFile = fin->nTypeNameFile;
+	fout->opt = fin->opt;
+	fout->organization = fin->organization;
+	fout->pHeaderMF = NULL;
+	fout->recordLength = fin->recordLength;
+	fout->stFileDef = NULL;
+	fout->stKeys = NULL;
 	return 0;
 }

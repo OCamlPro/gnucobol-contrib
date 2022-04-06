@@ -45,6 +45,9 @@
 /* s.m.                                                     */
 /* inserita funzione per gestione del test case sensitive   */
 
+
+int utl_counter = 0;
+
 /*
 #ifdef _MSC_VER
 int strcasecmp ( const char *str1, const char *str2) {
@@ -72,7 +75,9 @@ int utils_parseFileOrganization(const char *organization)
 		return FILE_ORGANIZATION_SEQUENTIAL;
 	} else if (!strcasecmp(organization,"LS")) {
 		return FILE_ORGANIZATION_LINESEQUENTIAL;
-/* future use	} else if (!strcasecmp(organization,"SQMF")) {		//SEQ MF    */
+	} else if (!strcasecmp(organization, "LSF")) {
+		return FILE_ORGANIZATION_LINESEQUFIXED;
+		/* future use	} else if (!strcasecmp(organization,"SQMF")) {		//SEQ MF    */
 /* future use		return FILE_ORGANIZATION_SEQUENTIALMF;                      */
 	} else {
 		fprintf(stderr,"*GCSORT*P001 - Error parsing organization : %s invalid\n", organization);
@@ -371,7 +376,9 @@ const char *utils_getFileOrganizationName(int organization)
 			return "SQ";
 		case FILE_ORGANIZATION_LINESEQUENTIAL:
 			return "LS";
-/*  FUTURE USE		case FILE_ORGANIZATION_SEQUENTIALMF:    */
+		case FILE_ORGANIZATION_LINESEQUFIXED:
+			return "LSF";
+			/*  FUTURE USE		case FILE_ORGANIZATION_SEQUENTIALMF:    */
 /*  FUTURE USE			return "SQMF";                      */    
 		default:
 			return "";
@@ -996,6 +1003,13 @@ int utl_GetFileSizeEnvName(struct file_t* file) {
 	return 0;
 }
 
+int64_t utl_GetFileSize(struct file_t* file) 
+{
+	struct stat filestatus;
+	stat(file->name, &filestatus);
+	return filestatus.st_size;
+}
+
 void utils_SetRecordOptionSortType (char* szType)
 {
 	int nType = utils_parseFileFormat(szType);
@@ -1031,7 +1045,7 @@ int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned 
 		/* do { */
 			nS = utl_replace_str(pCheck, find, set, result, lenIn, lenOut);
 			if (nS == 0) {
-				// strncpy(pCheck, result, (strlen(str) + (lenIn - lenOut)));
+				/* strncpy(pCheck, result, (strlen(str) + (lenIn - lenOut))); */
 				strncpy(pCheck, result, lenOut);
 				nT++;
 			}
@@ -1061,4 +1075,108 @@ int utl_replace_str(unsigned char* str, unsigned char* find, unsigned char* set,
 	strcpy(result, buffer);
 	*/
 	return 0;
+}
+void sort_temp_name(const char* ext)
+{
+#if defined(_MSC_VER)  ||  defined(__MINGW32__) || defined(__MINGW64__)
+	/* s.m. 202101 if (globalJob->strPathTempFile == NULL)  */
+	if (strlen(globalJob->strPathTempFile) == 0) {
+		GetTempPath(FILENAME_MAX, cob_tmp_temp);
+		if (strlen(cob_tmp_temp) == 0) {
+			cob_tmp_temp[0] = '.';
+			cob_tmp_temp[1] = '\\';
+			cob_tmp_temp[2] = 0x00;
+		}
+	}
+	else
+		strcpy(cob_tmp_temp, globalJob->strPathTempFile);
+	GetTempFileName(cob_tmp_temp, "Srt", 0, cob_tmp_buff);
+	DeleteFile(cob_tmp_buff);
+	strcpy(cob_tmp_temp, cob_tmp_buff);
+	strcpy(cob_tmp_temp + strlen(cob_tmp_temp) - 4, ext);
+	return;
+#else
+	char* buff;
+	char* cob_tmpdir = NULL;
+	char* p = NULL;
+	pid_t			cob_process_id = 0;
+	int                  cob_iteration;
+	cob_process_id = getpid();
+	cob_iteration = globalJob->nIndextmp;
+	memset(cob_tmp_temp, 0x00, sizeof(cob_tmp_temp));
+	/* -->>printf("globalJob->strPathTempFile %s \n", globalJob->strPathTempFile);  */
+
+/* linux 	if (globalJob->strPathTempFile == NULL){    */
+	if (strlen(globalJob->strPathTempFile) == 0) {
+		if ((p = getenv("TMPDIR")) != NULL) {
+			cob_tmpdir = p;
+		}
+		else if ((p = getenv("TMP")) != NULL) {
+			cob_tmpdir = p;
+		}
+		if (p == NULL)
+			sprintf(cob_tmp_temp, "./Srt%d_%d%s", (int)cob_process_id,
+				(int)cob_iteration, ext);
+		else
+			sprintf(cob_tmp_temp, "%s/Srt%d_%d%s", cob_tmpdir, (int)cob_process_id,
+				(int)cob_iteration, ext);
+
+	}
+	else
+		sprintf(cob_tmp_temp, "%s/Srt%d_%d%s", globalJob->strPathTempFile, (int)cob_process_id, (int)cob_iteration, ext);
+
+	/* -->>	printf(" Temporary File \n%s\n", cob_tmp_temp );    */
+
+	return;
+#endif
+	printf("cob_tmp_temp : \n%s\n", cob_tmp_temp);
+}
+/* check len and realloc data out */
+int  utl_copy_realloc(char* out, char* in) {
+	strcpy(out, in);
+	return strlen(out);
+}
+
+/* String  search - replace */
+int utl_str_searchreplace(char* orig, char* search, char* replace, char* result) {
+	char* ins;			/* the next insert point										 */
+	char* tmp;			/* varies														 */
+	int len_search;		/* length of search (the string to remove)						 */
+	int len_replace;	/* length of replace (the string to searchlace search replace)	 */
+	int len_front;		/* distance between search and end of last search				 */
+	int count;			/* number of searchlacements									 */
+
+	// sanity checks and initialization
+	if (!orig || !search)
+		return 0;
+	len_search = strlen(search);
+	if (len_search == 0)
+		return 0; /* empty search causes infinite loop during count */
+	if (!replace)
+		replace = "";
+	len_replace = strlen(replace);
+
+	// count the number of searchlacements needed
+	ins = orig;
+	for (count = 0; tmp = strstr(ins, search); ++count) {
+		ins = tmp + len_search;
+	}
+	tmp = result;
+
+	/*
+	 first time through the loop, all the variable are set correctly
+	 from here on,
+	    tmp points to the end of the result string
+	    ins points to the next occurrence of search in orig
+	    orig points to the remainder of orig after "end of search"
+	*/
+	while (count--) {
+		ins = strstr(orig, search);
+		len_front = ins - orig;
+		tmp = strncpy(tmp, orig, len_front) + len_front;
+		tmp = strcpy(tmp, replace) + len_replace;
+		orig += len_front + len_search; /* move to next "end of search" */
+	}
+	strcpy(tmp, orig);
+	return 1;
 }

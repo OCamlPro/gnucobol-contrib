@@ -48,6 +48,7 @@
 #include "exitroutines.h"
 #include "copyfile.h"
 #include "datediff.h"
+#include "join.h"
 
 
 /* Module initialization indicator */
@@ -58,6 +59,7 @@ static unsigned int	initialized = 0;
 static cob_module	*module = NULL;
 /* Global variable pointer */
 cob_global		*cob_glob_ptr;
+
 /* Call parameters */
 cob_field		*cob_procedure_params[1];
 /* Module path */
@@ -148,10 +150,10 @@ int main(int argc, char **argv)
 	 check date - End
 	*/
 
-	if (argc >= 2) 
+	if (argc >= 2)  
 	{
 		if (strstr(argv[1], "--help") != NULL) {
-			GCSORT_Usage() ;
+			GCSORT_Usage(argv[2]) ;
 			return GC_RTC_OK;
 		}
 		if (strstr(argv[1], "--version") != NULL){
@@ -169,7 +171,7 @@ int main(int argc, char **argv)
 	if (argc < 2) {
 		fprintf(stdout,"________________________________________________________________________\n");
 		fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-		fprintf(stdout,"Copyright (C) 2009-2020 Cedric ISSALY / Sauro Menna\n");
+		fprintf(stdout,"Copyright (C) 2009-2022 Cedric ISSALY / Sauro Menna\n");
 		fprintf(stdout,"________________________________________________________________________\n");
 		fprintf(stdout,"gcsort. Nothing to do.\n");
 		fprintf(stdout,"Usage: gcsort <option> <command>\n");
@@ -178,6 +180,8 @@ int main(int argc, char **argv)
 		fprintf(stdout,"              Read and execute command from filename params\n");
 		fprintf(stdout,"or   : gcsort --help\n");
 		fprintf(stdout,"              Print help\n");
+		fprintf(stdout, "or   : gcsort --help  SORT | MERGE | COPY | JOIN \n");
+		fprintf(stdout, "              Print help for specific control statement\n");
 		fprintf(stdout,"or   : gcsort --version\n");
 		fprintf(stdout,"              Print version information\n");
 		fprintf(stdout,"or   : gcsort --config\n");
@@ -200,6 +204,7 @@ int main_prod(int argc, char **argv) {
 	time_t timeStart;
 	struct job_t *job;
 	int nRC = -2;
+	char szMex[10];
 	time (&timeStart);
 	yydebug = 0;            /* 0;   // no debug  // yydebug=1; // yes debug    */
 	yyset_debug(0);         /* 0);	// set debug scanner off                   */
@@ -210,7 +215,7 @@ int main_prod(int argc, char **argv) {
 	cob_glob_ptr->cob_call_params = 0; ;
 	cob_glob_ptr->cob_stmt_exception = 0;
 
-
+	memset(szMex, 0x00, 10);
 
 	/* Set frame stack pointer */
 	frame_ptr = frame_stack;
@@ -294,38 +299,31 @@ int main_prod(int argc, char **argv) {
 				/* check typeOP  'S' for Sort , 'M' for Merge and 'C' for Copy  */
 				switch (job_GetTypeOp(job)) {
 				case ('C'):
+					sprintf(szMex, "Copy");
 					nRC = job_copy(job);
 					break;
 				case ('M'):
+					sprintf(szMex, "Merge");
 					nRC = job_merge_files(job);
 					break;
 				case ('S'):
+					sprintf(szMex, "Sort");
 					nRC = job_sort(job);
+					break;
+				case ('J'):
+					sprintf(szMex, "Join");
+					nRC = job_joiner(job);
 					break;
 				}
 				if (nRC >= 0)	
 					job_print_final(job, & timeStart);
 		}
 	}
-
 	if (nRC == 0) {
-        if (job_GetTypeOp(job) == 'M') 		
-		    printf("GCSORT - Merge OK\n");
-        else
-			if (job_GetTypeOp(job) == 'C')
-				printf("GCSORT - Copy OK\n");
-			else
-				printf("GCSORT - Sort OK\n"); 
-    }
-	else
-	{
-        if (job_GetTypeOp(job) == 'M') 		
-		    printf("GCSORT - Merge ERROR\n");  
-        else
-			if (job_GetTypeOp(job) == 'C')
-				printf("GCSORT - Copy ERROR\n");
-			else
-				printf("GCSORT - Sort ERROR\n");
+		fprintf(stdout, "GCSORT - %s OK\n\n", szMex);
+	}
+	else {
+		fprintf(stdout, "GCSORT - %s KO\n\n", szMex);
 		nRC = GC_RTC_ERROR;
 	}
 

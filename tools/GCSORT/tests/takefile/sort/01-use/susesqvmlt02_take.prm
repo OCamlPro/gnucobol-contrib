@@ -6,4 +6,4 @@ gIvE        ../files/fil_outfil_501_66.txt.out  org LS RECord F,3520
 MErGe   Fields=COPy                                                            
 OutRec FIElds=(C'variable         ',183,12,1X,2918,6,1X,9,50,1X,2827,2,1X,3119,20,C'NO ',3410,109,C'X',3519:X,C'*')
 Omit Cond=(10,8,Ch,Eq,C'a91230Bc')
-Outfil OutRec FIElds=(18,12,48,6,3519:X,C'*'),FNAMES='../files/susesqvmlt02.out'
+Outfil OutRec FIElds=(18,12,48,6,3519:X,C'*'),FNAMES=../files/susesqvmlt02.out

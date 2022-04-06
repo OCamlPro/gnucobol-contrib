@@ -79,32 +79,41 @@ extern int yydebug;
      ORG = 288,
      RECORD = 289,
      SORT = 290,
-     USE = 291,
-     COPY = 292,
-     TYPE = 293,
-     LENGTH = 294,
-     DATE1 = 295,
-     DATE2 = 296,
-     DATE3 = 297,
-     DATE4 = 298,
-     CHANGE = 299,
-     NOMATCH = 300,
-     DIGIT = 301,
-     DIGITBIG = 302,
-     CHARTCOND = 303,
-     CHARTYPE = 304,
-     FILETYPE = 305,
-     FORMATTYPE = 306,
-     KEY = 307,
-     KEYTYPE = 308,
-     OCCURFILL = 309,
-     OPCOND = 310,
-     ORDER = 311,
-     RECTYPEFIX = 312,
-     RECTYPEVAR = 313,
-     STRING = 314,
-     TOKSKIP = 315,
-     SIGNDIGITBIG = 316
+     JOINKEYS = 291,
+     USE = 292,
+     COPY = 293,
+     TYPE = 294,
+     LENGTH = 295,
+     DATE1 = 296,
+     DATE2 = 297,
+     DATE3 = 298,
+     DATE4 = 299,
+     CHANGE = 300,
+     NOMATCH = 301,
+     SORTED = 302,
+     NOSEQCK = 303,
+     UNPAIRED = 304,
+     ONLY = 305,
+     JOIN = 306,
+     JOINREFORMAT = 307,
+     FILL = 308,
+     DIGIT = 309,
+     DIGITBIG = 310,
+     CHARTCOND = 311,
+     CHARTYPE = 312,
+     FILETYPE = 313,
+     FORMATTYPE = 314,
+     JOINFILE = 315,
+     KEY = 316,
+     KEYTYPE = 317,
+     OCCURFILL = 318,
+     OPCOND = 319,
+     ORDER = 320,
+     RECTYPEFIX = 321,
+     RECTYPEVAR = 322,
+     STRING = 323,
+     TOKSKIP = 324,
+     SIGNDIGITBIG = 325
    };
 #endif
 
@@ -127,7 +136,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 131 "..\\..\\parser.h"
+#line 140 "..\\..\\parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

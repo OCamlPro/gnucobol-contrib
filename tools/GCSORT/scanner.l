@@ -51,6 +51,7 @@
 %option noyywrap nounput batch
 %option case-insensitive
 
+                
 			/* for position and length */
 DIGIT		    [0-9]{1,5}
 			/* for value, example condition */
@@ -66,7 +67,7 @@ BLANK		    [ \t]*
 DATESEP         [-\\/.]{1}
 
             /* File type */
-FILETYPE	    LS|SQ|IX|RL
+FILETYPE	    LS|SQ|IX|RL|LSF
 
             /*  Format Type Field   */
          /* CH|BI|FI|FL|PD|ZD|TI|OT|CTO|LI|OL|CLO|CST|LS|CSL */
@@ -114,7 +115,7 @@ CHARTCOND       C|X|Y
 CHARTYPE        C|X|Z				
             /*  Order A = Ascending, D = Descending */
 ORDER           A|D				
-            /*  Key Tye for indexed file P=Primary, A= ALternative, AD = Alternative with duuplicates, C = Continue */
+            /*  Key Tye for indexed file P=Primary, A= ALternative, AD = Alternative with duplicates, C = Continue */
 KEYTYPE         P|A|AD|C	
             /* Fixed record */
 RECTYPEFIX	    F
@@ -125,6 +126,8 @@ RECTYPEVAR      V
 OCCURFILL   [0-9]{1,5}[C|X|Z]{1} 
             /* Operator condition */ 
 OPCOND          EQ|GT|GE|LT|LE|NE|SS
+            /* Joinkeys File */
+JOINFILE        F1|F2            
 
     /* OCCURFILL   [0-9]{1,5}[C|X|Z]{1} */
 	/* <CHSC>{CHARTYPE} */
@@ -146,6 +149,7 @@ EXROUT          E15|E35
 
 "BUILD"[=]*{BLANK}                              return BUILD;
 "CHANGE"[=]*{BLANK}                             return CHANGE;
+[,]*{BLANK}"FILL"[=]*{BLANK}                    return FILL;
 "NOMATCH"[=]*{BLANK}                            return NOMATCH;
 "COND"                          BEGIN(TCOND);   return COND; 
 [(]{BLANK}"COPY"{BLANK}[)]                      return COPY; 
@@ -182,10 +186,11 @@ EXROUT          E15|E35
 
             /* {SIGN}{ADDSUBNUM}	            yylval.number = strtol(yytext, &pEnd, 10) ;			return ADDSUBNUM; */
                                                 
-"DATE1"                                      return DATE1;
-"DATE2"                                      return DATE2;
-"DATE3"                                      return DATE3;
-"DATE4"                                      return DATE4;
+"DATE1"                                         return DATE1;
+"DATE2"                                         return DATE2;
+"DATE3"                                         return DATE3;
+"DATE4"                                         return DATE4;
+[,]*{BLANK}"FILE"{BLANK}[,]*                    return FNAMES; /*   return FILE;   */
 [,]*{BLANK}"FILES"{BLANK}[,]*                   return FNAMES; /*   return FILES;   */
 [,]*{BLANK}"FNAMES"{BLANK}[,]*	                return FNAMES;
 [,]*{BLANK}"FORMAT"{BLANK}[,]*                  return FORMAT;
@@ -196,6 +201,7 @@ EXROUT          E15|E35
 "KEY"	                        BEGIN(KEYV);    return KEY;
 [,]*{BLANK}"LENGTH"{BLANK}[=]{BLANK}            return LENGTH;
 "MERGE"		       nPhase = 1;  BEGIN(INITIAL); return MERGE;
+"JOINKEYS"         nPhase = 1;  BEGIN(INITIAL); return JOINKEYS;
 [(]*{BLANK}"NONE"{BLANK}[)]*	                return NONE;
 [,]*{BLANK}"OMIT"		        BEGIN(TCOND);   return OMIT; 
 "OPTION"	                                    return OPTION;
@@ -211,6 +217,12 @@ EXROUT          E15|E35
     /* "RECORD"	                         return RECORD; */
 "RECORD"	                    BEGIN(INITIAL); return RECORD;
 "SORT"		       nPhase = 1;  BEGIN(INITIAL); return SORT;
+"SORTED"                                        return SORTED;
+"NOSEQCK"                                       return NOSEQCK;
+"UNPAIRED"                                      return UNPAIRED;
+"ONLY"                                          return ONLY;
+"JOIN"                                          return JOIN;
+"REFORMAT"	                    BEGIN(CHSC);    return JOINREFORMAT;	
 [,]*{BLANK}"STARTREC"	                        return STARTREC;
 [,]*{BLANK}"STOPAFT"	                        return STOPAFT;
 [,]*{BLANK}"SPLIT"                              return SPLIT;
@@ -252,7 +264,7 @@ EXROUT          E15|E35
 {OCCURFILL} 		        yylval.string = _strdup(yytext) ;                   return OCCURFILL;
 <TCOND>{CHARTCOND}	        yylval.string = _strdup(yytext) ;                   return CHARTCOND;    
 <CHSC>{CHARTYPE}	        yylval.string = _strdup(yytext) ;                   return CHARTYPE; 
-
+{JOINFILE}                  yylval.string = _strdup(yytext) ;					return JOINFILE;
 
 {FORMATTYPE}		        yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  
 

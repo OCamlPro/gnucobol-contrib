@@ -503,7 +503,7 @@ int job_copyFile(struct job_t *job)
 			continue;
 /* E35 End */
 		if ((nLenRek > 0) && (job->outfil == NULL)){
-			job_set_area(job, job->outputFile, recordBuffer+nSplitPosPnt, nLenRecOut);	/* Len output   */
+			job_set_area(job, job->outputFile, recordBuffer+nSplitPosPnt, nLenRecOut, nLenRek);	/* Len output   */
 			cob_write (job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
 			if (atol((char *)job->outputFile->stFileDef->file_status) != 0) {
 			    fprintf(stderr,"*GCSORT*S627*ERROR: Cannot write to file %s - File Status (%c%c)\n",file_getName(job->outputFile),
@@ -541,7 +541,8 @@ int job_copyFile(struct job_t *job)
 	} /*for (file=job->inputFile; file!=NULL; file=file_getNext(file)) */
 job_save_exit:
 
-	cob_close (job->outputFile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
+	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0))
+		cob_close (job->outputFile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
 
 	if (desc >= 0){
 		if (close(desc)<0) {

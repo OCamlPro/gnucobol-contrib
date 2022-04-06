@@ -28,7 +28,7 @@
 #include "gcsort.h"
 #include "gcshare.h"
 #include "changefield.h"
-
+#include "join.h"
 
 
 
@@ -44,6 +44,8 @@ void inrec_initialize(struct inrec_t* inrec) {
 	inrec->range.changeCmdOpt = NULL;
 	inrec->szChangeBufIn = NULL;
 	inrec->szChangeBufOut = NULL;
+	inrec->joinCmd.nFileJoin = 0;			/*  1=F1, 2=F2 */
+
 }
 struct inrec_t *inrec_constructor_range(int position, int length) {
 	struct inrec_t *inrec=(struct inrec_t *)malloc(sizeof(struct inrec_t));
@@ -57,6 +59,21 @@ struct inrec_t *inrec_constructor_range(int position, int length) {
 	}
 	return inrec;
 }
+
+struct inrec_t* inrec_constructor_range_join(int nField, int position, int length) {
+	struct inrec_t* inrec = (struct inrec_t*)malloc(sizeof(struct inrec_t));
+	if (inrec != NULL) {
+		inrec_initialize(inrec);
+		inrec->type = INREC_TYPE_JOIN;
+		inrec->joinCmd.position = position - 1;
+		inrec->joinCmd.length = length;
+		inrec->next = NULL;
+		inrec->joinCmd.changeCmdOpt = NULL;
+		inrec->joinCmd.nFileJoin = nField;
+	}
+	return inrec;
+}
+
 struct inrec_t *inrec_constructor_change_position(int position, struct fieldValue_t *fieldValue) {
 	struct inrec_t *inrec=(struct inrec_t *)malloc(sizeof(struct inrec_t));
     if (inrec != NULL) {
@@ -217,7 +234,9 @@ void inrec_destructor(struct inrec_t *inrec) {
 				free(inrec->szChangeBufIn);
 				free(inrec->szChangeBufOut);
 			}
-		default:
+		case INREC_TYPE_JOIN:
+			break;
+        default:
 			break;
 	}
 	free(inrec);
@@ -263,6 +282,12 @@ int inrec_print(struct inrec_t *inrec) {
 		case INREC_TYPE_CHANGE_CMDOPT:
 			fprintf(stdout, "%d,%d", inrec->range.position + 1, inrec->range.length);
 			change_print(inrec->changeCmd.changeCmdOpt);
+		case INREC_TYPE_JOIN:
+			if (inrec->joinCmd.position == -100)
+				fprintf(stdout, "B");
+			else
+				fprintf(stdout, "%d,%d",inrec->joinCmd.position+1,inrec->joinCmd.length);
+			break;
 		default:
 			break;
 	}
@@ -291,6 +316,9 @@ int inrec_getLength(struct inrec_t *inrec) {
 				break;
 			case INREC_TYPE_CHANGE_CMDOPT:
 				length += o->changeCmd.changeCmdOpt->vlen;
+                break;
+			case INREC_TYPE_JOIN:
+				length += o->joinCmd.length;
 			default:
 				break;
 		}
@@ -434,8 +462,8 @@ int inrec_copy_overlay(struct inrec_t* inrec, unsigned char* output, unsigned ch
 			break;
 			/* new 202012 */
 		case INREC_TYPE_CHANGE_ABSPOS:
-			/* s.m. 20220215 memcpy(output + i->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(i->change.fieldValue), fieldValue_getGeneratedLength(i->change.fieldValue)); */
-			/* s.m. 20220215 position = i->range.position + fieldValue_getGeneratedLength(i->change.fieldValue); */
+			/*   s.m. 20220215 memcpy(output + i->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(i->change.fieldValue), fieldValue_getGeneratedLength(i->change.fieldValue)); */
+			/*   s.m. 20220215 position = i->range.position + fieldValue_getGeneratedLength(i->change.fieldValue); */
 			memcpy(output + i->change.posAbsRec + nSplitPos + nSplit, fieldValue_getGeneratedValue(i->change.fieldValue), fieldValue_getGeneratedLength(i->change.fieldValue));
 			position = i->change.posAbsRec + fieldValue_getGeneratedLength(i->change.fieldValue);
 			break;

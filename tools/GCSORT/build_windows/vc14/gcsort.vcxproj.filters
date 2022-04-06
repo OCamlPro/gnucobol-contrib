@@ -75,6 +75,15 @@
     <ClInclude Include="..\..\copyfile.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\datediff.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\changefield.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\join.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\condfield.c">
@@ -131,5 +140,25 @@
     <ClCompile Include="..\..\copyfile.c">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\datediff.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\changefield.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\join.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\AUTHORS" />
+    <None Include="..\..\ChangeLog" />
+    <None Include="..\..\COPYING" />
+    <None Include="..\..\INSTALL" />
+    <None Include="..\..\Makefile" />
+    <None Include="..\..\parser.y" />
+    <None Include="..\..\scanner.l" />
+    <None Include="..\..\THANKS" />
+    <None Include="..\..\TODO" />
   </ItemGroup>
 </Project>

@@ -1,26 +1,33 @@
-GCSORT 1.0.0
+GCSORT 1.3.3
 
 GCSORT (formerly OCsort) is an free and open source sort tool, which implements a subset
 of the functionality of the Micro Focus (IP) MFSORT (c) utility.
+
+Main features : SORT, MERGE, COPY and JOIN
 
 This program is distributed under the GNU General Public License. See COPYING for details.
 
 GCSORT requires the following external libraries to be installed:
 
 Windows    MinGW
-    bison (GNU Bison) 2.7
-    win_flex 2.5.37
     gcc (GCC) 4.8.1
+    libcob (GnuCOBOL)GnuCOBOL  3.1 or higher
+    (*Optional) bison (GNU Bison) 2.7
+    (*Optional) win_flex 2.5.37
 
 LINUX
-    bison (GNU Bison) 2.7
-    flex 2.5.37    
     gcc (GCC) 4.8.3 20140911 (Red Hat 4.8.3-9)
+    libcob (GnuCOBOL)  2.2 or higher
+    (*Optional) bison (GNU Bison) 2.7
+    (*Optional) flex 2.5.37    
     
-Functionality supported :
+(*Optional) library mandatory only if you modify parser.y or scanner.l.    
+    
+Supported features :
 ________________________________________________________________________________________
  gcsort help
- gcsort is a  program to sort, merge and copy records in a file into a specified order
+ gcsort is a utility to sort, merge, copy and join records in a file into a
+   specified order in GnuCOBOL environment.
 ________________________________________________________________________________________
  Syntax case insensitive
  Return code : 0 (ok) - 4 (warning) - 16 (error)
@@ -33,14 +40,17 @@ gcsort options
 ________________________________________________________________________________________
 gcsort control statements
 Notations: '{name}' = parameters , '|' = Alternative format of control statement
+========================================================================================
+                Section for SORT, MERGE and COPY control statements
+========================================================================================
+ SORT | MERGE | COPY FIELDS Control statement for Sort, Merge, Copy file(s)
 ________________________________________________________________________________________
- SORT | MERGE | COPY FIELDS Control statement for Sort or Merge file(s)
  USE                 Declare input file(s)
  GIVE                Declare output file
  [ SUM FIELDS ]      Sum fields for same record key, or eliminate duplicate keys)
  [ RECORD     ]      Record control statement
  [ INCLUDE    ]      Select input records that respect include condition(s)
- [ OMIT       ]      Omit input records that respect include condition(s)
+ [ OMIT       ]      Omit input records that respect omit condition(s)
  [ INREC      ]      Reformat input record Before sort, merge or copy operation
  [ OUTREC     ]      Reformat input record After sort, merge or copy operation
  [ OUTFIL     ]      Create one or more output files for sort,merge or copy operation
@@ -94,6 +104,178 @@ gcsort
          Y2PAST           (YY) - Sliding, (YYYY) century
          MODS E15=(<name>) [,]     <name>= Name E15 Cobol Program for input
               E35=(<name>)         <name>= Name E35 Cobol Program for ouput
+    SUM FIELDS = [({Pos},{Len},{FormatType2}, ...)]         |
+                 [({Pos},{Len}, ...)],FORMAT={FormatType2}  |
+                 [NONE] | [(NONE)]
+
+    INCLUDE | OMIT
+            COND=({Condition})[,FORMAT={FormatType}]
+
+    INREC   FIELDS | INREC   BUILD =({FieldSpec})
+    INREC   OVERLAY =({FieldSpec})
+    OUTREC  FIELDS | OUTREC  BUILD =({FieldSpec})
+    OUTREC  OVERLAY =({FieldSpec})
+
+    OUTFIL
+         INCLUDE | OMIT ({Condition})[,FORMAT={FormatType}]
+         OUTREC = ({FieldSpec})
+         FILES/FNAMES= {Filename}  | (file1, file2, file3,...)
+         STARTREC={nn}    Start from record nn
+         ENDREC={nn}      Skip record after nn
+         SAVE
+         SPLIT            Split 1 record  output for file group (file1, file2, file3,...)
+         SPLITBY={nn}     Split n records output for file group (file1, file2, file3,...)
+
+    OPTION
+         SKIPREC={nn}     Skip nn records from input
+         STOPAFT={nn}     Stop read after nn records
+         VLSCMP           0 disabled , 1 = enabled -- temporarily replace any
+                               missing compare field bytes with binary zeros
+         VLSHRT           0 disabled , 1 = enabled -- treat any comparison
+                               involving a short field as false
+________________________________________________________________________________________
+___{Parameters}____________________________|___{Relational}_____________________________
+  {FileName} = Filename or Env. Variable   |  EQ = Equal
+  {Pos}      = Field Position              |  GT = GreaterThan
+  {Len}      = Field Length                |  GE = GreaterEqual
+  {RecordLen}= Record Length               |  LT = LesserThan
+  {MinLen}   = Min size of record          |  LE = LesserEqual
+  {MaxLen}   = Max size of record          |  NE = NotEqual
+  {Order}    = A(ascending) | D(descending)|  SS = SubString (only for Field Type 'CH')
+___________________________________________|____________________________________________
+___{Condition}__________________________________________________________________________
+  Format 1  - (Pos,Len,{FormatType},{Relational},[AND|OR],Pos,Len,{FormatType})
+  Format 2  - (Pos,Len,{FormatType},{Relational},[X|C'[value]'] | numeric value)]
+  Format 3  - ( {Condition} ,[AND|OR],{Condition} )
+  Format 4  - ( Pos,Len,{FormatType},{Relational}, [DATE1][(+/-)num] | [DATE2][(+/-)num]
+                                                   [DATE3][(+/-)num] | [DATE4][(+/-)num]
+       DATE - Currente Date : DATE1 (C'yyyymmdd'), DATE2 (C'yyyymm'),
+                              DATE3 (C'yyyyddd'),  DATE4 (C'yyyy-mm-dd') (no Timestamp)
+       [(+/-)num]  [+num] future date, [-num] past date) only for DATE1,DATE2,DATE3
+________________________________________________________________________________________
+___{Org}___File Organization_______________|___{KeyType}____Mandatory for ORG = IX______
+  LS  = Line Sequential                    |  P  = Primary Key
+  SQ  = Sequential Fixed or Variable       |  A  = Alternative Key
+  IX  = Indexed Fixed or Variable          |  D  = Alternative Key with Duplicates
+  RL  = Relative Fixed or Variable         |  C  = Continue definition
+___________________________________________|____________________________________________
+__{FormatType}____Field Format Type________|___{FormatType2}____Format Type SumField____
+  CH  = Char                               |  BI = Binary unsigned
+  BI  = Binary unsigned                    |  FI = Binary signed
+  FI  = Binary signed                      |  FL = Floating Point
+  FL  = Floating Point                     |  PD = Packed
+  PD  = Packed                             |  ZD = Zoned
+  ZD  = Zoned                              |  CLO = Numeric sign leading
+  CLO = Numeric sign leading               |  CSL = Numeric sign leading separate
+  CSL = Numeric sign leading separate      |  CST = Numeric sign trailing separate
+  CST = Numeric sign trailing separate     |
+___________________________________________|____________________________________________
+_Format_Len_Type__Date field_______________|_Format_Len_Type__Date field________________
+  Y2T = 8   ZD    CCYYMMDD                 |  Y2D = 1   PD    YY
+  Y2T = 4   ZD    YYXX                     |  Y2P = 2   PD    YY
+  Y2T = 2   ZD    YYX                      |  Y2U = 3   PD    YYDDD
+  Y2T = 3   ZD    YY                       |  Y2S = 2   ZD    YY
+  Y2T = 5   ZD    YYDDD                    |  Y2V = 4   PD    YYMMDD
+  Y2T = 6   ZD    YYMMDD                   |  Y2X = 3   PD    DDDYY
+  Y2B = 1   BI    YY                       |  Y2Y = 4   PD    MMDDYY
+  Y2C = 2   ZD    YY                       |  Y2Z = 2   ZD    YY
+___________________________________________|____________________________________________
+____{FieldSpec}___Field Specification___________________________________________________
+  pos, len           pos = position input record, len = length of field
+  posOut:pos,len     posOut  = position output, pos = position input , len = length
+  n:X                Filling with Blank character from last position to n
+                         (absolute position of output record).
+  n:Z                Filling with zero Binary character from last position to n
+                         (absoluteposition of output record).
+  C'constant'        constant character value.
+  nC'constant'       repeat n times constant character value.
+  nX                 repeat n times Blank character.
+  nZ                 repeat n times Binary (0x00) character.
+  X'hh....hh'        hexdecimal characters.
+  nX'hh...hh'        repeat n times hexdecimal characters.
+  CHANGE=(vlen,[C | X]'<valueFind>',[C | X]'<valueSet>',.....),NOMATCH=([C | X]'<valueSet>)
+  CHANGE=(vlen,[C | X]'<valueFind>', posIn, lenIn), NOMATCH = (posIn, posLen)
+________________________________________________________________________________________
+========================================================================================
+  Section for JOIN control statement
+========================================================================================
+ JOIN file(s)
+    USE                 Declare input file F1
+    USE                 Declare input file F2
+    GIVE                Declare output file
+    JOINKEYS FILES=F1.. Declare keys file F1
+        [ INCLUDE]  Input file F1 - Select input records that respect include condition(s)
+        [ OMIT   ]  Input file F1 - Omit input records that respect omit condition(s)
+    JOINKEYS FILES=F2.. Declare keys file F2
+        [ INCLUDE]  Input file F2 - Select input records that respect include condition(s)
+        [ OMIT   ]  Input file F2 - Omit input records that respect omit condition(s)
+    UNPAIRED            Declare join type
+    REFORMAT FIELDS     Declare output format
+    [ INCLUDE]      Output file - Select input records that respect include condition(s)
+    [ OMIT   ]      Output file - Omit input records that respect omit condition(s)
+    [ INREC  ]      Output file - Reformat input record before join operation
+    [ OUTFIL ]      Output file - Create one or more output files from join operation
+________________________________________________________________________________________
+    JOIN
+    USE  {Filename}             [File F1]
+         ORG {Org}
+         RECORD [F,{RecordLen}] | [V,{MinLen},{MaxLen}]
+                [KEY ({Pos},{Len},{KeyType})]
+
+    USE  {Filename}             [File F2]
+         ORG {Org}
+         RECORD [F,{RecordLen}] | [V,{MinLen},{MaxLen}]
+                [KEY ({Pos},{Len},{KeyType})]
+
+    GIVE same parameters of USE
+
+    JOINKEYS FILES=F1,FIELDS=[({Pos},{Len},{Order}, ...)]
+                             [,SORTED] [,STOPAFT={nn]]
+           [, INCLUDE ] | [, OMIT]
+                   [ COND=({Condition})[,FORMAT={FormatType}] ]
+
+    JOINKEYS FILES=F2,FIELDS=[({Pos},{Len},{Order}, ...)]
+                             [,SORTED] [,STOPAFT={nn]]
+           [, INCLUDE ] | [, OMIT]
+                   [ COND=({Condition})[,FORMAT={FormatType}] ]
+
+    JOIN UNPAIRED [,F1][,F2][,ONLY]
+         UNPAIRED,F1,F2 or UNPAIRED
+             Unpaired records from F1 and F2 as well as paired records (Full outer join).
+         UNPAIRED,F1
+             Unpaired records from F1 as well as paired records (Left outer join).
+         UNPAIRED,F2
+             Unpaired records from F2 as well as paired records (Right outer join).
+         UNPAIRED,F1,F2,ONLY or UNPAIRED,ONLY
+             Unpaired records from F1 and F2.
+         UNPAIRED,F1,ONLY
+             Unpaired records from F1.
+         UNPAIRED,F2,ONLY
+             Unpaired records from F2.
+
+    REFORMAT FIELDS=({File}:{Pos},{Len},{?},{File}:{Pos},{Len}.....) [,FILL=[C'constant'] | [X'hh']
+______Commands for output file__________________________________________________________
+    INCLUDE | OMIT
+            COND=({Condition})[,FORMAT={FormatType}]
+
+    INREC   FIELDS | INREC   BUILD =({FieldSpec})
+    INREC   OVERLAY =({FieldSpec})
+    OUTREC  FIELDS | OUTREC  BUILD =({FieldSpec})
+    OUTREC  OVERLAY =({FieldSpec})
+
+    OUTFIL
+         INCLUDE | OMIT ({Condition})[,FORMAT={FormatType}]
+         OUTREC BUILD | BUILD = ({FieldSpec})
+         FILES/FNAMES= {Filename}
+
+________________________________________________________________________________________
+___{Parameters}____________________________|___{Parameters}_____________________________
+  {File}     = F1 or F2                    | ? = 1-byte indicator joined record
+  {Pos}      = Field Position              |    'B' = 'Both' - Key  found in F1 and F2
+  {Len}      = Field Length                |    '1' = Key found in F1, but not in F2
+  {Order}    = A(ascending) | D(descending)|    '2' = Key found in F1, but not in F1
+  C'Constant'= Character fill byte         |     nn = Numbers of records from input file
+  X'hh' = Hexadecimal fill byte (00-FF).   |
 ________________________________________________________________________________________
 ___{Parameters}____________________________|___{Relational}_____________________________
   {FileName} = Filename or Env. Variable   |  EQ = Equal

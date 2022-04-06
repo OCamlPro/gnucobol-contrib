@@ -34,12 +34,14 @@ struct change_t;
 #define INREC_TYPE_RANGE_POSITION	3
 #define INREC_TYPE_CHANGE_ABSPOS	4
 #define INREC_TYPE_CHANGE_CMDOPT	5
+#define INREC_TYPE_JOIN				6
 
 struct inrec_t {
 	int nIsOverlay;
 	int type;
 	union {
 		struct {
+			int nFileJoin;			/*  1=F1, 2=F2 */
 			int position;
 			int length;
 			int posAbsRec;
@@ -48,6 +50,7 @@ struct inrec_t {
 			struct change_t* changeCmdOpt;
 		} range;				/* 0	INREC_TYPE_RANGE    */
 		struct {
+			int nFileJoin;			/*  1=F1, 2=F2 */
 			int position;
 			int length;
 			int posAbsRec;
@@ -56,6 +59,7 @@ struct inrec_t {
 			struct change_t* changeCmdOpt;
 		} change_position;		/*  1	INREC_TYPE_CHANGE_POSITION  */
 		struct {
+			int nFileJoin;			/*  1=F1, 2=F2 */
 			int position;
 			int length;
 			int posAbsRec;
@@ -64,6 +68,7 @@ struct inrec_t {
 			struct change_t* changeCmdOpt;
 		} change;				/*  2	INREC_TYPE_CHANGE   */
 		struct {		
+			int nFileJoin;			/*  1=F1, 2=F2 */
 			int position;
 			int length;
 			int posAbsRec;
@@ -72,6 +77,7 @@ struct inrec_t {
 			struct change_t* changeCmdOpt;
 		} range_position;		/*  3	INREC_TYPE_RANGE_POSITION   */
 		struct {
+			int nFileJoin;			/*  1=F1, 2=F2 */
 			int position;
 			int length;
 			int posAbsRec;
@@ -79,6 +85,15 @@ struct inrec_t {
 			char type;
 			struct change_t* changeCmdOpt;
 		} changeCmd;			/*  5	INREC_TYPE_CHANGE_CMDOPT   */
+		struct {
+			int nFileJoin;			/*  1=F1, 2=F2 */
+			int position;
+			int length;
+			int posAbsRec;
+			struct fieldValue_t* fieldValue;
+			char type;
+			struct change_t* changeCmdOpt;
+		} joinCmd;			/*  5	INREC_TYPE_JOIN   */
 	};
 	unsigned char* szChangeBufIn;
 	unsigned char* szChangeBufOut;
@@ -89,6 +104,7 @@ struct inrec_t {
 
 void inrec_initialize(struct inrec_t* inrec);
 struct inrec_t *inrec_constructor_range(int position, int length);
+struct inrec_t* inrec_constructor_range_join(int nFile, int position, int length);
 struct inrec_t *inrec_constructor_change_position(int position, struct fieldValue_t *fieldValue);
 struct inrec_t *inrec_constructor_change(struct fieldValue_t *fieldValue);
 struct inrec_t *inrec_constructor_range_position(int posAbsRec, int position, int length);

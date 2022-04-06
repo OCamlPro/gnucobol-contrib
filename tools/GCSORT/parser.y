@@ -57,10 +57,12 @@
     #include "gcshare.h"
     #include "datediff.h"
     #include "changefield.h"
+    #include "join.h"
 
 	#define  INREC_CASE		1
 	#define  OUTREC_CASE	2
-
+    #define  JOIN_CASE      3
+    
     /* -->> extern char szMexToken[260];    */
 
 	int yylex    (void);
@@ -72,6 +74,9 @@
     struct inrec_t *      inrec=NULL;
     struct outrec_t *     outrec=NULL;
     struct changefield_t* current_changefield=NULL;
+    struct join_t*        current_join=NULL;
+    struct join_t*        F1_join=NULL;
+    struct join_t*        F2_join=NULL;
     int    pntChange = 0;  /* 1 = Inrec , 2 = Inrec */
 
 	int nRecCase=0;
@@ -79,6 +84,7 @@
 	int current_outrec=0;
 	int current_inrec=0;
 	int current_sortField=0;
+    int current_filejoin=0;         /* Join File 1 = F1, 2 = F2  */
     int inrec_overlay=0;
     int outrec_overlay=0;
 	int nPosAbsRec=0;
@@ -97,6 +103,7 @@
 	int  nTypeFormat;			/* 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields  */
 	int  nTypeIncludeOmit;		/* 0= Nothing, 1 = Include, Omit=2                              */
 	int  nstate_outfil = 0;
+    int  nOnly=0;
 
 }
 %token				AND						"AND clause"
@@ -133,6 +140,7 @@
 %token 				ORG						"ORG instruction"
 %token 				RECORD					"RECORD instruction"
 %token 				SORT					"SORT clause"
+%token              JOINKEYS                "JOINKEYS clause"
 %token 				USE						"USE clause"
 %token 				COPY					"COPY"
 %token 				TYPE                    "TYPE"
@@ -143,6 +151,14 @@
 %token 				DATE4                   "DATE4"
 %token              CHANGE                  "CHANGE"
 %token              NOMATCH                 "NOMATCH"
+%token              SORTED                  "SORTED"                   
+%token              NOSEQCK                 "NOSEQCK"
+%token              UNPAIRED                "UNPAIRED"
+%token              ONLY                    "ONLY"
+%token              JOIN                    "JOIN"
+%token              JOINREFORMAT            "JOINREFORMAT"
+%token              FILL                    "FILL"
+
 %token <number>		DIGIT					"DIGIT"
 %token <number>		DIGITBIG		        "DIGITBIG"
         /* %token <number>     ADDSUBNUM               "ADDSUBNUM" */
@@ -150,6 +166,7 @@
 %token <string>		CHARTYPE				"CHARTYPE" 
 %token <string>		FILETYPE				"FILETYPE"
 %token <string>		FORMATTYPE				"FORMATTYPE"
+%token <string>     JOINFILE                "JOINFILE"
 %token <string>		KEY						"KEY" 
 %token <string>		KEYTYPE					"KEYTYPE" 
 %token <string>		OCCURFILL				"OCCURFILL"
@@ -186,6 +203,12 @@ beginning:
 clause:   recordclause {}
 		| sortclause {}
 		| mergeclause {}
+        | joinkeysclause {}
+        | joinclause {}
+        | joinreformatclause{}
+        | joinkeysalloptions{}
+        | joinoptions{}
+        | fill_char{}
         | useclause {}
 		| giveclause {}
 		| formatclause {}
@@ -204,6 +227,7 @@ clause:   recordclause {}
             /* | filesclause {} */
 		| saveclause {}
 		| optionclause {}
+        | buildclause {}
 ;
 
 useclause: 
@@ -224,7 +248,7 @@ useclause:
 }
 ;
 giveclause: 
-      GIVE STRING {
+     GIVE STRING { 
         struct file_t *file=file_constructor($2);
         strcpy(szMexToken, " give clause ");
         if (file == NULL) {
@@ -428,6 +452,7 @@ allsortfield:
 
 sortfield:	
       DIGIT ',' DIGIT ',' fielddirection {
+            /* Sort Fields */
         if (current_sortField==1) {
             struct sortField_t *sortField;
             sortField=sortField_constructor($1,$3,0, $5);
@@ -436,6 +461,17 @@ sortfield:
 				YYABORT;
 			}
             sortField_addDefinition(sortField);
+            nTypeFormat = 1;
+        }
+            /* JoinKeys */
+        if (current_sortField==3) {             
+            struct sortField_t *joinField;
+            joinField=sortField_constructor($1,$3,0, $5);
+			if (joinField == NULL) {
+                utl_abend_terminate(MEMORYALLOC, 108, ABEND_SKIP);
+				YYABORT;
+			}
+            join_addDefinitionJoin(current_filejoin, joinField);
             nTypeFormat = 1;
         }
 }
@@ -485,6 +521,184 @@ mergeclause:
 }
 ;
 
+        /* JOINKEYS Statement */
+        /* JOINKEYS  FILE=F1 , FIELDS=(pos,len,ord,.....) */
+joinkeysclause: 
+      JOINKEYS FNAMES '=' JOINFILE ',' FIELDS '(' {
+        job_SetTypeOP('J');		/* for Join */
+        current_sortField=3;            /* Sort field / Join field for JOIN STATEMENT */
+        if (globalJob->join == NULL) {
+            struct join_t* pJoin = join_constructor();
+            if (pJoin == NULL) {
+                utl_abend_terminate(MEMORYALLOC, 509, ABEND_SKIP);
+                YYABORT;
+            }
+            current_join = pJoin;
+            join_SetReferenceJob(current_join);     /* Save reference join into job */
+        }
+        if (memcmp($4,(char*) "F1",2)==0) {
+            current_filejoin = 1;
+        }
+        if (memcmp($4,(char*) "F2",2)==0) {
+            current_filejoin = 2;
+        }
+        } allsortfield ')'  {
+        current_sortField=0;
+        strcpy(szMexToken, " joinkeys clause ");        
+        free($4);  /* Verify */
+}
+;
+
+
+joinkeysalloptions: 
+      joinkeysoptions {}
+    | joinkeysoptions  joinkeysalloptions {}
+;
+
+joinkeysoptions:
+      ',' SORTED  {
+		strcpy(szMexToken, " join option sorted  ");
+        join_IsSorted(current_filejoin, current_join);
+}
+    | ',' SORTED ',' NOSEQCK {
+		strcpy(szMexToken, " join option noseqck  ");
+        join_noSeqCk(current_filejoin, current_join);
+}
+    | STOPAFT '=' SIGNDIGITBIG {
+		strcpy(szMexToken, " join option stop after 1");
+        join_stopAfter(current_filejoin, current_join, $3);
+}
+    | STOPAFT '=' DIGIT {
+		strcpy(szMexToken, " join option stop after 2");
+        join_stopAfter(current_filejoin, current_join, $3);
+}
+;
+
+        /* JOIN Statement */
+        /* JOIN UNPAIRED,F1,F2,ONLY  */
+        /* I = Inner, U = Unpaired , O = Only,  S= Skip
+        |=========================|===================|============|=================================|
+        |       Command           |   Join Type       |    Flag    |           Output                |
+        |=========================|===================|============|=================================|
+        | not specified           | Inner join        | F1=I, F2=I | F1 matched, F2 matched          |
+        | Unpaired, F1, F2        | Full outer join   | F1=U, F2=U | All records                     |
+        | Unpaired                | Full outer join   | F1=U, F2=U | All records                     |
+        | Unpaired, F1            | Left outer join   | F1=U, F2=I | F1 all records and F2 matched   |
+        | Unpaired, F2            | Right outer join  | F1=I, F2=U | F1 matched and F2 all records   |
+        | Unpaired, F1, F2, Only  | Only unpaired     | F1=O, F2=O | F1 no matched, F2 no matched    |
+        | Unpaired, Only          | Only unpaired     | F1=O, F2=O | F1 no matched, F2 no matched    |
+        | Unpaired, F1, Only      | Unpaired from F1  | F1=O, F2=S | F1 only no matched, F2 Skipped  |
+        | Unpaired, F2, Only      | Unpaired from F2  | F1=S, F2=O | F1 Skipped, F2 only no matched  |
+        |=========================|===================|============|=================================|
+        */
+joinclause: 
+      JOIN  UNPAIRED  {
+        strcpy(szMexToken, " join unpaired clause ");
+        join_setUnpaired(1, 'U');
+        join_setUnpaired(2, 'U');
+        nOnly=0;
+}
+    | JOIN  UNPAIRED joinoptions {
+        strcpy(szMexToken, " join unpaired clause ");
+        if (nOnly  == 0) {
+            join_setUnpaired(1, 'U');
+            join_setUnpaired(2, 'U');
+        }
+        if (nOnly  == 1) {
+            join_setUnpaired(1, 'O');
+            join_setUnpaired(2, 'O');
+        }
+        nOnly=0;
+}
+        /* JOIN UNPAIRED,F1 or F2 */
+    | JOIN  UNPAIRED ',' JOINFILE joinoptions {
+        strcpy(szMexToken, " join unpaired clause ");
+        if (nOnly  == 0) {
+            if (memcmp($4,(char*) "F1",2)==0) {
+                join_setUnpaired(1, 'U');
+                join_setUnpaired(2, 'I');
+            }
+            if (memcmp($4,(char*) "F2",2)==0) {
+                join_setUnpaired(1, 'I');
+                join_setUnpaired(2, 'U');
+            }
+        }
+        if (nOnly  == 1) {
+            if (memcmp($4,(char*) "F1",2)==0) {
+                join_setUnpaired(1, 'O');
+                join_setUnpaired(2, 'S');
+            }
+            if (memcmp($4,(char*) "F2",2)==0) {
+                join_setUnpaired(1, 'S');
+                join_setUnpaired(2, 'O');
+            }
+        }
+        nOnly=0;
+        free($4); 
+}
+        /*     JOIN UNPAIRED,F1,F2 */
+    | JOIN  UNPAIRED ',' JOINFILE ',' JOINFILE joinoptions {          
+        current_sortField=0;                                          
+        strcpy(szMexToken, " sort clause ");                          
+        if (nOnly  == 0) {                                            
+            join_setUnpaired(1, 'U');                             
+            join_setUnpaired(2, 'U');                             
+        }
+        if (nOnly  == 1) {
+            join_setUnpaired(1, 'O');
+            join_setUnpaired(2, 'O');
+        }
+        nOnly=0;
+        free($4); 
+        free($6); 
+}
+;
+
+joinoptions:
+    |   ',' ONLY  {
+        /* utils_SetOptionSort("ONLY", NULL, 0); */
+		strcpy(szMexToken, " joinoptions ONLY clause ");
+        nOnly=1;
+}
+;
+
+    /* JOINREFORMAT */
+    
+
+joinreformatclause: 
+/* s.m. 20160915 */
+           /*     JOINREFORMAT FIELDS '(' {
+                    strcpy(szMexToken, " joinreformat clause ");
+                    //  verify if mandatory current_outrec=1;  
+                    nRecCase=JOIN_CASE;
+                    nPosAbsRec = 0;
+            } allinoutrec ')' {
+                    current_outrec=0;
+                    nRecCase=0;
+            } */
+     JOINREFORMAT FIELDS '(' {
+		strcpy(szMexToken, " joinreformat clause ");
+        /*  verify if mandatory current_outrec=1;  */
+        nRecCase=JOIN_CASE;
+		nPosAbsRec = 0;
+} allinoutrec ')' fill_char {
+        current_outrec=0;
+        nRecCase=0;
+}
+;
+
+fill_char:
+    |  FILL  CHARTYPE  STRING {
+        current_outrec=0;
+        nRecCase=0;
+        strcpy(szMexToken, " join fill clause ");
+        /* fill character * */
+        join_fillbuff(current_filejoin, current_join, $2, $3);
+        free($2);
+        free($3);
+}
+;
+
 /* #################################################################################################### */
 /* -->>nTypeFormat;			// 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields  */
 /* -->>nTypeIncludeOmit;		// 0= Nothing, 1 = Include, 2 = Omit                        */
@@ -505,7 +719,7 @@ formatclause:
             condField_setFormatFieldsTypeAll(nTypeFormat, $4);
         if (nTypeFormat == 2)
             condField_setCondFieldsTypeAll(nTypeIncludeOmit, $4);
-        if (nTypeFormat == 3)	// for SumFields
+        if (nTypeFormat == 3)	//  for SumFields  
             condField_setFormatFieldsTypeAll(nTypeFormat, $4);
 		strcpy(szMexToken, " format clause ");
 }
@@ -834,7 +1048,6 @@ inoutrec:
     /* case 10,5  copy field from position 10 for len 5 from input, into actual position of output record   */
     /* #################################################################################################### */
     /*     int    pntChange = 0; 1 = Inrec , 2 = Inrec */
-
       DIGIT ',' DIGIT {
         switch(nRecCase) {
         case OUTREC_CASE :
@@ -888,10 +1101,62 @@ inoutrec:
                     pntChange = 1; 
             }
             break;
+        case JOIN_CASE :
+            strcpy(szMexToken, " join reformat clause ");
+            /* struct reformat_t * */
+            inrec=inrec_constructor_range_join(current_filejoin, $1,$3);
+            if (inrec == NULL) {
+                utl_abend_terminate(MEMORYALLOC, 119, ABEND_SKIP);
+                YYABORT;
+            }
+            nPosAbsRec += inrec->range.length;
+            /* inrec->nIsOverlay=inrec_overlay; */
+            join_reformat_addDefinition(inrec);
+            /* save pointer CHANGE option */
+            pntChange = 1; 
+            break;
         default:
             break;
         }
 } 
+    /*      Character ? for statement JOINKEYS                */
+    | '?'  {
+        if (nRecCase == 3)
+            strcpy(szMexToken, " join reformat clause ");
+            /* struct reformat_t * */
+            inrec=inrec_constructor_range_join(current_filejoin, -99,1);       /* Fix value */
+            if (inrec == NULL) {
+                utl_abend_terminate(MEMORYALLOC, 119, ABEND_SKIP);
+                YYABORT;
+            }
+            nPosAbsRec += inrec->range.length;
+            /* inrec->nIsOverlay=inrec_overlay; */
+            join_reformat_addDefinition(inrec);
+            /* save pointer CHANGE option */
+            pntChange = 1; 
+}
+    | JOINFILE ':' DIGIT ',' DIGIT {
+            strcpy(szMexToken, " join reformat clause ");
+            /* struct reformat_t * */
+            if (memcmp($1,(char*) "F1",2)==0) {
+                current_filejoin = 1;
+            }
+            if (memcmp($1,(char*) "F2",2)==0) {
+                current_filejoin = 2;
+            }
+            inrec=inrec_constructor_range_join(current_filejoin, $3,$5);
+            if (inrec == NULL) {
+                utl_abend_terminate(MEMORYALLOC, 119, ABEND_SKIP);
+                YYABORT;
+            }
+
+            nPosAbsRec += inrec->range.length;
+            /* inrec->nIsOverlay=inrec_overlay; */
+            join_reformat_addDefinition(inrec);
+            /* save pointer CHANGE option */
+            pntChange = 1; 
+            free($1);
+}      
     /* new  20201211 start  */
     /* ######################################################################################## */
     /* case 11:C'A'  (from position 11 output, copy character 'A')  */
@@ -1397,7 +1662,7 @@ outrecclause:
       OUTREC FIELDS '=' '(' {
 		strcpy(szMexToken, " outrec clause ");
         current_outrec=1;
-        nRecCase=2;
+        nRecCase=OUTREC_CASE;
 		nPosAbsRec = 0;
 } allinoutrec ')' {
         current_outrec=0;
@@ -1408,7 +1673,7 @@ outrecclause:
       OUTREC FIELDS '(' {
         strcpy(szMexToken, " outrec clause ");
         current_outrec=1;
-        nRecCase=2;
+        nRecCase=OUTREC_CASE;
 		nPosAbsRec = 0;
 } allinoutrec ')' {
         current_outrec=0;
@@ -1418,7 +1683,7 @@ outrecclause:
     | OUTREC BUILD '=' '(' {
         strcpy(szMexToken, " outrec clause ");
         current_outrec=1;
-        nRecCase=2;
+        nRecCase=OUTREC_CASE;
 		nPosAbsRec = 0;
 } allinoutrec ')' {
         current_outrec=0;
@@ -1429,7 +1694,7 @@ outrecclause:
     | OUTREC BUILD '(' {
         strcpy(szMexToken, " outrec clause ");
         current_outrec=1;
-        nRecCase=2;
+        nRecCase=OUTREC_CASE;
 		nPosAbsRec = 0;
 } allinoutrec ')' {
         current_outrec=0;
@@ -1439,7 +1704,7 @@ outrecclause:
     | OUTREC OVERLAY '=' '(' {
         strcpy(szMexToken, " outrec clause Overlay");
         current_outrec=1;
-        nRecCase=2;
+        nRecCase=OUTREC_CASE;
 		nPosAbsRec = 0;
 } allinoutrec ')' {
         current_outrec=0;
@@ -1451,7 +1716,7 @@ outrecclause:
       OUTREC OVERLAY '(' {
         strcpy(szMexToken, " outrec clause Overlay");
         current_outrec=1;
-        nRecCase=2;
+        nRecCase=OUTREC_CASE;
 		nPosAbsRec = 0;
         } allinoutrec ')' {
         current_outrec=0;
@@ -1466,7 +1731,7 @@ outrecclause:
 /*  */
       OUTREC '=' '(' {
         current_outrec=1;
-        nRecCase=2;
+        nRecCase=OUTREC_CASE;
         strcpy(szMexToken, " outrec clause ");
 		nPosAbsRec = 0;
 } allinoutrec ')' {
@@ -1476,7 +1741,7 @@ outrecclause:
  /* */
   | OUTREC '(' {
         current_outrec=1;
-        nRecCase=2;
+        nRecCase=OUTREC_CASE;
 		nPosAbsRec = 0;
         strcpy(szMexToken, " outrec clause ");
 } allinoutrec ')' {
@@ -1491,7 +1756,7 @@ inrecclause:
       INREC FIELDS '=' '(' {
         strcpy(szMexToken, " inrec clause ");
         current_inrec=1;
-        nRecCase=1;
+        nRecCase=INREC_CASE;
 		nPosAbsRec = 0;
 } allinoutrec ')' {
         current_inrec=0;
@@ -1501,7 +1766,7 @@ inrecclause:
       INREC FIELDS '(' {
         strcpy(szMexToken, " inrec clause ");
         current_inrec=1;
-        nRecCase=1;
+        nRecCase=INREC_CASE;
 		nPosAbsRec = 0;
         } allinoutrec ')' {
         current_inrec=0;
@@ -1511,7 +1776,7 @@ inrecclause:
     | INREC BUILD '=' '(' {
         strcpy(szMexToken, " inrec clause ");
         current_inrec=1;
-        nRecCase=1;
+        nRecCase=INREC_CASE;
 		nPosAbsRec = 0;
 } allinoutrec ')' {
         current_inrec=0;
@@ -1521,7 +1786,7 @@ inrecclause:
     | INREC BUILD '(' {
         strcpy(szMexToken, " inrec clause ");
         current_inrec=1;
-        nRecCase=1;
+        nRecCase=INREC_CASE;
 		nPosAbsRec = 0;
 } allinoutrec ')' {
 			current_inrec=0;
@@ -1531,7 +1796,7 @@ inrecclause:
     | INREC OVERLAY '=' '(' {
         strcpy(szMexToken, " inrec clause Overlay");
         current_inrec=1;
-        nRecCase=1;
+        nRecCase=INREC_CASE;
 		nPosAbsRec = 0;
 } allinoutrec ')' {
         current_inrec=0;
@@ -1543,7 +1808,7 @@ inrecclause:
       INREC OVERLAY '(' {
         strcpy(szMexToken, " inrec clause Overlay");
         current_inrec=1;
-        nRecCase=1;
+        nRecCase=INREC_CASE;
 		nPosAbsRec = 0;
         } allinoutrec ')' {
         current_inrec=0;
@@ -1553,6 +1818,17 @@ inrecclause:
 };
 /* =================================================================================== */
 
+
+buildclause:
+     ',' BUILD '(' {
+        strcpy(szMexToken, " build clause ");
+        /* current_inrec=1;         */
+        /* nRecCase=INREC_CASE;     */
+		nPosAbsRec = 0;
+} allinoutrec ')' {
+		/*  current_inrec=0;    */
+		nRecCase=0;
+}
 
 /* OUTFIL   */
 allsumfield: sumfield {}
@@ -1655,7 +1931,10 @@ fnamesclause:
 ;
 outfilincludeclause: 
       INCLUDE '=' allcondfield  {
-
+        if (nRecCase == JOIN_CASE) {
+            if (current_join != NULL)       /* Join */
+			    join_IncludeCondField(current_filejoin, current_join, $3);
+        }
 		if (current_outfil != NULL)
 			setOutfilIncludeCondField(current_outfil, $3);
 		nTypeIncludeOmit = 1;
@@ -1664,6 +1943,10 @@ outfilincludeclause:
 ;
 outfilomitclause: 
       OMIT '=' allcondfield  {
+        if (nRecCase == JOIN_CASE) {
+            if (current_join != NULL)       /* Join */
+                join_OmitCondField(current_filejoin, current_join, $3);
+        }
 		if (current_outfil != NULL)
 			setOutfilOmitCondField(current_outfil, $3);
 		nTypeIncludeOmit = 1;

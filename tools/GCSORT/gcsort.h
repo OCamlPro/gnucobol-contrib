@@ -54,7 +54,9 @@ _LIB
 
 /* GCSDEBUG   used to view info details Scanner-Parser - DISABLE release*/
 #define GCSDEBUG 
-#undef  GCSDEBUG
+    /* */
+#undef  GCSDEBUG 
+    /* */
 
 
 #define GCSORT_ALLOCATE				50
@@ -69,8 +71,8 @@ _LIB
 /* value 1 : generate temp file fixed name : cob17, cob18, cob19, cob1a, cob1b  */
 #define GCSORT_DEBUG   0        /* 0 no debug - 1 debug */
 #define GCSORT_TESTCMD 0
-#define GCSORT_VERSION "01.03.02"
-#define GCSORT_TAR_DATE "Jan 14 2022 15:00:00 UTC"
+#define GCSORT_VERSION "01.03.03"
+#define GCSORT_TAR_DATE "Feb 6 2022 15:00:00 UTC"
 
 /* Return Code */
 #define GC_RTC_OK	 0
@@ -83,9 +85,14 @@ _LIB
 #endif
 
 void GCSORT_Config( void );
-void GCSORT_Usage ( void ) ;
+void GCSORT_Usage ( unsigned char* cmd) ;
 void GCSORT_Version( void ) ;
 void verify_options(int numargs, char** args);
-
+void GCSORT_Usage_all(void);
+void gcsort_help_header(void);
+void gcsort_help_header2(void);
+void gcsort_help_body_SMC(void);
+void gcsort_help_body_JOIN(void);
+void gcsort_help_footer(void);
 
 #endif /* GCSORT_H_INCLUDED */

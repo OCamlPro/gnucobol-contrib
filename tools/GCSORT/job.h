@@ -83,8 +83,9 @@ struct job_t;
 struct job_t {
 	char arrayFileInCmdLine[MAXFILEIN][FILENAME_MAX];
     char arrayFileOutCmdLine[MAXFILEIN][FILENAME_MAX];
+	char arrayFileOutFilCmdLine[MAXFILEIN][FILENAME_MAX];
 	char array_FileTmpName[MAX_HANDLE_TEMPFILE][FILENAME_MAX];
-	char job_typeOP;				        /* 'S' for sort, 'M' for Merge, 'C' for Copy    */
+	char job_typeOP;				        /* 'S' for sort, 'M' for Merge, 'C' for Copy, 'J' for Join    */
 	char strPathTempFile[FILENAME_MAX];     /* path temporary file                          */
 	char szCmdLineCommand[8192];	        /* Copy from command line                       */
 	char szTakeFileName[8192];	            /* Take FileName                                */
@@ -120,6 +121,7 @@ struct job_t {
 	int  nLenKeys;
 	int  nMaxFileIn;
 	int  nMaxFileOut;
+	int  nMaxFileOutFil;
 	int  nMaxHandle;
 	int64_t	file_length;
 	int64_t	lPosAbsRead;
@@ -171,6 +173,8 @@ struct job_t {
 	int		nLenFutureUseL6;
 	int		nLenFutureUseL7;
 
+	struct join_t* join;
+
 };
 
 /* ok ok ok struct job_t* globalJob;    */
@@ -196,11 +200,19 @@ INLINE int job_ReadFileTemp(struct mmfio_t* descTmp, int* nLR, unsigned char* sz
 int job_print(struct job_t *job);
 int job_GetTypeOp(struct job_t *job);
 
+/*
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	static INLINE int job_GetKeys(unsigned char* szBufferIn, unsigned char* szKeyOut);
 #else
 	static INLINE2 int job_GetKeys(unsigned char* szBufferIn, unsigned char* szKeyOut);
 #endif
+*/
+#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+ int job_GetKeys(unsigned char* szBufferIn, unsigned char* szKeyOut);
+#else
+ int job_GetKeys(unsigned char* szBufferIn, unsigned char* szKeyOut);
+#endif
+
 int job_GetLenKeys( void );
 int job_GetLastPosKeys( void);
 
@@ -209,7 +221,9 @@ int job_Verify_EOF(int* nState, struct job_t* job, cob_file* stFileDef, unsigned
 int job_checkFS(cob_file* stFileDef);
 
 
-static INLINE int job_IdentifyBuf(unsigned char** ptrBuf, int nMaxEle);
+/* static INLINE int job_IdentifyBuf(unsigned char** ptrBuf, int nMaxEle); */
+ int job_IdentifyBuf(unsigned char** ptrBuf, int nMaxEle);
+
 int job_print_final(struct job_t *job, time_t* timeStart);
 int job_SetTypeOP (char typeOP);
 int job_merge_files(struct job_t *job);
@@ -224,6 +238,7 @@ int	job_scanCmdLineFile(struct job_t *job, char* buffer, char* bufnew);
 int	job_scanPrioritySearch(char* buffer);
 int	job_FileInputBuffer (struct job_t *job, char* szBuffIn, char* bufnew, int nPosStart);
 int	job_FileOutputBuffer (struct job_t *job, char* szBuffIn, char* bufnew, int nPosStart);
+int	job_FileOutFilBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nPosStart, char* strtoken);
 int job_PutIntoArrayFile(char* pszBufOut, char* pszBufIn, int nLength);
 int job_RedefinesFileName( struct job_t *job);
 int job_NormalOperations(struct job_t *job);
@@ -236,7 +251,7 @@ void job_CloneFileForOutfilSet(struct job_t *job, struct file_t* file);
 	INLINE2 int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen);
 #endif
 	*/
-int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen);
+int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLenOut, int nLenRek);
 int	job_scanCmdSpecialChar(char* bufnew);
 int	job_RescanCmdSpecialChar(char* bufnew);
 /* void job_SetRecLen(struct job_t *job, int recordsize, unsigned char* szHR);  */
@@ -256,7 +271,9 @@ static INLINE  int job_compare_qsort(const void* first, const void* second);
 static INLINE2 int job_compare_qsort(const void* first, const void* second);
 #endif
 
-static INLINE int job_IdentifyBufMerge(unsigned char** ptrBuf, int nMaxElements);
+/* static INLINE int job_IdentifyBufMerge(unsigned char** ptrBuf, int nMaxElements); */
+int job_IdentifyBufMerge(unsigned char** ptrBuf, int nMaxElements, int* nCmp); 
+
 INLINE int job_ReadFileMerge(struct file_t* file, int* descTmp, int* nLR, unsigned char* szBuffRek, int nFirst);
 cob_field* job_cob_field_create ( void );
 void job_cob_field_set (cob_field* field_ret, int type, int digits, int scale, int flags, int nLen);
@@ -275,6 +292,8 @@ int job_compare_date_Y2T(cob_field* fk2, cob_field* fk1);
 int job_compare_date_Y2X(cob_field* fk2, cob_field* fk1);
 int job_compare_date_Y2Y(cob_field* fk2, cob_field* fk1);
 
+char* job_GetLastCharPath(char* sz, int* pNum, int* nSkipped);
+char* job_GetNextToken(char* sz, int* nSkipped);
 
 int job_SetPosLenKeys(int* arPosLen);
 

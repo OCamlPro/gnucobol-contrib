@@ -66,5 +66,7 @@ int file_GetMF(struct file_t *file);
 int file_setOutputFile(struct file_t *file);
 int file_setInputFile(struct file_t *file);
 int file_SetInfoForFile(struct file_t* fkey, int nMode);
+int file_clone(struct file_t* fout, struct file_t* fin);
+
 
 #endif /* FILE_H_INCLUDED   */

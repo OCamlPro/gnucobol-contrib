@@ -1,4 +1,13 @@
+2022-04-06  Sauro Menna  <smenna@users.sourceforge.net>
+    * Version 1.03.03
+    * New Statement JOINJKEYS to join two files
+    * Test cases for join and examples (testjoin.sh or testjoin.bat in gcsort/tests/script)
+    * New version of MAKEFILE MinGW compatible, review LIBs
+    * Update help GCSORT
+    * Updated command gcsort --help 
+
 2022-01-19  Sauro Menna  <smenna@users.sourceforge.net>
+    * Version 1.03.02
     * Modified MAKEFILE project
     * New option RECORD CONTROL STATEMENT
     * New Date : DATE1, DATE2, DATE3, DATE4 with (+/-)days/month

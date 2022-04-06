@@ -220,7 +220,8 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
    In this example, any records less than 28 bytes are not included.
 */
 			nTcmp = 0;
-			if (file_getOrganization(job->inputFile) != FILE_ORGANIZATION_LINESEQUENTIAL){
+			if ((file_getOrganization(job->inputFile) != FILE_ORGANIZATION_LINESEQUENTIAL) ||
+			    (file_getOrganization(job->inputFile) != FILE_ORGANIZATION_LINESEQUFIXED)) {
 				if ((unsigned long)(condField->condition.position+condField->condition.length) > job->LenCurrRek) {
 					if (job->nVLSCMP == 1) {
 						memset(szBufVLSCMP, 0x00, MAX_RECSIZE);
@@ -284,7 +285,9 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
 					return TRUE;
 				return FALSE;
 			case COND_CONDITION_NOTEQUAL:
-				if (result >= 0)
+				/* s.m. 20220208 if (result >= 0)	*/
+				/* s.m. 20220208	return TRUE;	*/
+				if (result != 0)
 					return TRUE;
 				return FALSE;
 			default:

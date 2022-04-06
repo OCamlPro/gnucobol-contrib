@@ -49,5 +49,7 @@ int sortField_getType(struct sortField_t *sortField);
 int sortField_getDirection(struct sortField_t *sortField);
 int sortField_addDefinition(struct sortField_t *sortField);
 int sortField_setDefinition(struct sortField_t *sortField);
+int sortField_addDefinitionJoin(struct sortField_t* sortField);
 
-#endif // SORTFIELD_H_INCLUDED
+
+#endif /* SORTFIELD_H_INCLUDED  */

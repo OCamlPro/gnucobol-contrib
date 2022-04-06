@@ -31,7 +31,7 @@
        77 f-s                   pic xx.
 	   01 cmd-string            pic x(250).
        01 env-set-name          pic x(25).
-       01 env-set-value         pic x(250).
+       01 env-set-value         pic x(1024).
        01 gcsort-tests-ver      pic x(20) value ' version 1.0'.
       *
        77 idx                   pic 9(3).
@@ -78,7 +78,7 @@
                         occurs 5 times pic x(10).
       *
       **          
-      * rows for take file 
+      * rows for take file      
       * key is name of test
       **
        01      array-takefile.
@@ -87,177 +87,183 @@
            05  ar-ele-take-row-01.
       * 10
             07 ar-ele-take-row-01001      pic x(10) value 'soutfsqf01'.
-            07 ar-ele-take-row-01002      pic x(80) value  
-                ' SORT FIELDS=(8,5,CH,A)                             '.
+            07 ar-ele-take-row-01002      pic x(52) value  
+             ' SORT FIELDS=(8,5,CH,A)                          '.
             07 ar-ele-take-row-01003      pic x(10) value 'soutfsqf01'.
-            07 ar-ele-take-row-01004      pic x(80) value  
-                ' USE  dd_infile   RECORD F,90 ORG SQ                '.
+            07 ar-ele-take-row-01004      pic x(52) value  
+             ' USE  dd_infile   RECORD F,90 ORG SQ             '.
             07 ar-ele-take-row-01005      pic x(10) value 'soutfsqf01'.
-            07 ar-ele-take-row-01006      pic x(80) value  
-                ' GIVE dd_outfile  RECORD F,90 ORG SQ                '.
+            07 ar-ele-take-row-01006      pic x(52) value  
+             ' GIVE dd_outfile  RECORD F,90 ORG SQ             '.
             07 ar-ele-take-row-01007      pic x(10) value 'soutfsqf01'.
-            07 ar-ele-take-row-01008      pic x(80) value  
-               'OUTFIL INCLUDE =(8,2,CH,EQ,C''AA'',AND,32,7,ZD,LT,20),'.
+            07 ar-ele-take-row-01008      pic x(52) value  
+             'OUTFIL INCLUDE=(8,2,CH,EQ,C''AA'',AND,32,7,ZD,LT,20)'.
             07 ar-ele-take-row-01009      pic x(10) value 'soutfsqf01'.
-            07 ar-ele-take-row-01010      pic x(80) value  
-                '         FILES=dd_outfil_01                         '.
+            07 ar-ele-take-row-01010      pic x(52) value  
+             '        ,FILES=dd_outfil_01                      '.
             07 ar-ele-take-row-01011      pic x(10) value 'soutfsqf01'.
-            07 ar-ele-take-row-01012      pic x(80) value 
-            'OUTFIL INCLUDE =(8,2,CH,EQ,C''GG'',AND,32,7,ZD,LT,35),'.
+            07 ar-ele-take-row-01012      pic x(52) value 
+             'OUTFIL INCLUDE =(8,2,CH,EQ,C''GG'',AND,32,7,ZD,LT,35),'.
             07 ar-ele-take-row-01013      pic x(10) value 'soutfsqf01'.
-            07 ar-ele-take-row-01014      pic x(80) value  
-                '         FILES=dd_outfil_02                         '.
+            07 ar-ele-take-row-01014      pic x(52) value  
+             '       FILES=dd_outfil_02                      '.
             07 ar-ele-take-row-01015      pic x(10) value 'soutfsqf01'.
-            07 ar-ele-take-row-01016      pic x(80) value  
-              'OUTFIL INCLUDE =(8,2,CH,EQ,C''EE'',AND,32,7,ZD,GT,-10)'.
+            07 ar-ele-take-row-01016      pic x(52) value  
+             'OUTFIL INCLUDE =(8,2,CH,EQ,C''EE'',AND,32,7,ZD,GT,-10)'.
             07 ar-ele-take-row-01017      pic x(10) value 'soutfsqf01'.
-            07 ar-ele-take-row-01018      pic x(80) value  
-                '        ,FILES=dd_outfil_03                         '.
+            07 ar-ele-take-row-01018      pic x(52) value  
+             '      ,FILES=dd_outfil_03                      '.
             07 ar-ele-take-row-01019      pic x(10) value 'soutfsqf01'.
-            07 ar-ele-take-row-01020      pic x(80) value  
-                ' OUTFIL FNAMES=dd_outfil_save,SAVE                  '.
+            07 ar-ele-take-row-01020      pic x(52) value  
+             ' OUTFIL FNAMES=dd_outfil_save,SAVE'.
       * 10
             07 ar-ele-take-row-02001      pic x(10) value 'soutfsqf02'.
-            07 ar-ele-take-row-02002      pic x(80) value  
-                ' SORT FIELDS=(8,5,CH,A)                            '.
+            07 ar-ele-take-row-02002      pic x(52) value  
+             ' SORT FIELDS=(8,5,CH,A)                          '.
             07 ar-ele-take-row-02003      pic x(10) value 'soutfsqf02'.
-            07 ar-ele-take-row-02004      pic x(80) value  
-                ' USE  dd_infile   RECORD F,90 ORG SQ               '.
+            07 ar-ele-take-row-02004      pic x(52) value  
+             ' USE  dd_infile   RECORD F,90 ORG SQ             '.
             07 ar-ele-take-row-02005      pic x(10) value 'soutfsqf02'.
-            07 ar-ele-take-row-02006      pic x(80) value  
-                ' GIVE dd_outfile  RECORD F,90 ORG SQ               '.
+            07 ar-ele-take-row-02006      pic x(52) value  
+             ' GIVE dd_outfile  RECORD F,90 ORG SQ             '.
             07 ar-ele-take-row-02007      pic x(10) value 'soutfsqf02'.
-            07 ar-ele-take-row-02008      pic x(80) value  
-                'OUTFIL OMIT =(8,2,CH,EQ,C''AA'',AND,32,7,ZD,LT,20),'.
+            07 ar-ele-take-row-02008      pic x(52) value  
+             'OUTFIL OMIT =(8,2,CH,EQ,C''AA'',AND,32,7,ZD,LT,20), '.
             07 ar-ele-take-row-02009      pic x(10) value 'soutfsqf02'.
-            07 ar-ele-take-row-02010      pic x(80) value  
-                '         FILES=dd_outfil_01                        '.
+            07 ar-ele-take-row-02010      pic x(52) value  
+             '         FILES=dd_outfil_01                         '.
             07 ar-ele-take-row-02011      pic x(10) value 'soutfsqf02'.
-            07 ar-ele-take-row-02012      pic x(80) value  
-                'OUTFIL OMIT =(8,2,CH,EQ,C''GG'',AND,32,7,ZD,LT,35),'.
+            07 ar-ele-take-row-02012      pic x(52) value  
+             'OUTFIL OMIT =(8,2,CH,EQ,C''GG'',AND,32,7,ZD,LT,35), '.
             07 ar-ele-take-row-02013      pic x(10) value 'soutfsqf02'.
-            07 ar-ele-take-row-02014      pic x(80) value  
-                '         FILES=dd_outfil_02                        '.
+            07 ar-ele-take-row-02014      pic x(52) value  
+             '         FILES=dd_outfil_02                         '.
             07 ar-ele-take-row-02015      pic x(10) value 'soutfsqf02'.
-            07 ar-ele-take-row-02016      pic x(80) value  
-                'OUTFIL OMIT=(8,2,CH,EQ,C''EE'',AND,32,7,ZD,GT,-10)'.
+            07 ar-ele-take-row-02016      pic x(52) value  
+             'OUTFIL OMIT=(8,2,CH,EQ,C''EE'',AND,32,7,ZD,GT,-10)  '.
             07 ar-ele-take-row-02017      pic x(10) value 'soutfsqf02'.
-            07 ar-ele-take-row-02018      pic x(80) value  
-                '        ,FILES=dd_outfil_03                        '. 
+            07 ar-ele-take-row-02018      pic x(52) value  
+             '        ,FILES=dd_outfil_03                         '. 
             07 ar-ele-take-row-02019      pic x(10) value 'soutfsqf02'.
-            07 ar-ele-take-row-02020      pic x(80) value  
-                ' OUTFIL FNAMES=dd_outfil_save,SAVE                 '.
+            07 ar-ele-take-row-02020      pic x(52) value  
+             ' OUTFIL FNAMES=dd_outfil_save,SAVE                  '.
       *          
       * 7
             07 ar-ele-take-row-03001      pic x(10) value 'soutfsqf03'.
-            07 ar-ele-take-row-03002      pic x(80) value  
-                ' SORT FIELDS=(8,5,CH,A)                             '.
+            07 ar-ele-take-row-03002      pic x(52) value  
+             ' SORT FIELDS=(8,5,CH,A)                          '.
             07 ar-ele-take-row-03003      pic x(10) value 'soutfsqf03'.
-            07 ar-ele-take-row-03004      pic x(80) value  
-                ' USE  dd_infile   RECORD F,90 ORG SQ                '.
+            07 ar-ele-take-row-03004      pic x(52) value  
+             ' USE  dd_infile   RECORD F,90 ORG SQ             '.
             07 ar-ele-take-row-03005      pic x(10) value 'soutfsqf03'.
-            07 ar-ele-take-row-03006      pic x(80) value  
-                ' GIVE dd_outfile  RECORD F,90 ORG SQ                '.
+            07 ar-ele-take-row-03006      pic x(52) value  
+             ' GIVE dd_outfile  RECORD F,90 ORG SQ             '.
             07 ar-ele-take-row-03007      pic x(10) value 'soutfsqf03'.
-            07 ar-ele-take-row-03008      pic x(80) value  
-                'OUTFIL FILES=dd_outfil_01,dd_outfil_02,dd_outfil_03,'. 
+            07 ar-ele-take-row-03008      pic x(52) value  
+             'OUTFIL FILES=dd_outfil_01,dd_outfil_02,dd_outfil_03,'. 
             07 ar-ele-take-row-03009      pic x(10) value 'soutfsqf03'.
-            07 ar-ele-take-row-03010      pic x(80) value  
-                'SPLIT,'.
+            07 ar-ele-take-row-03010      pic x(52) value  
+             'SPLIT,'.
             07 ar-ele-take-row-03011      pic x(10) value 'soutfsqf03'.
-            07 ar-ele-take-row-03012      pic x(80) value  
-                'INCLUDE=(8,2,CH,EQ,C''AA'',AND,32,7,ZD,LT,20)'. 
+            07 ar-ele-take-row-03012      pic x(52) value  
+             'INCLUDE=(8,2,CH,EQ,C''AA'',AND,32,7,ZD,LT,20)'. 
             07 ar-ele-take-row-03013      pic x(10) value 'soutfsqf03'.
-            07 ar-ele-take-row-03014      pic x(80) value  
-                ' OUTFIL FNAMES=dd_outfil_save,SAVE                  '. 
+            07 ar-ele-take-row-03014      pic x(52) value  
+             ' OUTFIL FNAMES=dd_outfil_save,SAVE               '. 
       * 6
             07 ar-ele-take-row-05001      pic x(10) value 'soutfsqf05'.
-            07 ar-ele-take-row-05002      pic x(80) value  
-                'SORT FIELDS=(8,5,CH,A)                            '.
+            07 ar-ele-take-row-05002      pic x(52) value  
+             'SORT FIELDS=(8,5,CH,A)                           '.
             07 ar-ele-take-row-05003      pic x(10) value 'soutfsqf05'.
-            07 ar-ele-take-row-05004      pic x(80) value  
-                'USE  dd_infile   RECORD F,90 ORG SQ               '.
+            07 ar-ele-take-row-05004      pic x(52) value  
+             'USE  dd_infile   RECORD F,90 ORG SQ              '.
             07 ar-ele-take-row-05005      pic x(10) value 'soutfsqf05'.
-            07 ar-ele-take-row-05006      pic x(80) value  
-                'GIVE dd_outfile  RECORD F,90 ORG SQ               '.
+            07 ar-ele-take-row-05006      pic x(52) value  
+             'GIVE dd_outfile  RECORD F,90 ORG SQ              '.
             07 ar-ele-take-row-05007      pic x(10) value 'soutfsqf05'.
-            07 ar-ele-take-row-05008      pic x(80) value  
-                'OUTFIL FNAMES=dd_outfil_01,ENDREC=20              '.
+            07 ar-ele-take-row-05008      pic x(52) value  
+             'OUTFIL FNAMES=dd_outfil_01,ENDREC=20             '.
             07 ar-ele-take-row-05009      pic x(10) value 'soutfsqf05'.
-            07 ar-ele-take-row-05010      pic x(80) value  
-                'OUTFIL FNAMES=dd_outfil_02,STARTREC=21,ENDREC=40  '.
+            07 ar-ele-take-row-05010      pic x(52) value  
+             'OUTFIL FNAMES=dd_outfil_02,STARTREC=21,ENDREC=40    '.
             07 ar-ele-take-row-05011      pic x(10) value 'soutfsqf05'.
-            07 ar-ele-take-row-05012      pic x(80) value  
-                'OUTFIL FNAMES=dd_outfil_03,STARTREC=41            '.
+            07 ar-ele-take-row-05012      pic x(52) value  
+             'OUTFIL FNAMES=dd_outfil_03,STARTREC=41              '.
                 
       *      
       * 16
-            07 ar-ele-take-row-04001    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04002    pic x(80) value  
-                'SORT FIELDS=(8,5,CH,A)              '.        
-            07 ar-ele-take-row-04003    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04004    pic x(80) value  
-                'USE  dd_infile   RECORD F,90 ORG SQ '. 
-            07 ar-ele-take-row-04005    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04006    pic x(80) value  
-                'GIVE dd_outfile  RECORD F,90 ORG SQ '. 
-            07 ar-ele-take-row-04007    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04008    pic x(80) value  
-                'OUTFIL FILES=dd_outfil1,            '. 
-            07 ar-ele-take-row-04009    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04010    pic x(80) value  
-                'OUTREC=        (1,7,                '. 
-            07 ar-ele-take-row-04011    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04012    pic x(80) value  
-                '               32,7,                '. 
-            07 ar-ele-take-row-04013    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04014    pic x(80) value  
-                '               20,8,                '. 
-            07 ar-ele-take-row-04015    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04016    pic x(80) value  
-                '               16,4,                '. 
-            07 ar-ele-take-row-04017    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04018    pic x(80) value  
-                '               28,4,                '. 
-            07 ar-ele-take-row-04019    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04020    pic x(80) value  
-                '               13,3,                '. 
-            07 ar-ele-take-row-04021    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04022    pic x(80) value  
-                '                8,5,                '. 
-            07 ar-ele-take-row-04023    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04024    pic x(80) value  
-                '               39,4, *   FL COMP-1  '. 
-            07 ar-ele-take-row-04025    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04026    pic x(80) value  
-                '               43,7, *   CLO        '. 
-            07 ar-ele-take-row-04027    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04028    pic x(80) value  
-                '               50,8, *   CST        '. 
-            07 ar-ele-take-row-04029    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04030    pic x(80) value  
-                '               58,8, *   CSL        '. 
-            07 ar-ele-take-row-04031    pic x(10) value 'soutfsqf04'.
-            07 ar-ele-take-row-04032    pic x(80) value  
-                '               66,25)*   Filler     '.
+            07 ar-ele-take-row-04001      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04002      pic x(52) value  
+             'SORT FIELDS=(8,5,CH,A)                           '.        
+            07 ar-ele-take-row-04003      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04004      pic x(52) value  
+             'USE  dd_infile   RECORD F,90 ORG SQ              '. 
+            07 ar-ele-take-row-04005      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04006      pic x(52) value  
+             'GIVE dd_outfile  RECORD F,90 ORG SQ              '. 
+            07 ar-ele-take-row-04007      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04008      pic x(52) value  
+             'OUTFIL FILES=dd_outfil1,                         '. 
+            07 ar-ele-take-row-04009      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04010      pic x(52) value  
+             'OUTREC=        (1,7,                             '. 
+            07 ar-ele-take-row-04011      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04012      pic x(52) value  
+             '               32,7,                             '. 
+            07 ar-ele-take-row-04013      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04014      pic x(52) value  
+             '               20,8,                             '. 
+            07 ar-ele-take-row-04015      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04016      pic x(52) value  
+             '               16,4,                             '. 
+            07 ar-ele-take-row-04017      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04018      pic x(52) value  
+             '               28,4,                             '. 
+            07 ar-ele-take-row-04019      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04020      pic x(52) value  
+             '               13,3,                             '. 
+            07 ar-ele-take-row-04021      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04022      pic x(52) value  
+             '                8,5,                             '. 
+            07 ar-ele-take-row-04023      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04024      pic x(52) value  
+             '               39,4, *   FL COMP-1               '. 
+            07 ar-ele-take-row-04025      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04026      pic x(52) value  
+             '               43,7, *   CLO                     '. 
+            07 ar-ele-take-row-04027      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04028      pic x(52) value  
+             '               50,8, *   CST                     '. 
+            07 ar-ele-take-row-04029      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04030      pic x(52) value  
+             '               58,8, *   CSL                     '. 
+            07 ar-ele-take-row-04031      pic x(10) value 'soutfsqf04'.
+            07 ar-ele-take-row-04032      pic x(52) value  
+             '               66,25)*   Filler                  '.
       
       *
           03 filler redefines ar-ele-take-rows 
                occurs 49 times.
            05  ar-ele-take-vet.
-            07 ar-ele-take-vet-01         pic x(10).                       ** name
-            07 ar-ele-take-vet-02         pic x(80).                       ** value of takefile
+      ** name     
+            07 ar-ele-take-vet-01         pic x(10).                       
+      ** value of takefile      
+            07 ar-ele-take-vet-02         pic x(52).                       
             
       **
           
        77   ntype               BINARY-LONG .
-       77   cmd-go              pic x(80) value space.
+       77   cmd-go              pic x(1024) value space.
            
       *-------------------------------------------------------*
        procedure division.
       *-------------------------------------------------------*
        master                     section.
        begin-00.
+      *** debug                   display "display 00000000000000"
+      *** debug                   perform display-takefile-gr02
+
+
            display '*===============================================*'
            display ' GCSort test environment ' gcsort-tests-ver
            display '*===============================================*'
@@ -267,7 +273,7 @@
            display '*===============================================*'
            call 'gctestgetop' using ntype    
            display ' Environment : ' ntype 
- 
+           
       *
            perform exec-all-gr02 varying idx from 1 by 1
                   until idx > ar-name-max-ele
@@ -285,6 +291,7 @@
        exec-all-gr02              section.
       *---------------------------------------------------------*
        exal-00.
+      *** debug         
            display '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'
            display '*===============================================*'
            display ' ID test : ' ar-ele-vet(idx)  "   Start "
@@ -352,25 +359,25 @@
       *            "   " status-test
       *
            display '----------------------------------'
-                   '----------------------------------'
-                   '--------------'
-           display '|              |                       '
-                   'retcode                        |          |'
+                '----------------------------------'
+                '--------------'
+           display '|              |                    '
+                'retcode                        |          |'
                    
            display '| Test id      |     cobol      | '
-                   '     gcsort     |     diffil'
-                   'e       |  status  |'
+                '     gcsort     |     diffil'
+                'e       |  status  |'
            display '----------------------------------'
-                   '----------------------------------'
-                   '--------------'
+                '----------------------------------'
+                '--------------'
       
            perform epilog-view-gr02 
                varying idx from 1 by 1
                   until idx > ar-name-max-ele
 
            display '----------------------------------'
-                   '----------------------------------'
-                   '--------------'
+                '----------------------------------'
+                '--------------'
            . 
        eprt-99.
            exit.
@@ -409,18 +416,18 @@
        epca-00.
            if  retcode-sum = zero
                display '=================================='
-                       '====='
+                    '====='
                display '=====   T E S T    P A S S E D    '
-                       '====='
+                    '====='
                display '=================================='
-                       '====='
+                    '====='
            else
                display '=================================='
-                       '====='
+                    '====='
                display '=====   T E S T    F A I L E D    '
-                       '====='
+                    '====='
                display '=================================='
-                       '====='
+                    '====='
            end-if
            .
        epca-99.
@@ -493,7 +500,8 @@ TEST00***               display ' cmd:>' cmd-go  '<'
        sort-cbl-gr02a             section.
       *---------------------------------------------------------*
        stcb-00.
-           move 99  to ar-tst-rtc01(idx-take)  
+      ***     move 99  to ar-tst-rtc01(idx-take)  
+           move 99  to ar-tst-rtc01(idx)  
       ** set dd_infile=%filedir%\fsqf01.dat 
            move 'dd_infile'              to env-set-name
            move '../files/fsqf01.dat'    to env-set-value
@@ -503,7 +511,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_cbl01.srt'    delimited by size
+                 '_cbl01.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -511,7 +519,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_srt01.srt'    delimited by size
+                 '_srt01.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -519,7 +527,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
       *******     move 'susesqf01b '       to       cmd-string
            move space               to cmd-string
            string ar-ele-vet(idx) delimited by space
-                  'b1'            delimited by size
+               'b1'            delimited by size
                   into cmd-string
 Win        if (ntype = 1)
                inspect cmd-string replacing all chrsl by chrbs
@@ -564,7 +572,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
        sort-cbl-gr02b             section.
       *---------------------------------------------------------*
        stcb-00.
-           move 99  to ar-tst-rtc02(idx-take)  
+           move 99  to ar-tst-rtc02(idx)  
       ** set dd_infile=%filedir%\fsqf01.dat 
            move 'dd_infile'              to env-set-name
            move '../files/fsqf01.dat'    to env-set-value
@@ -574,7 +582,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_cbl02.srt'    delimited by size
+                 '_cbl02.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -582,7 +590,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_srt02.srt'    delimited by size
+                 '_srt02.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -590,7 +598,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
       *******     move 'susesqf01b '       to       cmd-string
            move space               to cmd-string
            string ar-ele-vet(idx) delimited by space
-                  'b2'            delimited by size
+               'b2'            delimited by size
                   into cmd-string
 Win        if (ntype = 1)
                inspect cmd-string replacing all chrsl by chrbs
@@ -646,7 +654,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_cbl03.srt'    delimited by size
+                 '_cbl03.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -654,7 +662,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_srt03.srt'    delimited by size
+                 '_srt03.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -662,7 +670,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
       *******     move 'susesqf01b '       to       cmd-string
            move space               to cmd-string
            string ar-ele-vet(idx) delimited by space
-                  'b3'            delimited by size
+               'b3'            delimited by size
                   into cmd-string
 Win        if (ntype = 1)
                inspect cmd-string replacing all chrsl by chrbs
@@ -718,7 +726,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_gcs.srt'      delimited by size
+                 '_gcs.srt'      delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -726,7 +734,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_gcs01.srt'    delimited by size
+                 '_gcs01.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -734,7 +742,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_gcs02.srt'    delimited by size
+                 '_gcs02.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -742,7 +750,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_gcs03.srt'    delimited by size
+                 '_gcs03.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -750,7 +758,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_gcs_save.srt' delimited by size
+                 '_gcs_save.srt' delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -758,12 +766,12 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                to wk-fcmd
            string   '../takefile/tmp/'    delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '.prm'    delimited by size
+                 '.prm'    delimited by size
                     into wk-fcmd
            open output fcmd
            if f-s not equal '00' 
               display 'Error on open output file: ' wk-fcmd
-                      ' element : ' ar-ele-vet(idx) 
+                   ' element : ' ar-ele-vet(idx) 
               move 25  to RETURN-CODE
               goback
            end-if
@@ -775,7 +783,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            string  'gcsort TAKE ../takefile/tmp/'
                                   delimited by size
                    ar-ele-vet(idx)  delimited by space
-                   '.prm'         delimited by size
+                '.prm'         delimited by size
                       into cmd-string
 Win        if (ntype = 1)
                 inspect cmd-string replacing all chrsl by chrbs
@@ -814,6 +822,28 @@ TEST00***               display ' cmd:>' cmd-go  '<'
           exit.
       *
       *---------------------------------------------------------*
+       display-takefile-gr02        section.
+      *---------------------------------------------------------*
+       disp-00.
+           perform display-takerecord-gr02 varying idx-take
+               from 1 by 1 until (idx-take > ar-ele-take-num) 
+           .    
+       disp-99.
+           exit.
+      * 
+      *---------------------------------------------------------*
+       display-takerecord-gr02      section. 
+      *---------------------------------------------------------*
+       dstr-00.
+            display "ar-ele-take-vet-01(idx-take) >" 
+                     ar-ele-take-vet-01(idx-take) "<"
+                    "ar-ele-take-vet-02(idx-take) >"
+                    ar-ele-take-vet-02(idx-take)  "<"
+           .
+       dstr-99.
+           exit.
+      *
+      *---------------------------------------------------------*
        write-takefile-gr02        section.
       *---------------------------------------------------------*
        wrta-00.
@@ -827,9 +857,14 @@ TEST00***               display ' cmd:>' cmd-go  '<'
        write-takerecord-gr02      section. 
       *---------------------------------------------------------*
        wrtr-00.
+      ** debug         display "ar-ele-take-vet-01(idx-take) >" 
+      ** debug                  ar-ele-take-vet-01(idx-take) "<"
+      ** debug                  "ar-ele-vet(idx) > " ar-ele-vet(idx) "<"
            if(ar-ele-take-vet-01(idx-take) = ar-ele-vet(idx))
+              move space to r-cmd
               move ar-ele-take-vet-02(idx-take)  to r-cmd
               write r-cmd
+              display "r-cmd = " r-cmd
            .
        wrtr-99.
            exit.
@@ -843,14 +878,14 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_cbl01.srt'    delimited by size
+                 '_cbl01.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       ** set dd_ingcsort=%filedir%/susesqf01_gcs.srt
            move 'dd_ingcsort'              to env-set-name
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_gcs01.srt'    delimited by size
+                 '_gcs01.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -905,14 +940,14 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_cbl02.srt'    delimited by size
+                 '_cbl02.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       ** set dd_ingcsort=%filedir%/susesqf01_gcs.srt
            move 'dd_ingcsort'              to env-set-name
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_gcs02.srt'    delimited by size
+                 '_gcs02.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -967,14 +1002,14 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_cbl03.srt'    delimited by size
+                 '_cbl03.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       ** set dd_ingcsort=%filedir%/susesqf01_gcs.srt
            move 'dd_ingcsort'              to env-set-name
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_gcs03.srt'    delimited by size
+                 '_gcs03.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -1033,28 +1068,28 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move 'dd_outfile'              to env-set-name
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_cbl.srt'    delimited by size
+                 '_cbl.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       *
            move 'dd_outfile1'              to env-set-name
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_cbl01.srt'    delimited by size
+                 '_cbl01.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       *  
            move 'dd_outfile2'             to env-set-name
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_cbl02.srt'    delimited by size
+                 '_cbl02.srt'    delimited by size
                     into env-set-value
            perform set-value-env
       * 
            move 'dd_outfile3'             to env-set-name
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_cbl03.srt'    delimited by size
+                 '_cbl03.srt'    delimited by size
                     into env-set-value
            perform set-value-env
        
@@ -1062,13 +1097,13 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move 'dd_sortwork'             to env-set-name
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_cbl_save.srt' delimited by size
+                 '_cbl_save.srt' delimited by size
                     into env-set-value
            perform set-value-env
        
       * 
            string ar-ele-vet(idx) delimited by space
-                  'b' delimited by size
+               'b' delimited by size
                    into cmd-string
 Win        if (ntype = 1)
                inspect cmd-string replacing all chrsl by chrbs
@@ -1126,7 +1161,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
        exec-gr02-002              section.
       *---------------------------------------------------------*
        susesqf01-00.
-           perform genfile-input-gr02
+           perform genfile-input-gr02                
            perform sort-cbl-gr02-002
            perform sort-gc-gr02-002
            perform diffile-gr02-002
@@ -1215,13 +1250,13 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                to wk-fcmd
            string   '../takefile/tmp/'    delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '.prm'    delimited by size
+                 '.prm'    delimited by size
                     into wk-fcmd
            inspect wk-fcmd replacing all chrsl by chrbs
            open output fcmd
            if f-s not equal '00' 
               display 'Error on open output file: ' wk-fcmd
-                      ' element : ' ar-ele-vet(idx) 
+                   ' element : ' ar-ele-vet(idx) 
               move 25  to RETURN-CODE
               goback
            end-if
@@ -1233,7 +1268,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            string  'gcsort TAKE ../takefile/tmp/'
                                   delimited by size
                    ar-ele-vet(idx)  delimited by space
-                   '.prm'         delimited by size
+                '.prm'         delimited by size
                       into cmd-string
 Win        if (ntype = 1)
                inspect cmd-string replacing all chrsl by chrbs

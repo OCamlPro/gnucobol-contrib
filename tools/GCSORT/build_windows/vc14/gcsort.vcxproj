@@ -101,9 +101,10 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libcob.lib;mpir.lib;libvbisam.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcob.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <PreBuildEvent>
       <Command>C:\gcsort\gcsort_relnew\Flex_Bison_cmd.Bat</Command>
@@ -120,7 +121,7 @@ copy $(OutDir)$(TargetName).exe C:\GCSORT\GCSORT_relnew\benchmark\benchmark2_Win
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VBISAM;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,9 +145,11 @@ copy $(OutDir)$(TargetName).exe C:\GCSORT\GCSORT_relnew\benchmark\benchmark2_Win
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcob.lib;mpir.lib;libvbisam.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutDir)$(TargetName).exe C:\GCSORT\GCSORT_relnew\benchmark\benchmark2_Windows\bin</Command>
+      <Command>copy $(OutDir)$(TargetName).exe C:\GCSORT\GCSORT_relnew\tests\bin
+copy $(OutDir)$(TargetName).exe C:\GCSORT\GCSORT_relnew\benchmark\benchmark2_Windows\bin</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -170,14 +173,17 @@ copy $(OutDir)$(TargetName).exe C:\GCSORT\GCSORT_relnew\benchmark\benchmark2_Win
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\changefield.h" />
     <ClInclude Include="..\..\condfield.h" />
     <ClInclude Include="..\..\copyfile.h" />
+    <ClInclude Include="..\..\datediff.h" />
     <ClInclude Include="..\..\exitroutines.h" />
     <ClInclude Include="..\..\fieldvalue.h" />
     <ClInclude Include="..\..\file.h" />
     <ClInclude Include="..\..\gcshare.h" />
     <ClInclude Include="..\..\inrec.h" />
     <ClInclude Include="..\..\job.h" />
+    <ClInclude Include="..\..\join.h" />
     <ClInclude Include="..\..\keyidxrel.h" />
     <ClInclude Include="..\..\libgcsort.h" />
     <ClInclude Include="..\..\mmfioc.h" />
@@ -191,13 +197,16 @@ copy $(OutDir)$(TargetName).exe C:\GCSORT\GCSORT_relnew\benchmark\benchmark2_Win
     <ClInclude Include="..\..\utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\changefield.c" />
     <ClCompile Include="..\..\condfield.c" />
     <ClCompile Include="..\..\copyfile.c" />
+    <ClCompile Include="..\..\datediff.c" />
     <ClCompile Include="..\..\exitroutines.c" />
     <ClCompile Include="..\..\fieldvalue.c" />
     <ClCompile Include="..\..\file.c" />
     <ClCompile Include="..\..\inrec.c" />
     <ClCompile Include="..\..\job.c" />
+    <ClCompile Include="..\..\join.c" />
     <ClCompile Include="..\..\keyidxrel.c" />
     <ClCompile Include="..\..\mmfioc.c" />
     <ClCompile Include="..\..\gcsort.c" />
@@ -209,6 +218,17 @@ copy $(OutDir)$(TargetName).exe C:\GCSORT\GCSORT_relnew\benchmark\benchmark2_Win
     <ClCompile Include="..\..\sortfield.c" />
     <ClCompile Include="..\..\sumfield.c" />
     <ClCompile Include="..\..\utils.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\AUTHORS" />
+    <None Include="..\..\ChangeLog" />
+    <None Include="..\..\COPYING" />
+    <None Include="..\..\INSTALL" />
+    <None Include="..\..\Makefile" />
+    <None Include="..\..\parser.y" />
+    <None Include="..\..\scanner.l" />
+    <None Include="..\..\THANKS" />
+    <None Include="..\..\TODO" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

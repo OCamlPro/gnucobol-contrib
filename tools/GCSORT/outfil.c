@@ -455,7 +455,8 @@ int outfil_set_area (struct file_t* file, unsigned char* szBuf, int nLen )
 		file->stFileDef->record->size = nLen;
 	}
 	/* s.m. 202101 Start    */
-	if (file->organization == FILE_ORGANIZATION_LINESEQUENTIAL)
+	if ((file->organization == FILE_ORGANIZATION_LINESEQUENTIAL)  ||
+	    (file->organization == FILE_ORGANIZATION_LINESEQUFIXED))
 		file->stFileDef->record->size = file->stFileDef->record_max;
 	/* s.m. 202101 End  */
 	return 0 ;

@@ -1,28 +1,32 @@
-GCSORT 1.0.0 (beta).
+GCSORT 1.3.3 
 
 
 INSTALL
 
- *Requirements
+ * Minimum Requirements. 
+    No changes to parser.y and scanner.l. 
+    Only to generate gcsort in executable format.
+
+	GNU C compiler  (version work with 4.3.2)
+	GNU Make        (version work with 3.81)
+    GNU Cobol       (Version 2.2.0) or higher
+
+ * Requirements for changes to parser.y and scanner.l
+ 
 	GNU C compiler  (version work with 4.3.2)
 	GNU Make        (version work with 3.81)
 	GNU Bison       (version work with 2.4.1)
 	GNU Flex        (version work with 2.5.35)
 
-    GNU Cobol (Version 1.1.0)  library and include file for : libcob - gmplib
-    OR
-    GNU Cobol (Version 2.0.0)  library and include file for : libcob - gmplib
-    OR     
-    GNU Cobol (Version 3.0.0)  library and include file for : libcob - gmplib  
+    GNU Cobol       (Version 2.2.0) or higher
+
     
  *Install
     Linux / Windows environment:    
     After checkout in folder build_linux modify 
-    1) compile.sh # change the paths according to your needs
-    2) Makefile   # change the paths according to your needs / local setup
-    3) chmod 777 compile.sh  #enable for execution only for linux
+    1) Makefile   # change the paths according to your needs / local setup
     
-    For linux   :     ./compile.sh 
+    For linux   :     make  
 	For windows :     make
  
 	MinGW/MSYS environment:    
@@ -31,7 +35,7 @@ INSTALL
 	2) Installing MinGW and the MSYS , use the GUI interface to add :
 		msys-bison.bin
 		msys-fles.bin
-	3) Makefile   
+	3) make    
 	
 	
  *Usage

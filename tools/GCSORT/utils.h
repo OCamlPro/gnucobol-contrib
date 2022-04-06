@@ -105,7 +105,7 @@
 #define FILE_ORGANIZATION_SEQUENTIAL		3
 #define FILE_ORGANIZATION_LINESEQUENTIAL	4
 #define FILE_ORGANIZATION_SEQUENTIALMF		5
-
+#define FILE_ORGANIZATION_LINESEQUFIXED		6
 
 #define FIELD_TYPE_CHARACTER		0
 #define FIELD_TYPE_BINARY			1
@@ -175,6 +175,8 @@
 #define EXITROUTINE     2
 #define NOMATCH_FOUND	3
 #define CHANGE_ERR		4
+#define SEQUENCE_ERR	5
+#define PARAM_ERR		6
 
 #define ABEND_SKIP      1
 #define ABEND_EXEC      2
@@ -228,6 +230,7 @@ void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate);
 int utl_GetFileSizeEnvName(struct file_t* file);
 void utils_SetRecordOptionSortType(char* szType);
 void utils_SetRecordOptionSortLen(int l1, int l2, int l3, int l4, int l5, int l6, int l7);
+int64_t utl_GetFileSize(struct file_t* file);
 
 
 #if defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
@@ -236,5 +239,12 @@ void utils_SetRecordOptionSortLen(int l1, int l2, int l3, int l4, int l5, int l6
 
 int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut);
 int utl_replace_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut);
+int utl_copy_realloc(char* out, char* in);
+
+int utl_str_searchreplace(char* orig, char* search, char* replace, char* result);
+
+void sort_temp_name(const char* ext);
+
+
 
 #endif /* UTILS_H_INCLUDED  */

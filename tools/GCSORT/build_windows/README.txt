@@ -2,7 +2,7 @@ How to build in native Windows environments:
 
 * get/build necessary headers, link libraries and runtime dlls,
   place them in build_windows\Win32 and build_windows\x64
-* get MPIR, libcob, Bison and Flex 
+* get libcob, Bison and Flex 
 * compile with your environment, for example via IDE by opening the solution
   and click "build" or starting the VS/WinSDK command prompt and calling
   msbuild "gcsort.sln" /p:Platform=x32 /p:Configuration=Release

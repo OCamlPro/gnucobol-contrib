@@ -430,7 +430,7 @@ int outrec_copy_overlay(struct outrec_t* outrec, unsigned char* output, unsigned
 			position += fieldValue_getGeneratedLength(o->change.fieldValue);
 			break;
 			/* new 202012   */
-		case OUTREC_TYPE_CHANGE_ABSPOS:
+		case OUTREC_TYPE_CHANGE_ABSPOS:			
 			/*  s.m. 20220215 memcpy(output + o->range.position + nSplitPos + nSplit, fieldValue_getGeneratedValue(o->change.fieldValue), fieldValue_getGeneratedLength(o->change.fieldValue)); */
 			/*  s.m. 20220215 position = o->range.position + fieldValue_getGeneratedLength(o->change.fieldValue);	*/
 			memcpy(output + o->change.posAbsRec + nSplitPos + nSplit, fieldValue_getGeneratedValue(o->change.fieldValue), fieldValue_getGeneratedLength(o->change.fieldValue));
