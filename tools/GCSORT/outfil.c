@@ -228,6 +228,12 @@ int outfile_clone_output(struct job_t* job, struct file_t* file)
 	if (file->stFileDef->record_max > 0)
 		file->stFileDef->record = util_cob_field_make(COB_TYPE_ALPHANUMERIC, file->maxLength, 0, 0, file->maxLength, ALLOCATE_DATA);
 	file->stFileDef->record->data = (unsigned char*) malloc((sizeof(unsigned char)*job->outputFile->maxLength)+1);
+
+#if __LIBCOB_VERSION >= 3  && __LIBCOB_VERSION_MINOR >= 2
+	if (file->stFileDef != NULL)
+		file->stFileDef->fcd = NULL;
+#endif
+
 	if (file->format == FILE_TYPE_VARIABLE)
 		file->stFileDef->variable_record = util_cob_field_make( COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA);
 	else

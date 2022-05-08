@@ -11,7 +11,7 @@
       *  cobc -x  -std=default -debug -Wall  -o gctestsetup gctestsetup.cbl 
       ****************************************************************
  	   identification division.
-       program-id. gctestsetup.
+       program-id. gctestset.
        environment division.
        configuration section.
            repository.
@@ -190,6 +190,7 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
       *---------------------------------------------------------*
        exco-00.
       * skip comment
+           move zero   to retcode
            if (r-command(1:1) NOT = '*') AND
               (r-command(1:1) NOT = SPACE) 
              evaluate TRIM(r-command, TRAILING)

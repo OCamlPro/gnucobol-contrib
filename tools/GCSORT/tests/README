@@ -6,11 +6,11 @@
   --------------------
         1) bin     - for executables
         2) cfg     - contains files for configuration environment
-                        gctestsetup.cfg   - file with parameters used by gctestrun module
+                        gctestset.cfg   - file with parameters used by gctestrun module
                                             Copy files
                                             Compile all programs
                                             Execute programs to generate files for tests
-                        gctestsetup.def   - file definition of parameters for compilation via gnucobol
+                        gctestset.def   - file definition of parameters for compilation via gnucobol
         3) copy    - copy cobol used by programs
         4) files   - files used by programs
         5) filesin - formatted files  
@@ -51,19 +51,19 @@
                 
      d. Sequence to activate tests.
          Linux Environment
-        1) execute     : ./compile.sh         ---> Linux Environment. compile gctestsetup Cobol program.
+        1) execute     : ./compile.sh         ---> Linux Environment. compile gctestset Cobol program.
         2) change dir  : cd ../bin
         3) execute     : ./gctesettup         ---> Linux Environment. execute setup (copy files, compile test program, run programs) 
         4) execute     : ./gctestrun          ---> execute all cases
 
          MinGW Environment
-        1) execute     : ./compile_mingw.bat  ---> MinGW Environment. compile gctestsetup Cobol program.
+        1) execute     : ./compile_mingw.bat  ---> MinGW Environment. compile gctestset Cobol program.
         2) change dir  : cd ../bin
         3) execute     : ./gctesettup         ---> MinGW Environment. execute setup (copy files, compile test program, run programs) 
         4) execute     : ./gctestrun          ---> execute all cases
 
          Windows Environment
-        1) execute     : compile.bat          ---> Windows Environment. compile gctestsetup Cobol program.
+        1) execute     : compile.bat          ---> Windows Environment. compile gctestset Cobol program.
         2) change dir  : cd ..\bin
         3) execute     : gctesettup           ---> Windows Environment. execute setup (copy files, compile test program, run programs)  
         4) execute     : gctestrun            ---> execute all cases
@@ -77,6 +77,7 @@
             |   gctestrun3   |    00   |  Test OK |
             |   gctestrun4   |    00   |  Test OK |
             |   gctestrun5   |    00   |  Test OK |
+            |   gctestrun6   |    00   |  Test OK |
             ---------------------------------------
             =======================================
             =====   T E S T    P A S S E D    =====
@@ -86,7 +87,7 @@
             (Linux) ./gctestrun 1>../log/logout.txt  2>../log/logerr.txt 
             (MinGW) ./gctestrun 1>../log/logout.txt  2>../log/logerr.txt
             (Windows) gctestrun 1>..\log\logout.txt  2>..\log\logerr.txt or
-        to redirect message output into files.
+        to redirect output message  into files.
         After the run, checks log files. 
         
         

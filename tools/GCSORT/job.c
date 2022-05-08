@@ -1498,11 +1498,17 @@ int job_check(struct job_t *job)
 			file->stFileDef->record = util_cob_field_make(COB_TYPE_ALPHANUMERIC, file->maxLength, 0, 0, file->maxLength, ALLOCATE_DATA);
 
 		if (file->format == FILE_TYPE_VARIABLE) 
-			if (file->stFileDef->variable_record == NULL)
+			if (file->stFileDef->variable_record == NULL) {
 				file->stFileDef->variable_record = util_cob_field_make(COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA);
+			}
 /* no 			else
 				file->stFileDef->variable_record = NULL;
 */
+#if __LIBCOB_VERSION >= 3  && __LIBCOB_VERSION_MINOR >= 2
+		if (file->stFileDef != NULL)
+			file->stFileDef->fcd = NULL;
+#endif
+
 		file->stFileDef->record_min = file->recordLength;
 		file->stFileDef->record_max = file->maxLength;
 
@@ -1525,6 +1531,10 @@ int job_check(struct job_t *job)
 			if (file->stFileDef->variable_record == NULL)
 				file->stFileDef->variable_record = util_cob_field_make(COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA);
 
+#if __LIBCOB_VERSION >= 3  && __LIBCOB_VERSION_MINOR >= 2
+		if (file->stFileDef != NULL)
+			file->stFileDef->fcd = NULL;
+#endif
 		file->stFileDef->record_min = file->recordLength;
 		file->stFileDef->record_max = file->maxLength;
 	}

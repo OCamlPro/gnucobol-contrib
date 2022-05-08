@@ -53,6 +53,12 @@ struct file_t *file_constructor(char *name) {
         file->nNumKeys=0;
         file->stFileDef=NULL;
         file->stKeys=NULL;
+
+#if __LIBCOB_VERSION >= 3  && __LIBCOB_VERSION_MINOR >= 2
+		if (file->stFileDef != NULL)
+			file->stFileDef->fcd = NULL;
+#endif
+
 	}
 	return file;
 }
@@ -333,6 +339,11 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 #endif
 /* s.m. 202101 end  */
 
+#if __LIBCOB_VERSION >= 3  && __LIBCOB_VERSION_MINOR >= 2
+	if (fout->stFileDef != NULL)
+		fout->stFileDef->fcd = NULL;
+#endif
+
             file->stFileDef->access_mode = COB_ACCESS_DYNAMIC;  
 			file->stFileDef->organization = COB_ORG_INDEXED;
 			break;
@@ -354,5 +365,10 @@ int file_clone(struct file_t* fout, struct file_t* fin) {
 	fout->recordLength = fin->recordLength;
 	fout->stFileDef = NULL;
 	fout->stKeys = NULL;
+
+#if __LIBCOB_VERSION >= 3  && __LIBCOB_VERSION_MINOR >= 2
+	if (fout->stFileDef != NULL)
+		fout->stFileDef->fcd = NULL;
+#endif	
 	return 0;
 }

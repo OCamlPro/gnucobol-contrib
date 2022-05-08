@@ -1,3 +1,8 @@
+2022-05-08  Sauro Menna  <smenna@users.sourceforge.net>
+    * Rename gctestsetup.cbl (in tests/src folder) for problems in MinGW environment
+    * from gctestsetup.cbl to gctestset.cbl
+    * Modified compile scripts compile.sh, compile.bat, compile_mingw.bat
+    * Added the source file viewfiledate2.cbl in tests/src folder    
 2022-04-06  Sauro Menna  <smenna@users.sourceforge.net>
     * Version 1.03.03
     * New Statement JOINJKEYS to join two files
