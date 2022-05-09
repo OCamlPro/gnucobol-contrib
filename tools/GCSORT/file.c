@@ -340,8 +340,8 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 /* s.m. 202101 end  */
 
 #if __LIBCOB_VERSION >= 3  && __LIBCOB_VERSION_MINOR >= 2
-	if (fout->stFileDef != NULL)
-		fout->stFileDef->fcd = NULL;
+	if (file->stFileDef != NULL)
+		file->stFileDef->fcd = NULL;
 #endif
 
             file->stFileDef->access_mode = COB_ACCESS_DYNAMIC;  
