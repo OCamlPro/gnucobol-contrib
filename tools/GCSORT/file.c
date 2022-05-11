@@ -264,6 +264,11 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 	file->stFileDef->extfh_ptr = NULL;
 #endif
 
+#if __LIBCOB_VERSION >= 3  && __LIBCOB_VERSION_MINOR >= 2
+	if (file->stFileDef != NULL)
+		file->stFileDef->fcd = NULL;
+#endif
+
     /* default: */
     file->stFileDef->organization = COB_ORG_SEQUENTIAL;
 
@@ -338,11 +343,6 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 			file->stFileDef->mapkey=-1;
 #endif
 /* s.m. 202101 end  */
-
-#if __LIBCOB_VERSION >= 3  && __LIBCOB_VERSION_MINOR >= 2
-	if (file->stFileDef != NULL)
-		file->stFileDef->fcd = NULL;
-#endif
 
             file->stFileDef->access_mode = COB_ACCESS_DYNAMIC;  
 			file->stFileDef->organization = COB_ORG_INDEXED;
