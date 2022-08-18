@@ -11,47 +11,47 @@
  AUTHOR.           V.B.COEN MBCS.
 *>**
  DATE-WRITTEN.     17th NOVEMBER 1986.
- *> DATE-UPDATED.    September - December 2018. Major update from MF version.
+*> DATE-UPDATED.   September - December 2018. Major update and migration from
+*>                 Micro Focus version.
+*>                 2.02.12 and .13 New file for creew name etc, and option to
+*>                 print out running grnd totals after the months figures.
 *>**
  DATE-COMPILED.    TO-DAY.   *> GC does NOT update.
 *>**
-*> Security.       Copyright (C) 1986-2020, Vincent Bryan Coen.
+*> Security.       Copyright (C) 1986-2022 and later, Vincent Bryan Coen.
 *>                 Distributed under the GNU General Public License
 *>                 v2.0. Only. See the file COPYING for details.
 *>**
  REMARKS.          Personal Flight Log Book Program.
-*>                 For all air crew including PPL, CPL, ATPL,
-*>                 military and other crew members including
-*>                 Engineers, Radio, Radar operators, GIBs etc.
-*>                 Reports only released AFTER closing program
-*>                 as all files only closed at end with all reports
-*>                 being cumulative.
+*>
+*>                 For all air crew including PPL, CPL, ATPL, military and other
+*>                 crew members including Engineers, Radio, Radar operators,
+*>                 GIBs etc.
+*>                 Reports only released AFTER closing program as all files only
+*>                 closed at end with all reports being cumulative.
 *>
 *>                 WARNING: The data files used for this version are NOT
 *>                 compatible with the original (version 1.0 series that
 *>                 was issued between 1986 and 2012) nor prior versions
 *>                 dated from 1976 with versions before 1.00.
 *>
-*>                 NOTE this program creates a report file that
-*>                 you can pass through a word processing program
-*>                 such as LibreOffice or Microsoft Word to change
-*>                 page layout such as margins (1.5cm), Landscape
-*>                 and font size (9pt) and Duplex long edge before
+*>                 NOTE this program creates a report file that you can pass
+*>                 through a word processing program such as LibreOffice or
+*>                 Microsoft Word to change page layout such as margins (1.5cm),
+*>                 Landscape and font size (9pt) and Duplex long edge before
 *>                 printing. the file name is logbook.rpt.
-*>                 As the program used is not known, it is to the
-*>                 user to set these changes up prior to printing
-*>                 as each word processor is different but only
-*>                 involves a minute or so to change settings for
-*>                 producing a report.
+*>                 As the program used is not known, it is to the user to set
+*>                 these changes up prior to printing as each word processor is
+*>                 different but only involves a minute or so to change settings
+*>                 for producing a report.
 *>
 *>                 A script is provided called prtpdf.sh for Linux users
 *>                 to do this but you might want or need to modify the
 *>                 settings within it if needed to suit paper used although
 *>                 there are two versions with one for A4 and other for Letter.
 *>
-*>                 To help automate using this script, you need to
-*>                 install some additional packages, enscript,
-*>                 Postscript.
+*>                 To help automate using this script, you need to install some
+*>                 additional packages namely, enscript, Postscript.
 *>
 *>                 Many of the notes herein are to remind me to include them
 *>                 in the user manual for Flightlog and will be stripped out
@@ -61,12 +61,13 @@
 *>**
 *>  Specific program or compiler settings.
 *>                 If using a different COBOL compiler other than
-*>                 GnuCOBOL v3 you must check that these features are
-*>                 included to minimise error or warning messages
-*>                 when compiling.
+*>                 GnuCOBOL v3 or v4 you must check that these features are
+*>                 included to minimise error or warning messages when compiling
+*>                 the flightlog program.
 *>
 *>  Environment Variables used:
-*>                 COB_SCREEN_EXCEPTIONS  -  Set in program.  Used for GnuCOBOL for accepting F keys.
+*>                 COB_SCREEN_EXCEPTIONS  -  Set in program.
+*>                                           Used for GnuCOBOL for accepting F keys.
 *>                 COB_SCREEN_ESC         -  Set in program.   -  ditto  -
 *>                 COB_EXIT_WAIT          -  Set in program.   -  ditto  -
 *>                 LC_TIME                -  Program checks for 1st five chars of values :
@@ -84,26 +85,31 @@
 *>**
 *>  Terminal settings:
 *>                 Minimum size of 106 wide and 24 depth
-*>                     (but will make use of deeper) to
-*>                        display information.
+*>                  (but will make use of deeper) to display information.
 *>**
 *>  Called Internal Library Modules:
-*>                 CBL_DELETE_FILE
 *>                 CBL_CHECK_FILE_EXIST
+*>                 CBL_DELETE_FILE
 *>**
 *>  Called Cobol Functions:
-*>                 Upper-case.
-*>                 Current-Date.
+*>                 CURRENT-DATE
+*>                 DATE-OF-INTEGER
+*>                 DAY-TO-YYYYDDD
+*>                 INTEGER-OF-DAY
+*>                 TEST-DATE-YYYYMMDD
+*>                 UPPER-CASE.
+*>
 *>                 Escape code sequence capture within Screen handling and
 *>                 Screen Colour within Screen handling * See 78's
-*>                          for both, below accept-terminator-array.
+*>                          for both, below Accept-Terminator-Array.
+*>
 *>                 Screen save and restore using:
-*>                 scr_dump
-*>                 scr_restore  -  Used when Functions keys F1 and F3 used
-*>                                 for displaying F1=Airfields & F3=Aircraft.
+*>                   scr_dump
+*>                   scr_restore  -  Used when Functions keys F1 and F3 used
+*>                                   for displaying F1=Airfields & F3=Aircraft.
 *>                 This works under Linux and on a Raspberry Pi 3B+
-*>                  but NOT yet tested under any other
-*>                 operating systems such as OSX, Windows.
+*>                 but NOT yet tested under any other operating systems such as
+*>                 OSX, Windows.
 *>**
 *>  Called Modules.
 *>                 None.
@@ -126,8 +132,9 @@
 *>                      exists (after return).
 *>                 Note that | means OR = Choices for the same thing.
 *>******
-*>  Program Error messages used:  Supplied in English.
-*>  -------------------------------------------------
+*>  Program Error messages used:  Supplied in English only.
+*>  ------------------------------------------------------
+*>
 *>  Programming Errors in file sizing:
 *>                 SY001 thru SY009.  Report all as a major programming defect.
 *>**
@@ -147,14 +154,14 @@
 *>
 *> TODO maybe ? (outstanding):
 *>
-*>  20/10/18            4. Consider using Mysql RDB for all data used on a per pilot
-*>                     basis. Worth doing ?.
-*>                     Would allow for extra statistics using SQL queries but again is
-*>                     this useful ?.
+*>  20/10/18            4. Consider using Mysql RDB for all data used on a per
+*>                     crew member / pilot basis. Worth doing ?.
+*>                     Would allow for extra statistics using SQL queries but
+*>                     again is this useful ?.
 *>                     If application used as a web based system allows for multi
 *>                     pilots by using one database per pilot by name via a login
 *>                     facility.    Priority LOW / MEDIUM as would require users
-*>                     to install Mysql package, bit ITT for low exp. users.
+*>                     to install Mysql package, bit OTT for low experienced users.
 *>                     Could consider using Sqlite but err, why ?
 *>**
 *>  07/11/18            6. Consider using a web browser interface for display
@@ -175,21 +182,22 @@
 *>
 *> This program is time recording software for air crews as private,
 *> commercial (i.e., holding a CPL or ATPL) and military, World wide and is
-*> Copyright (c) Vincent B Coen. 1986-2020 and later. The supplied copyright
-*> notices that are displayed and printed MUST be maintained at all times.
+*> Copyright (c) Vincent B Coen. 1986-2022 and later.
+*>
+*> The supplied copyright notices that are displayed and printed MUST be
+*>    maintained at all times.
 *>
 *> This program as OS (Open Source) is free software; you can redistribute
 *> it and/or modify it under the terms of the GNU General Public License
 *> as published by the Free Software Foundation; version 2 ONLY.
-*> This means that the source code used to produce the program MUST be
-*> supplied along with any executable / Binary programs supplied, in
-*> any form and that the source MUST be able to create
-*> the same executable or binary programs.
+*> This means that the source code used to produce the program MUST be supplied
+*> along with any executable / Binary programs supplied, in any form and that
+*> the source MUST be able to create the same executable or binary programs.
 *>
 *> As supplied, it is set up to use the GnuCOBOL compiler that is also free
 *> to obtain and use along with any run time elements to do so.
-*> This is available at https://sourceforge.net/projects/open-cobol under
-*> Files then gnu-cobol with the current version being 3.0.
+*> This is available at https://sourceforge.net/projects/gnucobol under
+*> Files then gnucobol with the current version being 3.1.2.
 *>
 *> This will allow any user to build the compiler then the Flightlog program
 *> under Windows, Linux, OSX, or any other *nix system within a short
@@ -206,9 +214,16 @@
 *> for more details. If it breaks, you own both pieces but I will endeavour
 *> to fix it, providing you tell me about the problem. When doing so please
 *> specify the version used which is displayed on the menu and reports.
+*>
 *> This only allows usage for personal use, that means not commercially Nor
 *> can it be sold without permission of the author/programmer.
-*>  See manual inside front cover for contact information.
+*>   See manual inside front cover for contact information.
+*>
+*> It is used by the author / Programmer for own records who has amassed
+*> thousands of hours and works well in such recording for Mil, PPL and
+*> Commercial flying since the late 60's early 70's.
+*> It has also been provided to Flight training operations and others for
+*> use in house and flight crews, FOC (Free of Charge).
 *>
 *> You should have received a copy of the GNU General Public License along
 *> with FlightLog; see the file Copying.pdf.  If not, write to the Free Software
@@ -263,6 +278,10 @@
                              ORGANIZATION LINE SEQUENTIAL
                              STATUS       FS-REPLY.
 *>
+     SELECT Crew             ASSIGN       "Crew.dat"
+                             ORGANIZATION LINE SEQUENTIAL
+                             STATUS       FS-REPLY.
+*>
      SELECT PRINT-FILE       ASSIGN       "logbook.rpt"
                              ORGANIZATION LINE SEQUENTIAL
                              STATUS       FS-REPLY.
@@ -284,9 +303,9 @@
 *>-----------
 *>
 *>   File Definition for the Flight Log Book File
-*>   Rec size 112 bytes
 *>
- FD  FLIGHTLOG-FILE.
+ FD  FLIGHTLOG-FILE
+     Record contains 112 characters.
  01  FLIGHTLOG-RECORD.
      03  FLT-Date-Time-Key.
          05  FLT-DATE        PIC 9(8).  *> ccyymmdd
@@ -313,19 +332,23 @@
      03  FLT-REMARKS         PIC X(32).  *> 109
      03  filler              pic xxx.    *> unused - for poss. expansion - 112.
 *>
- FD  FLIGHTLOGBACKUP-FILE.
+ FD  FLIGHTLOGBACKUP-FILE
+     Record contains 112 characters.
  01  FLIGHTLOGBACKUP-RECORD PIC X(112).
 *>
- FD  AIRFIELD-FILE.                      *> Name changed 20 to 36 19/12/18. NEED To run program afldconv1
+ FD  AIRFIELD-FILE                       *> Name changed 20 to 36 19/12/18. NEED To run program afldconv1
+     Record contains 48 characters.
  01  AIRFIELD-RECORD.                    *>  to update file using .seq file as input.
      03  ICAO-CODE           PIC X(4).
      03  AFLD-Name           pic x(36).
      03  AFLD-Last-Flt       pic 9(8).
 *>
- FD  AIRFIELDBackup-FILE.
+ FD  AIRFIELDBackup-FILE
+     Record contains 48 characters.
  01  AIRFIELDBackup-RECORD   pic x(48).
 *>
- FD  AIRCRAFT-FILE.
+ FD  AIRCRAFT-FILE
+     Record contains 24 characters.
  01  AIRCRAFT-RECORD.
      03  Aircraft-Type       PIC X(8).
      03  AIRCRAFT-MS         PIC X.
@@ -335,11 +358,17 @@
  *>    03  Aircraft-Man        pic x(20).
  *>    03  Aircraft-Name       pic x(20).
 *>
- fd  AircraftBackup-File.
+ fd  AircraftBackup-File
+     Record contains 24 characters.
  01  AircraftBackup-Record   pic x(24).
  *> 01  AircraftBackup-Record   pic x(64).
 *>
- FD  PRINT-FILE.
+ fd  Crew
+     Record contains 40 characters.
+ 01  Crew-Record             pic x(40).
+*>
+ FD  PRINT-FILE
+     Record contains 160 characters.
  01  PRINT-RECORD            PIC X(160).
 *>
  01  filler.             *> Print-Head1.
@@ -450,7 +479,8 @@
      03  PCoE-Multi          pic zzzzz9.99   blank when zero.   *> 106 +8
      03  PCoE-Inst           pic zzzzz9.99   blank when zero.   *> 114 +9
 *>
- FD  CSV-Data-File.                              *> File name in CSV-File-Name via rec type 3.
+ FD  CSV-Data-File                               *> File name in CSV-File-Name via rec type 3.
+     Record contains 512 characters.             *> Variable size to a Maximum of 512 bytes
  01  CSV-Data-Record         pic x(512).         *> Maximum record data size so increase if needed
                                                  *>  also field WS-CSV-Rec-Size.
 *>
@@ -459,8 +489,8 @@
 *>  This record must always be present when importing data log book data and is specific for one
 *>   Airline, Flight training establishment or executive a/c hire centre.
 *>
-*> Records for new airport or new aircraft only needed if a new one may be in current data.
-*>   Entries will be checked that they are not currently held and if not will be added to data bases.
+*> Records for new airport or new aircraft is only needed if a new one may be in the current data.
+*>   Entries will be checked that they are not currently held, and if not will be added to data bases.
 *>
 *>  Record types can be in any order, i.e., records 1, 2, 3, Optional: 6, and
 *>      if needed 4 and/or 5 as required.
@@ -561,7 +591,7 @@
 *>
  WORKING-STORAGE SECTION.
 *>----------------------
- 77  PROG-NAME               PIC X(18) VALUE "LOG BOOK (2.02.11)".
+ 77  PROG-NAME               PIC X(18) VALUE "LOG BOOK (2.02.13)".
  77  WS-CSV-Rec-Size         pic 9999 comp  value 512. *> This is the maximum record size for CSV logbook
                                                        *> data records [see manual]. If unsure leave as is
                                                        *>  It is more likely to be smaller i.e., 256.
@@ -587,7 +617,6 @@
  77  A                       PIC 9999 COMP  VALUE ZERO.
  77  B                       PIC 9999 COMP  VALUE ZERO.
  77  C                       PIC 9999 COMP  VALUE ZERO.
- 77  D                       PIC 9999 COMP  VALUE ZERO.
  77  Z                       PIC 99   COMP  VALUE ZERO.
  77  Y                       PIC 99   COMP  VALUE ZERO.  *> used to count FLT fields in CSV config.
  77  CSV-Recs-In             pic 9(4)       value zero.
@@ -596,6 +625,7 @@
  77  INS-FLAG                PIC 9    COMP  VALUE ZERO.
  77  DISPLAY-FLAG            PIC 9    COMP  VALUE ZERO.
  77  MONTHLY-ANAL-FLAG       PIC 9    COMP  VALUE ZERO.
+ 77  Runing-Monthly-Totals   pic 9    comp  value zero.  *> Produce running totals after monthly totals. 05/08/22
  77  ANALYSIS-ONLY-FLAG      PIC 9    COMP  VALUE ZERO.
  77  SHORT-PRINT             PIC 9    COMP  VALUE ZERO.
  77  PRINT-FLAG              PIC 9    COMP  VALUE ZERO.
@@ -638,6 +668,7 @@
  77  WS-Rec-Length-2         pic 9(5)  comp  value zero.
  77  MENU-REPLY              PIC X           VALUE SPACE.
  77  Menu-Option             pic x           value space.       *> taken from menu-reply
+ 77  Menu-Option-2           pic x           value space.       *> Running totals on reports ?
  77  SW-Its-Night            pic 9           value zero.        *> 1 = its night else zero.
  77  SW-Escaped              pic 9           value zero.        *> 1 is escape pressed.
  77  SW-ACFT-Date            pic 9           value zero.        *> via P3 or P4
@@ -866,6 +897,7 @@
      03  WS-Data-Lines   binary-char unsigned value zero.
 *>
 *> For saving and restoring screen for Afld and Aircraft display lists (function keys F1 and F3).
+*>   specifically for *nix system but might work for Windows.
 *>
   01  wScreenName             pic x(256).
   01  wInt                    binary-long.
@@ -959,7 +991,7 @@
  01  filler REDEFINES Night-In-Month.
      03  NIM                 pic 99   occurs 12.
 *>
-*>  Analysis table blocks
+*>  Analysis Table Blocks
 *>
  01  AIRCRAFT-TABLE.               *> Should be well above that required for an ATPL.
      03  WST-AIRCRAFT-SIZE   PIC 9999   COMP   VALUE ZERO.
@@ -1010,7 +1042,7 @@
      03  WS2-MULTI           PIC 9(8)  COMP.
      03  WS2-INSX            PIC 9(8)  COMP.
 *>
-*> This table for certificate of Experience at 30, 91, 182 & 13 mths (as 395 days)
+*> This table for Certificate Of Experience at 30, 91, 182 & 13 mths (as 395 days)
 *>  with flitelog read in REVERSE (using 'previous') printing out in order of shortest time.
 *>     Recording for tt, night, min. night flights, day and min. day flights
 *>                   Instructor, IFR single and multi.
@@ -1130,7 +1162,7 @@
  *> 01  Table-ASCII.
  *>    03  T-ACSII-Def.
  *>        05  filler          pic x(16)         value
- *>            X"2227272E2C2826293B2F3C3E3F3A3D5C".                                *> " ' ' . , ( & ) ; / < > ? : = \
+ *>            X"2227272E2C2826293B2F3C3E3F3A3D5C".      *> " ' ' . , ( & ) ; / < > ? : = \
  *>        05  filler          pic x(63)         value
  *>            " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ".
  *>    03  T-ASCII-Itm redefines T-ACSII-Def
@@ -1138,7 +1170,7 @@
  *> 01  Table-EBCDIC.
  *>    03  T-EBCDIC-Def.
  *>        05  filler              pic x(16)     value
- *>            X"7F797D4B6B4D505D5E614C6E6F7A7EE0".                             *> " ' ' . , ( & ) ; / < > ? : = \ "79" in case mistyped but is a `
+ *>            X"7F797D4B6B4D505D5E614C6E6F7A7EE0".      *> " ' ' . , ( & ) ; / < > ? : = \ "79" in case mistyped but is a `
  *>        05  filler              pic x(11)     value
  *>            X"40F0F1F2F3F4F5F6F7F8F9".                 *> SPACE, 0123456789
  *>        05  filler              pic x(9)      value
@@ -1298,7 +1330,7 @@
 *>
  A020-DISPLAY-MENU.
      DISPLAY  SPACE at 0101 with erase eos.
-     DISPLAY  "Copyright (c) 1986-2299 Vincent B Coen FMBS, Applewood Computers, Hatfield, UK"
+     DISPLAY  "Copyright (c) 1986-2299 Vincent B Coen FBCS, Applewood Computers, Hatfield, UK"
                         line ws-Lines col 01 WITH foreground-color COB-COLOR-Red.
      display  WSE-Year  line ws-Lines col 20 with foreground-color COB-COLOR-RED.
      DISPLAY  PROG-NAME AT 0101 WITH foreground-color COB-COLOR-GREEN.
@@ -1321,12 +1353,26 @@
      go       to A900-EOJ.
 *>
  A050-Get-User-Details.
+*>2.02.13.
+     move     spaces to WS-User.
+     Open     Input Crew.
+     if       FS-Reply = "00"
+              read   Crew not at end
+              move   Crew-Record to WS-User.
+     close    Crew.
+*>
      DISPLAY  FL012 AT line ws-22-Lines col 01 WITH foreground-color COB-COLOR-Yellow with erase eol.
      DISPLAY  "[" AT line ws-23-Lines col 01 WITH foreground-color COB-COLOR-Yellow with erase eol.
      DISPLAY  "]" AT line ws-23-Lines col 42 WITH foreground-color COB-COLOR-Yellow.
      ACCEPT   WS-USER AT line ws-23-Lines col 02 with update.
      display  space at line ws-22-Lines col 01 with erase eol.
      display  space at line ws-23-Lines col 01 with erase eol.
+*>
+     if       WS-User (1:8) not = spaces
+              open     output Crew
+              move     WS-User to Crew-Record
+              write    Crew-Record
+              close    Crew.
 *>
  A900-EOJ.
      close    Print-File Airfield-File Aircraft-File Flightlog-File.
@@ -2696,7 +2742,7 @@
  CC000-LOG-BOOK-REPORT SECTION.
 *>============================
 *>
-*> Routine called for Menu options C, D, E & F:
+*> Routine called for Menu options C, D, E & F and 3 & 4:
 *>   Logbook only report (C), Logbook and Anal (D), Anal & Totals rep (E), Anal & Tots display (F)
 *>
      PERFORM  A020-DISPLAY-MENU.
@@ -2778,6 +2824,15 @@
               else
                        move zeros to Print-Start-Time
      end-if.
+*>
+ CC035-Get-Running-Totals-After-Each-Month.     *> 05/08/2022 v2.2.012
+     display  "Do you want running totals on change of month ? [ ]" at 2001 with erase eos.
+     move     "N" to Menu-Option-2.
+     accept   Menu-Option-2 at 2050 with update.
+     if       Menu-Option-2 = "Y" or "y"
+              move     1 to Runing-Monthly-Totals
+     else
+              move     zero  to Runing-Monthly-Totals.   *> JIC it is run > 1 per run
 *>
  CC040-LBR-DDB.
      display  space at 2001 with erase eos.
@@ -3083,6 +3138,7 @@
  CCA040-LBR-SUBS.
      MOVE     SPACES TO SR1-LIT2 SR2-LIT2 PRINT-RECORD.
      if       display-flag = zero
+       and    Runing-Monthly-Totals = 1   *> 2.2.12 7/8/22
               add 1 to Line-Cnt
               WRITE PRINT-RECORD AFTER 1.
      MOVE     ZERO TO WS-WORK1.
@@ -3128,7 +3184,7 @@
 *>
      MOVE     SPACES TO PRINT-RECORD.
 *>
- cca100-Print-Subs.
+ CCA100-Print-Subs.
      MOVE     SPACES TO Print-Record SR2-LIT2 pr3-data2.
      move     all "-" to pr3-data1.
      WRITE    PRINT-RECORD AFTER 1.
@@ -3162,6 +3218,11 @@
      add      2 to line-cnt.
      if       line-cnt > WS-Line-Cnt-Size-2  *> 49
               perform CCA030-LBR-Heads.
+*>
+*> Produce running Totals after monthly if requested v2.02.12
+*>
+     if       Runing-Monthly-Totals = 1
+              PERFORM  CCA040-LBR-SUBS thru CCA050-Subs.
 *>
  CCA999-EXIT. exit section.
 *>
@@ -3552,7 +3613,7 @@
               WRITE    PRINT-RECORD AFTER PAGE
      else
               write    Print-Record after 1.
-     move     " The following to be read in conjuction with the Aircraft report page/s" TO PRINT-RECORD.
+     move     " The following to be read in conjunction with the Aircraft report page/s" TO PRINT-RECORD.
      write    Print-Record after 2.
      move     spaces to Print-Record.
      string   "      Active date used for all Certificate of Experience data is "

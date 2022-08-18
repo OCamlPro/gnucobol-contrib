@@ -1,3 +1,12 @@
+2.02.12 No requirements for this version but a small file is now ceated holding
+the name and license details of the pilot or crew member for the report.
+It now allows you to specify that you want running grand totals to be created
+after each months totals when using option D.
+
+===============================================================================
+
+Before 2.02.10
+
 This flightlog update fixes some bugs and increases the size of the airfield
 name from 20 characters to 36 to help cover some of the European airfields
 that have longer than average names as well as
