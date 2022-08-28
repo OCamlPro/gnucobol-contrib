@@ -80,7 +80,7 @@ program-id. changeformat.
 *>=======================================================
 
 *>=======================================================
-*> 2014-10-20 1) tested with Vincent Voen's ACAS st010
+*> 2014-10-20 1) tested with Vincent Coen's ACAS st010
 *>            2) added area-a-indent
 *>            3) add tab to scanner
 *>            4) rewrite free comment processing
