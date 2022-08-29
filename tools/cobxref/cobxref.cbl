@@ -16,7 +16,7 @@
 *>  Operating system path delimiter - set for *nix, for NATIVE windows change to "\".
 *>      NATIVE means if compiled GnuCOBOL using Visual Studio ONLY.
 *>
->>DEFINE CONSTANT C-OS-Delimiter  AS "/"           *> *nix and Win 10 is "\"
+>>SET CONSTANT C-OS-Delimiter  "/"           *> AS   *nix and Win 10 is "\"
 *>
 *> These are for printcbl
 *>
@@ -33,6 +33,11 @@
 *> Usage of the testing options can and will produce a LOT of output.
 *>    100's of megs.
 *>  Only use if requested by the programmer / Development team.
+*>
+*>  After testing completes consider removing the statement :
+*>       go       to  aa070-Bypass-File-Deletes
+*>      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*> to allow the temp Partnn.tmp files to be deleted at end of sources for program
 *>
 *>----
 *> END CONFIGURATION SETTINGS
@@ -237,7 +242,7 @@
      03  SdSortKey         pic x(74).           *>  22/3/22  x(106).  *> updated 10/3/22.
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v2.03.04".
+ 77  Prog-Name             pic x(13) value "Xref v2.03.05".
  77  Page-No               Binary-long  value zero.
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
@@ -410,6 +415,7 @@
 *>
  01  HoldID                pic x(64)       value spaces. *> +32 char & next.
  01  HoldID-Module         pic x(64)       value spaces.
+ 01  Hold-End-Program      pic x(64)       value spaces.   *> 27/3/22
 *>
  01  SourceInWS.
      03  Sv1what           pic x(16).
@@ -550,19 +556,6 @@
 *>
  01  WS-Locale             pic x(16) value spaces.     *> Holds o/p from env var. LC_TIME but only uses 1st 5 chars
  01  WS-Local-Time-Zone    pic 9     value 3.          *> Defaults International, See below !
-*>
-*> Sets WS-Local-Time-Zone ^~^ to one of these 88 values according to
-*>    your local requirements
-*> NOTE Environment var. LC_TIME is checked for "en_GB" for UK (1)
-*>                                          and "en_US" for USA (2)  OTHERWISE its 3 for *nix format
-*>   at start of program.
-*>   For any other, you can add yours if different but let the Lead Programmer
-*>     know, so it can be added to the master sources otherwise default will
-*>      be Unix format
-*>
-*>    Note that 'implies' does NOT mean the program does anything e.g.,
-*>        changes page sizing in the report but see Compiler-Line-Cnt variable as is 4 subtracted
-*>           for LTZ-USA.
 *>
      88  LTZ-UK                           value 1. *> dd/mm/ccyy  [en_GB] Implies A4 Paper for prints
      88  LTZ-USA                          value 2. *> mm/dd/ccyy  [en_US] Implies Ltr Paper for prints
@@ -1541,9 +1534,16 @@
 *> Now add in contents of Global table if processing nested modules
 *>   and we have processed first one by loading sort file
 *>
+*> We should check if we have had a END PRORAM holdid here and remove any entries related to it
+*>    27/3/22
+*>
      if       Git-Table-Count not = zero
               initialize SortRecord
               perform varying a from 1 by 1 until a > Git-Table-Count
+                   if   Git-Word (a) = spaces      or = high-values      *> check for deleted entry
+                     or Git-Prog-Name (a) = spaces or = high-values      *>  Ditto
+                        exit perform cycle
+                   end-if
                    move Git-HoldWSorPD  (a) to SkaWSorPD
                    move Git-HoldWSorPD2 (a) to SkaWSorPD2
                    if Reports-In-Lower
@@ -1558,7 +1558,8 @@
                         move Git-HoldWSorPD (a) to E2
                    end-if
                    move 1 to USect (E2)
-                   move HoldID  to SkaProgramName
+                   move Git-Prog-Name (a) to SkaProgramName
+    *>               move HoldID  to SkaProgramName     *> This is wrong if clearing out END PROGRAM entries
                    if  SkaDataName not = spaces
                        write SortRecord
                    end-if
@@ -1892,6 +1893,7 @@
 *>       page break on change of prog name.
 *>
      perform  bc000-Last-Act.
+*>
      if       not End-Prog
               perform  bc620-Do-Global-Conditions thru bc629-Exit
               close Source-Listing.
@@ -3587,9 +3589,14 @@
               write CopySourceRecIn2 from SourceInWS
      end-if
 *>
+*>  Should consider removing CDF entries for program after finding this and recording it in a vars
+*> 27/3/22
+*>
      if       SourceInWS (1:12) = "END PROGRAM "
               perform zz000-Inc-CobolRefNo
               perform zz000-Outputsource
+              unstring SourceInWS (13:64) delimited by space
+                            into Hold-End-Program
               go to zz100-Get-A-Source-Record
      end-if
 *>
@@ -4841,7 +4848,7 @@
  *>                read Reserve-Stream at end
  *>                     go to ca030-Clean-Up
  *>                end-read
-            or Res-Record (1:14) = "Internal registers"
+            or Res-Record (1:18) = "Internal registers"
                     move 1 to Res-Start      *> Dont have res-State set to 1 so help to make it so
                     go to ca020-get-thru-base-data
  *>       end-if
