@@ -9,7 +9,7 @@
 *> change the value in C-Compiler-Line-Cnt currently 55
 *>-----------------------------------------------------
 *>
->>DEFINE CONSTANT C-Compiler-Line-Cnt   AS 55
+>>SET CONSTANT C-Compiler-Line-Cnt  55
 *>
 *> Used in printcbl and cobxref etc
 *>
@@ -20,15 +20,15 @@
 *>
 *> These are for printcbl
 *>
->>DEFINE CONSTANT C-Testing-1   AS 0    *> Not testing (default), change to AS 1 if wanted.
->>DEFINE CONSTANT C-Testing-2   AS 0    *> Not testing (default), change to AS 1 if wanted.
->>DEFINE CONSTANT C-Testing-3   AS 0    *> Not testing (default), change to AS 1 if wanted.
->>DEFINE CONSTANT C-Testing-4   AS 0    *> Not testing (default), change to AS 1 if wanted.
+>>SET CONSTANT C-Testing-1    0    *> Not testing (default), change to AS 1 if wanted.
+>>SET CONSTANT C-Testing-2    0    *> Not testing (default), change to AS 1 if wanted.
+>>SET CONSTANT C-Testing-3    0    *> Not testing (default), change to AS 1 if wanted.
+>>SET CONSTANT C-Testing-4    0    *> Not testing (default), change to AS 1 if wanted.
 *>
 *> Used in cobxref  -  produces a lot of screen output displays from printcbl & cobxref modules
 *>    This can be over ridden by Param 5 use of -TEST
 *>
->>DEFINE CONSTANT X-Testing     AS "N"  *> Not testing (default) change to AS "Y" if wanted.
+>>SET CONSTANT X-Testing      "N"  *> Not testing (default) change to AS "Y" if wanted.
 *>
 *> Usage of the testing options can and will produce a LOT of output.
 *>    100's of megs.
@@ -564,6 +564,7 @@
  01  Error-messages.
      03 Msg1      pic x(31) value "Msg1  Aborting: No input stream".
      03 Msg2      pic x(35) value "Msg2  Aborting: Early eof on source".
+     03 Msg3      pic x(43) value "Msg3  Aborting: Git table Error before sort".
      03 Msg4      pic x(48) value "Msg4  Logic Error:Lost1 wsFoundWord2 numeric? = ".
      03 Msg5      pic x(38) value "Msg5  Logic Error:Lost2 wsFoundWord2 =".
      03 Msg6      pic x(40) value "Msg6  Error: Con table size needs > 5000".
@@ -1415,6 +1416,7 @@
 *>
  01  Git-Table-Size        Binary-Long value 10.
  01  Git-Table-Count       Binary-Long value zero.
+ 01  Git-Table-Deleted-Cnt Binary-Long value zero.  *> count # CDF's removed by Git-Word & Git-Prog-Name = spaces
 *>
 *>==================================
 *> 01  Linked-Data
@@ -3235,6 +3237,10 @@
               if   Git-Used-By-CDF (a) = "Y"         *> Don't print CDF in Global report
                    exit perform cycle
               end-if
+              if   Git-Word (a) = spaces      or = high-values      *> check for deleted entry
+                or Git-Prog-Name (a) = spaces or = high-values      *>  Ditto
+                   exit perform cycle
+              end-if
               move Git-RefNo (a)      to XrDefn
               move Git-HoldWSorPD (a) to b
               if Reports-In-Lower
@@ -3597,6 +3603,7 @@
               perform zz000-Outputsource
               unstring SourceInWS (13:64) delimited by space
                             into Hold-End-Program
+              perform zz210-Remove-CDF-From-Git-Table thru zz210-Exit
               go to zz100-Get-A-Source-Record
      end-if
 *>
@@ -4544,6 +4551,40 @@
  zz200-Exit.
      exit.
 *>
+ zz210-Remove-CDF-From-Git-Table.
+*>******************************
+*>
+*>  Removes ALL CDF definitions from GIT table having read a END-PROGRAM
+*>  statement by moving high-value to Git-Word and Git-Prog-Name and
+*>  increasing count in Git-Table-Deleted-Cnt
+*>
+*>  Then sort table, deduct Git-Table-Deleted-Cnt from Git-Table-Count.
+*>
+     move     zero to Git-Table-Deleted-Cnt.
+     perform  varying a1 from 1 by 1 until a1 > Git-Table-Count
+              if  Git-Used-By-CDF (Git-Table-Count) = "Y"
+                  move  high-values to Git-Word (a1)
+                                       Git-Prog-Name (a1)
+                  move  space       to Git-Used-By-CDF (a1)
+                  add   1           to Git-Table-Deleted-Cnt
+     end-perform
+     move     space to SW-Found-CDF
+                       SW-CDF-Present.
+     if       Git-Table-Deleted-Cnt = Git-Table-Count
+              move zero to Git-Table-Count
+     else
+      if      Git-Table-Deleted-Cnt not > Git-Table-Count
+              subtract Git-Table-Deleted-Cnt from Git-Table-Count
+      else
+              display Msg3
+              stop run.
+*>
+     if       Git-Table-Count > 1
+              sort  Git-Elements ascending key Git-Word.
+*>
+ zz210-Exit.
+     exit.
+*>
  zz220-Check-For-Globals.     *> Should work for CDF's    18/3/22
 *>**********************
      move zero to a1.
@@ -4616,7 +4657,9 @@
 *>                      and system functions.
 *>                      Note that Mnemonics - devices, features and switch names
 *>                      are NOT obtained so that they can appear in xref listings.
-*>                     Updated (03/02/2019) to also give System functions.
+*>
+*>                      Updated (03/02/2019) to also give System functions.
+*>                      Updated 01/09/2022 to reorder the Msg messages.
 *>**
 *>    Called by.
 *>                      cobxref
@@ -4690,7 +4733,7 @@
 *>
  working-storage section.
 *>**********************
- 77  Prog-Name              pic x(27)       value "get-reserved-lists v1.00.04".
+ 77  Prog-Name              pic x(27)       value "get-reserved-lists v1.00.05".
  77  S-Ptr                  Binary-long     value zero.
  77  Res-Start              Binary-char     value zero.
  77  ws-Function-Table-Size pic s9(5)  comp value zero.
@@ -4707,9 +4750,9 @@
 *> Msg1 thru 10, 18 & 19 in cobxref
      03 Msg11     pic x(60) value "Msg11 Cannot run 'cobc --list-intrinsics', cobc not in path?".
      03 Msg12     pic x(58) value "Msg12 Cannot run 'cobc --list-reserved', cobc not in path?".
-     03 Msg13     pic x(51) value "Msg13 Intrinsic word table was successfully updated".
-     03 Msg14     pic x(49) value "Msg14 Reserve word table was successfully updated".
-     03 Msg15     pic x(55) value "Msg15 Cannot run 'cobc --list-sytem', cobc not in path?".
+     03 Msg13     pic x(55) value "Msg13 Cannot run 'cobc --list-sytem', cobc not in path?".
+     03 Msg14     pic x(51) value "Msg14 Intrinsic word table was successfully updated".
+     03 Msg15     pic x(49) value "Msg15 Reserve word table was successfully updated".
      03 Msg16     pic x(48) value "Msg16 System word table was successfully updated".
 *>
  Linkage section.
@@ -4795,7 +4838,7 @@
               close Intrinsic-Stream
               if    Function-Table-Size > ws-Function-Table-Size
                 and not SW-No-Display
-                    display Msg13
+                    display Msg14
               end-if
               exit section.
 *>
@@ -4891,7 +4934,7 @@
      close    Reserve-Stream.
      if       Resvd-Table-Size > ws-Resvd-Table-Size
           and not SW-No-Display
-              display Msg14
+              display Msg15
      end-if
      exit     section.
 *>
@@ -4899,7 +4942,7 @@
  da010-init.
      open     input System-Stream.
      if       FS-Reply = 35
-              display Msg15.
+              display Msg13.
      if       FS-Reply not = zero
               move FS-Reply to ws-return-code
               exit section.
@@ -4940,8 +4983,7 @@
      go       to da020-get-thru-base-data.
 *>
  end program get-reserved-lists.
-*>
-*>
+ *>
  identification division.
 *>**********************
  program-id.    printcbl.
@@ -4957,7 +4999,7 @@
 *> Temporary for testing program args etc, (We-Are-Testing) will display prog arguments at start.
 *>  Set to 1 to be active
 *>
-*>>>>>>>>>DEFINE CONSTANT C-Testing-1   AS 0    *> Not testing (default), change to AS 1 if wanted.
+*>>>>>>>>>SET CONSTANT C-Testing-1   AS 0    *> Not testing (default), change to AS 1 if wanted.
 *>
 *>   Others removed as NOT NEEDED IN MODULE MODE for cobxref.
 *>
@@ -5979,7 +6021,7 @@
      Move     Input-Record To PL-Text.
      perform  zz010-Write-Print-Line3.
 *>
-     perform  bb000-Start.                       *>  WE NEED TO CONSIDER CODE FOR Lit continuation (-) etc
+     perform  bb000-Start.                       *>  I NEED TO CONSIDER CODE FOR Lit continuation (-) etc
      perform  varying WS-P3 from 1 by 1 until WS-P3 > IR-Buffer-Data-Size
                                            or IR-Buffer (WS-P3:2) = ". "
               if     function UPPER-CASE (IR-Buffer (WS-P3:3)) = "IN " or = "OF "
@@ -7287,6 +7329,5 @@
 *>
  zz900-Exit.  Exit section.
 *>*********   ************
-*>
  end program printcbl.
  end program cobxref.

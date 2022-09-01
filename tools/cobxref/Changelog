@@ -1,3 +1,15 @@
+2022-09-01  Vincent B Coen <vbcoen@btconnect.com>
+       (v2.03.05)   Replaced all '>>DEFINE' with >>SET'
+                    moved END PROGRAM to end of sources.
+
+2022-03-27  Vincent B Coen <vbcoen@btconnect.com>
+       (v2.03.05?)  Start some coding to support end of scope for DEFINES/SET
+                    after getting END PROGRAM by removing prog's DEFINES in
+                    GIT (Global) tables but need to work out where to init
+                    effected GIT entries with high-values.
+
+                    This has been put on the back burner as hardly critical.
+
 2022-03-26  Vincent B Coen <vbcoen@btconnect.com>
        (v2.03.04)   A minor bug, clear duplicate refno reporting on same line
                     where variable used more than once. Found yet another bug
