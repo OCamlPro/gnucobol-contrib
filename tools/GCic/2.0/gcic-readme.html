@@ -1,4 +1,3 @@
-p
 <!DOCTYPE html>
 <html style="font-size:18px; font-family: sans-serif; background-color: black; color: white;">
 <head>
@@ -478,7 +477,7 @@ GCic uses some specific features of GnuCOBOL 3.1 and may not compile or function
 </ul>
 <p>Immediately upon starting and retrieving the command-line arguments, <code>gciclock</code> will create the lock file (with a simple <code>OPEN OUTPUT</code> followed immediately with a <code>CLOSE</code>).  It then waits for the OS to notify it that the GCic process that spawned it has terminated.</p>
 <p>Once the GCic process terminates for any reason INCLUDING a Ctrl-C/Ctrl-Break, the <code>gciclock</code> task will be awakened and will delete the lock file immediately before it too terminates.</p>
-<li>If the file <i>does exist</i>, this means the <code>gciclock</code> process that created it i>is still running</>, waiting for it's <code>gcic</code> process to finish.  The new <code>gcic</code> process will therefore issue the message "<b>xxxxxxx is already being compiled</b>" message and then halt after 3 seconds. 
+<li>If the file <i>does exist</i>, this means the <code>gciclock</code> process that created it i>is still running</>, waiting for it's <code>gcic</code> process to finish.  The new <code>gcic</code> process will therefore issue the message "<b>xxxxxxx is already being compiled</b>" message and then halt after 3 seconds.
 </ol>
 <p>If you wish, the locking mechasism can be disabled using the <code>LOCKFILE</code> <a href="#setup">configuration constant</a>
 <span class="top"><a href="#top">TOP</a></span>
