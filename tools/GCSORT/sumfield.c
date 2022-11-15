@@ -33,7 +33,7 @@
 #include "job.h"
 #include "gcshare.h"
 
-//##-->> s.m. 20201021 typedef cob_field_attr cob_field_attr;
+/* ##-->> s.m. 20201021 typedef cob_field_attr cob_field_attr;  */
 static const cob_field_attr cob_all_attr = {0x22, 0, 0, 0, NULL};
 static cob_field cob_all_zero	= {1, (cob_u8_ptr)"0", &cob_all_attr};
 
@@ -190,7 +190,7 @@ int SumField_getType(struct SumField_t *SumField)
 
 void SumField_ResetTotSingle(struct SumField_t *SumField) 
 {
-	// set zero to totalizer
+	/* set zero to totalizer    */
 	cob_move (&cob_all_zero, &SumField->pCobFieldTotRes);
 
 	return ;
@@ -213,9 +213,9 @@ int SumField_SumField(const void *pRek)
 {
 	struct SumField_t *SumField;
 	for (SumField=globalJob->SumField; SumField!=NULL; SumField=SumField_getNext(SumField)) {
-		// set pointer field area 
+		/* set pointer field area */
 		SumField->pCobField.data = (unsigned char*) pRek+(SumField_getPosition(SumField)-1);
-		// add to totalizer value of field
+		/* add to totalizer value of field  */
 		cob_add (&SumField->pCobFieldTotRes, &SumField->pCobField, 0);
 	}
 	return 0;
@@ -224,13 +224,13 @@ int SumField_SumFieldUpdateRek(const void *pRek)
 {
 	struct SumField_t *SumField;
 	for (SumField=globalJob->SumField; SumField!=NULL; SumField=SumField_getNext(SumField)) {
-		// copy totalizer into record area
-		// use this instruction only when length of totalizer is the same of field
-        // 
+		/* copy totalizer into record area                                              */
+		/* use this instruction only when length of totalizer is the same of field      */
+        /*                                                                              */
         memcpy((unsigned char*) pRek+(SumField_getPosition(SumField)-1), SumField->pCobFieldTotRes.data, SumField_getLength(SumField));
-        // In this point move totalizer into field and copy value for length of field declared in gcsort
-        //         cob_move(&SumField->pCobFieldTotRes, &SumField->pCobField);   // 
-        //         memcpy((unsigned char*) pRek+(SumField_getPosition(SumField)-1), SumField->pCobField.data, SumField_getLength(SumField));
+        /* In this point move totalizer into field and copy value for length of field declared in gcsort                                            */
+        /*         cob_move(&SumField->pCobFieldTotRes, &SumField->pCobField);                                                                      */
+        /*         memcpy((unsigned char*) pRek+(SumField_getPosition(SumField)-1), SumField->pCobField.data, SumField_getLength(SumField));        */
 	}
 	return 0;
 }
@@ -260,26 +260,26 @@ int SumFields_KeyCheck(struct job_t* job,
 						int nSplit)
 {
     int useRecord = 1;
-        if (job_compare_key(szKeyPrec, szKeyCurr) == 0) {	// Compare Keys
+        if (job_compare_key(szKeyPrec, szKeyCurr) == 0) {	/* Compare Keys */
             *nLenPrec = *nLenRek;
             SumField_SumField((unsigned char*)szBuffRek+nSplit);
             memcpy(szPrecSumFields, szBuffRek, *nLenRek+nSplit);
             useRecord=0;
             *bIsWrited = 1;
         }
-        else // Keys not equal write buffer to file
+        else /* Keys not equal write buffer to file */
         {
             useRecord = 1;
-            // Save
-            memcpy(szKeySave,		szKeyPrec,      job->nLenKeys+SZPOSPNT);			   //lPosPnt + Key
+            /* Save */
+            memcpy(szKeySave,		szKeyPrec,      job->nLenKeys+SZPOSPNT);			    /*   lPosPnt + Key  */
             memcpy(szSaveSumFields, szPrecSumFields, *nLenPrec+nSplit);
             *nLenSave = *nLenPrec;
-            // Previous
-            memcpy(szKeyPrec,		szKeyCurr,      job->nLenKeys+SZPOSPNT);			   //lPosPnt + key
-            memcpy(szPrecSumFields, (unsigned char*) szBuffRek, *nLenRek+nSplit); // PosPnt
+            /* Previous */
+            memcpy(szKeyPrec,		szKeyCurr,      job->nLenKeys+SZPOSPNT);			    /* lPosPnt + key    */
+            memcpy(szPrecSumFields, (unsigned char*) szBuffRek, *nLenRek+nSplit);           /*  PosPnt          */
             *nLenPrec = *nLenRek;
-            //Current
-            memcpy(szKeyCurr,       szKeySave,      job->nLenKeys+SZPOSPNT);			   //lPosPnt + Key
+            /* Current  */
+            memcpy(szKeyCurr,       szKeySave,      job->nLenKeys+SZPOSPNT);			    /*  lPosPnt + Key   */
             memcpy(szBuffRek,       szSaveSumFields, *nLenSave+nSplit);
             *nLenRek = *nLenSave;
             *bIsWrited = 0;

@@ -337,14 +337,18 @@ int main_prod(int argc, char **argv) {
 	/* printf("GCSORT - cob_module_leave\n");   */
 	/* Pop module stack */
     /*
-    -->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>cob_module_leave (module);
-	-->>>>>>>>>>>>>>>>>>>>>cob_module_free(&module);
+    cob_module_leave (module);
+	cob_module_free(&module);
 		printf("GCSORT - cob_stop_run\n");
 		cob_stop_run(nRC);
 		cob_terminate_exec(nRC); 
 	 
 	 printf("GCSORT - cob_stop_run after\n");
      */
+
+	cob_module_leave(module);
+	cob_module_free(&module);
+
 	return nRC;
 }
 

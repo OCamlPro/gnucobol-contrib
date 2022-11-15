@@ -53,7 +53,7 @@ struct E15Call_t* E15Call_constructor(int nLenRecSize)
 {
     struct E15Call_t* pE15c= (struct E15Call_t*)malloc(sizeof(struct E15Call_t));
     if (pE15c == NULL) {
-        fprintf(stderr, "*GCSORT*S701*ERROR: Problem with allocation E15 routine \n");
+        fprintf(stdout,"*GCSORT*S701*ERROR: Problem with allocation E15 routine \n");
         return NULL;
     }        
     pE15c->pCallE15 = util_MakeAttrib_call(COB_TYPE_ALPHANUMERIC, FILENAME_MAX, 0, 0, FILENAME_MAX, ALLOCATE_DATA);
@@ -185,7 +185,8 @@ int	E15Run(const int entry, struct E15Call_t* pE15C, int nRecFlag, int nLen, uns
                    DEPENDING ON EXITAREA-LEN   PIC X.
     */
 
-    if (unlikely(entry < 0))
+   /* s.m. 20220625 if (unlikely(entry < 0)) */
+    if (entry < 0)
         return -1;
 
   cob_set_int(pE15C->pRecFlag, nRecFlag);
@@ -208,7 +209,9 @@ int	E15Run(const int entry, struct E15Call_t* pE15C, int nRecFlag, int nLen, uns
   E15cob_glob_ptr->cob_call_params = 10; /* 3;  */
   E15cob_glob_ptr->cob_stmt_exception = 0;
 
-  if (unlikely((E15cob_glob_ptr->cob_exception_code & 0x0b00) == 0x0b00)) E15cob_glob_ptr->cob_exception_code = 0;
+  /* 20220625 if (unlikely((E15cob_glob_ptr->cob_exception_code & 0x0b00) == 0x0b00)) E15cob_glob_ptr->cob_exception_code = 0; */
+  if ((E15cob_glob_ptr->cob_exception_code & 0x0b00) == 0x0b00) 
+      E15cob_glob_ptr->cob_exception_code = 0; 
 
   E15cob_unifunc.funcvoid = cob_call_field(pE15C->pCallE15, NULL, 1, 0);
   E15ex_retcode = ((int (*)(void*, void*, void*, void*, void*, void*, void*, void*, void*, void* ))E15cob_unifunc.funcint)
@@ -269,7 +272,7 @@ struct E35Call_t* E35Call_constructor(int nLenRecSize)
 {
     struct E35Call_t* pE35c = (struct E35Call_t*)malloc(sizeof(struct E35Call_t));
     if (pE35c == NULL) {
-        fprintf(stderr, "*GCSORT*S701*ERROR: Problem with allocation E35 routine \n");
+        fprintf(stdout,"*GCSORT*S701*ERROR: Problem with allocation E35 routine \n");
         return NULL;
     }
     pE35c->pCallE35 = util_MakeAttrib_call(COB_TYPE_ALPHANUMERIC, FILENAME_MAX, 0, 0, FILENAME_MAX, ALLOCATE_DATA);
@@ -416,7 +419,8 @@ int	E35Run(const int entry, struct E35Call_t* pE35C, int nRecFlag, int nLen, uns
                DEPENDING ON EXITAREA-LEN   PIC X.
     */
 
-    if (unlikely(entry < 0))
+   /* 20220625  if (unlikely(entry < 0)) */
+    if (entry < 0)
         return -1;
 
     cob_set_int(pE35C->pRecFlag, nRecFlag);
@@ -442,7 +446,9 @@ int	E35Run(const int entry, struct E35Call_t* pE35C, int nRecFlag, int nLen, uns
     E35cob_glob_ptr->cob_call_params = 10; 
     E35cob_glob_ptr->cob_stmt_exception = 0;
 
-    if (unlikely((E35cob_glob_ptr->cob_exception_code & 0x0b00) == 0x0b00)) E35cob_glob_ptr->cob_exception_code = 0;
+    /* 20220625 if (unlikely((E35cob_glob_ptr->cob_exception_code & 0x0b00) == 0x0b00)) E35cob_glob_ptr->cob_exception_code = 0; */
+    if ((E35cob_glob_ptr->cob_exception_code & 0x0b00) == 0x0b00) 
+        E35cob_glob_ptr->cob_exception_code = 0;
 
     E35cob_unifunc.funcvoid = cob_call_field(pE35C->pCallE35, NULL, 1, 0);
     E35ex_retcode = ((int (*)(void*, void*, void*, void*, void*, void*, void*, void*, void*, void*))E35cob_unifunc.funcint)

@@ -95,7 +95,13 @@
 #include "job.h"
 #include "outfil.h"
 
- 
+#if	defined(_WIN32) 
+	#define	NUM_FMT_LLD		"%0.9I64d"
+#else
+	#define	NUM_FMT_LLD		"%lld"
+#endif
+
+
 #define FILE_TYPE_FIXED			0
 #define FILE_TYPE_VARIABLE		1
 
@@ -177,6 +183,7 @@
 #define CHANGE_ERR		4
 #define SEQUENCE_ERR	5
 #define PARAM_ERR		6
+#define RECORD_LENGTH	7
 
 #define ABEND_SKIP      1
 #define ABEND_EXEC      2
@@ -237,7 +244,9 @@ int64_t utl_GetFileSize(struct file_t* file);
 	unsigned long  GetTickCount(void);  
 #endif
 
-int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut);
+int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut, int nCurrOcc, int nMaxOcc, int* nOverChar, int nShift);
+int utl_replace_single_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut);
+int utl_replace_findrep(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int find_len, int repl_len, int lenIn, int lenOut, int nCurrOcc, int nMaxOcc, int nShift);
 int utl_replace_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut);
 int utl_copy_realloc(char* out, char* in);
 
@@ -245,6 +254,6 @@ int utl_str_searchreplace(char* orig, char* search, char* replace, char* result)
 
 void sort_temp_name(const char* ext);
 
-
+void util_view_numrek(void);
 
 #endif /* UTILS_H_INCLUDED  */

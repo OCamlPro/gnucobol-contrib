@@ -21,7 +21,7 @@
 
 #ifndef _MMFIOC_H_
 #define _MMFIOC_H_
-//#ifdef _WIN32
+/*  #ifdef _WIN32   */
 
 #if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	#include <windows.h>
@@ -53,9 +53,9 @@ enum SEEKPOS
 
 enum OPENFLAGS
 {
-	OPN_READ = 0, //Opens the file for reading only
-	OPN_READWRITE, //Opens the file for reading and writing
-	OPN_WRITE	  //Opens the file for writing
+	OPN_READ = 0,   /*  Opens the file for reading only             */
+	OPN_READWRITE,  /*  Opens the file for reading and writing      */
+	OPN_WRITE	    /*  Opens the file for writing                  */
 };
 
 
@@ -63,7 +63,7 @@ struct mmfio_t
 {
 	unsigned char		m_cRefCount;
 	enum OPENFLAGS		m_eOpenflags;
-//#ifdef _WIN32
+/*  #ifdef _WIN32   */
 #if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	void*				m_hFileMapping;
 #else
@@ -75,7 +75,7 @@ struct mmfio_t
 	int64_t				m_nViewBegin;
 	int64_t				m_nCurPos;
 	int64_t				m_nSeekPos;
-//#ifdef _WIN32
+/*  #ifdef _WIN32   */
 #if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	void*				m_hFile;
 #else
@@ -97,7 +97,7 @@ struct mmfio_t
 	int					nReadBytes ;
 	int					nWriteBytes;
 
-	//unsigned char*		pBufData;
+	/*  unsigned char*		pBufData;   */
 
 };
 
@@ -118,4 +118,4 @@ extern INLINE int mmfio_Read(unsigned char* pBuf, int nCountIn, struct mmfio_t**
 
 
 
-#endif // _MMFIOC_H
+#endif /* _MMFIOC_H */

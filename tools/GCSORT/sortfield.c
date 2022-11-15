@@ -139,6 +139,7 @@ int sortField_addDefinition(struct sortField_t *sortField)
 	sortField_addQueue(&(globalJob->sortField), sortField);
 	return 0;
 }
+
 int sortField_setDefinition(struct sortField_t *sortField) 
 {
 	globalJob->sortField=sortField;

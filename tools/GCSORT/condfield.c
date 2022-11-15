@@ -230,8 +230,8 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
 					}
 
 					if ((job->nVLSCMP == 0) && (job->nVLSHRT == 0)) {
-						fprintf(stderr,"*GCSORT*S100*ERROR: Record len:%ld < of condition(position):%d, condition(length):%d\n", job->LenCurrRek, condField->condition.position, condField->condition.length);
-						fprintf(stderr,"*GCSORT*S101* GCSORT - TERMINATED\n");
+						fprintf(stdout,"*GCSORT*S100*ERROR: Record len:%ld < of condition(position):%d, condition(length):%d\n", job->LenCurrRek, condField->condition.position, condField->condition.length);
+						fprintf(stdout,"*GCSORT*S101* GCSORT - TERMINATED\n");
 						exit(GC_RTC_ERROR);
 					}
 					else

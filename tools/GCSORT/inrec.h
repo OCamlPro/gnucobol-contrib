@@ -35,6 +35,7 @@ struct change_t;
 #define INREC_TYPE_CHANGE_ABSPOS	4
 #define INREC_TYPE_CHANGE_CMDOPT	5
 #define INREC_TYPE_JOIN				6
+#define INREC_TYPE_FINDREP			7
 
 struct inrec_t {
 	int nIsOverlay;
@@ -48,6 +49,7 @@ struct inrec_t {
 			struct fieldValue_t* fieldValue;
 			char type;
 			struct change_t* changeCmdOpt;
+			struct findrep_t* findrepCmdOpt;
 		} range;				/* 0	INREC_TYPE_RANGE    */
 		struct {
 			int nFileJoin;			/*  1=F1, 2=F2 */
@@ -57,6 +59,7 @@ struct inrec_t {
 			struct fieldValue_t *fieldValue;
 			char type;
 			struct change_t* changeCmdOpt;
+			struct findrep_t* findrepCmdOpt;
 		} change_position;		/*  1	INREC_TYPE_CHANGE_POSITION  */
 		struct {
 			int nFileJoin;			/*  1=F1, 2=F2 */
@@ -66,6 +69,7 @@ struct inrec_t {
 			struct fieldValue_t *fieldValue;
 			char type;
 			struct change_t* changeCmdOpt;
+			struct findrep_t* findrepCmdOpt;
 		} change;				/*  2	INREC_TYPE_CHANGE   */
 		struct {		
 			int nFileJoin;			/*  1=F1, 2=F2 */
@@ -75,6 +79,7 @@ struct inrec_t {
 			struct fieldValue_t* fieldValue;
 			char type;
 			struct change_t* changeCmdOpt;
+			struct findrep_t* findrepCmdOpt;
 		} range_position;		/*  3	INREC_TYPE_RANGE_POSITION   */
 		struct {
 			int nFileJoin;			/*  1=F1, 2=F2 */
@@ -84,6 +89,7 @@ struct inrec_t {
 			struct fieldValue_t* fieldValue;
 			char type;
 			struct change_t* changeCmdOpt;
+			struct findrep_t* findrepCmdOpt;
 		} changeCmd;			/*  5	INREC_TYPE_CHANGE_CMDOPT   */
 		struct {
 			int nFileJoin;			/*  1=F1, 2=F2 */
@@ -93,7 +99,18 @@ struct inrec_t {
 			struct fieldValue_t* fieldValue;
 			char type;
 			struct change_t* changeCmdOpt;
-		} joinCmd;			/*  5	INREC_TYPE_JOIN   */
+			struct findrep_t* findrepCmdOpt;
+		} joinCmd;			/*  6	INREC_TYPE_JOIN   */
+		struct {
+			int nFileJoin;			/*  1=F1, 2=F2 */
+			int position;
+			int length;
+			int posAbsRec;
+			struct fieldValue_t* fieldValue;
+			char type;
+			struct change_t* changeCmdOpt;
+			struct findrep_t* findrepCmdOpt;
+		} findrepCmd;			/*  7	OUTREC_TYPE_FINDREP   */
 	};
 	unsigned char* szChangeBufIn;
 	unsigned char* szChangeBufOut;
@@ -112,7 +129,9 @@ struct inrec_t *inrec_constructor_subst(unsigned char *chfieldValue);
 struct inrec_t *inrec_constructor_padding(int nAbsPos, unsigned char *chfieldValue, int nPosAbsRec);
 struct inrec_t *inrec_constructor_substnchar(unsigned char *ntch, unsigned char *chfieldValue);
 struct inrec_t* inrec_constructor_possubstnchar(int npos, unsigned char* ntch, unsigned char* chfieldValue);
+struct inrec_t* inrec_constructor_findrep(void);
 
+int inrec_set_findrep(struct inrec_t* inrec, struct findrep_t* findrep);
 void inrec_destructor(struct inrec_t *inrec);
 int inrec_addQueue(struct inrec_t **inrec,struct inrec_t *inrec_add);
 struct inrec_t *inrec_getNext(struct inrec_t *inrec);
@@ -123,6 +142,7 @@ int inrec_copy_overlay(struct inrec_t* inrec, unsigned char* output, unsigned ch
 int inrec_SetOverlay(struct inrec_t* Inrec, int nOverlay);
 int inrec_SetChangeCmdOpt(struct inrec_t* inrec, struct change_t* chg);
 int inrec_addDefinition(struct inrec_t *Inrec);
+int inrec_SetFindRepCmdOpt(struct inrec_t* Inrec);
 
 #endif /* INREC_H_INCLUDED  */
 

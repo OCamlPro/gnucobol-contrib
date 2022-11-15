@@ -70,50 +70,62 @@ extern int yydebug;
      VLSHRT = 279,
      Y2PAST = 280,
      MODS = 281,
-     EXROUT = 282,
-     BUILD = 283,
-     FIELDS = 284,
-     OVERLAY = 285,
-     GIVE = 286,
-     MERGE = 287,
-     ORG = 288,
-     RECORD = 289,
-     SORT = 290,
-     JOINKEYS = 291,
-     USE = 292,
-     COPY = 293,
-     TYPE = 294,
-     LENGTH = 295,
-     DATE1 = 296,
-     DATE2 = 297,
-     DATE3 = 298,
-     DATE4 = 299,
-     CHANGE = 300,
-     NOMATCH = 301,
-     SORTED = 302,
-     NOSEQCK = 303,
-     UNPAIRED = 304,
-     ONLY = 305,
-     JOIN = 306,
-     JOINREFORMAT = 307,
-     FILL = 308,
-     DIGIT = 309,
-     DIGITBIG = 310,
-     CHARTCOND = 311,
-     CHARTYPE = 312,
-     FILETYPE = 313,
-     FORMATTYPE = 314,
-     JOINFILE = 315,
-     KEY = 316,
-     KEYTYPE = 317,
-     OCCURFILL = 318,
-     OPCOND = 319,
-     ORDER = 320,
-     RECTYPEFIX = 321,
-     RECTYPEVAR = 322,
-     STRING = 323,
-     TOKSKIP = 324,
-     SIGNDIGITBIG = 325
+     BUILD = 282,
+     FIELDS = 283,
+     OVERLAY = 284,
+     GIVE = 285,
+     MERGE = 286,
+     ORG = 287,
+     RECORD = 288,
+     SORT = 289,
+     JOINKEYS = 290,
+     USE = 291,
+     COPY = 292,
+     TYPE = 293,
+     LENGTH = 294,
+     DATE1 = 295,
+     DATE2 = 296,
+     DATE3 = 297,
+     DATE4 = 298,
+     CHANGE = 299,
+     NOMATCH = 300,
+     SORTED = 301,
+     NOSEQCK = 302,
+     UNPAIRED = 303,
+     ONLY = 304,
+     JOIN = 305,
+     JOINREFORMAT = 306,
+     FILL = 307,
+     FINDREP = 308,
+     INFR = 309,
+     OUTFR = 310,
+     INOUT = 311,
+     STARTPOS = 312,
+     ENDPOS = 313,
+     DO = 314,
+     MAXLEN = 315,
+     OVERRUN = 316,
+     SHIFT = 317,
+     DIGIT = 318,
+     DIGITBIG = 319,
+     CHARTCOND = 320,
+     CHARTYPE = 321,
+     FILETYPE = 322,
+     FORMATTYPE = 323,
+     JOINFILE = 324,
+     KEY = 325,
+     KEYTYPE = 326,
+     OCCURFILL = 327,
+     OPCOND = 328,
+     ORDER = 329,
+     RECTYPEFIX = 330,
+     RECTYPEVAR = 331,
+     STRING = 332,
+     TOKSKIP = 333,
+     EXROUT = 334,
+     YESNO = 335,
+     ERRTRUNC = 336,
+     SIGNDIGITBIG = 337
    };
 #endif
 
@@ -129,14 +141,16 @@ typedef union YYSTYPE
 	long long   llnumber;
 	char        *string;
 	char        character;
-	struct condField_t  *condField;
-	struct fieldValue_t *fieldValue;
-	struct SumField_t   *SumField;
-    struct changefield_t *changefield;
+	struct condField_t      *condField;
+	struct fieldValue_t     *fieldValue;
+	struct SumField_t       *SumField;
+    struct changefield_t    *changefield;
+    struct findrep_t        *findrep;
+    struct findrepfield_t   *findrep_field;
 
 
 /* Line 2058 of yacc.c  */
-#line 140 "..\\..\\parser.h"
+#line 154 "..\\..\\parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

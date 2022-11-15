@@ -75,9 +75,9 @@ void GCSORT_Config ( void )
 		else
 			fprintf(stdout," - Info debug Parser/Scanner\n");
     }
-	fprintf(stdout,"GCSORT_MEMSIZE               : " CB_FMT_LLD " MByte\n", (long long)(job->ulMemSizeAlloc+job->ulMemSizeAllocSort)/1024000);
-	fprintf(stdout,"        Memory size for key  : " CB_FMT_LLD " MByte\n", (long long)(job->ulMemSizeAllocSort/1024000));
-	fprintf(stdout,"        Memory size for data : " CB_FMT_LLD " MByte\n", (long long)(job->ulMemSizeAlloc/1024000));
+	fprintf(stdout,"GCSORT_MEMSIZE               : " NUM_FMT_LLD " MByte\n", (long long)(job->ulMemSizeAlloc+job->ulMemSizeAllocSort)/1024000);
+	fprintf(stdout,"        Memory size for key  : " NUM_FMT_LLD " MByte\n", (long long)(job->ulMemSizeAllocSort/1024000));
+	fprintf(stdout,"        Memory size for data : " NUM_FMT_LLD " MByte\n", (long long)(job->ulMemSizeAlloc/1024000));
 	fprintf(stdout,"GCSORT_MLT                   : %7d  Pages for cache MemoryMappedFile\n", job->nMlt);
 	fprintf(stdout,"  MemoryMappedFile page size : %7.2f MByte\n", (double)(job->nMlt * page_size)/1024000);
 	fprintf(stdout,"            System page size : %7ld Bytes\n", page_size);
@@ -646,10 +646,10 @@ void gcsort_help_body_SMC(void) {
     printf("    INCLUDE | OMIT\n");
     printf("            COND=({Condition})[,FORMAT={FormatType}]                     \n");
     printf("\n");
-    printf("    INREC   FIELDS | INREC   BUILD =({FieldSpec})\n");
-    printf("    INREC   OVERLAY =({FieldSpec})\n");
-    printf("    OUTREC  FIELDS | OUTREC  BUILD =({FieldSpec})\n");
-    printf("    OUTREC  OVERLAY =({FieldSpec}) \n");
+    printf("    INREC   FIELDS =({FieldSpec})   | INREC   BUILD =({FieldSpec})\n");
+    printf("    INREC   OVERLAY =({FieldSpec})  | INREC   FINDREP =({FindRepSpec}) \n");
+    printf("    OUTREC  FIELDS =({FieldSpec})   | OUTREC  BUILD =({FieldSpec})\n");
+    printf("    OUTREC  OVERLAY =({FieldSpec})  | OUTREC  FINDREP =({FindRepSpec}) \n");
     printf(" \n");
     printf("    OUTFIL                                                                         \n");
     printf("         INCLUDE | OMIT ({Condition})[,FORMAT={FormatType}]                            \n");
@@ -730,6 +730,17 @@ void gcsort_help_body_SMC(void) {
     printf("  nX'hh...hh'        repeat n times hexdecimal characters.    \n");
     printf("  CHANGE=(vlen,[C | X]'<valueFind>',[C | X]'<valueSet>',.....),NOMATCH=([C | X]'<valueSet>)    \n");
     printf("  CHANGE=(vlen,[C | X]'<valueFind>', posIn, lenIn), NOMATCH = (posIn, posLen)\n");
+    printf("________________________________________________________________________________________\n");
+    printf("____{FindRepSpec}___Field Find/Replace Specification____________________________________\n");
+    printf("  IN=C'constant' , OUT=C'constant'                      constant character value. \n");
+    printf("  IN=(C'constant', C'constant' ....) , OUT=C'constant'  constant character value. \n");
+    printf("  INOUT=(C'constantIn', C'constantOut' , C'constantIn', C'constantOut', ....) \n");
+    printf("  STARTPOS=pos        pos = Start Position to find/replace\n");
+    printf("  ENDPOS=pos          pos = End Position to find/replace\n");
+    printf("  DO=n                n=Maximum number of times find and replace \n");
+    printf("  MAXLEN=n            n=Maximum len of record n\n");
+    printf("  OVERRUN=TRUNC|ERROR Truncate or Error(Default) for overrun\n");
+    printf("  SHIFT=YES|NO        Shift data or no (default) when different length between find replace\n");
     printf("________________________________________________________________________________________\n");
     return;
 }

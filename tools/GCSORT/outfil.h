@@ -31,17 +31,16 @@ struct outfil_t{
 	struct condField_t	*outfil_omitCond;
 	struct outrec_t 	*outfil_outrec;
 
-	int64_t	outfil_nStartRec;		// StartRek for outfil
-	int64_t	outfil_nEndRec;			// EndRek for outfil
-	int	  nSave;
-	int   nSplit;			        // (SPLIT SPLITBY -SPLIT1R=n-)	
-    int   nRecSplit;                // Num record split by = nn
-    int   nRecTmp;                  // Num record split by = nn
-	// new
-	int		bIsCopy;		// SORT-MERGE FIELDS=COPY
+	int64_t	outfil_nStartRec;		/* StartRek for outfil          */
+	int64_t	outfil_nEndRec;			/* EndRek for outfil            */
+	int	    nSave;
+	int     nSplit;			        /* (SPLIT SPLITBY -SPLIT1R=n-)  */	
+    int     nRecSplit;              /* Num record split by = nn     */
+    int     nRecTmp;                /* Num record split by = nn     */
+	int	    bIsCopy;		        /* SORT-MERGE FIELDS=COPY       */
 	int		recordWriteOutTotal;
 	int		recordNumber;
-    struct  file_t* pLastFileSplit;        // for SPLIT
+    struct  file_t* pLastFileSplit; /* for SPLIT                    */
 	struct outfil_t *next;
 };
 

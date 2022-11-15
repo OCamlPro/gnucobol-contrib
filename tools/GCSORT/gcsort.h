@@ -58,6 +58,9 @@ _LIB
 #undef  GCSDEBUG 
     /* */
 
+#if defined(snprintf) && defined(_MSC_VER) 
+        #undef snprintf
+#endif
 
 #define GCSORT_ALLOCATE				50
 #define GCSORT_ALLOCATE_MEMSIZE		512000000 
@@ -71,7 +74,7 @@ _LIB
 /* value 1 : generate temp file fixed name : cob17, cob18, cob19, cob1a, cob1b  */
 #define GCSORT_DEBUG   0        /* 0 no debug - 1 debug */
 #define GCSORT_TESTCMD 0
-#define GCSORT_VERSION "01.03.03"
+#define GCSORT_VERSION "01.03.04"
 #define GCSORT_TAR_DATE "Feb 6 2022 15:00:00 UTC"
 
 /* Return Code */
@@ -83,6 +86,14 @@ _LIB
 #if	!defined(_MSC_VER) /* defined(__MINGW32__) || defined(__MINGW64__)  */
 #define strtok_s __strtok_r
 #endif
+
+/* start - compatibility version 3.1 and 4.0 */
+#if __LIBCOB_VERSION >= 4
+    #define flag        tf_ascending
+    #define linorkeyptr linage 
+#endif
+/*  end - compatibility version 3.1 and 4.0 */
+
 
 void GCSORT_Config( void );
 void GCSORT_Usage ( unsigned char* cmd) ;

@@ -3,6 +3,9 @@
 
 
 
-SORT FIELDS(3,1,CH,A) 
-USE     ../files/sqbi03         RECORD F,58 ORG SQ 
-GIVE    ../files/sqbi03_02.srt  RECORD F,58 ORG SQ
+ SORT FIELDS(3,1,CH,A) 
+ USE     ../files/sqbi03         RECORD F,101 ORG SQ 
+ GIVE    ../files/sqbi03_02.srt  RECORD F,101 ORG SQ
+
+*  USE     ../files/sqbi03         RECORD F,58 ORG SQ 
+*  GIVE    ../files/sqbi03_02.srt  RECORD F,58 ORG SQ

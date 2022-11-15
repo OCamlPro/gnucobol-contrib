@@ -54,7 +54,8 @@ struct file_t *file_constructor(char *name) {
         file->stFileDef=NULL;
         file->stKeys=NULL;
 
-#if __LIBCOB_VERSION >= 3  && __LIBCOB_VERSION_MINOR >= 2
+#if __LIBCOB_VERSION > 3 || \
+   ( __LIBCOB_VERSION == 3  && __LIBCOB_VERSION_MINOR >= 2 )
 		if (file->stFileDef != NULL)
 			file->stFileDef->fcd = NULL;
 #endif
@@ -216,10 +217,14 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 	struct KeyIdx_t* tKeys; 
 	int	k=0;
 	file->stFileDef = (cob_file*) malloc(sizeof(cob_file));
+
+#if __LIBCOB_VERSION > 3
+	memset(file->stFileDef->file_status, 0x00, sizeof(file->stFileDef->file_status));
+#else
 	file->stFileDef->file_status = NULL; 
 	file->stFileDef->file_status = ((unsigned char*)malloc((sizeof(unsigned char)*3)));
 	memset (file->stFileDef->file_status, 0x00, 3);
-
+#endif
 	file->stFileDef->select_name = (const char *)"masterseqfile";
 	/* Problem with Join file name //-->>file->stFileDef->assign = util_cob_field_make( COB_TYPE_ALPHANUMERIC, strlen(file->name), 0, 0, strlen(file->name), ALLOCATE_DATA); */
 	file->stFileDef->assign = util_cob_field_make( COB_TYPE_ALPHANUMERIC, strlen(file->name), 0, 0, GCSORT_SIZE_FILENAME, ALLOCATE_DATA);
@@ -264,7 +269,8 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 	file->stFileDef->extfh_ptr = NULL;
 #endif
 
-#if __LIBCOB_VERSION >= 3  && __LIBCOB_VERSION_MINOR >= 2
+#if __LIBCOB_VERSION > 3 || \
+   ( __LIBCOB_VERSION == 3  && __LIBCOB_VERSION_MINOR >= 2 )
 	if (file->stFileDef != NULL)
 		file->stFileDef->fcd = NULL;
 #endif
@@ -300,12 +306,12 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 			tKeys =  file->stKeys;
 			/* check keys - for indexed file is mandatory   */
 			if (file->nNumKeys == 0) {
-				fprintf(stderr,"*GCSORT*S300*ERROR: KEY definitions are not specified for Indexed file. \n");
+				fprintf(stdout,"*GCSORT*S300*ERROR: KEY definitions are not specified for Indexed file. \n");
 				exit(GC_RTC_ERROR);
 			}
 			/* check keys - for indexed file Primary is first definition    */
 			if (tKeys->type != KEY_IDX_PRIMARY) {
-				fprintf(stderr,"*GCSORT*S301*ERROR: KEY specifications error. First field is not primary key.\n");
+				fprintf(stdout,"*GCSORT*S301*ERROR: KEY specifications error. First field is not primary key.\n");
 				exit(GC_RTC_ERROR);
 			}
 
@@ -366,7 +372,8 @@ int file_clone(struct file_t* fout, struct file_t* fin) {
 	fout->stFileDef = NULL;
 	fout->stKeys = NULL;
 
-#if __LIBCOB_VERSION >= 3  && __LIBCOB_VERSION_MINOR >= 2
+#if __LIBCOB_VERSION > 3 || \
+   ( __LIBCOB_VERSION == 3  && __LIBCOB_VERSION_MINOR >= 2 )
 	if (fout->stFileDef != NULL)
 		fout->stFileDef->fcd = NULL;
 #endif	

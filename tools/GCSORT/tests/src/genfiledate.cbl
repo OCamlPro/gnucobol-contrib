@@ -37,6 +37,7 @@
            03   sep-prg          pic x.
            03   prog-seq         pic 9(6).
            03   filler           pic x(24).
+           03   filler           pic x(200).
       *  Record len 55  
        fd outfile.
        01 outfile-record.

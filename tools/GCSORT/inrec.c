@@ -29,6 +29,7 @@
 #include "gcshare.h"
 #include "changefield.h"
 #include "join.h"
+#include "findreplace.h"
 
 
 
@@ -142,7 +143,7 @@ struct inrec_t *inrec_constructor_padding(int nAbsPos, unsigned char *chfieldVal
 		    else
     /* this is error because abs position is < of current position of field */
             {
-                fprintf(stderr,"*GCSORT*S400*ERROR: absolute position %d is minor of current position of field %d\n",
+                fprintf(stdout,"*GCSORT*S400*ERROR: absolute position %d is minor of current position of field %d\n",
                 nAbsPos, nPosAbsRec+1);
                 exit(GC_RTC_ERROR);
             }
@@ -215,6 +216,29 @@ struct inrec_t *inrec_constructor_substnchar(unsigned char* ntch, unsigned char 
 	return inrec;
 }
 
+struct inrec_t* inrec_constructor_findrep(void)
+{
+	struct inrec_t* inrec = (struct inrec_t*)malloc(sizeof(struct inrec_t));
+	if (inrec != NULL) {
+		inrec_initialize(inrec);
+		inrec->type = INREC_TYPE_FINDREP;
+		inrec->range.position = 0;
+		inrec->range.length = 0;
+		inrec->next = NULL;
+		inrec->changeCmd.changeCmdOpt = NULL;
+	}
+	return inrec;
+}
+
+int inrec_set_findrep(struct inrec_t* inrec, struct findrep_t* findrep)
+{
+	if (inrec != NULL) {
+		inrec->findrepCmd.findrepCmdOpt = findrep;
+	}
+	return 0;
+}
+
+
 void inrec_destructor(struct inrec_t *inrec) {
 	switch (inrec->type) {
 		case INREC_TYPE_RANGE:
@@ -236,7 +260,14 @@ void inrec_destructor(struct inrec_t *inrec) {
 			}
 		case INREC_TYPE_JOIN:
 			break;
-        default:
+		case INREC_TYPE_FINDREP:
+			if (inrec->findrepCmd.findrepCmdOpt != NULL) {
+				findrep_destructor(inrec->findrepCmd.findrepCmdOpt);
+				free(inrec->szChangeBufIn);
+				free(inrec->szChangeBufOut);
+			}
+			break;
+		default:
 			break;
 	}
 	free(inrec);
@@ -288,6 +319,9 @@ int inrec_print(struct inrec_t *inrec) {
 			else
 				fprintf(stdout, "%d,%d",inrec->joinCmd.position+1,inrec->joinCmd.length);
 			break;
+		case INREC_TYPE_FINDREP:
+			findrep_print(inrec->findrepCmd.findrepCmdOpt);
+			break;
 		default:
 			break;
 	}
@@ -319,6 +353,11 @@ int inrec_getLength(struct inrec_t *inrec) {
                 break;
 			case INREC_TYPE_JOIN:
 				length += o->joinCmd.length;
+				break;
+				/* FINDREP */
+			case INREC_TYPE_FINDREP:
+				length = globalJob->LenCurrRek;
+				break;
 			default:
 				break;
 		}
@@ -420,6 +459,28 @@ int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *inpu
 					utl_abend_terminate(CHANGE_ERR, 16, ABEND_EXEC);
 				}
 			break;			
+			/* FINDREP */
+			case INREC_TYPE_FINDREP:
+			{
+				/* Reset buffer in and buffer out */
+				memset(i->szChangeBufIn, 0x00, COB_FILE_BUFF);
+				memset(i->szChangeBufOut, 0x00, COB_FILE_BUFF);
+				if (i->findrepCmd.findrepCmdOpt->nEndPos > 0)
+					nIRangeLen = i->findrepCmd.findrepCmdOpt->nEndPos - i->findrepCmd.findrepCmdOpt->nStartPos;
+				else
+					nIRangeLen = globalJob->LenCurrRek;
+				gc_memcpy(i->szChangeBufIn, input + i->findrepCmd.findrepCmdOpt->nStartPos + nSplitPos + nSplit, nIRangeLen);
+				findrep_search_replace(i->findrepCmd.findrepCmdOpt, i->szChangeBufIn, i->szChangeBufOut, nIRangeLen, nIRangeLen, input + nSplitPos, i->findrepCmd.findrepCmdOpt->nDo);
+				/* save in output all data from input */
+				memcpy(output + nSplitPos + nSplit, input + nSplitPos + nSplit, globalJob->LenCurrRek);
+				/* copy data modified from replace   */
+				memcpy(output + i->findrepCmd.findrepCmdOpt->nStartPos + nSplitPos + nSplit, i->szChangeBufOut, nIRangeLen);
+
+				if (i->findrepCmd.findrepCmdOpt->nEndPos > 0)
+					position = globalJob->LenCurrRek;
+				else
+					position = nIRangeLen;
+			}
 			default:
 				break;
 		}
@@ -554,6 +615,14 @@ int inrec_SetChangeCmdOpt(struct inrec_t* inrec, struct change_t* chg)
 		/* Allocate field to compare values CHANGE */
 		inrec->szChangeBufIn = malloc(COB_FILE_BUFF);
 		inrec->szChangeBufOut = malloc(COB_FILE_BUFF);
+	}
+	return 0;
+}
+int inrec_SetFindRepCmdOpt(struct inrec_t* Inrec)
+{
+	if (Inrec != NULL) {
+		Inrec->szChangeBufIn = malloc(COB_FILE_BUFF);
+		Inrec->szChangeBufOut = malloc(COB_FILE_BUFF);
 	}
 	return 0;
 }

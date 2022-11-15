@@ -136,6 +136,10 @@ JOINFILE        F1|F2
     
 EXROUT          E15|E35
 
+YESNO           YES|NO
+
+ERRTRUNC        ERROR|TRUNC
+
             /* Num +/- for date */
 /* ADDSUBNUM   [0-9]{1,3}          */
 
@@ -212,7 +216,6 @@ EXROUT          E15|E35
 [,]*{BLANK}"OUTREC"	            BEGIN(CHSC);    return OUTREC;		
 [,]*{BLANK}"SAVE"{BLANK}[,]*	                return SAVE;
 [,]*{BLANK}"SKIPREC"	                        return SKIPREC;
-"EXROUT"                                        return EXROUT;
 [,]*{BLANK}"MODS"                           	return MODS;
     /* "RECORD"	                         return RECORD; */
 "RECORD"	                    BEGIN(INITIAL); return RECORD;
@@ -234,6 +237,20 @@ EXROUT          E15|E35
 [,]*{BLANK}"VLSHRT"	                            return VLSHRT;
 [,]*{BLANK}"Y2PAST"	                            return Y2PAST;
 
+            /* FINDREP */
+"FINDREP"                                       return FINDREP;
+"IN"                                            return INFR;
+"OUT"                                           return OUTFR;
+"INOUT"                                         return INOUT;
+"STARTPOS"                                      return STARTPOS;
+"ENDPOS"                                        return ENDPOS;
+"DO"                                            return DO;
+"MAXLEN"                                        return MAXLEN;
+"OVERRUN"                                       return OVERRUN;
+"SHIFT"                                         return SHIFT;
+            /* FINDREP */
+
+            
 "REMOVECC"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
 ",REMOVECC"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
 "CONVERT"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
@@ -267,8 +284,12 @@ EXROUT          E15|E35
 {JOINFILE}                  yylval.string = _strdup(yytext) ;					return JOINFILE;
 
 {FORMATTYPE}		        yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  
-
-{EXROUT}                    yylval.string = _strdup(yytext) ;					return EXROUT; 	
+"EXROUT"                                                                        return EXROUT;
+{EXROUT}                    yylval.string = _strdup(yytext) ;					return EXROUT; 
+"YESNO"                                                                         return YESNO;
+{YESNO}                     yylval.string = _strdup(yytext) ;					return YESNO; 
+"ERRTRUNC"                                                                      return ERRTRUNC;
+{ERRTRUNC}                  yylval.string = _strdup(yytext) ;					return ERRTRUNC; 
   
    /* String C''';'   */
 "'"[^']*"'"	{yylval.string=malloc(strlen(yytext)-1);

@@ -333,7 +333,7 @@ static INLINE int write_buffered (int		desc,
     if (tempPosition > MAX_SIZE_CACHE_WRITE) {
 		if (_write(desc, (unsigned char*)(bufferwriteglobal), (unsigned int) *position_buf_write) < 0) 
 		{
-    		fprintf(stderr,"*GCSORT*S090*ERROR: Cannot write output file  %s\n",strerror(errno));
+    		fprintf(stdout,"*GCSORT*S090*ERROR: Cannot write output file  %s\n",strerror(errno));
     		return -1;
 		}
     	*position_buf_write=0;
@@ -354,7 +354,7 @@ static INLINE int write_buffered_save_final (int		desc,
     if (*position_buf_write + nLenRek > MAX_SIZE_CACHE_WRITE_FINAL) {
     	if (_write(desc, (unsigned char*)(bufferwriteglobal), (unsigned int) *position_buf_write) < 0) 
     	{
-    		fprintf(stderr,"*GCSORT*S091*ERROR: Cannot write output file  %s\n",strerror(errno));
+    		fprintf(stdout,"*GCSORT*S091*ERROR: Cannot write output file  %s\n",strerror(errno));
     		return -1;
     	}
     	*position_buf_write=0;
@@ -373,7 +373,7 @@ static INLINE int write_buffered_final (int  desc,
 		return 0;
     if (write(desc, (unsigned char*)bufferwriteglobal , *position_buf_write) < 0) 
     {
-    	fprintf(stderr,"*GCSORT*S092*ERROR: Cannot write output file  %s\n",strerror(errno));
+    	fprintf(stdout,"*GCSORT*S092*ERROR: Cannot write output file  %s\n",strerror(errno));
     	return -1;
     }
 	*position_buf_write=0;

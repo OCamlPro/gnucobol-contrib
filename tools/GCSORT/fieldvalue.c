@@ -141,7 +141,8 @@ struct fieldValue_t *fieldValue_constr_newF(char *type, char *value, int nTypeF,
 	if (fieldValue == NULL)
         utl_abend_terminate(MEMORYALLOC, 6, ABEND_EXEC);
 	fieldValue->type=utils_parseFieldValueType(type[strlen(type)-1]);
-	memset(szB1, 0x00, sizeof(szB1));
+	/* memset(szB1, 0x00, sizeof(szB1));*/
+	memset(szB1, 0x00, 256);
 	if (strlen(type) > 1) {
 		memcpy(szB1, type, strlen(type)-1);	/* 36C'xx' */
 		fieldValue->occursion=atoi(szB1);

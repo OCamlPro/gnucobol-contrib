@@ -1,5 +1,17 @@
+2022-11-14  Sauro Menna  <smenna@users.sourceforge.net>
+    * Version 1.03.04
+    * Fixed reference to __LIBCOB_VERSION and __LIBCOB_VERSION_MINOR
+      (Thanks to Simon Sobisch)
+    * New option FINDREP in INREC and OUTREC control statement
+    * New test case FINDREP
+    * New File-status management with compatibility for GnuCOBOL 3.2 
+      (Thanks to Chuck Haatvedt & Arnold Trembley)
+    * Redirecting error messages to stdout 
+    * Fixed errors on files used in test environments
+
 2022-05-11  Sauro Menna  <smenna@users.sourceforge.net>
     * Modified file.c for compatibility with libcob (GnuCOBOL) version 3.2.
+
 2022-05-08  Sauro Menna  <smenna@users.sourceforge.net>
     * Rename gctestsetup.cbl (in tests/src folder) for problems in MinGW environment
     * from gctestsetup.cbl to gctestset.cbl

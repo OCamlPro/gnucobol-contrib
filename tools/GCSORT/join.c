@@ -125,12 +125,12 @@ int join_allocateData(struct join_t* join, struct job_t* job) {
 
 	join->pDataF1 = (unsigned char*)calloc((size_t)join->llMaxMemSize, sizeof(unsigned char));
 	if (join->pDataF1 == 0) {
-		fprintf(stderr, "*GCSORT*S825*ERROR: Cannot Allocate join->pDataF1, size "CB_FMT_LLD" byte - %s\n", (long long)join->llMaxMemSize, strerror(errno));
+		fprintf(stdout,"*GCSORT*S825*ERROR: Cannot Allocate join->pDataF1, size "NUM_FMT_LLD" byte - %s\n", (long long)join->llMaxMemSize, strerror(errno));
 		return -1;
 	}
 	join->pDataF2 = (unsigned char*)calloc((size_t)join->llMaxMemSize, sizeof(unsigned char));
 	if (join->pDataF2 == 0) {
-		fprintf(stderr, "*GCSORT*S825*ERROR: Cannot Allocate join->pDataF2, size "CB_FMT_LLD" byte - %s\n", (long long)join->llMaxMemSize, strerror(errno));
+		fprintf(stdout,"*GCSORT*S825*ERROR: Cannot Allocate join->pDataF2, size "NUM_FMT_LLD" byte - %s\n", (long long)join->llMaxMemSize, strerror(errno));
 		return -1;
 	}
 
@@ -291,7 +291,7 @@ int join_print(struct job_t* job, struct join_t* join)
 			if (join->joinkeysF1->nIsSorted == 1)
 				printf(", SORTED\n");
 			if (join->joinkeysF1->nStopAfter > 0)
-				printf(", STOPAFT=" CB_FMT_LLD "\n", (long long)join->joinkeysF1->nStopAfter);
+				printf(", STOPAFT=" NUM_FMT_LLD "\n", (long long)join->joinkeysF1->nStopAfter);
 			printf("\n");
 		}
 		if (join->joinkeysF1->includeCondField != NULL)
@@ -311,7 +311,7 @@ int join_print(struct job_t* job, struct join_t* join)
 			if (join->joinkeysF2->nIsSorted == 1)
 				printf(", SORTED\n");
 			if (join->joinkeysF2->nStopAfter > 0)
-				printf(", STOPAFT=" CB_FMT_LLD "\n", (long long)join->joinkeysF2->nStopAfter);
+				printf(", STOPAFT=" NUM_FMT_LLD "\n", (long long)join->joinkeysF2->nStopAfter);
 			printf("\n");
 		}
 		if (join->joinkeysF2->includeCondField != NULL)
@@ -409,9 +409,9 @@ int join_print(struct job_t* job, struct join_t* join)
 				if (outfil->nSplit > 0)
 					printf("\t\tSPLIT \n");
 				if (outfil->outfil_nStartRec >= 0)
-					printf("\t\tSTARTREC = " CB_FMT_LLD "\n", (long long)outfil->outfil_nStartRec);
+					printf("\t\tSTARTREC = " NUM_FMT_LLD "\n", (long long)outfil->outfil_nStartRec);
 				if (outfil->outfil_nEndRec >= 0)
-					printf("\t\tENDREC = " CB_FMT_LLD "\n", (long long)outfil->outfil_nEndRec);
+					printf("\t\tENDREC = " NUM_FMT_LLD "\n", (long long)outfil->outfil_nEndRec);
 			}
 		}
 		if (job->outrec != NULL) {
@@ -792,21 +792,21 @@ int job_joiner(struct job_t* job)
 	if (nF1Sorted == 0) {
 		desc = remove(join->pNameTmpF1);
 		if (desc != 0) {
-			fprintf(stderr, "*GCSORT*W801* WARNING : Cannot remove file %s : %s\n", join->pNameTmpF1, strerror(errno));
+			fprintf(stdout,"*GCSORT*W801* WARNING : Cannot remove file %s : %s\n", join->pNameTmpF1, strerror(errno));
 			g_retWarn = 4;
 		}
 	}
 	if (nF2Sorted == 0) {
 		desc = remove(join->pNameTmpF2);
 		if (desc != 0) {
-			fprintf(stderr, "*GCSORT*W802* WARNING : Cannot remove file %s : %s\n", join->pNameTmpF2, strerror(errno));
+			fprintf(stdout,"*GCSORT*W802* WARNING : Cannot remove file %s : %s\n", join->pNameTmpF2, strerror(errno));
 			g_retWarn = 4;
 		}
 	}
 	if (nFoutSort == 0) {
 		desc = remove(join->pNameTmpOut);
 		if (desc != 0) {
-			fprintf(stderr, "*GCSORT*W802* WARNING : Cannot remove file %s : %s\n", join->pNameTmpOut, strerror(errno));
+			fprintf(stdout,"*GCSORT*W802* WARNING : Cannot remove file %s : %s\n", join->pNameTmpOut, strerror(errno));
 			g_retWarn = 4;
 		}
 
@@ -828,8 +828,6 @@ int join_sortFile(struct job_t* job)
 
 
 int join_join_files(struct job_t* job) {
-
-	char szDebug[60];
 
 	char szNameTmp[MAX_RECSIZE];
 	int	bIsEof[MAX_FILES_INPUT];
@@ -900,7 +898,7 @@ int join_join_files(struct job_t* job) {
 		byteReadFile[k] = 0;
 		Arrayfile_s[k] = NULL;
 		memset(szBufKey[k], 0x00, GCSORT_KEY_MAX);
-		memset(szBufRek[k], 0x00, sizeof(szBufRek[k]));
+		memset(szBufRek[k], 0x00, GCSORT_MAX_BUFF_REK);
 		ptrBuf[k] = 0x00;
 	}
 	recordBufferLength = MAX_RECSIZE;
@@ -910,23 +908,23 @@ int join_join_files(struct job_t* job) {
 
 	recordBuffer = (unsigned char*)malloc(recordBufferLength + nSplitPosPnt);
 	if (recordBuffer == 0)
-		fprintf(stderr, "*GCSORT*S862*ERROR: Cannot Allocate recordBuffer : %s\n", strerror(errno));
+		fprintf(stdout,"*GCSORT*S862*ERROR: Cannot Allocate recordBuffer : %s\n", strerror(errno));
 
 	recordBufferF1 = (unsigned char*)malloc(recordBufferLength + nSplitPosPnt);
 	if (recordBufferF1 == 0)
-		fprintf(stderr, "*GCSORT*S862*ERROR: Cannot Allocate recordBufferF1 : %s\n", strerror(errno));
+		fprintf(stdout,"*GCSORT*S862*ERROR: Cannot Allocate recordBufferF1 : %s\n", strerror(errno));
 
 	recordBufferF2 = (unsigned char*)malloc(recordBufferLength + nSplitPosPnt);
 	if (recordBufferF2 == 0)
-		fprintf(stderr, "*GCSORT*S862*ERROR: Cannot Allocate recordBufferF2 : %s\n", strerror(errno));
+		fprintf(stdout,"*GCSORT*S862*ERROR: Cannot Allocate recordBufferF2 : %s\n", strerror(errno));
 
 	recordBufferPrevious = (unsigned char*)malloc(recordBufferLength + nSplitPosPnt);
 	if (recordBufferPrevious == 0)
-		fprintf(stderr, "*GCSORT*S863*ERROR: Cannot Allocate recordBufferPrevious : %s\n", strerror(errno));
+		fprintf(stdout,"*GCSORT*S863*ERROR: Cannot Allocate recordBufferPrevious : %s\n", strerror(errno));
 
 	szBuffRek = (unsigned char*)malloc(recordBufferLength + nSplitPosPnt);
 	if (szBuffRek == 0)
-		fprintf(stderr, "*GCSORT*S864*ERROR: Cannot Allocate szBuffRek : %s\n", strerror(errno));
+		fprintf(stdout,"*GCSORT*S864*ERROR: Cannot Allocate szBuffRek : %s\n", strerror(errno));
 
 	for (kj = 0; kj < MAX_FILES_INPUT; kj++) {
 		byteReadFile[kj] = 0;
@@ -946,7 +944,7 @@ int join_join_files(struct job_t* job) {
 	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { /* new  */
 		cob_open(job->outputFile->stFileDef, COB_OPEN_OUTPUT, 0, NULL);
 		if (atol((char*)job->outputFile->stFileDef->file_status) != 0) {
-			fprintf(stderr, "*GCSORT*S865*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
+			fprintf(stdout,"*GCSORT*S865*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
 				job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
 			retcode_func = -1;
 			goto job_join_files_exit;
@@ -968,7 +966,7 @@ int join_join_files(struct job_t* job) {
 		/* LIBCOB for all files */
 		cob_open(Arrayfile_s[nIdx1]->stFileDef, COB_OPEN_INPUT, 0, NULL);
 		if (atol((char*)Arrayfile_s[nIdx1]->stFileDef->file_status) != 0) {
-			fprintf(stderr, "*GCSORT*S866*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(Arrayfile_s[nIdx1]), Arrayfile_s[nIdx1]->stFileDef->file_status[0], Arrayfile_s[nIdx1]->stFileDef->file_status[1]);
+			fprintf(stdout,"*GCSORT*S866*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(Arrayfile_s[nIdx1]), Arrayfile_s[nIdx1]->stFileDef->file_status[0], Arrayfile_s[nIdx1]->stFileDef->file_status[1]);
 			retcode_func = -1;
 			goto job_join_files_exit;
 		}
@@ -992,13 +990,13 @@ int join_join_files(struct job_t* job) {
 
 			/* Check for empty file */
 	if ((join->neleF1 == 0) && (bIsEof[0] > 0)) {
-		fprintf(stderr, "*GCSORT*S895*ERROR: File empty F1 %s\n", file_getName(Arrayfile_s[0]));
+		fprintf(stdout,"*GCSORT*S895*ERROR: File empty F1 %s\n", file_getName(Arrayfile_s[0]));
 		retcode_func = -1;
 		goto job_join_files_exit;
 	}
 	
 	if ((join->neleF2 == 0) && (bIsEof[1] > 0)) {
-		fprintf(stderr, "*GCSORT*S896*ERROR: File empty F2 %s\n", file_getName(Arrayfile_s[1]));
+		fprintf(stdout,"*GCSORT*S896*ERROR: File empty F2 %s\n", file_getName(Arrayfile_s[1]));
 		retcode_func = -1;
 		goto job_join_files_exit;
 	}
@@ -1107,7 +1105,7 @@ int join_join_files(struct job_t* job) {
 					if (bcheckF1 > 0) {
 						nSequenceRek = join_compare_rek(recordBufferF1, szBufRek[0]);
 						if (nSequenceRek > 0) {
-							fprintf(stderr, "*GCSORT*S827*ERROR: Sequence error for file F1 record: " CB_FMT_LLD  " - name: %s \n", (long long)join->joinkeysF1->nNumRow, file_getName(job->inputFile));
+							fprintf(stdout,"*GCSORT*S827*ERROR: Sequence error for file F1 record: " NUM_FMT_LLD  " - name: %s \n", (long long)join->joinkeysF1->nNumRow, file_getName(job->inputFile));
 							utl_abend_terminate(SEQUENCE_ERR, 501, ABEND_EXEC);
 						}
 					}
@@ -1121,7 +1119,7 @@ int join_join_files(struct job_t* job) {
 					if (bcheckF2 > 0) {
 						nSequenceRek = join_compare_rek(recordBufferF2, szBufRek[1]);
 						if (nSequenceRek > 0) {
-							fprintf(stderr, "*GCSORT*S828*ERROR: Sequence error for file F2 record: " CB_FMT_LLD    " - name: %s \n", (long long)join->joinkeysF2->nNumRow, file_getName(job->inputFile->next));
+							fprintf(stdout,"*GCSORT*S828*ERROR: Sequence error for file F2 record: " NUM_FMT_LLD    " - name: %s \n", (long long)join->joinkeysF2->nNumRow, file_getName(job->inputFile->next));
 							utl_abend_terminate(SEQUENCE_ERR, 501, ABEND_EXEC);
 						}
 					}
@@ -1175,6 +1173,21 @@ int join_join_files(struct job_t* job) {
 					nFWrite += 1;
 				}
 
+
+				//if ((useRecord == 0) || ((join_F1_read() == 1) && (join_F1_write() == 0))) {
+				if (((join_F1_read() == 1) && (join_F1_write() == 0))) {
+					memset(szBuffRek, 0x00, join->fileSaveOut->maxLength);
+					memcpy(szBuffRek, recordBufferF1, join->fileSaveOut->maxLength);
+					fprintf(stderr, "Record F1 discarded: %.*s\n", join->fileSaveF1->maxLength, szBuffRek);
+				}
+				//if ((useRecord == 0) || ((join_F2_read() == 1) && (join_F2_write() == 0))) {
+				if (((join_F2_read() == 1) && (join_F2_write() == 0))) {
+					memset(szBuffRek, 0x00, recordBufferLength);
+					memcpy(szBuffRek, recordBufferF2, join->fileSaveOut->maxLength);
+					fprintf(stderr, "Record F2 discarded: %.*s\n", join->fileSaveF2->maxLength, szBuffRek);
+				}
+
+
 				if ((nFWrite == 0) && (join_F2_read() == 0)) {
 					break;
 				}
@@ -1185,9 +1198,9 @@ int join_join_files(struct job_t* job) {
 			   
 				/*           REFORMAT   RECORD           */
 				/* Verify if continue (UseRecord == 1)  or (Write from buffer F1 or F2)*/
-				if ((useRecord == 0) || (nFWrite == 0))
+				if ((useRecord == 0) || (nFWrite == 0)) {
 					continue;
-
+				}
 				memset(szBuffRek, 0x20, recordBufferLength);
 				/* Fill buffer with fill character ( blank default */
 				memset(recordBuffer, join->cFill, join->fileSaveOut->maxLength);
@@ -1228,12 +1241,30 @@ int join_join_files(struct job_t* job) {
 				if ((nbyteRead > 0) && (job->outfil == NULL)) {
 					job_set_area(job, job->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut, nbyteRead);
 					cob_write(job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
-					if (atol((char*)job->outputFile->stFileDef->file_status) != 0) {
-						fprintf(stderr, "*GCSORT*S867*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
-							job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
-						job_print_error_file(job->outputFile->stFileDef, nLenRecOut);
-						retcode_func = -1;
-						goto job_join_files_exit;
+					switch (atol((char*)job->outputFile->stFileDef->file_status))
+					{
+						case 0: 
+							break;
+						case  4:		/* record successfully read, but too short or too long */
+							fprintf(stdout,"*GCSORT*S867*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", job->outputFile->stFileDef->assign->data,
+								job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
+							util_view_numrek();
+							retcode_func = -1;
+							goto job_join_files_exit;
+							break;
+						case 71:
+							fprintf(stdout,"*GCSORT*S867*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(job->outputFile),
+								job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
+							util_view_numrek();
+							retcode_func = -1;
+							goto job_join_files_exit;
+							break;
+						default:
+							fprintf(stdout,"*GCSORT*S867*ERROR: Cannot write file %s - File Status (%c%c)\n", file_getName(job->outputFile),
+								job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
+							util_view_numrek();
+							retcode_func = -1;
+							goto job_join_files_exit;
 					}
 					job->recordWriteOutTotal++;
 				}
@@ -1324,7 +1355,7 @@ int join_compare_rek(const void* first, const void* second)
 	sortFieldF1 = globalJob->join->joinkeysF1->joinField;
 	sortFieldF2 = globalJob->join->joinkeysF2->joinField;
 	if ((sortFieldF1 == NULL) || (sortFieldF2 == NULL)) {
-		fprintf(stderr, "*GCSORT*S788*ERROR: Compare record error ( join_compare_rek) JoinKeys F1 or F2 is not defined\n");
+		fprintf(stdout,"*GCSORT*S788*ERROR: Compare record error ( join_compare_rek) JoinKeys F1 or F2 is not defined\n");
 		utl_abend_terminate(PARAM_ERR, 501, ABEND_EXEC);
 	}
 
@@ -1973,17 +2004,54 @@ int join_ReadFileSingleRow(struct join_t* join, int nF, struct file_t* file, int
 	int nRetCode = 0;
 	/* LIBCOB for all files */
 	cob_read_next(file->stFileDef, NULL, COB_READ_NEXT);
-	if (atol((char*)file->stFileDef->file_status) != 0) {	    /* Check    */
-		if (atol((char*)file->stFileDef->file_status) == 10) {	/* EOF      */
+	/*
+	if (atol((char*)file->stFileDef->file_status) != 0) {	    
+		if (atol((char*)file->stFileDef->file_status) == 10) {	
 			*nLR = 0;
-			nRetCode = 1; /* return 1; */
+			nRetCode = 1;
 		}
 		if (atol((char*)file->stFileDef->file_status) > 10) {
-			fprintf(stderr, "*GCSORT*S069*ERROR: Cannot read file %s - File Status (%c%c) \n", file_getName(file),
+			fprintf(stdout,"*GCSORT*S069*ERROR: Cannot read file %s - File Status (%c%c) \n", file_getName(file),
 				file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
 			exit(GC_RTC_ERROR);
 		}
 	}
+	*/
+	switch (atol((char*)file->stFileDef->file_status))
+	{
+		case 0:
+			break;
+		case  4:		/* record successfully read, but too short or too long */
+			fprintf(stdout,"*GCSORT*S069b*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", file->stFileDef->assign->data,
+				file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+			util_view_numrek();
+			exit(GC_RTC_ERROR);	/* Error stop execution */
+			break;
+		case 10:
+			*nLR = 0;
+			nRetCode = 1;
+		case 71:
+			fprintf(stdout,"*GCSORT*S069b*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(file),
+				file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+			util_view_numrek();
+			exit(GC_RTC_ERROR);	/* Error stop execution */
+			break;
+		default:
+			if (atol((char*)file->stFileDef->file_status) < 10) {
+				fprintf(stdout, "*GCSORT*W967a* WARNING : Warning reading file %s - File Status (%c%c) \n", file_getName(file),
+					file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+				util_view_numrek();
+				nRetCode = 0;
+			}
+			else
+			{
+				fprintf(stdout, "*GCSORT*S069b*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(file),
+					file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+				util_view_numrek();
+				exit(GC_RTC_ERROR);
+			}
+	}
+
 	memset(szBuffRek, 0x20, nLenRek);
 	gc_memcpy(szBuffRek, file->stFileDef->record->data, nLenRek);
 
@@ -2034,16 +2102,52 @@ int join_ReadFile(struct join_t* join, int nF, struct file_t* file, int* descTmp
 		if (nSkipRead == 0) {
 			/* LIBCOB for all files */
 			cob_read_next(file->stFileDef, NULL, COB_READ_NEXT);
-			if (atol((char*)file->stFileDef->file_status) != 0) {	    /* Check    */
-				if (atol((char*)file->stFileDef->file_status) == 10) {	/* EOF      */
+			/*
+			if (atol((char*)file->stFileDef->file_status) != 0) {	    
+				if (atol((char*)file->stFileDef->file_status) == 10) {	
 					*nLR = 0;
-					nRetCode = 1; /* return 1; */
+					nRetCode = 1; 
 				}
 				if (atol((char*)file->stFileDef->file_status) > 10) {
-					fprintf(stderr, "*GCSORT*S069*ERROR: Cannot read file %s - File Status (%c%c) \n", file_getName(file),
+					fprintf(stdout,"*GCSORT*S069*ERROR: Cannot read file %s - File Status (%c%c) \n", file_getName(file),
 						file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
 					exit(GC_RTC_ERROR);
 				}
+			}
+			*/
+			switch (atol((char*)file->stFileDef->file_status))
+			{
+				case 0:
+					break;
+				case  4:		/* record successfully read, but too short or too long */
+					fprintf(stdout,"*GCSORT*S069c*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", file->stFileDef->assign->data,
+						file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+					util_view_numrek();
+					exit(GC_RTC_ERROR);	/* Error stop execution */
+					break;
+				case 10:
+					*nLR = 0;
+					nRetCode = 1;
+				case 71:
+					fprintf(stdout,"*GCSORT*S069c*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(file),
+						file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+					util_view_numrek();
+					exit(GC_RTC_ERROR);	/* Error stop execution */
+					break;
+				default:
+					if (atol((char*)file->stFileDef->file_status) < 10) {
+						fprintf(stdout, "*GCSORT*W069a* WARNING : Warning reading file %s - File Status (%c%c) \n", file_getName(file),
+							file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+						util_view_numrek();
+						nRetCode = 0;
+					}
+					else
+					{
+						fprintf(stdout, "*GCSORT*S069c*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(file),
+							file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+						util_view_numrek();
+						exit(GC_RTC_ERROR);
+					}
 			}
 			if (nF == 0)
 				join->joinkeysF1->nNumRow++;
@@ -2183,7 +2287,7 @@ int join_empty_fileF1(struct job_t* job) {
 		byteReadFile[k] = 0;
 		Arrayfile_s[k] = NULL;
 		memset(szBufKey[k], 0x00, GCSORT_KEY_MAX);
-		memset(szBufRek[k], 0x00, sizeof(szBufRek[k]));
+		memset(szBufRek[k], 0x00, GCSORT_MAX_BUFF_REK);
 		ptrBuf[k] = 0x00;
 	}
 	recordBufferLength = MAX_RECSIZE;
@@ -2193,19 +2297,19 @@ int join_empty_fileF1(struct job_t* job) {
 
 	recordBuffer = (unsigned char*)malloc(recordBufferLength + nSplitPosPnt);
 	if (recordBuffer == 0)
-		fprintf(stderr, "*GCSORT*S862*ERROR: Cannot Allocate recordBuffer : %s\n", strerror(errno));
+		fprintf(stdout,"*GCSORT*S862*ERROR: Cannot Allocate recordBuffer : %s\n", strerror(errno));
 
 	recordBufferF1 = (unsigned char*)malloc(recordBufferLength + nSplitPosPnt);
 	if (recordBufferF1 == 0)
-		fprintf(stderr, "*GCSORT*S862*ERROR: Cannot Allocate recordBufferF1 : %s\n", strerror(errno));
+		fprintf(stdout,"*GCSORT*S862*ERROR: Cannot Allocate recordBufferF1 : %s\n", strerror(errno));
 
 	recordBufferF2 = (unsigned char*)malloc(recordBufferLength + nSplitPosPnt);
 	if (recordBufferF2 == 0)
-		fprintf(stderr, "*GCSORT*S862*ERROR: Cannot Allocate recordBufferF2 : %s\n", strerror(errno));
+		fprintf(stdout,"*GCSORT*S862*ERROR: Cannot Allocate recordBufferF2 : %s\n", strerror(errno));
 
 	szBuffRek = (unsigned char*)malloc(recordBufferLength + nSplitPosPnt);
 	if (szBuffRek == 0)
-		fprintf(stderr, "*GCSORT*S864*ERROR: Cannot Allocate szBuffRek : %s\n", strerror(errno));
+		fprintf(stdout,"*GCSORT*S863*ERROR: Cannot Allocate szBuffRek : %s\n", strerror(errno));
 
 	for (kj = 0; kj < MAX_FILES_INPUT; kj++) {
 		byteReadFile[kj] = 0;
@@ -2225,7 +2329,7 @@ int join_empty_fileF1(struct job_t* job) {
 	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { /* new  */
 		cob_open(job->outputFile->stFileDef, COB_OPEN_OUTPUT, 0, NULL);
 		if (atol((char*)job->outputFile->stFileDef->file_status) != 0) {
-			fprintf(stderr, "*GCSORT*S865*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
+			fprintf(stdout,"*GCSORT*S865*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
 				job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
 			retcode_func = -1;
 			goto join_empty_fileF1_exit;
@@ -2281,7 +2385,7 @@ int join_empty_fileF1(struct job_t* job) {
 		/* LIBCOB for all files */
 		cob_open(Arrayfile_s[nIdx1]->stFileDef, COB_OPEN_INPUT, 0, NULL);
 		if (atol((char*)Arrayfile_s[nIdx1]->stFileDef->file_status) != 0) {
-			fprintf(stderr, "*GCSORT*S866*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(Arrayfile_s[nIdx1]), Arrayfile_s[nIdx1]->stFileDef->file_status[0], Arrayfile_s[nIdx1]->stFileDef->file_status[1]);
+			fprintf(stdout,"*GCSORT*S866*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(Arrayfile_s[nIdx1]), Arrayfile_s[nIdx1]->stFileDef->file_status[0], Arrayfile_s[nIdx1]->stFileDef->file_status[1]);
 			retcode_func = -1;
 			goto join_empty_fileF1_exit;
 		}
@@ -2399,12 +2503,30 @@ int join_empty_fileF1(struct job_t* job) {
 			if ((nbyteRead > 0) && (job->outfil == NULL)) {
 				job_set_area(job, job->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut, nbyteRead);
 				cob_write(job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
-				if (atol((char*)job->outputFile->stFileDef->file_status) != 0) {
-					fprintf(stderr, "*GCSORT*S867*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
-						job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
-					job_print_error_file(job->outputFile->stFileDef, nLenRecOut);
-					retcode_func = -1;
-					goto join_empty_fileF1_exit;
+				switch (atol((char*)job->outputFile->stFileDef->file_status))
+				{
+					case 0: 
+						break;
+					case  4:		/* record successfully read, but too short or too long */
+						fprintf(stdout,"*GCSORT*S867*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", job->outputFile->stFileDef->assign->data,
+							job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
+						util_view_numrek();
+						retcode_func = -1;
+						goto join_empty_fileF1_exit;
+						break;
+					case 71:
+						fprintf(stdout,"*GCSORT*S867*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(job->outputFile),
+							job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
+						util_view_numrek();
+						retcode_func = -1;
+						goto join_empty_fileF1_exit;
+						break;
+					default:
+						fprintf(stdout,"*GCSORT*S867*ERROR: Cannot write file %s - File Status (%c%c)\n", file_getName(job->outputFile),
+							job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
+						util_view_numrek();
+						retcode_func = -1;
+						goto join_empty_fileF1_exit;
 				}
 				job->recordWriteOutTotal++;
 			}
@@ -2432,7 +2554,7 @@ int join_empty_fileF1(struct job_t* job) {
 			if (bcheckF2 > 0) {
 				nSequenceRek = join_compare_rek(recordBufferF2, szBufRek[1]);
 				if (nSequenceRek > 0) {
-					fprintf(stderr, "*GCSORT*S828*ERROR: Sequence error for file F2 record: " CB_FMT_LLD    " - name: %s \n", (long long)join->joinkeysF2->nNumRow, file_getName(job->inputFile->next));
+					fprintf(stdout,"*GCSORT*S828*ERROR: Sequence error for file F2 record: " NUM_FMT_LLD    " - name: %s \n", (long long)join->joinkeysF2->nNumRow, file_getName(job->inputFile->next));
 					utl_abend_terminate(SEQUENCE_ERR, 501, ABEND_EXEC);
 				}
 			}
@@ -2523,7 +2645,7 @@ int join_empty_fileF2(struct job_t* job) {
 		byteReadFile[k] = 0;
 		Arrayfile_s[k] = NULL;
 		memset(szBufKey[k], 0x00, GCSORT_KEY_MAX);
-		memset(szBufRek[k], 0x00, sizeof(szBufRek[k]));
+		memset(szBufRek[k], 0x00, GCSORT_MAX_BUFF_REK);
 		ptrBuf[k] = 0x00;
 	}
 	recordBufferLength = MAX_RECSIZE;
@@ -2533,19 +2655,19 @@ int join_empty_fileF2(struct job_t* job) {
 
 	recordBuffer = (unsigned char*)malloc(recordBufferLength + nSplitPosPnt);
 	if (recordBuffer == 0)
-		fprintf(stderr, "*GCSORT*S862*ERROR: Cannot Allocate recordBuffer : %s\n", strerror(errno));
+		fprintf(stdout,"*GCSORT*S862*ERROR: Cannot Allocate recordBuffer : %s\n", strerror(errno));
 
 	recordBufferF1 = (unsigned char*)malloc(recordBufferLength + nSplitPosPnt);
 	if (recordBufferF1 == 0)
-		fprintf(stderr, "*GCSORT*S862*ERROR: Cannot Allocate recordBufferF1 : %s\n", strerror(errno));
+		fprintf(stdout,"*GCSORT*S862*ERROR: Cannot Allocate recordBufferF1 : %s\n", strerror(errno));
 
 	recordBufferF2 = (unsigned char*)malloc(recordBufferLength + nSplitPosPnt);
 	if (recordBufferF2 == 0)
-		fprintf(stderr, "*GCSORT*S862*ERROR: Cannot Allocate recordBufferF2 : %s\n", strerror(errno));
+		fprintf(stdout,"*GCSORT*S862*ERROR: Cannot Allocate recordBufferF2 : %s\n", strerror(errno));
 
 	szBuffRek = (unsigned char*)malloc(recordBufferLength + nSplitPosPnt);
 	if (szBuffRek == 0)
-		fprintf(stderr, "*GCSORT*S864*ERROR: Cannot Allocate szBuffRek : %s\n", strerror(errno));
+		fprintf(stdout,"*GCSORT*S864*ERROR: Cannot Allocate szBuffRek : %s\n", strerror(errno));
 
 	for (kj = 0; kj < MAX_FILES_INPUT; kj++) {
 		byteReadFile[kj] = 0;
@@ -2565,7 +2687,7 @@ int join_empty_fileF2(struct job_t* job) {
 	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { /* new  */
 		cob_open(job->outputFile->stFileDef, COB_OPEN_OUTPUT, 0, NULL);
 		if (atol((char*)job->outputFile->stFileDef->file_status) != 0) {
-			fprintf(stderr, "*GCSORT*S865*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
+			fprintf(stdout,"*GCSORT*S865*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
 				job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
 			retcode_func = -1;
 			goto join_empty_fileF2_exit;
@@ -2621,7 +2743,7 @@ int join_empty_fileF2(struct job_t* job) {
 		/* LIBCOB for all files */
 		cob_open(Arrayfile_s[nIdx1]->stFileDef, COB_OPEN_INPUT, 0, NULL);
 		if (atol((char*)Arrayfile_s[nIdx1]->stFileDef->file_status) != 0) {
-			fprintf(stderr, "*GCSORT*S866*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(Arrayfile_s[nIdx1]), Arrayfile_s[nIdx1]->stFileDef->file_status[0], Arrayfile_s[nIdx1]->stFileDef->file_status[1]);
+			fprintf(stdout,"*GCSORT*S866*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(Arrayfile_s[nIdx1]), Arrayfile_s[nIdx1]->stFileDef->file_status[0], Arrayfile_s[nIdx1]->stFileDef->file_status[1]);
 			retcode_func = -1;
 			goto join_empty_fileF2_exit;
 		}
@@ -2682,7 +2804,7 @@ int join_empty_fileF2(struct job_t* job) {
 			if (bcheckF1 > 0) {
 				nSequenceRek = join_compare_rek(recordBufferF1, szBufRek[0]);
 				if (nSequenceRek > 0) {
-					fprintf(stderr, "*GCSORT*S828*ERROR: Sequence error for file F2 record: " CB_FMT_LLD    " - name: %s \n", (long long)join->joinkeysF2->nNumRow, file_getName(job->inputFile->next));
+					fprintf(stdout,"*GCSORT*S828*ERROR: Sequence error for file F2 record: " NUM_FMT_LLD    " - name: %s \n", (long long)join->joinkeysF2->nNumRow, file_getName(job->inputFile->next));
 					utl_abend_terminate(SEQUENCE_ERR, 501, ABEND_EXEC);
 				}
 			}
@@ -2743,12 +2865,30 @@ int join_empty_fileF2(struct job_t* job) {
 			if ((nbyteRead > 0) && (job->outfil == NULL)) {
 				job_set_area(job, job->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut, nbyteRead);
 				cob_write(job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
-				if (atol((char*)job->outputFile->stFileDef->file_status) != 0) {
-					fprintf(stderr, "*GCSORT*S867*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
-						job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
-					job_print_error_file(job->outputFile->stFileDef, nLenRecOut);
-					retcode_func = -1;
-					goto join_empty_fileF2_exit;
+				switch (atol((char*)job->outputFile->stFileDef->file_status))
+				{
+					case 0: 
+						break;
+					case  4:		/* record successfully read, but too short or too long */
+						fprintf(stdout,"*GCSORT*S867*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", job->outputFile->stFileDef->assign->data,
+							job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
+						retcode_func = -1;
+						util_view_numrek();
+						goto join_empty_fileF2_exit;
+						break;
+					case 71:
+						fprintf(stdout,"*GCSORT*S867*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(job->outputFile),
+							job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
+						util_view_numrek();
+						retcode_func = -1;
+						goto join_empty_fileF2_exit;
+						break;
+					default:
+						fprintf(stdout,"*GCSORT*S867*ERROR: Cannot write file %s - File Status (%c%c)\n", file_getName(job->outputFile),
+							job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
+						util_view_numrek();
+						retcode_func = -1;
+						goto join_empty_fileF2_exit;
 				}
 				job->recordWriteOutTotal++;
 			}
@@ -2793,7 +2933,7 @@ int join_empty_fileF1F2(struct job_t* job) {
 	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { /* new  */
 		cob_open(job->outputFile->stFileDef, COB_OPEN_OUTPUT, 0, NULL);
 		if (atol((char*)job->outputFile->stFileDef->file_status) != 0) {
-			fprintf(stderr, "*GCSORT*S365*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
+			fprintf(stdout,"*GCSORT*S365*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
 				job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
 			return -1;
 		}

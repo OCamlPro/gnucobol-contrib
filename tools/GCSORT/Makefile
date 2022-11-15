@@ -34,6 +34,7 @@ OBJS=\
     gcsort.o \
 	exitroutines.o \
 	fieldvalue.o \
+	findreplace.o \
 	file.o \
 	keyidxrel.o \
     inrec.o \
@@ -91,6 +92,7 @@ exitroutines.o:file.h exitroutines.h libgcsort.h utils.h
 datediff.o:gcsort.h libgcsort.h utils.h datediff.h
 fieldvalue.o:fieldvalue.h gcsort.h job.h libgcsort.h outrec.h  utils.h 
 file.o:file.h gcshare.h gcsort.h job.h utils.h 
+findreplace.o:fieldvalue.h findreplace.h utils.h
 gcsort.o:libgcsort.h gcsort.h job.h utils.h file.h gcshare.h exitroutines.h copyfile.h datediff.h join.h
 gcsorthelp.o:gcsort.h job.h
 inrec.o:fieldvalue.h gcshare.h gcsort.h inrec.h job.h utils.h changefield.h join.h

@@ -38,6 +38,7 @@
            03     filler redefines r-row.
              05   r-param1          pic x(40).
              05   r-param2          pic x(40).
+           03     filler            pic x(10).
       *    
        working-storage section.
        77 f-s                   pic xx.

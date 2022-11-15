@@ -188,13 +188,13 @@ int change_search_replace(struct change_t* CmdOpt, unsigned char* BufIn, unsigne
 	if (CmdOpt != NULL) {
 		for (f = CmdOpt->pairs; f != NULL; f = f->next) {
 			if (f->change_type == CHANGETYPE_VALUE)
-				nSubs += utl_replace_recursive_str(BufIn, (unsigned char*)f->find->generated_value, (unsigned char*) f->set->generated_value, BufOut, lenIn, lenOut);
+				nSubs += utl_replace_single_str(BufIn, (unsigned char*)f->find->generated_value, (unsigned char*) f->set->generated_value, BufOut, lenIn, lenOut);
 			else
 				/* f->change_type == CHANGETYPE_POSLEN */
 			{
 				memset(szRekIn, 0x00, COB_FILE_BUFF);
 				gc_memcpy(szRekIn, inputrec + f->setpos - 1, lenOut);
-				nSubs += utl_replace_recursive_str(BufIn, (unsigned char*)f->find->generated_value, (unsigned char*)&szRekIn, BufOut, lenIn, f->setlen);
+				nSubs += utl_replace_single_str(BufIn, (unsigned char*)f->find->generated_value, (unsigned char*)&szRekIn, BufOut, lenIn, f->setlen);
 			}
 			if (nSubs > 0)
 				break;	/* Stop after first substitution */

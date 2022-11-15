@@ -25,18 +25,16 @@
 #include <stdint.h>
 #include "job.h"
 
-// struct SumField_t;
-
 struct SumField_t {
 	int position;
 	int length;
 	int type;
 
-	cob_field_attr  pCobFAttr;				// Attribute for record area
-	cob_field	    pCobField;				// Field for record area
+	cob_field_attr  pCobFAttr;				/* Attribute for record area    */
+	cob_field	    pCobField;				/* Field for record area        */
 
-	cob_field_attr  pCobFAttrTotRes;		// Attribute for totalizer
-	cob_field	    pCobFieldTotRes;		// Field for totalizer
+	cob_field_attr  pCobFAttrTotRes;		/* Attribute for totalizer      */
+	cob_field	    pCobFieldTotRes;		/* Field for totalizer          */
 
 	struct SumField_t *next;
 };
@@ -64,4 +62,4 @@ void SumField_setTypeCobField(struct SumField_t *SumField, int type, int length)
 int SumFields_KeyCheck(struct job_t* job, int* bIsWrited, unsigned char* szKeyPrec, unsigned int* nLenPrec, 
                         unsigned char* szKeyCurr,  unsigned int* nLenRek, unsigned char* szKeySave,  unsigned int* nLenSave, 
                         unsigned char* szPrecSumFields, unsigned char* szSaveSumFields, unsigned char* szBuffRek, int nSplit);
-#endif // SUMFIELD_H_INCLUDED
+#endif /* SUMFIELD_H_INCLUDED   */

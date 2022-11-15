@@ -253,7 +253,7 @@
       **
           
        77   ntype               BINARY-LONG .
-       77   cmd-go              pic x(1024) value space.
+       77   cmd-go              pic x(80) value space.
            
       *-------------------------------------------------------*
        procedure division.
@@ -485,7 +485,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
                  goback
              end-if             
            end-if            
-           display ' cmd line : '  cmd-go
+      D    display ' cmd line : '  cmd-go
            call     'SYSTEM' using cmd-go
       D    display  'RETURN-CODE Value : ' RETURN-CODE
       * reset 
@@ -544,7 +544,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
                  goback
              end-if             
            end-if            
-           display ' cmd line : ' cmd-go
+           display ' cmd line : ' cmd-go(1:80)
            call 'SYSTEM' using cmd-go
       *
            move  RETURN-CODE  to ar-tst-rtc01(idx)
@@ -864,7 +864,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
               move space to r-cmd
               move ar-ele-take-vet-02(idx-take)  to r-cmd
               write r-cmd
-              display "r-cmd = " r-cmd
+      D       display "r-cmd = " r-cmd
            .
        wrtr-99.
            exit.

@@ -26,9 +26,11 @@
 #include "fieldvalue.h"
 #include "utils.h"
 #include "job.h"
+#include "file.h"
 #include "outrec.h"
 #include "gcshare.h"
 #include "changefield.h"
+#include "findreplace.h"
 
 
 void outrec_initialize(struct outrec_t* outrec) {
@@ -118,7 +120,7 @@ struct outrec_t *outrec_constructor_padding(int nAbsPos, unsigned char *chfieldV
             else
     /* this is error because abs position is < of current position of field */
             {
-                fprintf(stderr,"*GCSORT*S500*ERROR: absolute position %d is minor of current position of field %d\n",
+                fprintf(stdout,"*GCSORT*S500*ERROR: absolute position %d is minor of current position of field %d\n",
                 nAbsPos, nPosAbsRec+1);
                 exit(GC_RTC_ERROR);
             }
@@ -187,6 +189,30 @@ struct outrec_t* outrec_constructor_possubstnchar(int npos, unsigned char* ntch,
 	}
 	return outrec;
 }
+
+struct outrec_t* outrec_constructor_findrep( void )
+{
+	struct outrec_t* outrec = (struct outrec_t*)malloc(sizeof(struct outrec_t));
+	if (outrec != NULL) {
+		outrec_initialize(outrec);
+		outrec->type = OUTREC_TYPE_FINDREP;
+		outrec->range.position = 0;
+		outrec->range.length = 0;
+		outrec->next = NULL;
+		outrec->changeCmd.changeCmdOpt = NULL;
+	}
+	return outrec;
+}
+
+int outrec_set_findrep(struct outrec_t* outrec, struct findrep_t* findrep)
+{
+	if (outrec != NULL) {
+		outrec->findrepCmd.findrepCmdOpt = findrep;
+	}
+	return 0;
+}
+
+
 void outrec_destructor(struct outrec_t *outrec) 
 {
 	switch (outrec->type) {
@@ -209,6 +235,14 @@ void outrec_destructor(struct outrec_t *outrec)
 				free(outrec->szChangeBufIn);
 				free(outrec->szChangeBufOut);
 			}		
+			break;
+		case OUTREC_TYPE_FINDREP:
+			if (outrec->findrepCmd.findrepCmdOpt != NULL) {
+				findrep_destructor(outrec->findrepCmd.findrepCmdOpt);
+				free(outrec->szChangeBufIn);
+				free(outrec->szChangeBufOut);
+			}
+			break;
 		default:
 			break;
 	}
@@ -261,6 +295,10 @@ int outrec_print(struct outrec_t *outrec) {
 		case OUTREC_TYPE_CHANGE_CMDOPT:
 			fprintf(stdout, "%d,%d", outrec->range.position + 1, outrec->range.length);
 			change_print(outrec->changeCmd.changeCmdOpt);
+			break;
+		case OUTREC_TYPE_FINDREP:
+			findrep_print(outrec->findrepCmd.findrepCmdOpt);
+			break;
 		default:
 			break;
 	}
@@ -272,7 +310,7 @@ int outrec_getLength(struct outrec_t *outrec) {
 
 	for (o=outrec;o!=NULL;o=o->next) {
 		switch (o->type) {
-			case OUTREC_TYPE_RANGE:
+			case OUTREC_TYPE_RANGE:	
 				length+=o->range.length;
 				break;
 			case OUTREC_TYPE_CHANGE_POSITION:
@@ -289,6 +327,11 @@ int outrec_getLength(struct outrec_t *outrec) {
 				break;
 			case OUTREC_TYPE_CHANGE_CMDOPT:
 				length += o->changeCmd.changeCmdOpt->vlen;
+				break;
+				/* FINDREP */
+			case OUTREC_TYPE_FINDREP:
+				length = globalJob->outputFile->maxLength;
+				break;
 			default:
 				break;
 		}
@@ -301,7 +344,7 @@ int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *i
 	int nSplit = 0;
 	struct outrec_t *o;
 	int nORangeLen = 0;
-	if (nIsMF == 1)             /* EMUALTE MFSORT  position is 1 for DFSORT position is +4  */
+	if (nIsMF == 1)             /* EMULATE MFSORT  position is 1 for DFSORT position is +4  */
 	if (job_EmuleMFSort() == 2) /* DFSort    0 Normal yes shift, 1 MF no shift            */
 	{
 		if (nFileFormat == FILE_TYPE_VARIABLE)
@@ -390,6 +433,28 @@ int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *i
 					utl_abend_terminate(CHANGE_ERR, 16, ABEND_EXEC);
 				}
 			break;
+			/* FINDREP */
+			case OUTREC_TYPE_FINDREP:
+			{
+				/* Reset buffer in and buffer out */
+				memset(o->szChangeBufIn, 0x00, COB_FILE_BUFF);
+				memset(o->szChangeBufOut, 0x00, COB_FILE_BUFF);
+				if (o->findrepCmd.findrepCmdOpt->nEndPos > 0)
+					nORangeLen = o->findrepCmd.findrepCmdOpt->nEndPos - o->findrepCmd.findrepCmdOpt->nStartPos;
+				else
+					nORangeLen = globalJob->LenCurrRek;
+				gc_memcpy(o->szChangeBufIn, input + o->findrepCmd.findrepCmdOpt->nStartPos + nSplitPos + nSplit, nORangeLen);
+				findrep_search_replace(o->findrepCmd.findrepCmdOpt, o->szChangeBufIn, o->szChangeBufOut, nORangeLen, nORangeLen, input + nSplitPos, o->findrepCmd.findrepCmdOpt->nDo);
+				/* save in output all data from input */
+				memcpy(output + nSplitPos + nSplit, input + nSplitPos + nSplit, globalJob->LenCurrRek);
+				/* copy data modified from replace   */
+				memcpy(output + o->findrepCmd.findrepCmdOpt->nStartPos + nSplitPos + nSplit, o->szChangeBufOut, nORangeLen);
+				
+				if (o->findrepCmd.findrepCmdOpt->nEndPos > 0)
+					position = globalJob->LenCurrRek;
+				else
+					position = nORangeLen;
+			}
 			default:
 				break;
 		}
@@ -513,6 +578,14 @@ int outrec_SetChangeCmdOpt(struct outrec_t* Outrec, struct change_t* chg)
 		Outrec->szChangeBufIn = malloc(COB_FILE_BUFF);
 		Outrec->szChangeBufOut = malloc(COB_FILE_BUFF);
 		Outrec->szChangeBufNoMatch = malloc(COB_FILE_BUFF);
+	}
+	return 0;
+}
+int outrec_SetFindRepCmdOpt(struct outrec_t* Outrec)
+{
+	if (Outrec != NULL) {
+		Outrec->szChangeBufIn = malloc(COB_FILE_BUFF);
+		Outrec->szChangeBufOut = malloc(COB_FILE_BUFF);
 	}
 	return 0;
 }

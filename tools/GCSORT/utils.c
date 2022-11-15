@@ -80,7 +80,7 @@ int utils_parseFileOrganization(const char *organization)
 		/* future use	} else if (!strcasecmp(organization,"SQMF")) {		//SEQ MF    */
 /* future use		return FILE_ORGANIZATION_SEQUENTIALMF;                      */
 	} else {
-		fprintf(stderr,"*GCSORT*P001 - Error parsing organization : %s invalid\n", organization);
+		fprintf(stdout,"*GCSORT*P001 - Error parsing organization : %s invalid\n", organization);
 		return -1;
 	}
 }
@@ -182,7 +182,7 @@ int utils_parseFieldType(const char *type)
 		return FIELD_TYPE_NUMERIC_Y2Z;
 		
 	} else {
-		fprintf(stderr, "*GCSORT*P002 - Error parsing datatye : %s invalid\n", type);
+		fprintf(stdout,"*GCSORT*P002 - Error parsing datatye : %s invalid\n", type);
 		return -1;
 	}
 }
@@ -258,7 +258,7 @@ int utils_getFieldTypeInt(char* strType)
 	else if (!strcasecmp(strType, "Y2Z")) {
 		return FIELD_TYPE_NUMERIC_Y2Z;
 	}
-	fprintf(stderr, "*GCSORT*P003 - Error parsing datatye : %s invalid\n", strType);
+	fprintf(stdout,"*GCSORT*P003 - Error parsing datatye : %s invalid\n", strType);
 	return -1;
 }
 
@@ -962,16 +962,16 @@ void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate)
 {
 	switch (nAbendType) {
     case MEMORYALLOC:
-        fprintf(stderr,"*GCSORT* ERROR: Aborting execution for problems with memory allocation. Code : %d\n", nCodeErr);
+        fprintf(stdout,"*GCSORT* ERROR: Aborting execution for problems with memory allocation. Code : %d\n", nCodeErr);
         break;
 	case EXITROUTINE:
-		fprintf(stderr, "*GCSORT* ERROR: Aborting execution from E15 routine. Code : %d\n", nCodeErr);
+		fprintf(stdout,"*GCSORT* ERROR: Aborting execution from E15 routine. Code : %d\n", nCodeErr);
 		break;
 	case NOMATCH_FOUND:
-		fprintf(stderr, "*GCSORT* ERROR: Aborting execution from CHANGE statement. NOMATCH found. Code : %d\n", nCodeErr);
+		fprintf(stdout,"*GCSORT* ERROR: Aborting execution from CHANGE statement. NOMATCH found. Code : %d\n", nCodeErr);
 		break;
 	default:
-        fprintf(stderr,"*GCSORT* ERROR: Aborting execution.  Code : %d\n", nCodeErr);
+        fprintf(stdout,"*GCSORT* ERROR: Aborting execution.  Code : %d\n", nCodeErr);
         break;
     }
     if (nTerminate == ABEND_EXEC)
@@ -1031,7 +1031,27 @@ void utils_SetRecordOptionSortLen(int l1, int l2, int l3, int l4, int l5, int l6
 	return;
 }
 
-int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut)
+int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut, int nCurrOcc, int nMaxOcc, int *nOverChar, int nShift)
+{
+	int nS = 0;
+	int nSizeFRT = 0;
+	unsigned char* pCheck = malloc(COB_FILE_BUFF);
+	if (pCheck == NULL) {
+		utl_abend_terminate(MEMORYALLOC, 16, ABEND_EXEC);
+	}
+	memset(pCheck, 0x00, COB_FILE_BUFF);
+	if (strlen(find) > 0 ) {
+		strcpy(pCheck, str);
+		nS = utl_replace_findrep(pCheck, find, set, result, strlen(find), strlen(set), lenIn, lenOut, nCurrOcc, nMaxOcc, nShift);
+		strncpy(pCheck, result, lenOut);
+	}
+	free(pCheck);
+	*nOverChar = (strlen(find) - strlen(set)) * nS;		/* Calculate difference record length  */
+
+	return nS;
+}
+
+int utl_replace_single_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut)
 {
 	int nS = 0;
 	int nT = 0;
@@ -1040,15 +1060,15 @@ int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned 
 		utl_abend_terminate(MEMORYALLOC, 16, ABEND_EXEC);
 	}
 	memset(pCheck, 0x00, COB_FILE_BUFF);
-	if (strlen(str) > 0 ) {
+	if (strlen(find) > 0) {
 		strcpy(pCheck, str);
 		/* do { */
-			nS = utl_replace_str(pCheck, find, set, result, lenIn, lenOut);
-			if (nS == 0) {
-				/* strncpy(pCheck, result, (strlen(str) + (lenIn - lenOut))); */
-				strncpy(pCheck, result, lenOut);
-				nT++;
-			}
+		nS = utl_replace_str(pCheck, find, set, result, lenIn, lenOut);
+		if (nS == 0) {
+			/* strncpy(pCheck, result, (strlen(str) + (lenIn - lenOut))); */
+			strncpy(pCheck, result, lenOut);
+			nT++;
+		}
 		/*  } while (nS == 0); */
 	}
 	free(pCheck);
@@ -1068,14 +1088,55 @@ int utl_replace_str(unsigned char* str, unsigned char* find, unsigned char* set,
 	}
 
 	gc_memcpy(result, set, lenOut);
-	/*
-	strncpy(buffer, str, p - str);
-	buffer[p - str] = '\0';
-	sprintf(buffer + (p - str), "%s%s", set, p + lenIn);
-	strcpy(result, buffer);
-	*/
+
 	return 0;
 }
+
+int utl_replace_findrep(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int find_len, int repl_len, int lenIn, int lenOut, int nCurrOcc, int nMaxOcc, int nShift)
+{
+	char buffer[COB_FILE_BUFF];
+	memset(buffer, 0x00, COB_FILE_BUFF);
+	char* insert_point = &buffer[0];
+	const char* tmp = str;
+	int nSubs = nCurrOcc;
+	int nNumShift = 0;
+	while (1) {
+		const char* p = strstr(tmp, find);
+
+		/* walked past last occurrence of find; copy remaining part */
+		if (p == NULL) {
+			strcpy(insert_point, tmp);
+			break;
+		}
+		nSubs = nSubs + 1;
+		if (nSubs > nMaxOcc) {
+			strcpy(insert_point, tmp);
+			break;				/* Break replace after n occurences */
+		}
+		/* copy part before find */
+		memcpy(insert_point, tmp, p - tmp);
+		insert_point += p - tmp;
+
+		/* copy set string */
+		memcpy(insert_point, set, repl_len);
+		insert_point += repl_len;
+
+		/* adjust pointers, move on */
+		tmp = p + find_len;
+		/* Check Shift option (FINDREP)  */
+		if ((nShift == 1) && ((find_len - repl_len) > 0)) {
+			nNumShift = (find_len - repl_len);
+			memcpy(insert_point, tmp - nNumShift, nNumShift);
+			insert_point += nNumShift;
+		}
+	}
+
+	/* write altered string back to str */
+	memcpy(result, buffer, lenOut);
+
+	return nSubs;
+}
+
 void sort_temp_name(const char* ext)
 {
 #if defined(_MSC_VER)  ||  defined(__MINGW32__) || defined(__MINGW64__)
@@ -1103,7 +1164,7 @@ void sort_temp_name(const char* ext)
 	int                  cob_iteration;
 	cob_process_id = getpid();
 	cob_iteration = globalJob->nIndextmp;
-	memset(cob_tmp_temp, 0x00, sizeof(cob_tmp_temp));
+	memset(cob_tmp_temp, 0x00, FILENAME_MAX + 8);
 	/* -->>printf("globalJob->strPathTempFile %s \n", globalJob->strPathTempFile);  */
 
 /* linux 	if (globalJob->strPathTempFile == NULL){    */
@@ -1146,7 +1207,7 @@ int utl_str_searchreplace(char* orig, char* search, char* replace, char* result)
 	int len_front;		/* distance between search and end of last search				 */
 	int count;			/* number of searchlacements									 */
 
-	// sanity checks and initialization
+	/* sanity checks and initialization */
 	if (!orig || !search)
 		return 0;
 	len_search = strlen(search);
@@ -1156,7 +1217,7 @@ int utl_str_searchreplace(char* orig, char* search, char* replace, char* result)
 		replace = "";
 	len_replace = strlen(replace);
 
-	// count the number of searchlacements needed
+	/* count the number of searchlacements needed */
 	ins = orig;
 	for (count = 0; tmp = strstr(ins, search); ++count) {
 		ins = tmp + len_search;
@@ -1179,4 +1240,9 @@ int utl_str_searchreplace(char* orig, char* search, char* replace, char* result)
 	}
 	strcpy(tmp, orig);
 	return 1;
+}
+
+void util_view_numrek(void) {
+	fprintf(stdout, " Total Records Readed  : " NUM_FMT_LLD "\n", (long long)globalJob->recordNumberTotal);
+	fprintf(stdout, " Total Records Writed  : " NUM_FMT_LLD "\n", (long long)globalJob->recordWriteOutTotal);
 }

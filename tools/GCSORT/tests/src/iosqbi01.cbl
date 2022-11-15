@@ -127,8 +127,10 @@
 		  move -222222222222222222 to msr-18s
 		  move  222222222222222222 to msr-18
     	  write masterseqrecord.
-       end-close.             
+       end-close.
+      D         display "before - close masterseqfile".
           close masterseqfile.
+      D         display "after  - close masterseqfile".
        end-proc.
           stop run.
       *       
