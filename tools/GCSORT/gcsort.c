@@ -87,7 +87,6 @@ ioixpafix_(const int entry) {
 #define  COB_MODULE_DATE		20210104
 #define  COB_MODULE_TIME		184615
 
-int g_cb_ebcdic_sign = 0;
 
 extern int yydebug;
 void yyset_debug(int ndbg);
@@ -371,7 +370,7 @@ void verify_options(int numargs, char** args)
 					if (!strcasecmp(pch, "ASCII"))
 						g_cb_ebcdic_sign = 0;
 					else {
-						fprintf(stdout, "*GCSORT* ERROR: Problem with option -fsign, values correct are ASCII/EBCDIC\n");
+						fprintf(stdout, "*GCSORT* ERROR: Problem with option -fsign, correct values are ASCII/EBCDIC\n");
 						exit(GC_RTC_ERROR);
 					}
 				}

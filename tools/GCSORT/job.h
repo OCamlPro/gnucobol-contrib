@@ -67,6 +67,8 @@ struct job_t;
 #define SIZEINT				sizeof(int)     /* 4    */
 #define SIZEINT64			sizeof(int64_t) /* 8    */
 
+#define MAX_FIELDSIZE		4092  /* DFSort limits */
+
 #define SZPOSPNT            SIZEINT64
 #define SZLENREC            SIZEINT
 #define SZPNTDATA           SIZEINT64

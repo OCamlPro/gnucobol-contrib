@@ -1174,13 +1174,13 @@ int join_join_files(struct job_t* job) {
 				}
 
 
-				//if ((useRecord == 0) || ((join_F1_read() == 1) && (join_F1_write() == 0))) {
+				/* //if ((useRecord == 0) || ((join_F1_read() == 1) && (join_F1_write() == 0))) { */
 				if (((join_F1_read() == 1) && (join_F1_write() == 0))) {
 					memset(szBuffRek, 0x00, join->fileSaveOut->maxLength);
 					memcpy(szBuffRek, recordBufferF1, join->fileSaveOut->maxLength);
 					fprintf(stderr, "Record F1 discarded: %.*s\n", join->fileSaveF1->maxLength, szBuffRek);
 				}
-				//if ((useRecord == 0) || ((join_F2_read() == 1) && (join_F2_write() == 0))) {
+				/* //if ((useRecord == 0) || ((join_F2_read() == 1) && (join_F2_write() == 0))) { */
 				if (((join_F2_read() == 1) && (join_F2_write() == 0))) {
 					memset(szBuffRek, 0x00, recordBufferLength);
 					memcpy(szBuffRek, recordBufferF2, join->fileSaveOut->maxLength);

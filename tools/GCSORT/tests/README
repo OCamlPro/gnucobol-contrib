@@ -69,26 +69,37 @@
         4) execute     : gctestrun            ---> execute all cases
 
         If test is ok, program prints :
-            ---------------------------------------
-            |   Test id      | retcode |  status  |
-            ---------------------------------------
-            |   gctestrun1   |    00   |  Test OK |
-            |   gctestrun2   |    00   |  Test OK |
-            |   gctestrun3   |    00   |  Test OK |
-            |   gctestrun4   |    00   |  Test OK |
-            |   gctestrun5   |    00   |  Test OK |
-            |   gctestrun6   |    00   |  Test OK |
-            ---------------------------------------
-            =======================================
-            =====   T E S T    P A S S E D    =====
-            =======================================
+        *===============================================*
+        ------------------------------------------------
+        |   Test id      |      retcode     |  status  |
+        ------------------------------------------------
+        |   gctestrun1   |    +0000000000   |    OK    |
+        |   gctestrun2   |    +0000000000   |    OK    |
+        |   gctestrun3   |    +0000000000   |    OK    |
+        |   gctestrun4   |    +0000000000   |    OK    |
+        |   gctestrun5   |    +0000000000   |    OK    |
+        |   gctestrun6   |    +0000000000   |    OK    |
+        ------------------------------------------------
+        =======================================
+        =====   T E S T    P A S S E D    =====
+        =======================================
         
         You can execute : 
-            (Linux) ./gctestrun 1>../log/logout.txt  2>../log/logerr.txt 
-            (MinGW) ./gctestrun 1>../log/logout.txt  2>../log/logerr.txt
-            (Windows) gctestrun 1>..\log\logout.txt  2>..\log\logerr.txt or
+            (Linux) ./gctestrun 1>../log/run_logout.txt 
+            (MinGW) ./gctestrun 1>../log/run_logout.txt 
+            (Windows) gctestrun 1>..\log\run_logout.txt 
         to redirect output message  into files.
         After the run, checks log files. 
+
+        In the log file run_logerr.txt there will be the following lines :
+        *GCSORT*W968* WARNING : Warning reading file ../files/sqbi03 - File Status (04) 
+        *GCSORT*W680* WARNING : OUTFIL without FILES/FNAMES, forced GIVE definition ../files/fil_outfil_100_009.txt.srt
+        *GCSORT*W680* WARNING : OUTFIL without FILES/FNAMES, forced GIVE definition ../files/fil_outfil_100_009.txt.srt
+        *GCSORT*W680* WARNING : OUTFIL without FILES/FNAMES, forced GIVE definition ../files/fil_outfil_100_08a.txt.srt
+        *GCSORT*W680* WARNING : OUTFIL without FILES/FNAMES, forced GIVE definition ../files/fil_outfil_100_10a.txt.srt
+        *GCSORT*W680* WARNING : OUTFIL without FILES/FNAMES, forced GIVE definition ../files/fil_outfil_001_012.txt
+        *GCSORT*W680* WARNING : OUTFIL without FILES/FNAMES, forced GIVE definition ../files/fil_outfil_001_014.txt
+        *GCSORT*W680* WARNING : OUTFIL without FILES/FNAMES, forced GIVE definition ../files/fil_outfil_001_015.txt        
         
-        
+        These are warnings and not errors.
         

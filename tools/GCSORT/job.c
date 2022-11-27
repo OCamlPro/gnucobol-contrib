@@ -467,10 +467,12 @@ void job_ReviewMemAlloc ( struct job_t *job  )
 	cob_set_int(g_ckfdate2, 0);
 
 	/* field for date (only reference)  */
-	g_fdate1 = util_MakeAttrib_call(COB_TYPE_NUMERIC_DISPLAY, 8, 0, 0, 8, NOALLOCATE_DATA);
+	/* //-->> s.m. 20221125 g_fdate1 = util_MakeAttrib_call(COB_TYPE_NUMERIC_DISPLAY, 8, 0, 0, 8, NOALLOCATE_DATA); */
+	g_fdate1 = util_MakeAttrib_call(COB_TYPE_NUMERIC_DISPLAY, 8, 0, 0, 8, ALLOCATE_DATA);
 
 	/* field for date (only reference) */
-	g_fdate2 = util_MakeAttrib_call(COB_TYPE_NUMERIC_DISPLAY, 8, 0, 0, 8, NOALLOCATE_DATA);
+	/* //-->> s.m. 20221125 g_fdate2 = util_MakeAttrib_call(COB_TYPE_NUMERIC_DISPLAY, 8, 0, 0, 8, NOALLOCATE_DATA); */
+	g_fdate2 = util_MakeAttrib_call(COB_TYPE_NUMERIC_DISPLAY, 8, 0, 0, 8, ALLOCATE_DATA);
 	/* cob_set_int(g_fdate2, 0);    */
 	return;
 }
@@ -505,7 +507,7 @@ int job_sort (struct job_t* job)
 		else
 			nRC = job_save_tempfile(job);
 		if (job->nStatistics == 2) 				
-                util_print_time_elap("After   job_save          ");
+                util_print_time_elap("After   job_save Tempfile ");
 		if (nRC == -1)
 				break;
 	} while (nContinueSrtTmp == 1);
@@ -1935,14 +1937,18 @@ int job_destroy(struct job_t *job) {
 	job_cob_field_destroy(g_ckfdate2);
 
 	/* only reference no allocation             */
-	job_cob_field_destroy_NOData(g_fd1);
+	/* field with allocation	job_cob_field_destroy_NOData(g_fd1); */
 	/*  only reference no allocation            */  
-	job_cob_field_destroy_NOData(g_fd2);
+	/* field with allocation	job_cob_field_destroy_NOData(g_fd2); */
+	job_cob_field_destroy(g_fd1);
+	job_cob_field_destroy(g_fd2);
 
 	/* new 20211228 */
 	/* field for date (only reference)  */
-	job_cob_field_destroy_NOData(g_fdate1);
-	job_cob_field_destroy_NOData(g_fdate2);
+	/* field with allocation	job_cob_field_destroy_NOData(g_fdate1);  */
+	/* field with allocation	job_cob_field_destroy_NOData(g_fdate2);  */
+	job_cob_field_destroy(g_fdate1);
+	job_cob_field_destroy(g_fdate2);
 
 	if (job->inputFile!=NULL) {
 		for (file=job->inputFile; file!=NULL; file=file_getNext(file)) {
@@ -4125,16 +4131,16 @@ int job_SetPosLenKeys(int* arPosLen) {
 			nLen = sortField_getLength(sortField);
 			job_getTypeFlags (sortField_getType(sortField), &nType, &nFlags, nLen);
 			if (IsDateType(sortField->type)) {
-				g_fdate1->data = (unsigned char*)first + nSp;
-				g_fdate2->data = (unsigned char*)second + nSp;
+				gc_memcpy(g_fdate1->data, (unsigned char*)first + nSp, nLen);
+				gc_memcpy(g_fdate2->data, (unsigned char*)second + nSp, nLen);
 				job_cob_field_reset(g_fdate1, COB_TYPE_NUMERIC_DISPLAY, nLen, nLen);
 				job_cob_field_reset(g_fdate2, COB_TYPE_NUMERIC_DISPLAY, nLen, nLen);
 				result = job_CheckTypeDate(sortField->type, (cob_field*)g_fdate1, g_fdate2);
 			}
 			else 
 			{
-				g_fd1->data = (unsigned char*)first + nSp;
-				g_fd2->data = (unsigned char*)second + nSp;
+				gc_memcpy(g_fd1->data, (unsigned char*)first + nSp, nLen);
+				gc_memcpy(g_fd2->data, (unsigned char*)second + nSp, nLen);
 				job_cob_field_set(g_fd1, nType, nLen, 0, nFlags, nLen);
 				job_cob_field_set(g_fd2, nType, nLen, 0, nFlags, nLen);
 				result = cob_numeric_cmp(g_fd1, g_fd2);
@@ -4153,12 +4159,14 @@ int job_SetPosLenKeys(int* arPosLen) {
 
 	return 0;
 }
+/* //-->>  s.m. 20221125 */
 INLINE int job_compare_rek(const void *first, const void *second, int bCheckPosPnt)
 {
     int nType, nLen, nFlags, nTipo;
 	lPosA = 0;
 	lPosB = 0;
 	result=0;
+
 	nSp=SZPOSPNT; /* first 8 byte for PosPnt    */
 	for (sortField=globalJob->sortField; sortField!=NULL; sortField=sortField_getNext(sortField)) {
 		nTipo = sortField->type;
@@ -4170,21 +4178,23 @@ INLINE int job_compare_rek(const void *first, const void *second, int bCheckPosP
 		}
         else
 		{
-            job_getTypeFlags (sortField_getType(sortField), &nType, &nFlags, nLen);
-			if (IsDateType(nType)) {
-				g_fdate1->data = (unsigned char*)first + nSp;
-				g_fdate2->data = (unsigned char*)second + nSp;
+            job_getTypeFlags (sortField_getType(sortField), &nTipo, &nFlags, nLen);
+			if (IsDateType(nTipo)) {
+				gc_memcpy(g_fdate1->data, (unsigned char*)first + sortField->position - 1 + nSp, nLen);
+				gc_memcpy(g_fdate2->data, (unsigned char*)second + sortField->position - 1 + nSp, nLen);
 				job_cob_field_reset(g_fdate1, COB_TYPE_NUMERIC_DISPLAY, nLen, nLen);
 				job_cob_field_reset(g_fdate2, COB_TYPE_NUMERIC_DISPLAY, nLen, nLen);
 				result = job_CheckTypeDate(sortField->type, (cob_field*)g_fdate1, (cob_field*)g_fdate2);
 			}
 			else
 			{
-				g_fd1->data = (unsigned char*)first + sortField->position - 1 + nSp;
-				g_fd2->data = (unsigned char*)second + sortField->position - 1 + nSp;
-				job_cob_field_set(g_fd1, nType, nLen, 0, nFlags, nLen);
-				job_cob_field_set(g_fd2, nType, nLen, 0, nFlags, nLen);
-				result = cob_numeric_cmp(g_fd1, g_fd2);  /* cob_cmp(g_fd1, g_fd2);  */
+				job_cob_field_set(g_fd1, nTipo, nLen, 0, nFlags, nLen);
+				job_cob_field_set(g_fd2, nTipo, nLen, 0, nFlags, nLen);
+				gc_memcpy(g_fd1->data, (unsigned char*)first + sortField->position - 1 + nSp, nLen);
+				gc_memcpy(g_fd2->data, (unsigned char*)second + sortField->position - 1 + nSp, nLen);
+
+				result = cob_numeric_cmp(g_fd1, g_fd2);  /* result = cob_cmp(g_fd1, g_fd2);  */
+				
 			}
         }
 
@@ -4946,14 +4956,6 @@ int job_merge_files(struct job_t *job) {
 					goto job_merge_files_exit;
 				}
 
-				//if (atol((char *)job->outputFile->stFileDef->file_status) != 0) {
-				//	fprintf(stdout,"*GCSORT*S067*ERROR: Cannot open file %s - File Status (%c%c)\n",file_getName(job->outputFile),
-				//		job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
-				//	job_print_error_file(job->outputFile->stFileDef, nLenRecOut);
-            	//	retcode_func = -1;
-				//	goto job_merge_files_exit;
-				//}
-
 				job->recordWriteOutTotal++;
 			}
 			/* OUTFIL   */
@@ -5099,7 +5101,8 @@ cob_field* job_cob_field_create ( void )
 	attrArea = (cob_field_attr*) malloc(sizeof(cob_field_attr));
 	field_ret = (cob_field*)malloc(sizeof(cob_field));
 	field_ret->attr = attrArea;
-	field_ret->data = NULL;
+	/* s.m. 20221125 field_ret->data = NULL; */
+	field_ret->data = (unsigned char*) malloc(MAX_FIELDSIZE);
 	return field_ret;
 }
 void job_cob_field_set (cob_field* field_ret, int type, int digits, int scale, int flags, int nLen)

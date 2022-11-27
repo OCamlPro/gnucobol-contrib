@@ -243,7 +243,8 @@ static void E15CALL_module_init (cob_module *module)
   module->module_time = COB_MODULE_TIME;
   module->module_type = 0;
   module->module_param_cnt = 0;
-  module->ebcdic_sign = 0;
+  /* //-->> module->ebcdic_sign = 0; */
+  module->ebcdic_sign = g_cb_ebcdic_sign;
   module->decimal_point = '.';
   module->currency_symbol = '$';
   module->numeric_separator = ',';
@@ -487,7 +488,8 @@ static void E35CALL_module_init(cob_module* module)
     module->module_time = COB_MODULE_TIME;
     module->module_type = 0;
     module->module_param_cnt = 0;
-    module->ebcdic_sign = 0;
+    /* module->ebcdic_sign = 0; */
+    module->ebcdic_sign = g_cb_ebcdic_sign;
     module->decimal_point = '.';
     module->currency_symbol = '$';
     module->numeric_separator = ',';

@@ -1,3 +1,7 @@
+2022-11-25  Sauro Menna  <smenna@users.sourceforge.net>
+    * Version 1.03.04
+    * Fix problem in field compare
+
 2022-11-14  Sauro Menna  <smenna@users.sourceforge.net>
     * Version 1.03.04
     * Fixed reference to __LIBCOB_VERSION and __LIBCOB_VERSION_MINOR

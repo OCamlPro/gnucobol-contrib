@@ -3901,7 +3901,7 @@ yyreduce:
                 }
                 else
                     findrep_setType(findrep, FINDREP_TYPE_ININOUT);
-                //-->>findrepfield_setOutForAll(findrep_field, $9);
+                /* //-->>findrepfield_setOutForAll(findrep_field, $9); */
                 findrep_setpairs(findrep, findrep_field);
                 outrec_set_findrep(outrec, findrep);
             }
@@ -3944,7 +3944,7 @@ yyreduce:
                 }
                 else
                     findrep_setType(findrep, FINDREP_TYPE_ININOUT);
-                //-->>findrepfield_setOutForAll(findrep_field, $9);
+                /* //-->>findrepfield_setOutForAll(findrep_field, $9); */
                 findrep_setpairs(findrep, findrep_field);
                 inrec_set_findrep(inrec, findrep);
             }

@@ -25,6 +25,8 @@
 #define  COB_MODULE_DATE		20210104
 #define  COB_MODULE_TIME		184615
 
+static int g_cb_ebcdic_sign = 0;
+
 /* -- #ifdef	_WIN32  */
 #if defined(_WIN32) && ( !defined(__MINGW32__) && !defined(__MINGW64__))
 
