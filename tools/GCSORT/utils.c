@@ -848,8 +848,11 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
            attrArea->flags  = attrArea->flags | COB_FLAG_IS_FP | COB_FLAG_HAVE_SIGN;
             break;
         case COB_TYPE_NUMERIC_PACKED:
+			/*
              if (nLen <= 1) 
-                attrArea->digits = nLen*2;
+                /* Why ?? attrArea->digits = nLen * 2; */
+			/*
+				attrArea->digits = nLen * 1;
              else
              {
                 if (nLen % 2 == 0)
@@ -857,6 +860,8 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
 			    else
 	    	    	attrArea->digits = (nLen*2)-1;
              }
+			*/
+			attrArea->digits = (nLen * 2) - 1;	/* digits number */
             attrArea->scale = 0;
     	    attrArea->flags  = attrArea->flags | COB_FLAG_HAVE_SIGN;
             break;

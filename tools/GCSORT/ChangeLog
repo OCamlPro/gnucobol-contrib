@@ -1,6 +1,9 @@
-2022-11-25  Sauro Menna  <smenna@users.sourceforge.net>
+2022-12-01  Sauro Menna  <smenna@users.sourceforge.net>
+    * Fixed problem with packed-decimal length
+
+2022-11-27  Sauro Menna  <smenna@users.sourceforge.net>
     * Version 1.03.04
-    * Fix problem in field compare
+    * Fix problem in field compare with fsign=EBCDIC/ASCII
 
 2022-11-14  Sauro Menna  <smenna@users.sourceforge.net>
     * Version 1.03.04

@@ -4249,7 +4249,8 @@ static INLINE2 int job_compare_qsort(const void* first, const void* second)
 			if IsDateType(g_nTypeGC)
 				g_result = job_CheckTypeDate(g_nTypeGC, (cob_field*)cob_field_key[g_idx - 2], (cob_field*)cob_field_key[g_idx - 1]);
 			else
-				g_result = cob_numeric_cmp((cob_field*)cob_field_key[g_idx - 2], (cob_field*)cob_field_key[g_idx - 1]);
+			g_result = cob_numeric_cmp((cob_field*)cob_field_key[g_idx - 2], (cob_field*)cob_field_key[g_idx - 1]);
+			/* g_result = cob_cmp((cob_field*)cob_field_key[g_idx - 2], (cob_field*)cob_field_key[g_idx - 1]); */
         }
 
         if (g_result) {
@@ -4423,6 +4424,15 @@ int job_compare_date_YYDDD(cob_field* fk2, cob_field* fk1)
         Field nn (two digits)  
 	    if field < limit inferior ---> date major, add liminf to field or subtract liminf to field
     */
+
+	/* Reset digit number */
+	cob_field_attr* attrArea;
+	attrArea = (cob_field_attr*)fk2->attr;
+	attrArea->digits = 5;
+	attrArea = (cob_field_attr*)fk1->attr;
+	attrArea->digits = 5;
+
+
 	int ndate1 = cob_get_int(fk1);
 	int ndate2 = cob_get_int(fk2);
 	int nyear1 = ndate1 / 1000;
@@ -4460,6 +4470,15 @@ int job_compare_date_YYMMDD(cob_field* fk2, cob_field* fk1)
 	    Field nn (two digits)  
 	    if field < limit inferior ---> date major, add liminf to field or subtract liminf to field
     */
+
+	/* Reset digit number */
+	cob_field_attr* attrArea;
+	attrArea = (cob_field_attr*)fk2->attr;
+	attrArea->digits = 6;
+	attrArea = (cob_field_attr*)fk1->attr;
+	attrArea->digits = 6;
+
+
 	int ndate1 = cob_get_int(fk1);
 	int ndate2 = cob_get_int(fk2);
 	int nyear1 = ndate1 / 10000;
@@ -4497,6 +4516,14 @@ int job_compare_date_YY(cob_field* fk2, cob_field* fk1)
 	    Field nn (two digits)  
 	    if field < limit inferior ---> date major, add liminf to field or subtract liminf to field
     */
+
+	/* Reset digit number */
+	cob_field_attr* attrArea;
+	attrArea = (cob_field_attr*)fk2->attr;
+	attrArea->digits = 2;
+	attrArea = (cob_field_attr*)fk1->attr;
+	attrArea->digits = 2;
+
 	int ndate1 = cob_get_int(fk1);
 	int ndate2 = cob_get_int(fk2);
 
