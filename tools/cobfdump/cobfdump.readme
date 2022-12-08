@@ -1,0 +1,163 @@
+
+2022-12-07
+
+The 'cobfdump' program is an extension of Gary Cutler's excellant
+'cobdump'.  The extension provides the ability to request your dump
+information be placed into a disk file instead of on 'SYSERR'.  This
+allows you to run your testing in one session while observing the dump
+data in another session.  It also means that your test session isn't
+scrambled with displayed dump data.
+
+The CALL 'cobfdump' verb now supports up to four arguments.  The first two
+are identical to GC's original 'cobdump'.  Those are:
+
+- arg1: reference the data you want hex dumped
+
+- - Note: this is the only mandatory argument.
+
+
+- arg2: the number of bytes that you want to process
+
+- - Note: the default length is the length in bytes of arg1.  However you
+may specify more or fewer (not zero) bytes to be processed.  If this value
+evaluates to less than one, it is defaulted to one.
+
+
+The new arguments are:
+
+- arg3: the name of a disk file to receive the formatted output.
+
+- - Note: the default action is to first check if the named file exists.
+if the named file is found, output to disk is canclled and the display
+reverts to 'SYSERR'.  If the named file is not found, 'OPEN OUTPUT' is
+used to create the file.  More on file naming later.
+
+This default action is a bit of security to prevent the accidental
+destruction of other possibly system sensitive programs or files.  Of
+course no one should ever write a program that does not give a programmer
+the option to shoot themselves in the foot.  To that end we offer:
+
+
+- arg4: If this argument is present and has a value of 'E' (upper-case
+required), it changes the file open mode to 'OPEN EXTEND'.
+
+- - Note: This option effectively cancels to initial check for the
+presence of the dump file you have named.  This option is supplied so
+repeated calls for dump processing can be appended to an existing dump
+file.  Care in naming your dump files is the order of the day when using
+this option.  There are no checks for system files or any particular name
+that may in fact be detrimental to the health of the system.
+
+           All the usual denials of responsibility apply.
+
+Another note: 'arg2' must be included if 'arg3' and/or 'arg4' are used.
+
+
+Moving on, here are a few examples.
+
+Assumptions:
+      01  DATAWORK    PIC X(255).
+
+CALL 'cobfdump' USING DATAWORK.
+- Similar to original 'cobdump'.  The entire contents of 'DATAWORK' are
+hex dumped to 'SYSERR'.
+
+
+
+CALL 'cobfdump' USING DATAWORK, 12.
+- Similar to original 'cobdump'.  The first 12 bytes of 'DATAWORK' are hex
+dumped to 'SYSERR'.
+
+
+
+CALL 'cobfdump' USING DATAWORK(14:), 12.
+- Similar to original 'cobdump'.  Starting at offset 14, 12 bytes of
+'DATAWORK' are hex dumped to 'SYSERR'.
+
+
+
+CALL 'cobfdump' USING DATAWORK, 12, "./mydumpfile".
+- The first 12 bytes of 'DATAWORK' are hex dumped to "./mydumpfile".
+
+- - Note: if this verb is repeated exactly as written above, the contents
+of "./mydumpfile" will depend on one of the following scenarios:
+
+1) If you deleted "./mydumpfile" prior to the 'CALL', the contents of
+"./mydumpfile" will reflect the latest values in 'DATAWORK'.
+
+2) If you did not delete "./mydumpfile" prior to the 'CALL', the contents
+of "./mydumpfile" will not be changed and the dump will go to 'SYSERR'.
+
+
+
+CALL 'cobfdump' USING DATAWORK, 12, "./mydumpfile", "E".
+- The hex dump of the first 12 bytes of 'DATAWORK' are appended to
+"./mydumpfile" if it already exists else a new file is created.
+
+- - Note: if this verb is repeated as is, the contents of "./mydumpfile"
+will be appended with new dump data.
+
+
+Invalid usage or just bad ideas ...
+
+CALL 'cobfdump' USING DATAWORK,, "./mydumpfile", "E".
+- Note: missing 'arg2' (length of data dump) - AbEnd
+
+CALL 'cobfdump' USING DATAWORK,17, "/etc/passwd", "E".
+- Note: Bad idea ...  if an explanation is necessary consider a career at
+Burger King.
+
+
+
+A word on file naming ...
+
+IMHO file creation seems to work better in GnuCobol if the file name is a
+fully qualified value.  Again that is my opinion only.  Therefore if a
+file name does not start with a '/' or a '\' we will prepend the submitted
+name with the path to the current folder.
+
+Assumptions:
+
+$(pwd) = /my/work/area
+
+01  DATAWORK    PIC X(255).
+
+
+
+Examples:
+
+CALL 'cobfdump' USING DATAWORK, 12, "mydumpfile".
+Actual file name used: /my/work/area/mydumpfile
+
+CALL 'cobfdump' USING DATAWORK, 12, "./mydumpfile".
+Actual file name used: /my/work/area/mydumpfile
+
+CALL 'cobfdump' USING DATAWORK, 12, "/tmp/mydumpfile".
+Actual file name used: /tmp/mydumpfile
+
+
+
+I sometimes use 'cobfdump' as a way to produce checkpoints when working
+through bothersome code.  Example:
+
+(Remember to delete the files named in the examples prior to use.)
+
+...
+CALL 'cobfdump' USING DATAWORK, 12, "checkpoint.1".
+...
+CALL 'cobfdump' USING CUSTRECD(14:4), 4, "checkpoint.2".
+...
+CALL 'cobfdump' USING PAYMENTS, 62, "checkpoint.3".
+...
+CALL 'cobfdump' USING DATAWORK(24:12), 12, "checkpoint.4".
+...
+etc
+
+
+
+Bug reports and comments are welcome.
+
+Gregory A Failing, CDP
+FCSI
+
+
