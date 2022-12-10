@@ -98,6 +98,9 @@
 *>------------------------------------------------------------------------------
 *> 2021.05.02 Laszlo Erdos: 
 *>            - JAPI_INITIALIZE, japi_initialize.
+*>------------------------------------------------------------------------------
+*> 2022.12.10 Laszlo Erdos: 
+*>            - JAPI_TOFRONT, japi_tofront
 *>******************************************************************************
 */
 
@@ -225,6 +228,7 @@
   #define JAPI_CLEARTABLE                         2122
   #define JAPI_SETCOLUMNWIDTHS                    2123
   #define JAPI_INITIALIZE                         2124
+  #define JAPI_TOFRONT                            2125
 
 
   /*   JAPI_QUESTIONS  */
@@ -491,6 +495,7 @@
   extern  int   japi_getaction (  );
   extern  int   japi_nextaction (  );
   extern  void  japi_show ( int  );
+  extern  void  japi_tofront ( int  );
   extern  void  japi_showpopup ( int , int , int  );
   extern  void  japi_add ( int , int  );
   extern  void  japi_release ( int  );

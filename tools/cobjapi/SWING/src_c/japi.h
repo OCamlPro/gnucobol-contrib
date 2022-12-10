@@ -83,6 +83,9 @@
 *>------------------------------------------------------------------------------
 *> 2021.05.02 Laszlo Erdos: 
 *>            - j_initialize
+*>------------------------------------------------------------------------------
+*> 2021.12.10 Laszlo Erdos: 
+*>            - j_tofront
 *>******************************************************************************
 */
 
@@ -382,6 +385,7 @@
     extern  int   j_getaction ( void  );
     extern  int   j_nextaction ( void  );
     extern  void  j_show ( int  );
+    extern  void  j_tofront ( int  );
     extern  void  j_showpopup ( int , int , int  );
     extern  void  j_add ( int , int  );
     extern  void  j_release ( int  );

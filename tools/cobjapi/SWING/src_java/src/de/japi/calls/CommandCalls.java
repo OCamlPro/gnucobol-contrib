@@ -412,6 +412,15 @@ public class CommandCalls {
             ((Japi2List) c).update();
         }
     }
+
+    public static void toFront(Japi2Session session, Japi2Frame c) {
+        session.log2("toFront {0}", c);
+        c.setVisible(true);
+        c.setExtendedState(Japi2Frame.ICONIFIED);
+        c.setExtendedState(Japi2Frame.NORMAL);
+        c.toFront();
+        c.requestFocus();
+    }
     
     public static void showPopUp(Japi2Session session, JPopupMenu m)
             throws IOException {

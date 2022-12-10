@@ -47,6 +47,9 @@
 *>------------------------------------------------------------------------------
 *> 2020.05.30 Laszlo Erdos: 
 *>            - J-ADDTABWITHICON.
+*>------------------------------------------------------------------------------
+*> 2022.12.10 Laszlo Erdos: 
+*>            - J-TOFRONT.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -171,6 +174,7 @@
     MOVE J-SETPOS(WS-LABEL, WS-XPOS, WS-YPOS) TO WS-RET
 
     MOVE J-SHOW(WS-FRAME) TO WS-RET
+    MOVE J-TOFRONT(WS-FRAME) TO WS-RET
 
 *>  Waiting for actions
     PERFORM FOREVER

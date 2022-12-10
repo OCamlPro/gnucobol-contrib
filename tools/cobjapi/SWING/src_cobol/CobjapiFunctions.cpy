@@ -90,6 +90,9 @@
 *>------------------------------------------------------------------------------
 *> 2021.05.02 Laszlo Erdos: 
 *>            - J-INITIALIZE
+*>------------------------------------------------------------------------------
+*> 2022.12.10 Laszlo Erdos: 
+*>            - J-TOFRONT
 *>******************************************************************************
 
  FUNCTION J-ADD
@@ -322,6 +325,7 @@
  FUNCTION J-TITLEDNAMEDCOLORPANEL
  FUNCTION J-TRANSLATE
  FUNCTION J-TREE
+ FUNCTION J-TOFRONT
  FUNCTION J-VSCROLLBAR
  FUNCTION J-WINDOW
  FUNCTION J-WINDOWLISTENER.

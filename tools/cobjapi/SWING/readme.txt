@@ -300,6 +300,9 @@ Program history, changes and bug fixes are listed in program headers.
 Date       Name / Change description
 ========== ==================================================================
 -----------------------------------------------------------------------------
+2022.12.10 Laszlo Erdos:
+           - J-TOFRONT added. 
+-----------------------------------------------------------------------------
 2021.05.22 Laszlo Erdos:
            - Internal frame improved. 
            - tree_internal_frames example added.

@@ -94,6 +94,9 @@
 *>------------------------------------------------------------------------------
 *> 2021.05.02 Laszlo Erdos: 
 *>            - japi_initialize
+*>------------------------------------------------------------------------------
+*> 2021.12.10 Laszlo Erdos: 
+*>            - japi_tofront
 *>******************************************************************************
 */
 
@@ -1533,6 +1536,9 @@ int japi_nextaction()
 
 void japi_show(int obj)
 { 	send_2int(JAPI_SHOW,obj); }
+
+void japi_tofront(int obj)
+{ 	send_2int(JAPI_TOFRONT,obj); }
 
 void japi_showpopup(int obj, int x, int y)
 {	send_4int(JAPI_SHOWPOPUP,obj,x,y); }

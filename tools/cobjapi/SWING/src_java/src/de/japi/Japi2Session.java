@@ -1044,6 +1044,12 @@ public class Japi2Session implements Runnable {
                             else 
                                     throw new NotHandledException();
                             break;
+                    case Japi2Calls.JAPI_TOFRONT: 
+                            if (obj instanceof Japi2Frame) 
+                                    CommandCalls.toFront(this, (Japi2Frame) obj);
+                            else 
+                                    throw new NotHandledException();
+                            break;
                     case Japi2Calls.JAPI_SETSTATE: 
                             if (obj instanceof Japi2CheckMenuItem)
                                     CommandCalls.setState(this, (Japi2CheckMenuItem) obj);

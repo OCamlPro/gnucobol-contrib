@@ -86,6 +86,9 @@
 *>------------------------------------------------------------------------------
 *> 2021.05.02 Laszlo Erdos: 
 *>            - J-INITIALIZE
+*>------------------------------------------------------------------------------
+*> 2022.12.10 Laszlo Erdos: 
+*>            - J-TOFRONT
 *>******************************************************************************
  
 *>------------------------------------------------------------------------------
@@ -5915,6 +5918,45 @@
  MAIN-J-SHOW-EX.
     EXIT.
  END FUNCTION J-SHOW.
+
+
+*>------------------------------------------------------------------------------
+*> void j_tofront( int arg0)
+*> { japi_tofront(arg0);  }
+*>------------------------------------------------------------------------------
+ IDENTIFICATION DIVISION.
+ FUNCTION-ID. J-TOFRONT.
+
+ ENVIRONMENT DIVISION.
+ CONFIGURATION SECTION.
+ REPOSITORY.
+    FUNCTION ALL INTRINSIC.
+ 
+ DATA DIVISION.
+ WORKING-STORAGE SECTION.
+
+ LINKAGE SECTION.
+ 01 LNK-ARG-0                          BINARY-LONG.
+ 01 LNK-RET                            BINARY-LONG.
+
+ PROCEDURE DIVISION USING BY VALUE     LNK-ARG-0
+                    RETURNING          LNK-RET.
+
+ MAIN-J-TOFRONT SECTION.
+
+    CALL STATIC "japi_tofront" 
+         USING BY VALUE LNK-ARG-0
+         RETURNING OMITTED 
+    END-CALL 
+
+    MOVE ZEROES TO LNK-RET
+    
+    GOBACK
+
+    .
+ MAIN-J-TOFRONT-EX.
+    EXIT.
+ END FUNCTION J-TOFRONT.
 
  
 *>------------------------------------------------------------------------------
