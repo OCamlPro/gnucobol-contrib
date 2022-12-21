@@ -2,7 +2,11 @@ COBCEXE = cobc -x -free
 COBCMOD = cobc -m -free
 COBCOBJ = cobc -c -free
 
-all : tstwinbeep.exe
+all : tstwinbeep.exe tstwbeep.exe
+
+# compile and link with User32 lib
+tstwbeep.exe : tstwbeep.cob
+	$(COBCEXE) tstwbeep.cob -lUser32
 
 # compile and link with User32 lib
 tstwinbeep.exe : tstwinbeep.cob winbeep.cob win_beep.c winbeep.o win_beep.o

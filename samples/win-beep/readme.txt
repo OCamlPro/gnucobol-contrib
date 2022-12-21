@@ -5,6 +5,7 @@ Files:
 ======
 makefile         - for make (the object must be linked with User32 Windows lib)
 readme.txt       - this file
+tstwbeep.cob     - test program, direct call of Windows functions, without C module 
 tstwinbeep.cob   - test program
 win_beep.c       - C function calls
 winbeep.cob      - COBOL wrapper for the C functions
