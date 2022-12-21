@@ -2,7 +2,11 @@ COBCEXE = cobc -x -free
 COBCMOD = cobc -m -free
 COBCOBJ = cobc -c -free
 
-all : tstwinsound.exe
+all : tstwinsound.exe tstwsound.exe
+
+# compile and link with Winmm lib
+tstwsound.exe : tstwsound.cob
+	$(COBCEXE) tstwsound.cob -lWinmm
 
 # compile and link with Winmm lib
 tstwinsound.exe : tstwinsound.cob winsound.cob win_sound.c winsound.o win_sound.o

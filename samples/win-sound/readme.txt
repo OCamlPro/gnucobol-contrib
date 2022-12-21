@@ -5,6 +5,7 @@ Files:
 ======
 makefile         - for make (the object must be linked with Winmm Windows lib)
 readme.txt       - this file
+tstwsound.cob    - test program, direct call of Windows functions, without C module 
 tstwinsound.cob  - test program
 win_sound.c      - C function calls
 winsound.cob     - COBOL wrapper for the C functions
