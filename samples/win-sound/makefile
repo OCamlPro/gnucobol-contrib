@@ -6,7 +6,7 @@ all : tstwinsound.exe tstwsound.exe
 
 # compile and link with Winmm lib
 tstwsound.exe : tstwsound.cob
-	$(COBCEXE) tstwsound.cob -lWinmm
+	$(COBCEXE) tstwsound.cob -fno-gen-c-decl-static-call -A "-include Windows.h" -lWinmm
 
 # compile and link with Winmm lib
 tstwinsound.exe : tstwinsound.cob winsound.cob win_sound.c winsound.o win_sound.o
