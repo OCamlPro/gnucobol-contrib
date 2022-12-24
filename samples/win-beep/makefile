@@ -6,7 +6,7 @@ all : tstwinbeep.exe tstwbeep.exe
 
 # compile and link with User32 lib
 tstwbeep.exe : tstwbeep.cob
-	$(COBCEXE) tstwbeep.cob -lUser32
+	$(COBCEXE) tstwbeep.cob -fno-gen-c-decl-static-call -A "-include Windows.h" -lUser32
 
 # compile and link with User32 lib
 tstwinbeep.exe : tstwinbeep.cob winbeep.cob win_beep.c winbeep.o win_beep.o
