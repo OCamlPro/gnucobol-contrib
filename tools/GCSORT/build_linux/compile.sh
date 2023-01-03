@@ -1,4 +1,4 @@
-make clean
-make 1>logout.txt 2>logerr.txt
+make -f ../Makefile clean
+make -f ../Makefile all 2>logerr.txt | tee logout.txt
 cp gcsort gcsort_testcase/bin/gcsort
 cp gcsort tests/bin/gcsort

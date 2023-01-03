@@ -80,17 +80,20 @@
 2021-01-14  Sauro Menna  <smenna@users.sourceforge.net>
     * Fix problems with Temporary Files
     * New module to verify result of sort (tests/src)
+
 2021-01-08  Sauro Menna  <smenna@users.sourceforge.net>
     * New option OUTREC OVERLAY 
     * Fix problems in MinGW enviro nment
     * Review of test suite (folder tests) 
     * Fix problem in OUTREC
     * Changed Makefile to compile source and not generate parser/scanner
+
 2020-12-28  Sauro Menna  <smenna@users.sourceforge.net>
 	* New option INREC OVERLAY 
     * Fix problem in gcc compiler environment
     * Review of the configuration of the parser source
       New folder parser. Modified Makefile.
+
 2020-10-15  Sauro Menna  <smenna@users.sourceforge.net>
 	* gcsort.c - new option for sign EBCDIC (-fsign=EBCDIC)
     * gcsort.h - 
@@ -99,8 +102,10 @@
     * utils - new option for sign EBCDIC (-fsign=EBCDIC)
     * doc\GCSORT1_0_V01.pdf - review for new option
     * doc\GCSORT1_0_V01.odt - review for new option
+
 2020-02-05  Sergey Kashyrin <ska@kiska.net>
 	* job.c - fixing small SIGSEGV bug in sort_temp_name for Linux
+
 2019-03-05  Sauro Menna  <smenna@users.sourceforge.net>
     * job.c - job_set_area (Error in function name)
     * test environment : .. gcsort -> tests -> src
@@ -110,8 +115,10 @@
     * Make file for MinGW/MSYS
     * INSTALL File modified for MinGW/MSYS environment
     * libgcsort.h : define MinGW environment    
+
 2017-05-11  Sauro Menna  <smenna@users.sourceforge.net>
     * job.c - Padding text file
+
 2017-01-15  Sauro Menna  <smenna@users.sourceforge.net>
 
     * Review test environment (tests folder)
