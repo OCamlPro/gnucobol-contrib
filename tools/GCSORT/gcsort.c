@@ -54,9 +54,6 @@
 /* Module initialization indicator */
 static unsigned int	initialized = 0;
 
-/* Module structure pointer */
-
-static cob_module	*module = NULL;
 /* Global variable pointer */
 cob_global		*cob_glob_ptr;
 
@@ -238,6 +235,30 @@ int main_prod(int argc, char **argv) {
 	module->module_param_cnt = 0;
 	/* s.m.20201015 module->ebcdic_sign = 0;    */
 	module->ebcdic_sign = g_cb_ebcdic_sign;
+#if __LIBCOB_RELEASE >= 30200
+	switch (g_cb_colseq) {
+	case CB_COLSEQ_ASCII:
+#ifdef	COB_EBCDIC_MACHINE
+		module->collating_sequence = g_cb_ebcdic_ascii;
+#else
+		module->collating_sequence = NULL;
+#endif
+		break;
+	case CB_COLSEQ_EBCDIC:
+#ifdef	COB_EBCDIC_MACHINE
+		module->collating_sequence = NULL;
+#else
+		module->collating_sequence = g_cb_ascii_ebcdic;
+#endif
+		break;
+	case CB_COLSEQ_NATIVE:
+	default:
+		module->collating_sequence = NULL;
+		break;
+	}
+#else
+	module->collating_sequence = NULL;
+#endif /* __LIBCOB_RELEASE >= 30200 */
 	module->decimal_point = '.';
 	module->currency_symbol = '$';
 	module->numeric_separator = ',';
@@ -257,7 +278,6 @@ int main_prod(int argc, char **argv) {
 	module->module_sources = NULL;
 #endif
 
-	module->collating_sequence = NULL;
 	module->crt_status = NULL;
 	module->cursor_pos = NULL;
 	module->module_returning = 0;
@@ -356,9 +376,9 @@ void verify_options(int numargs, char** args)
 {
 	char* pch;
 	char szOpt[1024];
-	memset(szOpt, 0x00, 1024);
-	strcpy(szOpt, args[1]);
-	if ((numargs > 1) && (strlen(szOpt) > 0)) {
+        szOpt[sizeof(szOpt) - 1] = '\0';
+	for (int i = 1; i < numargs; ++i) {
+		strncpy(szOpt, args[i], sizeof(szOpt) - 1);
 		pch = strtok(szOpt, " =");
 		if (pch != NULL) {
 			if (!strcasecmp(pch, "-fsign")) {
@@ -375,6 +395,34 @@ void verify_options(int numargs, char** args)
 					}
 				}
 			}
+#if __LIBCOB_RELEASE >= 30200
+			if (!strcasecmp(pch, "-fcolseq")) {
+				pch = strtok(NULL, " =");
+				if (pch != NULL) {
+					if (!strcasecmp(pch, "NATIVE"))
+						g_cb_colseq = CB_COLSEQ_NATIVE;
+					else
+					if (!strcasecmp(pch, "ASCII"))
+						g_cb_colseq = CB_COLSEQ_ASCII;
+					else
+					if (!strcasecmp(pch, "EBCDIC"))
+						g_cb_colseq = CB_COLSEQ_EBCDIC;
+					else {
+						fprintf(stdout, "*GCSORT* ERROR: Problem with option -fcolseq, correct values are ASCII/EBCDIC/NATIVE\n");
+						exit(GC_RTC_ERROR);
+					}
+				}
+			}
+			if (!strcasecmp(pch, "-febcdic-table")) {
+				pch = strtok(NULL, " =");
+				if (pch != NULL) {
+					if (cob_get_collation_by_name(pch, &g_cb_ebcdic_ascii, &g_cb_ascii_ebcdic) < 0) {
+						fprintf(stdout, "*GCSORT* ERROR: Problem with option -febcdic-table, correct values are DEFAULT/IBM/GCOS\n");
+						exit(GC_RTC_ERROR);
+					}
+				}
+			}
+#endif /* __LIBCOB_RELEASE >= 30200 */
 		}
 	}
 	return;

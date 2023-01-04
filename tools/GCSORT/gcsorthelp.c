@@ -132,6 +132,10 @@ void GCSORT_Usage ( void )
     printf("________________________________________________________________________________________\n");
     printf("gcsort options\n");
     printf("-fsign=[ASCII|EBCDIC] define display sign representation\n");
+#if __LIBCOB_RELEASE >= 30200
+    printf("-fcolseq=[NATIVE|ASCII|EBCDIC] collating sequence to use\n");
+    printf("-febcdic-table=[DEFAULT|IBM|GCOS] EBCDIC table to use\n");
+#endif / * __LIBCOB_RELEASE >= 30200 * /
     printf("________________________________________________________________________________________\n");
     printf("gcsort control statements\n");
     printf("Notations: '{name}' = parameters , '|' = Alternative format of control statement\n");
@@ -317,6 +321,10 @@ void GCSORT_Usage_all(void)
     printf("________________________________________________________________________________________\n");
     printf("gcsort options\n");
     printf("-fsign=[ASCII|EBCDIC] define display sign representation\n");
+#if __LIBCOB_RELEASE >= 30200
+    printf("-fcolseq=[NATIVE|ASCII|EBCDIC] collating sequence to use\n");
+    printf("-febcdic-table=[DEFAULT|IBM|GCOS] EBCDIC table to use\n");
+#endif /* __LIBCOB_RELEASE >= 30200 */
     printf("________________________________________________________________________________________\n");
     printf("gcsort control statements\n");
     printf("Notations: '{name}' = parameters , '|' = Alternative format of control statement\n");
@@ -569,6 +577,10 @@ void gcsort_help_header2(void) {
     printf("________________________________________________________________________________________\n");
     printf("gcsort options\n");
     printf("-fsign=[ASCII|EBCDIC] define display sign representation\n");
+#if __LIBCOB_RELEASE >= 30200
+    printf("-fcolseq=[NATIVE|ASCII|EBCDIC] collating sequence to use\n");
+    printf("-febcdic-table=[DEFAULT|IBM|GCOS] EBCDIC table to use\n");
+#endif /* __LIBCOB_RELEASE >= 30200 */
     printf("________________________________________________________________________________________\n");
     return;
 }

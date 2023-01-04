@@ -53,4 +53,19 @@ extern "C" {
 #endif
 #endif 
 
+#if __LIBCOB_RELEASE >= 30200
+
+enum cb_colseq {
+	CB_COLSEQ_NATIVE = 0,
+	CB_COLSEQ_ASCII = 1,
+	CB_COLSEQ_EBCDIC = 2
+};
+
+static enum cb_colseq g_cb_colseq = CB_COLSEQ_NATIVE;
+
+static const cob_u8_t * g_cb_ascii_ebcdic = NULL;
+static const cob_u8_t * g_cb_ebcdic_ascii = NULL;
+
+#endif /* __LIBCOB_RELEASE >= 30200 */
+
 #endif /* LIBGCSORT_H_INCLUDED  */

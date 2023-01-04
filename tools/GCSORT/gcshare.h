@@ -26,6 +26,7 @@
 #ifndef SHAREFILE_INCLUDED
 	#define SHAREFILE_INCLUDED
 	#ifdef  MAIN_FILE
+		cob_module *module = NULL;
 		char	szMexToken[260]; 
 		char	cob_tmp_buff[COB_MEDIUM_BUFF];
 		char	cob_tmp_temp[FILENAME_MAX+8];
@@ -33,6 +34,7 @@
 		int     g_retWarn;
 
 	#else
+		extern cob_module *module;
 		extern char szMexToken[260];
 		extern char	cob_tmp_buff[COB_MEDIUM_BUFF];
 		extern char	cob_tmp_temp[FILENAME_MAX+8];

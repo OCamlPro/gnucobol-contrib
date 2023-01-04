@@ -245,6 +245,30 @@ static void E15CALL_module_init (cob_module *module)
   module->module_param_cnt = 0;
   /* //-->> module->ebcdic_sign = 0; */
   module->ebcdic_sign = g_cb_ebcdic_sign;
+#if __LIBCOB_RELEASE >= 30200
+	switch (g_cb_colseq) {
+	case CB_COLSEQ_ASCII:
+#ifdef	COB_EBCDIC_MACHINE
+		module->collating_sequence = g_cb_ebcdic_ascii;
+#else
+		module->collating_sequence = NULL;
+#endif
+		break;
+	case CB_COLSEQ_EBCDIC:
+#ifdef	COB_EBCDIC_MACHINE
+		module->collating_sequence = NULL;
+#else
+		module->collating_sequence = g_cb_ascii_ebcdic;
+#endif
+		break;
+	case CB_COLSEQ_NATIVE:
+	default:
+		module->collating_sequence = NULL;
+		break;
+	}
+#else
+	module->collating_sequence = NULL;
+#endif /* __LIBCOB_RELEASE >= 30200 */
   module->decimal_point = '.';
   module->currency_symbol = '$';
   module->numeric_separator = ',';
@@ -490,6 +514,30 @@ static void E35CALL_module_init(cob_module* module)
     module->module_param_cnt = 0;
     /* module->ebcdic_sign = 0; */
     module->ebcdic_sign = g_cb_ebcdic_sign;
+#if __LIBCOB_RELEASE >= 30200
+	switch (g_cb_colseq) {
+	case CB_COLSEQ_ASCII:
+#ifdef	COB_EBCDIC_MACHINE
+		module->collating_sequence = g_cb_ebcdic_ascii;
+#else
+		module->collating_sequence = NULL;
+#endif
+		break;
+	case CB_COLSEQ_EBCDIC:
+#ifdef	COB_EBCDIC_MACHINE
+		module->collating_sequence = NULL;
+#else
+		module->collating_sequence = g_cb_ascii_ebcdic;
+#endif
+		break;
+	case CB_COLSEQ_NATIVE:
+	default:
+		module->collating_sequence = NULL;
+		break;
+	}
+#else
+	module->collating_sequence = NULL;
+#endif /* __LIBCOB_RELEASE >= 30200 */
     module->decimal_point = '.';
     module->currency_symbol = '$';
     module->numeric_separator = ',';

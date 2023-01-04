@@ -1,3 +1,6 @@
+2023-01-04  David Declerck  <david.declerck@ocamlpro.com>
+    * New options -fcolseq and -febcdic-table allowing to specify the collating sequence (ASCII/EBCDIC) and EBCDIC table to use for character comparisons (available only if using libcob 3.2)
+
 2022-12-01  Sauro Menna  <smenna@users.sourceforge.net>
     * Fixed problem with packed-decimal length
 

@@ -119,6 +119,21 @@ int yyparse ( void );
 
 extern int job_compare_key(const void *first, const void *second);
 
+static int string_compare(unsigned char *s1, unsigned char *s2, int len)
+{
+	if (module->collating_sequence == NULL) {
+		return memcmp(s1, s2, len);
+	} else {
+		for (int i = 0; i < len; ++s1, ++s2, ++i) {
+			int res = module->collating_sequence[*s1] - module->collating_sequence[*s2];
+			if (res != 0) {
+				return (res < 0) ? -1 : 1;
+			}
+		}
+		return 0;
+	}
+}
+
 void job_SetCmdLine(struct job_t* job, char* strLine)
 {
 	/* attention                        */
@@ -559,7 +574,7 @@ int job_load(struct job_t *job, int argc, char **argv) {
              s.m. 20201015
              skip option
              */
-            if (!(strcasecmp(argv[i],"-fsign=EBCDIC")==0) && !(strcasecmp(argv[i],"-fsign=ASCII")==0)) {
+            if (argv[i][0] != '-') {
 				strcpy(buffer+bufferLength+1,argv[i]);
 			    bufferLength+=argvLength;
 		    }
@@ -4126,7 +4141,7 @@ int job_SetPosLenKeys(int* arPosLen) {
 	for (sortField=globalJob->sortField; sortField!=NULL; sortField=sortField_getNext(sortField)) {
 
         if (sortField_getType(sortField) == FIELD_TYPE_CHARACTER)
-            result=memcmp((unsigned char*) first+nSp, (unsigned char*) second+nSp, sortField_getLength(sortField));
+            result=string_compare((unsigned char*) first+nSp, (unsigned char*) second+nSp, sortField_getLength(sortField));
         else {
 			nLen = sortField_getLength(sortField);
 			job_getTypeFlags (sortField_getType(sortField), &nType, &nFlags, nLen);
@@ -4174,7 +4189,7 @@ INLINE int job_compare_rek(const void *first, const void *second, int bCheckPosP
 		/*        if (sortField_getType(sortField) == FIELD_TYPE_CHARACTER) */
 		if (nTipo == FIELD_TYPE_CHARACTER) {
 			/* s.m. 20210216	result=memcmp( (unsigned char*) first+sortField_getPosition(sortField)-1+nSp, (unsigned char*) second+sortField_getPosition(sortField)-1+nSp, sortField_getLength(sortField)); */
-			result = memcmp((unsigned char*)first + sortField->position - 1 + nSp, (unsigned char*)second + sortField->position - 1 + nSp, sortField->length);
+			result = string_compare((unsigned char*)first + sortField->position - 1 + nSp, (unsigned char*)second + sortField->position - 1 + nSp, sortField->length);
 		}
         else
 		{
@@ -4238,7 +4253,7 @@ static INLINE2 int job_compare_qsort(const void* first, const void* second)
         g_nLen = sortField->length;
         g_nTypeGC=sortField->type;
         if (g_nTypeGC == FIELD_TYPE_CHARACTER)
-            g_result=memcmp((unsigned char*) first+g_nSp, (unsigned char*) second+g_nSp, g_nLen);
+            g_result=string_compare((unsigned char*) first+g_nSp, (unsigned char*) second+g_nSp, g_nLen);
         else
         {
 			cob_field_key[g_idx]->data=(unsigned char*) first+g_nSp;
