@@ -14,35 +14,35 @@
 *>      See manual for information.
 *>
 
->>DEFINE CONSTANT C-Print-Out AS 0    *>  O/P file will be kept unprinted at EOJ.
+>>SET CONSTANT C-Print-Out    0    *>  O/P file will be kept unprinted at EOJ.
 
->>DEFINE CONSTANT C-PR-2      AS 0    *> Do NOT delete file after printing (default) or AS 1 if you do.
+>>SET CONSTANT C-PR-2         0    *> Do NOT delete file after printing (default) or AS 1 if you do.
 *>
 *>  Set as is, to CUPS printer spool name Change to yours if required
 *>                otherwise will not print out.
 *>                Note there is a trailing space that is NEEDED.
 *>
 
->>DEFINE CONSTANT PSN-1       AS "Officejet-Pro-8600 "   *> Change to your printer spool name
+>>SET CONSTANT PSN-1          "Officejet-Pro-8600 "   *> Change to your printer spool name
 *>                                                          if needed.
 *>
 
 *>
->>DEFINE CONSTANT PAGE-LINES  AS 54    *> Change here if you do not fill a page or go over to
+>>SET CONSTANT PAGE-LINES     54    *> Change here if you do not fill a page or go over to
                                        *>  a new one without a heading line (see Docs)
                                        *>  When printing.
 *>
 *>  Operating system path delimiter - set for *nix, for NATIVE windows change to "\".
 *>      NATIVE means if compiled GnuCOBOL using Visual Studio ONLY.
 *>
->>DEFINE CONSTANT C-OS-Delimiter  AS "/"
+>>SET CONSTANT C-OS-Delimiter "/"
 
 *> Group 2 - Testing settings Only.
 *>
 *> Temporary for testing program args etc, (We-Are-Testing) will display prog arguments at start.
 *>  Useful to have anyway!  Set to 1 to be active
 *>
->>DEFINE CONSTANT C-Testing-1   AS 0    *> Not testing (default), change to AS 1 if wanted.
+>>SET CONSTANT C-Testing-1    0    *> Not testing (default), change to AS 1 if wanted.
 *>                                         Normally used by programmer during testing only.
 *>
 *>---
@@ -58,7 +58,7 @@
 *>  ===============================================================
 *> Author.      Vincent B Coen New rewritten verson v2.01.18+)
 *>                See Changelog file for all changes.
-*> Copyright.   Vincent B Coen 2011-2019 Rewritten.
+*> Copyright.   Vincent B Coen 2011-2022 Rewritten.
 *>              [Jim C. Currey 2009-2011 Conceptual original programmer,]
 *>
 *> This program is free software; you can redistribute it and/or modify it
@@ -85,7 +85,7 @@
 *> 01/06/12 vbc - 'NOPRINT'           working
 *> 01/06/12 vbc - 'LIST|NOLIST'       working
 *> 02/06/12 vbc - 'EJECT' | '/'       working
-*>           add differing case for the above
+*>           with differing case for the above
 *>
 *>  WARNING: Minimum compiler version is v2.0.
 *>
@@ -122,6 +122,11 @@
 *>
 *>***************************************************************
 *>
+*> Changelog:
+*> 07/09/2022 vbc - 2.01.38 Updated copyright to 2022 no other changes.
+*>                          Added support for sourceformat Variable
+*>                          Chngd vars e for E2 as it is a reserved word (FUNCTION).
+*>
  environment division.
  input-output section.
  file-control.
@@ -144,7 +149,7 @@
  working-storage section.
 *>======================
 *>
- 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.37".  *> ver.rel.build
+ 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.38".  *> ver.rel.build
 *>
 *>   *******************************************
 *>   *     User changeable values here:       **
@@ -232,34 +237,33 @@
  01  WS-PPage               PIC ZZ9.
  01  WS-Switch-Print        pic 9          value 1.
      88  Print-On                          value 1      False is 0.
- 01  WS-Print-Open-Flag     pic 9          value zero.
+ 01  filler                 pic 9          value zero.
      88 WS-Print-Open                      value 1      False is 0.
 *>
  01  Found-Quote-in-Copy    pic 9          value zero.
 *>
- 01  No-Print               pic 9          value zero.  *> Set if "*>NOPRINT" or "**NOPRINT"
+ 01  filler                 pic 9          value zero.  *> Set if "*>NOPRINT" or "**NOPRINT"
                                                         *>       or P4 = 'NOPRINT' | 'noprint'
      88  No-Printing                       value 1  False is 0.    *>   found in 1st rec
 *>
  01  WS-Quote-Used          pic x          value space.   *> used in  zz010-Check-for-Extended-Record
- 01  Need-Leading-Quotes    pic 9          value zero.
+ 01  filler                 pic 9          value zero.
      88  WS-Need-Leading-Quote             value 1  False is 0.
 *>
- 01  WS-Have-Replaced       pic 9          value zero.
+ 01  filler                 pic 9          value zero.
      88  WS-We-Have-Replaced               value 1  False is 0.
 *>
- 01  Found-In               pic 9          value zero.  *> Not used yet
- 01  Found-WD               pic 9          value zero.
+ 01  filler                 pic 9          value zero.
      88  Found-Word                        value 1      False is 0.
- 01  Found-No               pic 9          value zero.
+ 01  filler                 pic 9          value zero.
      88  Found-Number                      value 1      False is 0.
- 01  In-Dir                 pic x(500)     value space. *> Not used yet
  01  Hold-Word1             pic x(256)     value space.
  01  Hold-Word2             pic x(256)     value space.
  01  WS-Free                pic 9          value zero.  *> Source code format
      88  WS-Fixed-Set                      value zero.
      88  WS-Free-Set                       value 1.
- 01  WS-Search              pic 9          value zero.  *> Search in copy libs
+     88  WS-Variable-Set                   value 2.
+ 01  filler                 pic 9          value zero.  *> Search in copy libs
      88  No-Search                         value 1.     *> Dont, as we are using source file
      88  Yes-Search                        value zero.  *> Do so, as we are using Copy files
  01  WS-Number-Test.
@@ -267,8 +271,6 @@
 *>
 *>   Used in Copy Table
 *>
- 01  WS-T1                  pic x.
- 01  WS-T1x redefines WS-T1 binary-char.
  01  Word-Delimit           pic x          value space.
  01  Word-Delimit2          pic xx         value spaces.  *> Of copyfilename, space or ". "
  01  WS-P1                  pic s9(7) comp value zero.    *> Used for small buffers
@@ -280,7 +282,6 @@
  01  WS-P7                  pic s9(7) comp value zero.
  01  WS-P8                  pic s9(7) comp value zero.
  01  WS-P9                  pic s9(7) comp value zero.
- 01  WS-P10                 pic s9(7) comp value zero.
  01  WS-P11                 pic s9(7) comp value zero.
  01  WS-P12                 pic s9(7) comp value zero.
  01  WS-P13                 pic s9(7) comp value zero.
@@ -304,13 +305,11 @@
  01  WS-Disp3               pic ----9.
  01  WS-Disp4               pic z(6)9.
  01  a                      pic s9(5) comp value zero.
- 01  b                      pic s9(5) comp value zero.
- 01  e                      pic s9(5) comp value zero.
+ 01  E2                     pic s9(5) comp value zero.
  01  f                      pic s9(5) comp value zero.
  01  g                      pic s9(7) comp value zero.
 *>
  01  fn                     pic 999  comp  value zero.
- 01  t                      pic 999  comp  value zero.
  01  u                      pic 999  comp  value zero.
  01  x                      pic 9(4) comp  value zero.
  01  xx                     pic 9(4) comp  value zero.
@@ -391,6 +390,8 @@
  01  IR-Buffer-Data-Size    pic 999     comp       value zero.
  01  Temp-Input-Record.
      03  TIR                pic x(256).
+ 01  Temp-Input-Record-2.
+     03  TIR2               pic x(256).
 *>
 *>   WARNING: Do NOT alter these Structures or Formats!
 *>
@@ -403,7 +404,7 @@
 *>
  01  Copy-Max-Length        pic 9(6)    comp       value 65536.      *> Is this too high? NOT USED
 *>
- 01  File-Handle-Tables.                                          *>  1st occurrence is for orig source file.
+ 01  File-Handle-Tables.                                             *>  1st occurrence is for orig source file.
      03  FHT                            occurs 1 to 10 depending on Fht-Table-Size.
          05  Fht-Byte-Count        pic x(4)    comp-x  value 1048576.
          05  Fht-Var-Block.
@@ -427,6 +428,7 @@
              07  Fht-Source-Format pic 9               value zero.
                  88  Fht-Fixed                         value 0.
                  88  Fht-Free                          value 1.
+                 88  Fht-Variable                      value 2.
              07  Fht-Block-Status  pic 9               value zero.
                  88  Fht-Block-Eof                     value 1.
          05  Fht-Current-Rec       pic x(256)          value spaces. *> Max size of free recs + 1
@@ -470,7 +472,7 @@
          05  CRT-Consecutive-Quotation pic 9           value zero.   *>  All new not programmed
          05  CRT-Newline-Count     pic 999     comp    value zero.   *>  All new not programmed
          05  CRT-Replacing-Count   pic 999     comp    value zero.
-         05  CRT-Copy-Length       pic 9(7)    comp    value zero.   *>  All new not programmed [ used in testing 4 prints]
+         05  CRT-Copy-Length       pic 9(7)    comp    value zero.
          05  CRT-Copy-Statement                        value spaces. *> The entire copy statement but not really needed
              07  filler            pic x(1024)  occurs 1024.         *> 1 MB                      except during testing
          05  CRT-Copy-FileName     pic x(256)          value spaces.
@@ -520,13 +522,13 @@
 *>
  01  IB-Size                pic 9(7)               value zero.
  01  Input-Buffer.
-     03  In-Buffer          pic x(1024)    occurs 1024.  *> 1 MB buffers
+     03  filler             pic x(1024)    occurs 1024.  *> 1 MB buffers
  01  CInput-Buffer.                                      *> Converted to uppercase for test
-     03  CIn-Buffer         pic x(1024)    occurs 1024.  *> 1 MB buffers
+     03  filler             pic x(1024)    occurs 1024.  *> 1 MB buffers
  01  OB-Size                pic 9(7)               value zero.
  01  Temp-Replacing-Source  pic x(2048).                 *> same as size of CRT-Replacing-Source
  01  Temp-Replacing-Target  pic x(2048).                 *>  - - Ditto for Target
- 01  Temp-Record            pic x(1024).                                             *> Was x(256).   28/2/19
+ 01  Temp-Record            pic x(1024).
 *>
 *> Copy of current Copy table block to save accessing a table when processing COPY
 *>
@@ -538,7 +540,7 @@
          88  WS-CRT-Copy-Found                        value 1     False is 0.
      03  WS-CRT-Copy-Library-Flag pic 9               value zero.
          88  WS-CRT-COPY-Lib-Found                    value 1     False is 0.
-     03  WS-CRT-Copy-Fname-Ext-Flag   pic 9           value zero.
+     03  filler                       pic 9           value zero.
          88  WS-CRT-Copy-Fname-Ext                    value 1     False is 0.
      03  WS-CRT-Replace-Found-Flag    pic 9           value zero.
          88  WS-CRT-Replace-Found                     value 1     False is 0.
@@ -575,7 +577,7 @@
              88  WS-CRT-RT-Else                       value 3.
              88  WS-CRT-RT-Oops                       value 0.
          05  WS-CRT-Found-Src     pic 99              value zero.    *> non zero if a replacing target is found
-         05  WS-CRT-Source-Size   pic 9(4)            value zero.    *> these sizes relate to the replacing-source and target
+         05  WS-CRT-Source-Size   pic 9(4)            value zero.    *> replacing-source and target
          05  WS-CRT-Target-Size   pic 9(4)            value zero.    *>   - - - -  ditto - - - -
          05  WS-CRT-Replacing-Source  pic x(2048)     value spaces.  *> Make larger if required
          05  WS-CRT-Replacing-Target  pic x(2048)     value spaces.  *> ditto
@@ -617,7 +619,7 @@
      move     WS-Print-File-Name to PR-Name.
 *>
  aa020-Get-Source-Format.
-     display  "3) Program format fixed or free - "      at 1601 with erase eos.
+     display  "3) Program format fixed, free or variable - "      at 1601 with erase eos.
      move     "fixed" to Hold-Word1.
      if       ws-Free-Set
               move "free" to Hold-Word1
@@ -625,18 +627,22 @@
      if       ws-Fixed-Set
               move "fixed" to Hold-Word1
      end-if
-     accept   Hold-Word1 at 1635 with update.
-     move     function upper-case (Hold-Word1) to Hold-Word1.
+     if       ws-Variable-Set
+              move "variable" to Hold-Word1
+     end-if
+     accept   Hold-Word1 at 1645 with update.
+     move     FUNCTION UPPER-CASE (Hold-Word1) to Hold-Word1.
      if       Hold-Word1 = "FIXED" or "-FIXED"
               set ws-Fixed-Set to true
      else
       if      Hold-Word1 = "FREE" or "-FREE"
               set ws-Free-Set to true
       else
+       if     Hold-Word1 = "VARIABLE" or "-VARIABLE"
+              set WS-Variable-Set to true
+       else
               display Msg30                         at 1801 with foreground-color 3
-              go to aa020-Get-Source-Format
-      end-if
-     end-if.
+              go to aa020-Get-Source-Format.
 *>
      display  "4) Enter Print Spool Name (or noprint) - "        at 1801  with erase eos.
      Accept   PSN at 1842 with update.
@@ -647,7 +653,7 @@
 *>
 *> Test for noprint at param 4
 *>
-     if       function upper-case (PSN) = "NOPRINT"
+     if       FUNCTION UPPER-CASE (PSN) = "NOPRINT"
               set No-Printing to true.
 *>
      if       WS-Input-File-Name = WS-Print-File-Name
@@ -720,23 +726,27 @@
      perform  da000-Check-For-Source.
      if       Fht-Free (Fht-Table-Size)
               set WS-Free-Set to true
-              move 256 to WS-End
-     else
+              move 256 to WS-End.
+     if       Fht-Variable (Fht-Table-Size)
+              set WS-Variable-Set to true
+              move 256  to WS-End.
+     if       Fht-Fixed (Fht-Table-Size)
               set WS-Fixed-Set to true
-              move 72  to WS-End
-     end-if
+              move 72  to WS-End.
 *>
 *> Find size of source record (max = 255 as per specs) & start of source
 *>
      perform  varying IR-Buffer-Data-Size from WS-End by -1 until
                            IR-Buffer (IR-Buffer-Data-Size:1) not = " "
                         or IR-Buffer-Data-Size < 2
+              continue
      end-perform
      if       IR-Buffer (IR-Buffer-Data-Size:1) = x"0D" or x"00"
               subtract 1 from IR-Buffer-Data-Size
      end-if
-     if       (WS-Free-Set  and IR-Buffer-Data-Size < 2)            *> Blank line
-        or    (WS-Fixed-Set and IR-Buffer-Data-Size < 9)
+     if       (WS-Free-Set and IR-Buffer-Data-Size < 2)
+
+        or    ((WS-Fixed-Set or WS-Variable-Set) and IR-Buffer-Data-Size < 9)
               add      1 to WS-Line-Number
               move     ws-line-number to PL-line-number
               move     spaces to PL-Filler-1
@@ -751,7 +761,7 @@
      move     zero to WS-P2.
      move     1    to WS-P1                                         *> Force Free format in case!!
                       WS-P5.
-     if       WS-Fixed-Set                                          *> Free set above
+     if       WS-Fixed-Set or WS-Variable-Set                       *> Free set above
               move  7 to WS-P1 WS-P5.
 *>
 *>  Support for source update only (no report) but can only happen on the first line of the source code
@@ -759,9 +769,17 @@
 *>
 *>  Parameter 4 (print filename) can be "NOPRINT"|"noprint" and will do the same as of 2.01.16.
 *>
+     move     FUNCTION TRIM (IR-Buffer) to TIR2.
+     move     FUNCTION UPPER-CASE (TIR2) to TIR2.
      if       WS-Line-Number = zero
-      and     ((ws-fixed-set and function upper-case (IR-Buffer (7:9)) = "**NOPRINT")
-        or     (ws-free-set  and function upper-case (IR-Buffer (1:9)) = "*>NOPRINT"))
+      and     (ws-free-set  and TIR2 (1:9) = "*>NOPRINT")     *> Was IR-Buffer
+              set No-Printing to true
+              move 1 to WS-Line-Number
+              go to ba000-Process
+     end-if
+     if       WS-Line-Number = zero
+        and   (ws-fixed-set or WS-Variable-Set)
+        and   FUNCTION UPPER-CASE (IR-Buffer (7:9)) = "**NOPRINT"
               set No-Printing to true
               move 1 to WS-Line-Number
               go to ba000-Process
@@ -777,18 +795,20 @@
      perform  zz900-Process-Replace.
      move     Input-Record To PL-Text.      *> Updated record/s from COPY if active  *> chgd 5/3/19
 *>
-     if       (ws-fixed-set and function upper-case (IR-Buffer (7:6)) = "**LIST")
-       or     (ws-Free-set  and function upper-case (IR-Buffer (1:6)) = "*>LIST")
+     move     FUNCTION TRIM (IR-Buffer) to TIR2.
+     move     FUNCTION UPPER-CASE (TIR2) to TIR2.
+     if       ((ws-fixed-set or WS-Variable-Set) and FUNCTION UPPER-CASE (IR-Buffer (7:6)) = "**LIST")
+       or     (ws-Free-set  and TIR2 (1:6) = "*>LIST")    *> Was IR-Buffer
               set Print-On to True
      end-if
      if       Print-On
-              if       ws-Fixed-Set
+              if       (ws-Fixed-Set or WS-Variable-Set)
                and     (IR-Buffer (7:1) = "/"
-                or     function upper-case (IR-Buffer (7:7)) = "**EJECT")  *> force page break NEXT line
+                or     FUNCTION UPPER-CASE (IR-Buffer (7:7)) = "**EJECT")  *> force page break NEXT line
                        move 250 to WS-Page-Line-Counter
               end-if
-              if       (ws-Free-Set
-               and     function upper-case (IR-Buffer (1:7)) = "*>EJECT")
+              if       ((ws-Free-Set or WS-Variable-Set)
+               and     TIR2 (1:7) = "*>EJECT")    *> Was IR-Buffer
                        move 250 to WS-Page-Line-Counter
               end-if
               if       WS-We-Have-Replaced            *> chgd 8/3/19
@@ -797,21 +817,20 @@
                        perform zz010-Write-Print-Line1     *> chgd 8/3/19
               end-if
      end-if
-     if       (ws-fixed-set and function upper-case (IR-Buffer (7:8)) = "**NOLIST")
-        or    (ws-free-set  and function upper-case (IR-Buffer (1:8)) = "*>NOLIST")
+     if       ((ws-fixed-set or WS-Variable-Set) and FUNCTION UPPER-CASE (IR-Buffer (7:8)) = "**NOLIST")
+        or    (ws-free-set  and TIR2 (1:8) = "*>NOLIST")    *> Was IR-Buffer
               set Print-On to false
      end-if
 *>
-*> If comments, we are done with line having tested for list. nolist, eject etc
+*> If comments, we are done with line
 *>
-     if       (ws-Fixed-Set and IR-Buffer (7:1) = "*")
-         or   (ws-Fixed-Set and IR-Buffer (7:1) = "$")  *> ex MF source/lists
-         or   (ws-Fixed-Set and IR-Buffer (7:1) = "#")  *> can we get them here cc7 ?
-         or   (WS-Fixed-Set and (IR-Buffer (7:1) = "D" or = "d"))     *> Debug with COPY  ????
-         or   (ws-Free-Set  and IR-Buffer (1:2) = "*>")
-         or   (ws-Free-Set  and IR-Buffer (2:2) = "*>")
-         or   (ws-Free-Set  and IR-Buffer (7:2) = "*>")  *> floater format in fixed,
-         or   (ws-Free-Set  and IR-Buffer (1:1) = "$")
+     move     FUNCTION TRIM (IR-Buffer) to TIR2.
+     if       ((ws-Fixed-Set or WS-Variable-Set) and IR-Buffer (7:1) = "*")
+         or   ((ws-Fixed-Set or WS-Variable-Set) and IR-Buffer (7:1) = "$")  *> ex MF source/lists
+         or   ((ws-Fixed-Set or WS-Variable-Set) and IR-Buffer (7:1) = "#")  *> can we get them here cc7 ?
+         or   ((WS-Fixed-Set or WS-Variable-Set) and (IR-Buffer (7:1) = "D" or = "d"))     *> Debug with COPY  ????
+         or   (ws-Free-Set  and TIR2 (1:2) = "*>")
+         or   (ws-Free-Set  and IR-Buffer (1:1) = "$")     *> these two always start in cc1
          or   (ws-Free-Set  and IR-Buffer (1:1) = "#")
               go to ba000-Process
      end-if
@@ -829,8 +848,8 @@
 *>       so may need more code!
 *>
      if       NOT Found-Number and Found-Word
-        and   (function upper-case (IR-Buffer (WS-P1:6)) = " COPY "
-         or   WS-P1 = 1 and function upper-case (IR-Buffer (1:5)) = "COPY ")
+        and   (FUNCTION UPPER-CASE (IR-Buffer (WS-P1:6)) = " COPY "
+         or   WS-P1 = 1 and FUNCTION UPPER-CASE (IR-Buffer (1:5)) = "COPY ")
               add      1 to WS-P1
               if       WS-P1 < IR-Buffer-Data-Size - 6
                        go to ba010-Compare-Loop
@@ -844,14 +863,15 @@
                                 until IR-Buffer (WS-P1:1) = quote
                                   or "'"
                                   or WS-P1 > IR-Buffer-Data-Size - 7
+                      continue
               end-perform                                      *> loose the literal or line
               if   WS-P1 > IR-Buffer-Data-Size - 7
                    go to ba000-Process
               end-if
      end-if
 *>
-     if       function upper-case (IR-Buffer (WS-P1:6)) = " COPY "
-       or     (WS-P1 = 1 and function upper-case (IR-Buffer (1:5)) = "COPY ")
+     if       FUNCTION UPPER-CASE (IR-Buffer (WS-P1:6)) = " COPY "
+       or     (WS-P1 = 1 and FUNCTION UPPER-CASE (IR-Buffer (1:5)) = "COPY ")
               move zero to Found-Quote-in-Copy
               go to ba020-Copy.
 *>
@@ -892,6 +912,7 @@
      if       WS-CRT-Copy-Lib-Found
               perform varying WS-P17 from 510 by -1
                       until WS-CRT-Copy-Library (WS-P17:1) not = space
+                      continue
               end-perform
               move    1    to WS-P18
               if      WS-CRT-Copy-Library (1:1) = quote or = "'"
@@ -906,14 +927,14 @@
                       move WS-CRT-Copy-Library (1:WS-P17) to Hold-Word1   *> without quotes!
               end-if
      end-if
-     move     zero to e.
+     move     zero to E2.
 *>
 *>   WS-CRT-Copy-Filename is without quotes
 *>
 *>   We can have "abcd.abc"; abcd.abc; abcd - NO Trailing period..
 *>
-     inspect  WS-CRT-Copy-Filename tallying e for all ".".
-     if       e > zero                                        *> its a .ext
+     inspect  WS-CRT-Copy-Filename tallying E2 for all ".".
+     if       E2 > zero                                        *> its a .ext
               set WS-CRT-Copy-Fname-Ext to true
      end-if
      move     WS-CRT-Copy-Filename to WS-Copy-File-Name.
@@ -1072,6 +1093,7 @@
 *>
      inspect  Input-Record replacing all x"09" by space   *> TAB
                                          X"0D" by space   *> CR
+                                         X"0A" by space   *> LF (when running under windows) 14/12/21
                                          x"00" by space   *> null
                                          " ; " by "   "
                                          " , " by "   "
@@ -1141,7 +1163,7 @@
 *>
      move     zero to IB-Size.
      perform  varying WS-P3 from 1 by 1 until WS-P3 > IR-Buffer-Data-Size
-              if     function upper-case (IR-Buffer (WS-P3:5)) = "COPY "
+              if     FUNCTION UPPER-CASE (IR-Buffer (WS-P3:5)) = "COPY "
                      set CRT-Copy-Found (CRT-Table-Size) to true
                      set CRT-Active (CRT-Table-Size)    to true
                      compute WS-P4 = IR-Buffer-Data-Size - (WS-P3 - 1)
@@ -1190,10 +1212,10 @@
                   perform zz010-Write-Print-Line2
                   go to ba999-Exit
               end-if
-              if  WS-Fixed-Set                         *> Now to cover butt & make sure a '.' is in record
-                  move "." to Input-Buffer (72:1)
-              else
+              if  WS-Free-Set or WS-Variable-Set
                   move "." to Input-Buffer (255:1)
+              else
+                  move "." to Input-Buffer (72:1)
               end-if
               go to bb030-Got-Full-Copy-Statement
      end-if
@@ -1201,21 +1223,25 @@
      move     Fht-Current-Rec (Fht-Table-Size) to Input-Record.
      perform  da000-Check-For-Source.                  *> JIC >>source inside copy
      if       Fht-Free (Fht-Table-Size)
-              set WS-Free-Set to true
-     else
-              set WS-Fixed-Set to true
-     end-if
+              set WS-Free-Set to true.
+     if       Fht-Variable (Fht-Table-Size)
+              set WS-Variable-Set to true.
+     if       Fht-Fixed (Fht-Table-Size)
+              set WS-Fixed-Set to true.
 *>
 *> Find size of source record (max = 255 as per specs) & start of source
 *>
      perform  varying IR-Buffer-Data-Size from WS-End by -1
                       until  IR-Buffer (IR-Buffer-Data-Size:1) not = " "
                           or IR-Buffer-Data-Size < 2
+              continue
      end-perform
      perform  varying IR-Buffer-Data-Size from IR-Buffer-Data-Size by -1
               until IR-Buffer (IR-Buffer-Data-Size:1) not = X"0D"
+                                                  and not = X"0A"   *> For windows 14/12/21
                                                   and not = X"00"
                           or IR-Buffer-Data-Size < 2
+              continue
      end-perform
 *>
      perform  zz100-Headings.
@@ -1232,9 +1258,9 @@
      perform  bb000-Start.                       *>  WE NEED TO CONSIDER CODE FOR Lit continuation (-) etc
      perform  varying WS-P3 from 1 by 1 until WS-P3 > IR-Buffer-Data-Size
                                            or IR-Buffer (WS-P3:2) = ". "
-              if     function upper-case (IR-Buffer (WS-P3:3)) = "IN " or = "OF "
-               or    function upper-case (IR-Buffer (WS-P3:9)) = "SUPPRESS "
-               or    function upper-case (IR-Buffer (WS-P3:10)) = "REPLACING "
+              if     FUNCTION UPPER-CASE (IR-Buffer (WS-P3:3)) = "IN " or = "OF "
+               or    FUNCTION UPPER-CASE (IR-Buffer (WS-P3:9)) = "SUPPRESS "
+               or    FUNCTION UPPER-CASE (IR-Buffer (WS-P3:10)) = "REPLACING "
                      compute WS-P4 = IR-Buffer-Data-Size - (WS-P3 - 1)
                      add 2 to IB-Size                              *> leave a space before next chars
                      move IR-Buffer (WS-P3:WS-P4) to Input-Buffer (IB-Size:WS-P4)
@@ -1266,7 +1292,7 @@
      move     Input-Buffer to CRT-Copy-Statement (CRT-Table-Size).  *> NEEDED - not yet??
      move     IB-Size      to CRT-Copy-Length (CRT-Table-Size).
 *>
-     move     function upper-case (Input-Buffer) to CInput-Buffer.   *> 4 testing upper-case reserved words
+     move     FUNCTION UPPER-CASE (Input-Buffer) to CInput-Buffer.   *> 4 testing UPPER-CASE reserved words
      move     CRT-Instance (CRT-Table-Size) to WS-CRT-Instance.      *> copied 2 current copy area 4 easier working
 *>
      if  we-are-testing4
@@ -1291,6 +1317,7 @@
                       perform varying WS-P3 from WS-P3 by 1              *> skip leading spaces
                                  until Input-Buffer (WS-P3:1) not = " "
                                     or WS-P3 not < IB-Size
+                              continue
                       end-perform
                       if      WS-P3 not < IB-Size
                               exit perform
@@ -1436,6 +1463,7 @@
                       end-if
                       perform  varying ws-P3 from Ws-P3 by 1 until Input-Buffer (WS-P3:1) not = " "
                                                                or WS-P3 not < IB-Size
+                               continue
                       end-perform
                       if       WS-P3 not < IB-Size                           *> chgd 28/2/19
                                exit perform cycle
@@ -1445,6 +1473,7 @@
                       end-if
                       perform  varying ws-P3 from Ws-P3 by 1 until Input-Buffer (WS-P3:1) not = " "
                                                                or  WS-P3 not < IB-Size
+                               continue
                       end-perform
                       if       Input-Buffer (WS-P3:2) = "=="
                                add 2 to WS-P3
@@ -1588,7 +1617,8 @@
 *>
 *>  WARNING IF DEBUG ON, NEXT LINE WILL FAIL !!!
 *>
-     move CRT-Instance (Fht-Table-Size + 1) to WS-CRT-Instance.      *> copy file closed so sames as fht ???
+     if       Fht-Table-Size > 1
+              move CRT-Instance (Fht-Table-Size + 1) to WS-CRT-Instance.    *> copy file closed so sames as fht ???
      if       WS-CRT-Replacing-Count = zero
               go to bc999-Exit.
      perform  varying WS-P11 from 1 by 1 until WS-P11 > WS-CRT-Replacing-Count
@@ -1600,7 +1630,7 @@
               if       WS-CRT-Found-Src (WS-P11) = zero
                        move spaces to PL-Text
                        if   No-Printing
-                            string "*>> "
+                            string "*>>W "
                                    Msg29 into PL-Text
                             end-string
                        else
@@ -1663,13 +1693,18 @@
 *>      in Input-Record
 *>
      move     zero to WS-P7
-                      WS-P8.
-     move     function upper-case (Input-Record) to Temp-Input-Record.
-     if       Temp-Input-Record (8:8) not = ">>SOURCE"
+                      WS-P8
+                      WS-P9.
+     move     FUNCTION UPPER-CASE (Input-Record) to Temp-Input-Record.
+     move     FUNCTION TRIM (Temp-Input-Record) to TIR2.         *> 7/9/22
+     if       TIR2 (1:8)  not = ">>SOURCE"       *> was Temp-Input-Record (8:8)
+       and    TIR2 (1:18) not = ">>SET SOURCEFORMAT"
+       and    TIR2 (1:11) not =  "$SET SOURCE"
               go to da000-Exit.
-*> DISPLAY "Found >>SOURCE as " Temp-input-record (8:48) end-display
-     inspect  Temp-Input-Record tallying WS-P7 for all "FREE".
-     inspect  Temp-Input-Record tallying WS-P8 for all "FIXED".
+*> DISPLAY "Found >>SOURCE or >>SET SOURCEFORMAT as " Temp-input-record (8:48) end-display
+     inspect  TIR2 tallying WS-P7 for all "FREE".       *> Was Temp-Input-Record
+     inspect  TIR2 tallying WS-P8 for all "FIXED".      *> Was Temp-Input-Record
+     inspect  TIR2 tallying WS-P9 for all "VARIABLE".   *> Was Temp-Input-Record
      if       WS-P8 > zero
               set Fht-Fixed (Fht-Table-Size) to true
               move 72   to WS-End
@@ -1680,7 +1715,12 @@
               move 256  to WS-End
 *>           DISPLAY " Setting free"
      end-if
-     move     zero to WS-P7 WS-P8.
+     if       WS-P9 > zero
+              set Fht-Variable (Fht-Table-Size) to true
+              move 256   to WS-End
+*>           DISPLAY " Setting variable"
+     end-if
+     move     zero to WS-P7 WS-P8 WS-P9.
 *>
  da000-Exit.
      exit     section.
@@ -1692,7 +1732,7 @@
               perform  zz030-Test-For-Copy
               if  WS-P6 not = zero           *>   got a COPY verb
                   move PL-Text to PL-Text2   *>     if then if does not always work
-                  if  WS-Fixed-Set
+                  if  (WS-Fixed-Set or WS-Variable-Set)
                       move PL-Text2 to Formatted-Line
                       move "*" to Formatted-Line (7:1)
                   else
@@ -1734,6 +1774,7 @@
 *>
      perform  varying WS-P21 from 255 by -1              *> get size of Input-Record
                   until Input-Record (WS-P21:1) not = space
+              continue
      end-perform.
  *>    move   WS-P21 to ws-disp3.
  *>    display "IR size = " ws-disp3.
@@ -1741,8 +1782,8 @@
      move     space to WS-Quote-Used.
      set      WS-Need-Leading-Quote to false.
      move     1     to WS-P30.                        *> temp-rec pointer
-     move     69  to WS-P25.                          *> DEFAULTS - allows to add '" &' cc70 then quote on new line
      move     12  to WS-P29.                          *> DEFAULTS - FIXED pl-text  pointer
+     move     69  to WS-P25.                          *> DEFAULTS - allows to add '" &' cc70 then quote on new line
 *>
      if       WS-Free-Set                             *> set starting point for target presets
               move      2  to WS-P29
@@ -1758,6 +1799,7 @@
 *>
      perform  varying WS-P30 from 1 by 1
                until Input-Record (WS-P30:1) not = space
+               continue
      end-perform.
  *>      display "IR2 = " Input-Record (WS-P30:WS-P21 - (WS-P30 - 1)).
      perform  test after varying WS-P30 from WS-P30 by 1   *> WS-P30 by 1
@@ -1846,10 +1888,10 @@
               add      1 to WS-P19
      end-perform.
      if       WS-P19 > WS-P29
-          if  PL-Text (1:40) not = spaces
-              perform    zz010-Write-Print-Line1
-              move     spaces to PL-Text
-          end-if
+              if       PL-Text (1:40) not = spaces
+                       perform  zz010-Write-Print-Line1
+                       move     spaces to PL-Text
+              end-if
      end-if.
 *>
  zz010-Exit1.
@@ -1875,7 +1917,7 @@
 *>
      if       No-Printing
               move PL-Text to PL-Text2
-              if  WS-Fixed-Set
+              if  WS-Fixed-Set or WS-Variable-Set
                   move PL-Text2 to Formatted-Line
                   move "*" to Formatted-Line (7:1)
               else
@@ -1921,7 +1963,7 @@
               display " Printcbl P1 P2 P3 P4 P5"  at 0401
               display "  P1: Input Filename"  at 0501
               display "  P2: Output-Filename" at 0601
-              display "  P3: Source format [-fixed | -free, fixed | free]" at 0701
+              display "  P3: Source format [-fixed | -free | -variable | fixed | free | variable ]" at 0701
               display "  P4: PSN (Print Spool Name) or NOPRINT | noprint"  at 0801
               display "  P5: 'Temp-CopyLib-Path'" at 0901
               display " P1 thru P4 are Mandatory"  at 1101
@@ -1946,7 +1988,7 @@
               move    spaces to Arg-Test
               accept  Arg-Value (z) from Argument-Value
               if      z = 3
-                      move function upper-case (Arg-Value (z)) to Arg-Test
+                      move FUNCTION UPPER-CASE (Arg-Value (z)) to Arg-Test
               else
                       move Arg-Value (z) to Arg-Test
               end-if
@@ -1958,10 +2000,13 @@
                                        PR-Name
               end-if
               if      z = 3 and (Arg-Test (1:6) = "-FIXED" or "FIXED ")
-                      set ws-fixed-set to true
+                      set WS-Fixed-Set to true
               end-if
               if      z = 3 and (Arg-Test (1:5) = "-FREE" or "FREE ")
-                      set ws-free-set to true
+                      set WS-Free-Set to true
+              end-if
+              if      z = 3 and (Arg-Test (1:9) = "-VARIABLE" or "VARIABLE ")
+                      set WS-Variable-Set to true
               end-if
               if      z = 4
                       move Arg-Test  to PSN
@@ -2012,12 +2057,11 @@
      display  "Output = " WS-Print-File-Name.
      display  "Format = " no advancing.
      if       ws-Fixed-Set
-              display "Fixed"
-     else
-      if      ws-free-set
-              display "Free"
-      end-if
-     end-if.
+              display "Fixed".
+     if       ws-Variable-Set
+              display "Variable".
+     if       ws-Free-Set
+              display "Free".
      display  "PSN    = " PSN.
      display  "Copy Libraries to search:".
      move     No-Of-Copy-Dirs to y.
@@ -2101,15 +2145,16 @@
      move     zero to WS-P6.                         *> non zero indicates copy statement present
      if       not No-Printing
               go to zz030-Exit.
-     if       (WS-Fixed-Set and IR-Buffer (7:1) = "*")
-         or   (WS-Fixed-Set and IR-Buffer (7:1) = "-")                  *> Literal
-         or   (WS-Fixed-Set and (IR-Buffer (7:1) = "D" or = "d"))     *> Debug with COPY  ????
-         or   (WS-Free-Set and IR-Buffer (1:2) = "*>")                  *> >>D (free) is processed.
-         or   (ws-Free-Set and IR-Buffer (2:2) = "*>")
-         or   (WS-Free-Set and IR-Buffer (1:1) = "$")
-         or   (WS-Free-Set and IR-Buffer (1:1) = "#")
+     move     FUNCTION TRIM (IR-Buffer) to TIR2.
+     if       ((WS-Fixed-Set or WS-Variable-Set) and IR-Buffer (7:1) = "*")
+         or   ((WS-Fixed-Set or WS-Variable-Set) and IR-Buffer (7:1) = "-")                  *> Literal
+         or   ((WS-Fixed-Set or WS-Variable-Set) and (IR-Buffer (7:1) = "D" or = "d"))     *> Debug with COPY  ????
+         or   (WS-Free-Set and TIR2 (1:2) = "*>")                  *> >>D (free) is processed.
+         or   (ws-Free-Set and TIR2 (2:2) = "*>")
+         or   (WS-Free-Set and TIR2 (1:1) = "$")
+         or   (WS-Free-Set and TIR2 (1:1) = "#")
               go to zz030-Exit.
-     inspect  function upper-case (IR-Buffer) tallying WS-P6 for all "COPY ".
+     inspect  FUNCTION UPPER-CASE (IR-Buffer) tallying WS-P6 for all " COPY ".  *> inserted leading space 10/9/22
      if       WS-P6 = zero
               go to zz030-Exit.
 *>
@@ -2124,9 +2169,9 @@
                        exit perform
               end-if
               if       NOT Found-Number and Found-Word
-                and    function upper-case (IR-Buffer (WS-P6:6)) = " COPY "
+                and    FUNCTION UPPER-CASE (IR-Buffer (WS-P6:6)) = " COPY "
   *>              or     (WS-P1 = 1                                         *> Free format
-  *>                 and function upper-case (IR-Buffer (1:5)) = "COPY ")   *> chg 25/2/19
+  *>                 and FUNCTION UPPER-CASE (IR-Buffer (1:5)) = "COPY ")   *> chg 25/2/19
                        move zero to WS-P6
                        exit perform
               end-if
@@ -2135,16 +2180,17 @@
                        perform varying WS-P6 from WS-P6 by 1 until IR-Buffer (WS-P6:1) = quote
                                                                 or = "'"
                                                                 or WS-P6 > IR-Buffer-Data-Size - 7
+                               continue
                        end-perform                     *> loose the literal or line
                        if   WS-P6 > IR-Buffer-Data-Size - 7
                             move zero to WS-P6
                             exit perform
                        end-if
               end-if
-              if       function upper-case (IR-Buffer (WS-P6:6)) = " COPY "
+              if       FUNCTION UPPER-CASE (IR-Buffer (WS-P6:6)) = " COPY "
                        exit perform
               end-if
-              if       WS-P1 = 1 and function upper-case (IR-Buffer (1:5)) = "COPY "
+              if       WS-P1 = 1 and FUNCTION UPPER-CASE (IR-Buffer (1:5)) = "COPY "
                        exit perform
               end-if
               move     IR-Buffer (WS-P6:1) to WS-Number-Test
@@ -2172,7 +2218,7 @@
      add      1                     to WS-Page-Number.
      if       WS-Page-Number not = 1
               write Print-Line after 1.
-     move     function Current-Date to Ws-Current-Date.
+     move     FUNCTION Current-Date to Ws-Current-Date.
      move     WS-Input-File-Name    to Print-Line.
      move     "Cobol Source Print"  to Print-Line (25:18).
      move     "("                   to Print-Line (44:1).
@@ -2240,9 +2286,14 @@
               move   spaces to print-line
               if     ws-Fixed-Set
                      move "Fixed" to Hold-Word1
-              else
+              end-if
+              if     WS-Free-Set
                      move "Free"  to Hold-Word1
               end-if
+              if     WS-Variable-Set
+                     move "Variable" to Hold-Word1
+              end-if
+*>
               string "Running with "     delimited by size
                      WS-Input-File-Name  delimited by space
                      ", "                delimited by size
@@ -2305,12 +2356,12 @@
 *> set up New entry in File Table
 *>
      add      1 to Fht-Table-Size.
-     move     Fht-Table-Size to e.
-     initialize Fht-Var-Block (e).
-     move     Fht-Buffer-Size  to   Fht-Byte-Count (e).
-     move     spaces to Fht-Current-Rec (e)
-                        Fht-Buffer (e).
-     move     1      to Fht-pointer (e).
+     move     Fht-Table-Size to E2.
+     initialize Fht-Var-Block (E2).
+     move     Fht-Buffer-Size  to   Fht-Byte-Count (E2).
+     move     spaces to Fht-Current-Rec (E2)
+                        Fht-Buffer (E2).
+     move     1      to Fht-pointer (E2).
 *>
      perform  zz400-Check-File-Exists thru zz400-Exit.
      if       Return-Code not = zero             *> Could have 26, 25, 35 = no file found
@@ -2318,9 +2369,9 @@
               subtract 1 from Fht-Table-Size
               go to zz300-Exit.
 *>
-     move     Fht-Table-Size to e.               *> just in case its been altered or used etc
-     move     Cbl-File-Size to Fht-File-Size (e).
-     move     Cbl-File-Name to Fht-File-Name (e).
+     move     Fht-Table-Size to E2.               *> just in case its been altered or used etc
+     move     Cbl-File-Size to Fht-File-Size (E2).
+     move     Cbl-File-Name to Fht-File-Name (E2).
      move     1    to Cbl-Access-Mode
                       Cbl-Deny-Mode.             *> deny write
      move     zero to Cbl-Device
@@ -2340,7 +2391,7 @@
               go to zz300-exit
      end-if
 *>
-     move     Cbl-File-Handle to Fht-File-Handle (e).
+     move     Cbl-File-Handle to Fht-File-Handle (E2).
      add      1 to Copy-Depth.
      if       Copy-Depth > Max-Copy-Depth           *> Keep track of how deep we went!
               move Copy-Depth to Max-Copy-Depth.
@@ -2621,6 +2672,7 @@
                        perform varying WS-P14 from 1 by 1
                               until Input-Record (WS-P14:2) = "*>"
                                            or WS-P14 not < IR-Buffer-Data-Size
+                              continue
                        end-perform
                        if       WS-P14 < IR-Buffer-Data-Size
                                 subtract 1 from WS-P14
@@ -2638,7 +2690,7 @@
                     inspect  Input-Record (1:WS-P14) tallying WS-P15
                                   for all Temp-Replacing-Source  (1:WS-P12)
                     if       WS-P15 not = zero
-                             move     function substitute (Input-Record (1:WS-P14)            *> Copy Record
+                             move     FUNCTION substitute (Input-Record (1:WS-P14)            *> Copy Record
                                       Temp-Replacing-Source  (1:WS-P12)
                                       Temp-Replacing-Target  (1:WS-P13)) to Temp-Record
                              if       Input-Record not = Temp-Record (1:256)
@@ -2679,11 +2731,11 @@
                                       replacing TRAILING Temp-Replacing-Source (1:WS-P12)
                                                     by   Temp-Replacing-Target (1:WS-P13)
                       else
-                             inspect  function upper-case (Input-Record (1:WS-P14)) tallying WS-P15
-                                                for all function upper-case (Temp-Replacing-Source (1:WS-P12))
+                             inspect  FUNCTION UPPER-CASE (Input-Record (1:WS-P14)) tallying WS-P15
+                                                for all FUNCTION UPPER-CASE (Temp-Replacing-Source (1:WS-P12))
                              perform  varying WS-P16 from 1 by 1 until WS-P16 > WS-P15
                                       if       WS-P15 not = zero
-                                               move     function SUBSTITUTE-CASE (Input-Record (1:WS-P14)
+                                               move     FUNCTION SUBSTITUTE-CASE (Input-Record (1:WS-P14)
                                                         Temp-Replacing-Source  (1:WS-P12)
                                                         Temp-Replacing-Target  (1:WS-P13)) to Temp-Record
                                                if       Input-Record not = Temp-Record (1:256)
@@ -2720,10 +2772,10 @@
                     add      1 to WS-P12                 *> add 2 for added space before and after texts
                     add      1 to WS-P13                 *>  ditto
                     move     zero to WS-P15
-                    inspect  function upper-case (Input-Record (1:WS-P14)) tallying WS-P15
-                                  for all function upper-case (Temp-Replacing-Source (1:WS-P12))
+                    inspect  FUNCTION UPPER-CASE (Input-Record (1:WS-P14)) tallying WS-P15
+                                  for all FUNCTION UPPER-CASE (Temp-Replacing-Source (1:WS-P12))
                     if       WS-P15 not = zero
-                             move     function SUBSTITUTE-CASE (Input-Record (1:WS-P14)
+                             move     FUNCTION SUBSTITUTE-CASE (Input-Record (1:WS-P14)
                                       Temp-Replacing-Source (1:WS-P12)
                                       Temp-Replacing-Target (1:WS-P13)) to Temp-Record
                              if       Input-Record not = Temp-Record (1:256)

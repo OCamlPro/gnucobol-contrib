@@ -1,7 +1,8 @@
-2019-03-11 Vincent B Coen
+2022-09-07 Vincent B Coen
         *    v2.01.37
-                    Support for replacing LEADING and TRAILING pseudo text but
-                    must be same size as inspect replacing is used.
+                    Updated copyright notices to 2022.
+                    Added support for source format VARIABLE.
+                    Need to do the same in cobxref but test code first.
 
 2019-03-10 Vincent B Coen
         *    v2.01.36
