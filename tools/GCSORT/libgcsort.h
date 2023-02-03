@@ -62,10 +62,10 @@ enum cb_colseq {
 };
 
 static enum cb_colseq g_cb_colseq = CB_COLSEQ_NATIVE;
-
-static const cob_u8_t * g_cb_ascii_ebcdic = NULL;
-static const cob_u8_t * g_cb_ebcdic_ascii = NULL;
+static cob_u8_t g_cb_coltab[256];
 
 #endif /* __LIBCOB_RELEASE >= 30200 */
+
+static const cob_u8_t *g_cb_coltab_ptr = NULL;
 
 #endif /* LIBGCSORT_H_INCLUDED  */

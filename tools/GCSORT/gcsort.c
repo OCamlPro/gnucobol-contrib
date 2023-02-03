@@ -235,30 +235,7 @@ int main_prod(int argc, char **argv) {
 	module->module_param_cnt = 0;
 	/* s.m.20201015 module->ebcdic_sign = 0;    */
 	module->ebcdic_sign = g_cb_ebcdic_sign;
-#if __LIBCOB_RELEASE >= 30200
-	switch (g_cb_colseq) {
-	case CB_COLSEQ_ASCII:
-#ifdef	COB_EBCDIC_MACHINE
-		module->collating_sequence = g_cb_ebcdic_ascii;
-#else
-		module->collating_sequence = NULL;
-#endif
-		break;
-	case CB_COLSEQ_EBCDIC:
-#ifdef	COB_EBCDIC_MACHINE
-		module->collating_sequence = NULL;
-#else
-		module->collating_sequence = g_cb_ascii_ebcdic;
-#endif
-		break;
-	case CB_COLSEQ_NATIVE:
-	default:
-		module->collating_sequence = NULL;
-		break;
-	}
-#else
-	module->collating_sequence = NULL;
-#endif /* __LIBCOB_RELEASE >= 30200 */
+	module->collating_sequence = g_cb_coltab_ptr;
 	module->decimal_point = '.';
 	module->currency_symbol = '$';
 	module->numeric_separator = ',';
@@ -374,6 +351,7 @@ int main_prod(int argc, char **argv) {
 
 void verify_options(int numargs, char** args)
 {
+	char ebcdic_table[1024] = "default";
 	char* pch;
 	char szOpt[1024];
         szOpt[sizeof(szOpt) - 1] = '\0';
@@ -416,15 +394,34 @@ void verify_options(int numargs, char** args)
 			if (!strcasecmp(pch, "-febcdic-table")) {
 				pch = strtok(NULL, " =");
 				if (pch != NULL) {
-					if (cob_get_collation_by_name(pch, &g_cb_ebcdic_ascii, &g_cb_ascii_ebcdic) < 0) {
-						fprintf(stdout, "*GCSORT* ERROR: Problem with option -febcdic-table, correct values are DEFAULT/IBM/GCOS\n");
-						exit(GC_RTC_ERROR);
-					}
+					strncpy(ebcdic_table, pch, sizeof(ebcdic_table) - 1);
 				}
 			}
 #endif /* __LIBCOB_RELEASE >= 30200 */
 		}
 	}
+
+#if __LIBCOB_RELEASE >= 30200
+	/* Load the translation table only if actually useful */
+	switch (g_cb_colseq) {
+#ifdef	COB_EBCDIC_MACHINE
+	case CB_COLSEQ_ASCII:
+		if (cob_load_collation(ebcdic_table, g_cb_coltab, NULL) < 0) {
+#else
+	case CB_COLSEQ_EBCDIC:
+		if (cob_load_collation(ebcdic_table, NULL, g_cb_coltab) < 0) {
+#endif
+			fprintf(stdout, "*GCSORT* ERROR: Problem with option -febcdic-table, could not load the given table\n");
+			exit(GC_RTC_ERROR);
+		}
+		g_cb_coltab_ptr = g_cb_coltab;
+		break;
+	default:
+		g_cb_coltab_ptr = NULL;
+		break;
+	}
+#endif /* __LIBCOB_RELEASE >= 30200 */
+
 	return;
 }
 
