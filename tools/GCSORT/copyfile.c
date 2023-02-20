@@ -399,7 +399,6 @@ int job_copyFile(struct job_t *job)
 */
 			if (ninrec == 1) {
 				if (job->inrec->nIsOverlay == 0) {
-					//-->>memset(recordBuffer, 0x20, sizeof(recordBuffer));
 					memset(recordBuffer, 0x20, GCSORT_MAX_BUFF_REK);
 					nbyteRead = inrec_copy(job->inrec, recordBuffer, szBuffRek, job->outputLength, file_getMaxLength(file), file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, 0);
 					memmove(szBuffRek, recordBuffer, nbyteRead);
@@ -407,7 +406,6 @@ int job_copyFile(struct job_t *job)
 				}
 				else
 				{	/* Overlay */
-					//-->>memset(recordBuffer, 0x20, sizeof(recordBuffer));
 					memset(recordBuffer, 0x20, GCSORT_MAX_BUFF_REK);
 					memmove(recordBuffer, szBuffRek, file_getMaxLength(file));	/* copy input record    */
 					nbyteRead = inrec_copy_overlay(job->inrec, recordBuffer, szBuffRek, job->outputLength, file_getMaxLength(file), file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, 0);
@@ -552,6 +550,10 @@ int job_copyFile(struct job_t *job)
 			job->recordWriteOutTotal++;
 		}
 	}	/*  end of cycle    */
+
+
+	/* s.m. 20230216 */
+	cob_close(file->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
 
 /* End output */ 
 

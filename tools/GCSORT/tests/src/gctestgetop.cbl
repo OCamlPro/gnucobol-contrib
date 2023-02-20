@@ -25,8 +25,12 @@
        file section.
        fd  fsys.
        01  r-def.
-           03     r-getsysop      pic x.
-           03 r-getsysop-9 redefines r-getsysop pic 9.
+           03 r-getsysop                        pic x(9).
+           03 r-getsysop-9-red redefines r-getsysop. 
+              05    r-getsysop-9                pic 9.
+              05    filler                      pic x(8).
+           03 r-getsysop-nver-red redefines r-getsysop. 
+              05    r-getsysop-nver             pic 9(9).
       *    
       *    
        working-storage section.
@@ -40,13 +44,15 @@
        linkage section.
       *
        01 ntype                 BINARY-LONG .
+       01 nver                  pic 9(9).
       *
       *-------------------------------------------------------*
-       procedure division using ntype.
+       procedure division using ntype, nver.
       *-------------------------------------------------------*
        master                     section.
        begin-00.
-           move 9 to ntype 
+           move 9       to ntype 
+           move zero    to nver
       *    display '*===============================================*'
       *    display ' GCSort test environment ' gcsort-tests-ver
       *    display '*===============================================*'
@@ -62,8 +68,14 @@
            end-if
            read fsys
            if (f-s = '00')
-              if r-getsysop is numeric 
+              if r-getsysop(1:1) is numeric 
                 move r-getsysop-9  to ntype  
+              end-if
+           end-if
+           read fsys
+           if (f-s = '00')
+              if r-getsysop is numeric 
+                move r-getsysop-nver  to nver
               end-if
            end-if
            close fsys

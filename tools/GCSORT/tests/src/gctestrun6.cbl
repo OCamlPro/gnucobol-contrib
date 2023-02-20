@@ -327,6 +327,7 @@
             07 ar-ele-take-vet-02         pic x(80).                       ** value 
           
        77   ntype               BINARY-LONG .
+       77   nver                pic 9(9) .
        77   cmd-go              pic x(80) value space.
            
       *
@@ -342,8 +343,9 @@
            display '  gctestrun6           SORT  Date fields'
            display '                       Group6'
            display '*===============================================*'
-           call 'gctestgetop' using ntype    
+           call 'gctestgetop' using ntype , nver   
            display ' Environment : ' ntype 
+           display ' Version     : ' nver 
  
       *
            perform exec-all-gr06 varying idx from 1 by 1

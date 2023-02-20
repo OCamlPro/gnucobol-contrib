@@ -117,23 +117,26 @@ void E15Call_destructor(struct E15Call_t* pE15C)
     util_cob_field_del(pE15C->pUnused5, ALLOCATE_DATA);
     util_cob_field_del(pE15C->pExitAreaLen, ALLOCATE_DATA);
     util_cob_field_del(pE15C->pExitArea, ALLOCATE_DATA);
+    if (pE15C != NULL)
+        free(pE15C);
+
     if (E15module->module_active) {
         E15module->module_active--;
     }
 
     /* Pop module stack */
-    cob_module_leave(E15module);
+/*  s.m. 20230218             cob_module_leave(E15module); */
 
     /* Program return */
-    if (!E15initialized)
-        return;
-    if (E15module && E15module->module_active)
-        cob_fatal_error(COB_FERROR_CANCEL);
-    E15ex_retcode = 0;
-    cob_module_free(&E15module);
-
-    E15initialized = 0;
-
+    /*
+    //20230218     if (!E15initialized)
+    //20230218         return;
+    //20230218     if (E15module && E15module->module_active)
+    //20230218         cob_fatal_error(COB_FERROR_CANCEL);
+    //20230218     E15ex_retcode = 0;
+    //20230218     cob_module_free(&E15module);
+    //20230218    E15initialized = 0;
+    */
     return;
 }
 
@@ -263,7 +266,22 @@ static void E15CALL_module_init (cob_module *module)
       module->module_stmt = 0;
       module->module_sources = NULL;
 #endif /* __LIBCOB_VERSION >= 3  */
-
+#if __LIBCOB_VERSION > 3 || \
+   ( __LIBCOB_VERSION == 3  && __LIBCOB_VERSION_MINOR >= 2 )	
+      module->gc_version = "3.2-dev"; /* COB_PACKAGE_VERSION; */
+      module->xml_mode = 1;
+      module->xml_code = NULL;
+      module->xml_event = NULL;
+      module->xml_information = NULL;
+      module->xml_namespace = NULL;
+      module->xml_namespace_prefix = NULL;
+      module->xml_nnamespace = NULL;
+      module->xml_nnamespace_prefix = NULL;
+      module->xml_ntext = NULL;
+      module->xml_text = NULL;
+      module->json_code = NULL;
+      module->json_status = NULL;
+#endif
 }
 /* END Routine E15 */
 
@@ -346,25 +364,28 @@ void E35Call_destructor(struct E35Call_t* pE35C)
     util_cob_field_del(pE35C->pOutputRecLen, ALLOCATE_DATA);
     util_cob_field_del(pE35C->pExitAreaLen, ALLOCATE_DATA);
     util_cob_field_del(pE35C->pExitArea, ALLOCATE_DATA);
+    if (pE35C != NULL)
+        free(pE35C);
 
     if (E35module->module_active) {
         E35module->module_active--;
     }
 
     /* Pop module stack */
-    cob_module_leave(E35module);
-
-    /* Program return */
-    if (!E35initialized)
-        return;
-
-    if (E35module && E35module->module_active)
-        cob_fatal_error(COB_FERROR_CANCEL);
-    E35ex_retcode = 0;
-    cob_module_free(&E35module);
-
-    E35initialized = 0;
-
+    /* s.m. 20230218             cob_module_leave(E35module); */
+  
+        /* Program return */
+    /*
+    //s.m. 20230218     if (!E35initialized)
+    //s.m. 20230218         return;
+    //s.m. 20230218     
+    //s.m. 20230218     if (E35module && E35module->module_active)
+    //s.m. 20230218         cob_fatal_error(COB_FERROR_CANCEL);
+    //s.m. 20230218     E35ex_retcode = 0;
+    //s.m. 20230218     cob_module_free(&E35module);
+    //s.m. 20230218 
+    //s.m. 20230218     E35initialized = 0;
+    */
     return;
 }
 
@@ -509,6 +530,22 @@ static void E35CALL_module_init(cob_module* module)
         module->module_stmt = 0;
         module->module_sources = NULL;
 #endif /* __LIBCOB_VERSION >= 3 */
+#if __LIBCOB_VERSION > 3 || \
+   ( __LIBCOB_VERSION == 3  && __LIBCOB_VERSION_MINOR >= 2 )	
+        module->gc_version = "3.2-dev"; /* COB_PACKAGE_VERSION; */
+        module->xml_mode = 1;
+        module->xml_code = NULL;
+        module->xml_event = NULL;
+        module->xml_information = NULL;
+        module->xml_namespace = NULL;
+        module->xml_namespace_prefix = NULL;
+        module->xml_nnamespace = NULL;
+        module->xml_nnamespace_prefix = NULL;
+        module->xml_ntext = NULL;
+        module->xml_text = NULL;
+        module->json_code = NULL;
+        module->json_status = NULL;
+#endif
 }
 
 /* END   Routine E35 */

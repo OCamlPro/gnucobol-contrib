@@ -26,7 +26,9 @@
        >>ELSE
        01 size-mod CONSTANT AS 8.
        >>END-IF
-
+       01  cmd-gcsort-ebcdic    pic x(55) value 
+            ' -fsign=EBCDIC -fcolseq=EBCDIC  -febcdic-table=DEFAULT '.
+       
        01 c-size-t   PIC 9(size-mod) COMP-5.       
        77 chrsl                 pic x value '/'.
        77 chrbs                 pic x value '\'.
@@ -50,13 +52,18 @@
       *
       *
        01       array-retcode-epilog-gr03.
-          03    ar-retcode-ele occurs 49 times.
+          03    ar-retcode-ele occurs 50 times.
            05   ar-tst-name           pic x(15).
            05   ar-tst-rtc01          USAGE BINARY-LONG.      
       ***
        01  ele-cmd-take-group.
-           05 ele-cmd-take-exec-num       pic 9(3) value 49.
+           05 ele-cmd-take-exec-num       pic 9(3) value 50.
            05 ele-cmd-take-exec.
+              07 ele-cmd-take-exec001E pic x(15) value 'susesqvmlt01E'.
+              07 ele-cmd-take-exec002E pic x(08) value 'gcsort  '.
+              07 ele-cmd-take-exec003E pic x(80) value 
+                    'sort/01-use/susesqvmlt01E_take.prm   '.
+      *
               07 ele-cmd-take-exec001 pic x(15) value 'susesqvmlt01'.
               07 ele-cmd-take-exec002 pic x(08) value 'gcsort  '.
               07 ele-cmd-take-exec003 pic x(80) value 
@@ -303,14 +310,14 @@
                     'sort/10-outfil/soutfsqfmlt09_take.prm '.
       *
             05 ele-cmd-take-exec-vet redefines ele-cmd-take-exec
-                     occurs 49 times.
+                     occurs 50 times.
               07 ele-cmd-take-exec-id       pic x(15).
               07 ele-cmd-take-exec-type     pic x(08).
               07 ele-cmd-take-exec-cmd      pic x(80).
       ***
        77   ntype               BINARY-LONG .
        77   nver                pic 9(9) .
-       77   cmd-go              pic x(80) value space.
+       77   cmd-go              pic x(250) value space.
       *-------------------------------------------------------*
        procedure division.
       *-------------------------------------------------------*
@@ -323,7 +330,7 @@
            display '  gctestrun3           SORT'
            display '                       Group3'
            display '*===============================================*'
-           call 'gctestgetop' using ntype, nver
+           call 'gctestgetop' using ntype , nver   
            display ' Environment : ' ntype 
            display ' Version     : ' nver 
 
@@ -491,6 +498,7 @@ Win        if (ntype = 1)
                move 99  to ar-tst-rtc01(idx-err) 
                move space                  to cmd-string
                string wk-cmd-sort                delimited by size
+                      cmd-gcsort-ebcdic          delimited by size
                       wk-dir-take                delimited by size
                       ele-cmd-take-exec-cmd(idx-take) delimited by space
                             into cmd-string

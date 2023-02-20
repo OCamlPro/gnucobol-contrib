@@ -1,3 +1,14 @@
+2023-02-20  Sauro Menna  <smenna@users.sourceforge.net>
+    * New test case EBCDIC option 
+    * Modify test case to support libcob 3.2 library and earlier versions
+    * Modify gcsysop.c to get GNUCobol version
+    * To enable testcase EBCDIC get version from output gcsysop   
+    * Fix memory Leaks in E15 and E35 function
+    * Use cob_tiny function to terminate the Cobol RTS (Thanks to Chuck Haatvedt)
+    * Test - Fix take file somisqfch01_take.prm, somisqfmlt03_take.prm
+    * FIX FINDREP Control statement (Thanks David Declerck) Enable format 'FINDREP = ( arg1, .... )'
+    * job.c fix memory leaks, utils.c assign NULL in free function
+    
 2023-01-25  David Declerck  <david.declerck@ocamlpro.com>
     * Update EBCDIC table handling through the -febcdic-table option to account for the changes in GnuCOBOL 3.2
 

@@ -62,7 +62,8 @@ enum cb_colseq {
 };
 
 static enum cb_colseq g_cb_colseq = CB_COLSEQ_NATIVE;
-static cob_u8_t g_cb_coltab[256];
+
+static cob_u8_t g_cb_coltab[256]; 
 
 #endif /* __LIBCOB_RELEASE >= 30200 */
 

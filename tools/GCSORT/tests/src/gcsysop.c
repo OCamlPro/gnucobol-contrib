@@ -19,14 +19,51 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
+#if defined(_WIN32) && ( !defined(__MINGW32__) && !defined(__MINGW64__))
+
+	#ifdef	_MSC_VER
+	#pragma warning(disable: 4800)
+	#endif
+
+	#if defined (__cplusplus)
+		#include <mpirxx.h>
+		#else
+		#include <mpir.h>
+	#endif
+
+	#include <libcob/common.h>
+
+#else
+#include <gmp.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include <libcob/common.h>
+#ifdef __cplusplus
+}
+#endif
+#endif 
+
+
+
 int gcsysop(void) ;
-//int main(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
     FILE * fp;
+    
+    char *ver = malloc(256);
     int nret=gcsysop();
-    printf("gcsysop - Get System Type : %d\n", nret);
+    printf("gcsysop - Get System Type  : %d       \n", nret);
+    #ifdef __LIBCOB_RELEASE
+	    printf("gcsysop - GNUCobol version : %0.9d\n", __LIBCOB_RELEASE);
+    #endif
+    
     fp = fopen ("gcsysoprun.txt", "w+");
     fprintf(fp, "%d\n", nret);
+    #ifdef __LIBCOB_RELEASE
+	    fprintf(fp, "%.9d\n", __LIBCOB_RELEASE);
+    #else
+    	    fprintf(fp, "000020200\n");
+    #endif
     fclose(fp);
     return nret;
 }
@@ -35,39 +72,39 @@ int gcsysop(void) {
 int systype = 0;
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
     systype = 1;
-   //define something for Windows (32-bit and 64-bit, this part is common)
+   /* define something for Windows (32-bit and 64-bit, this part is common) */
    #ifdef _WIN64
-      //define something for Windows (64-bit only)
+      /* define something for Windows(64 - bit only) */
    #else
-      //define something for Windows (32-bit only)
+      /* define something for Windows (32-bit only)  */   
    #endif
 #elif __APPLE__
     systype = 4;
     #include <TargetConditionals.h>
     #if TARGET_IPHONE_SIMULATOR
-         // iOS Simulator
+         /* iOS Simulator */
     #elif TARGET_OS_IPHONE
-        // iOS device
+        /* iOS device */
     #elif TARGET_OS_MAC
-        // Other kinds of Mac OS
+        /* Other kinds of Mac OS */
     #else#include <stdlib.h>
     #   error "Unknown Apple platform"
     #endif#include <stdlib.h>
 #elif __linux__
     systype = 2;
-    // linux
+    /* linux */
 #elif __unix__ // all unices not caught above
-    // Unix
+    /* Unix */
     systype = 3;
 #elif defined(_POSIX_VERSION)
-    // POSIX
+    /* POSIX */
     systype = 5;
 #else
 #   error "Unknown compiler"
     systype = -1;
 #endif
 
-// printf("%d\n", systype);
+/* printf("%d\n", systype); */
 
 return systype;
 }

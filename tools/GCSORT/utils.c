@@ -959,7 +959,8 @@ void util_cob_field_del ( cob_field* field_ret, int nData)
 				free(field_ret->data); 
 			field_ret->data = NULL;
 		}
-		free(field_ret);  
+		free(field_ret);
+		field_ret = NULL;
 	}
 }
 

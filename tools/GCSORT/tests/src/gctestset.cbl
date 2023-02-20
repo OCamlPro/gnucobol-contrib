@@ -38,9 +38,12 @@
            03     filler redefines r-row.
              05   r-param1          pic x(40).
              05   r-param2          pic x(40).
-           03     filler            pic x(10).
+           03     r-ver             pic x(9).
+           03     r-ver9 redefines r-ver pic 9(9).
+           03     filler            pic x.
       *    
        working-storage section.
+       77 wk-ver9               pic 9(9).
        77 f-s                   pic xx.
 	   77 retcode               BINARY-LONG SIGNED.
        01 env-set-name          pic x(25).
@@ -58,6 +61,7 @@
        77   lensub              pic 9(3).
       *
        77   ntype               BINARY-LONG .
+       77   nver                pic 9(9) .
        77   cmd-go              pic x(80) value space.
       *
        01     parm-def.
@@ -94,7 +98,7 @@
       *
        01      array-def-cmd.
           03   ar-max-ele       pic 99.
-          03   ar-def-cmd occurs 20 times.
+          03   ar-def-cmd occurs 120 times.
             05 ar-cmd           pic x(10).
             05 ar-def           pic x(512).
       *
@@ -113,7 +117,11 @@
            display '             Setup test enviroment '
            display '*===============================================*'
       *    call 'gcsysop' returning ntype
-           call 'gctestgetop' using ntype
+           move zero        to ntype
+           move zero        to nver
+           call 'gctestgetop' using ntype, nver
+           display ' Environment : ' ntype 
+           display ' Version     : ' nver 
 TEST00***          display ' after call gcsysop ntype = ' ntype  
            open input fdef
            if (f-s not = '00')
@@ -131,7 +139,8 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
                 goback
            end-if
            move  idx        to ar-max-ele
-           perform read-file-setup  until f-s not = '00'
+           move '00' to f-s
+           perform read-file-setup  until f-s not = '00' 
            close fsetup
            
            display '----------------------------------------------'
@@ -178,7 +187,7 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
        read-file-setup            section.
       *---------------------------------------------------------*
        refs-00.
-           read fsetup
+           read fsetup. 
            if (f-s = '00')
               perform exec-command
            end-if
@@ -192,6 +201,23 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
        exco-00.
       * skip comment
            move zero   to retcode
+           if  (r-command(1:1) NOT = '*') AND
+               (r-command(1:1) NOT = SPACE) 
+                if (r-ver not = space and not = low-value )
+                    move r-ver9 to wk-ver9
+                else 
+                    move zero   to wk-ver9
+                end-if
+      **          display 'wk-ver ' wk-ver9 ' nver ' nver
+               if ((wk-ver9 >  zero) and 
+                   (wk-ver9 > nver ))
+                    display ' Skip command : ' r-command ' ' r-param1
+                    display ' Version GNUCobol : ' nver
+                            ' Version command  : ' wk-ver9
+      *    force comment into command         
+                    move '*' to r-command(1:1)
+               end-if 
+           end-if 
            if (r-command(1:1) NOT = '*') AND
               (r-command(1:1) NOT = SPACE) 
              evaluate TRIM(r-command, TRAILING)
@@ -237,6 +263,27 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
                    if retcode not = zero
                         add 1 to count-errors
                    end-if
+               when 'compile_e'
+                   move TRIM(r-command, TRAILING) to cmd-cmd 
+                   move TRIM(r-param1, TRAILING)  to cmd-param
+                   perform get-command-line
+                   if (bfound = zero)
+                     display 
+                     '*gctestsetup* command not defined into file .def'
+                     display ' command : ' cmd-cmd 
+                     goback
+                   end-if
+                   perform set-command-line
+                   call 'SYSTEM' using cmd-def
+                   move RETURN-CODE   to retcode
+      ** Check return code [Problem in Linux environment]     
+                   if (retcode > 256)
+                        divide retcode by 256
+                        giving retcode
+                   end-if
+                   if retcode not = zero
+                        add 1 to count-errors
+                   end-if
                when 'setvar'
                    move TRIM(r-param1, TRAILING) to env-set-name
                    move TRIM(r-param2, TRAILING) to env-set-value
@@ -247,7 +294,8 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
                    perform set-value-env
                when 'execute'
 Win                if (ntype = 1)
-                    call 'SYSTEM' using r-param1
+                                move 1 to ntype
+                  call 'SYSTEM' using r-param1
                    else
 Linux                if (ntype = 2)
                         move space to cmd-go

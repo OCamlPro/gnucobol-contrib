@@ -685,6 +685,7 @@ int job_MakeExitRoutines(struct job_t* job)
 
 void job_CloneFileForOutfilSet(struct job_t *job, struct file_t* file) 
 {
+	char* pCmd;
 
     switch(file->organization) {
     case FILE_ORGANIZATION_SEQUENTIAL:		
@@ -693,12 +694,24 @@ void job_CloneFileForOutfilSet(struct job_t *job, struct file_t* file)
     case FILE_ORGANIZATION_LINESEQUENTIAL:
 		file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 	    file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
+#if __LIBCOB_RELEASE >= 30200
+		pCmd = cob_getenv_direct("COB_LS_FIXED");
+		if ((pCmd == NULL) || (strcasecmp(pCmd, "OFF") != 0))
+			cob_setenv("COB_LS_FIXED", "OFF", 0);
+#else
 		cob_putenv("COB_LS_FIXED=OFF");
+#endif
 		break;
 	case FILE_ORGANIZATION_LINESEQUFIXED:
 		file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 		file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
+#if __LIBCOB_RELEASE >= 30200
+		pCmd = cob_getenv_direct("COB_LS_FIXED");
+		if ((pCmd == NULL) || (strcasecmp(pCmd, "ON") != 0))
+			cob_setenv("COB_LS_FIXED", "ON", 0);
+#else
 		cob_putenv("COB_LS_FIXED=ON");
+#endif
 		break;
 	case FILE_ORGANIZATION_RELATIVE:
         file->stFileDef->organization = COB_ORG_RELATIVE;
@@ -4177,7 +4190,7 @@ int job_SetPosLenKeys(int* arPosLen) {
 /* //-->>  s.m. 20221125 */
 INLINE int job_compare_rek(const void *first, const void *second, int bCheckPosPnt)
 {
-    int nType, nLen, nFlags, nTipo;
+    int nLen, nFlags, nTipo;
 	lPosA = 0;
 	lPosB = 0;
 	result=0;

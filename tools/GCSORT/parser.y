@@ -2264,6 +2264,16 @@ outrecclause:
         nRecCase=0;
 		nPosAbsRec = 0;
 }
+    | OUTREC FINDREP '=' '(' {
+        strcpy(szMexToken, " outrec clause FINDREP ");
+        current_outrec=1;
+        nRecCase=OUTREC_CASE;
+		nPosAbsRec = 0;
+} allinoutrec ')' {
+        current_outrec=0;
+        nRecCase=0;
+		nPosAbsRec = 0;
+}
    /* */
     | OUTREC FINDREP  {
         strcpy(szMexToken, " outrec clause FINDREP ");
@@ -2373,6 +2383,16 @@ inrecclause:
         nRecCase=INREC_CASE;
 		nPosAbsRec = 0;
 } allinoutrec  {
+        current_inrec=0;
+        nRecCase=0;
+		nPosAbsRec = 0;
+}
+    | INREC FINDREP '=' '(' {
+        strcpy(szMexToken, " inrec clause FINDREP ");
+        current_inrec=1;
+        nRecCase=INREC_CASE;
+		nPosAbsRec = 0;
+} allinoutrec ')' {
         current_inrec=0;
         nRecCase=0;
 		nPosAbsRec = 0;

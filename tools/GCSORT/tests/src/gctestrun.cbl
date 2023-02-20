@@ -34,25 +34,46 @@
       *
       *  array-name
        01    array-name.
-          03 ar-name-max-ele          pic 99  value 7.
+          03 ar-name-max-ele          pic 99  value 10.
           03 ar-ele-name.
-            05 ar-ele-name-01         pic x(10) value 'gctestrun1'.
-            05 ar-ele-name-02         pic x(10) value 'gctestrun2'.
-            05 ar-ele-name-03         pic x(10) value 'gctestrun3'.
-            05 ar-ele-name-04         pic x(10) value 'gctestrun4'.
-            05 ar-ele-name-05         pic x(10) value 'gctestrun5'.
-            05 ar-ele-name-06         pic x(10) value 'gctestrun6'.
-            05 ar-ele-name-07         pic x(10) value 'gctestrun7'.
+            05 ar-ele-name-01         pic x(11) value 'gctestrun1'.
+            05 ar-ele-name-02         pic x(11) value 'gctestrun2'.
+            05 ar-ele-name-03         pic x(11) value 'gctestrun3'.
+            05 ar-ele-name-04         pic x(11) value 'gctestrun4'.
+            05 ar-ele-name-05         pic x(11) value 'gctestrun5'.
+            05 ar-ele-name-06         pic x(11) value 'gctestrun6'.
+            05 ar-ele-name-07         pic x(11) value 'gctestrun7'.
+            05 ar-ele-name-08         pic x(11) value 'gctestrun1A'.
+            05 ar-ele-name-09         pic x(11) value 'gctestrun1E'.
+            05 ar-ele-name-10         pic x(11) value 'gctestrun3E'.
           03 ar-ele-vet redefines ar-ele-name
-                        occurs 7 times pic x(10).
-      **          
+                        occurs 10 times pic x(11).
+      **  
+      *  array-name-version
+       01    array-name-ver.
+          03 ar-name-max-ele-version          pic 99  value 10.
+          03 ar-ele-name-version.
+            05 ar-ele-name-ver-01         pic 9(9) value 000020200.
+            05 ar-ele-name-ver-02         pic 9(9) value 000020200.
+            05 ar-ele-name-ver-03         pic 9(9) value 000020200.
+            05 ar-ele-name-ver-04         pic 9(9) value 000020200.
+            05 ar-ele-name-ver-05         pic 9(9) value 000020200.
+            05 ar-ele-name-ver-06         pic 9(9) value 000020200.
+            05 ar-ele-name-ver-07         pic 9(9) value 000020200.
+            05 ar-ele-name-ver-08         pic 9(9) value 000030200.
+            05 ar-ele-name-ver-09         pic 9(9) value 000030200.
+            05 ar-ele-name-ver-10         pic 9(9) value 000030200.
+          03 ar-ele-vet-ver redefines ar-ele-name-version
+                        occurs 10 times pic 9(9).
+      **                
       *
        01       array-retcode-epilog-gr05.
-          03    ar-retcode-ele occurs 7 times.
-           05   ar-tst-name           pic x(12).
+          03    ar-retcode-ele occurs 10 times.
+           05   ar-tst-name           pic x(11).
            05   ar-tst-rtc01          USAGE BINARY-LONG.
       *
        77   ntype               BINARY-LONG .
+       77   nver                pic 9(9) .
        77   cmd-go              pic x(80) value space.
        
       *-------------------------------------------------------*
@@ -66,8 +87,10 @@
            display '*===============================================*'
            display '  gctestrun       Running test ....'
            display '*===============================================*'
-           call 'gctestgetop' using ntype
+           call 'gctestgetop' using ntype, nver
            display ' Environment : ' ntype 
+           display ' Version     : ' nver 
+
       *
            perform exec-all-gr varying idx from 1 by 1
                   until idx > ar-name-max-ele
@@ -119,11 +142,19 @@
        epilog-view-gr05           section.
       *---------------------------------------------------------*
        epvw-00.
-           add ar-tst-rtc01(idx) to retcode-sum
+           if (ar-tst-rtc01(idx) = 98) 
+                add zero to retcode-sum
+           else
+                add ar-tst-rtc01(idx) to retcode-sum
+           end-if     
            if (ar-tst-rtc01(idx) = zero) 
               move "   OK    "    to status-test
            else 
-              move " ---> KO "    to status-test
+                 if (ar-tst-rtc01(idx) = 98) 
+                  move " Skipped "    to status-test
+               else
+                  move " ---> KO "    to status-test
+               end-if
            end-if
            display "|   " ar-tst-name(idx)    " |    "
                           ar-tst-rtc01(idx)   "   | "
@@ -188,6 +219,10 @@ Win        if (ntype = 1)
        exec-test-modules         section.
       *---------------------------------------------------------*
        gein-00.
+           if (ar-ele-vet-ver(idx) > nver)
+                move 98 to ar-tst-rtc01(idx)
+                go to gein-99
+           end-if 
            move 99 to ar-tst-rtc01(idx) 
            move ar-ele-vet(idx)  to cmd-string
 Win        if (ntype = 1)

@@ -270,7 +270,7 @@ int main_prod(int argc, char **argv) {
 	job=job_constructor();
 	if (job != NULL)
 	   	nRC = job_load(job, argc, argv);
-	else	
+	else
     	nRC = -1;
     if (nRC == 0){
 	/* check SORT FIELDS=COPY in this case force MERGE */
@@ -323,79 +323,88 @@ int main_prod(int argc, char **argv) {
 		nRC = GC_RTC_ERROR;
 	}
 
+	/* new from Chuck */
+	cob_tidy();
+
 	job_destroy(job);
     job_destructor(job);
-
-
-    if (module->module_active) {
-  	    module->module_active--;
-    }
-	/* printf("GCSORT - cob_module_leave\n");   */
-	/* Pop module stack */
-    /*
-    cob_module_leave (module);
-	cob_module_free(&module);
-		printf("GCSORT - cob_stop_run\n");
-		cob_stop_run(nRC);
-		cob_terminate_exec(nRC); 
-	 
-	 printf("GCSORT - cob_stop_run after\n");
-     */
-
-	cob_module_leave(module);
-	cob_module_free(&module);
 
 	return nRC;
 }
 
-
 void verify_options(int numargs, char** args)
 {
 	char ebcdic_table[1024] = "default";
+
 	char* pch;
 	char szOpt[1024];
-        szOpt[sizeof(szOpt) - 1] = '\0';
+	szOpt[sizeof(szOpt) - 1] = '\0';
 	for (int i = 1; i < numargs; ++i) {
 		strncpy(szOpt, args[i], sizeof(szOpt) - 1);
-		pch = strtok(szOpt, " =");
+		pch = strtok(szOpt, "=");
 		if (pch != NULL) {
 			if (!strcasecmp(pch, "-fsign")) {
-				pch = strtok(NULL, " =");
+				pch = strtok(NULL, "=");
 				if (pch != NULL) {
 					if (!strcasecmp(pch, "EBCDIC"))
 						g_cb_ebcdic_sign = 1;
 					else
-					if (!strcasecmp(pch, "ASCII"))
-						g_cb_ebcdic_sign = 0;
-					else {
-						fprintf(stdout, "*GCSORT* ERROR: Problem with option -fsign, correct values are ASCII/EBCDIC\n");
-						exit(GC_RTC_ERROR);
-					}
+						if (!strcasecmp(pch, "ASCII"))
+							g_cb_ebcdic_sign = 0;
+						else {
+							fprintf(stdout, "*GCSORT* ERROR: Problem with option -fsign, correct values are ASCII/EBCDIC\n");
+							exit(GC_RTC_ERROR);
+						}
 				}
+				else
+				{
+					fprintf(stdout, "*GCSORT* ERROR: invalid parameter in command line with option -fsign\n");
+					exit(GC_RTC_ERROR);
+				}
+
 			}
 #if __LIBCOB_RELEASE >= 30200
+			if (pch == NULL) {
+				fprintf(stdout, "*GCSORT* ERROR: invalid parameter in command line\n");
+				exit(GC_RTC_ERROR);
+			}
 			if (!strcasecmp(pch, "-fcolseq")) {
-				pch = strtok(NULL, " =");
+				/* s.m. 20230207 pch = strtok(NULL, " ="); */
+				/*  s.m. 20230207 */
+				pch = strtok(NULL, "=");
 				if (pch != NULL) {
 					if (!strcasecmp(pch, "NATIVE"))
 						g_cb_colseq = CB_COLSEQ_NATIVE;
 					else
-					if (!strcasecmp(pch, "ASCII"))
-						g_cb_colseq = CB_COLSEQ_ASCII;
-					else
-					if (!strcasecmp(pch, "EBCDIC"))
-						g_cb_colseq = CB_COLSEQ_EBCDIC;
-					else {
-						fprintf(stdout, "*GCSORT* ERROR: Problem with option -fcolseq, correct values are ASCII/EBCDIC/NATIVE\n");
-						exit(GC_RTC_ERROR);
-					}
+						if (!strcasecmp(pch, "ASCII"))
+							g_cb_colseq = CB_COLSEQ_ASCII;
+						else
+							if (!strcasecmp(pch, "EBCDIC"))
+								g_cb_colseq = CB_COLSEQ_EBCDIC;
+							else {
+								fprintf(stdout, "*GCSORT* ERROR: Problem with option -fcolseq, correct values are ASCII/EBCDIC/NATIVE\n");
+								exit(GC_RTC_ERROR);
+							}
+				}
+				else
+				{
+					fprintf(stdout, "*GCSORT* ERROR: invalid parameter in command line with option -fcolseq\n");
+					exit(GC_RTC_ERROR);
 				}
 			}
+
 			if (!strcasecmp(pch, "-febcdic-table")) {
-				pch = strtok(NULL, " =");
+				/* s.m. 20230207 pch = strtok(NULL, " ="); */
+				/* s.m. 20230207 */
+				pch = strtok(NULL, "=");
 				if (pch != NULL) {
 					strncpy(ebcdic_table, pch, sizeof(ebcdic_table) - 1);
 				}
+				else {
+					fprintf(stdout, "*GCSORT* ERROR: invalid parameter in command line with option -febcdic-table\n");
+					exit(GC_RTC_ERROR);
+				}
+
 			}
 #endif /* __LIBCOB_RELEASE >= 30200 */
 		}
@@ -403,9 +412,11 @@ void verify_options(int numargs, char** args)
 
 #if __LIBCOB_RELEASE >= 30200
 	/* Load the translation table only if actually useful */
+
 	switch (g_cb_colseq) {
 #ifdef	COB_EBCDIC_MACHINE
 	case CB_COLSEQ_ASCII:
+		// s.m. 20230215 if (cob_get_collation_by_name(ebcdic_table, (const cob_u8_t**)&g_cb_coltab, NULL) < 0) {
 		if (cob_load_collation(ebcdic_table, g_cb_coltab, NULL) < 0) {
 #else
 	case CB_COLSEQ_EBCDIC:
@@ -419,7 +430,16 @@ void verify_options(int numargs, char** args)
 	default:
 		g_cb_coltab_ptr = NULL;
 		break;
-	}
+		}
+	/*
+		if (g_cb_coltab_ptr != NULL) {
+			printf(" Table \n");
+			for (int y = 0; y < 256; y++) {
+				printf("Char [%d] = %c - (%x)\n", y, g_cb_coltab_ptr[y], g_cb_coltab_ptr[y]);
+			}
+		}
+		*/
+
 #endif /* __LIBCOB_RELEASE >= 30200 */
 
 	return;

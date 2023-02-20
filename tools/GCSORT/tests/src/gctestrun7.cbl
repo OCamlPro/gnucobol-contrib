@@ -143,6 +143,7 @@
       **
           
        77   ntype               BINARY-LONG .
+       77   nver                pic 9(9) .
        77   cmd-go              pic x(80) value space.
            
       *-------------------------------------------------------*
@@ -161,8 +162,9 @@
            display '  gctestrun7           SORT'
            display '                       Group2'
            display '*===============================================*'
-           call 'gctestgetop' using ntype    
+           call 'gctestgetop' using ntype, nver
            display ' Environment : ' ntype 
+           display ' Version     : ' nver 
            
       *
            perform exec-all-gr07 varying idx from 1 by 1

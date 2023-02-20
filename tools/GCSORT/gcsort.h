@@ -22,6 +22,8 @@
 #ifndef GCSORT_H_INCLUDED
 #define GCSORT_H_INCLUDED
 
+#include "libgcsort.h"
+
 #define _CRT_NONSTDC_NO_DEPRECATE 
 
 /* x64 ini  */

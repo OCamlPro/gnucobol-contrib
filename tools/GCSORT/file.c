@@ -215,6 +215,8 @@ int file_setInputFile(struct file_t *file) {
 int file_SetInfoForFile(struct file_t* file, int nMode) {
 
 	struct KeyIdx_t* tKeys; 
+	
+	char* pCmd;
 	int	k=0;
 	file->stFileDef = (cob_file*) malloc(sizeof(cob_file));
 
@@ -287,12 +289,26 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 		case FILE_ORGANIZATION_LINESEQUENTIAL:
 			file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 			file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
+#if __LIBCOB_RELEASE >= 30200
+			pCmd = cob_getenv_direct("COB_LS_FIXED");
+			if ((pCmd == NULL) || (strcasecmp(pCmd, "OFF") != 0)) {
+				cob_setenv("COB_LS_FIXED", "OFF", 1);
+			}			
+#else
 			cob_putenv("COB_LS_FIXED=OFF");	/* change value of environment value GnuCOBOL*/
+#endif
 			break;
 		case FILE_ORGANIZATION_LINESEQUFIXED:
 			file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 			file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
+#if __LIBCOB_RELEASE >= 30200
+			pCmd = cob_getenv_direct("COB_LS_FIXED");
+			if ((pCmd == NULL) || (strcasecmp(pCmd, "ON") != 0)) {
+				cob_setenv("COB_LS_FIXED", "ON", 1);
+			}	
+#else
 			cob_putenv("COB_LS_FIXED=ON");	/* change value of environment value GnuCOBOL*/
+#endif
 			break;
 		case FILE_ORGANIZATION_RELATIVE:
 			tKeys =  file->stKeys;
@@ -354,6 +370,7 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 			file->stFileDef->organization = COB_ORG_INDEXED;
 			break;
 	}
+
 	return 0;
 }
 int file_clone(struct file_t* fout, struct file_t* fin) {

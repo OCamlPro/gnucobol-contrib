@@ -1,0 +1,7 @@
+   * --------------------------------------------------------------------------------------------- *
+    * SUSESQVMLT01E	Sort file with	MLT	Column	SQ	File	Multi file in use	Simple example
+    * --------------------------------------------------------------------------------------------- *
+    
+   SORT FIELDS=(1,50,CH,A)                                           
+	use     ../files/fil_ebcdic_250.txt 	    	record v,1,250 org ls 
+	give     ../files/fil_ebcdic_250.txt.srt 	    record v,1,250 org ls
