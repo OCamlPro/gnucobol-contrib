@@ -236,6 +236,13 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 	/* new option Record Control Statement */
 	if (file->maxLength > 0)
 		file->stFileDef->record = util_cob_field_make( COB_TYPE_ALPHANUMERIC, file->maxLength, 0, 0, file->maxLength, ALLOCATE_DATA);
+	else
+	{
+		/* In this case forced len of output file */
+		file->stFileDef->record = util_cob_field_make(COB_TYPE_ALPHANUMERIC, globalJob->outputFile->recordLength, 0, 0, globalJob->outputFile->recordLength, ALLOCATE_DATA);
+		file->recordLength = globalJob->outputFile->recordLength;
+		file->maxLength = globalJob->outputFile->recordLength;
+	}
 
 	if (file->format == FILE_TYPE_VARIABLE)
 		file->stFileDef->variable_record = util_cob_field_make(COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA); 

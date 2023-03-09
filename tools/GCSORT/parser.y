@@ -289,7 +289,7 @@ giveclause:
 
 recordorginstruction: 
     { 	
-        strcat(szMexToken, " record org instruction "); 
+        strcpy(szMexToken, " record org instruction "); 
     }
     /*
 	| ORG FILETYPE  {  
@@ -358,7 +358,7 @@ recordorginstruction:
 
  allkeyfield: 
       keyfield { 
-        strcat(szMexToken, " key instruction ");
+        strcpy(szMexToken, " key instruction ");
 }
     | keyfield ',' allkeyfield {}
  ;
@@ -723,7 +723,7 @@ fill_char:
 
 /* #################################################################################################### */
 /* -->>nTypeFormat;			// 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields  */
-/* -->>nTypeIncludeOmit;		// 0= Nothing, 1 = Include, 2 = Omit                        */
+/* -->>nTypeIncludeOmit;	// 0= Nothing, 1 = Include, 2 = Omit                            */
 /* #################################################################################################### */
 formatclause: 
       FORMAT '=' fieldtype {
@@ -734,7 +734,20 @@ formatclause:
 			condField_setCondFieldsTypeAll(nTypeIncludeOmit, $3);
 		if (nTypeFormat == 3)	/* for SumFields    */
 			condField_setFormatFieldsTypeAll(nTypeFormat, $3);
-}
+    }
+    /* 20230221 Start  
+    |  FORMAT '=' OPCOND {
+		strcpy(szMexToken, " format clause substring ");
+		if (nTypeFormat == 1)
+			condField_setFormatFieldsTypeAll(nTypeFormat, FIELD_TYPE_SUBSTRING);
+		if (nTypeFormat == 2)
+			condField_setCondFieldsTypeAll(nTypeIncludeOmit, FIELD_TYPE_SUBSTRING);
+		if (nTypeFormat == 3)	
+			condField_setFormatFieldsTypeAll(nTypeFormat, FIELD_TYPE_SUBSTRING);
+    }
+    */
+    
+/* 20230221 End   */            
 /* s.m. 20160914
     | ',' FORMAT '=' fieldtype {
         if (nTypeFormat == 1)
@@ -753,12 +766,12 @@ allcondfield:
 }
 	| '(' allcondfield ')' {
 		$$=$2;
-		strcat(szMexToken, " condition field ");
+		strcpy(szMexToken, " condition field 01 ");
 }
     | allcondfield AND allcondfield {
 		condField=condField_constructor_operation(COND_OPERATION_AND, $1, $3);
 		$$=condField;
-		strcat(szMexToken, " condition field ");
+		strcpy(szMexToken, " condition field 02 ");
 		if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 110, ABEND_SKIP);
 			YYABORT;
@@ -767,7 +780,7 @@ allcondfield:
     | allcondfield OR allcondfield {
 		condField=condField_constructor_operation(COND_OPERATION_OR, $1, $3);
 		$$=condField;
-		strcat(szMexToken, " condition field ");
+		strcpy(szMexToken, " condition field 03 ");
 		if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 111, ABEND_SKIP);
 			YYABORT;
@@ -786,7 +799,7 @@ condfieldcond:
         nTypeFormat = 2; /* Format external token   */
         condField=condField_constructor_conditionfield($1,$3,$5,$7,$9,$11,$13);
         $$=condField;
-        strcat(szMexToken, " condition field ");
+        strcpy(szMexToken, " condition field 04 ");
 		if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 112, ABEND_SKIP);
 			YYABORT;
@@ -802,7 +815,7 @@ condfieldcond:
         nTypeFormat = 2; /* Format external token   */
         condField=condField_constructor_conditionfield($1,$3,0,$5,$7,$9,0);
         $$=condField;
-        strcat(szMexToken, " condition field ");
+        strcpy(szMexToken, " condition field 05 ");
 		if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 112, ABEND_SKIP);
 			YYABORT;
@@ -814,7 +827,7 @@ condfieldcond:
     /* #################################################################################################### */
     | DIGIT ',' DIGIT ',' fieldtype ',' condition ',' fieldvaluecond  {    
 		$$=condField_constructor_condition($1,$3,$5,$7,$9);
-		strcat(szMexToken, " condition field ");
+		strcpy(szMexToken, " condition field 06 ");
 		if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 113, ABEND_SKIP);
 			YYABORT;
@@ -826,7 +839,7 @@ condfieldcond:
     /* #################################################################################################### */
     | DIGIT ',' DIGIT ',' fieldtype ',' condition ',' fieldvalueconst {
         $$=condField_constructor_condition($1,$3,$5,$7,$9);
-        strcat(szMexToken, " condition field ");
+        strcpy(szMexToken, " condition field 07 ");
 		if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 114, ABEND_SKIP);
 			YYABORT;
@@ -840,7 +853,7 @@ condfieldcond:
         condField=condField_constructor_condition($1,$3,0,$5,(struct fieldValue_t *)$7);
         nTypeFormat = 2; /* Format external token   */
         $$=condField;
-        strcat(szMexToken, " condition field ");
+        strcpy(szMexToken, " condition field 08 ");
 		if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 115, ABEND_SKIP);
 			YYABORT;
@@ -854,7 +867,7 @@ condfieldcond:
         condField=condField_constructor_condition($1,$3,0,$5,(struct fieldValue_t *)$7);
         nTypeFormat = 2; /* Format external token   */
         $$=condField;
-        strcat(szMexToken, " condition field ");
+        strcpy(szMexToken, " condition field 09 ");
 		if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 116, ABEND_SKIP);
 			YYABORT;
@@ -868,7 +881,7 @@ condfieldcond:
         condField=condField_constructor_condition4Date($1,$3,$5,$7,(struct fieldValue_t *)$9);
         nTypeFormat = 2; /* Format external token   */
         $$=condField;
-        strcat(szMexToken, " condition field ");
+        strcpy(szMexToken, " condition field 10 ");
 		if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 141, ABEND_SKIP);
 			YYABORT;
@@ -1055,8 +1068,36 @@ includeclause:
         strcpy(szMexToken, " include clause ");
 }
     /* */
+    /* ; */
+
+/* 20230221 start */
+/*
+    | INCLUDE "FORMAT" '=' OPCOND ',' COND allcondfield  {
+        condField_addInclude($7);
+        nTypeIncludeOmit = 1;
+        strcpy(szMexToken, " include clause ");
+}
+    | INCLUDE "FORMAT" '=' OPCOND ',' COND '=' allcondfield  {
+        condField_addInclude($8);
+        nTypeIncludeOmit = 1;
+        strcpy(szMexToken, " include clause ");
+}
+*/
+    | INCLUDE formatclause ',' COND allcondfield  {
+        condField_addInclude($5);
+        nTypeIncludeOmit = 1;
+        strcpy(szMexToken, " include clause ");
+}
+
+    | INCLUDE formatclause ',' COND '=' allcondfield  {
+        condField_addInclude($6);
+        nTypeIncludeOmit = 1;
+        strcpy(szMexToken, " include clause ");
+}
+    /* */
 ;
 
+/* 20230221 end */
 /* =================================================================================== */
 
 allinoutrec: 
@@ -1869,7 +1910,7 @@ inoutrec:
 
 findrep_options_all: 
       findrep_options { 
-        strcat(szMexToken, " findrep_options instruction ");
+        strcpy(szMexToken, " findrep_options instruction ");
 }
     | findrep_options ',' findrep_options_all {}
  ;    
@@ -2013,7 +2054,7 @@ findrep_options:
 
 allfieldvaluerec:
     fieldvaluerec { 
-        strcat(szMexToken, " allfieldvaluerec instruction ");
+        strcpy(szMexToken, " allfieldvaluerec instruction ");
         if (findrep_field == NULL) {
             findrep_field = findrepfield_constructor((struct fieldValue_t*)$$, (struct fieldValue_t*) NULL);
         }
@@ -2025,7 +2066,7 @@ allfieldvaluerec:
 }
     | fieldvaluerec ',' allfieldvaluerec 
     {
-        strcat(szMexToken, " allfieldvaluerec instruction 2");
+        strcpy(szMexToken, " allfieldvaluerec instruction 2");
         if (findrep_field == NULL) {
             findrep_field = findrepfield_constructor((struct fieldValue_t*)$$, (struct fieldValue_t*) NULL);
         }
@@ -2040,7 +2081,7 @@ allfieldvaluerec:
 
 inoutfieldvaluerec:
     fieldvaluerec { 
-        strcat(szMexToken, " inoutfieldvaluerec instruction ");
+        strcpy(szMexToken, " inoutfieldvaluerec instruction ");
         if (nSwitchFR == 0) {
             field_tmp =$1;
             nSwitchFR = 1;
@@ -2061,7 +2102,7 @@ inoutfieldvaluerec:
 }
     | fieldvaluerec ',' inoutfieldvaluerec 
     {
-        strcat(szMexToken, " inoutfieldvaluerec instruction 2");
+        strcpy(szMexToken, " inoutfieldvaluerec instruction 2");
         if (nSwitchFR == 0) {
             field_tmp =$1;
             nSwitchFR = 1;
@@ -2104,7 +2145,7 @@ inoutfieldvaluerec:
 
 changepair: 
       changepairdet { 
-        strcat(szMexToken, " changepairdet instruction ");
+        strcpy(szMexToken, " changepairdet instruction ");
         $$=$1;
 }
     | changepairdet ',' changepair {}
@@ -2503,7 +2544,7 @@ filesgroup:
     /*  OUTFIL FNAMES=(FILE1,FILE2,FILE3,FILE4)           */
     /* ################################################## */
       | filesgroup ',' filesgroup {
-		strcat(szMexToken, " group files outfil ");
+		strcpy(szMexToken, " group files outfil ");
 }
 ;
 

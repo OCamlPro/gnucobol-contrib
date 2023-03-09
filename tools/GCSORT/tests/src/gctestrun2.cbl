@@ -115,7 +115,7 @@
              '      ,FILES=dd_outfil_03                      '.
             07 ar-ele-take-row-01019      pic x(10) value 'soutfsqf01'.
             07 ar-ele-take-row-01020      pic x(52) value  
-             ' OUTFIL FNAMES=dd_outfil_save,SAVE'.
+             ' OUTFIL SAVE,FNAMES=dd_outfil_save'.
       * 10
             07 ar-ele-take-row-02001      pic x(10) value 'soutfsqf02'.
             07 ar-ele-take-row-02002      pic x(52) value  
@@ -146,7 +146,7 @@
              '        ,FILES=dd_outfil_03                         '. 
             07 ar-ele-take-row-02019      pic x(10) value 'soutfsqf02'.
             07 ar-ele-take-row-02020      pic x(52) value  
-             ' OUTFIL FNAMES=dd_outfil_save,SAVE                  '.
+             ' OUTFIL SAVE,FNAMES=dd_outfil_save                  '.
       *          
       * 7
             07 ar-ele-take-row-03001      pic x(10) value 'soutfsqf03'.

@@ -1,3 +1,8 @@
+2023-03-20  Sauro Menna  <smenna@users.sourceforge.net>
+    * Fix problem in OUTFIL SAVE Option 
+    * Updated testcase COBOL source 
+    * Updated header files to include libcob.h
+
 2023-02-20  Sauro Menna  <smenna@users.sourceforge.net>
     * New test case EBCDIC option 
     * Modify test case to support libcob 3.2 library and earlier versions

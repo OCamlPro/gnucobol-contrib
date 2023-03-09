@@ -19,32 +19,7 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
-#if defined(_WIN32) && ( !defined(__MINGW32__) && !defined(__MINGW64__))
-
-	#ifdef	_MSC_VER
-	#pragma warning(disable: 4800)
-	#endif
-
-	#if defined (__cplusplus)
-		#include <mpirxx.h>
-		#else
-		#include <mpir.h>
-	#endif
-
-	#include <libcob/common.h>
-
-#else
-#include <gmp.h>
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include <libcob/common.h>
-#ifdef __cplusplus
-}
-#endif
-#endif 
-
-
+#include <libcob.h>
 
 int gcsysop(void) ;
 int main(int argc, char *argv[]) {
@@ -62,7 +37,7 @@ int main(int argc, char *argv[]) {
     #ifdef __LIBCOB_RELEASE
 	    fprintf(fp, "%.9d\n", __LIBCOB_RELEASE);
     #else
-    	    fprintf(fp, "000020200\n");
+    	fprintf(fp, "000020200\n");
     #endif
     fclose(fp);
     return nret;

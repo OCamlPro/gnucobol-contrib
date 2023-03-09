@@ -27,31 +27,7 @@
 
 static int g_cb_ebcdic_sign = 0;
 
-/* -- #ifdef	_WIN32  */
-#if defined(_WIN32) && ( !defined(__MINGW32__) && !defined(__MINGW64__))
-
-	#ifdef	_MSC_VER
-	#pragma warning(disable: 4800)
-	#endif
-
-	#if defined (__cplusplus)
-		#include <mpirxx.h>
-		#else
-		#include <mpir.h>
-	#endif
-
-	#include <libcob/common.h>
-
-#else
-#include <gmp.h>
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include <libcob/common.h>
-#ifdef __cplusplus
-}
-#endif
-#endif 
+#include <libcob.h>
 
 #if __LIBCOB_RELEASE >= 30200
 

@@ -323,10 +323,19 @@ int job_copyFile(struct job_t *job)
 			job->recordNumberTotal++;
 			job->LenCurrRek = nLenRek;
 /* check SKIPREC */
-			if (job->nSkipRec > 0)
-                if (nRecCount <= job->nSkipRec)
+			if (job->nSkipRec > 0) {
+				if (nRecCount <= job->nSkipRec) {
+					/* Make output for OUTFIL */
+					if ((nLenRek > 0) && (job->outfil != NULL)) {
+						if (outfil_write_buffer(job, recordBuffer, nLenRek, szBuffRek, nSplitPosPnt, useRecord) < 0) {
+							retcode_func = -1;
+							goto job_save_exit;
+						}
+						job->recordWriteOutTotal++;
+					}
 					continue;
-
+				}
+			}
 			useRecord=1;
 
 			/* Start Exit Routine E15
@@ -371,9 +380,17 @@ int job_copyFile(struct job_t *job)
 				}
 			}
 			/* End   Exit Routine E15 check skip record */
-			if (useRecord == 0)
+			if (useRecord == 0) {
+				/* Make output for OUTFIL */
+				if ((nLenRek > 0) && (job->outfil != NULL)) {
+					if (outfil_write_buffer(job, recordBuffer, nLenRek, szBuffRek, nSplitPosPnt, useRecord) < 0) {
+						retcode_func = -1;
+						goto job_save_exit;
+					}
+					job->recordWriteOutTotal++;
+				}
 				continue;
-
+			}
 			if (includecondfield == 1)
 				if  (condField_test(job->includeCondField,(unsigned char*) szBuffRek, job)== FALSE) {
 					useRecord=0;	/* if condition for include is false skip record  */
@@ -383,8 +400,17 @@ int job_copyFile(struct job_t *job)
 					useRecord = 0;	/* if condition for omit is true skip record */
 				}
 			}
-			if (useRecord==0)
+			if (useRecord == 0) {
+				/* Make output for OUTFIL */
+				if ((nLenRek > 0) && (job->outfil != NULL)) {
+					if (outfil_write_buffer(job, recordBuffer, nLenRek, szBuffRek, nSplitPosPnt, useRecord) < 0) {
+						retcode_func = -1;
+						goto job_save_exit;
+					}
+					job->recordWriteOutTotal++;
+				}
 				continue;
+			}
 
             /* check STOPAFT */
 			if (job->nStopAft > 0)
@@ -500,8 +526,17 @@ int job_copyFile(struct job_t *job)
 			}
 		}
 		/* End   Exit Routine E35 check skip record */
-		if (useRecord == 0)
+		if (useRecord == 0) {
+			/* Make output for OUTFIL */
+			if ((nLenRek > 0) && (job->outfil != NULL)) {
+				if (outfil_write_buffer(job, recordBuffer, nLenRek, szBuffRek, nSplitPosPnt, useRecord) < 0) {
+					retcode_func = -1;
+					goto job_save_exit;
+				}
+				job->recordWriteOutTotal++;
+			}
 			continue;
+		}
 /* E35 End */
 		if ((nLenRek > 0) && (job->outfil == NULL)){
 			job_set_area(job, job->outputFile, recordBuffer+nSplitPosPnt, nLenRecOut, nLenRek);	/* Len output   */
@@ -543,7 +578,7 @@ int job_copyFile(struct job_t *job)
 /* OUTFIL */
 /* Make output for OUTFIL */
 		if ((nLenRek > 0) && (job->outfil != NULL)){
-			if (outfil_write_buffer(job, recordBuffer, nLenRek, szBuffRek, nSplitPosPnt) < 0){
+			if (outfil_write_buffer(job, recordBuffer, nLenRek, szBuffRek, nSplitPosPnt, useRecord) < 0){
 					retcode_func = -1;
 					goto job_save_exit;
 			}

@@ -181,7 +181,12 @@ int utils_parseFieldType(const char *type)
 	else if (!strcasecmp(type, "Y2Z")) {
 		return FIELD_TYPE_NUMERIC_Y2Z;
 		
-	} else {
+	} 
+	else if (!strcasecmp(type, "SS")) {
+		return FIELD_TYPE_SUBSTRING;
+
+	}
+	else {
 		fprintf(stdout,"*GCSORT*P002 - Error parsing datatye : %s invalid\n", type);
 		return -1;
 	}
@@ -257,6 +262,9 @@ int utils_getFieldTypeInt(char* strType)
 	}
 	else if (!strcasecmp(strType, "Y2Z")) {
 		return FIELD_TYPE_NUMERIC_Y2Z;
+	}
+	else if (!strcasecmp(strType, "SS")) {
+		return FIELD_TYPE_SUBSTRING;
 	}
 	fprintf(stdout,"*GCSORT*P003 - Error parsing datatye : %s invalid\n", strType);
 	return -1;

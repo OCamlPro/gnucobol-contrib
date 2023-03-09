@@ -317,13 +317,16 @@ int outfil_close_files(  struct job_t *job  )
 
 /* Write for OUTFIL NO Split    */
 /* don't use buffered           */
-int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsigned int  byteRead, unsigned char* szBuffRek, int nSplitPosPnt) 
+int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsigned int  byteRead, unsigned char* szBuffRek, int nSplitPosPnt, int userec) 
 {
 
 	struct outfil_t *pOutfil;
 	int useRecord;
 	int nNumWrite;
+	int nUseWriteSave = 0;
+	int nWritedRec = 0;
 	unsigned int nLenRecOut=0;
+	
 	/* check if present SAVE e memorize pointer */
 	if (job->pSaveOutfil == NULL){
 		for (pOutfil=job->outfil; pOutfil != NULL; pOutfil=outfil_getNext(pOutfil)) 
@@ -337,84 +340,125 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
     pOutfil=job->outfil;	
 	nNumWrite=0;
 	nLenRecOut = job->outputLength;
-	for (pOutfil=job->outfil; pOutfil != NULL; pOutfil=outfil_getNext(pOutfil)) 
-	{
-		nLenRecOut = job->outputLength;
-		useRecord = 1;
-		 
-		if (job->pSaveOutfil == pOutfil)	/* skip */
-			continue;
-
-		if (pOutfil->outfil_nStartRec >= 0)
-            if (job->recordWriteOutTotal+1 < pOutfil->outfil_nStartRec)
-				continue;
-		if (pOutfil->outfil_nEndRec >= 0)
-			if (job->recordWriteOutTotal+1 > pOutfil->outfil_nEndRec)
-				continue;
-
-		/* check Include                                    */
-		/* if retcode of condField_test is '0' cond is OK.  */
-		if (pOutfil->outfil_includeCond !=NULL && condField_test(pOutfil->outfil_includeCond,(unsigned char*) recordBuffer+nSplitPosPnt, job)==0)  /* Cond KO   */
-				useRecord=0;
-		/* check Omit   */
-		if (pOutfil->outfil_omitCond != NULL && condField_test(pOutfil->outfil_omitCond,(unsigned char*) recordBuffer+nSplitPosPnt, job)!=0)	    /* Cond KO  */
-				useRecord=0;
-/* Verify Outfil- Outrek    */
-		if (pOutfil->outfil_outrec != NULL) {
-			memset(szBuffRek, 0x00, pOutfil->outfil_File->maxLength);
-			byteRead = outrec_copy(pOutfil->outfil_outrec, szBuffRek, recordBuffer, pOutfil->outfil_File->maxLength, byteRead, file_getFormat(pOutfil->outfil_File), file_GetMF(pOutfil->outfil_File), job, nSplitPosPnt);
-            memcpy(recordBuffer, szBuffRek, byteRead+nSplitPosPnt);
-			nLenRecOut = byteRead ;		/* For outrec force length of record copy   */
-		}
-		/* write record */
-		if (useRecord == 1)
+	if (userec == 1) {
+		nWritedRec = 0;
+		for (pOutfil = job->outfil; pOutfil != NULL; pOutfil = outfil_getNext(pOutfil))
 		{
-			if (byteRead > 0)
+			nLenRecOut = job->outputLength;
+			useRecord = 1;
+
+			if (job->pSaveOutfil == pOutfil)	/* skip */
+				continue;
+
+			if (pOutfil->outfil_nStartRec >= 0)
+				if (job->recordWriteOutTotal + 1 < pOutfil->outfil_nStartRec)
+					continue;
+			if (pOutfil->outfil_nEndRec >= 0)
+				if (job->recordWriteOutTotal + 1 > pOutfil->outfil_nEndRec)
+					continue;
+
+			/* check Include                                    */
+			/* if retcode of condField_test is '0' cond is OK.  */
+			if (pOutfil->outfil_includeCond != NULL && condField_test(pOutfil->outfil_includeCond, (unsigned char*)recordBuffer + nSplitPosPnt, job) == 0)  /* Cond KO   */
+				useRecord = 0;
+			/* check Omit   */
+			if (pOutfil->outfil_omitCond != NULL && condField_test(pOutfil->outfil_omitCond, (unsigned char*)recordBuffer + nSplitPosPnt, job) != 0)	    /* Cond KO  */
+				useRecord = 0;
+			/* Verify Outfil- Outrek    */
+			if (pOutfil->outfil_outrec != NULL) {
+				memset(szBuffRek, 0x00, pOutfil->outfil_File->maxLength);
+				byteRead = outrec_copy(pOutfil->outfil_outrec, szBuffRek, recordBuffer, pOutfil->outfil_File->maxLength, byteRead, file_getFormat(pOutfil->outfil_File), file_GetMF(pOutfil->outfil_File), job, nSplitPosPnt);
+				memcpy(recordBuffer, szBuffRek, byteRead + nSplitPosPnt);
+				nLenRecOut = byteRead;		/* For outrec force length of record copy   */
+			}
+			/* write record */
+			if (useRecord == 1)
 			{
-	/* Padding or truncate record output                    */
-    /* From manual SORT                                     */
-	/* OUTFIL not check LRECL for padding and truncating    */
-                if (pOutfil->nSplit == 0) {
-				    outfil_set_area(pOutfil->outfil_File, recordBuffer+nSplitPosPnt, nLenRecOut);
-				    cob_write (pOutfil->outfil_File->stFileDef, pOutfil->outfil_File->stFileDef->record, pOutfil->outfil_File->opt, NULL, 0);
-					switch (atol((char *)pOutfil->outfil_File->stFileDef->file_status))
-					{
-					   case 0 : 
-						   break;
-					   case  4:		/* record successfully read, but too short or too long */
-						   fprintf(stdout,"*GCSORT*S402*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", pOutfil->outfil_File->stFileDef->assign->data,
-							   pOutfil->outfil_File->stFileDef->file_status[0], pOutfil->outfil_File->stFileDef->file_status[1]);
-						   util_view_numrek();
-						   job_print_error_file(pOutfil->outfil_File->stFileDef, nLenRecOut);
-						   return -1;
-					   case 71:
-						  fprintf(stdout,"*GCSORT*S402*ERROR: Record contains bad character %s - File Status (%c%c)\n",file_getName(pOutfil->outfil_File),
-							pOutfil->outfil_File->stFileDef->file_status[0],pOutfil->outfil_File->stFileDef->file_status[1]);
-						  util_view_numrek();
-						  job_print_error_file(pOutfil->outfil_File->stFileDef, nLenRecOut);
-						  return -1;
-						  break;
-					   default :
-							fprintf(stdout,"*GCSORT*S402*ERROR: Cannot write to file %s - File Status (%c%c)\n",file_getName(pOutfil->outfil_File), 
-								pOutfil->outfil_File->stFileDef->file_status[0],pOutfil->outfil_File->stFileDef->file_status[1]);
+				nWritedRec = 1;
+				if (byteRead > 0)
+				{
+					/* Padding or truncate record output                    */
+					/* From manual SORT                                     */
+					/* OUTFIL not check LRECL for padding and truncating    */
+					if (pOutfil->nSplit == 0) {
+						outfil_set_area(pOutfil->outfil_File, recordBuffer + nSplitPosPnt, nLenRecOut);
+						cob_write(pOutfil->outfil_File->stFileDef, pOutfil->outfil_File->stFileDef->record, pOutfil->outfil_File->opt, NULL, 0);
+						switch (atol((char*)pOutfil->outfil_File->stFileDef->file_status))
+						{
+						case 0:
+							break;
+						case  4:		/* record successfully read, but too short or too long */
+							fprintf(stdout, "*GCSORT*S402*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", pOutfil->outfil_File->stFileDef->assign->data,
+								pOutfil->outfil_File->stFileDef->file_status[0], pOutfil->outfil_File->stFileDef->file_status[1]);
 							util_view_numrek();
 							job_print_error_file(pOutfil->outfil_File->stFileDef, nLenRecOut);
-            				return -1;
-				    }
-				    pOutfil->recordWriteOutTotal++;
-					pOutfil->outfil_File->nCountRow++;  /* for single file  */
-				    nNumWrite++;
-                }
-                else
-                {
-                   outfil_write_buffer_split ( job, pOutfil, recordBuffer, byteRead, szBuffRek, nSplitPosPnt);
-                }
+							return -1;
+						case 71:
+							fprintf(stdout, "*GCSORT*S402*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(pOutfil->outfil_File),
+								pOutfil->outfil_File->stFileDef->file_status[0], pOutfil->outfil_File->stFileDef->file_status[1]);
+							util_view_numrek();
+							job_print_error_file(pOutfil->outfil_File->stFileDef, nLenRecOut);
+							return -1;
+							break;
+						default:
+							fprintf(stdout, "*GCSORT*S402*ERROR: Cannot write to file %s - File Status (%c%c)\n", file_getName(pOutfil->outfil_File),
+								pOutfil->outfil_File->stFileDef->file_status[0], pOutfil->outfil_File->stFileDef->file_status[1]);
+							util_view_numrek();
+							job_print_error_file(pOutfil->outfil_File->stFileDef, nLenRecOut);
+							return -1;
+						}
+						pOutfil->recordWriteOutTotal++;
+						pOutfil->outfil_File->nCountRow++;  /* for single file  */
+						nNumWrite++;
+					}
+					else
+					{
+						outfil_write_buffer_split(job, pOutfil, recordBuffer, byteRead, szBuffRek, nSplitPosPnt);
+					}
+				}
+			}
+			else
+			{
+				if ((job->pSaveOutfil != 0) && (useRecord == 0) && (nWritedRec == 0))
+				{
+					if (byteRead > 0)
+					{
+						outfil_set_area(job->pSaveOutfil->outfil_File, recordBuffer + nSplitPosPnt, nLenRecOut);
+						cob_write(job->pSaveOutfil->outfil_File->stFileDef, job->pSaveOutfil->outfil_File->stFileDef->record, job->pSaveOutfil->outfil_File->opt, NULL, 0);
+						switch (atol((char*)job->pSaveOutfil->outfil_File->stFileDef->file_status))
+						{
+						case 0:
+							break;
+						case  4:		/* record successfully read, but too short or too long */
+							fprintf(stdout, "*GCSORT*S403*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", job->pSaveOutfil->outfil_File->stFileDef->assign->data,
+								job->pSaveOutfil->outfil_File->stFileDef->file_status[0], job->pSaveOutfil->outfil_File->stFileDef->file_status[1]);
+							util_view_numrek();
+							job_print_error_file(job->pSaveOutfil->outfil_File->stFileDef, nLenRecOut);
+							return -1;
+						case 71:
+							fprintf(stdout, "*GCSORT*S403*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(job->pSaveOutfil->outfil_File),
+								job->pSaveOutfil->outfil_File->stFileDef->file_status[0], job->pSaveOutfil->outfil_File->stFileDef->file_status[1]);
+							util_view_numrek();
+							job_print_error_file(job->pSaveOutfil->outfil_File->stFileDef, nLenRecOut);
+							return -1;
+							break;
+						default:
+							fprintf(stdout, "*GCSORT*S403*ERROR: Cannot write to file %s - File Status (%c%c)\n", file_getName(job->pSaveOutfil->outfil_File),
+								job->pSaveOutfil->outfil_File->stFileDef->file_status[0], job->pSaveOutfil->outfil_File->stFileDef->file_status[1]);
+							util_view_numrek();
+							job_print_error_file(job->pSaveOutfil->outfil_File->stFileDef, nLenRecOut);
+							return -1;
+						}
+						job->pSaveOutfil->recordWriteOutTotal++;
+						nNumWrite++;
+						nWritedRec = 1;		/* First insert in file SAVE */
+					}
+				}
 			}
 		}
 	}
-
-	if ((job->pSaveOutfil != 0) && (nNumWrite == 0))
-	{
+	
+	if ((job->pSaveOutfil != 0) && (nWritedRec == 0) && (userec == 0)) {
 		if (byteRead > 0)
 		{
 			outfil_set_area(job->pSaveOutfil->outfil_File, recordBuffer+nSplitPosPnt, nLenRecOut);

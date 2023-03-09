@@ -1340,6 +1340,8 @@ int	job_FileOutFilBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nP
 						pch0 = pch2;
 						if (pchSplit == NULL)
 							break;
+						if (strlen((unsigned char*)pch0) == 0)
+							break;
 					}
 					else
 					{
@@ -1397,17 +1399,16 @@ char* job_GetLastCharPath(char* sz, int* pNum, int* nSkipped)
 	int nsz = strlen(sz);
 	*nSkipped = 0;
 	for (j = 0; j < nsz; j++) {
-		if (sz[j] == '=')
-			break;
-		if (sz[j] == ' ')
-			break;
-		if (sz[j] == ',')
+		if ((sz[j] != '=') 
+		 && (sz[j] != ' ')
+	     && (sz[j] != ','))
 			break;
 		*nSkipped = *nSkipped + 1;
 	}
-	*nSkipped = *nSkipped + 1;
-	*pNum = *pNum + j + 1;
-	for (k = j+1; k < nsz; k++) {
+	// *nSkipped = *nSkipped + 1;
+	//*pNum = *pNum + j + 1;
+	*pNum = *pNum + j;
+	for (k = j + 1; k < nsz; k++) {
 		if (((sz[k] == '\'') || (sz[k] == '"')) && (bapo == 1)) {
 			k = k + 1;
 			break;
@@ -1711,9 +1712,14 @@ int job_print_final(struct job_t *job, time_t* timeStart)
 	if (job->outfil != NULL){
 		for (pOutfil=job->outfil; pOutfil != NULL; pOutfil=outfil_getNext(pOutfil)) {
     		fprintf(stdout,"OUTFIL Total Records Write     : %10d\n", pOutfil->recordWriteOutTotal);
-			for (file=pOutfil->outfil_File; file != NULL; file=file_getNext(file)) {
-                fprintf(stdout,"Record Write for file : %10d - File: %s\n", file->nCountRow, file->name);
+			if ((job->pSaveOutfil != NULL) && (pOutfil != job->pSaveOutfil)) {
+				for (file = pOutfil->outfil_File; file != NULL; file = file_getNext(file)) {
+					fprintf(stdout, "Record Write for file : %10d - File: %s\n", file->nCountRow, file->name);
+				}
 			}
+		}
+		if (job->pSaveOutfil != NULL) {
+			fprintf(stdout, "Record Write for file : %10d - SAVE: %s\n", job->pSaveOutfil->recordWriteOutTotal, job->pSaveOutfil->outfil_File->name);
 		}
 		fprintf(stdout,"\n");
 	}
@@ -2946,13 +2952,24 @@ int job_save_out(struct job_t *job)
                                            szPrecSumFields, szSaveSumFields, szBuffRek, SZPOSPNT);
 		}
 
-		if (useRecord==0)	/* skip record  */
+		/* if (useRecord == 0)	
 			continue;
-
+			*/
 		byteRead = nLenRek + nSplitPosPnt;
 		nNumBytes = nNumBytes + byteRead;
 		gc_memcpy(recordBuffer, szBuffRek, byteRead);
 
+		if (useRecord == 0) {	/* skip record  */
+			if ((nLenRek > 0) && (job->outfil != NULL)) {
+				if (outfil_write_buffer(job, recordBuffer, nLenRek, szBuffRek, nSplitPosPnt, useRecord) < 0) {
+					retcode_func = -1;
+					goto job_save_exit;
+				}
+				job->recordWriteOutTotal++;
+			}
+			continue;
+		}
+		
 		if (bIsFirstKeySumField == 1) {
 			bIsFirstKeySumField = 0;
 			gc_memcpy(recordBuffer, szFirstRek, nLenRek + nSplitPosPnt);
@@ -3033,8 +3050,16 @@ int job_save_out(struct job_t *job)
 			}
 		}
 		/* End   Exit Routine E35 check skip record */
-		if (useRecord == 0)
+		if (useRecord == 0) {
+			if ((nLenRek > 0) && (job->outfil != NULL)) {
+				if (outfil_write_buffer(job, recordBuffer, nLenRek, szBuffRek, nSplitPosPnt, useRecord) < 0) {
+					retcode_func = -1;
+					goto job_save_exit;
+				}
+				job->recordWriteOutTotal++;
+			}
 			continue;
+		}
 
 		/* E35 End  */
 		gc_memmove(szBuffOut, recordBuffer + SZPOSPNT, nLenRek);		/* save previous record for E35 */
@@ -3094,8 +3119,8 @@ int job_save_out(struct job_t *job)
 
 /* OUTFIL   */
 /* Make output for OUTFIL   */
-		if ((nLenRek > 0) && (job->outfil != NULL)){
-			if (outfil_write_buffer(job, recordBuffer, nLenRek, szBuffRek, nSplitPosPnt) < 0){
+		if ((nLenRek > 0) && (job->outfil != NULL)) {
+			if (outfil_write_buffer(job, recordBuffer, nLenRek, szBuffRek, nSplitPosPnt, useRecord) < 0){
 					retcode_func = -1;
 					goto job_save_exit;
 			}
@@ -3855,7 +3880,7 @@ char szNameTmp[FILENAME_MAX];
 		{
 	/* Make output for OUTFIL   */
 			if ((useRecord==1) && (job->outfil != NULL)) {
-				outfil_write_buffer(job, szBufRekTmpFile[nPosPtr]+nSplitPosPnt, byteRead, szBuffRek, nSplitPosPnt);
+				outfil_write_buffer(job, szBufRekTmpFile[nPosPtr]+nSplitPosPnt, byteRead, szBuffRek, nSplitPosPnt, useRecord);
 				job->recordWriteOutTotal++;
 			}
 		}
@@ -5015,7 +5040,7 @@ int job_merge_files(struct job_t *job) {
 			}
 			/* OUTFIL   */
 			if ((job->LenCurrRek > 0) && (job->outfil != NULL)){
-				if (outfil_write_buffer(job, recordBuffer, job->LenCurrRek, szBuffRek, nSplitPosPnt) < 0) {
+				if (outfil_write_buffer(job, recordBuffer, job->LenCurrRek, szBuffRek, nSplitPosPnt, useRecord) < 0) {
 					retcode_func = -1;
 					goto job_merge_files_exit;
 				}

@@ -123,7 +123,7 @@ struct job_t {
 	int  nLenKeys;
 	int  nMaxFileIn;
 	int  nMaxFileOut;
-	int  nMaxFileOutFil;
+	int  nMaxFileOutFil;		/* Number of file in OutFIL, used in SAVE option*/
 	int  nMaxHandle;
 	int64_t	file_length;
 	int64_t	lPosAbsRead;

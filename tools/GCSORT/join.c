@@ -1270,7 +1270,7 @@ int join_join_files(struct job_t* job) {
 				}
 				/* OUTFIL   */
 				if ((job->LenCurrRek > 0) && (job->outfil != NULL)) {
-					if (outfil_write_buffer(job, recordBuffer, job->LenCurrRek, szBuffRek, nSplitPosPnt) < 0) {
+					if (outfil_write_buffer(job, recordBuffer, job->LenCurrRek, szBuffRek, nSplitPosPnt, useRecord) < 0) {
 						retcode_func = -1;
 						goto job_join_files_exit;
 					}
@@ -2532,7 +2532,7 @@ int join_empty_fileF1(struct job_t* job) {
 			}
 			/* OUTFIL   */
 			if ((job->LenCurrRek > 0) && (job->outfil != NULL)) {
-				if (outfil_write_buffer(job, recordBuffer, job->LenCurrRek, szBuffRek, nSplitPosPnt) < 0) {
+				if (outfil_write_buffer(job, recordBuffer, job->LenCurrRek, szBuffRek, nSplitPosPnt, useRecord) < 0) {
 					retcode_func = -1;
 					goto join_empty_fileF1_exit;
 				}
@@ -2894,7 +2894,7 @@ int join_empty_fileF2(struct job_t* job) {
 			}
 			/* OUTFIL   */
 			if ((job->LenCurrRek > 0) && (job->outfil != NULL)) {
-				if (outfil_write_buffer(job, recordBuffer, job->LenCurrRek, szBuffRek, nSplitPosPnt) < 0) {
+				if (outfil_write_buffer(job, recordBuffer, job->LenCurrRek, szBuffRek, nSplitPosPnt, useRecord) < 0) {
 					retcode_func = -1;
 					goto join_empty_fileF2_exit;
 				}

@@ -1094,18 +1094,18 @@ int yy_flex_debug = 1;
 
 static yyconst flex_int16_t yy_rule_linenum[105] =
     {   0,
-      154,  155,  156,  157,  158,  159,  160,  161,  162,  163,
-      169,  177,  183,  193,  194,  195,  196,  197,  198,  199,
-      200,  201,  202,  203,  204,  205,  206,  207,  208,  209,
-      210,  211,  213,  214,  215,  216,  217,  218,  219,  221,
-      222,  223,  224,  225,  226,  227,  228,  229,  230,  231,
-      232,  233,  234,  235,  236,  237,  238,  241,  242,  243,
-      244,  245,  246,  247,  248,  249,  250,  254,  255,  256,
-      257,  258,  259,  260,  261,  264,  265,  266,  267,  270,
-      271,  272,  273,  274,  275,  277,  278,  280,  281,  282,
-      283,  284,  286,  287,  288,  289,  290,  291,  292,  295,
+      156,  157,  158,  159,  160,  161,  162,  163,  164,  165,
+      171,  179,  185,  195,  196,  197,  198,  199,  200,  201,
+      202,  203,  204,  205,  206,  207,  208,  209,  210,  211,
+      212,  213,  215,  216,  217,  218,  219,  220,  221,  223,
+      224,  225,  226,  227,  228,  229,  230,  231,  232,  233,
+      234,  235,  236,  237,  238,  239,  240,  243,  244,  245,
+      246,  247,  248,  249,  250,  251,  252,  256,  257,  258,
+      259,  260,  261,  262,  263,  266,  267,  268,  269,  272,
+      273,  274,  275,  276,  277,  279,  280,  282,  283,  284,
+      285,  286,  288,  289,  290,  291,  292,  293,  294,  297,
 
-      300,  301,  302,  303
+      302,  303,  304,  305
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -1185,6 +1185,7 @@ FS / CSF Signed Numeric - with optional leading floating sign  (PIC +++9, PIC --
 /* FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL */
 /* extended FORMATTYPE	 CH|BI|FI|FL|PD|ZD|TI|OT|CTO|LI|OL|CLO|CST|LS|CSL */
 /* released FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL */
+/* 202302 FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL|Y2T|Y2B|Y2C|Y2D|Y2P|Y2S|Y2U|Y2V|Y2X|Y2Y|Y2Z */
 /*
 DataType	Len	Type
 Y2T		8	ZD Y2T8 = Y4T8 (?) C'ccyymmdd' or Z'ccyymmdd'     
@@ -1215,6 +1216,7 @@ Y2Z		2	ZD
 /* comment for occursfill */ 
 /* ntimes X,Z,C */
 /* Operator condition */ 
+/* 202302 OPCOND          EQ|GT|GE|LT|LE|NE|SS */
 /* Joinkeys File */
 /* OCCURFILL   [0-9]{1,5}[C|X|Z]{1} */
 /* <CHSC>{CHARTYPE} */
@@ -1227,7 +1229,7 @@ Y2Z		2	ZD
 
 
 
-#line 1231 "..\\..\\scanner.c"
+#line 1233 "..\\..\\scanner.c"
 
 #define INITIAL 0
 #define KEYV 1
@@ -1460,10 +1462,10 @@ YY_DECL
 	register int yy_act;
     
 /* %% [7.0] user's declarations go here */
-#line 152 "..\\..\\scanner.l"
+#line 154 "..\\..\\scanner.l"
 
 
-#line 1467 "..\\..\\scanner.c"
+#line 1469 "..\\..\\scanner.c"
 
 	if ( !(yy_init) )
 		{
@@ -1575,52 +1577,52 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 154 "..\\..\\scanner.l"
+#line 156 "..\\..\\scanner.l"
 return BUILD;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 155 "..\\..\\scanner.l"
+#line 157 "..\\..\\scanner.l"
 return CHANGE;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 156 "..\\..\\scanner.l"
+#line 158 "..\\..\\scanner.l"
 return FILL;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 157 "..\\..\\scanner.l"
+#line 159 "..\\..\\scanner.l"
 return NOMATCH;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 158 "..\\..\\scanner.l"
+#line 160 "..\\..\\scanner.l"
 BEGIN(TCOND);   return COND; 
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 159 "..\\..\\scanner.l"
+#line 161 "..\\..\\scanner.l"
 return COPY; 
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 160 "..\\..\\scanner.l"
+#line 162 "..\\..\\scanner.l"
 return COPY; 
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 161 "..\\..\\scanner.l"
+#line 163 "..\\..\\scanner.l"
 return TOKSKIP;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 162 "..\\..\\scanner.l"
+#line 164 "..\\..\\scanner.l"
 return ENDREC;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 163 "..\\..\\scanner.l"
+#line 165 "..\\..\\scanner.l"
 if (nPhase == 1) { 
                                 BEGIN(ORDK);  
                                 nPhase = 0; 
@@ -1630,7 +1632,7 @@ if (nPhase == 1) {
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 169 "..\\..\\scanner.l"
+#line 171 "..\\..\\scanner.l"
 if (nPhase == 1) { 
                                 BEGIN(ORDK);  
                                 nPhase = 0; 
@@ -1640,7 +1642,7 @@ if (nPhase == 1) {
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 177 "..\\..\\scanner.l"
+#line 179 "..\\..\\scanner.l"
 if (nPhase == 1) {       
                                 BEGIN(ORDK);          
                                 nPhase = 0;           
@@ -1650,7 +1652,7 @@ if (nPhase == 1) {
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 183 "..\\..\\scanner.l"
+#line 185 "..\\..\\scanner.l"
 if (nPhase == 1) {       
                                 BEGIN(ORDK);          
                                 nPhase = 0;           
@@ -1661,445 +1663,445 @@ if (nPhase == 1) {
 /* {SIGN}{ADDSUBNUM}	            yylval.number = strtol(yytext, &pEnd, 10) ;			return ADDSUBNUM; */
 case 14:
 YY_RULE_SETUP
-#line 193 "..\\..\\scanner.l"
+#line 195 "..\\..\\scanner.l"
 return DATE1;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 194 "..\\..\\scanner.l"
+#line 196 "..\\..\\scanner.l"
 return DATE2;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 195 "..\\..\\scanner.l"
+#line 197 "..\\..\\scanner.l"
 return DATE3;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 196 "..\\..\\scanner.l"
+#line 198 "..\\..\\scanner.l"
 return DATE4;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 197 "..\\..\\scanner.l"
+#line 199 "..\\..\\scanner.l"
 return FNAMES; /*   return FILE;   */
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 198 "..\\..\\scanner.l"
+#line 200 "..\\..\\scanner.l"
 return FNAMES; /*   return FILES;   */
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 199 "..\\..\\scanner.l"
+#line 201 "..\\..\\scanner.l"
 return FNAMES;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 200 "..\\..\\scanner.l"
+#line 202 "..\\..\\scanner.l"
 return FORMAT;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 201 "..\\..\\scanner.l"
+#line 203 "..\\..\\scanner.l"
 BEGIN(INITIAL); return GIVE;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 202 "..\\..\\scanner.l"
+#line 204 "..\\..\\scanner.l"
 BEGIN(TCOND);   return INCLUDE; 
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 203 "..\\..\\scanner.l"
+#line 205 "..\\..\\scanner.l"
 BEGIN(CHSC);    return INREC;		
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 204 "..\\..\\scanner.l"
+#line 206 "..\\..\\scanner.l"
 BEGIN(CHSC);    return OUTREC;		
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 205 "..\\..\\scanner.l"
+#line 207 "..\\..\\scanner.l"
 BEGIN(KEYV);    return KEY;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 206 "..\\..\\scanner.l"
+#line 208 "..\\..\\scanner.l"
 return LENGTH;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 207 "..\\..\\scanner.l"
+#line 209 "..\\..\\scanner.l"
 nPhase = 1;  BEGIN(INITIAL); return MERGE;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 208 "..\\..\\scanner.l"
+#line 210 "..\\..\\scanner.l"
 nPhase = 1;  BEGIN(INITIAL); return JOINKEYS;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 209 "..\\..\\scanner.l"
+#line 211 "..\\..\\scanner.l"
 return NONE;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 210 "..\\..\\scanner.l"
+#line 212 "..\\..\\scanner.l"
 BEGIN(TCOND);   return OMIT; 
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 211 "..\\..\\scanner.l"
+#line 213 "..\\..\\scanner.l"
 return OPTION;
 	YY_BREAK
 /*"ORG"		                                    return ORG;*/
 case 33:
 YY_RULE_SETUP
-#line 213 "..\\..\\scanner.l"
+#line 215 "..\\..\\scanner.l"
 BEGIN(TORG);                return ORG;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 214 "..\\..\\scanner.l"
+#line 216 "..\\..\\scanner.l"
 return OUTFIL;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 215 "..\\..\\scanner.l"
+#line 217 "..\\..\\scanner.l"
 return OUTFIL;
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 216 "..\\..\\scanner.l"
+#line 218 "..\\..\\scanner.l"
 BEGIN(CHSC);    return OUTREC;		
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 217 "..\\..\\scanner.l"
+#line 219 "..\\..\\scanner.l"
 return SAVE;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 218 "..\\..\\scanner.l"
+#line 220 "..\\..\\scanner.l"
 return SKIPREC;
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 219 "..\\..\\scanner.l"
+#line 221 "..\\..\\scanner.l"
 return MODS;
 	YY_BREAK
 /* "RECORD"	                         return RECORD; */
 case 40:
 YY_RULE_SETUP
-#line 221 "..\\..\\scanner.l"
+#line 223 "..\\..\\scanner.l"
 BEGIN(INITIAL); return RECORD;
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 222 "..\\..\\scanner.l"
+#line 224 "..\\..\\scanner.l"
 nPhase = 1;  BEGIN(INITIAL); return SORT;
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 223 "..\\..\\scanner.l"
+#line 225 "..\\..\\scanner.l"
 return SORTED;
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 224 "..\\..\\scanner.l"
+#line 226 "..\\..\\scanner.l"
 return NOSEQCK;
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 225 "..\\..\\scanner.l"
+#line 227 "..\\..\\scanner.l"
 return UNPAIRED;
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 226 "..\\..\\scanner.l"
+#line 228 "..\\..\\scanner.l"
 return ONLY;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 227 "..\\..\\scanner.l"
+#line 229 "..\\..\\scanner.l"
 return JOIN;
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 228 "..\\..\\scanner.l"
+#line 230 "..\\..\\scanner.l"
 BEGIN(CHSC);    return JOINREFORMAT;	
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 229 "..\\..\\scanner.l"
+#line 231 "..\\..\\scanner.l"
 return STARTREC;
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 230 "..\\..\\scanner.l"
+#line 232 "..\\..\\scanner.l"
 return STOPAFT;
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 231 "..\\..\\scanner.l"
+#line 233 "..\\..\\scanner.l"
 return SPLIT;
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 232 "..\\..\\scanner.l"
+#line 234 "..\\..\\scanner.l"
 return SPLITBY;
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 233 "..\\..\\scanner.l"
+#line 235 "..\\..\\scanner.l"
 return SUM;
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 234 "..\\..\\scanner.l"
+#line 236 "..\\..\\scanner.l"
 return TYPE;
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 235 "..\\..\\scanner.l"
+#line 237 "..\\..\\scanner.l"
 BEGIN(INITIAL); return USE;
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 236 "..\\..\\scanner.l"
+#line 238 "..\\..\\scanner.l"
 return VLSCMP;
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 237 "..\\..\\scanner.l"
+#line 239 "..\\..\\scanner.l"
 return VLSHRT;
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 238 "..\\..\\scanner.l"
+#line 240 "..\\..\\scanner.l"
 return Y2PAST;
 	YY_BREAK
 /* FINDREP */
 case 58:
 YY_RULE_SETUP
-#line 241 "..\\..\\scanner.l"
+#line 243 "..\\..\\scanner.l"
 return FINDREP;
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 242 "..\\..\\scanner.l"
+#line 244 "..\\..\\scanner.l"
 return INFR;
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 243 "..\\..\\scanner.l"
+#line 245 "..\\..\\scanner.l"
 return OUTFR;
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 244 "..\\..\\scanner.l"
+#line 246 "..\\..\\scanner.l"
 return INOUT;
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 245 "..\\..\\scanner.l"
+#line 247 "..\\..\\scanner.l"
 return STARTPOS;
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 246 "..\\..\\scanner.l"
+#line 248 "..\\..\\scanner.l"
 return ENDPOS;
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 247 "..\\..\\scanner.l"
+#line 249 "..\\..\\scanner.l"
 return DO;
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 248 "..\\..\\scanner.l"
+#line 250 "..\\..\\scanner.l"
 return MAXLEN;
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 249 "..\\..\\scanner.l"
+#line 251 "..\\..\\scanner.l"
 return OVERRUN;
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 250 "..\\..\\scanner.l"
+#line 252 "..\\..\\scanner.l"
 return SHIFT;
 	YY_BREAK
 /* FINDREP */
 case 68:
 YY_RULE_SETUP
-#line 254 "..\\..\\scanner.l"
+#line 256 "..\\..\\scanner.l"
 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 255 "..\\..\\scanner.l"
+#line 257 "..\\..\\scanner.l"
 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 256 "..\\..\\scanner.l"
+#line 258 "..\\..\\scanner.l"
 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 257 "..\\..\\scanner.l"
+#line 259 "..\\..\\scanner.l"
 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 258 "..\\..\\scanner.l"
+#line 260 "..\\..\\scanner.l"
 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 259 "..\\..\\scanner.l"
+#line 261 "..\\..\\scanner.l"
 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 260 "..\\..\\scanner.l"
+#line 262 "..\\..\\scanner.l"
 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 261 "..\\..\\scanner.l"
+#line 263 "..\\..\\scanner.l"
 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 264 "..\\..\\scanner.l"
+#line 266 "..\\..\\scanner.l"
 return AND;
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 265 "..\\..\\scanner.l"
+#line 267 "..\\..\\scanner.l"
 return AND;
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 266 "..\\..\\scanner.l"
+#line 268 "..\\..\\scanner.l"
 return OR;
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 267 "..\\..\\scanner.l"
+#line 269 "..\\..\\scanner.l"
 return OR;
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 270 "..\\..\\scanner.l"
+#line 272 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ;					return OPCOND; 	
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 271 "..\\..\\scanner.l"
+#line 273 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ;					return ORDER; 
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 272 "..\\..\\scanner.l"
+#line 274 "..\\..\\scanner.l"
 yylval.number = strtol(yytext, &pEnd, 10) ;			return DIGIT;  
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 273 "..\\..\\scanner.l"
+#line 275 "..\\..\\scanner.l"
 yylval.number = strtol(yytext, &pEnd, 10) ;			return DIGIT; 
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 274 "..\\..\\scanner.l"
+#line 276 "..\\..\\scanner.l"
 yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;		return SIGNDIGITBIG;  
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 275 "..\\..\\scanner.l"
+#line 277 "..\\..\\scanner.l"
 yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;		return SIGNDIGITBIG;  
 	YY_BREAK
 /* {FORMATTYPE}		        yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  */
 case 86:
 YY_RULE_SETUP
-#line 277 "..\\..\\scanner.l"
+#line 279 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ;                   return RECTYPEFIX;
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 278 "..\\..\\scanner.l"
+#line 280 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ;                   return RECTYPEVAR;
 	YY_BREAK
 /* {FILETYPE}   	            yylval.string = _strdup(yytext) ;                   return FILETYPE;  */ 
 case 88:
 YY_RULE_SETUP
-#line 280 "..\\..\\scanner.l"
+#line 282 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ;                   return FILETYPE; 
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 281 "..\\..\\scanner.l"
+#line 283 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ;                   return OCCURFILL;
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 282 "..\\..\\scanner.l"
+#line 284 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ;                   return CHARTCOND;    
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 283 "..\\..\\scanner.l"
+#line 285 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ;                   return CHARTYPE; 
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 284 "..\\..\\scanner.l"
+#line 286 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ;					return JOINFILE;
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 286 "..\\..\\scanner.l"
+#line 288 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 287 "..\\..\\scanner.l"
+#line 289 "..\\..\\scanner.l"
 return EXROUT;
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 288 "..\\..\\scanner.l"
+#line 290 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ;					return EXROUT; 
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 289 "..\\..\\scanner.l"
+#line 291 "..\\..\\scanner.l"
 return YESNO;
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 290 "..\\..\\scanner.l"
+#line 292 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ;					return YESNO; 
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 291 "..\\..\\scanner.l"
+#line 293 "..\\..\\scanner.l"
 return ERRTRUNC;
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 292 "..\\..\\scanner.l"
+#line 294 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ;					return ERRTRUNC; 
 	YY_BREAK
 /* String C''';'   */
 case 100:
 /* rule 100 can match eol */
 YY_RULE_SETUP
-#line 295 "..\\..\\scanner.l"
+#line 297 "..\\..\\scanner.l"
 {yylval.string=malloc(strlen(yytext)-1);
 					 memcpy(yylval.string,yytext+1,strlen(yytext)-2);
 					 yylval.string[strlen(yytext)-2]=0;
@@ -2107,30 +2109,30 @@ YY_RULE_SETUP
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 300 "..\\..\\scanner.l"
+#line 302 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ; return KEYTYPE; 
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 301 "..\\..\\scanner.l"
+#line 303 "..\\..\\scanner.l"
 yylval.string = _strdup(yytext) ; return STRING;
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 302 "..\\..\\scanner.l"
+#line 304 "..\\..\\scanner.l"
 
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 303 "..\\..\\scanner.l"
+#line 305 "..\\..\\scanner.l"
 return yytext[0];
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 306 "..\\..\\scanner.l"
+#line 308 "..\\..\\scanner.l"
 ECHO;
 	YY_BREAK
-#line 2134 "..\\..\\scanner.c"
+#line 2136 "..\\..\\scanner.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(KEYV):
 case YY_STATE_EOF(ORDK):
@@ -3217,6 +3219,6 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 306 "..\\..\\scanner.l"
+#line 308 "..\\..\\scanner.l"
 
 

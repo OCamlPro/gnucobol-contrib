@@ -59,7 +59,7 @@ int outfil_addoutfilrec(struct outrec_t *outrec);
 int outfil_setOutfilFiles(struct outfil_t *outfil, struct file_t * file);
 int outfil_open_files( struct job_t *job  );
 int outfil_close_files(  struct job_t *job  );
-int outfil_write_buffer( struct job_t *job, unsigned char* buffer_pointer, unsigned int  nLenRek, unsigned char* szBuffRek, int nSplitPosPnt);
+int outfil_write_buffer( struct job_t *job, unsigned char* buffer_pointer, unsigned int  nLenRek, unsigned char* szBuffRek, int nSplitPosPnt, int userec);
 int outfil_write_buffer_split( struct job_t *job, struct outfil_t* outfil, unsigned char* buffer_pointer, unsigned int  nLenRek, unsigned char* szBuffRek, int nSplitPosPnt);
 int outfile_clone_output(struct job_t* job, struct file_t* file);
 int outfil_set_area (struct file_t* file, unsigned char* szBuf, int nLen );
