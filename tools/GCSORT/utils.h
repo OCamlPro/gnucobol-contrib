@@ -239,7 +239,7 @@ int utl_GetFileSizeEnvName(struct file_t* file);
 void utils_SetRecordOptionSortType(char* szType);
 void utils_SetRecordOptionSortLen(int l1, int l2, int l3, int l4, int l5, int l6, int l7);
 int64_t utl_GetFileSize(struct file_t* file);
-
+int  utl_fileConvertFileType(int organization);
 
 #if defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 	unsigned long  GetTickCount(void);  

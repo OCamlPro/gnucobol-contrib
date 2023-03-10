@@ -319,6 +319,10 @@ int job_copyFile(struct job_t *job)
 			nLenRek = file->stFileDef->record->size;
 			gc_memcpy(szBuffRek, file->stFileDef->record->data, file->stFileDef->record->size);
 
+			/* new for OutFil */
+			gc_memcpy(recordBuffer, file->stFileDef->record->data, file->stFileDef->record->size);
+
+
 			nRecCount++;
 			job->recordNumberTotal++;
 			job->LenCurrRek = nLenRek;

@@ -215,6 +215,8 @@ int outfile_clone_output(struct job_t* job, struct file_t* file)
 	/* check outfil without FNAME/FILE  */
 	if (file->stFileDef == NULL) { 
 		file_SetInfoForFile(file, COB_OPEN_OUTPUT);
+		/* Set organization in standard LIBCOB */
+		file->stFileDef->organization = utl_fileConvertFileType(job->outputFile->organization);
 		fprintf(stdout,"*GCSORT*W680* WARNING : OUTFIL without FILES/FNAMES, forced GIVE definition %s\n",file_getName(file));
 		job->nOutFileSameOutFile = 1; /* In this case Output file skipped, name is used for OutFil  */
         g_retWarn=4;
@@ -245,6 +247,9 @@ int outfile_clone_output(struct job_t* job, struct file_t* file)
 		file->stFileDef->variable_record = NULL;
 	if (job->outputFile->nNumKeys > 0)
 		file->stFileDef->keys = (cob_file_key*)(malloc (sizeof (cob_file_key) * job->outputFile->nNumKeys));
+
+	/* Set organization in standard LIBCOB */
+	file->stFileDef->organization = utl_fileConvertFileType(job->outputFile->organization);
 
 	if (job->outputFile->organization == FILE_ORGANIZATION_INDEXED) {
 		tKeys =  job->outputFile->stKeys;

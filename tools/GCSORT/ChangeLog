@@ -1,4 +1,7 @@
-2023-03-20  Sauro Menna  <smenna@users.sourceforge.net>
+2023-03-10  Sauro Menna  <smenna@users.sourceforge.net>
+    * Fix problem in OUTFIL SAVE Option 
+
+2023-03-09  Sauro Menna  <smenna@users.sourceforge.net>
     * Fix problem in OUTFIL SAVE Option 
     * Updated testcase COBOL source 
     * Updated header files to include libcob.h

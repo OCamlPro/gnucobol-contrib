@@ -84,6 +84,26 @@ int utils_parseFileOrganization(const char *organization)
 		return -1;
 	}
 }
+/* convert organization from GCSort to GNUCobol - LibCob */
+int utl_fileConvertFileType(int organization) {
+	switch (organization) {
+	case FILE_ORGANIZATION_TEMP:			/* 0 */
+		return -1;
+	case FILE_ORGANIZATION_INDEXED:			/* 1 */
+		return COB_ORG_INDEXED;
+	case FILE_ORGANIZATION_RELATIVE:		/* 2 */
+		return COB_ORG_RELATIVE;
+	case FILE_ORGANIZATION_SEQUENTIAL:		/* 3 */
+		return COB_ORG_SEQUENTIAL;
+	case FILE_ORGANIZATION_LINESEQUENTIAL:	/* 4 */
+		return COB_ORG_LINE_SEQUENTIAL;
+	case FILE_ORGANIZATION_SEQUENTIALMF:	/* 5 */
+		return COB_ORG_LINE_SEQUENTIAL;
+	case FILE_ORGANIZATION_LINESEQUFIXED:	/* 6 */
+		return COB_ORG_LINE_SEQUENTIAL;
+	}
+	return -1;
+}
 
 /* ==================================================== */
 /*  Format Type Field   */
