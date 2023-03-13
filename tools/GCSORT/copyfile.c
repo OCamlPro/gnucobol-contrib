@@ -217,7 +217,8 @@ int job_copyFile(struct job_t *job)
 		}
 	}
 	/* Outfil == NULL, standard output file */
-	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) {
+	/* if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { */
+	if ((job->outputFile != NULL)) {
 		cob_open(job->outputFile->stFileDef,  COB_OPEN_OUTPUT, 0, NULL);
 		if (atol((char*)job->outputFile->stFileDef->file_status) != 0) {
 			fprintf(stdout,"*GCSORT*S626*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
@@ -326,18 +327,29 @@ int job_copyFile(struct job_t *job)
 			nRecCount++;
 			job->recordNumberTotal++;
 			job->LenCurrRek = nLenRek;
+			job->recordReadInCurrent++;
 /* check SKIPREC */
 			if (job->nSkipRec > 0) {
-				if (nRecCount <= job->nSkipRec) {
+				if (job->recordReadInCurrent <= job->nSkipRec) {
 					/* Make output for OUTFIL */
+					/*   not valid
 					if ((nLenRek > 0) && (job->outfil != NULL)) {
 						if (outfil_write_buffer(job, recordBuffer, nLenRek, szBuffRek, nSplitPosPnt, useRecord) < 0) {
 							retcode_func = -1;
 							goto job_save_exit;
 						}
-						job->recordWriteOutTotal++;
 					}
+					*/
 					continue;
+				}
+			}
+/* check STOPAFT */
+			if (job->nStopAft > 0) {
+				/*  if (job->recordNumber >= job->nStopAft) { */
+				if (job->recordReadInCurrent > job->nStopAft) {
+					nbyteRead = 0;
+					job->recordNumberTotal--;
+					break;
 				}
 			}
 			useRecord=1;
@@ -391,7 +403,6 @@ int job_copyFile(struct job_t *job)
 						retcode_func = -1;
 						goto job_save_exit;
 					}
-					job->recordWriteOutTotal++;
 				}
 				continue;
 			}
@@ -411,17 +422,11 @@ int job_copyFile(struct job_t *job)
 						retcode_func = -1;
 						goto job_save_exit;
 					}
-					job->recordWriteOutTotal++;
 				}
 				continue;
 			}
 
-            /* check STOPAFT */
-			if (job->nStopAft > 0)
-                if (job->recordNumber >= job->nStopAft) {
-					nbyteRead=0;
-					break;
-			}
+
 /* INREC
  If INREC is present made a new area record.
  Only in this point
@@ -537,7 +542,6 @@ int job_copyFile(struct job_t *job)
 					retcode_func = -1;
 					goto job_save_exit;
 				}
-				job->recordWriteOutTotal++;
 			}
 			continue;
 		}
@@ -586,7 +590,6 @@ int job_copyFile(struct job_t *job)
 					retcode_func = -1;
 					goto job_save_exit;
 			}
-			job->recordWriteOutTotal++;
 		}
 	}	/*  end of cycle    */
 
@@ -610,7 +613,8 @@ int job_copyFile(struct job_t *job)
 	} /*for (file=job->inputFile; file!=NULL; file=file_getNext(file)) */
 job_save_exit:
 
-	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0))
+	/* if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) */
+	if (job->outputFile != NULL)
 		cob_close (job->outputFile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
 
 	if (desc >= 0){

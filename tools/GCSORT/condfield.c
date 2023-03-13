@@ -374,12 +374,20 @@ int condField_compare(struct condField_t *condField, unsigned char *record)
 	return result;
 }
 
+int condField_addIncludeOutfil(struct outfil_t* outfil, struct condField_t* condField) {
+	outfil->outfil_includeCond = condField;
+	return 0;
+}
 
 int condField_addInclude(struct condField_t *condField) {
 	globalJob->includeCondField=condField;
 	return 0;
 }
 
+int condField_addOmitOutfil(struct outfil_t* outfil, struct condField_t* condField) {
+	outfil->outfil_omitCond = condField;
+	return 0;
+}
 int condField_addOmit(struct condField_t *condField) {
 	globalJob->omitCondField=condField;
 	return 0;

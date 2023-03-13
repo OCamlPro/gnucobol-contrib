@@ -112,7 +112,11 @@
            perform check-env-var
       *  check if defined environment variables
            move 'dd_outfile3'  to env-pgm
-           perform check-env-var           
+           perform check-env-var  
+      *
+           move 'dd_outfile'  to env-pgm
+           perform check-env-var  
+
       *        
            sort file-sort
                 on ascending  key    srt-ch-field                          ## on descending key    <modify key>    
@@ -137,6 +141,10 @@
            close sortout1
            close sortout2
            close sortout3
+           
+           open output sortout.
+           close sortout.
+           
            display "*===============================================* "
            display " Record input  : "  record-counter-in
            display " Record output : "  record-counter-out
@@ -235,6 +243,40 @@
            write outfile-record 
            .
       * ============================= *
+      **-->> split-data.
+      * ============================= *
+      **-->>    read sortout at end 
+      **-->>         display " "
+      **-->>    end-read
+      **-->>    if fs-outfile equal "00"
+      **-->>       add 1 to record-counter-split
+      **-->>       if (record-counter-split >= nStart1 and 
+      **-->>           record-counter-split <= nEnd1)
+      **-->>           move 1 to nsplit
+      **-->>       end-if
+      **-->>       if (record-counter-split >= nStart2 and 
+      **-->>           record-counter-split <= nEnd2)
+      **-->>           move 2 to nsplit
+      **-->>       end-if
+      **-->>       if (record-counter-split >= nStart3 and 
+      **-->>           record-counter-split <= nEnd3)
+      **-->>           move 3 to nsplit
+      **-->>       end-if
+      **-->>       if nsplit = 1
+      **-->>          move outfile-record to outfile-record1
+      **-->>          write outfile-record1
+      **-->>       end-if
+      **-->>       if nsplit = 2
+      **-->>          move outfile-record to outfile-record2
+      **-->>          write outfile-record2
+      **-->>       end-if
+      **-->>       if nsplit = 3
+      **-->>          move outfile-record to outfile-record3
+      **-->>          write outfile-record3
+      **-->>       end-if
+      **-->>    end-if
+      **-->>    .
+      * ============================= *
        split-data.
       * ============================= *
            read sortout at end 
@@ -244,25 +286,16 @@
               add 1 to record-counter-split
               if (record-counter-split >= nStart1 and 
                   record-counter-split <= nEnd1)
-                  move 1 to nsplit
-              end-if
-              if (record-counter-split >= nStart2 and 
-                  record-counter-split <= nEnd2)
-                  move 2 to nsplit
-              end-if
-              if (record-counter-split >= nStart3 and 
-                  record-counter-split <= nEnd3)
-                  move 3 to nsplit
-              end-if
-              if nsplit = 1
                  move outfile-record to outfile-record1
                  write outfile-record1
               end-if
-              if nsplit = 2
+              if (record-counter-split >= nStart2 and 
+                  record-counter-split <= nEnd2)
                  move outfile-record to outfile-record2
                  write outfile-record2
               end-if
-              if nsplit = 3
+              if (record-counter-split >= nStart3 and 
+                  record-counter-split <= nEnd3)
                  move outfile-record to outfile-record3
                  write outfile-record3
               end-if

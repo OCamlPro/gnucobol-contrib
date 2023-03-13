@@ -82,6 +82,8 @@ int condField_addOmit(struct condField_t *condField);
 int condField_setCondFieldsTypeAll(int nTypeCond, int nVal);
 int condField_setFormatFieldsTypeAll(int nTypeFormat, int nVal);
 int condField_setFormat(struct condField_t *condField, int nVal);
+int condField_addIncludeOutfil(struct outfil_t* outfil, struct condField_t* condField);
+int condField_addOmitOutfil(struct outfil_t* outfil, struct condField_t* condField);
 
 
 #endif /* CONDFIELD_H_INCLUDED */

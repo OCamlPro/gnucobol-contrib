@@ -82,6 +82,7 @@ struct outfil_t *outfil_constructor( void)
 	    outfil->bIsCopy=0;		    /* SORT-MERGE FIELDS=COPY   */
 	    outfil->recordWriteOutTotal=0;
 	    outfil->recordNumber=0;
+		outfil->isVirtualFile = 1;
 	    outfil->next=NULL;
     }
 return outfil;
@@ -109,6 +110,13 @@ int  outfil_SetEndRec(struct outfil_t *outfil, int64_t nEndRec)
 	
 	outfil->outfil_nEndRec = nEndRec;
 	return 0;
+}
+
+void outfil_SetVirtualFile(struct outfil_t* outfil, int nValue) 
+{
+	outfil->isVirtualFile = nValue;	/* 0 = normal, 1 = virtual */
+	return ;
+
 }
  
 int setOutfilIncludeCondField(struct outfil_t* outfil, struct condField_t * condfield)
@@ -170,9 +178,10 @@ int outfil_addDefinition(struct outfil_t* outfil)
 	return 0;
 }
 
-int outfil_addoutfilrec(struct outrec_t *outrec) 
+int outfil_addoutfilrec(struct outfil_t* outfil, struct outrec_t *outrec)
 {
-	outrec_addQueue(&(globalJob->outfil->outfil_outrec), outrec);
+	/* 202303 - outrec_addQueue(&(globalJob->outfil->outfil_outrec), outrec); */
+	outrec_addQueue(&(outfil->outfil_outrec), outrec);
 	return 0;
 }
 
@@ -193,12 +202,15 @@ int outfil_open_files( struct job_t *job )
 		for (file=pOutfil->outfil_File; file != NULL; file=file_getNext(file)) {
 			/* clone info from GIVE outfile  */
 			outfile_clone_output(job, file);
-            strcpy((char*) file->stFileDef->assign->data, (char*) file_getName(file));  
-			cob_open(file->stFileDef,  COB_OPEN_OUTPUT, 0, NULL);
-			if (atol((char *)file->stFileDef->file_status) != 0) {
-				fprintf(stdout,"*GCSORT*S401*ERROR: Cannot open file %s - File Status (%c%c) \n",file_getName(file), 
-					file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
-				return -1;
+            strcpy((char*) file->stFileDef->assign->data, (char*) file_getName(file)); 
+			/* Check if OUTFIL has file definition */
+			if (pOutfil->isVirtualFile == 0) {	/* Not Is virtual file use GIVE file */
+				cob_open(file->stFileDef, COB_OPEN_OUTPUT, 0, NULL);
+				if (atol((char*)file->stFileDef->file_status) != 0) {
+					fprintf(stdout, "*GCSORT*S401*ERROR: Cannot open file %s - File Status (%c%c) \n", file_getName(file),
+						file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+					return -1;
+				}
 			}
 		}
 	}
@@ -217,9 +229,9 @@ int outfile_clone_output(struct job_t* job, struct file_t* file)
 		file_SetInfoForFile(file, COB_OPEN_OUTPUT);
 		/* Set organization in standard LIBCOB */
 		file->stFileDef->organization = utl_fileConvertFileType(job->outputFile->organization);
-		fprintf(stdout,"*GCSORT*W680* WARNING : OUTFIL without FILES/FNAMES, forced GIVE definition %s\n",file_getName(file));
+		/* disable warning - fprintf(stdout, "*GCSORT*W680* WARNING : OUTFIL without FILES/FNAMES, forced GIVE definition %s\n", file_getName(file)); */
 		job->nOutFileSameOutFile = 1; /* In this case Output file skipped, name is used for OutFil  */
-        g_retWarn=4;
+        /* disable warning - g_retWarn = 4; */
 		return 0;
 	}
 	file->stFileDef->record_min = job->outputFile->recordLength;                         
@@ -310,10 +322,12 @@ int outfil_close_files(  struct job_t *job  )
 	int nbyteRead=0;
 	for (pOutfil=job->outfil; pOutfil != NULL; pOutfil=outfil_getNext(pOutfil)) {
 		for (file=pOutfil->outfil_File; file != NULL; file=file_getNext(file)) {
-			cob_close (file->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
-			if (file->stFileDef->record != NULL) {
-				util_cob_field_del(file->stFileDef->record, ALLOCATE_DATA);
-				file->stFileDef->record = NULL;
+			if (pOutfil->isVirtualFile == 0) {	/* Not Is virtual file use GIVE file */
+				cob_close(file->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
+				if (file->stFileDef->record != NULL) {
+					util_cob_field_del(file->stFileDef->record, ALLOCATE_DATA);
+					file->stFileDef->record = NULL;
+				}
 			}
 		}
 	}
@@ -331,6 +345,7 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 	int nUseWriteSave = 0;
 	int nWritedRec = 0;
 	unsigned int nLenRecOut=0;
+	int nFS = 0; /* file status */
 	
 	/* check if present SAVE e memorize pointer */
 	if (job->pSaveOutfil == NULL){
@@ -354,13 +369,21 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 
 			if (job->pSaveOutfil == pOutfil)	/* skip */
 				continue;
-
+			/*
 			if (pOutfil->outfil_nStartRec >= 0)
 				if (job->recordWriteOutTotal + 1 < pOutfil->outfil_nStartRec)
 					continue;
 			if (pOutfil->outfil_nEndRec >= 0)
 				if (job->recordWriteOutTotal + 1 > pOutfil->outfil_nEndRec)
 					continue;
+			*/
+			if (pOutfil->outfil_nStartRec >= 0)
+				if (job->recordReadInCurrent < pOutfil->outfil_nStartRec)
+					continue;
+			if (pOutfil->outfil_nEndRec >= 0)
+				if (job->recordReadInCurrent > pOutfil->outfil_nEndRec)
+					continue;
+
 
 			/* check Include                                    */
 			/* if retcode of condField_test is '0' cond is OK.  */
@@ -370,7 +393,7 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 			if (pOutfil->outfil_omitCond != NULL && condField_test(pOutfil->outfil_omitCond, (unsigned char*)recordBuffer + nSplitPosPnt, job) != 0)	    /* Cond KO  */
 				useRecord = 0;
 			/* Verify Outfil- Outrek    */
-			if (pOutfil->outfil_outrec != NULL) {
+			if ((pOutfil->outfil_outrec != NULL) && (useRecord == 1)) {
 				memset(szBuffRek, 0x00, pOutfil->outfil_File->maxLength);
 				byteRead = outrec_copy(pOutfil->outfil_outrec, szBuffRek, recordBuffer, pOutfil->outfil_File->maxLength, byteRead, file_getFormat(pOutfil->outfil_File), file_GetMF(pOutfil->outfil_File), job, nSplitPosPnt);
 				memcpy(recordBuffer, szBuffRek, byteRead + nSplitPosPnt);
@@ -386,34 +409,43 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 					/* From manual SORT                                     */
 					/* OUTFIL not check LRECL for padding and truncating    */
 					if (pOutfil->nSplit == 0) {
-						outfil_set_area(pOutfil->outfil_File, recordBuffer + nSplitPosPnt, nLenRecOut);
-						cob_write(pOutfil->outfil_File->stFileDef, pOutfil->outfil_File->stFileDef->record, pOutfil->outfil_File->opt, NULL, 0);
-						switch (atol((char*)pOutfil->outfil_File->stFileDef->file_status))
+						if (pOutfil->isVirtualFile == 1) {	/* OUTFIL without file name */
+							outfil_set_area(globalJob->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut);
+							cob_write(globalJob->outputFile->stFileDef, globalJob->outputFile->stFileDef->record, globalJob->outputFile->opt, NULL, 0);
+							/* switch (atol((char*)pOutfil->outfil_File->stFileDef->file_status)) */
+							nFS = atol((char*)globalJob->outputFile->stFileDef->file_status);
+						}
+						else {
+							outfil_set_area(pOutfil->outfil_File, recordBuffer + nSplitPosPnt, nLenRecOut);
+							cob_write(pOutfil->outfil_File->stFileDef, pOutfil->outfil_File->stFileDef->record, pOutfil->outfil_File->opt, NULL, 0);
+							/* switch (atol((char*)pOutfil->outfil_File->stFileDef->file_status)) */
+								nFS = atol((char*)pOutfil->outfil_File->stFileDef->file_status);
+						}
+						switch (nFS)
 						{
 						case 0:
 							break;
 						case  4:		/* record successfully read, but too short or too long */
-							fprintf(stdout, "*GCSORT*S402*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", pOutfil->outfil_File->stFileDef->assign->data,
-								pOutfil->outfil_File->stFileDef->file_status[0], pOutfil->outfil_File->stFileDef->file_status[1]);
+							fprintf(stdout, "*GCSORT*S402*ERROR:record successfully read, but too short or too long. %s - File Status (%d)\n", pOutfil->outfil_File->stFileDef->assign->data, nFS);
 							util_view_numrek();
 							job_print_error_file(pOutfil->outfil_File->stFileDef, nLenRecOut);
 							return -1;
 						case 71:
-							fprintf(stdout, "*GCSORT*S402*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(pOutfil->outfil_File),
-								pOutfil->outfil_File->stFileDef->file_status[0], pOutfil->outfil_File->stFileDef->file_status[1]);
+							fprintf(stdout, "*GCSORT*S402*ERROR: Record contains bad character %s - File Status (%d)\n", file_getName(pOutfil->outfil_File), nFS);
 							util_view_numrek();
 							job_print_error_file(pOutfil->outfil_File->stFileDef, nLenRecOut);
 							return -1;
 							break;
 						default:
-							fprintf(stdout, "*GCSORT*S402*ERROR: Cannot write to file %s - File Status (%c%c)\n", file_getName(pOutfil->outfil_File),
-								pOutfil->outfil_File->stFileDef->file_status[0], pOutfil->outfil_File->stFileDef->file_status[1]);
+							fprintf(stdout, "*GCSORT*S402*ERROR: Cannot write to file %s - File Status (%d)\n", file_getName(pOutfil->outfil_File), nFS);
 							util_view_numrek();
 							job_print_error_file(pOutfil->outfil_File->stFileDef, nLenRecOut);
 							return -1;
 						}
 						pOutfil->recordWriteOutTotal++;
-						pOutfil->outfil_File->nCountRow++;  /* for single file  */
+						job->recordWriteOutTotal++;
+						if (pOutfil->isVirtualFile == 0)	/* No Virtual */
+							pOutfil->outfil_File->nCountRow++;  /* for single file  */
 						nNumWrite++;
 					}
 					else
@@ -455,6 +487,7 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 							return -1;
 						}
 						job->pSaveOutfil->recordWriteOutTotal++;
+						job->recordWriteOutTotal++;
 						nNumWrite++;
 						nWritedRec = 1;		/* First insert in file SAVE */
 					}
@@ -493,6 +526,7 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
             			return -1;
 			}
 			job->pSaveOutfil->recordWriteOutTotal++;
+			job->recordWriteOutTotal++;
 		}
 	}
 

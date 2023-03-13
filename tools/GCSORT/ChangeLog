@@ -1,4 +1,11 @@
-2023-03-10  Sauro Menna  <smenna@users.sourceforge.net>
+2023-03-13  Sauro Menna  <smenna@users.sourceforge.net>
+    * Version 1.03.05
+    * Changed OUTFIL without filename (FILES or FNAMES),  the data set will be processed in GIVE file
+    * Fix problems in OUTFIL START/ENDREC
+    * Update Testcase OUTFIL Cobol program  and takefile somisqfmlt03_take.prm 
+    * Update Testcase START/ENDREC Cobol program
+
+2023-03-09  Sauro Menna  <smenna@users.sourceforge.net>
     * Fix problem in OUTFIL SAVE Option 
 
 2023-03-09  Sauro Menna  <smenna@users.sourceforge.net>

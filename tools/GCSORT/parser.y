@@ -1042,13 +1042,19 @@ datetype:
 
 omitclause: 
       OMIT COND allcondfield  {
-        condField_addOmit($3);
+        if (nstate_outfil==1)
+            condField_addOmitOutfil(current_outfil, $3);
+        else 
+            condField_addOmit($3);
         nTypeIncludeOmit = 2;
         strcpy(szMexToken, " omit clause ");
 }
 /* s.m. 20160915 */
     | OMIT COND '=' allcondfield  {
-        condField_addOmit($4);
+        if (nstate_outfil==1)
+            condField_addOmitOutfil(current_outfil, $4);
+        else 
+            condField_addOmit($4);
         nTypeIncludeOmit = 2;
         strcpy(szMexToken, " omit clause ");
 }
@@ -1057,13 +1063,19 @@ omitclause:
 
 includeclause: 
       INCLUDE COND allcondfield  {
-        condField_addInclude($3);
+        if (nstate_outfil==1)
+            condField_addIncludeOutfil(current_outfil, $3);
+        else 
+            condField_addInclude($3);
         nTypeIncludeOmit = 1;
         strcpy(szMexToken, " include clause ");
 }
     /* 20160915 */
     | INCLUDE COND '=' allcondfield  {
-        condField_addInclude($4);
+        if (nstate_outfil==1)
+            condField_addIncludeOutfil(current_outfil, $4);
+        else 
+            condField_addInclude($4);
         nTypeIncludeOmit = 1;
         strcpy(szMexToken, " include clause ");
 }
@@ -1123,7 +1135,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec_addDefinition(outrec);
                 }
@@ -1139,7 +1151,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
@@ -1236,7 +1248,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
@@ -1281,7 +1293,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
@@ -1323,7 +1335,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
@@ -1367,7 +1379,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
@@ -1413,7 +1425,7 @@ inoutrec:
                 if ($1 > nPosAbsRec) 
                     nPosAbsRec = $1;
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
@@ -1461,7 +1473,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
@@ -1511,7 +1523,7 @@ inoutrec:
                 }
                 nPosAbsRec += fieldValue_getGeneratedLength(outrec->change.fieldValue);
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
@@ -1550,7 +1562,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec_addDefinition(outrec);
                 }
@@ -1565,7 +1577,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
@@ -1646,7 +1658,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec_addDefinition(outrec);
                 }
@@ -1675,7 +1687,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
@@ -1737,7 +1749,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec_addDefinition(outrec);
                 }
@@ -1766,7 +1778,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
@@ -1828,7 +1840,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec_addDefinition(outrec);
                 }
@@ -1857,7 +1869,7 @@ inoutrec:
                     YYABORT;
                 }
                 if (nstate_outfil==1) {
-                    outfil_addoutfilrec(outrec);
+                    outfil_addoutfilrec(current_outfil, outrec);
                 } else {
                     outrec->nIsOverlay=outrec_overlay;
                     outrec_addDefinition(outrec);
@@ -2532,11 +2544,12 @@ filesgroup:
 			YYABORT;
 		}
 		nCountGroupFiles++;
-		if (nCountGroupFiles == 1) 
+		if (nCountGroupFiles == 1)
 			outfil_setOutfilFiles(current_outfil, file);
 		else
             file_addQueue(&current_outfil->outfil_File, file);
         file_SetInfoForFile(file, COB_OPEN_OUTPUT); 
+        outfil_SetVirtualFile(current_outfil, 0);       /* OUTFIL has file name */
         free($1);
         strcpy(szMexToken, " files clause ");
 }	

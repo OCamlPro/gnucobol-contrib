@@ -198,6 +198,7 @@ struct job_t* job_constructor(void) {
 	job->inrec = NULL;
 	job->sumFields = 0;
 	job->SumField = NULL;
+	job->recordReadInCurrent = 0;
 	job->recordNumberTotal = 0;
 	job->recordWriteSortTotal = 0;
 	job->recordWriteOutTotal = 0;
@@ -497,6 +498,8 @@ int job_sort (struct job_t* job)
 	int nContinueSrtTmp=0;
 	int nRC=0;
 
+	job->recordReadInCurrent = 0;
+
 	do {
         if (job->nStatistics == 2)
                 util_print_time_elap("Before  job_loadFiles     ");
@@ -731,23 +734,32 @@ int job_CloneFileForOutfil( struct job_t *job)
 	struct file_t *file;
 	struct outfil_t *outfil;
 	struct file_t *fileJob;
-
+	int nFirst = 0;
 	fileJob = job->outputFile;
 
 	if ((job->outfil != NULL) && (fileJob != NULL)){
 		if (job->outfil->outfil_File == NULL){
-			file = (struct file_t*) file_constructor(fileJob->name);
-            if (file == NULL) 
-                utl_abend_terminate(MEMORYALLOC, 4, ABEND_EXEC);
-			file->format=fileJob->format;
-			file->organization=fileJob->organization;
-			file->recordLength=fileJob->recordLength;
-			file->maxLength=fileJob->maxLength;
-			file->pHeaderMF=NULL;
-			file->bIsSeqMF =fileJob->bIsSeqMF;
-			file->nFileMaxSize=fileJob->nFileMaxSize;
-			file->next=NULL;	
-			job->outfil->outfil_File = file;
+			for (outfil = job->outfil; outfil != NULL; outfil = outfil_getNext(outfil)) {
+				//for (file = outfil->outfil_File; file != NULL; file = file_getNext(file)) {
+					file = (struct file_t*)file_constructor(fileJob->name);
+					if (file == NULL)
+						utl_abend_terminate(MEMORYALLOC, 4, ABEND_EXEC);
+					file->format = fileJob->format;
+					file->organization = fileJob->organization;
+					file->recordLength = fileJob->recordLength;
+					file->maxLength = fileJob->maxLength;
+					file->pHeaderMF = NULL;
+					file->bIsSeqMF = fileJob->bIsSeqMF;
+					file->nFileMaxSize = fileJob->nFileMaxSize;
+					file->next = NULL;
+					if (nFirst == 0) {
+						job->outfil->outfil_File = file;
+						nFirst = 1;
+					}
+					else
+						outfil->outfil_File = file;
+				//}
+			}
 		}
 		else
 		{
@@ -1711,12 +1723,14 @@ int job_print_final(struct job_t *job, time_t* timeStart)
 
 	if (job->outfil != NULL){
 		for (pOutfil=job->outfil; pOutfil != NULL; pOutfil=outfil_getNext(pOutfil)) {
-    		fprintf(stdout,"OUTFIL Total Records Write     : %10d\n", pOutfil->recordWriteOutTotal);
-			if ((job->pSaveOutfil != NULL) && (pOutfil != job->pSaveOutfil)) {
-				for (file = pOutfil->outfil_File; file != NULL; file = file_getNext(file)) {
-					fprintf(stdout, "Record Write for file : %10d - File: %s\n", file->nCountRow, file->name);
+			//if (pOutfil->isVirtualFile == 0) {	/* No Virtual */
+				fprintf(stdout, "OUTFIL Total Records Write     : %10d\n", pOutfil->recordWriteOutTotal);
+				if ((job->pSaveOutfil != NULL) && (pOutfil != job->pSaveOutfil)) {
+					for (file = pOutfil->outfil_File; file != NULL; file = file_getNext(file)) {
+						fprintf(stdout, "Record Write for file : %10d - File: %s\n", file->nCountRow, file->name);
+					}
 				}
-			}
+			//}
 		}
 		if (job->pSaveOutfil != NULL) {
 			fprintf(stdout, "Record Write for file : %10d - SAVE: %s\n", job->pSaveOutfil->recordWriteOutTotal, job->pSaveOutfil->outfil_File->name);
@@ -1905,10 +1919,12 @@ int job_print(struct job_t *job)
 		if (job->outfil != NULL) {
 			printf("OUTFIL : \n");
 			for (outfil=job->outfil; outfil!=NULL; outfil=outfil_getNext(outfil)) {
-				printf("\tFNAMES/FILES:\n");
-				for (file=outfil->outfil_File; file!=NULL; file=file_getNext(file)) {
-					printf("\t\t");
-					file_print(file);
+				if (outfil->isVirtualFile == 0) {	/* No Virtual */
+					printf("\tFNAMES/FILES:\n");
+					for (file = outfil->outfil_File; file != NULL; file = file_getNext(file)) {
+						printf("\t\t");
+						file_print(file);
+					}
 				}
 				if (outfil->outfil_includeCond!=NULL) {
 					printf("\t\tINCLUDE : (");
@@ -2049,8 +2065,10 @@ int job_destroy(struct job_t *job) {
 	if (job->outfil != NULL) {
 		nIdxMaster=0;
 		for (outfil=job->outfil; outfil!=NULL; outfil=outfil_getNext(outfil)) {
-			fPOutfilrec[nIdxMaster] = outfil;
-			nIdxMaster++;
+			//-->>if (outfil->isVirtualFile == 0) {	/* No Virtual */
+				fPOutfilrec[nIdxMaster] = outfil;
+				nIdxMaster++;
+				//-->>}
 		}
 		for (nIdyMaster=0; nIdyMaster < nIdxMaster; nIdyMaster++){
 			nIdx=0;
@@ -2366,7 +2384,15 @@ int job_loadFiles(struct job_t *job) {
 			if (job->nSkipRec > 0)
                 if (nRecCount <= job->nSkipRec)
 					continue;
-
+/* check STOPAFT    */
+			if (job->nStopAft > 0) {
+				/* if (job->recordNumber >= job->nStopAft) { */
+				if (job->recordNumberTotal > job->nStopAft) {
+					job->recordNumberTotal--;
+					nbyteRead = 0;
+					break;
+				}
+			}
 			useRecord=1;
 
 			/* Start Exit Routine E15			
@@ -2427,12 +2453,7 @@ int job_loadFiles(struct job_t *job) {
 			if (useRecord==0)
 				continue;
 
-/* check STOPAFT    */
-			if (job->nStopAft > 0)
-                if (job->recordNumber >= job->nStopAft) {
-					nbyteRead=0;
-					break;
-			}
+
 /* INREC
    If INREC is present made a new area record.
    Only in this point
@@ -2883,8 +2904,8 @@ int job_save_out(struct job_t *job)
 	}
 
 	/* Outfil == NULL, standard output file */
-    /*if (job->outfil == NULL) {    */
-	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) {
+	/* if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { */
+	if (job->outputFile != NULL) {
 		cob_open(job->outputFile->stFileDef,  COB_OPEN_OUTPUT, 0, NULL);
 		if (atol((char *)job->outputFile->stFileDef->file_status) != 0) {
 			fprintf(stdout,"*GCSORT*S026*ERROR: Cannot open file %s - File Status (%c%c)\n",file_getName(job->outputFile),
@@ -2920,6 +2941,7 @@ int job_save_out(struct job_t *job)
 	{
 		useRecord=1;
 		nLenRecOut = job->outputLength;
+		job->recordReadInCurrent++;
 		
 		gc_memcpy(&lPosPnt, job->buffertSort + (i) * ((int64_t)job->nLenKeys + SIZESRTBUFF) + job->nLenKeys, SZPOSPNT);             /* lPosPnt  */
 		gc_memcpy(&nLenRek, job->buffertSort + (i) * ((int64_t)job->nLenKeys + SIZESRTBUFF) + job->nLenKeys + SZPOSPNT, SZLENREC);  /* nLenRek  */
@@ -2965,7 +2987,6 @@ int job_save_out(struct job_t *job)
 					retcode_func = -1;
 					goto job_save_exit;
 				}
-				job->recordWriteOutTotal++;
 			}
 			continue;
 		}
@@ -3056,7 +3077,6 @@ int job_save_out(struct job_t *job)
 					retcode_func = -1;
 					goto job_save_exit;
 				}
-				job->recordWriteOutTotal++;
 			}
 			continue;
 		}
@@ -3124,7 +3144,6 @@ int job_save_out(struct job_t *job)
 					retcode_func = -1;
 					goto job_save_exit;
 			}
-			job->recordWriteOutTotal++;
 		}
 	}	/*  end of cycle    */
 
@@ -4817,7 +4836,8 @@ int job_merge_files(struct job_t *job) {
 		}
 	}
 	/* If Outfile is not null and OutFil not present or OutFil present without FNAME    */
-	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { /* new  */
+	/* if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { */ /* new  */
+	if (job->outputFile != NULL)  { /* new  */
 		cob_open(job->outputFile->stFileDef,  COB_OPEN_OUTPUT, 0, NULL);
 		if (atol((char *)job->outputFile->stFileDef->file_status) != 0) {
 			fprintf(stdout,"*GCSORT*S065*ERROR: Cannot open file %s - File Status (%c%c)\n",file_getName(job->outputFile),
@@ -5108,7 +5128,8 @@ job_merge_files_exit:
 				cob_close (Arrayfile_s[kj]->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
 		}
 	}
-	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0))
+	/* if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) */
+	if (job->outputFile != NULL)
 		cob_close(job->outputFile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
 
 	return retcode_func;

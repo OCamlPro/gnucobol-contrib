@@ -105,6 +105,7 @@
                 MOVE 25 TO RETURN-CODE
                 GOBACK
            end-if
+           move zero to record-counter-in
            perform inputrec-proc until fs-infile not equal "00"
            close sortin
            .
@@ -114,30 +115,33 @@
       * ============================= *
            read sortin
            end-read
+           add 1 to record-counter-in
            add 1 to wk-skipped
            if (fs-infile equal "00")   
-              if (wk-skipped > record-skipped)
+              if (record-counter-in > record-stopaft)
+                move "10" to fs-infile
+              else
+                 if (record-counter-in > record-skipped)
                     perform release-record
+                 end-if
               end-if
            end-if
            .
       * ============================= *
        release-record.
       * ============================= *
-           add 1 to record-counter-in
+      ***     add 1 to record-counter-in
       ** filtering input record 
       ** test      if (in-ch-field(1:2) = "GG")                                   ## filtering data    
-           if ((in-ch-field(1:2) > "GG")  AND                                 ## filtering data    
+             if ((in-ch-field(1:2) > "GG")  AND                                 ## filtering data    
               (in-bi-field > 10)          AND
               (in-fi-field < 40)          AND
               (in-fl-field > 10)          AND
               (in-pd-field > 10)          AND
               (in-zd-field < 40))
-              if (wk-stopaft < record-stopaft)
-                 release sort-data from infile-record
-                 add 1 to wk-stopaft
+                 release sort-data from infile-record             
               end-if
-           end-if
+           add 1 to wk-stopaft
            .
       *
       * ============================= *

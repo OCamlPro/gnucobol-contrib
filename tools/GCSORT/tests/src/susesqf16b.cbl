@@ -127,19 +127,36 @@
            close sortin
            .
       *
+      *
       * ============================= *
         inputrec-proc.
       * ============================= *
            read sortin
            end-read
-           if fs-infile equal "00" 
-               perform release-record  
+           add 1 to record-counter-in
+           if (fs-infile equal "00")   
+              if (record-counter-in > stopaft)
+                move "10" to fs-infile
+              else
+                 if (record-counter-in > skiprec)
+                    perform release-record
+                 end-if
+              end-if
            end-if
            .
-      * ============================= *
+      *** ============================= *
+      **  inputrec-proc.
+      *** ============================= *
+      **     read sortin
+      **     end-read
+      **     if fs-infile equal "00" 
+      **         perform release-record  
+      **     end-if
+      **     .
+      *** ============================= *
        release-record.
       * ============================= *
-           add 1 to record-counter-in
+      *****     add 1 to record-counter-in
            if (record-counter-in > skiprec)
       ** filtering input record 
                if ((in-ch-field(1:2) > "GG")  AND                                 ## filtering data    
@@ -227,12 +244,12 @@
        write-record-out.
       * ============================= *
            move low-value           to outfile-record
-           if (record-counter-out <= stopaft)
+      **     if (record-counter-out <= stopaft)
                add  1                   to record-counter-out
                move save-record-sort    to outfile-record
                move zero                to bIsPending
                write outfile-record 
-           end-if
+      **     end-if
            .
       * ============================= *
        view-data.

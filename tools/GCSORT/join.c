@@ -941,7 +941,8 @@ int join_join_files(struct job_t* job) {
 		}
 	}
 	/* If Outfile is not null and OutFil not present or OutFil present without FNAME    */
-	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { /* new  */
+	/* if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { */ /* new  */
+	if (job->outputFile != NULL) { /* new  */
 		cob_open(job->outputFile->stFileDef, COB_OPEN_OUTPUT, 0, NULL);
 		if (atol((char*)job->outputFile->stFileDef->file_status) != 0) {
 			fprintf(stdout,"*GCSORT*S865*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
@@ -2326,7 +2327,8 @@ int join_empty_fileF1(struct job_t* job) {
 		}
 	}
 	/* If Outfile is not null and OutFil not present or OutFil present without FNAME    */
-	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { /* new  */
+	/* if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { */ /* new  */
+	if (job->outputFile != NULL) { /* new  */
 		cob_open(job->outputFile->stFileDef, COB_OPEN_OUTPUT, 0, NULL);
 		if (atol((char*)job->outputFile->stFileDef->file_status) != 0) {
 			fprintf(stdout,"*GCSORT*S865*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
@@ -2684,7 +2686,8 @@ int join_empty_fileF2(struct job_t* job) {
 		}
 	}
 	/* If Outfile is not null and OutFil not present or OutFil present without FNAME    */
-	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { /* new  */
+	/*if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { */ /* new  */
+	if (job->outputFile != NULL) { /* new  */
 		cob_open(job->outputFile->stFileDef, COB_OPEN_OUTPUT, 0, NULL);
 		if (atol((char*)job->outputFile->stFileDef->file_status) != 0) {
 			fprintf(stdout,"*GCSORT*S865*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
@@ -2930,7 +2933,8 @@ join_empty_fileF2_exit:
 }
 
 int join_empty_fileF1F2(struct job_t* job) {
-	if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { /* new  */
+	/* if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) { */ /* new  */
+	if (job->outputFile != NULL) { /* new  */
 		cob_open(job->outputFile->stFileDef, COB_OPEN_OUTPUT, 0, NULL);
 		if (atol((char*)job->outputFile->stFileDef->file_status) != 0) {
 			fprintf(stdout,"*GCSORT*S365*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(job->outputFile),
