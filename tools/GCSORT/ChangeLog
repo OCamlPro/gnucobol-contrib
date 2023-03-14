@@ -1,3 +1,9 @@
+2023-03-14  Sauro Menna  <smenna@users.sourceforge.net>
+    * Version 1.03.05
+    * Extended  OUTFIL without filename (FILES or FNAMES),  the data set will be processed in GIVE file also for SAVE option
+    * In the OUTFIL option you can also indicate the same GIVE file name 
+    
+
 2023-03-13  Sauro Menna  <smenna@users.sourceforge.net>
     * Version 1.03.05
     * Changed OUTFIL without filename (FILES or FNAMES),  the data set will be processed in GIVE file
