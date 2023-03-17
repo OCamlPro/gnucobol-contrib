@@ -454,8 +454,7 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 						}
 						pOutfil->recordWriteOutTotal++;
 						job->recordWriteOutTotal++;
-						if (pOutfil->isVirtualFile == 0)	/* No Virtual */
-							pOutfil->outfil_File->nCountRow++;  /* for single file  */
+						pOutfil->outfil_File->nCountRow++;  /* for single file  */
 						nNumWrite++;
 					}
 					else
@@ -463,59 +462,13 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 						outfil_write_buffer_split(job, pOutfil, recordBuffer, byteRead, szBuffRek, nSplitPosPnt);
 					}
 				}
-			}
-			else
-			{
-				if ((job->pSaveOutfil != 0) && (useRecord == 0) && (nWritedRec == 0))
-				{
-					if (byteRead > 0)
-					{
-						if (job->pSaveOutfil->isVirtualFile == 1) {	/* OUTFIL without file name */
-							outfil_set_area(globalJob->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut);
-							cob_write(globalJob->outputFile->stFileDef, globalJob->outputFile->stFileDef->record, globalJob->outputFile->opt, NULL, 0);
-							/* switch (atol((char*)pOutfil->outfil_File->stFileDef->file_status)) */
-							pFile = globalJob->outputFile->stFileDef;
-							nFS = atol((char*)globalJob->outputFile->stFileDef->file_status);
-						}
-						else
-						{
-							outfil_set_area(job->pSaveOutfil->outfil_File, recordBuffer + nSplitPosPnt, nLenRecOut);
-							cob_write(job->pSaveOutfil->outfil_File->stFileDef, job->pSaveOutfil->outfil_File->stFileDef->record, job->pSaveOutfil->outfil_File->opt, NULL, 0);
-							pFile = job->pSaveOutfil->outfil_File->stFileDef;
-							nFS = (atol((char*)job->pSaveOutfil->outfil_File->stFileDef->file_status));
-						}
-						switch (nFS)
-						{
-						case 0:
-							break;
-						case  4:		/* record successfully read, but too short or too long */
-							fprintf(stdout, "*GCSORT*S403*ERROR:record successfully read, but too short or too long. %s - File Status (%d)\n", pFile->assign->data, nFS);
-								util_view_numrek();
-							job_print_error_file(pFile, nLenRecOut);
-							return -1;
-						case 71:
-							fprintf(stdout, "*GCSORT*S403*ERROR: Record contains bad character %s - File Status (%d)\n", pFile->assign->data, nFS);
-							util_view_numrek();
-							job_print_error_file(pFile, nLenRecOut);
-							return -1;
-							break;
-						default:
-							fprintf(stdout, "*GCSORT*S403*ERROR: Cannot write to file %s - File Status (%d)\n", pFile->assign->data, nFS);
-							util_view_numrek();
-							job_print_error_file(pFile, nLenRecOut);
-							return -1;
-						}
-						job->pSaveOutfil->recordWriteOutTotal++;
-						job->recordWriteOutTotal++;
-						nNumWrite++;
-						nWritedRec = 1;		/* First insert in file SAVE */
-					}
-				}
-			}
+			}			
 		}
 	}
 	
-	if ((job->pSaveOutfil != 0) && (nWritedRec == 0) && (userec == 0)) {
+	/* If nWritedRec equal zero no write in Outfil file maded  or userec is equal zero 
+	   in this case verify Save file, if is presents write output in Save file */
+	if ((job->pSaveOutfil != 0) && (nWritedRec == 0) ) {
 		if (byteRead > 0)
 		{
 			if (job->pSaveOutfil->isVirtualFile == 1) {	/* OUTFIL without file name */

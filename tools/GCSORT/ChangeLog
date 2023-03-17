@@ -1,3 +1,7 @@
+2023-03-17  Sauro Menna  <smenna@users.sourceforge.net>
+    * Fixed OUTFIL problem with more definitions
+    * Fixed OUTFIL records counter 
+
 2023-03-14  Sauro Menna  <smenna@users.sourceforge.net>
     * Version 1.03.05
     * Extended  OUTFIL without filename (FILES or FNAMES),  the data set will be processed in GIVE file also for SAVE option
