@@ -13,8 +13,8 @@
  DATE-WRITTEN.     17th NOVEMBER 1986.
 *> DATE-UPDATED.   September - December 2018. Major update and migration from
 *>                 Micro Focus version.
-*>                 2.02.12 and .13 New file for creew name etc, and option to
-*>                 print out running grnd totals after the months figures.
+*>                 2.02.12 and .13 New file for crew name etc, and option to
+*>                 print out running grand totals after the months figures.
 *>**
  DATE-COMPILED.    TO-DAY.   *> GC does NOT update.
 *>**
@@ -67,14 +67,14 @@
 *>
 *>  Environment Variables used:
 *>                 COB_SCREEN_EXCEPTIONS  -  Set in program.
-*>                                           Used for GnuCOBOL for accepting F keys.
+*>                                           Used for GnuCOBOL for accepting F(unction) keys.
 *>                 COB_SCREEN_ESC         -  Set in program.   -  ditto  -
 *>                 COB_EXIT_WAIT          -  Set in program.   -  ditto  -
 *>                 LC_TIME                -  Program checks for 1st five chars of values :
 *>                                           en_GB (dd/mm/ccyy),
 *>                                           en_US (mm/dd/ccyy),
 *>                                           or unset for *nix
-*>                                            which gives ccmm/mm/dd.
+*>                                            which gives ccyy/mm/dd.
 *>                                          as all other settings will be treated as UNIX.
 *>                 If needed, a callable script that runs flightlog should be
 *>                 used to set LC_TIME and then call the program.
@@ -85,7 +85,8 @@
 *>**
 *>  Terminal settings:
 *>                 Minimum size of 106 wide and 24 depth
-*>                  (but will make use of deeper) to display information.
+*>                  (but will make use of deeper) to display information
+*>                   via the usage of the F1 and F3 functions keys.
 *>**
 *>  Called Internal Library Modules:
 *>                 CBL_CHECK_FILE_EXIST
@@ -115,13 +116,14 @@
 *>                 None.
 *>**
 *>  Switches used (88):
-*>                  NO-PRINT-YET of PRINT-FLAG and other internals.
+*>                 NO-PRINT-YET of PRINT-FLAG and other internals.
 *>**
 *>  Called parameters:
+*>                 Normally not needed but . . .
 *>                 P1 - NONIGHT | NONITE - To stop program from calculating when
-*>                                 night time starts.
-*>                  E.g.,  flightlog NONIGHT
-*>                      NIGHT | NITE     - To do night time calcs use when P2 is used.
+*>                                 night time starts - it is not an exact science.
+*>                 E.g.,  flightlog NONIGHT
+*>                      NIGHT | NITE     - To do night time calculations use when P2 is used.
 *>                      CSV-TEST         - Test displays (with pause) in csv processing after unstring
 *>                                         Useful to check for mistakes in CSV-config rec 1
 *>                                         problems. Otherwise do not use.
@@ -149,7 +151,8 @@
 *>                 FL001 thru FL050.  Flightlog usage issues. (FL018 not used)
 *>**
 *>  CHANGES.       See Changelog file  with latest at the end.
-*>                 Note last two digits of version (.nn) is build number.
+*>                 Note last two digits of version (.nn) is build number and
+*>                 is changed for any and all changes to the source.
 *>
 *>
 *> TODO maybe ? (outstanding):
@@ -174,7 +177,7 @@
 *>                     in Remarks so is it really needed for the 90 Day CoE ?.
 *>                     CAA / FAA requirement ?
 *>                     The problem with it is that it is not used for commercial or
-*>                     military aircrew.
+*>                     military aircrew and likewise for non pilot crew.
 *>**
 *>****************************************************************************************
 *> Copyright Notice.
@@ -185,7 +188,7 @@
 *> Copyright (c) Vincent B Coen. 1986-2022 and later.
 *>
 *> The supplied copyright notices that are displayed and printed MUST be
-*>    maintained at all times.
+*>  maintained at all times.
 *>
 *> This program as OS (Open Source) is free software; you can redistribute
 *> it and/or modify it under the terms of the GNU General Public License
@@ -217,7 +220,9 @@
 *>
 *> This only allows usage for personal use, that means not commercially Nor
 *> can it be sold without permission of the author/programmer.
-*>   See manual inside front cover for contact information.
+*>  Contact me with your proposals and I will see what can be done -
+*>   See manual inside front cover for additional contact information.
+*>     but email address is vbcoen@gmail.com
 *>
 *> It is used by the author / Programmer for own records who has amassed
 *> thousands of hours and works well in such recording for Mil, PPL and
@@ -278,6 +283,9 @@
                              ORGANIZATION LINE SEQUENTIAL
                              STATUS       FS-REPLY.
 *>
+*> This file has one record that hold the crew members name details etc
+*>   that is entered when selecting any reports - help to save typing.
+*>
      SELECT Crew             ASSIGN       "Crew.dat"
                              ORGANIZATION LINE SEQUENTIAL
                              STATUS       FS-REPLY.
@@ -286,11 +294,19 @@
                              ORGANIZATION LINE SEQUENTIAL
                              STATUS       FS-REPLY.
 *>
+*>  This file is used to import technical log file records
+*>   from a company you work for as a crew member.
+*>
 *>  File name default is "csv-flitelog" overridden by CSV rec type 3
 *>
      SELECT CSV-Data-File    ASSIGN       CSV-File-Name
                              ORGANIZATION LINE SEQUENTIAL
                              STATUS       FS-REPLY.
+*>
+*>  This file hold the configuration of the data for the above file.
+*>   On a change of airline company it will most likely need to be
+*>      created again if their data format is different from another
+*>      airline or other commercial operator, etc.
 *>
      SELECT CSV-Layout-File  assign       CSV-Config-Name          *> default is "csv-conf.txt"
                              ORGANIZATION LINE SEQUENTIAL
@@ -336,9 +352,12 @@
      Record contains 112 characters.
  01  FLIGHTLOGBACKUP-RECORD PIC X(112).
 *>
- FD  AIRFIELD-FILE                       *> Name changed 20 to 36 19/12/18. NEED To run program afldconv1
-     Record contains 48 characters.
- 01  AIRFIELD-RECORD.                    *>  to update file using .seq file as input.
+ FD  AIRFIELD-FILE                       *> Name changed from 20 to 36 19/12/18.
+     Record contains 48 characters.      *> if using old version (pre v2.02) you NEED
+*>                                           To run program afldconv1 to update
+*>                                           this file using the .seq file as
+*>                                           input, created  via menu option 'S'.
+ 01  AIRFIELD-RECORD.
      03  ICAO-CODE           PIC X(4).
      03  AFLD-Name           pic x(36).
      03  AFLD-Last-Flt       pic 9(8).
@@ -354,16 +373,16 @@
      03  AIRCRAFT-MS         PIC X.
      03  Aircraft-Complex    pic x.     *> Y or (space / N).
      03  Aircraft-Last-Reg   pic x(6).
-     03  Aircraft-Last-Flt   pic 9(8).
+     03  Aircraft-Last-Flt   pic 9(8).  *> size for USA a/c regs.
  *>    03  Aircraft-Man        pic x(20).
  *>    03  Aircraft-Name       pic x(20).
 *>
  fd  AircraftBackup-File
      Record contains 24 characters.
  01  AircraftBackup-Record   pic x(24).
- *> 01  AircraftBackup-Record   pic x(64).
+  *> 01  AircraftBackup-Record   pic x(64).
 *>
- fd  Crew
+ FD  Crew
      Record contains 40 characters.
  01  Crew-Record             pic x(40).
 *>

@@ -133,13 +133,14 @@ B.  You may want to save the current source file version of flightlog
     cobc -x afldconv1.cbl
     cobc -x flightlog.cbl
 
-    These should have completed with NO error or warning messages but if so find out
-    why and fix the issue/s and rerun.
+    These should have completed with NO error or warning messages but if so find
+    out why and fix the issue/s and rerun.
 
  3. Copy the flightlog executable to the same directory you found it in step 3
     replacing the old version. Shown here but may not be the correct location :
       [ cp -f flightlog ~/bin ]
-     but it is the usual one for Linux based systems but yours could be different :)
+     but it is the usual one for Linux based systems but yours could be
+     different :)
 
  4. Next is running the convert program afldconv1, so now run:
     afldconv1
@@ -175,18 +176,23 @@ Changelog :
                         Change Afld entry during Flight data entry/amend.
 
                         Tables for EBCDIC to ASCII updated for redefines.
-                        Just need to add in the inspect, converting code during the read
-                        of the data file. Now added - the problem will be to find
-                        data to test it with. USer running CSV import any one got a EBCDIC
-                        CSV data file for testing ?
-                        Removed the airfield sort but kept the 'not print unused aflds'
-                        facility. Sort by date just made it hard to read anyway.
+                        Just need to add in the inspect, converting code during
+                        the read of the data file. Now added - the problem will
+                        be to find data to test it with. USer running CSV import
+                        any one got a EBCDIC CSV data file for testing ?
+                        Removed the airfield sort but kept the 'not print unused
+                        aflds' facility. Sort by date just made it hard to read
+                        anyway.
 
- 24/12/18 vbc - 2.02.01 Experiment for using airfield names in place of ICAO codes
-                        PR11, PH11 ?     from TODO (2).
-                        BUG - Using HIDDEN menu options 3 & 4 for C & D respectively.
-                        Carried totals not happening chg test for > 1 instd of > 0
+ 24/12/18 vbc - 2.02.01 Experiment for using airfield names in place of ICAO
+                        codes   PR11, PH11 ?     from TODO (2).
+                        BUG - Using HIDDEN menu options 3 & 4 for C & D
+                        respectively. Carried totals not happening chg test for
+                        > 1 instd of > 0
 
  31/12/18 vbc - 2.02.03 Mostly typos and added some extra help.
- 19/11/19 vbc - 2.02.08 Minor typos, i.e., missing space between words in this document.
+ 19/11/19 vbc - 2.02.08 Minor typos, i.e., missing space between words in this
+                        document.
  26/11/19 vbc - 2.02-10 Minor typos and alignment in this document.
+ 18/03/23 vbc -         Cleaned up this doc to width size 80 chars amd chgd (C)
+                        to 2023.
