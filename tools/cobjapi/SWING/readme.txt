@@ -300,6 +300,9 @@ Program history, changes and bug fixes are listed in program headers.
 Date       Name / Change description
 ========== ==================================================================
 -----------------------------------------------------------------------------
+2023.04.29 Giancarlo Canini:
+           - charts example added. 
+-----------------------------------------------------------------------------
 2022.12.10 Laszlo Erdos:
            - J-TOFRONT added. 
 -----------------------------------------------------------------------------
@@ -330,6 +333,9 @@ Date       Name / Change description
 -----------------------------------------------------------------------------
 2021.02.07 Laszlo Erdos:
            - New functions for Table added.
+-----------------------------------------------------------------------------
+2021.01.05 Giancarlo Canini:
+           - linearfunction example added.
 -----------------------------------------------------------------------------
 2020.12.22 Laszlo Erdos:
            - DesktopPane and InternalFrame added.
