@@ -1,3 +1,10 @@
+2023-05-10  Sauro Menna  <smenna@users.sourceforge.net>
+    * FIX problem in Line Sequential Fixed (LSF)
+
+2023-03-17  Sauro Menna  <smenna@users.sourceforge.net>
+    * Version 1.03.06
+    * Search Substring (SS) in format field
+
 2023-03-17  Sauro Menna  <smenna@users.sourceforge.net>
     * Fixed OUTFIL problem with more definitions
     * Fixed OUTFIL records counter 

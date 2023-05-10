@@ -3231,6 +3231,11 @@ int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, i
 	/* 20220202 s.m. int nLenRek = job->outputFile->stFileDef->record->size; */
 /* 20180511 s.m. end    */
 /* set area data        */
+	/* s.m. 20230510 review length */
+	if (((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) || (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUFIXED)) &&
+		(file->stFileDef->record->size < (unsigned int)nLenRek)) {
+		file->stFileDef->record->size = nLenRek;
+	}
 	/* s.m. 202202 gc_memcpy(file->stFileDef->record->data, szBuf, nLenRek);  */
 	gc_memcpy(file->stFileDef->record->data, szBuf, file->stFileDef->record->size);
 
@@ -3244,7 +3249,7 @@ int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, i
 		 (file->stFileDef->record->size > (unsigned int) nLenRek)) {
             memset(file->stFileDef->record->data+nLenRek, 0x20, file->stFileDef->record->size - nLenRek); /* padding with blank (0x20)   */
     }
-/* 20180511 s.m. end    */
+	/* 20180511 s.m. end    */
 	if (job->outputFile->format == FILE_TYPE_VARIABLE){
 		job->outputFile->stFileDef->record->size = nLenOut;
 		cob_set_int(job->outputFile->stFileDef->variable_record, (int)nLenOut);

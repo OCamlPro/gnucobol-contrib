@@ -521,7 +521,7 @@ void GCSORT_Usage_all(void)
     printf("  ZD  = Zoned                              |  CLO = Numeric sign leading                \n");
     printf("  CLO = Numeric sign leading               |  CSL = Numeric sign leading separate       \n");
     printf("  CSL = Numeric sign leading separate      |  CST = Numeric sign trailing separate      \n");
-    printf("  CST = Numeric sign trailing separate     |                                            \n");
+    printf("  CST = Numeric sign trailing separate     |  SS  = Search Substring                    \n");
     printf("___________________________________________|____________________________________________\n");
     printf("_Format_Len_Type__Date field_______________|_Format_Len_Type__Date field________________\n");
     printf("  Y2T = 8   ZD    CCYYMMDD                 |  Y2D = 1   PD    YY                        \n");
@@ -715,7 +715,7 @@ void gcsort_help_body_SMC(void) {
     printf("  ZD  = Zoned                              |  CLO = Numeric sign leading                \n");
     printf("  CLO = Numeric sign leading               |  CSL = Numeric sign leading separate       \n");
     printf("  CSL = Numeric sign leading separate      |  CST = Numeric sign trailing separate      \n");
-    printf("  CST = Numeric sign trailing separate     |                                            \n");
+    printf("  CST = Numeric sign trailing separate     |  SS  = Search Substring                    \n");
     printf("___________________________________________|____________________________________________\n");
     printf("_Format_Len_Type__Date field_______________|_Format_Len_Type__Date field________________\n");
     printf("  Y2T = 8   ZD    CCYYMMDD                 |  Y2D = 1   PD    YY                        \n");
@@ -885,7 +885,7 @@ void gcsort_help_body_JOIN(void) {
     printf("  ZD  = Zoned                              |  CLO = Numeric sign leading                \n");
     printf("  CLO = Numeric sign leading               |  CSL = Numeric sign leading separate       \n");
     printf("  CSL = Numeric sign leading separate      |  CST = Numeric sign trailing separate      \n");
-    printf("  CST = Numeric sign trailing separate     |                                            \n");
+    printf("  CST = Numeric sign trailing separate     |  SS  = Search Substring                    \n");
     printf("___________________________________________|____________________________________________\n");
     printf("_Format_Len_Type__Date field_______________|_Format_Len_Type__Date field________________\n");
     printf("  Y2T = 8   ZD    CCYYMMDD                 |  Y2D = 1   PD    YY                        \n");

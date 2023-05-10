@@ -117,15 +117,16 @@ extern int yydebug;
      KEYTYPE = 326,
      OCCURFILL = 327,
      OPCOND = 328,
-     ORDER = 329,
-     RECTYPEFIX = 330,
-     RECTYPEVAR = 331,
-     STRING = 332,
-     TOKSKIP = 333,
-     EXROUT = 334,
-     YESNO = 335,
-     ERRTRUNC = 336,
-     SIGNDIGITBIG = 337
+     SUBSTRING = 329,
+     ORDER = 330,
+     RECTYPEFIX = 331,
+     RECTYPEVAR = 332,
+     STRING = 333,
+     TOKSKIP = 334,
+     EXROUT = 335,
+     YESNO = 336,
+     ERRTRUNC = 337,
+     SIGNDIGITBIG = 338
    };
 #endif
 
@@ -150,7 +151,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 154 "..\\..\\parser.h"
+#line 155 "..\\..\\parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

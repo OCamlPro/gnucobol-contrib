@@ -419,6 +419,8 @@ int utils_getFieldTypeLIBCOBInt(int nInteralType, int nLen)
 	switch (nInteralType) {
 	case FIELD_TYPE_CHARACTER:
 		return COB_TYPE_ALPHANUMERIC;
+	case FIELD_TYPE_SUBSTRING:			/* SubString */
+		return COB_TYPE_ALPHANUMERIC;	
 	case FIELD_TYPE_BINARY:
 		return COB_TYPE_NUMERIC_BINARY;
 	case FIELD_TYPE_FIXED:
@@ -466,6 +468,7 @@ int utils_getFieldTypeLIBCOBFlags(int nInteralType)
 {
 	switch (nInteralType) {
 	case FIELD_TYPE_CHARACTER:
+	case FIELD_TYPE_SUBSTRING:	/* SubString*/
 		return 0;
 	case FIELD_TYPE_BINARY:
         return COB_FLAG_BINARY_SWAP;
@@ -525,7 +528,9 @@ const char *utils_getFieldTypeName(int type)
 	switch(type) {
 		case FIELD_TYPE_CHARACTER:
 			return "CH";
-/* BI Binary
+		case FIELD_TYPE_SUBSTRING:	/* SubString */
+			return "SS";
+			/* BI Binary
 PIC 9(n) COMP|BINARY|COMP-4|COMP-5
 		n = 1 to 4	len 2 BI
 		n = 5 to 9	len	4 BI

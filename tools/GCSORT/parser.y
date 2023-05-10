@@ -111,6 +111,7 @@
 	int	 nIntTmp;
 	int  nTypeFormat;			/* 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields  */
 	int  nTypeIncludeOmit;		/* 0= Nothing, 1 = Include, Omit=2                              */
+    int  nFieldType = 0;        /* field type used when format is spicified */
 	int  nstate_outfil = 0;
     int  nOnly=0;
 
@@ -189,6 +190,7 @@
 %token <string>		KEYTYPE					"KEYTYPE" 
 %token <string>		OCCURFILL				"OCCURFILL"
 %token <string>		OPCOND					"OPCOND"
+%token <string>		SUBSTRING				"SUBSTRING"
 %token <string>		ORDER					"ORDER"
 %token <string>		RECTYPEFIX				"RECTYPEFIX"
 %token <string>		RECTYPEVAR				"RECTYPEVAR"
@@ -383,6 +385,11 @@ fieldtype:
 		$$=utils_parseFieldType($1);
 		free($1);
 }
+|   /* To verify format SS = SubString */
+      SUBSTRING {
+		$$=utils_parseFieldType($1);
+		free($1);
+}
 ;
 fielddirection: 
       ORDER {
@@ -393,6 +400,11 @@ fielddirection:
 
 condition: 
       OPCOND {
+		$$=utils_parseCondCondition($1);
+		free($1);
+}
+|   /* To verify format SS = SubString */
+      SUBSTRING {
 		$$=utils_parseCondCondition($1);
 		free($1);
 }
@@ -728,6 +740,7 @@ fill_char:
 formatclause: 
       FORMAT '=' fieldtype {
 		strcpy(szMexToken, " format clause ");
+        nFieldType = $3;    /* save field type */
 		if (nTypeFormat == 1)
 			condField_setFormatFieldsTypeAll(nTypeFormat, $3);
 		if (nTypeFormat == 2)
@@ -735,7 +748,7 @@ formatclause:
 		if (nTypeFormat == 3)	/* for SumFields    */
 			condField_setFormatFieldsTypeAll(nTypeFormat, $3);
     }
-    /* 20230221 Start  
+    /* 20230221 Start */ 
     |  FORMAT '=' OPCOND {
 		strcpy(szMexToken, " format clause substring ");
 		if (nTypeFormat == 1)
@@ -745,7 +758,7 @@ formatclause:
 		if (nTypeFormat == 3)	
 			condField_setFormatFieldsTypeAll(nTypeFormat, FIELD_TYPE_SUBSTRING);
     }
-    */
+    /* */
     
 /* 20230221 End   */            
 /* s.m. 20160914
@@ -850,7 +863,8 @@ condfieldcond:
     /* case 88,13,LT,-10  field in position 88 with length 13 less then -10 */
     /* #################################################################################################### */
     | DIGIT ',' DIGIT ',' condition ',' fieldvalueconst  {    
-        condField=condField_constructor_condition($1,$3,0,$5,(struct fieldValue_t *)$7);
+        /* condField=condField_constructor_condition($1,$3,0,$5,(struct fieldValue_t *)$7); */
+        condField=condField_constructor_condition($1,$3,nFieldType,$5,(struct fieldValue_t *)$7);
         nTypeFormat = 2; /* Format external token   */
         $$=condField;
         strcpy(szMexToken, " condition field 08 ");
@@ -864,7 +878,8 @@ condfieldcond:
     /* case 45,6,LE,C'999999'  field in position 45 with length 6 less then '999999'    */
     /* #################################################################################################### */
     | DIGIT ',' DIGIT ',' condition ',' fieldvaluecond  {    
-        condField=condField_constructor_condition($1,$3,0,$5,(struct fieldValue_t *)$7);
+        /* condField=condField_constructor_condition($1,$3,0,$5,(struct fieldValue_t *)$7); */
+        condField=condField_constructor_condition($1,$3,nFieldType,$5,(struct fieldValue_t *)$7); 
         nTypeFormat = 2; /* Format external token   */
         $$=condField;
         strcpy(szMexToken, " condition field 09 ");

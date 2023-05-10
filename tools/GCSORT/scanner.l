@@ -87,7 +87,8 @@ TI / OT / CTO / ZD  Zoned decimal  - sign trailing
 
     /* released FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL */
     /* 202302 FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL|Y2T|Y2B|Y2C|Y2D|Y2P|Y2S|Y2U|Y2V|Y2X|Y2Y|Y2Z */
-FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL|Y2T|Y2B|Y2C|Y2D|Y2P|Y2S|Y2U|Y2V|Y2X|Y2Y|Y2Z|SS
+FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL|Y2T|Y2B|Y2C|Y2D|Y2P|Y2S|Y2U|Y2V|Y2X|Y2Y|Y2Z
+SUBSTRING    SS
     /*
   DataType	Len	Type
     Y2T		8	ZD Y2T8 = Y4T8 (?) C'ccyymmdd' or Z'ccyymmdd'     
@@ -127,7 +128,7 @@ RECTYPEVAR      V
 OCCURFILL   [0-9]{1,5}[C|X|Z]{1} 
             /* Operator condition */ 
     /* 202302 OPCOND          EQ|GT|GE|LT|LE|NE|SS */
-OPCOND      EQ|GT|GE|LT|LE|NE|SS
+OPCOND      EQ|GT|GE|LT|LE|NE
             /* Joinkeys File */
 JOINFILE        F1|F2            
 
@@ -286,6 +287,8 @@ ERRTRUNC        ERROR|TRUNC
 {JOINFILE}                  yylval.string = _strdup(yytext) ;					return JOINFILE;
 
 {FORMATTYPE}		        yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  
+{SUBSTRING}		            yylval.string = _strdup(yytext) ;                   return SUBSTRING;  
+
 "EXROUT"                                                                        return EXROUT;
 {EXROUT}                    yylval.string = _strdup(yytext) ;					return EXROUT; 
 "YESNO"                                                                         return YESNO;

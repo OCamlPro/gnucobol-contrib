@@ -296,26 +296,12 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 		case FILE_ORGANIZATION_LINESEQUENTIAL:
 			file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 			file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
-#if __LIBCOB_RELEASE >= 30200
-			pCmd = cob_getenv_direct("COB_LS_FIXED");
-			if ((pCmd == NULL) || (strcasecmp(pCmd, "OFF") != 0)) {
-				cob_setenv("COB_LS_FIXED", "OFF", 1);
-			}			
-#else
-			cob_putenv("COB_LS_FIXED=OFF");	/* change value of environment value GnuCOBOL*/
-#endif
+			/* use default value LIBCOB */
 			break;
 		case FILE_ORGANIZATION_LINESEQUFIXED:
 			file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 			file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
-#if __LIBCOB_RELEASE >= 30200
-			pCmd = cob_getenv_direct("COB_LS_FIXED");
-			if ((pCmd == NULL) || (strcasecmp(pCmd, "ON") != 0)) {
-				cob_setenv("COB_LS_FIXED", "ON", 1);
-			}	
-#else
-			cob_putenv("COB_LS_FIXED=ON");	/* change value of environment value GnuCOBOL*/
-#endif
+			cob_putenv("COB_LS_FIXED=1");	 /* change value of environment value GnuCOBOL*/
 			break;
 		case FILE_ORGANIZATION_RELATIVE:
 			tKeys =  file->stKeys;
