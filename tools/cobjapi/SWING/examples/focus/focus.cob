@@ -234,7 +234,6 @@
          03  ws-row                  pic x(65).
 
 
-
 *> **************************************************** <*
 *> >>>>>>>>>>>>>>>> PROCEDURE DIVISION <<<<<<<<<<<<<<<< <*
 *> **************************************************** <*
@@ -319,17 +318,24 @@
      move j-setfontsize(ws-quit, ws-fontsize) to ws-ret
      move j-setnamedcolor(ws-quit, j-green) to ws-ret
 
-*>   Create Background Label     
+*>   Create Background Labels     
      move j-label(ws-frame, "GnuCOBOL CobJapi Demo") to ws-label      
      move 52 to ws-fontsize
      move j-setfontsize(ws-label, ws-fontsize) to ws-ret
-     move 550 to ws-xpos
-     move 680 to ws-ypos
+     move 530 to ws-xpos
+     move 770 to ws-ypos
      move 800 to ws-width-label
      move 100 to ws-height-label
      move j-setsize(ws-label, ws-width-label, ws-height-label) to ws-ret 
      move j-setpos(ws-label, ws-xpos, ws-ypos) to ws-ret
      move j-setnamedcolor(ws-label, j-yellow) to ws-ret
+     move j-graphiclabel(ws-frame, "GnuCOBOL.png") to ws-label      
+     move 770 to ws-xpos
+     move 430 to ws-ypos
+     move 300 to ws-width-label
+     move 300 to ws-height-label
+     move j-setsize(ws-label, ws-width-label, ws-height-label) to ws-ret 
+     move j-setpos(ws-label, ws-xpos, ws-ypos) to ws-ret
 
 *>   Create Input Data Button
      move j-graphicbutton(ws-frame, "input-data.png") to ws-button-insert
