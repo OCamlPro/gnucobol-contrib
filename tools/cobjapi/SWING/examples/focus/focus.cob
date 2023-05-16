@@ -1,18 +1,18 @@
-*>******************************************************************************
-*>  focus.cob is free software: you can redistribute it and/or 
-*>  modify it under the terms of the GNU Lesser General Public License as 
-*>  published by the Free Software Foundation, either version 3 of the License,
-*>  or (at your option) any later version.
+*>   ****************************************************************************************************************
+*>   focus.cob is free software: you can redistribute it and/or 
+*>   modify it under the terms of the GNU Lesser General Public License as 
+*>   published by the Free Software Foundation, either version 3 of the License,
+*>   or (at your option) any later version.
 *>
-*>  focus.cob is distributed in the hope that it will be useful, 
-*>  but WITHOUT ANY WARRANTY; without even the implied warranty of 
-*>  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*>  See the GNU Lesser General Public License for more details.
+*>   focus.cob is distributed in the hope that it will be useful, 
+*>   but WITHOUT ANY WARRANTY; without even the implied warranty of 
+*>   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*>   See the GNU Lesser General Public License for more details.
 *>
-*>  You should have received a copy of the GNU Lesser General Public License 
-*>  along with focus.cob.
-*>  If not, see <http://www.gnu.org/licenses/>.
-*>******************************************************************************
+*>   You should have received a copy of the GNU Lesser General Public License 
+*>   along with focus.cob.
+*>   If not, see <http://www.gnu.org/licenses/>.
+*>   ****************************************************************************************************************
 
 *>   ****************************************************************************************************************
 *>   ******************************************  Author: Giancarlo Canini  ******************************************
@@ -31,9 +31,9 @@
 *>       and check for any duplication of an existing ID; 
 *>   2)  Change data by searching for the ID, disabling the ID field to avoid changing it; 
 *>   3)  Display data in a (coloured) table with the possibility of displaying a single record or update (possibly) 
-*>       new data in the table with a double click; 
-*>   4)  Choice Menu to Delete a record or the File called 'filedata.dat' 
-*>  
+*>       new data in the table with a double click, and sort data by ID, by Name or by Budget (with optimize Data);
+*>   4)  Choice Menu to Delete a Record or the File called 'filedata.dat' 
+  
 *>   Functions used:
 *>
 *>   j-start()
@@ -103,8 +103,13 @@
 
  input-output section.
      file-control.
-         select filedata assign to disk  "filedata.dat"
-         organization is sequential.
+         select filedata assign to disk "filedata.dat"
+             organization is sequential.
+
+         select filedatasort assign to disk "filedatasort.dat"
+             organization is sequential.
+
+         select sortdata assign to disk.
  
 
 *> **************************************************** <*
@@ -118,6 +123,18 @@
      02  id-field                    pic x(20).
      02  uno                         pic x(25).
      02  due                         pic 9(16)v9(3).
+
+ fd  filedatasort.
+ 01  filerecordsort.
+     02  id-field-sort               pic x(20).
+     02  uno-sort                    pic x(25).
+     02  due-sort                    pic 9(16)v9(3).
+
+ sd  sortdata.
+ 01  sortrecord.
+     02  sort-id                     pic x(20).
+     02  sort-uno                    pic x(25).
+     02  sort-due                    pic 9(16)v9(3).
 
  working-storage section.
  copy "CobjapiConstants.cpy".        
@@ -145,6 +162,9 @@
  01  ws-button-choose                binary-long.
  01  ws-button-quit                  binary-long.
  01  ws-button-save                  binary-long.
+ 01  ws-button-sort-id               binary-long.
+ 01  ws-button-sort-name             binary-long.
+ 01  ws-button-sort-importo          binary-long.
  01  ws-panel                        binary-long.
  01  ws-table                        binary-long.
  01  ws-item                         binary-long.
@@ -214,6 +234,7 @@
 
 *>   Table structure
  01  i                               pic 9(4).
+ 01  view-record                     pic x(83).
 
  01  ws-column-names.
      02 filler   value "Identification".
@@ -227,11 +248,19 @@
      02 filler   value "|".
      02 filler   value "320".
      02 filler   value "|".
-     02 filler   value "250".
+     02 filler   value "240".
 
  01  ws-rows.
      02  element occurs 1000 times.  
-         03  ws-row                  pic x(65).
+         03  ws-row              pic x(65).
+
+ 01  ws-col-1            pic x(20).
+ 01  ws-col-2            pic x(25).
+ 01  ws-col-3            pic x(20).
+
+*>   Sort File names.
+ 01  old-file-name               pic x(30) value "filedatasort.dat".
+ 01  new-file-name               pic x(30) value "filedata.dat".
 
 
 *> **************************************************** <*
@@ -244,42 +273,56 @@
      move j-start() to ws-ret
 
      if ws-ret = zeroes
-     then
+
         display "Can't connect to server! (JAPI.jar)"
+
         stop run
+
      end-if
 
      perform create-gui-elements
 
 *>   Perform until Exit Perform
      perform forever
+
          move j-nextaction() to ws-obj
   
          if  ws-obj = ws-frame or
              ws-obj = ws-quit or 
              ws-obj = ws-button-quit
+
              move j-choicebox2(ws-frame, "Quit", "Do you want to exit the Program?", " Yes ", " No ") to ws-ret
 
              if  ws-ret = 1
+
                  exit perform 
+
              end-if
 
          end-if         
 
          if  ws-obj = ws-button-insert
-             perform data-input     
+
+             perform data-input 
+
          end-if
 
          if  ws-obj = ws-button-modify
+
              perform data-modify       
+
          end-if  
 
          if  ws-obj = ws-button-view
-             perform data-view       
+
+             perform data-view    
+
          end-if
 
          if  ws-obj = ws-button-choose
-             perform data-choose      
+
+             perform data-choose    
+
          end-if 
               
      end-perform
@@ -291,9 +334,9 @@
      .
 
 
-*> ******************************************************************* <*
-*> >>>>>>>>>>>>>>>>>> Create GUI Elements Procedure <<<<<<<<<<<<<<<<<< <*
-*> ******************************************************************* <*
+*> **************************************************** <*
+*> >>>>>>>>>>> Create GUI Elements Procedure <<<<<<<<<< <*
+*> **************************************************** <*
 
  create-gui-elements.
      move j-getscreenwidth() to ws-width
@@ -329,6 +372,7 @@
      move j-setsize(ws-label, ws-width-label, ws-height-label) to ws-ret 
      move j-setpos(ws-label, ws-xpos, ws-ypos) to ws-ret
      move j-setnamedcolor(ws-label, j-yellow) to ws-ret
+
      move j-graphiclabel(ws-frame, "GnuCOBOL.png") to ws-label      
      move 770 to ws-xpos
      move 430 to ws-ypos
@@ -557,6 +601,9 @@
      move 100 to ws-ypos                    
      move j-setpos(ws-frame-view, ws-xpos, ws-ypos) to ws-ret
      move j-setnamedcolorbg(ws-frame-view, j-dark-gray) to ws-ret
+     move 950 to ws-width
+     move 680 to ws-height
+     move j-setsize(ws-frame-view, ws-width, ws-height) to ws-ret
 
 *>   Create and Set Position Panel         
      move j-panel(ws-frame-view) to ws-panel
@@ -569,11 +616,78 @@
 
 *>   Create Table
      move j-table(ws-panel, ws-column-names) to ws-table
+     move j-setfontstyle(ws-table, j-courier, j-bold, ws-fontstyle) to ws-ret
      move j-setcolumnwidths(ws-table, ws-column-widths) to ws-ret
-     move j-setgridcolor(ws-table, j-white, j-green, j-blue) to ws-ret
      move j-setgridnamedcolor(ws-table, j-blue) to ws-ret
      move j-setnamedcolorbg(ws-table, j-black) to ws-ret
      move j-setnamedcolor(ws-table, j-yellow) to ws-ret
+     move j-setheadernamedcolor(ws-table, j-green) to ws-ret
+     move j-setheadernamedcolorbg(ws-table, j-dark-gray) to ws-ret
+
+*>   Create Table Sort Data Button
+     move j-graphicbutton(ws-frame-view, "sort-table.png") to ws-button-sort-id
+     move 835 to ws-xpos
+     move 100 to ws-ypos
+     move j-setpos(ws-button-sort-id, ws-xpos, ws-ypos) to ws-ret
+     move j-setnamedcolorbg(ws-button-sort-id, j-dark-gray) to ws-ret
+
+     move j-graphicbutton(ws-frame-view, "sort-table.png") to ws-button-sort-name
+     move 835 to ws-xpos
+     move 220 to ws-ypos
+     move j-setpos(ws-button-sort-name, ws-xpos, ws-ypos) to ws-ret
+     move j-setnamedcolorbg(ws-button-sort-name, j-dark-gray) to ws-ret
+
+     move j-graphicbutton(ws-frame-view, "sort-table.png") to ws-button-sort-importo
+     move 835 to ws-xpos
+     move 340 to ws-ypos
+     move j-setpos(ws-button-sort-importo, ws-xpos, ws-ypos) to ws-ret
+     move j-setnamedcolorbg(ws-button-sort-importo, j-dark-gray) to ws-ret
+
+*>   Create Sort Data Labels
+     move j-label(ws-frame-view, "by ID") to ws-label      
+     move 16 to ws-fontsize
+     move j-setfontsize(ws-label, ws-fontsize) to ws-ret
+     move 830 to ws-xpos
+     move 140 to ws-ypos
+     move 100 to ws-width-label
+     move 30 to ws-height-label
+     move j-setsize(ws-label, ws-width-label, ws-height-label) to ws-ret 
+     move j-setpos(ws-label, ws-xpos, ws-ypos) to ws-ret
+     move j-setnamedcolor(ws-label, j-white) to ws-ret
+
+     move j-label(ws-frame-view, "by Name") to ws-label      
+     move 16 to ws-fontsize
+     move j-setfontsize(ws-label, ws-fontsize) to ws-ret
+     move 830 to ws-xpos
+     move 260 to ws-ypos
+     move 100 to ws-width-label
+     move 30 to ws-height-label
+     move j-setsize(ws-label, ws-width-label, ws-height-label) to ws-ret 
+     move j-setpos(ws-label, ws-xpos, ws-ypos) to ws-ret
+     move j-setnamedcolor(ws-label, j-white) to ws-ret
+
+     move j-label(ws-frame-view, "by Budget") to ws-label      
+     move 16 to ws-fontsize
+     move j-setfontsize(ws-label, ws-fontsize) to ws-ret
+     move 830 to ws-xpos
+     move 380 to ws-ypos
+     move 100 to ws-width-label
+     move 30 to ws-height-label
+     move j-setsize(ws-label, ws-width-label, ws-height-label) to ws-ret 
+     move j-setpos(ws-label, ws-xpos, ws-ypos) to ws-ret
+     move j-setnamedcolor(ws-label, j-white) to ws-ret
+
+     move j-label(ws-frame-view, "(OPTIMIZE DATA)") to ws-label      
+     move 10 to ws-fontsize
+     move j-setfontsize(ws-label, ws-fontsize) to ws-ret
+     move j-setfontstyle(ws-label, j-dialogin, ws-fontstyle) to ws-ret
+     move 830 to ws-xpos
+     move 405 to ws-ypos
+     move 100 to ws-width-label
+     move 20 to ws-height-label
+     move j-setsize(ws-label, ws-width-label, ws-height-label) to ws-ret 
+     move j-setpos(ws-label, ws-xpos, ws-ypos) to ws-ret
+     move j-setnamedcolor(ws-label, j-red-magenta) to ws-ret
 
 *>   Create Ws-Frame-Choose-Delete Elements
 *>   Create Frame
@@ -664,6 +778,9 @@
      move j-setcursor(ws-button-quit, j-hand-cursor) to ws-ret
      move j-setcursor(ws-button-save, j-hand-cursor) to ws-ret
      move j-setcursor(ws-button-search, j-hand-cursor) to ws-ret
+     move j-setcursor(ws-button-sort-id, j-hand-cursor) to ws-ret
+     move j-setcursor(ws-button-sort-name, j-hand-cursor) to ws-ret
+     move j-setcursor(ws-button-sort-importo, j-hand-cursor) to ws-ret
      move j-setcursor(ws-delete-file, j-hand-cursor) to ws-ret
      move j-setcursor(ws-delete-record, j-hand-cursor) to ws-ret
      move j-setcursor(ws-table, j-crosshair-cursor) to ws-ret
@@ -678,9 +795,9 @@
      move j-pack(ws-frame) to ws-ret.
 
 
-*> ********************************************************************************* <*
-*> >>>>>>>>>>>>>>>>>>>>>>>>>> Accept Input Data Procedure <<<<<<<<<<<<<<<<<<<<<<<<<< <*
-*> ********************************************************************************* <*
+*> **************************************************** <*
+*> >>>>>>>>>>>> Accept Input Data Procedure <<<<<<<<<<< <*
+*> **************************************************** <*
 
  data-input.
      move j-show(ws-frame-input) to ws-ret
@@ -688,16 +805,20 @@
 
 *>   Perform Until Exit Perform    
      perform forever
+
          move j-nextaction() to ws-obj-insert
 
          if  ws-obj-insert = ws-frame-input and controllo-modify = 0
+
              exit perform
+
          end-if
 
          move 1 to ws-try
 
 *>   Get data into identificativo-acquisito, testo-acquisito, and numero-acquisito            
          if  controllo-modify = 0
+
              move 0 to counter
              move j-gettext(ws-textfield-0, identificativo-acquisito) to ws-ret
 
@@ -715,6 +836,7 @@
              inspect identificativo-acquisito replacing all "@" by spaces
              inspect identificativo-acquisito replacing all "#" by spaces
              inspect identificativo-acquisito tallying counter for all " "
+
          end-if
 
          move j-gettext(ws-textfield-1, testo-acquisito) to ws-ret 
@@ -750,7 +872,8 @@
                  nome is equal to spaces or
                  importo is equal to zeroes or
                  importo = "0.000.000.000.000.000,000" or
-                 counter > 53                                              
+                 counter > 53  
+                                                             
                  move j-alertbox(ws-frame-input, "Attention!!!", "The entered data has not been acquired correctly." & x"0a" &
                      "Fill in all input fields or clear input data with BackSpace and try again." & x"0a" &
                      "The Identification field must be at least 3 characters.", "Ok") to ws-alert
@@ -766,27 +889,33 @@
                  end-call 
 
                  if  return-code = 35 and controllo-modify = 0
+
                      open output filedata
                      move identificativo to id-field
                      move nome to uno
                      move importo to due
                      write filerecord
                      close filedata
+
                  end-if
 
                  if  return-code = 0 and controllo-modify = 0
+
                      move "n" to fine
                      open i-o filedata
 
                      perform until fine is equal to "y"
+
                          read filedata at end move "y" to fine
                          end-read
                          
                          if  id-field = identificativo and identificativo is not equal to spaces
+
                              move "y" to fine
                              move 1 to trovato
                              move j-choicebox2(ws-frame-modify, "Attention!!!", "The Identification already exists!" & x"0a" & 
                                  "Do you want to try with another ID?", "Yes", "No") to ws-try
+
                          end-if
 
                      end-perform
@@ -794,33 +923,41 @@
                      close filedata
 
                      if  trovato = 0
+
                          open extend filedata
                          move identificativo to id-field
                          move nome to uno
                          move importo to due
                          write filerecord
                          close filedata
+
                      end-if
 
                  end-if
 
                  if  return-code = 0 and controllo-modify = 1
+
                      move identificativo to id-field
                      move nome to uno
                      move importo to due
                      rewrite filerecord 
+
                  end-if
                  
                  if  ws-try = 2
-                     exit perform                    
+
+                     exit perform
+
                  end-if
                  
                  if  trovato = 0
+
                      move j-messagebox(ws-frame, "Info", "Data saved correctly!") to ws-alert
                      move 2000 to ws-msec
                      move j-sleep(ws-msec) to ws-ret
                      move j-dispose(ws-alert) to ws-ret
                      exit perform
+
                  end-if
 
              end-if
@@ -831,7 +968,9 @@
 
 *>   Close Ws-Frame-Input and Initialize Texts
      if  controllo-modify = 0
+
          move j-settext(ws-textfield-0, "_") to ws-ret
+
      end-if
 
      move j-settext(ws-textfield-1, "_") to ws-ret
@@ -840,9 +979,9 @@
      move j-dispose(ws-frame-input) to ws-ret.
 
 
-*> ********************************************************************************* <*
-*> >>>>>>>>>>>>>>>>>>>>>>>>>>>>> Modify Data Procedure <<<<<<<<<<<<<<<<<<<<<<<<<<<<< <*
-*> ********************************************************************************* <*
+*> **************************************************** <*
+*> >>>>>>>>>>>>>>> Modify Data Procedure <<<<<<<<<<<<<< <*
+*> **************************************************** <*
 
  data-modify.
      move j-show(ws-frame-modify) to ws-ret
@@ -855,11 +994,14 @@
 
 *>   Perform Until Exit Perform    
      perform forever
+
          move j-nextaction() to ws-obj-modify
 
          if  ws-obj-modify = ws-frame-modify
+
              move 0 to controllo-modify
              exit perform
+
          end-if
 
          if  ws-obj-modify = ws-button-search 
@@ -890,6 +1032,7 @@
              end-call 
                     
              if  return-code = 35
+
                  move j-alertbox(ws-frame-modify, "Attention!!!", "The filedata.dat file does not exist." & x"0a" &
                      "Create the file in the Input Data Menu.", "Ok") to ws-alert
                  exit perform
@@ -915,6 +1058,7 @@
                  move "n" to fine
 
                  if  controllo-modify = 1 and delete-record = 1
+
                      move importo to importo-view
                      
                      inspect importo-view replacing all "." by "|"
@@ -925,11 +1069,13 @@
                              "Name: " trim(nome) x"0a" 
                              "Budget: " trim(importo-view) 
                              into delete-string
+                     end-string
 
                      move j-choicebox2(ws-frame-modify, "Do you want to delete this record?", 
                          delete-string, "Yes", "No") to ws-ret
 
                          if  ws-ret = 1
+
                              move spaces to id-field
                              move spaces to uno
                              move zeroes to due
@@ -937,17 +1083,21 @@
                              close filedata
                              move 0 to controllo-modify
                              exit perform
+
                          end-if
 
                          if  ws-ret = 2
+
                              close filedata
                              move 0 to controllo-modify
                              exit perform
+
                          end-if
 
                  end-if
  
                  if  controllo-modify = 1
+
                      move j-settext(ws-textfield-0, identificativo) to ws-ret
                      move j-settext(ws-textfield-1, nome) to ws-ret
                      move j-settext(ws-textfield-2, importo) to ws-ret
@@ -960,12 +1110,15 @@
                      move 0 to controllo-modify
                      close filedata
                      exit perform
+
                  end-if
                  
                  if  controllo-modify = 0
+
                      move j-alertbox(ws-frame-modify, "Attention!!!", "Your ID does not exist." & x"0a" &
                      "Input another Identification and try again.", "Ok") to ws-alert
                      close filedata
+
                  end-if
 
              end-if
@@ -978,13 +1131,12 @@
      move j-dispose(ws-frame-modify) to ws-ret.
 
 
-*> ********************************************************************************* <*
-*> >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> View Data Procedure <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< <*
-*> ********************************************************************************* <*
+*> **************************************************** <*
+*> >>>>>>>>>>>>>>>> View Data Procedure <<<<<<<<<<<<<<< <*
+*> **************************************************** <*
 
  data-view.
      move j-show(ws-frame-view) to ws-ret
-     move j-pack(ws-frame-view) to ws-ret
 
      call "CBL_CHECK_FILE_EXIST"   
          using       "filedata.dat", fileinfo
@@ -992,28 +1144,95 @@
      end-call
 
      perform forever   
+
          move j-nextaction() to ws-obj-view
 
          if  ws-obj-view = ws-frame-view
+
              exit perform
+
          end-if
 
          if  ws-obj-view = ws-table
+
              move j-getselect(ws-table) to ws-item
              add 1 to ws-item
 
              if  ws-item >= 0
-                 move j-alertbox(ws-frame-view, "Selected record from filedata.dat", ws-row(ws-item), "Ok") to ws-ret                    
+
+                 initialize view-record
+
+                 unstring ws-row(ws-item) delimited by "|" 
+                     into ws-col-1, ws-col-2, ws-col-3
+                 end-unstring
+                 
+                 string  "Id: " ws-col-1 x"0a" 
+                         "Name: " ws-col-2 x"0a"
+                         "Budget: " ws-col-3
+                         into view-record
+                 end-string
+
+                 move j-alertbox(ws-frame-view, "Selected record from filedata.dat", view-record, "Ok") to ws-ret 
+
              end-if 
 
          end-if
 
          if  return-code = 35
-             move j-alertbox(ws-frame-modify, "Attention!!!", "The filedata.dat file does not exist." & x"0a" &
+         
+             move j-alertbox(ws-frame-view, "Attention!!!", "The filedata.dat file does not exist." & x"0a" &
              "Create the file in the Input Data Menu.", "Ok") to ws-alert
              exit perform
 
          else
+
+             if  ws-obj-view = ws-button-sort-id
+
+                 sort sortdata on ascending key sort-id
+		           using   filedata
+                     giving  filedatasort
+         
+                 call "CBL_DELETE_FILE" using new-file-name
+                 end-call
+
+                 call "CBL_RENAME_FILE" using old-file-name, new-file-name
+                 end-call
+
+             end-if
+
+             if  ws-obj-view = ws-button-sort-name
+
+                 sort sortdata on ascending key sort-uno
+		           using   filedata
+                     giving  filedatasort
+         
+                 call "CBL_DELETE_FILE" using new-file-name
+                 end-call
+
+                 call "CBL_RENAME_FILE" using old-file-name, new-file-name
+                 end-call
+
+             end-if
+
+             if  ws-obj-view = ws-button-sort-importo 
+
+                 move j-setcursor(ws-button-sort-importo, j-wait-cursor) to ws-ret
+     
+                 sort sortdata on descending key sort-due
+		           using   filedata
+                     giving  filedatasort
+         
+                 call "CBL_DELETE_FILE" using new-file-name
+                 end-call
+
+                 call "CBL_RENAME_FILE" using old-file-name, new-file-name
+                 end-call
+
+                 perform optimize-data
+
+                 move j-setcursor(ws-button-sort-importo, j-hand-cursor) to ws-ret
+
+             end-if
 
              move 1 to i
              move "n" to fine
@@ -1022,10 +1241,12 @@
              initialize ws-rows
 
              perform until fine is equal to "y"
+
                  read filedata at end move "y" to fine
                  end-read
                 
                  if  fine <> "y" and id-field is not equal to spaces
+
                      move id-field to identificativo
                      move uno to nome
                      move due to importo-view
@@ -1035,13 +1256,15 @@
                      inspect importo-float replacing all "," by "."
                      inspect importo-float replacing all "|" by ","
 
-                     string  trim(identificativo), "|", 
-                             trim(nome), "|", 
+                     string  trim(identificativo) "|" 
+                             trim(nome) "|"
                              trim(importo-float) 
                              into ws-row(i)
+                     end-string
 
                      move j-addrow(ws-table, ws-row(i)) to ws-ret
                      add 1 to i
+
                  end-if
 
              end-perform
@@ -1051,13 +1274,14 @@
          end-if
 
      end-perform
-     
+
+    *>   Close Ws-Frame-View
      move j-dispose(ws-frame-view) to ws-ret.
      
 
-*> ********************************************************************************* <*
-*> >>>>>>>>>>>>>>>>>>>>>>>>>> Choose Data Delete Procedure <<<<<<<<<<<<<<<<<<<<<<<<< <*
-*> ********************************************************************************* <*
+*> **************************************************** <*
+*> >>>>>>>>>>> Choose Data Delete Procedure <<<<<<<<<<< <*
+*> **************************************************** <*
 
  data-choose.
      move j-show(ws-frame-choose) to ws-ret
@@ -1067,22 +1291,29 @@
      move j-setstate(ws-delete-record, j-false) to ws-ret
 
      perform forever   
+
          move j-nextaction() to ws-obj-choose
 
          if  ws-obj-choose = ws-frame-choose
+
              exit perform
+
          end-if
 
          if  ws-obj-choose = ws-delete-file
+
              move j-getstate(ws-delete-file) to ws-ret
 
              if  ws-ret = j-true
+
                  move j-choicebox2(ws-frame-modify, "Attention!!!", "Do you really want to delete the filedata.dat" & x"0a" &
                  "file with all its data?", "Yes", "No") to ws-ret
 
                  if  ws-ret = 1
+
                      call "CBL_DELETE_FILE" using "filedata.dat"
                      end-call
+
                  end-if
 
                  exit perform
@@ -1092,19 +1323,68 @@
          end-if
  
          if  ws-obj-choose = ws-delete-record
+
              move j-getstate(ws-delete-record) to ws-ret
 
              if  ws-ret = j-true
+
                  move 1 to delete-record
 
                  perform data-modify
 
                  move 0 to delete-record
+
                  exit perform
+
              end-if
 
          end-if
 
      end-perform
      
+*>   Close Ws-Frame-Choose
      move j-dispose(ws-frame-choose) to ws-ret.
+     
+
+*> **************************************************** <*
+*> >>>>>>>>>>>>>>>>>>>> Optimize Data <<<<<<<<<<<<<<<<< <*
+*> **************************************************** <*
+
+ optimize-data.
+     move 1000 to ws-msec
+     move j-sleep(ws-msec) to ws-ret
+     move "n" to fine
+
+     open input filedata 
+     open output filedatasort
+
+     perform until fine ="y"
+
+         read filedata at end move "y" to fine
+         end-read
+
+         if  id-field is not equal to spaces and fine <> "y"
+
+             move id-field to id-field-sort
+             move uno to uno-sort
+             move due to due-sort
+             write filerecordsort
+
+         end-if
+
+     end-perform
+
+     close filedata
+     close filedatasort
+
+     call "CBL_DELETE_FILE" using new-file-name
+     end-call
+
+     call "CBL_RENAME_FILE" using old-file-name, new-file-name
+     end-call
+ .
+
+
+*> **************************************************** <*
+*> >>>>>>>>>>>>>>>>>> End Focus Program <<<<<<<<<<<<<<< <*
+*> **************************************************** <*
