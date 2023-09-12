@@ -1,4 +1,4 @@
-      ****************************************************************
+  ****************************************************************
       *
       * AUTHOR   Sauro Menna
       * DATE     20230207  
@@ -56,22 +56,42 @@
             05 ar-ele-name-01         pic x(11) value 'susesqf01E'.
             05 ar-ele-name-02         pic x(11) value 'susesqf02E'.
             05 ar-ele-name-03         pic x(11) value 'susesqf03E'.
-            05 ar-ele-name-04         pic x(11) value 'susesqf16E'.
-            05 ar-ele-name-05         pic x(11) value 'sfrmsqf17E'.
-            05 ar-ele-name-06         pic x(11) value 'sfrmsqf18E'.
-            05 ar-ele-name-07         pic x(11) value 'sincsqf04E'.
+            05 ar-ele-name-04         pic x(11) value 'susesqf16 '.
+            05 ar-ele-name-05         pic x(11) value 'sfrmsqf17 '.
+            05 ar-ele-name-06         pic x(11) value 'sfrmsqf18 '.
+            05 ar-ele-name-07         pic x(11) value 'sincsqf04 '.
             05 ar-ele-name-08         pic x(11) value 'sincsqf05E'.
             05 ar-ele-name-09         pic x(11) value 'sincsqf06E'.
-            05 ar-ele-name-10         pic x(11) value 'sincsqf07E'.
-            05 ar-ele-name-11         pic x(11) value 'sincsqf08E'.
-            05 ar-ele-name-12         pic x(11) value 'sincsqf19E'.
-            05 ar-ele-name-13         pic x(11) value 'somisqf09E'.
-            05 ar-ele-name-14         pic x(11) value 'somisqf11E'.
+            05 ar-ele-name-10         pic x(11) value 'sincsqf07 '.
+            05 ar-ele-name-11         pic x(11) value 'sincsqf08 '.
+            05 ar-ele-name-12         pic x(11) value 'sincsqf19 '.
+            05 ar-ele-name-13         pic x(11) value 'somisqf09 '.
+            05 ar-ele-name-14         pic x(11) value 'somisqf11 '.
       **      05 ar-ele-name-15         pic x(11) value 'somisqf12E'.
-            05 ar-ele-name-16         pic x(11) value 'somisqf13E'.
+            05 ar-ele-name-16         pic x(11) value 'somisqf13 '.
       **      05 ar-ele-name-17         pic x(11) value 'sinrsqf14E'.
       **      05 ar-ele-name-18         pic x(11) value 'soutsqf10E'.
-      **      05 ar-ele-name-19         pic x(11) value 'soutfsqf04E'.
+      **      05 ar-ele-name-19         pic x(11) value 'soutfsqf04E'.  
+      **===============================================================      
+      **      05 ar-ele-name-01         pic x(11) value 'susesqf01E'.
+      **      05 ar-ele-name-02         pic x(11) value 'susesqf02E'.
+      **      05 ar-ele-name-03         pic x(11) value 'susesqf03E'.
+      **      05 ar-ele-name-04         pic x(11) value 'susesqf16 '.
+      **      05 ar-ele-name-05         pic x(11) value 'sfrmsqf17 '.
+      **      05 ar-ele-name-06         pic x(11) value 'sfrmsqf18 '.
+      **      05 ar-ele-name-07         pic x(11) value 'sincsqf04 '.
+      **      05 ar-ele-name-08         pic x(11) value 'sincsqf05E'.
+      **      05 ar-ele-name-09         pic x(11) value 'sincsqf06E'.
+      **      05 ar-ele-name-10         pic x(11) value 'sincsqf07 '.
+      **      05 ar-ele-name-11         pic x(11) value 'sincsqf08 '.
+      **      05 ar-ele-name-12         pic x(11) value 'sincsqf19 '.
+      **      05 ar-ele-name-13         pic x(11) value 'somisqf09 '.
+      **      05 ar-ele-name-14         pic x(11) value 'somisqf11 '.
+      ****      05 ar-ele-name-15         pic x(11) value 'somisqf12E'.
+      **      05 ar-ele-name-16         pic x(11) value 'somisqf13 '.
+      ****      05 ar-ele-name-17         pic x(11) value 'sinrsqf14E'.
+      ****      05 ar-ele-name-18         pic x(11) value 'soutsqf10E'.
+      ****      05 ar-ele-name-19         pic x(11) value 'soutfsqf04E'.
           03 ar-ele-vet redefines ar-ele-name
                         occurs 15 times pic x(11).
        01  array-pgm-diff.
@@ -170,103 +190,103 @@
             07 ar-ele-take-row-03008    pic x(80) 
                     value ' GIVE dd_outfile  RECORD F,90 ORG SQ '.
       * 9
-            07 ar-ele-take-row-04001    pic x(11) value 'susesqf16E'.
+            07 ar-ele-take-row-04001    pic x(11) value 'susesqf16 '.
             07 ar-ele-take-row-04002    pic x(80) value 
              'SORT FIELDS=(8,5,CH,A)                    '.
-            07 ar-ele-take-row-04003    pic x(11) value 'susesqf16E'.
+            07 ar-ele-take-row-04003    pic x(11) value 'susesqf16 '.
             07 ar-ele-take-row-04004    pic x(80) value 
              'USE  dd_infile     RECORD F,90 ORG SQ     '.
-            07 ar-ele-take-row-04005    pic x(11) value 'susesqf16E'.
+            07 ar-ele-take-row-04005    pic x(11) value 'susesqf16 '.
             07 ar-ele-take-row-04006    pic x(80) value  
              'GIVE dd_outfile    RECORD F,90 ORG SQ     '.
-            07 ar-ele-take-row-04007    pic x(11) value 'susesqf16E'.
+            07 ar-ele-take-row-04007    pic x(11) value 'susesqf16 '.
             07 ar-ele-take-row-04008    pic x(80) value 
              'INCLUDE COND=(8,2,CH,GT,C''GG'',AND,13,3,BI,GT,10,AND,'.
-            07 ar-ele-take-row-04009    pic x(11) value 'susesqf16E'.
+            07 ar-ele-take-row-04009    pic x(11) value 'susesqf16 '.
             07 ar-ele-take-row-04010    pic x(80) value 
              '16,4,FI,LT,40,AND,20,8,FL,GT,10,AND,28,4,PD,GT,10,AND,'.
-            07 ar-ele-take-row-04011    pic x(11) value 'susesqf16E'.
+            07 ar-ele-take-row-04011    pic x(11) value 'susesqf16 '.
             07 ar-ele-take-row-04012    pic x(80) value 
              '32,7,ZD,LT,40)'.
-            07 ar-ele-take-row-04013    pic x(11) value 'susesqf16E'.
+            07 ar-ele-take-row-04013    pic x(11) value 'susesqf16 '.
             07 ar-ele-take-row-04014    pic x(80) value 
              'SUM FIELDS=(NONE)                         '.                 
-            07 ar-ele-take-row-04015    pic x(11) value 'susesqf16E'.
+            07 ar-ele-take-row-04015    pic x(11) value 'susesqf16 '.
             07 ar-ele-take-row-04016    pic x(80) value 
             'OPTION SKIPREC=5                          '.
-            07 ar-ele-take-row-04017    pic x(11) value 'susesqf16E'.
+            07 ar-ele-take-row-04017    pic x(11) value 'susesqf16 '.
             07 ar-ele-take-row-04018    pic x(80) value 
             'STOPAFT=15                                '.
       *  8                   
-            07 ar-ele-take-row-05001    pic x(11) value 'sfrmsqf17E'.
+            07 ar-ele-take-row-05001    pic x(11) value 'sfrmsqf17 '.
             07 ar-ele-take-row-05002    pic x(80) value 
                 'SORT FIELDS=(8,5,CH,A)                    '.
-            07 ar-ele-take-row-05003    pic x(11) value 'sfrmsqf17E'.
+            07 ar-ele-take-row-05003    pic x(11) value 'sfrmsqf17 '.
             07 ar-ele-take-row-05004    pic x(80) value 
                 'INCLUDE COND=(8,2,CH,LE,C''FF'',AND,      '.
-            07 ar-ele-take-row-05005    pic x(11) value 'sfrmsqf17E'.
+            07 ar-ele-take-row-05005    pic x(11) value 'sfrmsqf17 '.
             07 ar-ele-take-row-05006    pic x(80) value 
                 '             39,4,FL,GT,-10,OR,           '.
-            07 ar-ele-take-row-05007    pic x(11) value 'sfrmsqf17E'.
+            07 ar-ele-take-row-05007    pic x(11) value 'sfrmsqf17 '.
             07 ar-ele-take-row-05008    pic x(80) value 
                 '             43,7,CLO,GT,10,AND,          '.
-            07 ar-ele-take-row-05009    pic x(11) value 'sfrmsqf17E'.
+            07 ar-ele-take-row-05009    pic x(11) value 'sfrmsqf17 '.
             07 ar-ele-take-row-05010    pic x(80) value 
                 '             50,8,CST,LE,-30,OR,          '.
-            07 ar-ele-take-row-05011    pic x(11) value 'sfrmsqf17E'.
+            07 ar-ele-take-row-05011    pic x(11) value 'sfrmsqf17 '.
             07 ar-ele-take-row-05012    pic x(80) value 
                 '             58,8,CSL,LE,10)              '.
-            07 ar-ele-take-row-05013    pic x(11) value 'sfrmsqf17E'.
+            07 ar-ele-take-row-05013    pic x(11) value 'sfrmsqf17 '.
             07 ar-ele-take-row-05014    pic x(80) value 
                 'USE  dd_infile     RECORD F,90 ORG SQ     '.                 
-            07 ar-ele-take-row-05015    pic x(11) value 'sfrmsqf17E'.
+            07 ar-ele-take-row-05015    pic x(11) value 'sfrmsqf17 '.
             07 ar-ele-take-row-05016    pic x(80) value 
                 'GIVE dd_outfile    RECORD F,90 ORG SQ     '.                 
       * 8
-            07 ar-ele-take-row-06001    pic x(11) value 'sfrmsqf18E'.
+            07 ar-ele-take-row-06001    pic x(11) value 'sfrmsqf18 '.
             07 ar-ele-take-row-06002    pic x(80) value 
                 'SORT FIELDS=(8,5,CH,A)                    '.
-            07 ar-ele-take-row-06003    pic x(11) value 'sfrmsqf18E'.
+            07 ar-ele-take-row-06003    pic x(11) value 'sfrmsqf18 '.
             07 ar-ele-take-row-06004    pic x(80) value 
                 'OMIT COND=(8,2,CH,LE,C''FF'',AND,         '.
-            07 ar-ele-take-row-06005    pic x(11) value 'sfrmsqf18E'.
+            07 ar-ele-take-row-06005    pic x(11) value 'sfrmsqf18 '.
             07 ar-ele-take-row-06006    pic x(80) value 
                 '             39,4,FL,GT,-10,OR,           '.
-            07 ar-ele-take-row-06007    pic x(11) value 'sfrmsqf18E'.
+            07 ar-ele-take-row-06007    pic x(11) value 'sfrmsqf18 '.
             07 ar-ele-take-row-06008    pic x(80) value 
                 '             43,7,CLO,GT,10,AND,          '.
-            07 ar-ele-take-row-06009    pic x(11) value 'sfrmsqf18E'.
+            07 ar-ele-take-row-06009    pic x(11) value 'sfrmsqf18 '.
             07 ar-ele-take-row-06010    pic x(80) value 
                 '             50,8,CST,LE,-30,OR,          '.
-            07 ar-ele-take-row-06011    pic x(11) value 'sfrmsqf18E'.
+            07 ar-ele-take-row-06011    pic x(11) value 'sfrmsqf18 '.
             07 ar-ele-take-row-06012    pic x(80) value 
                 '             58,8,CSL,LE,10)              '.
-            07 ar-ele-take-row-06013    pic x(11) value 'sfrmsqf18E'.
+            07 ar-ele-take-row-06013    pic x(11) value 'sfrmsqf18 '.
             07 ar-ele-take-row-06014    pic x(80) value 
                 'USE  dd_infile     RECORD F,90 ORG SQ     '.                 
-            07 ar-ele-take-row-06015    pic x(11) value 'sfrmsqf18E'.
+            07 ar-ele-take-row-06015    pic x(11) value 'sfrmsqf18 '.
             07 ar-ele-take-row-06016    pic x(80) value 
                 'GIVE dd_outfile    RECORD F,90 ORG SQ     '.                 
       * 7
-            07 ar-ele-take-row-07001    pic x(11) value 'sincsqf04E'.
+            07 ar-ele-take-row-07001    pic x(11) value 'sincsqf04 '.
             07 ar-ele-take-row-07002    pic x(80) value 
                 'SORT FIELDS=(8,5,CH,A)                    '.
-            07 ar-ele-take-row-07003    pic x(11) value 'sincsqf04E'.
+            07 ar-ele-take-row-07003    pic x(11) value 'sincsqf04 '.
             07 ar-ele-take-row-07004    pic x(80) value 
                 'INCLUDE COND=(8,2,CH,GT,C''GG'',AND,      '.
-            07 ar-ele-take-row-07005    pic x(11) value 'sincsqf04E'.
+            07 ar-ele-take-row-07005    pic x(11) value 'sincsqf04 '.
             07 ar-ele-take-row-07006    pic x(80) value 
                 '    13,3,BI,GT,10,AND,16,4,FI,LT,40,AND,  '.
-            07 ar-ele-take-row-07007    pic x(11) value 'sincsqf04E'.
+            07 ar-ele-take-row-07007    pic x(11) value 'sincsqf04 '.
             07 ar-ele-take-row-07008    pic x(80) value 
                 '    20,8,FL,GT,10,AND,28,4,PD,GT,10,AND,  '.
-            07 ar-ele-take-row-07009    pic x(11) value 'sincsqf04E'.
+            07 ar-ele-take-row-07009    pic x(11) value 'sincsqf04 '.
             07 ar-ele-take-row-07010    pic x(80) value 
                 '    32,7,ZD,LT,40)                        '.
-            07 ar-ele-take-row-07011    pic x(11) value 'sincsqf04E'.
+            07 ar-ele-take-row-07011    pic x(11) value 'sincsqf04 '.
             07 ar-ele-take-row-07012    pic x(80) value 
                 'USE  dd_infile     RECORD F,90 ORG SQ     '.                 
-            07 ar-ele-take-row-07013    pic x(11) value 'sincsqf04E'.
+            07 ar-ele-take-row-07013    pic x(11) value 'sincsqf04 '.
             07 ar-ele-take-row-07014    pic x(80) value 
                 'GIVE dd_outfile    RECORD F,90 ORG SQ     '.                 
       * 15
@@ -374,115 +394,137 @@
             07 ar-ele-take-row-09038    pic x(80) value 
                 '32,7,ZD,LT,40)'                       .                 
       * 8
-            07 ar-ele-take-row-10001    pic x(11) value 'sincsqf07E'.
+            07 ar-ele-take-row-10001    pic x(11) value 'sincsqf07 '.
             07 ar-ele-take-row-10002    pic x(80) value 
                 'SORT FIELDS=(8,5,CH,A)                    '.
-            07 ar-ele-take-row-10003    pic x(11) value 'sincsqf07E'.
+            07 ar-ele-take-row-10003    pic x(11) value 'sincsqf07 '.
             07 ar-ele-take-row-10004    pic x(80) value 
                 'USE  dd_infile     RECORD F,90 ORG SQ     '.                 
-            07 ar-ele-take-row-10005    pic x(11) value 'sincsqf07E'.
+            07 ar-ele-take-row-10005    pic x(11) value 'sincsqf07 '.
             07 ar-ele-take-row-10006    pic x(80) value 
                 'GIVE dd_outfile    RECORD F,90 ORG SQ     '.                 
-            07 ar-ele-take-row-10007    pic x(11) value 'sincsqf07E'.
+            07 ar-ele-take-row-10007    pic x(11) value 'sincsqf07 '.
             07 ar-ele-take-row-10008    pic x(80) value 
                 'INCLUDE COND=(8,2,CH,GT,C''GG'',AND, '.
-            07 ar-ele-take-row-10009    pic x(11) value 'sincsqf07E'.
+            07 ar-ele-take-row-10009    pic x(11) value 'sincsqf07 '.
             07 ar-ele-take-row-10010    pic x(80) value 
                 ' 13,3,BI,GT,10,AND,16,4,FI,LT,40,AND,'. 
-            07 ar-ele-take-row-10011    pic x(11) value 'sincsqf07E'.
+            07 ar-ele-take-row-10011    pic x(11) value 'sincsqf07 '.
             07 ar-ele-take-row-10012    pic x(80) value 
                 ' 20,8,FL,GT,10,AND,28,4,PD,GT,10,AND,'.
-            07 ar-ele-take-row-10013    pic x(11) value 'sincsqf07E'.
+            07 ar-ele-take-row-10013    pic x(11) value 'sincsqf07 '.
             07 ar-ele-take-row-10014    pic x(80) value 
                 '32,7,ZD,LT,40)'                       .                 
-            07 ar-ele-take-row-10015    pic x(11) value 'sincsqf07E'.
+            07 ar-ele-take-row-10015    pic x(11) value 'sincsqf07 '.
             07 ar-ele-take-row-10016    pic x(80) value 
                 'SUM FIELDS=(NONE) '                   .                 
       * 8
-            07 ar-ele-take-row-11001    pic x(11) value 'sincsqf08E'.
+            07 ar-ele-take-row-11001    pic x(11) value 'sincsqf08 '.
             07 ar-ele-take-row-11002    pic x(80) value  
                 'SORT FIELDS=(8,5,CH,A)                '.
-            07 ar-ele-take-row-11003    pic x(11) value 'sincsqf08E'.
+            07 ar-ele-take-row-11003    pic x(11) value 'sincsqf08 '.
             07 ar-ele-take-row-11004    pic x(80) value  
                 'USE  dd_infile     RECORD F,90 ORG SQ '.                 
-            07 ar-ele-take-row-11005    pic x(11) value 'sincsqf08E'.
+            07 ar-ele-take-row-11005    pic x(11) value 'sincsqf08 '.
             07 ar-ele-take-row-11006    pic x(80) value  
                 'GIVE dd_outfile    RECORD F,90 ORG SQ '.                 
-            07 ar-ele-take-row-11007    pic x(11) value 'sincsqf08E'.
+            07 ar-ele-take-row-11007    pic x(11) value 'sincsqf08 '.
             07 ar-ele-take-row-11008    pic x(80) value  
                 'INCLUDE COND=(8,2,CH,GT,C''GG'',AND, ' .
-            07 ar-ele-take-row-11009    pic x(11) value 'sincsqf08E'.
+            07 ar-ele-take-row-11009    pic x(11) value 'sincsqf08 '.
             07 ar-ele-take-row-11010    pic x(80) value  
                 ' 13,3,BI,GT,10,AND,16,4,FI,LT,40,AND,' . 
-            07 ar-ele-take-row-11011    pic x(11) value 'sincsqf08E'.
+            07 ar-ele-take-row-11011    pic x(11) value 'sincsqf08 '.
             07 ar-ele-take-row-11012    pic x(80) value  
                 ' 20,8,FL,GT,10,AND,28,4,PD,GT,10,AND,' .
-            07 ar-ele-take-row-11013    pic x(11) value 'sincsqf08E'.
+            07 ar-ele-take-row-11013    pic x(11) value 'sincsqf08 '.
             07 ar-ele-take-row-11014    pic x(80) value  
                 '32,7,ZD,LT,40)'                        .                
-            07 ar-ele-take-row-11015    pic x(11) value 'sincsqf08E'.
+            07 ar-ele-take-row-11015    pic x(11) value 'sincsqf08 '.
             07 ar-ele-take-row-11016    pic x(80) value  
                 'OPTION STOPAFT=15 SKIPREC=5 '          .                 
       * 4
-            07 ar-ele-take-row-12001    pic x(11) value 'sincsqf19E'.
+            07 ar-ele-take-row-12001    pic x(11) value 'sincsqf19 '.
             07 ar-ele-take-row-12002    pic x(80) value  
                 'SORT FIELDS=(8,5,CH,A)                   '.
-            07 ar-ele-take-row-12003    pic x(11) value 'sincsqf19E'.
+            07 ar-ele-take-row-12003    pic x(11) value 'sincsqf19 '.
             07 ar-ele-take-row-12004    pic x(80) value  
                'INCLUDE COND=(8,4,CH,SS,C''DDDD,GGGG,HHHH,JJJJ,OOOO'')'.
-            07 ar-ele-take-row-12005    pic x(11) value 'sincsqf19E'.
+            07 ar-ele-take-row-12005    pic x(11) value 'sincsqf19 '.
             07 ar-ele-take-row-12006    pic x(80) value  
                 'USE  dd_infile     RECORD F,90 ORG SQ     '.                 
-            07 ar-ele-take-row-12007    pic x(11) value 'sincsqf19E'.
+            07 ar-ele-take-row-12007    pic x(11) value 'sincsqf19 '.
             07 ar-ele-take-row-12008    pic x(80) value  
                 'GIVE dd_outfile    RECORD F,90 ORG SQ     '.            
       * 8
-            07 ar-ele-take-row-13001    pic x(11) value 'somisqf09E'.
+            07 ar-ele-take-row-13001    pic x(11) value 'somisqf09 '.
             07 ar-ele-take-row-13002    pic x(80) value  
                 'SORT FIELDS=(8,5,CH,A)                   '.
-            07 ar-ele-take-row-13003    pic x(11) value 'somisqf09E'.
+            07 ar-ele-take-row-13003    pic x(11) value 'somisqf09 '.
             07 ar-ele-take-row-13004    pic x(80) value  
                 'OMIT COND=((8,2,CH,LT,C''GG'',AND,'.
-            07 ar-ele-take-row-13005    pic x(11) value 'somisqf09E'.
+            07 ar-ele-take-row-13005    pic x(11) value 'somisqf09 '.
             07 ar-ele-take-row-13006    pic x(80) value  
                 '13,3,BI,LT,15,AND,16,4,FI,GT,6)'.
-            07 ar-ele-take-row-13007    pic x(11) value 'somisqf09E'.
+            07 ar-ele-take-row-13007    pic x(11) value 'somisqf09 '.
             07 ar-ele-take-row-13008    pic x(80) value  
                 ',OR,'.
-            07 ar-ele-take-row-13009    pic x(11) value 'somisqf09E'.
+            07 ar-ele-take-row-13009    pic x(11) value 'somisqf09 '.
             07 ar-ele-take-row-13010    pic x(80) value  
                 '(20,8,FL,GE,25,AND,28,4,PD,LE,18,'.
-            07 ar-ele-take-row-13011    pic x(11) value 'somisqf09E'.
+            07 ar-ele-take-row-13011    pic x(11) value 'somisqf09 '.
             07 ar-ele-take-row-13012    pic x(80) value  
                 'AND,32,7,ZD,EQ,12))'.
-            07 ar-ele-take-row-13013    pic x(11) value 'somisqf09E'.
+            07 ar-ele-take-row-13013    pic x(11) value 'somisqf09 '.
             07 ar-ele-take-row-13014    pic x(80) value  
                 'USE  dd_infile     RECORD F,90 ORG SQ     '.
-            07 ar-ele-take-row-13015    pic x(11) value 'somisqf09E'.
+            07 ar-ele-take-row-13015    pic x(11) value 'somisqf09 '.
             07 ar-ele-take-row-13016    pic x(80) value  
                 'GIVE dd_outfile    RECORD F,90 ORG SQ     '.                 
       * 7
-            07 ar-ele-take-row-14001    pic x(11) value 'somisqf11E'.
+      ***     07 ar-ele-take-row-14001    pic x(11) value 'somisqf11 '.
+      ***     07 ar-ele-take-row-14002    pic x(80) value  
+      ***         'SORT FIELDS=(8,5,CH,A)                    '.
+      ***     07 ar-ele-take-row-14003    pic x(11) value 'somisqf11 '.
+      ***     07 ar-ele-take-row-14004    pic x(80) value  
+      ***         'OMIT COND=(8,2,CH,LE,C''MM'',AND,         '.
+      ***     07 ar-ele-take-row-14005    pic x(11) value 'somisqf11 '.
+      ***     07 ar-ele-take-row-14006    pic x(80) value  
+      ***         '13,3,BI,GT,-10,OR,16,4,FI,GT,10,AND,      '.
+      ***     07 ar-ele-take-row-14007    pic x(11) value 'somisqf11 '.
+      ***     07 ar-ele-take-row-14008    pic x(80) value  
+      ***         '20,8,FL,LE,40,OR,28,4,PD,LE,10,AND,       '.
+      ***     07 ar-ele-take-row-14009    pic x(11) value 'somisqf11 '.
+      ***     07 ar-ele-take-row-14010    pic x(80) value  
+      ***         '32,7,ZD,GE,15)                            '.
+      ***     07 ar-ele-take-row-14011    pic x(11) value 'somisqf11 '.
+      ***     07 ar-ele-take-row-14012    pic x(80) value  
+      ***         'USE  dd_infile     RECORD F,90 ORG SQ     '.                 
+      ***     07 ar-ele-take-row-14013    pic x(11) value 'somisqf11 '.
+      ***     07 ar-ele-take-row-14014    pic x(80) value  
+      ***         'GIVE dd_outfile    RECORD F,90 ORG SQ     '.   
+      ***+++
+            07 ar-ele-take-row-14001    pic x(11) value 'somisqf11 '.
             07 ar-ele-take-row-14002    pic x(80) value  
                 'SORT FIELDS=(8,5,CH,A)                    '.
-            07 ar-ele-take-row-14003    pic x(11) value 'somisqf11E'.
+            07 ar-ele-take-row-14003    pic x(11) value 'somisqf11 '.
             07 ar-ele-take-row-14004    pic x(80) value  
-                'OMIT COND=(8,2,CH,LE,C''MM'',AND,         '.
-            07 ar-ele-take-row-14005    pic x(11) value 'somisqf11E'.
+                'OMIT COND= 8,2,CH,LE,C''MM'',AND,         '.
+            07 ar-ele-take-row-14005    pic x(11) value 'somisqf11 '.
             07 ar-ele-take-row-14006    pic x(80) value  
-                '13,3,BI,GT,-10,OR,16,4,FI,GT,10,AND,      '.
-            07 ar-ele-take-row-14007    pic x(11) value 'somisqf11E'.
+                '13,3,BI,GT,-10                            '.
+            07 ar-ele-take-row-14007    pic x(11) value 'somisqf11 '.
             07 ar-ele-take-row-14008    pic x(80) value  
-                '20,8,FL,LE,40,OR,28,4,PD,LE,10,AND,       '.
-            07 ar-ele-take-row-14009    pic x(11) value 'somisqf11E'.
+                '        '.
+            07 ar-ele-take-row-14009    pic x(11) value 'somisqf11 '.
             07 ar-ele-take-row-14010    pic x(80) value  
-                '32,7,ZD,GE,15)                            '.
-            07 ar-ele-take-row-14011    pic x(11) value 'somisqf11E'.
+                '                              '.
+            07 ar-ele-take-row-14011    pic x(11) value 'somisqf11 '.
             07 ar-ele-take-row-14012    pic x(80) value  
                 'USE  dd_infile     RECORD F,90 ORG SQ     '.                 
-            07 ar-ele-take-row-14013    pic x(11) value 'somisqf11E'.
+            07 ar-ele-take-row-14013    pic x(11) value 'somisqf11 '.
             07 ar-ele-take-row-14014    pic x(80) value  
-                'GIVE dd_outfile    RECORD F,90 ORG SQ     '.                 
+                'GIVE dd_outfile    RECORD F,90 ORG SQ     '.        
       * 22
       ***     07 ar-ele-take-row-15001    pic x(11) value 'somisqf12E'.
       ***     07 ar-ele-take-row-15002    pic x(80) value  
@@ -551,52 +593,52 @@
       ***     07 ar-ele-take-row-15044    pic x(80) value  
       ***         '               11X)                       '.  
       * 16
-            07 ar-ele-take-row-16001    pic x(11) value 'somisqf13E'.
+            07 ar-ele-take-row-16001    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16002    pic x(80) value  
                 'SORT FIELDS=(8,5,CH,A)                    '.
-            07 ar-ele-take-row-16003    pic x(11) value 'somisqf13E'.
+            07 ar-ele-take-row-16003    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16004    pic x(80) value  
                 'USE  dd_infile     RECORD F,90 ORG SQ     '.                
-            07 ar-ele-take-row-16005    pic x(11) value 'somisqf13E'.
+            07 ar-ele-take-row-16005    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16006    pic x(80) value  
                 'GIVE dd_outfile    RECORD F,90 ORG SQ     '.                
-            07 ar-ele-take-row-16007    pic x(11) value 'somisqf13E'.
+            07 ar-ele-take-row-16007    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16008    pic x(80) value  
-                ' OMIT COND=(8,2,CH,LE,C''MM'',AND,        '.                
-            07 ar-ele-take-row-16009    pic x(11) value 'somisqf13E'.
+                ' OMIT COND= 8,2,CH,LE,C''MM'',AND,        '.                
+            07 ar-ele-take-row-16009    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16010    pic x(80) value  
-                '13,3,BI,GT,-10,OR,16,4,FI,GT,10,AND,      '.                
-            07 ar-ele-take-row-16011    pic x(11) value 'somisqf13E'.
+                '13,3,BI,GT,-10       '.                
+            07 ar-ele-take-row-16011    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16012    pic x(80) value  
-                '20,8,FL,LE,40,OR,28,4,PD,LE,10,AND,       '.                
-            07 ar-ele-take-row-16013    pic x(11) value 'somisqf13E'.
+                '        '.                
+            07 ar-ele-take-row-16013    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16014    pic x(80) value  
-                '32,7,ZD,GE,15)                            '.                
-            07 ar-ele-take-row-16015    pic x(11) value 'somisqf13E'.
+                '                            '.                
+            07 ar-ele-take-row-16015    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16016    pic x(80) value  
                 ' SUM FIELDS=(13,3,BI,    '.
-            07 ar-ele-take-row-16017    pic x(11) value 'somisqf13E'.
+            07 ar-ele-take-row-16017    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16018    pic x(80) value  
                 '             16,4,FI,    '.
-            07 ar-ele-take-row-16019    pic x(11) value 'somisqf13E'.
+            07 ar-ele-take-row-16019    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16020    pic x(80) value  
                 '             20,8,FL,    '.
-            07 ar-ele-take-row-16021    pic x(11) value 'somisqf13E'.
+            07 ar-ele-take-row-16021    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16022    pic x(80) value  
                 '             28,4,PD,    '.
-            07 ar-ele-take-row-16023    pic x(11) value 'somisqf13E'.
+            07 ar-ele-take-row-16023    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16024    pic x(80) value  
                 '             32,7,ZD,    '.
-            07 ar-ele-take-row-16025    pic x(11) value 'somisqf13E'.
+            07 ar-ele-take-row-16025    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16026    pic x(80) value  
                 '             39,4,FL,    '.
-            07 ar-ele-take-row-16027    pic x(11) value 'somisqf13E'.
+            07 ar-ele-take-row-16027    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16028    pic x(80) value  
                 '             43,7,CLO,   '.
-            07 ar-ele-take-row-16029    pic x(11) value 'somisqf13E'.
+            07 ar-ele-take-row-16029    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16030    pic x(80) value  
                 '             50,8,CST,   '.
-            07 ar-ele-take-row-16031    pic x(11) value 'somisqf13E'.
+            07 ar-ele-take-row-16031    pic x(11) value 'somisqf13 '.
             07 ar-ele-take-row-16032    pic x(80) value  
                 '             58,8,CSL)   '.
       * 15     
@@ -891,7 +933,7 @@ Win        if (ntype = 1)
            move 'dd_outfile'          to env-set-name
            move '../files/fsqf01.dat' to env-set-value
            perform set-value-env
-           move 'genfileA' to cmd-string
+           move 'genfileAAE' to cmd-string
 Win        if (ntype = 1)
                inspect cmd-string replacing all chrsl by chrbs
                move cmd-string to cmd-go
@@ -949,7 +991,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
       *******     move 'susesqf01b '       to       cmd-string
            move space               to cmd-string
            string ar-ele-vet(idx) delimited by space
-                  'b'             delimited by size
+                  'bAE'           delimited by size
                   into cmd-string
 Win        if (ntype = 1)
                inspect cmd-string replacing all chrsl by chrbs
@@ -1116,8 +1158,12 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            perform set-value-env
       *
       ** %exedir%\diffile
-           move ar-ele-vetdiff(idx)    to cmd-string
-Win        if (ntype = 1)
+             move space to cmd-string
+      **++     move ar-ele-vetdiff(idx)    to cmd-string
+             string ar-ele-vetdiff(idx) delimited by space
+                    'AE'                delimited by size
+                  into cmd-string        
+           if (ntype = 1)
                inspect cmd-string replacing all chrsl by chrbs
                move cmd-string to cmd-go
            else
@@ -1156,3 +1202,4 @@ TEST00***               display ' cmd:>' cmd-go  '<'
           .
        diff-99.
           exit.
+          

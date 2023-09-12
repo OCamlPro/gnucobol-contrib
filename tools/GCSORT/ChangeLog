@@ -1,3 +1,8 @@
+2023-09-12  Sauro Menna  <smenna@users.sourceforge.net>
+    * Version 1.03.07
+    * Review test case EBCDIC ( -fsign=EBCDIC  -fdefault-colseq=EBCDIC -febcdic-table=DEFAULT)
+    * Update README and INSTALL files
+    
 2023-05-10  Sauro Menna  <smenna@users.sourceforge.net>
     * FIX problem in Line Sequential Fixed (LSF)
 

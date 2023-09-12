@@ -117,11 +117,12 @@
       ** filtering input record 
       ** OMIT COND=(8,2,CH,LE,C'MM',AND,13,3,BI,GT,-10,OR,16,4,FI,GT,10,AND,20,8,FL,LE,40,OR,28,4,PD,LE,10,AND,32,7,ZD,GE,15)
           if ((in-ch-field(1:2) <= "MM")  AND                                 ## filtering data    
-              (in-bi-field >  -10))       OR
-             ((in-fi-field >   10)        AND
-              (in-fl-field <=  40))       OR
-             ((in-pd-field <=  10)        AND
-              (in-zd-field >=  15))
+              (in-bi-field >  -10))       
+      **        OR
+      **       ((in-fi-field >   10)        AND
+      **        (in-fl-field <=  40))       OR
+      **       ((in-pd-field <=  10)        AND
+      **        (in-zd-field >=  15))
 			   add 1 to record-counter-skip
            else
                release sort-data from infile-record

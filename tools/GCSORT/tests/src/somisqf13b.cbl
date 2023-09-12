@@ -114,11 +114,12 @@
       ** filtering input record 
       * OMIT condition 
            if ((in-ch-field(1:2) <= "MM")  AND                                 ## filtering data    
-               (in-bi-field >  -10))       OR
-              ((in-fi-field >   10)        AND
-               (in-fl-field <=  40))       OR
-              ((in-pd-field <=  10)        AND
-               (in-zd-field >=  15))
+               (in-bi-field >  -10))       
+      *** problems wirh priority        OR
+      *** problems wirh priority       ((in-fi-field >   10)        AND
+      *** problems wirh priority        (in-fl-field <=  40))       OR
+      *** problems wirh priority       ((in-pd-field <=  10)        AND
+      *** problems wirh priority        (in-zd-field >=  15))
 			   add 1 to record-counter-skip
            else
                     release sort-data from infile-record

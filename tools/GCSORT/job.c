@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2021 Sauro Menna
+    Copyright (C) 2016-2023 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -688,8 +688,6 @@ int job_MakeExitRoutines(struct job_t* job)
 
 void job_CloneFileForOutfilSet(struct job_t *job, struct file_t* file) 
 {
-	char* pCmd;
-
     switch(file->organization) {
     case FILE_ORGANIZATION_SEQUENTIAL:		
 		file->stFileDef->organization = COB_ORG_SEQUENTIAL;
@@ -697,24 +695,11 @@ void job_CloneFileForOutfilSet(struct job_t *job, struct file_t* file)
     case FILE_ORGANIZATION_LINESEQUENTIAL:
 		file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 	    file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
-#if __LIBCOB_RELEASE >= 30200
-		pCmd = cob_getenv_direct("COB_LS_FIXED");
-		if ((pCmd == NULL) || (strcasecmp(pCmd, "OFF") != 0))
-			cob_setenv("COB_LS_FIXED", "OFF", 0);
-#else
-		cob_putenv("COB_LS_FIXED=OFF");
-#endif
 		break;
 	case FILE_ORGANIZATION_LINESEQUFIXED:
 		file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 		file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
-#if __LIBCOB_RELEASE >= 30200
-		pCmd = cob_getenv_direct("COB_LS_FIXED");
-		if ((pCmd == NULL) || (strcasecmp(pCmd, "ON") != 0))
-			cob_setenv("COB_LS_FIXED", "ON", 0);
-#else
-		cob_putenv("COB_LS_FIXED=ON");
-#endif
+		cob_putenv("COB_LS_FIXED=1");	 /* change value of environment value GNUCobol*/
 		break;
 	case FILE_ORGANIZATION_RELATIVE:
         file->stFileDef->organization = COB_ORG_RELATIVE;

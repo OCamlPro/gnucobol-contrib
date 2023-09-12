@@ -61,7 +61,7 @@ void GCSORT_Config ( void )
 	*/
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-	fprintf(stdout,"Copyright (C) 2009-2022 Cedric ISSALY / Sauro Menna\n");
+	fprintf(stdout,"Copyright (C) 2009-2023 Cedric ISSALY / Sauro Menna\n");
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"\n");
 	fprintf(stdout,"GCSORT_DEBUG                 : %d", job->ndeb);
@@ -104,7 +104,7 @@ void GCSORT_Config ( void )
 void GCSORT_Version ( void ) 
 {
 	printf("gcsort Version %s\n", GCSORT_VERSION); 
-	printf("Copyright (C) 2009-2022 Cedric ISSALY / Sauro Menna\n");
+	printf("Copyright (C) 2009-2023 Cedric ISSALY / Sauro Menna\n");
 	printf("Packaged  %s\n", GCSORT_TAR_DATE);
 
 #if __LIBCOB_VERSION >= 3

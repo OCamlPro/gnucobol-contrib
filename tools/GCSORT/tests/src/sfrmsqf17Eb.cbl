@@ -17,6 +17,9 @@
        program-id. sfrmsqf17b.
        environment division.
        configuration section.
+       special-names.
+           ALPHABET    case-ascii      IS  ASCII
+           ALPHABET    case-ebcdic     IS  EBCDIC.      
        repository.
         function all intrinsic.
        input-output section.
@@ -61,6 +64,20 @@
       *    
            copy wkenvfield.
       *    
+       01 wk-infile-record.
+           05 wk-in-seq-record   pic  9(07).
+           05 wk-in-ch-field     pic  x(5).
+           05 wk-in-bi-field     pic  9(7) comp.
+           05 wk-in-fi-field     pic s9(7) comp.
+           05 wk-in-fl-field     comp-2.
+           05 wk-in-pd-field     pic s9(7) comp-3.
+           05 wk-in-zd-field     pic s9(7).
+           05 wk-in-fl-field-1   comp-1.
+           05 wk-in-clo-field    pic s9(7) sign is leading.
+           05 wk-in-cst-field    pic s9(7) sign is trailing separate.
+           05 wk-in-csl-field    pic s9(7) sign is leading separate.
+           05 wk-in-ch-filler    pic  x(25).
+      *
       * ============================= *
        procedure division.
       * ============================= *
@@ -108,18 +125,31 @@
            end-read
            if fs-infile equal "00"
                perform release-record
+               
+      **         move "99" to fs-infile 
+               
            end-if
            .
       * ============================= *
        release-record.
       * ============================= *
            add 1 to record-counter-in
+           move infile-record to wk-infile-record
+              
+           TRANSFORM wk-in-seq-record FROM case-ebcdic TO case-ascii       
+           TRANSFORM wk-in-ch-field   FROM case-ebcdic TO case-ascii       
+           TRANSFORM wk-in-zd-field   FROM case-ebcdic TO case-ascii       
+           TRANSFORM wk-in-clo-field  FROM case-ebcdic TO case-ascii       
+           TRANSFORM wk-in-cst-field  FROM case-ebcdic TO case-ascii       
+           TRANSFORM wk-in-csl-field  FROM case-ebcdic TO case-ascii       
+           TRANSFORM wk-in-ch-filler  FROM case-ebcdic TO case-ascii 
+                      
       ** filtering input record 
-           if ((in-ch-field(1:2) <= "FF")  AND                                 ## filtering data    
-               (in-fl-field-1 >  -10))     OR
-              ((in-clo-field >   10)       AND
-               (in-cst-field <= -30))      OR
-              ((in-csl-field <=  10))
+           if ((wk-in-ch-field(1:2) <= "FF")  AND                                 ## filtering data    
+               (wk-in-fl-field-1 > -10))      OR
+              ((wk-in-clo-field >   10)       AND
+               (wk-in-cst-field <= -30))      OR
+              ((wk-in-csl-field <=  10))
                release sort-data from infile-record
            end-if
            .

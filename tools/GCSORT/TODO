@@ -25,3 +25,4 @@ GCSORT TODO						-*- outline -*-
  ToDo |	Y2TP (PackedDecimal)|	 OUTFIL BUILD=(11,3,Y2XP,X,21,4,Y2WP)
  ToDo | JOIN features       |    Write output file with record discarded
  ToDo | XSUM features       |    Write output file with record discarded from SumField
+ ToDo | Data Type           |    Insert new data type SFF (signed free form) and UFF (unsigned free form) 

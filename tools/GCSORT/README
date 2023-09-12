@@ -1,4 +1,4 @@
-GCSORT 1.3.3
+GCSORT 1.3.7
 
 GCSORT (formerly OCsort) is an free and open source sort tool, which implements a subset
 of the functionality of the Micro Focus (IP) MFSORT (c) utility.
@@ -24,7 +24,6 @@ LINUX
 (*Optional) library mandatory only if you modify parser.y or scanner.l.    
     
 Supported features :
-________________________________________________________________________________________
  gcsort help
  gcsort is a utility to sort, merge, copy and join records in a file into a
    specified order in GnuCOBOL environment.
@@ -37,6 +36,8 @@ Usage from command line     : gcsort <options> <control statements>
 ________________________________________________________________________________________
 gcsort options
 -fsign=[ASCII|EBCDIC] define display sign representation
+-fcolseq=[NATIVE|ASCII|EBCDIC] collating sequence to use
+-febcdic-table=<cconv-table>/<file>     EBCDIC/ASCII translation table
 ________________________________________________________________________________________
 gcsort control statements
 Notations: '{name}' = parameters , '|' = Alternative format of control statement
@@ -111,10 +112,10 @@ gcsort
     INCLUDE | OMIT
             COND=({Condition})[,FORMAT={FormatType}]
 
-    INREC   FIELDS | INREC   BUILD =({FieldSpec})
-    INREC   OVERLAY =({FieldSpec})
-    OUTREC  FIELDS | OUTREC  BUILD =({FieldSpec})
-    OUTREC  OVERLAY =({FieldSpec})
+    INREC   FIELDS =({FieldSpec})   | INREC   BUILD =({FieldSpec})
+    INREC   OVERLAY =({FieldSpec})  | INREC   FINDREP =({FindRepSpec})
+    OUTREC  FIELDS =({FieldSpec})   | OUTREC  BUILD =({FieldSpec})
+    OUTREC  OVERLAY =({FieldSpec})  | OUTREC  FINDREP =({FindRepSpec})
 
     OUTFIL
          INCLUDE | OMIT ({Condition})[,FORMAT={FormatType}]
@@ -168,7 +169,7 @@ __{FormatType}____Field Format Type________|___{FormatType2}____Format Type SumF
   ZD  = Zoned                              |  CLO = Numeric sign leading
   CLO = Numeric sign leading               |  CSL = Numeric sign leading separate
   CSL = Numeric sign leading separate      |  CST = Numeric sign trailing separate
-  CST = Numeric sign trailing separate     |
+  CST = Numeric sign trailing separate     |  SS  = Search Substring
 ___________________________________________|____________________________________________
 _Format_Len_Type__Date field_______________|_Format_Len_Type__Date field________________
   Y2T = 8   ZD    CCYYMMDD                 |  Y2D = 1   PD    YY
@@ -195,6 +196,17 @@ ____{FieldSpec}___Field Specification___________________________________________
   nX'hh...hh'        repeat n times hexdecimal characters.
   CHANGE=(vlen,[C | X]'<valueFind>',[C | X]'<valueSet>',.....),NOMATCH=([C | X]'<valueSet>)
   CHANGE=(vlen,[C | X]'<valueFind>', posIn, lenIn), NOMATCH = (posIn, posLen)
+________________________________________________________________________________________
+____{FindRepSpec}___Field Find/Replace Specification____________________________________
+  IN=C'constant' , OUT=C'constant'                      constant character value.
+  IN=(C'constant', C'constant' ....) , OUT=C'constant'  constant character value.
+  INOUT=(C'constantIn', C'constantOut' , C'constantIn', C'constantOut', ....)
+  STARTPOS=pos        pos = Start Position to find/replace
+  ENDPOS=pos          pos = End Position to find/replace
+  DO=n                n=Maximum number of times find and replace
+  MAXLEN=n            n=Maximum len of record n
+  OVERRUN=TRUNC|ERROR Truncate or Error(Default) for overrun
+  SHIFT=YES|NO        Shift data or no (default) when different length between find replace
 ________________________________________________________________________________________
 ========================================================================================
   Section for JOIN control statement
@@ -311,7 +323,7 @@ __{FormatType}____Field Format Type________|___{FormatType2}____Format Type SumF
   ZD  = Zoned                              |  CLO = Numeric sign leading
   CLO = Numeric sign leading               |  CSL = Numeric sign leading separate
   CSL = Numeric sign leading separate      |  CST = Numeric sign trailing separate
-  CST = Numeric sign trailing separate     |
+  CST = Numeric sign trailing separate     |  SS  = Search Substring
 ___________________________________________|____________________________________________
 _Format_Len_Type__Date field_______________|_Format_Len_Type__Date field________________
   Y2T = 8   ZD    CCYYMMDD                 |  Y2D = 1   PD    YY
@@ -348,3 +360,4 @@ GCSORT_PATHTMP     Pathname for temporary files     (Default TMP / TEMP / TMPDIR
 GCSORT_STATISTICS  0 minimal informations, 1 for Summary, 2 for Details
 GCSORT_TESTCMD     0 for normal operations , 1 for ONLY test command line (NO SORT)
 ________________________________________________________________________________________
+

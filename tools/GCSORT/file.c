@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2023 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -216,7 +216,6 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 
 	struct KeyIdx_t* tKeys; 
 	
-	char* pCmd;
 	int	k=0;
 	file->stFileDef = (cob_file*) malloc(sizeof(cob_file));
 
@@ -301,7 +300,7 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 		case FILE_ORGANIZATION_LINESEQUFIXED:
 			file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 			file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
-			cob_putenv("COB_LS_FIXED=1");	 /* change value of environment value GnuCOBOL*/
+			cob_putenv("COB_LS_FIXED=1");	 /* change value of environment value GNUCobol*/
 			break;
 		case FILE_ORGANIZATION_RELATIVE:
 			tKeys =  file->stKeys;

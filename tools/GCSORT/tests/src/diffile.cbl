@@ -184,6 +184,41 @@
       * ============================= *
        check-key.
       * ============================= *
+      **      display "in1-seq-record    " in1-seq-record   
+      **      display "in2-seq-record    " in2-seq-record   
+           if in1-ch-field not = in2-ch-field   
+                display "in1-ch-field not = in2-ch-field   "
+           end-if       
+           if    in1-bi-field not = in2-bi-field   
+                display " in1-bi-field not = in2-bi-field "
+           end-if       
+           if    in1-fi-field not = in2-fi-field   
+                display " in1-fi-field not = in2-fi-field "
+           end-if       
+           if    in1-pd-field not = in2-pd-field   
+                display " in1-pd-field not = in2-pd-field "
+           end-if       
+           if    in1-zd-field not = in2-zd-field   
+               display "  in1-zd-field not = in2-zd-field "
+      **         display "  in1-zd-field "  in1-zd-field
+      **         display "  in2-zd-field "  in2-zd-field
+           end-if       
+           if    in1-fl-field not = in2-fl-field   
+                display "  in1-fl-field not = in2-fl-field"
+           end-if       
+           if    in1-fl-field-1 not = in2-fl-field-1 
+                display "  in1-fl-field-1 not = in2-fl-field-1 "
+           end-if       
+           if    in1-clo-field not = in2-clo-field                
+                display " in1-clo-field not = in2-clo-field "
+           end-if       
+           if    in1-cst-field not = in2-cst-field  
+                display " in1-cst-field not = in2-cst-field "
+           end-if       
+           if    in1-csl-field not = in2-csl-field 
+                display " in1-csl-field not = in2-csl-field "
+           end-if       
+      ** 
            if (in1-ch-field not = in2-ch-field   or
                in1-bi-field not = in2-bi-field   or
                in1-fi-field not = in2-fi-field   or
@@ -194,7 +229,6 @@
                in1-clo-field not = in2-clo-field or               
                in1-cst-field not = in2-cst-field or 
                in1-csl-field not = in2-csl-field )
-
                move 1 to bError
                display "============== # Error # ============== "
                display "  Record COBOL  num " record-counter-incbl
@@ -226,4 +260,7 @@
                        " fl(1)=" in2-fl-field-1                         
            end-if
            .
+           end-of-pgm.
+                exit.
+                
 

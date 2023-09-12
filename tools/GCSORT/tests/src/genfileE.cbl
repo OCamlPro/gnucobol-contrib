@@ -151,8 +151,7 @@
            TRANSFORM   cst-field  FROM  case-ascii        
                                   TO    case-ebcdic                                  
            TRANSFORM   csl-field  FROM  case-ascii        
-                                  TO    case-ebcdic                                  
-                         
+                                  TO    case-ebcdic  
            .
 
        add-counter.

@@ -113,7 +113,7 @@
            display ' GCSort test environment ' gcsort-tests-ver
            display '*===============================================*'
            display '*===============================================*'
-           display '  gctestsetup          '
+           display '  gctestset           '
            display '             Setup test enviroment '
            display '*===============================================*'
       *    call 'gcsysop' returning ntype
@@ -145,7 +145,7 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
            
            display '----------------------------------------------'
            if count-errors > 0
-              display '*gctestsetup* num. errors : ' count-errors 
+              display '*gctestset* num. errors : ' count-errors 
               display '       setup failed '
            else
               display '       setup ok '
@@ -264,6 +264,27 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
                         add 1 to count-errors
                    end-if
                when 'compile_e'
+                   move TRIM(r-command, TRAILING) to cmd-cmd 
+                   move TRIM(r-param1, TRAILING)  to cmd-param
+                   perform get-command-line
+                   if (bfound = zero)
+                     display 
+                     '*gctestsetup* command not defined into file .def'
+                     display ' command : ' cmd-cmd 
+                     goback
+                   end-if
+                   perform set-command-line
+                   call 'SYSTEM' using cmd-def
+                   move RETURN-CODE   to retcode
+      ** Check return code [Problem in Linux environment]     
+                   if (retcode > 256)
+                        divide retcode by 256
+                        giving retcode
+                   end-if
+                   if retcode not = zero
+                        add 1 to count-errors
+                   end-if
+               when 'compile_ae'
                    move TRIM(r-command, TRAILING) to cmd-cmd 
                    move TRIM(r-param1, TRAILING)  to cmd-param
                    perform get-command-line

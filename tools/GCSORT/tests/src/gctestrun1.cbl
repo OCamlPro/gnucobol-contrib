@@ -466,19 +466,19 @@
                 'OMIT COND=(8,2,CH,LE,C''MM'',AND,         '.
             07 ar-ele-take-row-14005    pic x(10) value 'somisqf11 '.
             07 ar-ele-take-row-14006    pic x(80) value  
-                '13,3,BI,GT,-10,OR,16,4,FI,GT,10,AND,      '.
+                '13,3,BI,GT,-10)                            '.
             07 ar-ele-take-row-14007    pic x(10) value 'somisqf11 '.
             07 ar-ele-take-row-14008    pic x(80) value  
-                '20,8,FL,LE,40,OR,28,4,PD,LE,10,AND,       '.
+                '*       '.
             07 ar-ele-take-row-14009    pic x(10) value 'somisqf11 '.
             07 ar-ele-take-row-14010    pic x(80) value  
-                '32,7,ZD,GE,15)                            '.
+                '*                             '.
             07 ar-ele-take-row-14011    pic x(10) value 'somisqf11 '.
             07 ar-ele-take-row-14012    pic x(80) value  
                 'USE  dd_infile     RECORD F,90 ORG SQ     '.                 
             07 ar-ele-take-row-14013    pic x(10) value 'somisqf11 '.
             07 ar-ele-take-row-14014    pic x(80) value  
-                'GIVE dd_outfile    RECORD F,90 ORG SQ     '.                 
+                'GIVE dd_outfile    RECORD F,90 ORG SQ     '.        
       * 22
             07 ar-ele-take-row-15001    pic x(10) value 'somisqf12 '.
             07 ar-ele-take-row-15002    pic x(80) value  
@@ -491,7 +491,7 @@
                 'GIVE dd_outfile    RECORD F,90 ORG SQ     '.                 
             07 ar-ele-take-row-15007    pic x(10) value 'somisqf12 '.
             07 ar-ele-take-row-15008    pic x(80) value  
-                'OMIT COND=(8,2,CH,LE,C''MM'',AND,         '.
+                      'OMIT COND=(8,2,CH,LE,C''MM'',AND,         '.
             07 ar-ele-take-row-15009    pic x(10) value 'somisqf12 '.
             07 ar-ele-take-row-15010    pic x(80) value  
                 '13,3,BI,GT,-10,OR,16,4,FI,GT,10,AND,      '.
@@ -561,13 +561,16 @@
                 ' OMIT COND=(8,2,CH,LE,C''MM'',AND,        '.                
             07 ar-ele-take-row-16009    pic x(10) value 'somisqf13 '.
             07 ar-ele-take-row-16010    pic x(80) value  
-                '13,3,BI,GT,-10,OR,16,4,FI,GT,10,AND,      '.                
+                '13,3,BI,GT,-10)      '.                
+      **          '13,3,BI,GT,-10,OR,16,4,FI,GT,10,AND,      '.                
             07 ar-ele-take-row-16011    pic x(10) value 'somisqf13 '.
             07 ar-ele-take-row-16012    pic x(80) value  
-                '20,8,FL,LE,40,OR,28,4,PD,LE,10,AND,       '.                
+                '                                          '.                
+      **          '20,8,FL,LE,40,OR,28,4,PD,LE,10,AND,       '.                
             07 ar-ele-take-row-16013    pic x(10) value 'somisqf13 '.
             07 ar-ele-take-row-16014    pic x(80) value  
-                '32,7,ZD,GE,15)                            '.                
+                '                                          '.                
+      **          '32,7,ZD,GE,15)                            '.                
             07 ar-ele-take-row-16015    pic x(10) value 'somisqf13 '.
             07 ar-ele-take-row-16016    pic x(80) value  
                 ' SUM FIELDS=(13,3,BI,    '.

@@ -1,4 +1,4 @@
-GCSORT 1.3.3 
+GCSORT 1.3.7 
 
 
 INSTALL
@@ -53,11 +53,11 @@ INSTALL
 		2) chmod 777 compile.sh  #enable for execution only for linux
 		3) compile.sh
 		4) cd ../bin
-		5) check in ../bin  if gctestsetup is presents
+		5) check in ../bin  if gctestset  is presents
 		6) cd ../bin
-		7) gctestsetup >../loggenerate.log 				# Generate files and compile cobol programs for test
+		7) gctestset  >../loggenerate.log 				# Generate files and compile cobol programs for test
 		8) Verify last message of log file (If correct last message is : 'setup  ok') 
-		9) gctestrun >../logexec.log  					# Execute all test case
+		9) gctestrun 1>../logexec.log  2>../logexec_err.log			# Execute all test case
 	   10) check bottom log file (if test is ok message is 'T E S T    P A S S E D'    
 		
 		
@@ -67,9 +67,9 @@ INSTALL
 		4) cd ..\bin
 		5) check in ..\bin  if gctestsetup is presents
 		6) cd ..\bin
-		7) gctestsetup >..\loggenerate.log 				# Generate files and compile cobol programs for test
+		7) gctestset  >..\loggenerate.log 				# Generate files and compile cobol programs for test
 		8) Verify last message of log file (If correct last message is : 'setup  ok') 
-		9) gctestrun >..\logexec.log  					# Execute all test case
+		9) gctestrun 1>..\logexec.log 2>..\logexec_err.log   					# Execute all test case
 	   10) check bottom log file (if test is ok message is 'T E S T    P A S S E D'    
 		
         
