@@ -61,7 +61,7 @@ working-storage section.
 01 SO_REUSEADDR binary-int value 2.
 01 YES binary-int value 1.
 
-01 message pic x(32).
+01 message-data pic x(32).
 01 message-length binary-short unsigned.
 
 01 command-port pic X(16).
@@ -124,11 +124,11 @@ start-messagereceive.
         perform abort-receive
     end-if
 
-    move spaces to message
+    move spaces to message-data
     call 'recv' using
         by value receive-descriptor
-        by reference message
-        by value length(message)
+        by reference message-data
+        by value length(message-data)
         by value 0
     end-call
     if return-code = -1
@@ -137,7 +137,7 @@ start-messagereceive.
     end-if
     compute message-length = return-code end-compute
     if message-length = 0
-        move 'empty message' to message
+        move 'empty message' to message-data
         move 13 to message-length
     end-if
     call 'close' using by value receive-descriptor end-call
@@ -146,7 +146,7 @@ start-messagereceive.
     call 'gettimestamp' using timestamp end-call
     string timestamp delimited by size
         ' messagereceive received message ' delimited by size
-        message(1:message-length) delimited by size
+        message-data(1:message-length) delimited by size
         into general-message
     end-string
     display general-message end-display

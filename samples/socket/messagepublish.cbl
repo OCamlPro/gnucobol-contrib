@@ -88,7 +88,7 @@ working-storage section.
 
 01 subscriber-descriptor binary-int.
 
-01 message pic x(32).
+01 message-data pic x(32).
 01 message-length binary-short unsigned.
 
 01 command-port pic X(16).
@@ -165,16 +165,16 @@ start-messagepublish.
     end-if
 
     perform receive-message
-    perform until message = 'quit' or 'QUIT'
+    perform until message-data = 'quit' or 'QUIT'
         evaluate true
-        when message = 'load' or 'LOAD'
+        when message-data = 'load' or 'LOAD'
 *>          load the list of subscribers
             perform load-subscribers
         when other
 *>          scan the subscriber list
             perform varying s from 1 by 1
             until s > s-max
-                if subscriber-message(s) = message(1:message-length)
+                if subscriber-message(s) = message-data(1:message-length)
                     move subscriber-host(s) to host
                     move subscriber-port(s) to port
                     call 'connecttoserver' using
@@ -186,14 +186,14 @@ start-messagepublish.
                     end-call
                     call 'send' using
                         by value subscriber-descriptor
-                        by reference message
+                        by reference message-data
                         by value message-length
                         by value 0
                     end-call
                     move spaces to general-message
                     if return-code = -1
                         string timestamp ' messagepublish send ' delimited by size
-                            message(1:message-length) delimited by size
+                            message-data(1:message-length) delimited by size
                             ' to ' delimited by size
                             subscriber-host(s) delimited by space
                             space delimited by size
@@ -203,7 +203,7 @@ start-messagepublish.
                         end-string
                      else
                         string timestamp ' messagepublish sent ' delimited by size
-                            message(1:message-length) delimited by size
+                            message-data(1:message-length) delimited by size
                             ' to ' delimited by size
                             subscriber-host(s) delimited by space
                             space delimited by size
@@ -223,11 +223,11 @@ start-messagepublish.
     stop run
     .
 receive-message.
-    move spaces to message
+    move spaces to message-data
     call 'recv' using
         by value publish-descriptor
-        by reference message
-        by value length(message)
+        by reference message-data
+        by value length(message-data)
         by value 0
     end-call
     if return-code = -1
@@ -236,13 +236,13 @@ receive-message.
     end-if
     compute message-length = return-code end-compute
     if message-length = 0
-        move 'empty message' to message
+        move 'empty message' to message-data
         move 13 to message-length
     end-if
     call 'gettimestamp' using timestamp end-call
     display timestamp 
         ' messagepublish received message '
-        message(1:message-length)
+        message-data(1:message-length)
     end-display
     .
 load-subscribers.
