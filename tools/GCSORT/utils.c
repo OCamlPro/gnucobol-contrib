@@ -206,6 +206,14 @@ int utils_parseFieldType(const char *type)
 		return FIELD_TYPE_SUBSTRING;
 
 	}
+	else if (!strcasecmp(type, "UFF")) {
+		return FIELD_TYPE_UNSIGNEDFF;
+
+	}
+	else if (!strcasecmp(type, "SFF")) {
+		return FIELD_TYPE_SIGNEDFF;
+
+	}
 	else {
 		fprintf(stdout,"*GCSORT*P002 - Error parsing datatye : %s invalid\n", type);
 		return -1;
@@ -285,6 +293,12 @@ int utils_getFieldTypeInt(char* strType)
 	}
 	else if (!strcasecmp(strType, "SS")) {
 		return FIELD_TYPE_SUBSTRING;
+	}
+	else if (!strcasecmp(strType, "UFF")) {
+		return FIELD_TYPE_UNSIGNEDFF;
+	}
+	else if (!strcasecmp(strType, "SFF")) {
+		return FIELD_TYPE_SIGNEDFF;
 	}
 	fprintf(stdout,"*GCSORT*P003 - Error parsing datatye : %s invalid\n", strType);
 	return -1;
@@ -436,9 +450,11 @@ int utils_getFieldTypeLIBCOBInt(int nInteralType, int nLen)
     case FIELD_TYPE_NUMERIC_CLO:       /* sign leading              */
     case FIELD_TYPE_NUMERIC_CSL:       /* sign leading separate     */
     case FIELD_TYPE_NUMERIC_CST:       /* sign trailing separate    */
-/* date */
+	case FIELD_TYPE_UNSIGNEDFF:		   /* Unsigned format free */
+	case FIELD_TYPE_SIGNEDFF:		   /* Signed format free */
+		/* date */
 	case FIELD_TYPE_NUMERIC_Y2T:       /* sign trailing separate    */
-		return COB_TYPE_NUMERIC_DISPLAY;
+			return COB_TYPE_NUMERIC_DISPLAY;
 	case FIELD_TYPE_NUMERIC_Y2B:       
 		return COB_TYPE_NUMERIC_BINARY;
 	case FIELD_TYPE_NUMERIC_Y2C:       
@@ -488,10 +504,12 @@ int utils_getFieldTypeLIBCOBFlags(int nInteralType)
         /* Zoned for number 00001, +00001,-000001       */
         /*-->>return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_SEPARATE | COB_FLAG_SIGN_LEADING;      // s.m. 20160914 insert COB_FLAG_SIGN_LEADING    */
         return COB_FLAG_HAVE_SIGN ;      /* s.m. 20160914 insert COB_FLAG_SIGN_LEADING problem with +/n zoned   */
-    case  FIELD_TYPE_NUMERIC_CLO:         /* sign leading   */
-        return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_LEADING;      
-    case  FIELD_TYPE_NUMERIC_CSL:         /* sign leading separate  */
-        return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_LEADING | COB_FLAG_SIGN_SEPARATE;      
+	case FIELD_TYPE_UNSIGNEDFF:		/* Unsigned Free Format */	/* s.m. 202309 */
+	case FIELD_TYPE_NUMERIC_CLO:         /* sign leading   */
+		return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_LEADING;
+	case FIELD_TYPE_SIGNEDFF:		/* Signed Free Format */
+	case FIELD_TYPE_NUMERIC_CSL:         /* sign leading separate  */
+		return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_LEADING | COB_FLAG_SIGN_SEPARATE;
     case  FIELD_TYPE_NUMERIC_CST:         /* sign trailing separate */
         return COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_SEPARATE;      
 /*  Date    */
@@ -587,6 +605,10 @@ PIC S9(n) COMP-3|PACKED-DECIMAL
 			return "Y2Y";
 		case FIELD_TYPE_NUMERIC_Y2Z:
 			return "Y2Z";
+		case FIELD_TYPE_UNSIGNEDFF:
+			return "UFF";
+		case FIELD_TYPE_SIGNEDFF:
+			return "SFF";
 
 		default:
 			fprintf(stderr, "* utils_getFieldTypeName*  : %d\n", type);
@@ -1284,4 +1306,29 @@ int utl_str_searchreplace(char* orig, char* search, char* replace, char* result)
 void util_view_numrek(void) {
 	fprintf(stdout, " Total Records Readed  : " NUM_FMT_LLD "\n", (long long)globalJob->recordNumberTotal);
 	fprintf(stdout, " Total Records Writed  : " NUM_FMT_LLD "\n", (long long)globalJob->recordWriteOutTotal);
+}
+
+int64_t util_UFFSFF(unsigned char* pData, int nFieldLen, int nUS) {
+
+	int i = 0;
+	int64_t newVal = 0;
+	int bSign = 0;
+
+	for (i = 0; i < nFieldLen; i++) {
+		/* Get number */
+		if ((unsigned char)(pData[i]) >= '0' && (unsigned char)pData[i] <= '9') {
+			newVal = (int64_t) (newVal * 10 + ((unsigned char)pData[i] - '0'));
+		}
+		/* Verify sign */
+		if (((unsigned char)pData[i] == ')') || ((unsigned char)pData[i] == '-'))
+			bSign = 1;
+	}
+
+	/* Check UFF or SFF */
+	if ((nUS == 1) && (bSign == 1) && (newVal > 0))
+		newVal = newVal * -1;
+
+	/* fprintf(stdout, " Value string=%s - Value num=" NUM_FMT_LLD "\n", pData, (long long)newVal); */
+
+	return newVal;
 }

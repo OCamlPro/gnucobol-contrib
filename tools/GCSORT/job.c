@@ -103,6 +103,8 @@ int g_nLen;
 int g_nFlags;
 int g_idx;
 int g_idx_max=0;
+int64_t g_fld1 = 0;
+int64_t g_fld2 = 0;
 cob_field* cob_field_key[100];
 unsigned char* g_pdata[100];
 
@@ -2050,10 +2052,10 @@ int job_destroy(struct job_t *job) {
 	if (job->outfil != NULL) {
 		nIdxMaster=0;
 		for (outfil=job->outfil; outfil!=NULL; outfil=outfil_getNext(outfil)) {
-			//-->>if (outfil->isVirtualFile == 0) {	/* No Virtual */
+			/*/-->>if (outfil->isVirtualFile == 0) { */	/* No Virtual */
 				fPOutfilrec[nIdxMaster] = outfil;
 				nIdxMaster++;
-				//-->>}
+			/*	//-->>} */
 		}
 		for (nIdyMaster=0; nIdyMaster < nIdxMaster; nIdyMaster++){
 			nIdx=0;
@@ -2737,13 +2739,17 @@ int job_checkFS(cob_file* stFileDef)
 	for (sortField=globalJob->sortField; sortField!=NULL; sortField=sortField_getNext(sortField)) {
         g_nLen = sortField->length;
         g_nTypeGC=sortField->type;
-        if (g_nTypeGC != FIELD_TYPE_CHARACTER) {
+        if ((g_nTypeGC != FIELD_TYPE_CHARACTER)) /* s.m. 202309 &&
+			(g_nTypeGC != FIELD_TYPE_UNSIGNEDFF) &&
+			(g_nTypeGC != FIELD_TYPE_SIGNEDFF)) */
+		{
             job_getTypeFlags (g_nTypeGC, &g_nType, &g_nFlags, g_nLen);
             job_cob_field_set(g_fd1, g_nType, g_nLen, 0, g_nFlags, g_nLen);
             job_cob_field_set(g_fd2, g_nType, g_nLen, 0, g_nFlags, g_nLen);
             cob_field_key[g_idx]=(cob_field*)util_cob_field_make(g_fd1->attr->type, g_fd1->attr->digits, g_fd1->attr->scale, g_fd1->attr->flags,g_fd1->size, ALLOCATE_DATA);
 			g_pdata[g_idx] = (unsigned char*) cob_field_key[g_idx]->data;
-            g_idx++;
+			g_idx++;
+
             cob_field_key[g_idx]=(cob_field*)util_cob_field_make(g_fd2->attr->type, g_fd2->attr->digits, g_fd2->attr->scale, g_fd2->attr->flags,g_fd2->size, ALLOCATE_DATA);
 			g_pdata[g_idx] = (unsigned char*) cob_field_key[g_idx]->data;
 			g_idx++;
@@ -4168,7 +4174,16 @@ int job_SetPosLenKeys(int* arPosLen) {
 				/* *nFlags = COB_FLAG_NO_SIGN_NIBBLE; // COB_FLAG_HAVE_SIGN;    */
 				*nFlags = 0;
 				break;
-
+				/*  s.m. 202309 */
+		    case FIELD_TYPE_UNSIGNEDFF:
+				*nType = COB_TYPE_NUMERIC_DISPLAY;
+				*nFlags = 0;				
+				break;
+				/*  s.m. 202309 */
+			case FIELD_TYPE_SIGNEDFF:
+				*nType = COB_TYPE_NUMERIC_DISPLAY;
+				*nFlags = COB_FLAG_HAVE_SIGN | COB_FLAG_SIGN_LEADING | COB_FLAG_SIGN_SEPARATE;
+				break;
 			default:
 				fprintf(stdout, "* job_getTypeFlags*  : %d\n", nTypeField);
 				exit(GC_RTC_ERROR);
@@ -4187,7 +4202,7 @@ int job_SetPosLenKeys(int* arPosLen) {
 	nSp=SZPOSPNT; /* first 8 byte for PosPnt    */
 	for (sortField=globalJob->sortField; sortField!=NULL; sortField=sortField_getNext(sortField)) {
 
-        if (sortField_getType(sortField) == FIELD_TYPE_CHARACTER)
+        if ((sortField_getType(sortField) == FIELD_TYPE_CHARACTER)) /* s.m. 202309  || (g_nTypeGC == FIELD_TYPE_UNSIGNEDFF) || (g_nTypeGC == FIELD_TYPE_SIGNEDFF)) */
             result=string_compare((unsigned char*) first+nSp, (unsigned char*) second+nSp, sortField_getLength(sortField));
         else {
 			nLen = sortField_getLength(sortField);
@@ -4299,19 +4314,38 @@ static INLINE2 int job_compare_qsort(const void* first, const void* second)
     for (sortField=globalJob->sortField; sortField!=NULL; sortField=sortField_getNext(sortField)) {
         g_nLen = sortField->length;
         g_nTypeGC=sortField->type;
-        if (g_nTypeGC == FIELD_TYPE_CHARACTER)
+        if ((g_nTypeGC == FIELD_TYPE_CHARACTER)) 		/*  s.m. 202309  || (g_nTypeGC == FIELD_TYPE_UNSIGNEDFF) || (g_nTypeGC == FIELD_TYPE_SIGNEDFF)) */
             g_result=string_compare((unsigned char*) first+g_nSp, (unsigned char*) second+g_nSp, g_nLen);
         else
         {
 			cob_field_key[g_idx]->data=(unsigned char*) first+g_nSp;
+			if (g_nTypeGC == FIELD_TYPE_UNSIGNEDFF)
+				g_fld1 = util_UFFSFF(cob_field_key[g_idx]->data, g_nLen, 0);
+			else
+				if (g_nTypeGC == FIELD_TYPE_SIGNEDFF)
+					g_fld1 = util_UFFSFF(cob_field_key[g_idx]->data, g_nLen, 1);
 			g_idx++;
 			cob_field_key[g_idx]->data=(unsigned char*) second+g_nSp;
+			if (g_nTypeGC == FIELD_TYPE_UNSIGNEDFF)
+				g_fld2=util_UFFSFF(cob_field_key[g_idx]->data, g_nLen, 0);
+			else
+				if (g_nTypeGC == FIELD_TYPE_SIGNEDFF)
+					g_fld2 = util_UFFSFF(cob_field_key[g_idx]->data, g_nLen, 1);
 			g_idx++;
 			/* check if datatype is DATE    */
 			if IsDateType(g_nTypeGC)
 				g_result = job_CheckTypeDate(g_nTypeGC, (cob_field*)cob_field_key[g_idx - 2], (cob_field*)cob_field_key[g_idx - 1]);
 			else
-			g_result = cob_numeric_cmp((cob_field*)cob_field_key[g_idx - 2], (cob_field*)cob_field_key[g_idx - 1]);
+				/* s.m. 202309 */
+				if ((g_nTypeGC == FIELD_TYPE_SIGNEDFF) || (g_nTypeGC == FIELD_TYPE_UNSIGNEDFF)) {
+					if (g_fld1 < g_fld2)
+						g_result = -1;
+					else
+						if (g_fld1 > g_fld2)
+							g_result = 1;
+				}
+				else
+					g_result = cob_numeric_cmp((cob_field*)cob_field_key[g_idx - 2], (cob_field*)cob_field_key[g_idx - 1]);
 			/* g_result = cob_cmp((cob_field*)cob_field_key[g_idx - 2], (cob_field*)cob_field_key[g_idx - 1]); */
         }
 

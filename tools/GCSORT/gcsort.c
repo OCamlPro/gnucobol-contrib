@@ -94,6 +94,17 @@ int main(int argc, char **argv)
 	int rtc = 0;
 	g_retWarn = 0;
 
+	/* new data type
+	unsigned char szBOut[45];
+	unsigned char pBOut;
+	memset(szBOut, 0x00, 45);
+	unsigned char szData[45] = { "A12B)34" };
+	unsigned char* pData = szData;
+	int nFieldLen = 7;
+	int nUS = 0;
+	util_UFFSFF(pData, nFieldLen, nUS);
+	*/
+
 #if defined(GCSORT_NEWFEATURES) 
 
 	int in1 = 20210520;
@@ -167,7 +178,8 @@ int main(int argc, char **argv)
 	if (argc < 2) {
 		fprintf(stdout,"________________________________________________________________________\n");
 		fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-		fprintf(stdout,"Copyright (C) 2009-2023 Cedric ISSALY / Sauro Menna\n");
+		fprintf(stdout, "Copyright (C) 2016-2023 Sauro Menna\n");
+		fprintf(stdout, "                   2009 Cedric ISSALY\n");
 		fprintf(stdout,"________________________________________________________________________\n");
 		fprintf(stdout,"gcsort. Nothing to do.\n");
 		fprintf(stdout,"Usage: gcsort <option> <command>\n");

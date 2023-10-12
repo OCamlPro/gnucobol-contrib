@@ -134,6 +134,8 @@
 #define FIELD_TYPE_NUMERIC_Y2Y		29
 #define FIELD_TYPE_NUMERIC_Y2Z		30
 #define FIELD_TYPE_SUBSTRING 		50
+#define FIELD_TYPE_UNSIGNEDFF		51
+#define FIELD_TYPE_SIGNEDFF			52
 
 
 
@@ -256,5 +258,8 @@ int utl_str_searchreplace(char* orig, char* search, char* replace, char* result)
 void sort_temp_name(const char* ext);
 
 void util_view_numrek(void);
+
+int64_t util_UFFSFF(unsigned char* pData, int nFieldLen, int nUS);
+
 
 #endif /* UTILS_H_INCLUDED  */

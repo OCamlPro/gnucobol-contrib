@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2021 Sauro Menna
+    Copyright (C) 2016-2023 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -61,7 +61,8 @@ void GCSORT_Config ( void )
 	*/
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-	fprintf(stdout,"Copyright (C) 2009-2023 Cedric ISSALY / Sauro Menna\n");
+    fprintf(stdout, "Copyright (C) 2016-2023 Sauro Menna\n");
+    fprintf(stdout, "                   2009 Cedric ISSALY\n");
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"\n");
 	fprintf(stdout,"GCSORT_DEBUG                 : %d", job->ndeb);
@@ -104,7 +105,8 @@ void GCSORT_Config ( void )
 void GCSORT_Version ( void ) 
 {
 	printf("gcsort Version %s\n", GCSORT_VERSION); 
-	printf("Copyright (C) 2009-2023 Cedric ISSALY / Sauro Menna\n");
+    printf("Copyright (C) 2016-2023 Sauro Menna\n");
+    printf("                   2009 Cedric ISSALY\n");
 	printf("Packaged  %s\n", GCSORT_TAR_DATE);
 
 #if __LIBCOB_VERSION >= 3
@@ -235,7 +237,8 @@ void GCSORT_Usage ( void )
     printf("  ZD  = Zoned                              |  CLO = Numeric sign leading                \n");
     printf("  CLO = Numeric sign leading               |  CSL = Numeric sign leading separate       \n");
     printf("  CSL = Numeric sign leading separate      |  CST = Numeric sign trailing separate      \n");
-    printf("  CST = Numeric sign trailing separate     |                                            \n");
+    printf("  CST = Numeric sign trailing separate     |  SFF = Signed free form                    \n");
+    printf("                                           |  UFF = Unsigned free form                  \n");
     printf("___________________________________________|____________________________________________\n");
     printf("_Format_Len_Type__Date field_______________|_Format_Len_Type__Date field________________\n");
     printf("  Y2T = 8   ZD    CCYYMMDD                 |  Y2D = 1   PD    YY                        \n");
