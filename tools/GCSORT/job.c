@@ -200,10 +200,12 @@ struct job_t* job_constructor(void) {
 	job->inrec = NULL;
 	job->sumFields = 0;
 	job->SumField = NULL;
+	job->nXSumFilePresent = 0;
 	job->recordReadInCurrent = 0;
 	job->recordNumberTotal = 0;
 	job->recordWriteSortTotal = 0;
 	job->recordWriteOutTotal = 0;
+	job->recordDiscardXSUMTotal = 0;
 	job->recordNumber = 0;
 	job->recordNumberAllocated = 0;
 	job->bIsFieldCopy = 0;
@@ -227,6 +229,7 @@ struct job_t* job_constructor(void) {
 	for (nJ = 0; nJ < MAX_HANDLE_TEMPFILE; nJ++)
 		job->nCountSrt[nJ] = 0;
 	job->nSkipRec = 0;
+
 	job->nStopAft = 0;
 	job->strPathTempFile[0] = 0x00; /*    NULL;   */
 	memset(job->arrayFileInCmdLine, 0x00, (MAXFILEIN * FILENAME_MAX));
@@ -235,6 +238,11 @@ struct job_t* job_constructor(void) {
 	job->nMaxFileIn = 0;
 	memset(job->arrayFileOutCmdLine, 0x00, (MAXFILEIN * FILENAME_MAX));
 	job->nMaxFileOut = 0;
+
+	/* XSUM file */
+	memset(job->FileNameXSUM, 0x00, (FILENAME_MAX));
+
+	job->XSUMfile = NULL;
 
 	memset(job->arrayFileOutFilCmdLine, 0x00, (MAXFILEIN * FILENAME_MAX));
 	job->nMaxFileOutFil = 0;
@@ -643,6 +651,11 @@ int job_load(struct job_t *job, int argc, char **argv) {
 		returnCode = job_CloneFileForOutfil(job); 
 	}
 
+	/* verify XSUM */
+	if (returnCode == 0)
+		returnCode = job_CloneFileForXSUMFile(job);
+
+
 /* Clone informations from GIVE File for all OUTFIL files.  */
 	if (returnCode == 0) {
 		returnCode = job_MakeExitRoutines(job);
@@ -713,6 +726,53 @@ void job_CloneFileForOutfilSet(struct job_t *job, struct file_t* file)
     }
 
     return;
+}
+int job_CloneFileForXSUMFile(struct job_t* job)
+{
+
+	struct file_t* file;
+	struct file_t* fileJob;
+	int nEnvVar = 0;
+	fileJob = job->outputFile;
+
+
+	if ((fileJob != NULL) && (job->XSUMfile != NULL) && (job->nXSumFilePresent > 0)) {
+		file = job->XSUMfile;
+		file->format = fileJob->format;
+		file->organization = fileJob->organization;
+		file->recordLength = fileJob->recordLength;
+		file->maxLength = fileJob->maxLength;
+		file->pHeaderMF = NULL;
+		file->bIsSeqMF = fileJob->bIsSeqMF;
+		file->nFileMaxSize = fileJob->nFileMaxSize;
+		file->next = NULL;
+	}
+
+	if ((fileJob != NULL) && (job->XSUMfile == NULL) && (job->nXSumFilePresent > 0)) {
+		memset(job->FileNameXSUM, 0x00, FILENAME_MAX);
+		strcpy(job->FileNameXSUM, fileJob->name);
+		/* check if file name is a environment variable */
+		nEnvVar = utl_GetFileEnvName(job->FileNameXSUM);
+		/* nEnvVar == 0 -> job->FileNameXSUM is a file name           */
+		/* nEnvVar >  0 -> job->FileNameXSUM is environment variable  */
+		if (nEnvVar == 0)
+			strcat(job->FileNameXSUM, ".xsum");
+		/* */
+		file = (struct file_t*)file_constructor(job->FileNameXSUM);
+		if (file == NULL)
+			utl_abend_terminate(MEMORYALLOC, 4, ABEND_EXEC);
+		file->format = fileJob->format;
+		file->organization = fileJob->organization;
+		file->recordLength = fileJob->recordLength;
+		file->maxLength = fileJob->maxLength;
+		file->pHeaderMF = NULL;
+		file->bIsSeqMF = fileJob->bIsSeqMF;
+		file->nFileMaxSize = fileJob->nFileMaxSize;
+		file->next = NULL;
+		job->XSUMfile = file;
+	}
+
+	return 0;
 }
 
 int job_CloneFileForOutfil( struct job_t *job) 
@@ -872,6 +932,30 @@ int job_RedefinesFileName( struct job_t *job)
 			}
 		}
 	}
+
+	/* XSUM */
+	if (job->XSUMfile != 0) {
+		file = job->XSUMfile;
+		memcpy(file->name, job->FileNameXSUM, strlen(job->FileNameXSUM));
+		file->name[strlen(job->FileNameXSUM)] = 0x00;
+#if _WIN32    /* all commands for linux, change for windows */
+		job_checkslash(file->name);
+#endif
+		if (file->stFileDef != NULL) {
+			memset(file->stFileDef->assign->data, 0x00, strlen(job->FileNameXSUM) + 1);
+			memcpy(file->stFileDef->assign->data, job->FileNameXSUM, strlen(job->FileNameXSUM));
+#ifdef VBISAM
+			/* check if file name from command line contains ".dat" for indexed file    */
+			if (file->organization == FILE_ORGANIZATION_INDEXED) {
+				memset(szExt, 0x00, sizeof(szExt));
+				memcpy(szExt, file->stFileDef->assign->data + strlen((const char*)file->stFileDef->assign->data) - 4, 4);
+				cob_sys_tolower(szExt, 4);
+				if (strcmp(szExt, ".dat") == 0)
+					*(file->stFileDef->assign->data + strlen((const char*)file->stFileDef->assign->data) - 4) = '\0';
+			}
+#endif
+		}
+	}
 	return 0;
 }
 
@@ -885,7 +969,7 @@ int	job_scanPrioritySearch(char* buffer)
 	char*  pBufUpp;
 
 	pBufUpp = (char*) malloc(sizeof(char)*(strlen(buffer) + 1));
-	util_covertToUpper(buffer, pBufUpp);
+	util_convertToUpper(buffer, pBufUpp);
 
 	/* Priority Search
 	   USE ---- GIVE  or   GIVE --- USE
@@ -944,6 +1028,12 @@ int	job_scanCmdLineFile(struct job_t *job, char* buffer, char* bufnew)
 		job_FileInputBuffer(job, szBufNew2, bufnew, nPosStart);
 		strcpy(szBufNew2, bufnew);
 	}
+	nPosStart = 0; /* forzature */
+	memset(bufnew, 0x00, COB_MEDIUM_BUFF);
+	job_XSUMFileOutputBuffer(job, szBufNew2, bufnew, nPosStart);
+	strcpy(szBufNew2, bufnew);
+	
+
 	/* -- only debug printf("\nNew Command Line : %s\n", bufnew);   */
 	nPosStart = 0; /* forzature */
 	memset(bufnew, 0x00, COB_MEDIUM_BUFF);
@@ -1053,7 +1143,7 @@ int	job_FileInputBuffer (struct job_t *job, char* szBuffIn, char* bufnew, int nP
 	int   pk=0;
 
 	szSearch = (char*) malloc(sizeof(char)*(strlen(szBuffIn) + 1));
-	util_covertToUpper(szBuffIn, szSearch);
+	util_convertToUpper(szBuffIn, szSearch);
 
 	pch1=szSearch+nPosStart;
 	pch2=szSearch+nPosStart;
@@ -1153,7 +1243,7 @@ int	job_FileOutputBuffer (struct job_t *job, char* szBuffIn, char* bufnew, int n
 	int   pk=0;	
 
 	szSearch = (char*) malloc(sizeof(char)*(strlen(szBuffIn) + 1));
-	util_covertToUpper(szBuffIn, szSearch);
+	util_convertToUpper(szBuffIn, szSearch);
 
 	pch1=szSearch+nPosStart;
 	pch2=szSearch+nPosStart;
@@ -1223,6 +1313,100 @@ int	job_FileOutputBuffer (struct job_t *job, char* szBuffIn, char* bufnew, int n
 	return (nSp1);
 }
 
+int	job_XSUMFileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nPosStart)
+{
+	char  strXSUM[] = "XSUM";
+	char  strFNAMES[] = "FNAMES";
+	char  strRECORD[] = " RECORD ";
+	char  szFileName[GCSORT_SIZE_FILENAME];
+	char  szFileName_sv[GCSORT_SIZE_FILENAME];
+	char  sep1[] = "= ,\n\t";
+	char  sep2[] = ",\n\t";
+	char  sep3 = '=';
+	char* pch1;
+	char* pch2;
+	char* pch3;
+	char* szSearch;
+	char* pBufUpp;
+	int   bFound = 0;
+	int   nFirstRound = 0;
+	int   nPosNull = 0;
+	int   nSp1 = 1;
+	int   nSp2 = 0;
+	int   nSp3 = 0;
+	int   pk = 0;
+	int	  nSp9 = 0;
+
+	int   ncmp = 0;
+
+	memset(szFileName, 0x00, GCSORT_SIZE_FILENAME);
+	memset(szFileName_sv, 0x00, GCSORT_SIZE_FILENAME);
+
+	szSearch = (char*)malloc(sizeof(char) * (strlen(szBuffIn) + 1));
+	memset(szSearch, 0x00, sizeof(char) * (strlen(szBuffIn) + 1));
+	strcpy(szSearch, szBuffIn);
+	
+	pch1 = szSearch + nPosStart;
+	pch2 = szSearch + nPosStart;
+	pch3 = szSearch + nPosStart;
+
+    pch1 = utl_strinsstr(pch1, strXSUM);
+	if (pch1 != NULL) {
+		strcpy(szSearch, pch1);
+		pch1 = strtok(szSearch, sep1);
+		/* check FNAMES */
+		if ((pch1 != NULL) && (strncmp(pch1, strXSUM, sizeof(strXSUM)) == 0)) {
+			pch3 = pch1;
+			pch1 = strtok(NULL, sep2);
+			/* check FNAMES*/
+			if ((pch1 != NULL) && (strncmp(pch1, strFNAMES, sizeof(strFNAMES) - 1) == 0)) {
+				GetPathFileName(pch1, sep3, szFileName);
+				if (strlen(szFileName) != 0) {
+					
+					strcpy(szFileName_sv, szFileName);
+
+					nPosNull = job_PutIntoArrayFile(job->FileNameXSUM, szFileName, strlen(szFileName));
+					memset(szFileName, 0x00, GCSORT_SIZE_FILENAME);
+					sprintf(szFileName, "FX%03d", 1); /* new file name */
+					/* alloc same dimension of file input for string    */
+					nSp9 = strlen(szFileName);
+					for (pk = nSp9; pk < nPosNull; pk++) {
+						strcat(szFileName, "U");
+					}
+					strcat(bufnew, szFileName);	/* concat new file name */
+				}
+				else {
+					fprintf(stdout, "*GCSORT*S008*ERROR: Command XSUM not found or lower case, use uppercase\n");
+				}
+			}
+		}
+	}
+	else {
+		strcpy(bufnew, szBuffIn);
+		free(szSearch);
+		return 0;
+	}
+
+	pBufUpp = (char*)malloc(sizeof(char) * (strlen(szBuffIn) + 1));
+	strcpy(pBufUpp, szBuffIn);
+
+	pch1 = pBufUpp;
+	pch1 = utl_strinsstr(pch1, szFileName_sv);
+	if (pch1 == NULL) {
+		fprintf(stdout, "*GCSORT*S010*ERROR: Command XSUM not found or lower case, use uppercase\n");
+		exit(GC_RTC_ERROR);
+	}
+	int nLen = pch1 - pBufUpp;
+	pch2 = szBuffIn;
+	strncpy(bufnew, szBuffIn, nLen);
+	strcat(bufnew, szFileName);
+	strcat(bufnew, pch1 + strlen(szFileName));
+
+	free(szSearch);
+	free(pBufUpp);
+	return (nSp1);
+}
+
 int	job_FileOutFilBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nPosStart, char* strtoken)
 {
 /*	char  strFILES[] = "FILES=";  */
@@ -1256,7 +1440,7 @@ int	job_FileOutFilBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nP
 	memset(szSearch, 0x00, nLenszb);
 	memset(szReplace, 0x00, nLenszb);
 
-	util_covertToUpper(szBuffIn, szSearch);
+	util_convertToUpper(szBuffIn, szSearch);
 
 	pch0 = szSearch + nPosStart;
 	pch1 = szSearch + nPosStart;
@@ -1642,6 +1826,7 @@ int job_check(struct job_t *job)
 			}
 			cob_close(file->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
 		}
+
 	}
 	if (nErr>0)
 		return -1;
@@ -1649,31 +1834,31 @@ int job_check(struct job_t *job)
 	return 0;
 }
 
-int job_print_final(struct job_t *job, time_t* timeStart) 
+int job_print_final(struct job_t* job, time_t* timeStart)
 {
 	char szNameTmp[FILENAME_MAX];
 	time_t timeEnd;
-	struct tm *		timeinfoStart;
-	struct tm *		timeinfoEnd;
-	struct outfil_t *pOutfil;
-	struct file_t	*file;
+	struct tm* timeinfoStart;
+	struct tm* timeinfoEnd;
+	struct outfil_t* pOutfil;
+	struct file_t* file;
 	int seconds;
-	int hh,mm,ss,ms;
+	int hh, mm, ss, ms;
 	int nIdx;
-	int desc=0;
+	int desc = 0;
 
-	for (nIdx=0; nIdx < MAX_HANDLE_TEMPFILE; nIdx++) {
+	for (nIdx = 0; nIdx < MAX_HANDLE_TEMPFILE; nIdx++) {
 		if (job->array_FileTmpHandle[nIdx] != -1) {
 			strcpy(szNameTmp, job->array_FileTmpName[nIdx]);
-				
-			desc=remove(szNameTmp);
+
+			desc = remove(szNameTmp);
 			if (desc != 0) {
-				fprintf(stdout,"*GCSORT*W001* WARNING : Cannot remove file %s : %s\n", szNameTmp,strerror(errno));
-				g_retWarn=4;
+				fprintf(stdout, "*GCSORT*W001* WARNING : Cannot remove file %s : %s\n", szNameTmp, strerror(errno));
+				g_retWarn = 4;
 			}
 		}
 	}
-	fprintf(stdout,"====================================================================\n");
+	fprintf(stdout, "====================================================================\n");
 	if (job_GetTypeOp(job) == 'J') {
 		if (job->join->joinkeysF1->nIsSorted == 0) {
 			fprintf(stdout, " Total Records file F1 Read : " NUM_FMT_LLD "  -- Sort :  " NUM_FMT_LLD "\n", (long long)job->join->joinkeysF1->nNumRowReadSort, (long long)job->join->joinkeysF1->nNumRowWriteSort);
@@ -1685,10 +1870,15 @@ int job_print_final(struct job_t *job, time_t* timeStart)
 		}
 	}
 	else {
-		fprintf(stdout, " Total Records Number       : " NUM_FMT_LLD "\n", (long long)job->recordNumberTotal);
-		fprintf(stdout, " Total Records Write Sort   : " NUM_FMT_LLD "\n", (long long)job->recordWriteSortTotal);
+		fprintf(stdout, " Total Records Number..............: " NUM_FMT_LLD "\n", (long long)job->recordNumberTotal);
+		fprintf(stdout, " Total Records Write Sort..........: " NUM_FMT_LLD "\n", (long long)job->recordWriteSortTotal);
 	}
-	fprintf(stdout," Total Records Write Output : " NUM_FMT_LLD "\n", (long long) job->recordWriteOutTotal);
+	    fprintf(stdout, " Total Records Write Output........: " NUM_FMT_LLD "\n", (long long)job->recordWriteOutTotal);
+
+	if (job->nXSumFilePresent > 0) {
+		fprintf(stdout, " Total Records Discard XSUM Output.: " NUM_FMT_LLD "\n", (long long)job->recordDiscardXSUMTotal);
+	}
+
 	fprintf(stdout,"====================================================================\n");
 	if (job->nStatistics == 2)	{
 		if (job->bIsPresentSegmentation == 1) {
@@ -1699,11 +1889,11 @@ int job_print_final(struct job_t *job, time_t* timeStart)
 		}
 
 		fprintf(stdout,"\n");
-		fprintf(stdout," Memory size for GCSORT data     :  " NUM_FMT_LLD "\n", (long long) job->ulMemSizeAlloc);
-		fprintf(stdout," Memory size for GCSORT key      :  " NUM_FMT_LLD "\n", (long long) job->ulMemSizeAllocSort);
-		fprintf(stdout," MAX_SIZE_CACHE_WRITE            : %10d\n", MAX_SIZE_CACHE_WRITE);
-		fprintf(stdout," MAX_SIZE_CACHE_WRITE_FINAL      : %10d\n", MAX_SIZE_CACHE_WRITE_FINAL);
-		fprintf(stdout," MAX_MLTP_BYTE                   : %10d\n", job->nMlt);
+		fprintf(stdout," Memory size for GCSORT data.......: " NUM_FMT_LLD "\n", (long long) job->ulMemSizeAlloc);
+		fprintf(stdout," Memory size for GCSORT key........: " NUM_FMT_LLD "\n", (long long) job->ulMemSizeAllocSort);
+		fprintf(stdout," MAX_SIZE_CACHE_WRITE..............:%10d\n", MAX_SIZE_CACHE_WRITE);
+		fprintf(stdout," MAX_SIZE_CACHE_WRITE_FINAL........:%10d\n", MAX_SIZE_CACHE_WRITE_FINAL);
+		fprintf(stdout," MAX_MLTP_BYTE.....................:%10d\n", job->nMlt);
 		fprintf(stdout,"===============================================\n");
 		fprintf(stdout,"\n");
     }
@@ -1877,6 +2067,10 @@ int job_print(struct job_t *job)
 			}
 			printf(")\n");
 		}
+
+		/* XSUM */
+		if (job->nXSumFilePresent > 0) 
+			printf("XSUM file = %s\n", job->FileNameXSUM);
 	
 	/* OPTION   */
 		if ((job->nVLSCMP!=0) || (job->nVLSHRT!=0) ) {
@@ -2000,6 +2194,11 @@ int job_destroy(struct job_t *job) {
 	if (job->outputFile!=NULL) {
 		file_destructor(job->outputFile);
 	}
+
+	// XSUM file 
+	if (job->XSUMfile != NULL)
+		file_destructor(job->XSUMfile);
+
 	if (job->sortField!=NULL) {
 		nIdx=0;
 		for (sortField=job->sortField; sortField!=NULL; sortField=sortField_getNext(sortField)) {
@@ -2094,7 +2293,7 @@ int job_destroy(struct job_t *job) {
 			free(fPOutfilrec[nIdyMaster]);
 		}
 	}
-	 
+
 	/* verify Exit Routine  */
 	if (job->nExitRoutine > 0) { 
 		if (job->E15Routine) 
@@ -2908,7 +3107,23 @@ int job_save_out(struct job_t *job)
 			nIsFileVariable = 1; /* File is Variable Length */
 	}
 
-    nSplitPosPnt = SZPOSPNT;
+	/* XSUMFile == NULL, standard output file */
+	if (job->XSUMfile != NULL) {
+		outfile_clone_output(job, job->XSUMfile);
+
+		strcpy((char*)job->XSUMfile->stFileDef->assign->data, (char*)job->FileNameXSUM);
+		cob_open(job->XSUMfile->stFileDef, COB_OPEN_OUTPUT, 0, NULL);
+		if (atol((char*)job->XSUMfile->stFileDef->file_status) != 0) {
+			fprintf(stdout, "*GCSORT*S026*ERROR: Cannot open XSUM file %s - File Status (%c%c)\n", file_getName(job->XSUMfile),
+				job->XSUMfile->stFileDef->file_status[0], job->XSUMfile->stFileDef->file_status[1]);
+			retcode_func = -1;
+			goto job_save_exit;
+		}
+		if (job->XSUMfile->stFileDef->variable_record)
+			nIsFileVariable = 1; /* File is Variable Length */
+	}
+
+	nSplitPosPnt = SZPOSPNT;
 	bIsFirstSumFields = 0;
 	bIsWrited = 0;
 	nReadTmpFile=0;
@@ -2978,6 +3193,41 @@ int job_save_out(struct job_t *job)
 					retcode_func = -1;
 					goto job_save_exit;
 				}
+			}
+
+			// Save record - SumField discrded record XSUM
+			if (job->nXSumFilePresent > 0) {
+				job_set_area(job, job->XSUMfile, recordBuffer + nSplitPosPnt, nLenRecOut, nLenRek);	/* Len output   */
+				cob_write(job->XSUMfile->stFileDef, job->XSUMfile->stFileDef->record, job->XSUMfile->opt, NULL, 0);
+				switch (atol((char*)job->XSUMfile->stFileDef->file_status))
+				{
+				case 0:
+					break;
+				case  4:		/* record successfully read, but too short or too long */
+					fprintf(stdout, "*GCSORT*S027*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", job->XSUMfile->stFileDef->assign->data,
+						job->XSUMfile->stFileDef->file_status[0], job->XSUMfile->stFileDef->file_status[1]);
+					util_view_numrek();
+					job_print_error_file(job->outputFile->stFileDef, nLenRecOut);
+					retcode_func = -1;	/* Error stop execution */
+					goto job_save_exit;
+					break;
+				case 71:
+					fprintf(stdout, "*GCSORT*S027*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(job->XSUMfile),
+						job->XSUMfile->stFileDef->file_status[0], job->XSUMfile->stFileDef->file_status[1]);
+					util_view_numrek();
+					job_print_error_file(job->outputFile->stFileDef, nLenRecOut);
+					retcode_func = -1;	/* Error stop execution */
+					goto job_save_exit;
+					break;
+				default:
+					fprintf(stdout, "*GCSORT*S027*ERROR: Cannot write to file %s - File Status (%c%c)\n", file_getName(job->XSUMfile),
+						job->XSUMfile->stFileDef->file_status[0], job->XSUMfile->stFileDef->file_status[1]);
+					util_view_numrek();
+					job_print_error_file(job->XSUMfile->stFileDef, nLenRecOut);
+					retcode_func = -1;
+					goto job_save_exit;
+				}
+				job->recordDiscardXSUMTotal++;
 			}
 			continue;
 		}
@@ -3192,6 +3442,8 @@ job_save_exit:
 
 	cob_close (job->outputFile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
 
+	if (job->nXSumFilePresent > 0)
+		cob_close(job->XSUMfile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
 
 	if (desc >= 0){
 		if (close(desc)<0) {
@@ -3804,6 +4056,42 @@ char szNameTmp[FILENAME_MAX];
 					nSumEof = nSumEof + bIsEof[nLastRead];
 				}
 			}
+			/*  XSUM */
+
+			// Save record - SumField discrded record XSUM
+			if (job->nXSumFilePresent > 0) {
+				job_set_area(job, job->XSUMfile, recordBuffer + nSplitPosPnt, nLenRecOut, nLenRek);	/* Len output   */
+				cob_write(job->XSUMfile->stFileDef, job->XSUMfile->stFileDef->record, job->XSUMfile->opt, NULL, 0);
+				switch (atol((char*)job->XSUMfile->stFileDef->file_status))
+				{
+				case 0:
+					break;
+				case  4:		/* record successfully read, but too short or too long */
+					fprintf(stdout, "*GCSORT*S027*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", job->XSUMfile->stFileDef->assign->data,
+						job->XSUMfile->stFileDef->file_status[0], job->XSUMfile->stFileDef->file_status[1]);
+					util_view_numrek();
+					job_print_error_file(job->outputFile->stFileDef, nLenRecOut);
+					retcode_func = -1;	/* Error stop execution */
+					goto job_save_tempfinal_exit;
+					break;
+				case 71:
+					fprintf(stdout, "*GCSORT*S027*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(job->XSUMfile),
+						job->XSUMfile->stFileDef->file_status[0], job->XSUMfile->stFileDef->file_status[1]);
+					util_view_numrek();
+					job_print_error_file(job->outputFile->stFileDef, nLenRecOut);
+					retcode_func = -1;	/* Error stop execution */
+					goto job_save_tempfinal_exit;
+					break;
+				default:
+					fprintf(stdout, "*GCSORT*S027*ERROR: Cannot write to file %s - File Status (%c%c)\n", file_getName(job->XSUMfile),
+						job->XSUMfile->stFileDef->file_status[0], job->XSUMfile->stFileDef->file_status[1]);
+					util_view_numrek();
+					job_print_error_file(job->XSUMfile->stFileDef, nLenRecOut);
+					retcode_func = -1;
+					goto job_save_tempfinal_exit;
+				}
+				job->recordDiscardXSUMTotal++;
+			}			/*       */
 			continue;
 		}
 
@@ -3967,6 +4255,9 @@ job_save_tempfinal_exit:
 			free(szBufRekTmpFile[kj]);
 	}
 	cob_close (job->outputFile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
+
+	if (job->nXSumFilePresent > 0)
+		cob_close(job->XSUMfile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
 
 	if (desc > 0){
 		if ((close(desc))<0) {
@@ -5015,6 +5306,43 @@ int job_merge_files(struct job_t *job) {
 						nSumEof = nSumEof + bIsEof[nLastRead];
 					}
 				}
+				/*  XSUM */
+
+// Save record - SumField discrded record XSUM
+				if (job->nXSumFilePresent > 0) {
+					job_set_area(job, job->XSUMfile, recordBuffer + nSplitPosPnt, nLenRecOut, nLenRek);	/* Len output   */
+					cob_write(job->XSUMfile->stFileDef, job->XSUMfile->stFileDef->record, job->XSUMfile->opt, NULL, 0);
+					switch (atol((char*)job->XSUMfile->stFileDef->file_status))
+					{
+					case 0:
+						break;
+					case  4:		/* record successfully read, but too short or too long */
+						fprintf(stdout, "*GCSORT*S027*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", job->XSUMfile->stFileDef->assign->data,
+							job->XSUMfile->stFileDef->file_status[0], job->XSUMfile->stFileDef->file_status[1]);
+						util_view_numrek();
+						job_print_error_file(job->outputFile->stFileDef, nLenRecOut);
+						retcode_func = -1;	/* Error stop execution */
+						goto job_merge_files_exit;
+						break;
+					case 71:
+						fprintf(stdout, "*GCSORT*S027*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(job->XSUMfile),
+							job->XSUMfile->stFileDef->file_status[0], job->XSUMfile->stFileDef->file_status[1]);
+						util_view_numrek();
+						job_print_error_file(job->outputFile->stFileDef, nLenRecOut);
+						retcode_func = -1;	/* Error stop execution */
+						goto job_merge_files_exit;
+						break;
+					default:
+						fprintf(stdout, "*GCSORT*S027*ERROR: Cannot write to file %s - File Status (%c%c)\n", file_getName(job->XSUMfile),
+							job->XSUMfile->stFileDef->file_status[0], job->XSUMfile->stFileDef->file_status[1]);
+						util_view_numrek();
+						job_print_error_file(job->XSUMfile->stFileDef, nLenRecOut);
+						retcode_func = -1;
+						goto job_merge_files_exit;
+					}
+					job->recordDiscardXSUMTotal++;
+				}		
+				/* XSUM  */
 				continue;
 			}
 			 
@@ -5155,6 +5483,9 @@ job_merge_files_exit:
 	/* if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) */
 	if (job->outputFile != NULL)
 		cob_close(job->outputFile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
+
+	if (job->nXSumFilePresent > 0)
+		cob_close(job->XSUMfile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
 
 	return retcode_func;
 }

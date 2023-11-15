@@ -87,6 +87,7 @@ struct job_t {
     char arrayFileOutCmdLine[MAXFILEIN][FILENAME_MAX];
 	char arrayFileOutFilCmdLine[MAXFILEIN][FILENAME_MAX];
 	char array_FileTmpName[MAX_HANDLE_TEMPFILE][FILENAME_MAX];
+	char FileNameXSUM[FILENAME_MAX];
 	char job_typeOP;				        /* 'S' for sort, 'M' for Merge, 'C' for Copy, 'J' for Join    */
 	char strPathTempFile[FILENAME_MAX];     /* path temporary file                          */
 	char szCmdLineCommand[8192];	        /* Copy from command line                       */
@@ -114,6 +115,7 @@ struct job_t {
 	int  nOutFileSameOutFile;	/* when OutFil use OutFile  */
 	int	 ndeb; 
 	int	 sumFields;
+	int  nXSumFilePresent;				/* 0= no XSUM File, 1=yes XSUM File */
 	int  bIsTake;
 	int  bReUseSrtFile;
 	int  nCountSrt[MAX_HANDLE_TEMPFILE];
@@ -133,6 +135,7 @@ struct job_t {
 	int64_t recordReadInCurrent;
 	int64_t	recordWriteOutTotal;
 	int64_t	recordWriteSortTotal;
+	int64_t	recordDiscardXSUMTotal;
 	int64_t	ulMemSizeAlloc;		        /* Max size mem                 */
 	int64_t	ulMemSizeAllocSort;		    /* Max size mem                 */
 	int64_t	ulMemSizeRead;		        /* Current size mem after read  */
@@ -150,6 +153,8 @@ struct job_t {
 	struct outfil_t*	outfil;
 	struct outfil_t*	pLastOutfil_Split;
 	struct outfil_t*	pSaveOutfil;
+
+	struct file_t*		XSUMfile;
 
 	struct outrec_t*    outrec;
 	struct sortField_t* sortField;
@@ -241,12 +246,16 @@ int	job_scanCmdLineFile(struct job_t *job, char* buffer, char* bufnew);
 int	job_scanPrioritySearch(char* buffer);
 int	job_FileInputBuffer (struct job_t *job, char* szBuffIn, char* bufnew, int nPosStart);
 int	job_FileOutputBuffer (struct job_t *job, char* szBuffIn, char* bufnew, int nPosStart);
+int	job_XSUMFileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nPosStart);
 int	job_FileOutFilBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nPosStart, char* strtoken);
 int job_PutIntoArrayFile(char* pszBufOut, char* pszBufIn, int nLength);
 int job_RedefinesFileName( struct job_t *job);
 int job_NormalOperations(struct job_t *job);
 int job_CloneFileForOutfil( struct job_t *job);
 void job_CloneFileForOutfilSet(struct job_t *job, struct file_t* file);
+int job_CloneFileForXSUMFile(struct job_t* job);
+
+
 /*
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	INLINE int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen );
@@ -299,6 +308,8 @@ char* job_GetLastCharPath(char* sz, int* pNum, int* nSkipped);
 char* job_GetNextToken(char* sz, int* nSkipped);
 
 int job_SetPosLenKeys(int* arPosLen);
+
+
 
 
 /*  #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)   */

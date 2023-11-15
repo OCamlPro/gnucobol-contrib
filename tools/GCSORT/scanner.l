@@ -106,13 +106,13 @@ SUBSTRING    SS
     Y2U		3	PD  P'yyddd'   
     Y2V		4	PD  P'yymmdd'    
     Y2X		3	PD  P'dddyy'    
-    Y2Y		4	PD  P'mmddyy'
+    Y2Y		4	PD  P'mmddyy' 
     Y2Z		2	ZD
     */
     
             /*  Char Type  for condition CharType = C(char) | X(hexdical) <String>    */
    /* prec CHARTCOND       C|X  */
-CHARTCOND       C|X|Y
+CHARTCOND       C|X|Y|Z
             /*  Char Type  CharType = C(char) | X(hexdical) |Z(zero binary) <String>    */
 CHARTYPE        C|X|Z				
             /*  Order A = Ascending, D = Descending */
@@ -234,6 +234,7 @@ ERRTRUNC        ERROR|TRUNC
 [,]*{BLANK}"SPLIT"                              return SPLIT;
 [,]*{BLANK}"SPLITBY"{BLANK}[=]{BLANK}           return SPLITBY;
 "SUM"		                                    return SUM;
+[,]*{BLANK}"XSUM"		                        return XSUM;
 "TYPE"{BLANK}[=]{BLANK}                         return TYPE;
 "USE"		                    BEGIN(INITIAL); return USE;
 [,]*{BLANK}"VLSCMP"                             return VLSCMP;

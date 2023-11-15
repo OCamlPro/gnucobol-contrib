@@ -202,6 +202,12 @@ int SumField_setFunction( int nVal)
 	return 0;
 }
 
+int SumField_enableXSUM( void )
+{
+	globalJob->nXSumFilePresent = 1;
+	return 0;
+}
+
 
 int SumField_addDefinition(struct SumField_t *SumField) 
 {

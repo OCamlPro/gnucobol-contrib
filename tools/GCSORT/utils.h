@@ -96,7 +96,7 @@
 #include "outfil.h"
 
 #if	defined(_WIN32) 
-	#define	NUM_FMT_LLD		"%0.9I64d"
+	#define	NUM_FMT_LLD		"%9I64d"
 #else
 	#define	NUM_FMT_LLD		"%lld"
 #endif
@@ -227,7 +227,7 @@ int utils_SetOptionY2Past(char* optSort, int nNum);
 int utils_SetOptionExRoutine(char* optSort, char* szType, char* sCallName);
 
 void util_print_time_elap( const  char* szMex );
-void util_covertToUpper(char *strIn, char* strOut);
+void util_convertToUpper(char *strIn, char* strOut);
 /* Function for cob_field & cob_field_attrib    */
 cob_field* util_cob_field_make (int type, int digits, int scale, int flags, int nLen, int nData);
 void util_cob_field_del (cob_field* field_ret, int nData);
@@ -238,6 +238,7 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen);
 void util_resetAttrib(cob_field_attr* attrArea, int type, int digits);
 void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate);
 int utl_GetFileSizeEnvName(struct file_t* file);
+int utl_GetFileEnvName(char * file);
 void utils_SetRecordOptionSortType(char* szType);
 void utils_SetRecordOptionSortLen(int l1, int l2, int l3, int l4, int l5, int l6, int l7);
 int64_t utl_GetFileSize(struct file_t* file);
@@ -260,6 +261,10 @@ void sort_temp_name(const char* ext);
 void util_view_numrek(void);
 
 int64_t util_UFFSFF(unsigned char* pData, int nFieldLen, int nUS);
+
+void GetPathFileName(char* str, char sep, char* chPathRet);
+
+char* utl_strinsstr(const char* str1, const char* str2);
 
 
 #endif /* UTILS_H_INCLUDED  */

@@ -54,6 +54,7 @@ int SumField_getLength(struct SumField_t *SumField);
 int SumField_getType(struct SumField_t *SumField);
 void SumField_ResetTotSingle(struct SumField_t *SumField);
 int SumField_setFunction( int nVal );
+int SumField_enableXSUM(void);
 int SumField_addDefinition(struct SumField_t *SumField);
 int SumField_SumField(const void *pRek);
 int SumField_SumFieldUpdateRek(const void *pRek);

@@ -20,6 +20,7 @@
 */
 %debug
 %error-verbose
+
 %union { 
 	int         number;
 	long        lnumber;
@@ -33,7 +34,7 @@
     struct findrep_t        *findrep;
     struct findrepfield_t   *findrep_field;
 };
-%code {
+%code { 
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
@@ -135,6 +136,7 @@
 %token				STARTREC				"STARTREC clause"
 %token				STOPAFT					"STOPAFT clause"
 %token				SUM						"SUM clause"
+%token				XSUM					"XSUM clause"
 %token				SPLIT					"SPLIT clause"
 %token				SPLITBY					"SPLITBY clause"
 %token       		VLSCMP					"VLSCMP clause"
@@ -177,7 +179,6 @@
 %token              MAXLEN                  "MAXLEN"   
 %token              OVERRUN                 "OVERRUN"  
 %token              SHIFT                   "SHIFT"    
-
 %token <number>		DIGIT					"DIGIT"
 %token <number>		DIGITBIG		        "DIGITBIG"
         /* %token <number>     ADDSUBNUM               "ADDSUBNUM" */
@@ -199,6 +200,7 @@
 %token <string>     EXROUT                  "EXROUT clause"
 %token <string>     YESNO                   "YESNO clause"
 %token <string>     ERRTRUNC                "ERRTRUNC clause"
+
 %token <llnumber>	SIGNDIGITBIG			"SIGNDIGITBIG"
 %type <number>		fieldtype
 %type <number>		fielddirection
@@ -254,6 +256,7 @@ clause:   recordclause {}
 		| optionclause {}
         | buildclause {}
 ;
+
 
 useclause: 
 	  USE STRING {   
@@ -2538,9 +2541,55 @@ sumclause:
 		SumField_setFunction(1);
         strcpy(szMexToken, " sum fields clause ");
 }
+    | SUM FIELDS NONE XSUM {
+		SumField_setFunction(1);
+        strcpy(szMexToken, " sum fields clause ");
+        SumField_enableXSUM(); 
+        current_file=NULL;
+}
+    | SUM FIELDS NONE XSUM  FNAMES '=' STRING {
+		SumField_setFunction(1);
+        strcpy(szMexToken, " sum fields clause ");
+        SumField_enableXSUM(); 
+        SumField_enableXSUM(); 
+        struct file_t *file=file_constructor($7);
+        strcpy(szMexToken, " xsum clause ");
+        if (file == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 101, ABEND_SKIP);
+			YYABORT;
+		}
+        file_setXSUMFile(file);
+        current_file=file;
+        nTypeFile=0;
+        current_file=NULL;
+        free($7);        
+}
     | SUM FIELDS '(' allsumfield ')' {
         strcpy(szMexToken, " sum fields clause ");
         SumField_setFunction(2);
+}
+    | SUM FIELDS '(' allsumfield ')'  XSUM {
+        strcpy(szMexToken, " sum fields clause ");
+        SumField_setFunction(2);
+        SumField_enableXSUM(); 
+        /* Attenction file name for XSUM without FNAMES */
+}
+    | SUM FIELDS '(' allsumfield ')'  XSUM FNAMES '=' STRING {
+        strcpy(szMexToken, " sum fields clause ");
+        SumField_setFunction(2);
+        SumField_enableXSUM(); 
+        struct file_t *file=file_constructor($9);
+        strcpy(szMexToken, " xsum clause ");
+        if (file == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 101, ABEND_SKIP);
+			YYABORT;
+		}
+        file_setXSUMFile(file);
+        current_file=file;
+        nTypeFile=0;
+       /* file_SetInfoForFile(current_file, COB_OPEN_OUTPUT); */ /*  Output  */
+        current_file=NULL;
+        free($9);        
 }
 ;
 /* ============================================== */

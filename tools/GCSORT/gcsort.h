@@ -73,11 +73,13 @@ _LIB
 #define GCSORT_KEY_MAX              1024
 #define GCSORT_SIZE_FILENAME        1024
 
+#define GCSORT_SIZE_ENVVAR          256
+
 /* value 1 : generate temp file fixed name : cob17, cob18, cob19, cob1a, cob1b  */
 #define GCSORT_DEBUG   0        /* 0 no debug - 1 debug */
 #define GCSORT_TESTCMD 0
-#define GCSORT_VERSION "01.03.08"
-#define GCSORT_TAR_DATE "Oct. 12 2023 19:00:00 UTC"
+#define GCSORT_VERSION "01.03.09"
+#define GCSORT_TAR_DATE "Nov. 14 2023 19:35:00 UTC"
 
 /* Return Code */
 #define GC_RTC_OK	 0
@@ -95,6 +97,8 @@ _LIB
     #define linorkeyptr linage 
 #endif
 /*  end - compatibility version 3.1 and 4.0 */
+
+#define  COB_PACKAGE_VERSION		"3.2"
 
 
 void GCSORT_Config( void );

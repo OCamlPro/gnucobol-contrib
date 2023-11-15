@@ -436,13 +436,11 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 						case  4:		/* record successfully read, but too short or too long */
 							fprintf(stdout, "*GCSORT*S402*ERROR:record successfully read, but too short or too long. %s - File Status (%d)\n", pFile->assign->data, nFS);
 							util_view_numrek();
-							//job_print_error_file(pOutfil->outfil_File->stFileDef, nLenRecOut);
 							job_print_error_file(pFile, nLenRecOut);
 							return -1;
 						case 71:
 							fprintf(stdout, "*GCSORT*S402*ERROR: Record contains bad character %s - File Status (%d)\n", pFile->assign->data, nFS);
 							util_view_numrek();
-							//job_print_error_file(pOutfil->outfil_File->stFileDef, nLenRecOut);
 							job_print_error_file(pFile, nLenRecOut);
 							return -1;
 							break;

@@ -811,7 +811,7 @@ int utils_SetOptionExRoutine(char* optSort, char* szType, char* sCallName)
 	}
 	return 0;
 }
-void util_covertToUpper(char *strIn, char* strOut)
+void util_convertToUpper(char *strIn, char* strOut)
 {
     char* pIn;
 	char* pOut;
@@ -940,7 +940,6 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
                         attrArea->digits = (nLen * 2) - 1;
                 }
                 attrArea->scale = 0;
-            ///	attrArea->flags = attrArea->flags;			// NO SIGN
                 break;
 */
 		default:
@@ -1039,6 +1038,7 @@ void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate)
         exit(GC_RTC_ERROR);       
     return;
 }
+
 int utl_GetFileSizeEnvName(struct file_t* file) {
 	char* pEnv;
 	struct stat filestatus;
@@ -1061,6 +1061,26 @@ int utl_GetFileSizeEnvName(struct file_t* file) {
 		stat(pEnv, &filestatus);
 		return filestatus.st_size;
 	}
+	return 0;
+}
+/* verify if filename is a environment variable */
+int utl_GetFileEnvName( char* szfile) {
+	char* pEnv;
+	char szname[GCSORT_SIZE_FILENAME];
+	snprintf(szname, (size_t)COB_FILE_MAX, "%s", (const char*)szfile);
+	pEnv = getenv(szname);
+	if (pEnv != NULL)
+		return 1; 
+
+	snprintf(szname, (size_t)COB_FILE_MAX, "DD_%s", (const char*)szfile);
+	pEnv = getenv(szname);
+	if (pEnv != NULL) 
+		return 1;
+
+	snprintf(szname, (size_t)COB_FILE_MAX, "dd_%s", (const char*)szfile);
+	pEnv = getenv(szname);
+	if (pEnv != NULL) 
+		return 1;
 	return 0;
 }
 
@@ -1331,4 +1351,94 @@ int64_t util_UFFSFF(unsigned char* pData, int nFieldLen, int nUS) {
 	/* fprintf(stdout, " Value string=%s - Value num=" NUM_FMT_LLD "\n", pData, (long long)newVal); */
 
 	return newVal;
+}
+void GetPathFileName(char* str, char sep, char* chPathRet)
+{
+	int ns = strlen(str);
+	int s = 0;
+	int nc = 0;
+	memset(chPathRet, 0x00, FILENAME_MAX);
+	if (sep != 0) {
+		/* skip prefix string */
+		for (s = 0; s < ns; s++) {
+			if (str[s] == sep) {
+				s = s + 1;
+				break;
+			}
+		}
+	}
+	/* skip blank characters  */
+	for (; s < ns; s++) {
+		if (str[s] != ' ')
+			break;
+	}
+	/* verify path with single/double quote  */
+	int nF = 0;
+	for (; s < ns; s++) {
+
+		if (((str[s] == '\'') ||
+			(str[s] == '\"')) &&
+			(nF == 0)) {
+			chPathRet[nc++] = str[s];
+			nF = 1;
+			continue;
+		}
+		if (((str[s] == '\'') ||
+			(str[s] == '\"')) &&
+			(nF == 1)) {
+			chPathRet[nc++] = str[s];
+			break;
+		}
+
+		if (nF == 1)
+			chPathRet[nc++] = str[s];
+		else
+			if (str[s] == ' ')
+				break;
+			else
+				chPathRet[nc++] = str[s];
+	}
+	return;
+}
+
+char* utl_strinsstr(const char* str1, const char* str2)
+{
+	const char* p1 = str1;
+	const char* p2 = str2;
+	const char* r = *p2 == 0 ? str1 : 0;
+
+	while (*p1 != 0 && *p2 != 0)
+	{
+		if (tolower((unsigned char)*p1) == tolower((unsigned char)*p2))
+		{
+			if (r == 0)
+			{
+				r = p1;
+			}
+
+			p2++;
+		}
+		else
+		{
+			p2 = str2;
+			if (r != 0)
+			{
+				p1 = r + 1;
+			}
+
+			if (tolower((unsigned char)*p1) == tolower((unsigned char)*p2))
+			{
+				r = p1;
+				p2++;
+			}
+			else
+			{
+				r = 0;
+			}
+		}
+
+		p1++;
+	}
+
+	return *p2 == 0 ? (char*)r : 0;
 }

@@ -265,6 +265,8 @@ int main_prod(int argc, char **argv) {
 	module->flag_dump_ready = 0;
 	module->module_stmt = 0;
 	module->module_sources = NULL;
+	module->gc_version = COB_PACKAGE_VERSION; /* new 3.2 */
+	module->xml_mode = 1;
 #endif
 
 	module->crt_status = NULL;
@@ -291,7 +293,7 @@ int main_prod(int argc, char **argv) {
             job_SetTypeOP('M');
             printf("Forced command MERGE for SORT FIELDS=COPY\n");
     }
-    */
+    */ 
 		if (job_GetFieldCopy() == 1)
 			job_SetTypeOP('C');		/* Copy */
 		if (nRC >= 0) 	

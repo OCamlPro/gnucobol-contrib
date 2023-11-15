@@ -212,6 +212,10 @@ int file_setInputFile(struct file_t *file) {
 	file_addQueue(&globalJob->inputFile,file);
 	return 0;
 }
+int file_setXSUMFile(struct file_t* file) {
+	globalJob->XSUMfile = file;
+	return 0;
+}
 int file_SetInfoForFile(struct file_t* file, int nMode) {
 
 	struct KeyIdx_t* tKeys; 
