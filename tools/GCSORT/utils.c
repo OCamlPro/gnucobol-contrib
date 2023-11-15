@@ -1352,7 +1352,7 @@ int64_t util_UFFSFF(unsigned char* pData, int nFieldLen, int nUS) {
 
 	return newVal;
 }
-void GetPathFileName(char* str, char sep, char* chPathRet)
+void GetPathFileName(char* str, char* sep, char* chPathRet)
 {
 	int ns = strlen(str);
 	int s = 0;
@@ -1361,7 +1361,7 @@ void GetPathFileName(char* str, char sep, char* chPathRet)
 	if (sep != 0) {
 		/* skip prefix string */
 		for (s = 0; s < ns; s++) {
-			if (str[s] == sep) {
+			if ((sep != NULL) && (str[s] == *sep)) {
 				s = s + 1;
 				break;
 			}

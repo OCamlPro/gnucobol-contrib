@@ -1321,7 +1321,6 @@ int	job_XSUMFileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, in
 	char  szFileName[GCSORT_SIZE_FILENAME];
 	char  szFileName_sv[GCSORT_SIZE_FILENAME];
 	char  sep1[] = "= ,\n\t";
-	char  sep2[] = ",\n\t";
 	char  sep3 = '=';
 	char* pch1;
 	char* pch2;
@@ -1354,13 +1353,20 @@ int	job_XSUMFileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, in
 	if (pch1 != NULL) {
 		strcpy(szSearch, pch1);
 		pch1 = strtok(szSearch, sep1);
-		/* check FNAMES */
+		/* check XSUM */
 		if ((pch1 != NULL) && (strncmp(pch1, strXSUM, sizeof(strXSUM)) == 0)) {
 			pch3 = pch1;
-			pch1 = strtok(NULL, sep2);
+			pch1 = strtok(NULL, sep1);
 			/* check FNAMES*/
 			if ((pch1 != NULL) && (strncmp(pch1, strFNAMES, sizeof(strFNAMES) - 1) == 0)) {
-				GetPathFileName(pch1, sep3, szFileName);
+				/* check if string has blank characters */
+				/* token is equals FNAMES ? */
+				if (strlen(pch1) < sizeof(strFNAMES)) {
+					pch1 = strtok(NULL, sep1);
+					GetPathFileName(pch1, NULL, szFileName);
+				}
+				else
+					GetPathFileName(pch1, &sep3, szFileName);
 				if (strlen(szFileName) != 0) {
 					
 					strcpy(szFileName_sv, szFileName);
