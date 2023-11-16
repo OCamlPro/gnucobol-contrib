@@ -262,7 +262,7 @@ void util_view_numrek(void);
 
 int64_t util_UFFSFF(unsigned char* pData, int nFieldLen, int nUS);
 
-void GetPathFileName(char* str, char* sep, char* chPathRet);
+void utl_GetPathFileName(char* str, char* sep, char* chPathRet);
 
 char* utl_strinsstr(const char* str1, const char* str2);
 

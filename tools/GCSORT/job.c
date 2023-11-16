@@ -1320,7 +1320,9 @@ int	job_XSUMFileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, in
 	char  strRECORD[] = " RECORD ";
 	char  szFileName[GCSORT_SIZE_FILENAME];
 	char  szFileName_sv[GCSORT_SIZE_FILENAME];
-	char  sep1[] = "= ,\n\t";
+	//-->>char  sep1[] = "= ,\n\t";
+	char  sep1[] = " ,\n\t";
+	char  sep2[] = "=,";
 	char  sep3 = '=';
 	char* pch1;
 	char* pch2;
@@ -1349,6 +1351,7 @@ int	job_XSUMFileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, in
 	pch2 = szSearch + nPosStart;
 	pch3 = szSearch + nPosStart;
 
+	/* Find XSUM token */
     pch1 = utl_strinsstr(pch1, strXSUM);
 	if (pch1 != NULL) {
 		strcpy(szSearch, pch1);
@@ -1361,12 +1364,15 @@ int	job_XSUMFileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, in
 			if ((pch1 != NULL) && (strncmp(pch1, strFNAMES, sizeof(strFNAMES) - 1) == 0)) {
 				/* check if string has blank characters */
 				/* token is equals FNAMES ? */
-				if (strlen(pch1) < sizeof(strFNAMES)) {
-					pch1 = strtok(NULL, sep1);
-					GetPathFileName(pch1, NULL, szFileName);
+				if (strlen(pch1) <= sizeof(strFNAMES)) {
+					/* printf("[1]this condition string=%s\n", pch1); */
+					pch1 = strtok(NULL, sep2);
+					utl_GetPathFileName(pch1, NULL, szFileName);
 				}
-				else
-					GetPathFileName(pch1, &sep3, szFileName);
+				else {
+					/* printf("[2]this condition string=%s\n", pch1); */
+					utl_GetPathFileName(pch1, &sep3, szFileName);
+				}
 				if (strlen(szFileName) != 0) {
 					
 					strcpy(szFileName_sv, szFileName);

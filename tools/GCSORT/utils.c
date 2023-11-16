@@ -1352,13 +1352,13 @@ int64_t util_UFFSFF(unsigned char* pData, int nFieldLen, int nUS) {
 
 	return newVal;
 }
-void GetPathFileName(char* str, char* sep, char* chPathRet)
+void utl_GetPathFileName(char* str, char* sep, char* chPathRet)
 {
 	int ns = strlen(str);
 	int s = 0;
 	int nc = 0;
-	memset(chPathRet, 0x00, FILENAME_MAX);
-	if (sep != 0) {
+	memset(chPathRet, 0x00, GCSORT_SIZE_FILENAME);
+	if ((sep != NULL) && (sep != 0)) {
 		/* skip prefix string */
 		for (s = 0; s < ns; s++) {
 			if ((sep != NULL) && (str[s] == *sep)) {
