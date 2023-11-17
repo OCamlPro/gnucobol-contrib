@@ -225,7 +225,7 @@ void GCSORT_Usage ( void )
     printf("___{Org}___File Organization_______________|___{KeyType}____Mandatory for ORG = IX______\n");
     printf("  LS  = Line Sequential                    |  P  = Primary Key                          \n");
     printf("  SQ  = Sequential Fixed or Variable       |  A  = Alternative Key                      \n");
-    printf("  IX  = Indexed Fixed or Variable          |  D  = Alternative Key with Duplicates      \n");
+    printf("  IX  = Indexed Fixed or Variable          |  AD = Alternative Key with Duplicates      \n");
     printf("  RL  = Relative Fixed or Variable         |  C  = Continue definition                  \n");
     printf("___________________________________________|____________________________________________\n");
     printf("__{FormatType}____Field Format Type________|___{FormatType2}____Format Type SumField____\n");
@@ -514,7 +514,7 @@ void GCSORT_Usage_all(void)
     printf("___{Org}___File Organization_______________|___{KeyType}____Mandatory for ORG = IX______\n");
     printf("  LS  = Line Sequential                    |  P  = Primary Key                          \n");
     printf("  SQ  = Sequential Fixed or Variable       |  A  = Alternative Key                      \n");
-    printf("  IX  = Indexed Fixed or Variable          |  D  = Alternative Key with Duplicates      \n");
+    printf("  IX  = Indexed Fixed or Variable          |  AD = Alternative Key with Duplicates      \n");
     printf("  RL  = Relative Fixed or Variable         |  C  = Continue definition                  \n");
     printf("___________________________________________|____________________________________________\n");
     printf("__{FormatType}____Field Format Type________|___{FormatType2}____Format Type SumField____\n");
@@ -706,7 +706,7 @@ void gcsort_help_body_SMC(void) {
     printf("___{Org}___File Organization_______________|___{KeyType}____Mandatory for ORG = IX______\n");
     printf("  LS  = Line Sequential                    |  P  = Primary Key                          \n");
     printf("  SQ  = Sequential Fixed or Variable       |  A  = Alternative Key                      \n");
-    printf("  IX  = Indexed Fixed or Variable          |  D  = Alternative Key with Duplicates      \n");
+    printf("  IX  = Indexed Fixed or Variable          |  AD = Alternative Key with Duplicates      \n");
     printf("  RL  = Relative Fixed or Variable         |  C  = Continue definition                  \n");
     printf("___________________________________________|____________________________________________\n");
     printf("__{FormatType}____Field Format Type________|___{FormatType2}____Format Type SumField____\n");
@@ -876,7 +876,7 @@ void gcsort_help_body_JOIN(void) {
     printf("___{Org}___File Organization_______________|___{KeyType}____Mandatory for ORG = IX______\n");
     printf("  LS  = Line Sequential                    |  P  = Primary Key                          \n");
     printf("  SQ  = Sequential Fixed or Variable       |  A  = Alternative Key                      \n");
-    printf("  IX  = Indexed Fixed or Variable          |  D  = Alternative Key with Duplicates      \n");
+    printf("  IX  = Indexed Fixed or Variable          |  AD = Alternative Key with Duplicates      \n");
     printf("  RL  = Relative Fixed or Variable         |  C  = Continue definition                  \n");
     printf("___________________________________________|____________________________________________\n");
     printf("__{FormatType}____Field Format Type________|___{FormatType2}____Format Type SumField____\n");

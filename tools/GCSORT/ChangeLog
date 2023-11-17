@@ -1,3 +1,7 @@
+2023-11-17  Sauro Menna  <smenna@users.sourceforge.net>
+    * Version 1.03.09
+    * Alternative Key description - fix error in gcsorthelp.c and documentation
+
 2023-11-14  Sauro Menna  <smenna@users.sourceforge.net>
     * Version 1.03.09
     * XSUM features - Write separate output file with records discarded from SumField
