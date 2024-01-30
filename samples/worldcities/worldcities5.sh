@@ -10,5 +10,5 @@ cobc -x -W worldcities5.cob commonroutines.cbl
 ./worldcities5 $FILES/CAUS.txt $FILES/countryInfo.txt
 rm worldcities5.cob
 rm worldcities5
-lpr -P $PRINTQUEUE run-file
-lpr -P $PRINTQUEUE report-file
+#lpr -P $PRINTQUEUE run-file
+#lpr -P $PRINTQUEUE report-file
