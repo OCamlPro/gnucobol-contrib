@@ -63,7 +63,7 @@
        01  country-record pic x(1000).
 
        fd  city-file.
-       01  city-record pic x(1000).
+       copy city-record.
 
        sd  sort-file.
        01  sort-record.
@@ -77,7 +77,7 @@
        01  command-file-name pic x(128) value "worldcities5.sh".
        01  techtonics.
            03  pic x(128) value "rm run-file".
-           03  pic x(128) value "rm report-file".
+           03n  pic x(128) value "rm report-file".
            03  pic x(128) value
                "export PRINTQUEUE=Brother-HL-2170W-wireless".
            03  pic x(128) value "export FILES=$HOME/worldcityfiles".
