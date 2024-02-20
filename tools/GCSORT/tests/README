@@ -53,19 +53,19 @@
          Linux Environment
         1) execute     : ./compile.sh         ---> Linux Environment. compile gctestset Cobol program.
         2) change dir  : cd ../bin
-        3) execute     : ./gctesettup         ---> Linux Environment. execute setup (copy files, compile test program, run programs) 
+        3) execute     : ./gctestset         ---> Linux Environment. execute setup (copy files, compile test program, run programs) 
         4) execute     : ./gctestrun          ---> execute all cases
 
          MinGW Environment
         1) execute     : ./compile_mingw.bat  ---> MinGW Environment. compile gctestset Cobol program.
         2) change dir  : cd ../bin
-        3) execute     : ./gctesettup         ---> MinGW Environment. execute setup (copy files, compile test program, run programs) 
+        3) execute     : ./gctestset         ---> MinGW Environment. execute setup (copy files, compile test program, run programs) 
         4) execute     : ./gctestrun          ---> execute all cases
 
          Windows Environment
         1) execute     : compile.bat          ---> Windows Environment. compile gctestset Cobol program.
         2) change dir  : cd ..\bin
-        3) execute     : gctesettup           ---> Windows Environment. execute setup (copy files, compile test program, run programs)  
+        3) execute     : gctestset           ---> Windows Environment. execute setup (copy files, compile test program, run programs)  
         4) execute     : gctestrun            ---> execute all cases
 
         If test is ok, program prints :
@@ -102,4 +102,3 @@
         *GCSORT*W680* WARNING : OUTFIL without FILES/FNAMES, forced GIVE definition ../files/fil_outfil_001_015.txt        
         
         These are warnings and not errors.
-        

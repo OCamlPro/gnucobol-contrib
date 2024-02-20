@@ -92,13 +92,19 @@ _LIB
 #endif
 
 /* start - compatibility version 3.1 and 4.0 */
-#if __LIBCOB_VERSION >= 4
+#if !defined (__LIBCOB_VERSION)
+    /* CHECKME: does this work and pass tests? */
+    #define  COB_PACKAGE_VERSION	"2.2"
+#elif __LIBCOB_VERSION >= 4
     #define flag        tf_ascending
-    #define linorkeyptr linage 
+    #define linorkeyptr linage
+    #define  COB_PACKAGE_VERSION	"3.2"
+#elif __LIBCOB_VERSION_MINOR >= 2   /* < 4 ==> 3.1+*/
+    #define  COB_PACKAGE_VERSION	"3.2"
+#else
+    #define  COB_PACKAGE_VERSION	"3.1.2"
 #endif
 /*  end - compatibility version 3.1 and 4.0 */
-
-#define  COB_PACKAGE_VERSION		"3.2"
 
 
 void GCSORT_Config( void );

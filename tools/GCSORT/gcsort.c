@@ -260,13 +260,15 @@ int main_prod(int argc, char **argv) {
 	module->flag_fold_call = 0;
 	module->flag_exit_program = 0;
 
-#if __LIBCOB_VERSION >= 3
+#if defined (__LIBCOB_VERSION)	/* only defined for 3+ */
 	module->flag_debug_trace = 0;
 	module->flag_dump_ready = 0;
 	module->module_stmt = 0;
 	module->module_sources = NULL;
-	module->gc_version = COB_PACKAGE_VERSION; /* new 3.2 */
+#if __LIBCOB_RELEASE >= 30200
+	module->gc_version = COB_PACKAGE_VERSION;
 	module->xml_mode = 1;
+#endif
 #endif
 
 	module->crt_status = NULL;

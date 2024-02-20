@@ -63,11 +63,14 @@ all: $(TARGET)
 Debug:all
 Release:all
 
+# targets that are only logical targets instead of files
+.PHONY: clean check
 
 $(TARGET): $(OBJS)
 	@echo ' Generate gcsort'
 		$(LD) $(TARGET) $(LDFLAGS) $(OBJS) $(LIBS) $(DEBUGFLAGS)
 	@echo ' Copy gcsort in tests environment'
+		$(MKDIR)   $(OUTDIR)
 		$(INSTALL) $(TARGET) $(OUTDIR)
 
 
@@ -113,6 +116,15 @@ clean:
 
 deploy:
 	$(INSTALL) $(TARGET) $(OUTDIR)
+
+check: all
+	# ensure folders exist (issue with git mirrors)
+	$(MKDIR) tests/listing
+	$(MKDIR) tests/log
+	# TODO: handle WIN32
+	cd tests/script && ./compile.sh || true
+	cd tests/bin    && ./gctestset
+	cd tests/bin    && ./gctestrun
 
 cleanDebug:clean
 cleanRelease:clean
