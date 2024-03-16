@@ -1,19 +1,20 @@
-/* A Bison parser, made by GNU Bison 2.7.  */
-
+/* A Bison parser, made by GNU Bison 3.5.1.  */
+  
 /* Bison interface for Yacc-like parsers in C
-   
-      Copyright (C) 1984, 1989-1990, 2000-2012 Free Software Foundation, Inc.
-   
+
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
+
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
@@ -26,13 +27,16 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-   
+
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 #ifndef YY_YY_PARSER_H_INCLUDED
 # define YY_YY_PARSER_H_INCLUDED
-/* Enabling traces.  */
+/* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 1
 #endif
@@ -40,103 +44,101 @@
 extern int yydebug;
 #endif
 
-/* Tokens.  */
+/* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-   /* Put the tokens into the symbol table, so that GDB and other debuggers
-      know about them.  */
-   enum yytokentype {
-     AND = 258,
-     COND = 259,
-     ENDREC = 260,
-     FNAMES = 261,
-     FORMAT = 262,
-     INCLUDE = 263,
-     INREC = 264,
-     NONE = 265,
-     OMIT = 266,
-     OPTION = 267,
-     OR = 268,
-     OUTFIL = 269,
-     OUTREC = 270,
-     SAVE = 271,
-     SKIPREC = 272,
-     STARTREC = 273,
-     STOPAFT = 274,
-     SUM = 275,
-     XSUM = 276,
-     SPLIT = 277,
-     SPLITBY = 278,
-     VLSCMP = 279,
-     VLSHRT = 280,
-     Y2PAST = 281,
-     MODS = 282,
-     BUILD = 283,
-     FIELDS = 284,
-     OVERLAY = 285,
-     GIVE = 286,
-     MERGE = 287,
-     ORG = 288,
-     RECORD = 289,
-     SORT = 290,
-     JOINKEYS = 291,
-     USE = 292,
-     COPY = 293,
-     TYPE = 294,
-     LENGTH = 295,
-     DATE1 = 296,
-     DATE2 = 297,
-     DATE3 = 298,
-     DATE4 = 299,
-     CHANGE = 300,
-     NOMATCH = 301,
-     SORTED = 302,
-     NOSEQCK = 303,
-     UNPAIRED = 304,
-     ONLY = 305,
-     JOIN = 306,
-     JOINREFORMAT = 307,
-     FILL = 308,
-     FINDREP = 309,
-     INFR = 310,
-     OUTFR = 311,
-     INOUT = 312,
-     STARTPOS = 313,
-     ENDPOS = 314,
-     DO = 315,
-     MAXLEN = 316,
-     OVERRUN = 317,
-     SHIFT = 318,
-     DIGIT = 319,
-     DIGITBIG = 320,
-     CHARTCOND = 321,
-     CHARTYPE = 322,
-     FILETYPE = 323,
-     FORMATTYPE = 324,
-     JOINFILE = 325,
-     KEY = 326,
-     KEYTYPE = 327,
-     OCCURFILL = 328,
-     OPCOND = 329,
-     SUBSTRING = 330,
-     ORDER = 331,
-     RECTYPEFIX = 332,
-     RECTYPEVAR = 333,
-     STRING = 334,
-     TOKSKIP = 335,
-     EXROUT = 336,
-     YESNO = 337,
-     ERRTRUNC = 338,
-     SIGNDIGITBIG = 339
-   };
+  enum yytokentype
+  {
+    AND = 258,
+    COND = 259,
+    ENDREC = 260,
+    FNAMES = 261,
+    FORMAT = 262,
+    INCLUDE = 263,
+    INREC = 264,
+    NONE = 265,
+    OMIT = 266,
+    OPTION = 267,
+    OR = 268,
+    OUTFIL = 269,
+    OUTREC = 270,
+    SAVE = 271,
+    SKIPREC = 272,
+    STARTREC = 273,
+    STOPAFT = 274,
+    SUM = 275,
+    XSUM = 276,
+    SPLIT = 277,
+    SPLITBY = 278,
+    VLSCMP = 279,
+    VLSHRT = 280,
+    Y2PAST = 281,
+    MODS = 282,
+    BUILD = 283,
+    FIELDS = 284,
+    OVERLAY = 285,
+    GIVE = 286,
+    MERGE = 287,
+    ORG = 288,
+    RECORD = 289,
+    SORT = 290,
+    JOINKEYS = 291,
+    USE = 292,
+    COPY = 293,
+    TYPE = 294,
+    LENGTH = 295,
+    DATE1 = 296,
+    DATE2 = 297,
+    DATE3 = 298,
+    DATE4 = 299,
+    CHANGE = 300,
+    NOMATCH = 301,
+    SORTED = 302,
+    NOSEQCK = 303,
+    UNPAIRED = 304,
+    ONLY = 305,
+    JOIN = 306,
+    JOINREFORMAT = 307,
+    FILL = 308,
+    FINDREP = 309,
+    INFR = 310,
+    OUTFR = 311,
+    INOUT = 312,
+    STARTPOS = 313,
+    ENDPOS = 314,
+    DO = 315,
+    MAXLEN = 316,
+    OVERRUN = 317,
+    SHIFT = 318,
+    DIGIT = 319,
+    DIGITBIG = 320,
+    CHARTCOND = 321,
+    CHARTYPE = 322,
+    FILETYPE = 323,
+    FORMATTYPE = 324,
+    JOINFILE = 325,
+    KEY = 326,
+    KEYTYPE = 327,
+    OCCURFILL = 328,
+    OPCOND = 329,
+    SUBSTRING = 330,
+    ORDER = 331,
+    RECTYPEFIX = 332,
+    RECTYPEVAR = 333,
+    STRING = 334,
+    TOKSKIP = 335,
+    EXROUT = 336,
+    YESNO = 337,
+    ERRTRUNC = 338,
+    SIGNDIGITBIG = 339
+  };
 #endif
 
-
+/* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE
+union YYSTYPE
 {
-/* Line 2058 of yacc.c  */
-#line 24 "..\\..\\parser.y"
+#line 24 "parser.y"
  
 	int         number;
 	long        lnumber;
@@ -150,29 +152,17 @@ typedef union YYSTYPE
     struct findrep_t        *findrep;
     struct findrepfield_t   *findrep_field;
 
+#line 156 "parser.h"
 
-/* Line 2058 of yacc.c  */
-#line 156 "..\\..\\parser.h"
-} YYSTYPE;
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
+
 extern YYSTYPE yylval;
 
-#ifdef YYPARSE_PARAM
-#if defined __STDC__ || defined __cplusplus
-int yyparse (void *YYPARSE_PARAM);
-#else
-int yyparse ();
-#endif
-#else /* ! YYPARSE_PARAM */
-#if defined __STDC__ || defined __cplusplus
 int yyparse (void);
-#else
-int yyparse ();
-#endif
-#endif /* ! YYPARSE_PARAM */
 
 #endif /* !YY_YY_PARSER_H_INCLUDED  */
