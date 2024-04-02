@@ -59,7 +59,7 @@ file-control.
         assign to report-file-name
         file status is report-file-status.
 
-     select sort-file.
+     select sort-file assign to sortwork.
 
 data division.
 file section.

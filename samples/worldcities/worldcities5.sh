@@ -1,5 +1,11 @@
+#!/bin/bash
+
+
 rm run-file
 rm report-file
+
+set -e
+
 export PRINTQUEUE=Brother-HL-2170W-wireless
 export FILES=$HOME/worldcityfiles
 export countryfile=$FILES/countryInfo.txt
