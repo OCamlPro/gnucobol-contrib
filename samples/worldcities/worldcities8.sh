@@ -11,5 +11,5 @@ rm temp
 ./worldcities8 $FILES/countryInfo.txt $FILES/worldcities8.kml
 rm worldcities8
 rm temp
-lpr -P $PRINTQUEUE run-file
-lpr -P $PRINTQUEUE report-file
+#lpr -P $PRINTQUEUE run-file
+#lpr -P $PRINTQUEUE report-file
