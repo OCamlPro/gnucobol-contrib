@@ -1,3 +1,7 @@
+2024-04-30 Sergey Kashyrin <ska@kiska.net>
+	* IBM COBOL has a limitation of 160 characters in VALUE of PIC X.
+	* Had to split long lines. Flag is "-S"
+
 2022-01-15 Sergey Kashyrin <ska@kiska.net>
 	* Fix for DECLARE CURSOR and DECLARE TABLE inside DECLARE SECTION.
 

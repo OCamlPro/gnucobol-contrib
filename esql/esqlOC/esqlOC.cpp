@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2021 Sergey Kashyrin <ska@kiska.net>
+ * Copyright (C) 2006-2024 Sergey Kashyrin <ska@kiska.net>
  *               2012 enhanced by Doug Vogel <dv11674@gmail.com>
  *               2013 fixes and enhancements by Atilla Akarsular <030ati@gmail.com>
  *               2021 mf-compat by Simon Sobisch <simonsobisch@gnu.org>
@@ -40,13 +40,14 @@
 
 #include "vcache.h"
 
-static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCOBOL Version 3 (2022.01.15) Build " __DATE__ "\n";
+static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCOBOL Version 3 (2024.04.30) Build " __DATE__ "\n";
 /**  Version is present in SQLCA. Current is 03 */
 
 static bool bAPOST = true;		// use apostroph instead of quote
 static char Q = '\'';
 static const char * sQ = "'";
 static bool bStatic = false;	// static call
+static bool bSplit = false;
 static const char * sSQ = "";
 static bool bForceUnknown = false;	// force unknown statements to be EXECUTE IMMEDIATE
 static string W_ERR("");	// WHENEVER SQLERROR
@@ -926,20 +927,49 @@ private:
 			addln(lineno++, buf);
 			sprintf(buf, "           05 SQL-STMLEN PIC S9(4) COMP-5 VALUE %d.", sql.length());
 			addln(lineno++, buf);
-			string fl("           05 SQL-STMT   PIC X(");
-			fl += sql.length();
-			fl += ") VALUE ";
-			fl += Q;
-			for(int k = 0; k < sql.length(); ++k) {
-				if(sql[k] == Q) {
-					sql = sql.substr(0, k) + Q + sql.substr(k);
-					++k;
+			if(bSplit && sql.length() > 160) {
+				string fl("           05 SQL-STMT   PIC X(");
+				bool bProcess = true;
+				while(bProcess) {
+					string sql1;
+					if(sql.length() > 160) {
+						sql1 = sql.substr(0, 160);
+						sql = sql.substr(160);
+					} else {
+						sql1 = sql;
+						bProcess = false;
+					}
+					fl += sql1.length();
+					fl += ") VALUE ";
+					fl += Q;
+					for(int k = 0; k < sql1.length(); ++k) {
+						if(sql1[k] == Q) {
+							sql1 = sql1.substr(0, k) + Q + sql1.substr(k);
+							++k;
+						}
+					}
+					fl += sql1;
+					fl += Q;
+					fl += '.';
+					processfmt(lineno, fl);
+					fl = "           05 FILLER     PIC X(";
 				}
+			} else {
+				string fl("           05 SQL-STMT   PIC X(");
+				fl += sql.length();
+				fl += ") VALUE ";
+				fl += Q;
+				for(int k = 0; k < sql.length(); ++k) {
+					if(sql[k] == Q) {
+						sql = sql.substr(0, k) + Q + sql.substr(k);
+						++k;
+					}
+				}
+				fl += sql;
+				fl += Q;
+				fl += '.';
+				processfmt(lineno, fl);
 			}
-			fl += sql;
-			fl += Q;
-			fl += '.';
-			processfmt(lineno, fl);
 			if(cname.length() != 0) {
 				sprintf(buf, "           05 SQL-CNAME  PIC X(%d) VALUE %c%s%c.", cname.length(), Q, (const char*)cname, Q);
 				cname = buf;
@@ -3027,9 +3057,10 @@ char CobPgm::buf[2048];
 
 static int nstart;
 static void usage(char * pg) {
-	fprintf(stderr, "Usage: %s [-Q] [-F] [-static] [-I <copybook-directory> [| -I <copybook-directory>]] [-o <output-file>] <filename> ...\n", pg);
+	fprintf(stderr, "Usage: %s [-Q] [-F] [-S] [-static] [-I <copybook-directory> [| -I <copybook-directory>]] [-o <output-file>] <filename> ...\n", pg);
 	fprintf(stderr, "       -Q        Use double quotes\n");
 	fprintf(stderr, "       -F        Force unknown SQL statements to be accepted as \"execute immediate\"\n");
+	fprintf(stderr, "       -S        Split long alphanumeric into 160-bytes chunks\n");
 	fprintf(stderr, "       -static   Use static calls to OCSQL library\n");
 }
 
@@ -3089,6 +3120,10 @@ int main(int argsLength, char ** args)
 		}
 		if(0 == strcmp(args[nstart], "-F")) {
 			bForceUnknown = true;
+			continue;
+		}
+		if(0 == strcmp(args[nstart], "-S")) {
+			bSplit = true;
 			continue;
 		}
 		if(0 == strcmp(args[nstart], "-free")) {
