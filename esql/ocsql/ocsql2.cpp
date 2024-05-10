@@ -454,6 +454,7 @@ public:
 		}
 		if(COBREF != NULL) {
 			*COBREF = NULL;
+			*((char*)(COBREF + 1)) = 'N';
 		}
 	}
 	mydec * pbuf_set(int bufct, short bytelen = 0, short precision = 0) {
@@ -2397,7 +2398,7 @@ static void prnerr(SQLSMALLINT ht, SQLHANDLE h, OC_SQLCA * E)
 							E->OC_SQLCODE = - atoi((char *)state);
 						}
 					} else {
-						E->OC_SQLCODE = - err;
+						E->OC_SQLCODE = (err > 0) ? -err : err;
 						codewasset = true;
 					}
 					E->OC_SQLERRML = elen;

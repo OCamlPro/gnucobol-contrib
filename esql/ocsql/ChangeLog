@@ -1,3 +1,7 @@
+2024-05-08 Sergey Kashyrin <ska@kiska.net>
+
+	* Correcting SQLCODE - MSSQL is always giving positive value but DB2 on Mainframe giving negative.
+
 2022-01-03 Sergey Kashyrin <ska@kiska.net>
 
 	* Memory leak fix introduced on 2021-11-14.
