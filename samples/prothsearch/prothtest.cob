@@ -45,6 +45,8 @@
 *>            - Save / Load state.
 *> 2021.10.07 Laszlo Erdos: 
 *>            GMP functions in a separated file.
+*> 2024.06.02 Laszlo Erdos: 
+*>            Correct warning: duplicate USING BY REFERENCE item.
 *>******************************************************************************
 
  IDENTIFICATION DIVISION.
@@ -557,9 +559,8 @@
          RETURNING OMITTED
     END-CALL     
     
-    CALL "gmp_fn_mpz_add_ui" 
+    CALL "gmp_fn_mpz_add_ui_x" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER
-               BY REFERENCE WS-GMP-PROTH-NUMBER
                BY VALUE     1
          RETURNING OMITTED
     END-CALL     
@@ -572,9 +573,8 @@
          RETURNING OMITTED
     END-CALL     
 
-    CALL "gmp_fn_mpz_tdiv_q_ui" 
+    CALL "gmp_fn_mpz_tdiv_q_ui_x" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER-2
-               BY REFERENCE WS-GMP-PROTH-NUMBER-2
                BY VALUE     2
          RETURNING WS-RET-2
     END-CALL     
@@ -706,9 +706,8 @@
     END-CALL     
 
 *>  add 1 to square root of Proth number    
-    CALL "gmp_fn_mpz_add_ui" 
+    CALL "gmp_fn_mpz_add_ui_x" 
          USING BY REFERENCE WS-GMP-PROTH-NUMBER-SQRT
-               BY REFERENCE WS-GMP-PROTH-NUMBER-SQRT
                BY VALUE     1
          RETURNING OMITTED
     END-CALL     
@@ -942,10 +941,8 @@
             RETURNING WS-RET-1
        END-CALL     
       
-       CALL "gmp_fn_mpz_mul" 
+       CALL "gmp_fn_mpz_mul_x_y" 
             USING BY REFERENCE WS-GMP-POWM-RESULT
-                  BY REFERENCE WS-GMP-POWM-RESULT
-                  BY REFERENCE WS-GMP-POWM-RESULT
             RETURNING OMITTED
        END-CALL     
 
@@ -959,9 +956,8 @@
        
        IF WS-RET-1 = 1
        THEN
-          CALL "gmp_fn_mpz_mul" 
+          CALL "gmp_fn_mpz_mul_x" 
                USING BY REFERENCE WS-GMP-POWM-RESULT
-                     BY REFERENCE WS-GMP-POWM-RESULT
                      BY REFERENCE WS-GMP-POWM-BASE
                RETURNING OMITTED
           END-CALL     
@@ -971,9 +967,8 @@
       
           IF WS-CMP-RET-1 >= ZEROES
           THEN 
-             CALL "gmp_fn_mpz_mod" 
+             CALL "gmp_fn_mpz_mod_x" 
                   USING BY REFERENCE WS-GMP-POWM-RESULT
-                        BY REFERENCE WS-GMP-POWM-RESULT
                         BY REFERENCE WS-GMP-PROTH-NUMBER
                   RETURNING OMITTED
              END-CALL     
@@ -988,9 +983,8 @@
 
 *>  the function mpz_powm() can not give back -1, 
 *>  therefore we have to add 1, and compare the result with the Proth number    
-    CALL "gmp_fn_mpz_add_ui" 
+    CALL "gmp_fn_mpz_add_ui_x" 
          USING BY REFERENCE WS-GMP-POWM-RESULT
-               BY REFERENCE WS-GMP-POWM-RESULT
                BY VALUE     1
          RETURNING OMITTED
     END-CALL     
@@ -1079,9 +1073,8 @@
          RETURNING OMITTED
     END-CALL     
     
-    CALL "gmp_fn_mpz_add" 
+    CALL "gmp_fn_mpz_add_x" 
          USING BY REFERENCE WS-GMP-HELP-VAR
-               BY REFERENCE WS-GMP-HELP-VAR
                BY REFERENCE WS-GMP-B
          RETURNING OMITTED
     END-CALL     
@@ -1095,9 +1088,8 @@
     
     IF WS-CMP-RET-2 >= ZEROES
     THEN 
-       CALL "gmp_fn_mpz_add" 
+       CALL "gmp_fn_mpz_add_x" 
             USING BY REFERENCE WS-GMP-HELP-VAR
-                  BY REFERENCE WS-GMP-HELP-VAR
                   BY REFERENCE WS-GMP-PROTH-NUMBER
             RETURNING OMITTED
        END-CALL     

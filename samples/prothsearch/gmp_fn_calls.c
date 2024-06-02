@@ -33,6 +33,8 @@
 *> ========== ==================================================================
 *> 2021.10.07 Laszlo Erdos: 
 *>            First version created.
+*> 2024.06.02 Laszlo Erdos: 
+*>            Correct warning: duplicate USING BY REFERENCE item.
 *>******************************************************************************
 */
 
@@ -87,6 +89,13 @@ gmp_fn_mpz_add_ui (mpz_t rop, const mpz_t op1, unsigned long int op2)
 }
 
 void 
+gmp_fn_mpz_add_ui_x (mpz_t rop, unsigned long int op2)
+{
+  mpz_add_ui (rop, rop, op2);
+  return;
+}
+
+void 
 gmp_fn_mpz_sub_ui (mpz_t rop, const mpz_t op1, unsigned long int op2)
 {
   mpz_sub_ui (rop, op1, op2);
@@ -97,6 +106,12 @@ unsigned long int
 gmp_fn_mpz_tdiv_q_ui (mpz_t q, const mpz_t n, unsigned long int d)
 {
   return(mpz_tdiv_q_ui (q, n, d));
+}
+
+unsigned long int 
+gmp_fn_mpz_tdiv_q_ui_x (mpz_t q, unsigned long int d)
+{
+  return(mpz_tdiv_q_ui (q, q, d));
 }
 
 size_t 
@@ -137,9 +152,30 @@ gmp_fn_mpz_mul (mpz_t rop, const mpz_t op1, const mpz_t op2)
 }
 
 void 
+gmp_fn_mpz_mul_x (mpz_t rop, const mpz_t op2)
+{
+  mpz_mul (rop, rop, op2);
+  return;
+}
+
+void 
+gmp_fn_mpz_mul_x_y (mpz_t rop)
+{
+  mpz_mul (rop, rop, rop);
+  return;
+}
+
+void 
 gmp_fn_mpz_mod (mpz_t r, const mpz_t n, const mpz_t d)
 {
   mpz_mod (r, n, d);
+  return;
+}
+
+void 
+gmp_fn_mpz_mod_x (mpz_t r, const mpz_t d)
+{
+  mpz_mod (r, r, d);
   return;
 }
 
@@ -174,6 +210,13 @@ void
 gmp_fn_mpz_add (mpz_t rop, const mpz_t op1, const mpz_t op2)
 {
   mpz_add (rop, op1, op2);
+  return;  
+}
+
+void 
+gmp_fn_mpz_add_x (mpz_t rop, const mpz_t op2)
+{
+  mpz_add (rop, rop, op2);
   return;  
 }
 
