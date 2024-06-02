@@ -12,6 +12,8 @@ Author:       Laszlo Erdos - https://www.facebook.com/wortfee
 *>            - Save / Load state parameter.
 *> 2021.10.07 Laszlo Erdos: 
 *>            - GMP functions in a separated file.
+*> 2024.06.02 Laszlo Erdos: 
+*>            Correct warning: duplicate USING BY REFERENCE item.
 *>******************************************************************************
 
 Licensed under the GNU Lesser General Public License as published by the
