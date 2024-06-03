@@ -1,10 +1,10 @@
-GCSORT 1.3.7
+GCSORT 1.3.10 
 
 
 INSTALL
 
- * Minimum Requirements.
-    No changes to parser.y and scanner.l.
+ * Minimum Requirements. 
+    No changes to parser.y and scanner.l.  
     Only to generate gcsort in executable format.
 
 	GNU C compiler  (version work with 4.3.2)
@@ -12,7 +12,7 @@ INSTALL
     GNU Cobol       (Version 2.2.0) or higher
 
  * Requirements for changes to parser.y and scanner.l
-
+ 
 	GNU C compiler  (version work with 4.3.2)
 	GNU Make        (version work with 3.81)
 	GNU Bison       (version work with 2.4.1)
@@ -20,54 +20,59 @@ INSTALL
 
     GNU Cobol       (Version 2.2.0) or higher
 
-
+    
  *Install
-    Linux / Windows environment:
-    After checkout in folder build_linux modify
+    Linux / Windows environment:    
+    After checkout in folder build_linux modify 
     1) Makefile   # change the paths according to your needs / local setup
-
-    For linux   :     make
+    
+    For linux   :     make  
 	For windows :     make
-
-	MinGW/MSYS environment:
+ 
+	MinGW/MSYS environment:    
 	1) Use 'Build Guide for MinGW - Minimalist GNU for Windows' by Arnold J. Trembley
 	   to install components for GNUCobol.
 	2) Installing MinGW and the MSYS , use the GUI interface to add :
 		msys-bison.bin
 		msys-fles.bin
-	3) make
-
-
+	3) make    
+	
+	
  *Usage
     GCSORT --help   for help from command line.
     Folder testcase for example of commands.
-
+    
     Check for the functionnality implemented (listed in README) to see in this fit your needs.
-
+    
     Setting environment variable for best performance and view details of statistics.
-
+    
  *Tests case
     Requirements:  GnuCOBOL installed
-    Folder tests Linux/MinGW environment:
+    Folder tests Linux/MinGW environment: 
         1) cd gcsort/tests/script
 		2) chmod 777 compile.sh  #enable for execution only for linux
-		3) compile.sh
+		3) ./compile.sh
 		4) cd ../bin
 		5) check in ../bin  if gctestset  is presents
 		6) cd ../bin
-		7) gctestset  >../loggenerate.log 				# Generate files and compile cobol programs for test
-		8) Verify last message of log file (If correct last message is : 'setup  ok')
-		9) gctestrun 1>../logexec.log  2>../logexec_err.log			# Execute all test case
-	   10) check bottom log file (if test is ok message is 'T E S T    P A S S E D'
-
-
-    Folder tests Windows environment:
+		7) ./gctestset  >../loggenerate.log 				# Generate files and compile cobol programs for test
+		8) Verify last message of log file (If correct last message is : 'setup  ok') 
+		9) ./gctestrun 1>../logexec.log  2>../logexec_err.log			# Execute all test case
+	   10) check bottom log file (if test is ok message is 'T E S T    P A S S E D'    
+		
+		
+    Folder tests Windows environment: 
         1) cd gcsort\tests\script
 		3) compile.bat
 		4) cd ..\bin
 		5) check in ..\bin  if gctestset is presents
 		6) cd ..\bin
 		7) gctestset  >..\loggenerate.log 				# Generate files and compile cobol programs for test
-		8) Verify last message of log file (If correct last message is : 'setup  ok')
+		8) Verify last message of log file (If correct last message is : 'setup  ok') 
 		9) gctestrun 1>..\logexec.log 2>..\logexec_err.log   					# Execute all test case
-	   10) check bottom log file (if test is ok message is 'T E S T    P A S S E D'
+	   10) check bottom log file (if test is ok message is 'T E S T    P A S S E D'    
+		
+        
+        
+        
+        

@@ -1,7 +1,7 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
- *
+ * 
  *	This file is part of GCSORT.
  *
  *  GCSORT is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@
 #include "copyfile.h"
 #include "datediff.h"
 #include "join.h"
+#include "gcthread.h"
 
 
 /* Module initialization indicator */
@@ -66,8 +67,20 @@ struct cob_frame	*frame_overflow;
 struct cob_frame	*frame_ptr;
 struct cob_frame	frame_stack[255];
 
+	cob_u8_t* g_cb_fieldcollatingseq_ptr;
+	cob_u8_t  g_cb_fieldcollatingseq[256];
+#if __LIBCOB_RELEASE >= 30200
+	static char		ebcdic_table[1024] = "default";
+#endif
 static int		ioixpafix();
 static int		ioixpafix_(const int);
+
+
+/* MultiThread */
+int gcMultiThreadIsFirst = 0;
+int gcMultiThread = 0;	// 1
+int gcMaxThread = 0;	// 2
+/* MultiThread */
 
 static int
 ioixpafix()
@@ -178,7 +191,7 @@ int main(int argc, char **argv)
 	if (argc < 2) {
 		fprintf(stdout,"________________________________________________________________________\n");
 		fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-		fprintf(stdout, "Copyright (C) 2016-2023 Sauro Menna\n");
+		fprintf(stdout, "Copyright (C) 2016-2024 Sauro Menna\n");
 		fprintf(stdout, "                   2009 Cedric ISSALY\n");
 		fprintf(stdout,"________________________________________________________________________\n");
 		fprintf(stdout,"gcsort. Nothing to do.\n");
@@ -247,7 +260,7 @@ int main_prod(int argc, char **argv) {
 	module->module_param_cnt = 0;
 	/* s.m.20201015 module->ebcdic_sign = 0;    */
 	module->ebcdic_sign = g_cb_ebcdic_sign;
-	module->collating_sequence = g_cb_coltab_ptr;
+	module->collating_sequence = get_collation(g_cb_colseq);
 	module->decimal_point = '.';
 	module->currency_symbol = '$';
 	module->numeric_separator = ',';
@@ -266,7 +279,7 @@ int main_prod(int argc, char **argv) {
 	module->module_stmt = 0;
 	module->module_sources = NULL;
 #if __LIBCOB_RELEASE >= 30200
-	module->gc_version = COB_PACKAGE_VERSION;
+	module->gc_version = COB_PACKAGE_VERSION; /* new 3.2 */
 	module->xml_mode = 1;
 #endif
 #endif
@@ -282,33 +295,37 @@ int main_prod(int argc, char **argv) {
 	/* Save number of call params */
 	module->module_num_params = cob_glob_ptr->cob_call_params;
 	 
-
-	job=job_constructor();
-	if (job != NULL)
-	   	nRC = job_load(job, argc, argv);
-	else
-    	nRC = -1;
-    if (nRC == 0){
-	/* check SORT FIELDS=COPY in this case force MERGE */
-    /*
-    if ((job_GetTypeOp(job) == 'S') && (job_GetFieldCopy() == 1)){
-            job_SetTypeOP('M');
-            printf("Forced command MERGE for SORT FIELDS=COPY\n");
-    }
-    */ 
-		if (job_GetFieldCopy() == 1)
-			job_SetTypeOP('C');		/* Copy */
-		if (nRC >= 0) 	
-			nRC = job_print(job);
-		if (nRC >= 0) {
-			nRC = job_check(job);
-		}
-		if (nRC >= 0)	
-			job_ReviewMemAlloc(job);
-		if ((nRC >= 0) && (job_NormalOperations(job) == 1))         /* 0 = Normal , 1 = Test command Line   */
+	/* s.m. 20240302 */
+	/* MultiThread */
+	if (gcMultiThread == 0) {
+		job = job_constructor();
+		if (job != NULL)
+ 			nRC = job_load(job, argc, argv);
+		else
+			nRC = -1;
+		if (nRC == 0) {
+			/* check SORT FIELDS=COPY in this case force MERGE */
+			/*
+			if ((job_GetTypeOp(job) == 'S') && (job_GetFieldCopy() == 1)){
+					job_SetTypeOP('M');
+					printf("Forced command MERGE for SORT FIELDS=COPY\n");
+			}
+			*/
+			if (job_GetFieldCopy() == 1)
+				job_SetTypeOP('C');		/* Copy */
+			if (nRC >= 0)
+				nRC = job_print(job);
+			if (nRC >= 0) {
+				nRC = job_check(job);
+			}
+			if (nRC >= 0) {
+				job_ReviewMemAlloc(job);
+				job_AllocateField(job);
+			}
+			if ((nRC >= 0) && (job_NormalOperations(job) == 1))         /* 0 = Normal , 1 = Test command Line   */
 				printf("GCSORT - TEST COMMAND LINE PARAMETERS \n");
-		if ((nRC >= 0) && (job_NormalOperations(job) == 0)) {       /* 0 = Normal , 1 = Test command Line   */
-				/* check typeOP  'S' for Sort , 'M' for Merge and 'C' for Copy  */
+			if ((nRC >= 0) && (job_NormalOperations(job) == 0)) {       /* 0 = Normal , 1 = Test command Line   */
+					/* check typeOP  'S' for Sort , 'M' for Merge and 'C' for Copy  */
 				switch (job_GetTypeOp(job)) {
 				case ('C'):
 					sprintf(szMex, "Copy");
@@ -320,38 +337,48 @@ int main_prod(int argc, char **argv) {
 					break;
 				case ('S'):
 					sprintf(szMex, "Sort");
-					nRC = job_sort(job);
+						nRC = job_sort(job);
 					break;
 				case ('J'):
 					sprintf(szMex, "Join");
 					nRC = job_joiner(job);
 					break;
 				}
-				if (nRC >= 0)	
-					job_print_final(job, & timeStart);
+				if (nRC >= 0)
+					job_print_final(job, &timeStart);
+			}
+		}
+		if (nRC == 0) {
+			fprintf(stdout, "GCSORT - %s OK\n\n", szMex);
+		}
+		else {
+			fprintf(stdout, "GCSORT - %s KO\n\n", szMex);
+			nRC = GC_RTC_ERROR;
+		}
+
+		/* new from Chuck */
+		cob_tidy();
+
+		job_destroy(job);
+		job_destructor(job);
+	}
+	else
+	{
+		/* s.m. 20240302 */
+		nRC = gcthread_start(argc, argv, gcMaxThread, &timeStart);
+		if (nRC == 0) {
+			fprintf(stdout, "GCSORT - %s OK\n\n", szMex);
+		}
+		else {
+			fprintf(stdout, "GCSORT - %s KO\n\n", szMex);
+			nRC = GC_RTC_ERROR;
 		}
 	}
-	if (nRC == 0) {
-		fprintf(stdout, "GCSORT - %s OK\n\n", szMex);
-	}
-	else {
-		fprintf(stdout, "GCSORT - %s KO\n\n", szMex);
-		nRC = GC_RTC_ERROR;
-	}
-
-	/* new from Chuck */
-	cob_tidy();
-
-	job_destroy(job);
-    job_destructor(job);
-
 	return nRC;
 }
 
 void verify_options(int numargs, char** args)
 {
-	char ebcdic_table[1024] = "default";
-
 	char* pch;
 	char szOpt[1024];
 	szOpt[sizeof(szOpt) - 1] = '\0';
@@ -425,39 +452,36 @@ void verify_options(int numargs, char** args)
 #endif /* __LIBCOB_RELEASE >= 30200 */
 		}
 	}
+}
 
 #if __LIBCOB_RELEASE >= 30200
-	/* Load the translation table only if actually useful */
+ const cob_u8_t * get_collation(enum cb_colseq colseq)
+{
+	static cob_u8_t coltab[256];
+	static int coltab_loaded = 0;
 
-	switch (g_cb_colseq) {
-#ifdef	COB_EBCDIC_MACHINE
-	case CB_COLSEQ_ASCII:
-		// s.m. 20230215 if (cob_get_collation_by_name(ebcdic_table, (const cob_u8_t**)&g_cb_coltab, NULL) < 0) {
-		if (cob_load_collation(ebcdic_table, g_cb_coltab, NULL) < 0) {
+	/* Load the translation table only if actually useful */
+#ifdef COB_EBCDIC_MACHINE
+	 if (colseq == CB_COLSEQ_ASCII) {
 #else
-	case CB_COLSEQ_EBCDIC:
-		if (cob_load_collation(ebcdic_table, NULL, g_cb_coltab) < 0) {
+	 if (colseq == CB_COLSEQ_EBCDIC) {
 #endif
+		if (coltab_loaded) {
+			 return coltab;
+		 }
+	#ifdef COB_EBCDIC_MACHINE
+		if (cob_load_collation(ebcdic_table, coltab, NULL) < 0) {
+	#else
+		if (cob_load_collation(ebcdic_table, NULL, coltab) < 0) {
+	#endif
 			fprintf(stdout, "*GCSORT* ERROR: Problem with option -febcdic-table, could not load the given table\n");
 			exit(GC_RTC_ERROR);
 		}
-		g_cb_coltab_ptr = g_cb_coltab;
-		break;
-	default:
-		g_cb_coltab_ptr = NULL;
-		break;
-		}
-	/*
-		if (g_cb_coltab_ptr != NULL) {
-			printf(" Table \n");
-			for (int y = 0; y < 256; y++) {
-				printf("Char [%d] = %c - (%x)\n", y, g_cb_coltab_ptr[y], g_cb_coltab_ptr[y]);
-			}
-		}
-		*/
 
-#endif /* __LIBCOB_RELEASE >= 30200 */
-
-	return;
+		coltab_loaded = 1;
+		return coltab;
+	}
+	return NULL;
 }
+#endif /* __LIBCOB_RELEASE >= 30200 */
 
