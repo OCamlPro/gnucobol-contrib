@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -31,17 +31,20 @@
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	#include <io.h>
 	#define _strtoll    _strtoi64
+	#define GCThread __declspec( thread )
 #else
 	#include <limits.h>
 	#include <sys/io.h>
 	#include <time.h>
 	#include <fcntl.h>
 	#define _strtoll   strtoll
+	#define GCThread __thread 
 #endif
 
 
 #include "utils.h"
 #include "mmfioc.h"
+
 
 #define MAX_FILES_INPUT 16	/* Number of max files in input for merge and temporary files   */
 
@@ -64,6 +67,7 @@ struct job_t;
 
 #define MAX_RECSIZE			32752 
 #define MAX_HANDLE_TEMPFILE	16
+#define MAX_HANDLE_THREAD   16*16
 #define SIZEINT				sizeof(int)     /* 4    */
 #define SIZEINT64			sizeof(int64_t) /* 8    */
 
@@ -82,17 +86,25 @@ struct job_t;
 #define MAXFILEIN 100
 
 
+struct hSrtMem_t {
+	int64_t lPosPnt;			/* Pointer RRN file*/
+	unsigned int   nLenRek;		/* Record len */
+	unsigned char* pAddress;	/* Pointer memory record area */
+};
+
 struct job_t {
 	char arrayFileInCmdLine[MAXFILEIN][FILENAME_MAX];
     char arrayFileOutCmdLine[MAXFILEIN][FILENAME_MAX];
 	char arrayFileOutFilCmdLine[MAXFILEIN][FILENAME_MAX];
-	char array_FileTmpName[MAX_HANDLE_TEMPFILE][FILENAME_MAX];
+	// char array_FileTmpName[MAX_HANDLE_TEMPFILE][FILENAME_MAX];
+	char array_FileTmpName[MAX_HANDLE_THREAD][FILENAME_MAX];
 	char FileNameXSUM[FILENAME_MAX];
 	char job_typeOP;				        /* 'S' for sort, 'M' for Merge, 'C' for Copy, 'J' for Join    */
 	char strPathTempFile[FILENAME_MAX];     /* path temporary file                          */
 	char szCmdLineCommand[8192];	        /* Copy from command line                       */
 	char szTakeFileName[8192];	            /* Take FileName                                */
-	int	 array_FileTmpHandle[MAX_HANDLE_TEMPFILE];
+	//int	 array_FileTmpHandle[MAX_HANDLE_TEMPFILE];
+	int	 array_FileTmpHandle[MAX_HANDLE_THREAD];
 	int	 bIsFieldCopy;		                /* SORT-MERGE FIELDS=COPY                       */
 	int	 bIsPresentSegmentation;		    /* File segmentation                            */
 	int	 m_SeekOrder;
@@ -136,7 +148,7 @@ struct job_t {
 	int64_t	recordWriteOutTotal;
 	int64_t	recordWriteSortTotal;
 	int64_t	recordDiscardXSUMTotal;
-	int64_t	ulMemSizeAlloc;		        /* Max size mem                 */
+	int64_t	ulMemSizeAllocData;		        /* Max size mem                 */
 	int64_t	ulMemSizeAllocSort;		    /* Max size mem                 */
 	int64_t	ulMemSizeRead;		        /* Current size mem after read  */
 	int64_t	ulMemSizeSort;
@@ -181,7 +193,67 @@ struct job_t {
 	int		nLenFutureUseL6;
 	int		nLenFutureUseL7;
 
+	int     nTypeIndexHandler;		/* Type Index file handler */
+
+	int     nMultiThread;		/* flag MultiThread 0=no, 1=yes*/
+	int     nCurrThread;		/* current Thread */
+	int		nMaxThread;			/* num max Thread */
+	int     nTypeLoadThread;	/* 10 = block/chuck, 21 = round robin */
+
 	struct join_t* join;
+
+/* s.m. 20240302 */
+
+	cob_field* g_fd1;
+	cob_field* g_fd2;
+	cob_field* g_fdate1;
+	cob_field* g_fdate2;
+	cob_field* g_ckfdate1;
+	cob_field* g_ckfdate2;
+	struct sortField_t* srtF;
+
+	int g_lenRek;
+	int nSp ;
+	int nTypeFieldsCmd;
+	int result;
+	int64_t lPosA;
+	int64_t lPosB;
+	long nSpread;
+	struct sortField_t* gcsortField;
+	int g_nTypeGC;
+	int g_nType;
+	int g_nLen;
+	int g_nFlags;
+	int g_idx;
+	int g_idx_max;
+	int64_t g_fld1;
+	int64_t g_fld2;
+	cob_field* cob_field_key[100];
+	unsigned char* g_pdata[100];
+
+	int g_nSp;	
+	int g_nPos;
+	int g_result;
+	int g_first_sort;
+
+	const uint8_t* g_src;
+	uint8_t* g_dst;
+	size_t g_i;
+	int	nLenMemory;
+
+	struct hSrtMem_t* phSrt;
+	/*int64_t lPosPnt;
+	unsigned int   nLenRek;
+	unsigned char* pAddress;*/
+
+	int bThreadIsFirstRound;
+
+	int64_t	nCountRecThread;
+	struct file_t* fileLoad;
+	long	nMTSkipRec;
+	long	nMTStopAft;
+
+	long nRecCount;
 
 };
 
@@ -194,43 +266,47 @@ int job_sort(struct job_t* job);
 int job_load(struct job_t *job, int argc, char **argv);
 int job_check(struct job_t *job);
 int job_loadFiles(struct job_t *job);
+
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
-	int job_sort_data(struct job_t *job);
+	INLINE int job_sort_data(struct job_t *job);
 #else
-	static INLINE2 int job_sort_data(struct job_t* job);
+	INLINE int job_sort_data(struct job_t* job); 
 #endif
 int job_save_out(struct job_t *job);
 int job_save_tempfile(struct job_t *job);
 int job_save_tempfinal(struct job_t *job);
 
-INLINE int job_ReadFileTemp(struct mmfio_t* descTmp, int* nLR, unsigned char* szBuffRek, int nFirst);
+INLINE2 int job_ReadFileTemp(struct mmfio_t* descTmp, int* nLR, unsigned char* szBuffRek, int nFirst);
 
 int job_print(struct job_t *job);
 int job_GetTypeOp(struct job_t *job);
 
-/*
+
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
-	static INLINE int job_GetKeys(unsigned char* szBufferIn, unsigned char* szKeyOut);
+	INLINE  int job_GetKeys(struct job_t* job, unsigned char* szBufferIn, unsigned char* szKeyOut);
 #else
-	static INLINE2 int job_GetKeys(unsigned char* szBufferIn, unsigned char* szKeyOut);
-#endif
-*/
-#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
- int job_GetKeys(unsigned char* szBufferIn, unsigned char* szKeyOut);
-#else
- int job_GetKeys(unsigned char* szBufferIn, unsigned char* szKeyOut);
+	INLINE2 int job_GetKeys(struct job_t* job, unsigned char* szBufferIn, unsigned char* szKeyOut);
 #endif
 
-int job_GetLenKeys( void );
-int job_GetLastPosKeys( void);
 
-int job_Verify_EOF(int* nState, struct job_t* job, cob_file* stFileDef, unsigned char* szVectorRead1, int* nLenVR1, unsigned char* szVectorRead2, int* nLenVR2);
+int job_GetLenKeys( struct job_t* job );
+int job_GetLastPosKeys( struct job_t* job );
 
-int job_checkFS(cob_file* stFileDef);
+int job_Verify_EOF(int* nState, struct job_t* job, struct file_t* stFileDef, unsigned char* szVectorRead1, int* nLenVR1, unsigned char* szVectorRead2, int* nLenVR2);
 
+/* static INLINE */
 
-/* static INLINE int job_IdentifyBuf(unsigned char** ptrBuf, int nMaxEle); */
- int job_IdentifyBuf(unsigned char** ptrBuf, int nMaxEle);
+#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+	INLINE2 int job_IdentifyBuf(struct job_t* job, unsigned char** ptrBuf, int nMaxEle);
+#else
+	INLINE2 int job_IdentifyBuf(struct job_t* job, unsigned char** ptrBuf, int nMaxEle);
+#endif
+ /* NO Inline */
+#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+	int job_compare_rek_sort(const void* first, const void* second);
+#else
+	int job_compare_rek_sort(const void* first, const void* second);
+#endif
 
 int job_print_final(struct job_t *job, time_t* timeStart);
 int job_SetTypeOP (char typeOP);
@@ -255,41 +331,46 @@ int job_CloneFileForOutfil( struct job_t *job);
 void job_CloneFileForOutfilSet(struct job_t *job, struct file_t* file);
 int job_CloneFileForXSUMFile(struct job_t* job);
 
-
-/*
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
-	INLINE int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen );
+	INLINE int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLenOut, int nLenRek);
 #else
-	INLINE2 int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLen);
+	INLINE2 int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLenOut, int nLenRek);
 #endif
-	*/
-int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLenOut, int nLenRek);
-int	job_scanCmdSpecialChar(char* bufnew);
+
+	int	job_scanCmdSpecialChar(char* bufnew);
 int	job_RescanCmdSpecialChar(char* bufnew);
 /* void job_SetRecLen(struct job_t *job, int recordsize, unsigned char* szHR);  */
 void job_ReviewMemAlloc ( struct job_t *job  );
+void job_AllocateField(struct job_t* job);
+void job_DestroyField(struct job_t* job);
 int job_MakeExitRoutines(struct job_t* job);
+
+int job_skip_record_LS_LSF(struct job_t* job, struct file_t* file, long* nRec);
+int job_skip_record(struct job_t* job, struct file_t* file, long* nRec);
 
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	void job_getTypeFlags(int nTypeField, int* nType, int* nFlags, int nLen);
 #else
-	static INLINE2 void job_getTypeFlags (int nTypeField, int* nType, int* nFlags, int nLen );
-#endif
-INLINE int job_compare_key(const void *first, const void *second);
-INLINE int job_compare_rek(const void *first, const void *second, int bCheckPosPnt);
-#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
-static INLINE  int job_compare_qsort(const void* first, const void* second);
-#else
-static INLINE2 int job_compare_qsort(const void* first, const void* second);
+	void job_getTypeFlags (int nTypeField, int* nType, int* nFlags, int nLen );
 #endif
 
-/* static INLINE int job_IdentifyBufMerge(unsigned char** ptrBuf, int nMaxElements); */
-int job_IdentifyBufMerge(unsigned char** ptrBuf, int nMaxElements, int* nCmp); 
+	/* INLINE int job_compare_key(struct job_t* job, const void* first, const void* second); */
+
+int job_compare_key(struct job_t* job, const void* first, const void* second);
+
+INLINE int job_compare_rek(struct job_t* job, const void *first, const void *second, int bCheckPosPnt, int nSplit);
+#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+	 INLINE  int job_compare_qsort(struct job_t* job, const void* first, const void* second);
+#else
+	 INLINE2 int job_compare_qsort(const void* first, const void* second, void* jobparam);
+#endif
+
+int job_IdentifyBufMerge(struct job_t* job, unsigned char** ptrBuf, int nMaxElements, int* nCmp);
 
 INLINE int job_ReadFileMerge(struct file_t* file, int* descTmp, int* nLR, unsigned char* szBuffRek, int nFirst);
-cob_field* job_cob_field_create ( void );
+INLINE cob_field* job_cob_field_create ( void );
 void job_cob_field_set (cob_field* field_ret, int type, int digits, int scale, int flags, int nLen);
-void job_cob_field_reset(cob_field* field_ret, int type, int size, int digits);
+INLINE void job_cob_field_reset(cob_field* field_ret, int type, int size, int digits);
 void job_cob_field_destroy ( cob_field* field_ret);
 void job_cob_field_destroy_NOData(cob_field* field_ret);
 void job_print_error_file(cob_file* stFileDef, int nLenRecOut);
@@ -307,23 +388,26 @@ int job_compare_date_Y2Y(cob_field* fk2, cob_field* fk1);
 char* job_GetLastCharPath(char* sz, int* pNum, int* nSkipped);
 char* job_GetNextToken(char* sz, int* nSkipped);
 
-int job_SetPosLenKeys(int* arPosLen);
+int job_SetPosLenKeys(struct job_t* job, int* arPosLen);
+int job_AllocateDataKey(struct job_t* job);
 
-
-
+INLINE int write_buffered(int desc, unsigned char* buffer_pointer, int nLenRek, unsigned char* bufferwriteglobal, int* position_buf_write);
+INLINE int write_buffered_final(int  desc, unsigned char* bufferwriteglobal, int* position_buf_write);
+INLINE int write_buffered_save_final(int		desc, unsigned char* buffer_pointer, int nLenRek, unsigned char* bufferwriteglobal, int* position_buf_write);
 
 /*  #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)   */
 /*
 #else
 */
 #define FASTCOPY
-/* #undef FASTCOPY  */
+/* #undef FASTCOPY */
 #ifdef FASTCOPY
-  #define gc_memcpy  memmove   /* // memmove //memcpy  */
-  #define gc_memmove memmove   /* // memmove //memcpy  */
+  #define gc_memcpy  memcpy   /* // memmove //memcpy  */
+  #define gc_memmove memcpy   /* // memmove //memcpy  */
 #else
 unsigned int i_idx;
 /*  static INLINE2 unsigned char* gc_memcpy(unsigned char* dst, unsigned char* src, size_t n)   */
+#define gc_memmove gc_memcpy
 static INLINE2 void gc_memcpy(unsigned char* dst, unsigned char* src, size_t n)
 {
 	/* g_src = src;         */
@@ -334,65 +418,5 @@ static INLINE2 void gc_memcpy(unsigned char* dst, unsigned char* src, size_t n)
 	return; /*  dst;    */
 }
 #endif
-/**/
-static INLINE int write_buffered (int		desc, 
-						   unsigned char*	buffer_pointer, 
-						   int				nLenRek, 
-						   unsigned char*	bufferwriteglobal,
-						   int*				position_buf_write
-						  )
-{
-	int nSplit;
-    int tempPosition = *position_buf_write + nLenRek;  
-    if (tempPosition > MAX_SIZE_CACHE_WRITE) {
-		if (_write(desc, (unsigned char*)(bufferwriteglobal), (unsigned int) *position_buf_write) < 0) 
-		{
-    		fprintf(stdout,"*GCSORT*S090*ERROR: Cannot write output file  %s\n",strerror(errno));
-    		return -1;
-		}
-    	*position_buf_write=0;
-    }
-	nSplit = *position_buf_write;
-	gc_memcpy((unsigned char*)(bufferwriteglobal+nSplit), (unsigned char*)buffer_pointer, nLenRek);
-   *position_buf_write=*position_buf_write+nLenRek;
-    return 0;
-}
-
-static INLINE int write_buffered_save_final (int		desc, 
-									 unsigned char*		buffer_pointer, 
-										     int		nLenRek, 
-								    unsigned char*		bufferwriteglobal,
-											 int*		position_buf_write
-											)
-{
-    if (*position_buf_write + nLenRek > MAX_SIZE_CACHE_WRITE_FINAL) {
-    	if (_write(desc, (unsigned char*)(bufferwriteglobal), (unsigned int) *position_buf_write) < 0) 
-    	{
-    		fprintf(stdout,"*GCSORT*S091*ERROR: Cannot write output file  %s\n",strerror(errno));
-    		return -1;
-    	}
-    	*position_buf_write=0;
-    }
-	gc_memcpy((unsigned char*)(bufferwriteglobal+(*position_buf_write)), (unsigned char*)buffer_pointer, nLenRek);
-   *position_buf_write=*position_buf_write+nLenRek;
-    return 0;
-}
-
-static INLINE int write_buffered_final (int  desc, 
-						unsigned char*  bufferwriteglobal,
-						int*	position_buf_write
-					)
-{
-	if (*position_buf_write == 0)
-		return 0;
-    if (write(desc, (unsigned char*)bufferwriteglobal , *position_buf_write) < 0) 
-    {
-    	fprintf(stdout,"*GCSORT*S092*ERROR: Cannot write output file  %s\n",strerror(errno));
-    	return -1;
-    }
-	*position_buf_write=0;
-    return 0;
-}
-
 
 #endif /* JOB_H_INCLUDED    */

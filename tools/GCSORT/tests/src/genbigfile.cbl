@@ -18,7 +18,10 @@
        identification division.
        program-id. genbigfile.
        environment division.
-       input-output section.
+       configuration section.
+       repository.
+        function all intrinsic.
+        input-output section.
        file-control.
            copy sgensqf01.
        data division.
@@ -26,6 +29,7 @@
            copy fgensqf01.
       * 
        working-storage section.
+       01 RANDOM-NUMBER PIC 9999 value zero.
        77       record-counter-out    pic 9(7) value zero.
        77       program-name          pic x(12) value "*genbigfile*".
        77       ntimes                pic 9(9)  value 3.
@@ -74,14 +78,27 @@
                 display ' Num record num-rek-9   ' num-rek-9
                 goback
            end-if
+
            display " Records to generate : " ntimes
+           
+           compute ntimes = ntimes / 2
+           
+           display "   with crescent value   : " ntimes
            move zero        to idx, count-value, seq-record, rrn.
-           perform generate-file-asc ntimes times.           
+           
+           compute RANDOM-NUMBER = 25 + (70 - 25 + 1) * 
+                    (FUNCTION RANDOM)
+
+           
+            perform generate-file-asc ntimes times.           
            move 27          to idx
            move -1          to count-value
            move ntimes      to seq-record 
            add  1           to seq-record 
-      ***+++    perform generate-file-des ntimes times.   
+      ***+++    
+           display "   with decrescent value : " ntimes
+      **     display " Records to generate decrescent value : " ntimes
+           perform generate-file-des ntimes times.   
            close outfile.
       *
            display "*===============================================* "
@@ -152,10 +169,11 @@
            .
 
        add-counter.
-           add  1               to count-value  
-           if count-value > 26
-               move 1 to count-value
-           end-if
+           add  1            to count-value 
+           add RANDOM-NUMBER to count-value           
+      *    if count-value > 26
+      *        move 1 to count-value
+      *     end-if
            .
      
        set-valuerecord-des.
@@ -188,7 +206,9 @@
            move  count-value    to  csl-field
            .
        sub-counter.
-           subtract 1 from count-value       
+           subtract 1 from count-value   
+           subtract RANDOM-NUMBER from  count-value
+                    giving   count-value
       **     if count-value <= zero
       **         move 26 to count-value
       **     end-if

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2023 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -43,14 +43,14 @@ void GCSORT_Config ( void )
 	/*
 	fprintf(stdout,"__________________________________________________________________________________________________________\n");
 	fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-	fprintf(stdout,"Copyright (C) 2009-2021 Cedric ISSALY / Sauro Menna\n");
+	fprintf(stdout,"Copyright (C) 2009-2024 Cedric ISSALY / Sauro Menna\n");
 	fprintf(stdout,"__________________________________________________________________________________________________________\n");
 	fprintf(stdout,"\n");
 	fprintf(stdout,"GCSORT_BYTEORDER  - 0 for NATIVE, 1 for BIGENDIAN                              : %ld\n", job->nByteOrder);
 	fprintf(stdout,"GCSORT_DEBUG      - 0 no print info, 1 info DEBUG, 2 for info Parser           : %ld\n", job->ndeb);
-	fprintf(stdout,"GCSORT_MEMSIZE    - Memory Allocation in MByte                                 : %7ld MByte\n", (job->ulMemSizeAlloc+job->ulMemSizeAllocSort)/1024000);
+	fprintf(stdout,"GCSORT_MEMSIZE    - Memory Allocation in MByte                                 : %7ld MByte\n", (job->ulMemSizeAllocData+job->ulMemSizeAllocSort)/1024000);
 	fprintf(stdout,"                                                          Memory size for key  : %7ld MByte\n", (job->ulMemSizeAllocSort/1024000));
-	fprintf(stdout,"                                                          Memory size for data : %7ld MByte\n", (job->ulMemSizeAlloc/1024000));
+	fprintf(stdout,"                                                          Memory size for data : %7ld MByte\n", (job->ulMemSizeAllocData/1024000));
 	fprintf(stdout,"GCSORT_MLT        - Numbers of page for cache MemoryMappedFile                 : %ld\n", job->nMlt);
 	fprintf(stdout,"                                                              System page size : %7ld\n", page_size);
 	fprintf(stdout,"                                                    MemoryMappedFile page size : %7.2f MByte\n", (double)(job->nMlt * page_size)/1024000);
@@ -61,7 +61,7 @@ void GCSORT_Config ( void )
 	*/
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-    fprintf(stdout, "Copyright (C) 2016-2023 Sauro Menna\n");
+    fprintf(stdout, "Copyright (C) 2016-2024 Sauro Menna\n");
     fprintf(stdout, "                   2009 Cedric ISSALY\n");
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"\n");
@@ -76,9 +76,9 @@ void GCSORT_Config ( void )
 		else
 			fprintf(stdout," - Info debug Parser/Scanner\n");
     }
-	fprintf(stdout,"GCSORT_MEMSIZE               : " NUM_FMT_LLD " MByte\n", (long long)(job->ulMemSizeAlloc+job->ulMemSizeAllocSort)/1024000);
+	fprintf(stdout,"GCSORT_MEMSIZE               : " NUM_FMT_LLD " MByte\n", (long long)(job->ulMemSizeAllocData+job->ulMemSizeAllocSort)/1024000);
 	fprintf(stdout,"        Memory size for key  : " NUM_FMT_LLD " MByte\n", (long long)(job->ulMemSizeAllocSort/1024000));
-	fprintf(stdout,"        Memory size for data : " NUM_FMT_LLD " MByte\n", (long long)(job->ulMemSizeAlloc/1024000));
+	fprintf(stdout,"        Memory size for data : " NUM_FMT_LLD " MByte\n", (long long)(job->ulMemSizeAllocData/1024000));
 	fprintf(stdout,"GCSORT_MLT                   : %7d  Pages for cache MemoryMappedFile\n", job->nMlt);
 	fprintf(stdout,"  MemoryMappedFile page size : %7.2f MByte\n", (double)(job->nMlt * page_size)/1024000);
 	fprintf(stdout,"            System page size : %7ld Bytes\n", page_size);
@@ -105,7 +105,7 @@ void GCSORT_Config ( void )
 void GCSORT_Version ( void ) 
 {
 	printf("gcsort Version %s\n", GCSORT_VERSION); 
-    printf("Copyright (C) 2016-2023 Sauro Menna\n");
+    printf("Copyright (C) 2016-2024 Sauro Menna\n");
     printf("                   2009 Cedric ISSALY\n");
 	printf("Packaged  %s\n", GCSORT_TAR_DATE);
 
@@ -327,6 +327,7 @@ void GCSORT_Usage_all(void)
 #if __LIBCOB_RELEASE >= 30200
     printf("-fcolseq=[NATIVE|ASCII|EBCDIC] collating sequence to use\n");
     printf("-febcdic-table=<cconv-table>/<file>\tEBCDIC/ASCII translation table\n");
+    printf("-mt=<num> \t<num>  number of threads to be used \n");
 #endif /* __LIBCOB_RELEASE >= 30200 */
     printf("________________________________________________________________________________________\n");
     printf("gcsort control statements\n");
@@ -356,7 +357,7 @@ void GCSORT_Usage_all(void)
     printf("    USE  {Filename} \n");
     printf("         ORG {Org}\n");
     printf("         RECORD [F,{RecordLen}] | [V,{MinLen},{MaxLen}] \n");
-    printf("                [KEY ({Pos},{Len},{KeyType})]\n");
+    printf("                [KEY ({Pos},{Len},{KeyType}[,{Collating}])]\n");
     printf("\n");
     printf("    GIVE same parameters of USE \n");
     printf("\n");
@@ -418,12 +419,12 @@ void GCSORT_Usage_all(void)
     printf("    USE  {Filename}             [File F1]\n");
     printf("         ORG {Org}\n");
     printf("         RECORD [F,{RecordLen}] | [V,{MinLen},{MaxLen}] \n");
-    printf("                [KEY ({Pos},{Len},{KeyType})]\n");
+    printf("                [KEY ({Pos},{Len},{KeyType}[,{Collating}])]\n");
     printf("\n");
     printf("    USE  {Filename}             [File F2]\n");
     printf("         ORG {Org}\n");
     printf("         RECORD [F,{RecordLen}] | [V,{MinLen},{MaxLen}] \n");
-    printf("                [KEY ({Pos},{Len},{KeyType})]\n");
+    printf("                [KEY ({Pos},{Len},{KeyType}[,{Collating}])]\n");
     printf("\n");
     printf("    GIVE same parameters of USE \n");
     printf("\n");
@@ -517,6 +518,10 @@ void GCSORT_Usage_all(void)
     printf("  IX  = Indexed Fixed or Variable          |  AD = Alternative Key with Duplicates      \n");
     printf("  RL  = Relative Fixed or Variable         |  C  = Continue definition                  \n");
     printf("___________________________________________|____________________________________________\n");
+    printf("___{Collating}___Collating Sequence________|____________________________________________\n");
+    printf("  ASCII  = Ascii sequence                  |                                            \n");
+    printf("  EBCDIC = EBCDIC sequence                 |                                            \n");
+    printf("___________________________________________|____________________________________________\n");
     printf("__{FormatType}____Field Format Type________|___{FormatType2}____Format Type SumField____\n");
     printf("  CH  = Char                               |  BI = Binary unsigned                      \n");
     printf("  BI  = Binary unsigned                    |  FI = Binary signed                        \n");
@@ -585,6 +590,7 @@ void gcsort_help_header2(void) {
 #if __LIBCOB_RELEASE >= 30200
     printf("-fcolseq=[NATIVE|ASCII|EBCDIC] collating sequence to use\n");
     printf("-febcdic-table=<cconv-table>/<file>\tEBCDIC/ASCII translation table\n");
+    printf("-mt=<num> \t<num>  number of threads to be used \n");
 #endif /* __LIBCOB_RELEASE >= 30200 */
     printf("________________________________________________________________________________________\n");
     return;
@@ -617,7 +623,7 @@ void gcsort_help_body_SMC(void) {
     printf("    USE  {Filename} \n");
     printf("         ORG {Org}\n");
     printf("         RECORD [F,{RecordLen}] | [V,{MinLen},{MaxLen}] \n");
-    printf("                [KEY ({Pos},{Len},{KeyType})]\n");
+    printf("                [KEY ({Pos},{Len},{KeyType}[,{Collating}])]\n");
     printf("\n");
     printf("    GIVE same parameters of USE \n");
     printf("\n");
@@ -638,25 +644,25 @@ void gcsort_help_body_SMC(void) {
     printf("    OUTREC  OVERLAY =({FieldSpec}) \n");
     printf(" \n");
     printf("    OUTFIL                                                                         \n");
-    printf("         INCLUDE | OMIT ({Condition})[,FORMAT={FormatType}]                            \n");
-    printf("         OUTREC = ({FieldSpec})                                                   \n");
-    printf("         FILES/FNAMES= {Filename}  | (file1, file2, file3,...) \n");
+    printf("         INCLUDE | OMIT ({Condition})[,FORMAT={FormatType}]                        \n");
+    printf("         OUTREC = ({FieldSpec})                                                    \n");
+    printf("         FILES/FNAMES= {Filename}  | (file1, file2, file3,...)                     \n");
     printf("         STARTREC={nn}    Start from record nn                                     \n");
-    printf("         ENDREC={nn}      Skip record after nn                                      \n");
-    printf("         SAVE                            \n");
+    printf("         ENDREC={nn}      Skip record after nn                                     \n");
+    printf("         SAVE                                                                      \n");
     printf("         SPLIT            Split 1 record  output for file group (file1, file2, file3,...)  \n");
     printf("         SPLITBY={nn}     Split n records output for file group (file1, file2, file3,...)  \n");
     printf("\n");
     printf("    OPTION                                                                         \n");
     printf("         SKIPREC={nn}     Skip nn records from input                               \n");
     printf("         STOPAFT={nn}     Stop read after nn records                               \n");
-    printf("         VLSCMP           0 disabled , 1 = enabled -- temporarily replace any    \n");
-    printf("                               missing compare field bytes with binary zeros        \n");
-    printf("         VLSHRT           0 disabled , 1 = enabled -- treat any comparison       \n");
-    printf("                               involving a short field as false                     \n");
-    printf("         Y2PAST           (YY) - Sliding, (YYYY) century\n");
-    printf("         MODS E15=(<name>) [,]     <name>= Name E15 Cobol Program for input\n");
-    printf("              E35=(<name>)         <name>= Name E35 Cobol Program for ouput\n");
+    printf("         VLSCMP           0 disabled , 1 = enabled -- temporarily replace any      \n");
+    printf("                               missing compare field bytes with binary zeros       \n");
+    printf("         VLSHRT           0 disabled , 1 = enabled -- treat any comparison         \n");
+    printf("                               involving a short field as false                    \n");
+    printf("         Y2PAST           (YY) - Sliding, (YYYY) century                           \n");
+    printf("         MODS E15=(<name>) [,]     <name>= Name E15 Cobol Program for input        \n");
+    printf("              E35=(<name>)         <name>= Name E35 Cobol Program for ouput        \n");
     printf("\n");
     printf("    INCLUDE | OMIT\n");
     printf("            COND=({Condition})[,FORMAT={FormatType}]                     \n");
@@ -708,6 +714,10 @@ void gcsort_help_body_SMC(void) {
     printf("  SQ  = Sequential Fixed or Variable       |  A  = Alternative Key                      \n");
     printf("  IX  = Indexed Fixed or Variable          |  AD = Alternative Key with Duplicates      \n");
     printf("  RL  = Relative Fixed or Variable         |  C  = Continue definition                  \n");
+    printf("___________________________________________|____________________________________________\n");
+    printf("___{Collating}___Collating Sequence________|____________________________________________\n");
+    printf("  ASCII  = Ascii sequence                  |                                            \n");
+    printf("  EBCDIC = EBCDIC sequence                 |                                            \n");
     printf("___________________________________________|____________________________________________\n");
     printf("__{FormatType}____Field Format Type________|___{FormatType2}____Format Type SumField____\n");
     printf("  CH  = Char                               |  BI = Binary unsigned                      \n");
@@ -878,6 +888,10 @@ void gcsort_help_body_JOIN(void) {
     printf("  SQ  = Sequential Fixed or Variable       |  A  = Alternative Key                      \n");
     printf("  IX  = Indexed Fixed or Variable          |  AD = Alternative Key with Duplicates      \n");
     printf("  RL  = Relative Fixed or Variable         |  C  = Continue definition                  \n");
+    printf("___________________________________________|____________________________________________\n");
+    printf("___{Collating}___Collating Sequence________|____________________________________________\n");
+    printf("  ASCII  = Ascii sequence                  |                                            \n");
+    printf("  EBCDIC = EBCDIC sequence                 |                                            \n");
     printf("___________________________________________|____________________________________________\n");
     printf("__{FormatType}____Field Format Type________|___{FormatType2}____Format Type SumField____\n");
     printf("  CH  = Char                               |  BI = Binary unsigned                      \n");

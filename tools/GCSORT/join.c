@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2016-2022 Sauro Menna
+	Copyright (C) 2016-2024 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -115,7 +115,7 @@ int join_allocateData(struct join_t* join, struct job_t* job) {
 	/* get length record F2 */
 
 	/* Use job->buffertSort to allocate area for files F1 and F2 */
-	join->llMaxMemSize = (job->ulMemSizeAlloc + job->ulMemSizeAllocSort) / 2;
+	join->llMaxMemSize = (job->ulMemSizeAllocData + job->ulMemSizeAllocSort) / 2;
 	/* max num record for file F1 */
 	join->nMaxeleF1 = join->llMaxMemSize / job->inputFile->maxLength;
 	/* max num record for file F1 */
@@ -276,6 +276,7 @@ int join_print(struct job_t* job, struct join_t* join)
 	struct joinunpaired_t* unp;
 	struct outfil_t* outfil;
 	struct outrec_t* outrec;
+	struct condField_t* condField;
 	struct file_t* file;
 	if (join != NULL) {
 		/* F1 */
@@ -294,10 +295,35 @@ int join_print(struct job_t* job, struct join_t* join)
 				printf(", STOPAFT=" NUM_FMT_LLD "\n", (long long)join->joinkeysF1->nStopAfter);
 			printf("\n");
 		}
-		if (join->joinkeysF1->includeCondField != NULL)
-			condField_print(join->joinkeysF1->includeCondField);
+
+		if (join->joinkeysF1->includeCondField != NULL) {
+			printf("INCLUDE COND : (");
+			/*  condField_print(job->includeCondField); */
+			for (condField = join->joinkeysF1->includeCondField; condField != NULL; condField = condField_getNext(condField)) {
+				if (condField != join->joinkeysF1->includeCondField) {
+					printf(",");
+				}
+				condField_print(condField);
+			}
+			printf(")\n");
+		}
+
+
 		if (join->joinkeysF1->omitCondField != NULL)
 			condField_print(join->joinkeysF1->omitCondField);
+		if (join->joinkeysF1->omitCondField != NULL) {
+			printf("OMIT COND : (");
+			/* condField_print(job->omitCondField); */
+			for (condField = join->joinkeysF1->omitCondField; condField != NULL; condField = condField_getNext(condField)) {
+				if (condField != join->joinkeysF1->omitCondField) {
+					printf(",");
+				}
+				condField_print(condField);
+			}
+
+			printf(")\n");
+		}
+
 		/* F2 */
 		if (join->joinkeysF2->joinField != NULL) {
 			printf("JOIN F2 FIELDS : (");
@@ -314,10 +340,33 @@ int join_print(struct job_t* job, struct join_t* join)
 				printf(", STOPAFT=" NUM_FMT_LLD "\n", (long long)join->joinkeysF2->nStopAfter);
 			printf("\n");
 		}
-		if (join->joinkeysF2->includeCondField != NULL)
-			condField_print(join->joinkeysF2->includeCondField);
-		if (join->joinkeysF2->omitCondField != NULL)
-			condField_print(join->joinkeysF2->omitCondField);
+		if (join->joinkeysF2->includeCondField != NULL) {
+			printf("INCLUDE COND : (");
+			/*  condField_print(job->includeCondField); */
+			for (condField = join->joinkeysF2->includeCondField; condField != NULL; condField = condField_getNext(condField)) {
+				if (condField != join->joinkeysF2->includeCondField) {
+					printf(",");
+				}
+				condField_print(condField);
+			}
+			printf(")\n");
+		}
+
+
+		if (join->joinkeysF2->omitCondField != NULL) {
+			printf("OMIT COND : (");
+			/* condField_print(job->omitCondField); */
+			for (condField = join->joinkeysF2->omitCondField; condField != NULL; condField = condField_getNext(condField)) {
+				if (condField != join->joinkeysF2->omitCondField) {
+					printf(",");
+				}
+				condField_print(condField);
+			}
+
+			printf(")\n");
+		}
+
+
 		/* Reformat */
 		if (join->joinreformat != NULL) {
 			printf("REFORMAT FIELDS = (");
@@ -576,20 +625,20 @@ int job_joiner(struct job_t* job)
 	utl_copy_realloc(join->pNameFileOut, pFile->name);
 
 	globalJob->nIndextmp++;							/* Increment counter temporary file name */
-	sort_temp_name(".tmp");
+	sort_temp_name(job, "F1.tmp");
 	utl_copy_realloc(join->pNameTmpF1, cob_tmp_temp);		/* Sort File Tmp F1  is input to JOIN*/
 	globalJob->nIndextmp++;
-	sort_temp_name(".tmp");
+	sort_temp_name(job, "F2.tmp");
 	utl_copy_realloc(join->pNameTmpF2, cob_tmp_temp);		/* Sort File Tmp F2  is input to JOIN */
 
-	sort_temp_name(".tmp");
+	sort_temp_name(job, "OUT.tmp");
 	utl_copy_realloc(join->pNameTmpOut, cob_tmp_temp);		/* Sort File Tmp out  is output from JOIN */
 
 
 
 #if defined(GCSDEBUG) 
-	sprintf(join->pNameTmpF1, "C:\\GCSORT\\GCSORT_relnew\\tests\\files\\srtF1.txt");		/* Sort File Tmp F1  is input to JOIN*/
-	sprintf(join->pNameTmpF2, "C:\\GCSORT\\GCSORT_relnew\\tests\\files\\srtF2.txt");		/* Sort File Tmp F2  is input to JOIN*/
+	sprintf(join->pNameTmpF1,  "C:\\GCSORT\\GCSORT_relnew\\tests\\files\\srtF1.txt");		/* Sort File Tmp F1  is input to JOIN*/
+	sprintf(join->pNameTmpF2,  "C:\\GCSORT\\GCSORT_relnew\\tests\\files\\srtF2.txt");		/* Sort File Tmp F2  is input to JOIN*/
 	sprintf(join->pNameTmpOut, "C:\\GCSORT\\GCSORT_relnew\\tests\\files\\srtOut.txt");		/* Sort File Tmp F2  is input to JOIN*/
 #endif
 	/* Review file name and define to do */
@@ -630,7 +679,12 @@ int job_joiner(struct job_t* job)
 		job->recordNumberTotal = 0;
 		job->recordWriteSortTotal = 0;
 
+		fprintf(stdout, "Sort File F1 \n");
+
 		join_sortFile(job);
+
+		fprintf(stdout, "---------------------------------------------------------\n");
+
 
 		join->joinkeysF1->nNumRowReadSort = job->recordNumberTotal;
 		join->joinkeysF1->nNumRowWriteSort = job->recordWriteOutTotal;
@@ -639,6 +693,12 @@ int job_joiner(struct job_t* job)
 	}
 	else 
 		utl_copy_realloc(join->pNameTmpF1, join->pNameFileF1);
+
+	/* s.m. 20240214 */
+	job->includeCondField = NULL;
+	/* s.m. 20240214 */
+	job->omitCondField = NULL;
+
 
 	/* Check if file F2 is sorted */
 	/* Include and Omit condition if presents mandatory sort step*/
@@ -659,7 +719,11 @@ int job_joiner(struct job_t* job)
 		job->omitCondField = join->joinkeysF2->omitCondField;
 		job->recordNumberTotal = 0;
 		job->recordWriteSortTotal = 0;
+
+		fprintf(stdout, "Sort File F2 \n");
 		join_sortFile(job);
+		fprintf(stdout, "---------------------------------------------------------\n");
+
 		join->joinkeysF2->nNumRowReadSort = job->recordNumberTotal;
 		join->joinkeysF2->nNumRowWriteSort = job->recordWriteOutTotal;
 		nF2Sorted = 0;
@@ -887,8 +951,8 @@ int join_join_files(struct job_t* job) {
 
 	recordBufferLength = MAX_RECSIZE;
 
-	job->nLenKeys = job_GetLenKeys();
-	job->nLastPosKey = job_GetLastPosKeys();
+	job->nLenKeys = job_GetLenKeys(job);
+	job->nLastPosKey = job_GetLastPosKeys(job);
 
 	if (job->nLastPosKey <= NUMCHAREOL)
 		job->nLastPosKey = NUMCHAREOL;	/* problem into memchr  */
@@ -1179,13 +1243,13 @@ int join_join_files(struct job_t* job) {
 				if (((join_F1_read() == 1) && (join_F1_write() == 0))) {
 					memset(szBuffRek, 0x00, join->fileSaveOut->maxLength);
 					memcpy(szBuffRek, recordBufferF1, join->fileSaveOut->maxLength);
-					fprintf(stderr, "Record F1 discarded: %.*s\n", join->fileSaveF1->maxLength, szBuffRek);
+					/* 20240201 fprintf(stderr, "Record F1 discarded: %.*s\n", join->fileSaveF1->maxLength, szBuffRek); */ 
 				}
 				/* //if ((useRecord == 0) || ((join_F2_read() == 1) && (join_F2_write() == 0))) { */
 				if (((join_F2_read() == 1) && (join_F2_write() == 0))) {
 					memset(szBuffRek, 0x00, recordBufferLength);
 					memcpy(szBuffRek, recordBufferF2, join->fileSaveOut->maxLength);
-					fprintf(stderr, "Record F2 discarded: %.*s\n", join->fileSaveF2->maxLength, szBuffRek);
+					/* 20240201 fprintf(stderr, "Record F2 discarded: %.*s\n", join->fileSaveF2->maxLength, szBuffRek); */
 				}
 
 
@@ -1240,33 +1304,11 @@ int join_join_files(struct job_t* job) {
 				}
 				/*         */
 				if ((nbyteRead > 0) && (job->outfil == NULL)) {
-					job_set_area(job, job->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut, nbyteRead);
+					join_set_area(job, job->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut, nbyteRead);
 					cob_write(job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
-					switch (atol((char*)job->outputFile->stFileDef->file_status))
-					{
-						case 0: 
-							break;
-						case  4:		/* record successfully read, but too short or too long */
-							fprintf(stdout,"*GCSORT*S867*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", job->outputFile->stFileDef->assign->data,
-								job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
-							util_view_numrek();
-							retcode_func = -1;
-							goto job_join_files_exit;
-							break;
-						case 71:
-							fprintf(stdout,"*GCSORT*S867*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(job->outputFile),
-								job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
-							util_view_numrek();
-							retcode_func = -1;
-							goto job_join_files_exit;
-							break;
-						default:
-							fprintf(stdout,"*GCSORT*S867*ERROR: Cannot write file %s - File Status (%c%c)\n", file_getName(job->outputFile),
-								job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
-							util_view_numrek();
-							retcode_func = -1;
-							goto job_join_files_exit;
-					}
+					retcode_func = file_checkFSWrite("Write", "join_join_files", job->outputFile, nLenRecOut, nbyteRead);
+					if (retcode_func == -1)
+						goto job_join_files_exit;
 					job->recordWriteOutTotal++;
 				}
 				/* OUTFIL   */
@@ -1275,7 +1317,7 @@ int join_join_files(struct job_t* job) {
 						retcode_func = -1;
 						goto job_join_files_exit;
 					}
-					job->recordWriteOutTotal++;
+					/* s.m. 20240214  job->recordWriteOutTotal++; */
 				}
 				if ((nCmp < 0) && (bIsEof[0] == 0)) {
 					nCmp = 0;
@@ -1304,6 +1346,13 @@ job_join_files_exit:
 		}
 	}
 	cob_close(job->outputFile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
+
+	/* s.m. 2024 */
+	if (job->outfil != NULL) {
+		if (outfil_close_files(job) < 0)
+			return -1;
+	}
+
 	return retcode_func;
 }
 
@@ -2005,19 +2054,6 @@ int join_ReadFileSingleRow(struct join_t* join, int nF, struct file_t* file, int
 	int nRetCode = 0;
 	/* LIBCOB for all files */
 	cob_read_next(file->stFileDef, NULL, COB_READ_NEXT);
-	/*
-	if (atol((char*)file->stFileDef->file_status) != 0) {	    
-		if (atol((char*)file->stFileDef->file_status) == 10) {	
-			*nLR = 0;
-			nRetCode = 1;
-		}
-		if (atol((char*)file->stFileDef->file_status) > 10) {
-			fprintf(stdout,"*GCSORT*S069*ERROR: Cannot read file %s - File Status (%c%c) \n", file_getName(file),
-				file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
-			exit(GC_RTC_ERROR);
-		}
-	}
-	*/
 	switch (atol((char*)file->stFileDef->file_status))
 	{
 		case 0:
@@ -2031,6 +2067,7 @@ int join_ReadFileSingleRow(struct join_t* join, int nF, struct file_t* file, int
 		case 10:
 			*nLR = 0;
 			nRetCode = 1;
+			break;
 		case 71:
 			fprintf(stdout,"*GCSORT*S069b*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(file),
 				file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
@@ -2054,7 +2091,8 @@ int join_ReadFileSingleRow(struct join_t* join, int nF, struct file_t* file, int
 	}
 
 	memset(szBuffRek, 0x20, nLenRek);
-	gc_memcpy(szBuffRek, file->stFileDef->record->data, nLenRek);
+	/* -->> s.m. 20240201 gc_memcpy(szBuffRek, file->stFileDef->record->data, nLenRek); */
+	gc_memcpy(szBuffRek, file->stFileDef->record->data, file->stFileDef->record->size);
 
 	*nLR = file->stFileDef->record->size;
 
@@ -2080,6 +2118,11 @@ int join_ReadFile(struct join_t* join, int nF, struct file_t* file, int* descTmp
 	int nSkipRead = 0;
 	int nLenKey = 0;
 	int nLenRek = file->maxLength;
+
+	/* s.m. 2024   set len */
+	file->stFileDef->record->size = file->maxLength;
+
+
 	int bIsFirst = 0;
 	if (nF == 0) {
 		pData = join->pDataF1;
@@ -2103,19 +2146,6 @@ int join_ReadFile(struct join_t* join, int nF, struct file_t* file, int* descTmp
 		if (nSkipRead == 0) {
 			/* LIBCOB for all files */
 			cob_read_next(file->stFileDef, NULL, COB_READ_NEXT);
-			/*
-			if (atol((char*)file->stFileDef->file_status) != 0) {	    
-				if (atol((char*)file->stFileDef->file_status) == 10) {	
-					*nLR = 0;
-					nRetCode = 1; 
-				}
-				if (atol((char*)file->stFileDef->file_status) > 10) {
-					fprintf(stdout,"*GCSORT*S069*ERROR: Cannot read file %s - File Status (%c%c) \n", file_getName(file),
-						file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
-					exit(GC_RTC_ERROR);
-				}
-			}
-			*/
 			switch (atol((char*)file->stFileDef->file_status))
 			{
 				case 0:
@@ -2129,6 +2159,7 @@ int join_ReadFile(struct join_t* join, int nF, struct file_t* file, int* descTmp
 				case 10:
 					*nLR = 0;
 					nRetCode = 1;
+					break;
 				case 71:
 					fprintf(stdout,"*GCSORT*S069c*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(file),
 						file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
@@ -2161,7 +2192,11 @@ int join_ReadFile(struct join_t* join, int nF, struct file_t* file, int* descTmp
 		memset(szBuffRek, 0x20, nLenRek);
 		gc_memcpy(szBuffRek, file->stFileDef->record->data, nLenRek);
 
-		*nLR = file->stFileDef->record->size;
+		/* s.m. 20240201 *nLR = file->stFileDef->record->size;  */
+		*nLR = file->stFileDef->record_max; 
+
+		/* s.m. 20240201 */
+		file->stFileDef->record->size = file->stFileDef->record_max;
 
 		nLenKey = join_GetKeys(szBuffRek, szKeyOut, nF, join);
 		if (nNew == 1)
@@ -2277,8 +2312,8 @@ int join_empty_fileF1(struct job_t* job) {
 
 	recordBufferLength = MAX_RECSIZE;
 
-	job->nLenKeys = job_GetLenKeys();
-	job->nLastPosKey = job_GetLastPosKeys();
+	job->nLenKeys = job_GetLenKeys(job);
+	job->nLastPosKey = job_GetLastPosKeys(job);
 
 	if (job->nLastPosKey <= NUMCHAREOL)
 		job->nLastPosKey = NUMCHAREOL;	/* problem into memchr  */
@@ -2447,10 +2482,12 @@ int join_empty_fileF1(struct job_t* job) {
 		bIsFirstTimeF2 = 0;
 
 		memset(recordBufferF1, 0x20, job->inputFile->next->maxLength);
+		memset(recordBufferF2, 0x20, job->inputFile->next->maxLength);
+		memset(recordBuffer, 0x20, recordBufferLength + nSplitPosPnt);
+
 
 		gc_memcpy(recordBufferF2, szBufRek[1], job->inputFile->next->maxLength);
 		job->recordNumberTotal++;
-		memset(recordBuffer, 0x20, recordBufferLength + nSplitPosPnt);
 
 		nPosPtr = 1;   /* F2 */
 		if (bIsEof[nPosPtr] == 0) {
@@ -2503,33 +2540,11 @@ int join_empty_fileF1(struct job_t* job) {
 
 			
 			if ((nbyteRead > 0) && (job->outfil == NULL)) {
-				job_set_area(job, job->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut, nbyteRead);
+				join_set_area(job, job->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut, nbyteRead);
 				cob_write(job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
-				switch (atol((char*)job->outputFile->stFileDef->file_status))
-				{
-					case 0: 
-						break;
-					case  4:		/* record successfully read, but too short or too long */
-						fprintf(stdout,"*GCSORT*S867*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", job->outputFile->stFileDef->assign->data,
-							job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
-						util_view_numrek();
-						retcode_func = -1;
-						goto join_empty_fileF1_exit;
-						break;
-					case 71:
-						fprintf(stdout,"*GCSORT*S867*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(job->outputFile),
-							job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
-						util_view_numrek();
-						retcode_func = -1;
-						goto join_empty_fileF1_exit;
-						break;
-					default:
-						fprintf(stdout,"*GCSORT*S867*ERROR: Cannot write file %s - File Status (%c%c)\n", file_getName(job->outputFile),
-							job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
-						util_view_numrek();
-						retcode_func = -1;
-						goto join_empty_fileF1_exit;
-				}
+				retcode_func = file_checkFSWrite("Write", "join_empty_fileF1", job->outputFile, nLenRecOut, nbyteRead);
+				if (retcode_func == -1)
+					goto join_empty_fileF1_exit;
 				job->recordWriteOutTotal++;
 			}
 			/* OUTFIL   */
@@ -2636,8 +2651,8 @@ int join_empty_fileF2(struct job_t* job) {
 
 	recordBufferLength = MAX_RECSIZE;
 
-	job->nLenKeys = job_GetLenKeys();
-	job->nLastPosKey = job_GetLastPosKeys();
+	job->nLenKeys = job_GetLenKeys(job);
+	job->nLastPosKey = job_GetLastPosKeys(job);
 
 	if (job->nLastPosKey <= NUMCHAREOL)
 		job->nLastPosKey = NUMCHAREOL;	/* problem into memchr  */
@@ -2866,33 +2881,11 @@ int join_empty_fileF2(struct job_t* job) {
 			}
 
 			if ((nbyteRead > 0) && (job->outfil == NULL)) {
-				job_set_area(job, job->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut, nbyteRead);
+				join_set_area(job, job->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut, nbyteRead);
 				cob_write(job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
-				switch (atol((char*)job->outputFile->stFileDef->file_status))
-				{
-					case 0: 
-						break;
-					case  4:		/* record successfully read, but too short or too long */
-						fprintf(stdout,"*GCSORT*S867*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", job->outputFile->stFileDef->assign->data,
-							job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
-						retcode_func = -1;
-						util_view_numrek();
-						goto join_empty_fileF2_exit;
-						break;
-					case 71:
-						fprintf(stdout,"*GCSORT*S867*ERROR: Record contains bad character %s - File Status (%c%c)\n", file_getName(job->outputFile),
-							job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
-						util_view_numrek();
-						retcode_func = -1;
-						goto join_empty_fileF2_exit;
-						break;
-					default:
-						fprintf(stdout,"*GCSORT*S867*ERROR: Cannot write file %s - File Status (%c%c)\n", file_getName(job->outputFile),
-							job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
-						util_view_numrek();
-						retcode_func = -1;
-						goto join_empty_fileF2_exit;
-				}
+				retcode_func = file_checkFSWrite("Write", "join_empty_fileF2", job->outputFile, nLenRecOut, nbyteRead);
+				if (retcode_func == -1)
+					goto join_empty_fileF2_exit;
 				job->recordWriteOutTotal++;
 			}
 			/* OUTFIL   */
@@ -2944,3 +2937,68 @@ int join_empty_fileF1F2(struct job_t* job) {
 	}
 	return 0;
 }
+
+int join_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLenOut, int nLenRek)
+{
+
+	if (((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) || (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUFIXED)) &&
+		(file->stFileDef->record->size < (unsigned int)nLenOut)) {
+		file->stFileDef->record->size = nLenOut;
+	}
+	gc_memcpy(file->stFileDef->record->data, szBuf, nLenOut);
+	/* s.m. 20220202  if ((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) && (nLenRek < nLen)) { */
+	if (((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) || (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUFIXED)) &&
+		(file->stFileDef->record->size > (unsigned int)nLenOut)) {
+		memset(file->stFileDef->record->data + nLenOut, 0x20, file->stFileDef->record->size - nLenOut); /* padding with blank (0x20)   */
+	}
+	/* 20180511 s.m. end    */
+	if (job->outputFile->format == FILE_TYPE_VARIABLE) {
+		job->outputFile->stFileDef->record->size = nLenOut;
+		cob_set_int(job->outputFile->stFileDef->variable_record, (int)nLenOut);
+	}
+	else
+	{
+		// s.m. 20240201 		
+		job->outputFile->stFileDef->record->size = nLenOut;
+	}
+	return 0;
+}
+
+//int join_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLenOut, int nLenRek)
+//{
+//	/* 20180511 s.m. start                                                      */
+//	/* s.m. 20201226 int nLenRek = job->inputFile->stFileDef->record->size;     */
+//	/* 20220202 s.m. int nLenRek = job->outputFile->stFileDef->record->size; */
+///* 20180511 s.m. end    */
+///* set area data        */
+//	/* s.m. 20230510 review length */
+//// s.m. 20231120 if lenoutput is minor of leninput  , why change len for copy ?????
+//	if (((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) || (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUFIXED)) &&
+//		(file->stFileDef->record->size < (unsigned int)nLenRek)) {
+//		file->stFileDef->record->size = nLenRek;
+//	}
+//	gc_memcpy(file->stFileDef->record->data, szBuf, nLenRek);
+//	/* s.m. 20240201 gc_memcpy(file->stFileDef->record->data, szBuf, file->stFileDef->record->size); */
+//
+//	/* 20180511 s.m. start
+//
+//		 Padding - Only for FILE_ORGANIZATION_LINESEQUENTIAL, Fixed and Variable Len, and when length not equal for input/output
+//
+//	*/
+//	/* s.m. 20220202  if ((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) && (nLenRek < nLen)) { */
+//	if (((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) || (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUFIXED)) &&
+//		(file->stFileDef->record->size > (unsigned int)nLenRek)) {
+//		memset(file->stFileDef->record->data + nLenRek, 0x20, file->stFileDef->record->size - nLenRek); /* padding with blank (0x20)   */
+//	}
+//	/* 20180511 s.m. end    */
+//	if (job->outputFile->format == FILE_TYPE_VARIABLE) {
+//		job->outputFile->stFileDef->record->size = nLenOut;
+//		cob_set_int(job->outputFile->stFileDef->variable_record, (int)nLenOut);
+//	}
+//	else
+//	{
+//		// s.m. 20240201 		
+//		job->outputFile->stFileDef->record->size = nLenOut;
+//	}
+//	return 0;
+//}

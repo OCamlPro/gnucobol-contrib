@@ -114,13 +114,16 @@
                 move 25 to RETURN-CODE
                 stop run
            end-if
-           
+                move zero to bError
            perform view-data until  (fs-infile1 not equal "00"  and 
-                                     fs-infile2 not equal "00" )or 
-                                     bError     equal 1
+                                     fs-infile2 not equal "00" ) OR 
+                                     bError     > 15
            close sortcbl
            close sortgcs
            display "*===============================================* "
+           if (record-counter-incbl not equal record-counter-ingcs)
+                    move 1 to bError
+           end-if
            if (bError = zero)
                 display " Check OK  "
                 move zero to return-code
@@ -175,8 +178,8 @@
                 add 1 to record-counter-ingcs
            end-if
            if (fs-infile1 = "00" and fs-infile2 = "00")
-test00**                perform check-key
-                perform check-key-dett
+test00                 perform check-key
+      **        perform check-key-dett
            end-if
            .
        90.
@@ -197,7 +200,7 @@ test00**                perform check-key
                in1-cst-field not = in2-cst-field or 
                in1-csl-field not = in2-csl-field )
 
-               move 1 to bError
+               add 1 to bError
                display "============== # Error # ============== "
                display "  Record COBOL  num " record-counter-incbl
                display " sq="    in1-seq-record 
@@ -234,7 +237,7 @@ test00**                perform check-key
        check-key-dett section.
       * ============================= *
        10.
-           move zero to bError
+      **     move zero to bError
            if in1-ch-field not = in2-ch-field   
             move 1 to bError
            if  in1-bi-field not = in2-bi-field   

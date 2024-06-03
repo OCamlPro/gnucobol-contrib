@@ -1,0 +1,12 @@
+Start:  1982Eliot       Cats
+End:    2000Eliot       Cats
+Start:  1949Hammerstein South Pacific
+End:    1954Hammerstein South Pacific
+Start:  1940Hart        Pal Joey
+End:    1941Hart        Pal Joey
+Start:  1982Lloyd-WebberCats
+End:    2000Lloyd-WebberCats
+Start:  1940Rodgers     Pal Joey
+End:    1941Rodgers     Pal Joey
+Start:  1949Rodgers     South Pacific
+End:    1954Rodgers     South Pacific

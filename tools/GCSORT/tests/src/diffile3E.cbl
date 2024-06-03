@@ -132,8 +132,14 @@
            close sortcbl
            close sortgcs
            display "*===============================================* "
-           if (bError = zero) or 
-              (record-counter-incbl = record-counter-ingcs)
+           if (record-counter-incbl not equal record-counter-ingcs)
+                    move 1 to bError
+           end-if
+
+      ****    display "bError = " bError
+           if (bError = zero) 
+      **     or 
+      ****        (record-counter-incbl = record-counter-ingcs)
                 display " Check OK  "
                 move zero to return-code
            else

@@ -40,7 +40,7 @@
        77 retcode-sum           pic 9(10) value zero.
       *
        01  cmd-gcsort-ebcdic    pic x(70) value 
-            ' -fsign=EBCDIC -fcolseq=EBCDIC  -febcdic-table=DEFAULT '.
+            ' -fsign=EBCDIC -fcolseq=EBCDIC  -febcdic-table=default '.
        
       *
        01       array-retcode-epilog-gr01.
@@ -520,10 +520,10 @@
       **          'OMIT COND=(8,2,CH,LE,C''MM'',AND,         '.
             07 ar-ele-take-row-15009    pic x(11) value 'somisqf12E'.
             07 ar-ele-take-row-15010    pic x(80) value  
-                '13,3,BI,GT,-10,OR,16,4,FI,GT,10,AND,      '.
+                '13,3,BI,GT,-10,AND,16,4,FI,GT,10,AND,      '.
             07 ar-ele-take-row-15011    pic x(11) value 'somisqf12E'.
             07 ar-ele-take-row-15012    pic x(80) value  
-                '20,8,FL,LE,40,OR,28,4,PD,LE,10,AND,       '.
+                '20,8,FL,LE,40,AND,28,4,PD,LE,10,AND,       '.
             07 ar-ele-take-row-15013    pic x(11) value 'somisqf12E'.
             07 ar-ele-take-row-15014    pic x(80) value  
                 '32,7,ZD,GE,15)                            '.
@@ -747,7 +747,7 @@
            display ' GCSort test environment ' gcsort-tests-ver
            display '*===============================================*'
            display '*===============================================*'
-           display '  gctestrun1           SORT'
+           display '  gctestrun1E          SORT'
            display '                       Group1'
            display '*===============================================*'
            call 'gctestgetop' using ntype, nver

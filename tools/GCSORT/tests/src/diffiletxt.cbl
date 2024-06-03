@@ -97,6 +97,9 @@
            close sortcbl
            close sortgcs
            display "*===============================================* "
+           if (record-counter-incbl not equal record-counter-ingcs)
+                    move 1 to bError
+           end-if
            if (bError = zero)
                 display " Check OK  "
                 move zero to return-code

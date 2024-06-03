@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
     int nret=gcsysop();
     printf("gcsysop - Get System Type  : %d       \n", nret);
     #ifdef __LIBCOB_RELEASE
-	    printf("gcsysop - GNUCobol version : %0.9d\n", __LIBCOB_RELEASE);
+	    printf("gcsysop - GNUCobol version : %09d\n", __LIBCOB_RELEASE);
     #endif
     
     fp = fopen ("gcsysoprun.txt", "w+");

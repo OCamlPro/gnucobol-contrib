@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -25,7 +25,7 @@
 #include "file.h"
 #include "keyidxrel.h"
 
-struct KeyIdx_t *KeyIdx_constructor(int position, int length, int type)
+struct KeyIdx_t *KeyIdx_constructor(int position, int length, int type, int nCollatingSeq)
 {
 	struct KeyIdx_t *KeyIdx; 
 	cob_field_attr*  pCobFAttrKey;
@@ -43,6 +43,8 @@ struct KeyIdx_t *KeyIdx_constructor(int position, int length, int type)
                                         /*     1=A Alternative,                     */
                                         /*     2=AD Alternative with duplicates,    */
                                         /*     3=C Continue previous definition     */
+		/* s.m. 20240515 */
+		KeyIdx->nCollatingSeq = nCollatingSeq;
 	    KeyIdx->next=NULL;
     /* Attribute    */
         pCobFAttrKey->type = COB_TYPE_ALPHANUMERIC; /* type;                */   

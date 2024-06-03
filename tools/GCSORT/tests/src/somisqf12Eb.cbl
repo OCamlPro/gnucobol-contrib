@@ -190,10 +190,24 @@
            TRANSFORM wk-in-ch-filler  FROM case-ebcdic TO case-ascii 
       * filtering input record 
       * OMIT condition 
+      * Problem in GCSort priority OR AND
+      * modify all conditions AND
+      
+      **    if ((wk-in-ch-field(1:2) <= "MM")  AND                                 ## filtering data    
+      **        (wk-in-bi-field >  -10))       OR
+      **       ((wk-in-fi-field >   10)        AND
+      **        (wk-in-fl-field <=  40))       OR
+      **       ((wk-in-pd-field <=  10)        AND
+      **        (wk-in-zd-field >=  15))
+      **        add 1 to record-counter-skip
+      **    else
+      **             perform inrec-record
+      **             release sort-data 
+      **   end-if
            if ((wk-in-ch-field(1:2) <= "MM")  AND                                 ## filtering data    
-               (wk-in-bi-field >  -10))       OR
+               (wk-in-bi-field >  -10))       AND
               ((wk-in-fi-field >   10)        AND
-               (wk-in-fl-field <=  40))       OR
+               (wk-in-fl-field <=  40))       AND
               ((wk-in-pd-field <=  10)        AND
                (wk-in-zd-field >=  15))
 			   add 1 to record-counter-skip

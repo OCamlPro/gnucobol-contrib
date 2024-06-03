@@ -165,9 +165,9 @@
       * filtering input record 
       * OMIT condition 
            if ((in-ch-field(1:2) <= "MM")  AND                                 ## filtering data    
-               (in-bi-field >  -10))       OR
+               (in-bi-field >  -10))       AND
               ((in-fi-field >   10)        AND
-               (in-fl-field <=  40))       OR
+               (in-fl-field <=  40))       AND
               ((in-pd-field <=  10)        AND
                (in-zd-field >=  15))
 			   add 1 to record-counter-skip

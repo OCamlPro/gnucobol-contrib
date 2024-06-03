@@ -180,6 +180,7 @@ copy $(OutDir)$(TargetName).exe C:\GCSORT\GCSORT_relnew\benchmark\benchmark2_Win
     <ClInclude Include="..\..\exitroutines.h" />
     <ClInclude Include="..\..\fieldvalue.h" />
     <ClInclude Include="..\..\file.h" />
+    <ClInclude Include="..\..\findreplace.h" />
     <ClInclude Include="..\..\gcshare.h" />
     <ClInclude Include="..\..\inrec.h" />
     <ClInclude Include="..\..\job.h" />
@@ -204,6 +205,7 @@ copy $(OutDir)$(TargetName).exe C:\GCSORT\GCSORT_relnew\benchmark\benchmark2_Win
     <ClCompile Include="..\..\exitroutines.c" />
     <ClCompile Include="..\..\fieldvalue.c" />
     <ClCompile Include="..\..\file.c" />
+    <ClCompile Include="..\..\findreplace.c" />
     <ClCompile Include="..\..\inrec.c" />
     <ClCompile Include="..\..\job.c" />
     <ClCompile Include="..\..\join.c" />

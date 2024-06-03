@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2021 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -115,6 +115,29 @@
     int  nFieldType = 0;        /* field type used when format is spicified */
 	int  nstate_outfil = 0;
     int  nOnly=0;
+static int process_keyfield(int position, int length, char *keyType, char *keyCollating)
+{
+    if (current_file != NULL) {
+        struct KeyIdx_t *KeyIdx;
+        int sColSeq = CB_COLSEQ_NATIVE;
+#if __LIBCOB_RELEASE >= 30300
+        if (keyCollating != NULL) {
+            sColSeq = utils_parseKeyCollating(keyCollating);
+        }
+#endif
+        KeyIdx = KeyIdx_constructor(position, length, utils_parseKeyType(keyType), sColSeq);
+        if (KeyIdx == NULL) {
+            utl_abend_terminate(MEMORYALLOC, 102, ABEND_SKIP);
+            return 0;
+        }
+        KeyIdx_addDefinition(KeyIdx, current_file);
+    }
+    free(keyType);
+    if (keyCollating != NULL) {
+        free(keyCollating);
+    }
+    return 1;
+}
 
 }
 %token				AND						"AND clause"
@@ -196,10 +219,11 @@
 %token <string>		RECTYPEFIX				"RECTYPEFIX"
 %token <string>		RECTYPEVAR				"RECTYPEVAR"
 %token <string>		STRING					"STRING"
-%token <string>		TOKSKIP					"TOKSKIP clause"
-%token <string>     EXROUT                  "EXROUT clause"
-%token <string>     YESNO                   "YESNO clause"
-%token <string>     ERRTRUNC                "ERRTRUNC clause"
+%token <string>		TOKSKIP					"TOKSKIP"
+%token <string>     EXROUT                  "EXROUT"
+%token <string>     YESNO                   "YESNO"
+%token <string>     ERRTRUNC                "ERRTRUNC"
+%token <string>     COLLATING               "COLLATING"
 
 %token <llnumber>	SIGNDIGITBIG			"SIGNDIGITBIG"
 %type <number>		fieldtype
@@ -356,30 +380,38 @@ recordorginstruction:
         free($3);
 }
 
+  /*   | KEY '(' allkeyfieldcollating ')' recordorginstruction {
+    }*/
+
 	| KEY '(' allkeyfield ')' recordorginstruction {
 }
 
 ;
 
  allkeyfield: 
-      keyfield { 
-        strcpy(szMexToken, " key instruction ");
-}
-    | keyfield ',' allkeyfield {}
+      keyfield   { strcpy(szMexToken, " key instruction "); }
+    | keyfield_comma allkeyfield {}
+;
+    /*  allkeyfieldcollating: 
+       keyfieldCollating { strcpy(szMexToken, " key instruction collating "); }
+     | keyfieldCollating  ',' allkeyfieldcollating {} 
+        ; */
+ 
+keyfield_comma:
+      DIGIT ',' DIGIT ',' KEYTYPE ',' {
+        if (!process_keyfield($1, $3, $5, NULL)) YYABORT;
+    }
+    | DIGIT ',' DIGIT ',' KEYTYPE ',' COLLATING ',' {
+        if (!process_keyfield($1, $3, $5, $7)) YYABORT;
+    }
  ;
  
  keyfield:	
       DIGIT ',' DIGIT ',' KEYTYPE {
-        if (current_file!=NULL) {
-            struct KeyIdx_t *KeyIdx;
-            KeyIdx=KeyIdx_constructor($1, $3, utils_parseKeyType($5));
-            if (KeyIdx == NULL) {
-               utl_abend_terminate(MEMORYALLOC, 102, ABEND_SKIP);
-               YYABORT;
-            }
-            KeyIdx_addDefinition(KeyIdx, current_file);
-        }
-        free($5);
+         if (!process_keyfield($1, $3, $5, NULL)) YYABORT;
+    }
+    |  DIGIT ',' DIGIT ',' KEYTYPE ',' COLLATING {
+        if (!process_keyfield($1, $3, $5, $7)) YYABORT;
  }
 ;
     /* key clause - END */
@@ -563,6 +595,7 @@ mergeclause:
         /* JOINKEYS  FILE=F1 , FIELDS=(pos,len,ord,.....) */
 joinkeysclause: 
       JOINKEYS FNAMES '=' JOINFILE ',' FIELDS '(' {
+        nRecCase=JOIN_CASE;
         job_SetTypeOP('J');		/* for Join */
         current_sortField=3;            /* Sort field / Join field for JOIN STATEMENT */
         if (globalJob->join == NULL) {
@@ -574,10 +607,12 @@ joinkeysclause:
             current_join = pJoin;
             join_SetReferenceJob(current_join);     /* Save reference join into job */
         }
-        if (memcmp($4,(char*) "F1",2)==0) {
+        if ((memcmp($4,(char*) "F1",2)==0) ||
+            (memcmp($4,(char*) "f1",2)==0)) {
             current_filejoin = 1;
         }
-        if (memcmp($4,(char*) "F2",2)==0) {
+        if ((memcmp($4,(char*) "F2",2)==0) ||
+            (memcmp($4,(char*) "f2",2)==0)) {
             current_filejoin = 2;
         }
         } allsortfield ')'  {
@@ -652,21 +687,25 @@ joinclause:
     | JOIN  UNPAIRED ',' JOINFILE joinoptions {
         strcpy(szMexToken, " join unpaired clause ");
         if (nOnly  == 0) {
-            if (memcmp($4,(char*) "F1",2)==0) {
+            if ((memcmp($4,(char*) "F1",2)==0) ||
+                (memcmp($4,(char*) "f1",2)==0)) {
                 join_setUnpaired(1, 'U');
                 join_setUnpaired(2, 'I');
             }
-            if (memcmp($4,(char*) "F2",2)==0) {
+            if ((memcmp($4,(char*) "F2",2)==0) ||
+                (memcmp($4,(char*) "f2",2)==0)) {
                 join_setUnpaired(1, 'I');
                 join_setUnpaired(2, 'U');
             }
         }
         if (nOnly  == 1) {
-            if (memcmp($4,(char*) "F1",2)==0) {
+            if ((memcmp($4,(char*) "F1",2)==0) ||
+                (memcmp($4,(char*) "f1",2)==0)) { 
                 join_setUnpaired(1, 'O');
                 join_setUnpaired(2, 'S');
             }
-            if (memcmp($4,(char*) "F2",2)==0) {
+            if ((memcmp($4,(char*) "F2",2)==0) ||
+                (memcmp($4,(char*) "f2",2)==0)) {
                 join_setUnpaired(1, 'S');
                 join_setUnpaired(2, 'O');
             }
@@ -1133,7 +1172,8 @@ includeclause:
 allinoutrec: 
     inoutrec {	
 }
-		| allinoutrec ',' allinoutrec {	};
+		| allinoutrec ',' allinoutrec {	}
+        | change_options_all {}
 ;
 inoutrec: 
     /* #################################################################################################### */
@@ -1231,10 +1271,12 @@ inoutrec:
     | JOINFILE ':' DIGIT ',' DIGIT {
             strcpy(szMexToken, " join reformat clause ");
             /* struct reformat_t * */
-            if (memcmp($1,(char*) "F1",2)==0) {
+            if ((memcmp($1,(char*) "F1",2)==0) ||
+                (memcmp($1,(char*) "f1",2)==0)) {
                 current_filejoin = 1;
             }
-            if (memcmp($1,(char*) "F2",2)==0) {
+            if ((memcmp($1,(char*) "F2",2)==0) ||
+                (memcmp($1,(char*) "f2",2)==0)) {
                 current_filejoin = 2;
             }
             inrec=inrec_constructor_range_join(current_filejoin, $3,$5);
@@ -1620,48 +1662,6 @@ inoutrec:
             break;
         }
 }
-    /* CHANGE OPTION */
-    /*  pos, len,  CHANGE=( v , find, set ) , NOMATCH=(set) */
-    /* | CHANGE '(' DIGIT ',' changepair ')' ',' NOMATCH '(' fieldvaluecond ')' { */        
-    /* CHANGE=(1,C'22',X'51',C'88',X'58',C'44',X'52',C'66',X'53'),NOMATCH=(X'77') */
-     | CHANGE '(' DIGIT ',' changepair ')' ',' NOMATCH '(' changeCmdOpt ')' { 
-        /* define struct for change field */
-        
-        struct change_t* chg = change_constructor($3);
-        change_setNoMatch(chg, $10);  
-        change_setpairs(chg, $5);
-        /*    int    pntChange = 0 - 1 = Inrec , 2 = Inrec */
-         if (pntChange == 1) {       /* InRec */
-            inrec_SetChangeCmdOpt(inrec, chg);  /* setting INREC_TYPE_CHANGE_CMDOPT; */
-         } else 
-             if (pntChange == 2) {       /* OutRec */
-                outrec_SetChangeCmdOpt(outrec, chg);  /* setting OUTREC_TYPE_CHANGE_CMDOPT; */
-             } else {
-                 utl_abend_terminate(100, 234, ABEND_SKIP);
-                 YYABORT;
-         }
-         /* adjust position */
-         nPosAbsRec += $3;       /* len output change */
-}
-        /* CHANGE=(6,C'2',28,6),NOMATCH=(2,6) */
-     | CHANGE '(' DIGIT ',' changepair ')' ',' NOMATCH '(' DIGIT ',' DIGIT ')' { 
-        /* define struct for change field */       
-        struct change_t* chg = change_constructor($3);
-        change_setNoMatchPosLen(chg, $10, $12);  
-        change_setpairs(chg, $5);
-        /*    int    pntChange = 0 - 1 = Inrec , 2 = Inrec */
-         if (pntChange == 1) {       /* InRec */
-            inrec_SetChangeCmdOpt(inrec, chg);  /* setting INREC_TYPE_CHANGE_CMDOPT; */
-         } else 
-             if (pntChange == 2) {       /* OutRec */
-                outrec_SetChangeCmdOpt(outrec, chg);  /* setting OUTREC_TYPE_CHANGE_CMDOPT; */
-             } else {
-                 utl_abend_terminate(100, 234, ABEND_SKIP);
-                 YYABORT;
-         }
-         /* adjust position */
-         nPosAbsRec += $3;       /* len output change */
-}
 
         /* FINDREP */
      | INFR '=' fieldvaluerec ',' OUTFR '=' fieldvaluerec findrep_options_all {
@@ -1938,6 +1938,8 @@ inoutrec:
      }  
     }  ;
 
+
+
 findrep_options_all: 
       findrep_options { 
         strcpy(szMexToken, " findrep_options instruction ");
@@ -2173,6 +2175,72 @@ inoutfieldvaluerec:
     }
  ;
 
+change_options_all:
+    /* CHANGE OPTION */
+    /*  pos, len,  CHANGE=( v , find, set ) , NOMATCH=(set) */
+    /* | CHANGE '(' DIGIT ',' changepair ')' ',' NOMATCH '(' fieldvaluecond ')' { */        
+    /* CHANGE=(1,C'22',X'51',C'88',X'58',C'44',X'52',C'66',X'53'),NOMATCH=(X'77') */
+       CHANGE '(' DIGIT ',' changepair ')' ',' NOMATCH '(' changeCmdOpt ')' { 
+        /* define struct for change field */
+        
+        struct change_t* chg = change_constructor($3);
+        change_setNoMatch(chg, $10);  
+        change_setpairs(chg, $5);
+        /*    int    pntChange = 0 - 1 = Inrec , 2 = Inrec */
+         if (pntChange == 1) {       /* InRec */
+            inrec_SetChangeCmdOpt(inrec, chg);  /* setting INREC_TYPE_CHANGE_CMDOPT; */
+         } else 
+             if (pntChange == 2) {       /* OutRec */
+                outrec_SetChangeCmdOpt(outrec, chg);  /* setting OUTREC_TYPE_CHANGE_CMDOPT; */
+             } else {
+                 utl_abend_terminate(100, 234, ABEND_SKIP);
+                 YYABORT;
+         }
+         /* adjust position */
+         nPosAbsRec += $3;       /* len output change */
+}
+        /* CHANGE=(6,C'2',28,6),NOMATCH=(2,6) */
+     | CHANGE '(' DIGIT ',' changepair ')' ',' NOMATCH '(' DIGIT ',' DIGIT ')' { 
+        /* define struct for change field */       
+        struct change_t* chg = change_constructor($3);
+        change_setNoMatchPosLen(chg, $10, $12);  
+        change_setpairs(chg, $5);
+        /*    int    pntChange = 0 - 1 = Inrec , 2 = Inrec */
+         if (pntChange == 1) {       /* InRec */
+            inrec_SetChangeCmdOpt(inrec, chg);  /* setting INREC_TYPE_CHANGE_CMDOPT; */
+         } else 
+             if (pntChange == 2) {       /* OutRec */
+                outrec_SetChangeCmdOpt(outrec, chg);  /* setting OUTREC_TYPE_CHANGE_CMDOPT; */
+             } else {
+                 utl_abend_terminate(100, 234, ABEND_SKIP);
+                 YYABORT;
+         }
+         /* adjust position */
+         nPosAbsRec += $3;       /* len output change */
+}
+    /* s.m. 20240201 
+    OUTREC FIELDS=(1,15,16,2, CHANGE=(10,C'00x00',C'9999900000') ,18,83)
+    */
+     | CHANGE '(' DIGIT ',' changepair ')' { 
+        /* define struct for change field */
+        
+        struct change_t* chg = change_constructor($3);
+        /* s.m. 20240201 change_setNoMatch(chg, $10);  */
+        change_setpairs(chg, $5);
+        /*    int    pntChange = 0 - 1 = Inrec , 2 = Inrec */
+         if (pntChange == 1) {       /* InRec */
+            inrec_SetChangeCmdOpt(inrec, chg);  /* setting INREC_TYPE_CHANGE_CMDOPT; */
+         } else 
+             if (pntChange == 2) {       /* OutRec */
+                outrec_SetChangeCmdOpt(outrec, chg);  /* setting OUTREC_TYPE_CHANGE_CMDOPT; */
+             } else {
+                 utl_abend_terminate(100, 234, ABEND_SKIP);
+                 YYABORT;
+         }
+         /* adjust position */
+         nPosAbsRec += $3;       /* len output change */
+}
+;
 changepair: 
       changepairdet { 
         strcpy(szMexToken, " changepairdet instruction ");

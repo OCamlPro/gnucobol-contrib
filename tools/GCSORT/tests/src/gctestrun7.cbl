@@ -160,7 +160,7 @@
            display '*===============================================*'
            display '*===============================================*'
            display '  gctestrun7           SORT'
-           display '                       Group2'
+           display '                       Group7'
            display '*===============================================*'
            call 'gctestgetop' using ntype, nver
            display ' Environment : ' ntype 

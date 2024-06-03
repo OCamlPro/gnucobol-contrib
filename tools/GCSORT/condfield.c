@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2021 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -192,7 +192,35 @@ int condField_print(struct condField_t *condField) {
     }
 	return 0;
 }
- 
+
+int condField_checkLen(struct condField_t* condField, int nInputLen) {
+	int nLen = 0;
+	struct condField_t* condF;
+	for (condF = condField; condF != NULL; condF = condF->next)
+	{ 
+		switch (condF->type) {
+		case COND_TYPE_CONDITION:
+			nLen = condF->condition.position + condF->condition.length;
+			break;
+		case COND_TYPE_OPERATION:
+			if (condF->operation.first != NULL)
+				nLen = condField_checkLen(condF->operation.first, nInputLen);
+			if (condField->operation.second != NULL)
+				nLen = condField_checkLen(condF->operation.second, nInputLen);
+			break;
+		case COND_TYPE_COND_FIELDS:
+			nLen = condF->condition_field.position1 + condF->condition_field.length1;
+			break;
+		default:
+			break;
+		}
+		if (nLen == -1)
+			break;
+		if (nLen > nInputLen)
+			return -1;
+	}
+	return 0;
+}
 /* Return code:
  		= 0 - false = Condition is OK
       != 0 - true  = Condition si KO
@@ -256,12 +284,12 @@ int condField_test(struct condField_t *condField, unsigned char *record, struct 
             
 			if (nTcmp == 0) {
                 condField->condition.cb_fd->data = (unsigned char*) (record+condField->condition.position);
-				result=fieldValue_checkvalue((struct fieldValue_t *)condField->condition.fieldValue, condField->condition.cb_fd, condField->condition.length);
+				result=fieldValue_checkvalue(job, (struct fieldValue_t *)condField->condition.fieldValue, condField->condition.cb_fd, condField->condition.length);
             }
 			else
             {
                 condField->condition.cb_fd->data = (unsigned char*) (szBufVLSCMP+condField->condition.position);
-				result=fieldValue_checkvalue((struct fieldValue_t *)condField->condition.fieldValue, condField->condition.cb_fd, condField->condition.length);
+				result=fieldValue_checkvalue(job, (struct fieldValue_t *)condField->condition.fieldValue, condField->condition.cb_fd, condField->condition.length);
             }
 			switch (condField->condition.condition) {
 			case COND_CONDITION_EQUAL:

@@ -1,6 +1,5 @@
 /*
-    Copyright (C) 2016-2021 Sauro Menna
-    Copyright (C) 2009 Cedric ISSALY
+    Copyright (C) 2016-2024 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -57,6 +56,8 @@
 #include "exitroutines.h"
 #include "copyfile.h"
 #include "gcshare.h"
+
+
 
 
 int job_copy (struct job_t* job) 
@@ -190,9 +191,9 @@ int job_copyFile(struct job_t *job)
 	if (job->bIsPresentSegmentation == 0) {
 		job->recordNumber=0;
 		job->recordNumberAllocated=GCSORT_ALLOCATE;
-		job->recordData=(unsigned char *)calloc((size_t)job->ulMemSizeAlloc, sizeof(unsigned char));
+		job->recordData=(unsigned char *)calloc((size_t)job->ulMemSizeAllocData, sizeof(unsigned char));
 		job->buffertSort=(unsigned char *)calloc((size_t)job->ulMemSizeAllocSort, sizeof(unsigned char));
-		job->nLenKeys = job_GetLenKeys();
+		job->nLenKeys = job_GetLenKeys(job);
 		job->lPosAbsRead = 0;
 		bIsFirstTime=1;
 	}
@@ -205,7 +206,7 @@ int job_copyFile(struct job_t *job)
 	job->ulMemSizeRead = 0;
 	job->ulMemSizeSort = 0;
 	nIdxFileIn = -1;
-	job->nLastPosKey = job_GetLastPosKeys();
+	job->nLastPosKey = job_GetLastPosKeys(job);
 	if (job->nLastPosKey <= NUMCHAREOL)
 		job->nLastPosKey = NUMCHAREOL;	/* problem into memchr */
 	nEOFFileIn = 0;
@@ -295,7 +296,7 @@ int job_copyFile(struct job_t *job)
  			if (job->nExitRoutine == 0) {					/* 0=normal , 1=E15, 2=E35 , 3=E15+E35 only with 1 call read for E15  */
 				/* Read normal without exit routines */
 				cob_read_next(file->stFileDef, NULL, COB_READ_NEXT);
-				nFSRead = job_checkFS(file->stFileDef);
+				nFSRead = file_checkFSRead("Read", "job_copyFile", file, file->recordLength, file->recordLength);
 				if (nFSRead != 0) {
 					if (nFSRead == 1) {
 						bEOF = 1;
@@ -308,7 +309,7 @@ int job_copyFile(struct job_t *job)
 			}
 			else 
 			{
-				nFS = job_Verify_EOF(&nState, job, file->stFileDef, szVectorRead1, &nLenVR1, szVectorRead2, &nLenVR2);
+				nFS = job_Verify_EOF(&nState, job, file, szVectorRead1, &nLenVR1, szVectorRead2, &nLenVR2);
 				if ((nFS == 99) && (nLastRecord == 1)) {
 					bEOF = 1;
 					nbyteRead = 0;
@@ -549,37 +550,10 @@ int job_copyFile(struct job_t *job)
 		if ((nLenRek > 0) && (job->outfil == NULL)){
 			job_set_area(job, job->outputFile, recordBuffer+nSplitPosPnt, nLenRecOut, nLenRek);	/* Len output   */
 			cob_write (job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
-			switch (atol((char *)job->outputFile->stFileDef->file_status))
-			{
-			case 0: 
-				break;
-			case  4:		/* record successfully read, but too short or too long */
-				fprintf(stdout,"*GCSORT*S627*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", job->outputFile->stFileDef->assign->data,
-					job->outputFile->stFileDef->file_status[0], job->outputFile->stFileDef->file_status[1]);
-				util_view_numrek();
-				job_print_error_file(job->inputFile->stFileDef, nLenRek);
-				job_print_error_file(job->outputFile->stFileDef, nLenRecOut);
-				retcode_func = -1;	/* Error stop execution */
+			retcode_func = file_checkFSWrite("Write", "job_copyFile", job->outputFile, nLenRecOut, nLenRek);
+			if (retcode_func == -1)
 				goto job_save_exit;
-				break;
-			case 71 :
-				fprintf(stdout,"*GCSORT*S627*ERROR: Record contains bad character %s - File Status (%c%c)\n",file_getName(job->outputFile),
-					job->outputFile->stFileDef->file_status[0],job->outputFile->stFileDef->file_status[1]);
-				util_view_numrek();
-				job_print_error_file(job->inputFile->stFileDef, nLenRek);
-				job_print_error_file(job->outputFile->stFileDef, nLenRecOut);
-				retcode_func = -1;	/* Error stop execution */
-				goto job_save_exit;
-				break;
-			default :
-				fprintf(stdout,"*GCSORT*S627*ERROR: Cannot write to file %s - File Status (%c%c)\n",file_getName(job->outputFile),
-					job->outputFile->stFileDef->file_status[0],job->outputFile->stFileDef->file_status[1]);
-				util_view_numrek();
-				job_print_error_file(job->inputFile->stFileDef, nLenRek);
-				job_print_error_file(job->outputFile->stFileDef, nLenRecOut);
-				retcode_func = -1;
-				goto job_save_exit;
-			}
+
             job->recordWriteOutTotal++;
 		}
 

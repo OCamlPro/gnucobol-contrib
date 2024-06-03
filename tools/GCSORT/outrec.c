@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -281,7 +281,7 @@ int outrec_print(struct outrec_t *outrec) {
                    if (atoi(outrec->change.fieldValue->value) < 2)
                        printf("%s", utils_getFieldValueTypeName(outrec->change.fieldValue->type));
                    else
-                        printf("%d%s",outrec->change.fieldValue->occursion,utils_getFieldValueTypeName(outrec->change.fieldValue->type));
+                       printf("%d%s",outrec->change.fieldValue->occursion,utils_getFieldValueTypeName(outrec->change.fieldValue->type));
 				else
 					printf("%d:%c",outrec->change.posAbsRec,outrec->change.type);
 			break;
@@ -311,21 +311,39 @@ int outrec_getLength(struct outrec_t *outrec) {
 	for (o=outrec;o!=NULL;o=o->next) {
 		switch (o->type) {
 			case OUTREC_TYPE_RANGE:	
-				length+=o->range.length;
+				//length = o->range.position + o->range.length;  /* o->range.length; */
+				length += o->range.length;  /* o->range.length; */
 				break;
 			case OUTREC_TYPE_CHANGE_POSITION:
 				length+=fieldValue_getGeneratedLength(o->change_position.fieldValue);
 				break;
 			case OUTREC_TYPE_CHANGE:
-				length+=fieldValue_getGeneratedLength(o->change.fieldValue);
+				/* length += fieldValue_getGeneratedLength(o->change.fieldValue); */
+				if (o->change.posAbsRec == -1)
+					/* fieldValue_print(o->change.fieldValue); */
+					length += o->change.fieldValue->occursion;
+				else
+					if (o->change.posAbsRec == -2)
+						if (atoi(o->change.fieldValue->value) < 2)
+							/* printf("%s", utils_getFieldValueTypeName(o->change.fieldValue->type)); */
+							length += o->change.fieldValue->generated_length;
+						else
+							/* printf("%d%s", o->change.fieldValue->occursion, utils_getFieldValueTypeName(o->change.fieldValue->type)); */
+							length += o->change.fieldValue->occursion;
+					else
+						/* printf("%d:%c", o->change.posAbsRec, o->change.type); */
+						length = o->change.posAbsRec;
 				break;
 			case OUTREC_TYPE_CHANGE_ABSPOS:
-				length += o->change.posAbsRec + fieldValue_getGeneratedLength(o->change.fieldValue);
+				length = o->change.posAbsRec + fieldValue_getGeneratedLength(o->change.fieldValue);
 				break;
 			case OUTREC_TYPE_RANGE_POSITION:
-				length+=o->range_position.length;
+				/* length = o->range_position.position + o->range_position.length; */
+				length = o->range_position.length;
 				break;
 			case OUTREC_TYPE_CHANGE_CMDOPT:
+				/* length = o->changeCmd.position + o->changeCmd.length; */ /* s.m. 20231120 o->changeCmd.changeCmdOpt->vlen; */
+				/* length = o->changeCmd.length; */
 				length += o->changeCmd.changeCmdOpt->vlen;
 				break;
 				/* FINDREP */
@@ -344,12 +362,7 @@ int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *i
 	int nSplit = 0;
 	struct outrec_t *o;
 	int nORangeLen = 0;
-	if (nIsMF == 1)             /* EMULATE MFSORT  position is 1 for DFSORT position is +4  */
-	if (job_EmuleMFSort() == 2) /* DFSort    0 Normal yes shift, 1 MF no shift            */
-	{
-		if (nFileFormat == FILE_TYPE_VARIABLE)
-			nSplit = -4;		/* Position */
-	}
+
 	for (o=outrec;o!=NULL;o=o->next) {
 		switch (o->type) {
 			case OUTREC_TYPE_RANGE:
@@ -446,7 +459,8 @@ int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *i
 				gc_memcpy(o->szChangeBufIn, input + o->findrepCmd.findrepCmdOpt->nStartPos + nSplitPos + nSplit, nORangeLen);
 				findrep_search_replace(o->findrepCmd.findrepCmdOpt, o->szChangeBufIn, o->szChangeBufOut, nORangeLen, nORangeLen, input + nSplitPos, o->findrepCmd.findrepCmdOpt->nDo);
 				/* save in output all data from input */
-				memcpy(output + nSplitPos + nSplit, input + nSplitPos + nSplit, globalJob->LenCurrRek);
+				//-->>memcpy(output + nSplitPos + nSplit, input + nSplitPos + nSplit, globalJob->LenCurrRek);
+				memcpy(output + nSplitPos + nSplit, input + nSplit, globalJob->LenCurrRek);
 				/* copy data modified from replace   */
 				memcpy(output + o->findrepCmd.findrepCmdOpt->nStartPos + nSplitPos + nSplit, o->szChangeBufOut, nORangeLen);
 				
@@ -467,12 +481,6 @@ int outrec_copy_overlay(struct outrec_t* outrec, unsigned char* output, unsigned
 	int nSplit = 0;
 	struct outrec_t* o;
 	int nORangeLen = 0;
-	if (nIsMF == 1)     /* EMUALTE MFSORT  position is 1 for DFSORT position is +4  */
-		if (job_EmuleMFSort() == 2) /* DFSort    0 Normal yes shift, 1 MF no shift    */
-		{
-			if (nFileFormat == FILE_TYPE_VARIABLE)
-				nSplit = -4;		/* Position */
-		}
 	for (o = outrec; o != NULL; o = o->next) {
 		switch (o->type) {
 		case OUTREC_TYPE_RANGE:

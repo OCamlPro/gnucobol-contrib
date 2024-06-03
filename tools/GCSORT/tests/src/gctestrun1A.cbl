@@ -40,8 +40,8 @@
        77 retcode-sum           pic 9(10) value zero.
       *
        01  cmd-gcsort-ebcdic    pic x(70) value 
-            ' -fsign=EBCDIC -fcolseq=EBCDIC  -febcdic-table=DEFAULT '.
-       
+            ' -fsign=EBCDIC -fcolseq=EBCDIC  -febcdic-table=default '.
+        
       *
        01       array-retcode-epilog-gr01.
           03    ar-retcode-ele occurs 15 times.
@@ -61,7 +61,7 @@
             05 ar-ele-name-06         pic x(11) value 'sfrmsqf18 '.
             05 ar-ele-name-07         pic x(11) value 'sincsqf04 '.
             05 ar-ele-name-08         pic x(11) value 'sincsqf05E'.
-            05 ar-ele-name-09         pic x(11) value 'sincsqf06E'.
+            05 ar-ele-name-09         pic x(11) value 'sincsqf06 '.
             05 ar-ele-name-10         pic x(11) value 'sincsqf07 '.
             05 ar-ele-name-11         pic x(11) value 'sincsqf08 '.
             05 ar-ele-name-12         pic x(11) value 'sincsqf19 '.
@@ -81,7 +81,7 @@
       **      05 ar-ele-name-06         pic x(11) value 'sfrmsqf18 '.
       **      05 ar-ele-name-07         pic x(11) value 'sincsqf04 '.
       **      05 ar-ele-name-08         pic x(11) value 'sincsqf05E'.
-      **      05 ar-ele-name-09         pic x(11) value 'sincsqf06E'.
+      **      05 ar-ele-name-09         pic x(11) value 'sincsqf06 '.
       **      05 ar-ele-name-10         pic x(11) value 'sincsqf07 '.
       **      05 ar-ele-name-11         pic x(11) value 'sincsqf08 '.
       **      05 ar-ele-name-12         pic x(11) value 'sincsqf19 '.
@@ -336,61 +336,61 @@
             07 ar-ele-take-row-08030    pic x(80) value 
                 '              66,25)                      '.
       *  19     
-            07 ar-ele-take-row-09001    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09001    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09002    pic x(80) value 
                 'SORT FIELDS=(34,5,CH,A)                   '. 
-            07 ar-ele-take-row-09003    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09003    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09004    pic x(80) value 
                 'USE  dd_infile     RECORD F,90 ORG SQ     '.                  
-            07 ar-ele-take-row-09005    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09005    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09006    pic x(80) value 
                 'GIVE dd_outfile    RECORD F,90 ORG SQ     '.                  
-            07 ar-ele-take-row-09007    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09007    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09008    pic x(80) value 
                 'INREC    FIELDS(1,7,              '.
-            07 ar-ele-take-row-09009    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09009    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09010    pic x(80) value 
                 '               32,7,              '.
-            07 ar-ele-take-row-09011    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09011    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09012    pic x(80) value 
                 '               20,8,              '.
-            07 ar-ele-take-row-09013    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09013    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09014    pic x(80) value 
                 '               16,4,              '.
-            07 ar-ele-take-row-09015    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09015    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09016    pic x(80) value 
                 '               28,4,              '.
-            07 ar-ele-take-row-09017    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09017    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09018    pic x(80) value 
                 '               13,3,              '.
-            07 ar-ele-take-row-09019    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09019    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09020    pic x(80) value 
                 '                8,5,              '.
-            07 ar-ele-take-row-09021    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09021    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09022    pic x(80) value 
                 '               39,4,              '.
-            07 ar-ele-take-row-09023    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09023    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09024    pic x(80) value 
                 '               43,7,              '.
-            07 ar-ele-take-row-09025    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09025    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09026    pic x(80) value 
                 '               50,8,              '.
-            07 ar-ele-take-row-09027    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09027    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09028    pic x(80) value 
                 '               58,8,              '.
-            07 ar-ele-take-row-09029    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09029    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09030    pic x(80) value 
                 '               66,25)             '.
-            07 ar-ele-take-row-09031    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09031    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09032    pic x(80) value 
                 'INCLUDE COND=(8,2,CH,GT,C''GG'',AND, '.
-            07 ar-ele-take-row-09033    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09033    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09034    pic x(80) value 
                 ' 13,3,BI,GT,10,AND,16,4,FI,LT,40,AND,'. 
-            07 ar-ele-take-row-09035    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09035    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09036    pic x(80) value 
                 ' 20,8,FL,GT,10,AND,28,4,PD,GT,10,AND,'.
-            07 ar-ele-take-row-09037    pic x(11) value 'sincsqf06E'.
+            07 ar-ele-take-row-09037    pic x(11) value 'sincsqf06 '.
             07 ar-ele-take-row-09038    pic x(80) value 
                 '32,7,ZD,LT,40)'                       .                 
       * 8
@@ -767,7 +767,7 @@
            display ' GCSort test environment ' gcsort-tests-ver
            display '*===============================================*'
            display '*===============================================*'
-           display '  gctestrun1           SORT'
+           display '  gctestrun1A          SORT'
            display '                       Group1'
            display '*===============================================*'
            call 'gctestgetop' using ntype, nver

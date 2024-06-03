@@ -27,7 +27,7 @@
        01 size-mod CONSTANT AS 8.
        >>END-IF
        01  cmd-gcsort-ebcdic    pic x(55) value 
-            ' -fsign=EBCDIC -fcolseq=EBCDIC  -febcdic-table=DEFAULT '.
+            ' -fsign=EBCDIC -fcolseq=EBCDIC  -febcdic-table=default '.
        
        01 c-size-t   PIC 9(size-mod) COMP-5.       
        77 chrsl                 pic x value '/'.

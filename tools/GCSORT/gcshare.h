@@ -1,6 +1,5 @@
 /*
-	Copyright (C) 2016-2020 Sauro Menna
-	Copyright (C) 2009 Cedric ISSALY
+	Copyright (C) 2016-2024 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -29,17 +28,21 @@
 		cob_module *module = NULL;
 		char	szMexToken[260]; 
 		char	cob_tmp_buff[COB_MEDIUM_BUFF];
-		char	cob_tmp_temp[FILENAME_MAX+8];
+		char	cob_tmp_temp[COB_MEDIUM_BUFF];
 		struct job_t* globalJob;
 		int     g_retWarn;
-
+		#if __LIBCOB_RELEASE >= 30200
+			enum cb_colseq g_cb_colseq = CB_COLSEQ_NATIVE;
+		#endif
 	#else
 		extern cob_module *module;
 		extern char szMexToken[260];
 		extern char	cob_tmp_buff[COB_MEDIUM_BUFF];
-		extern char	cob_tmp_temp[FILENAME_MAX+8];
+		extern char	cob_tmp_temp[COB_MEDIUM_BUFF];
 		extern struct job_t* globalJob;
 		extern int  g_retWarn;
-
+		#if __LIBCOB_RELEASE >= 30200
+			extern enum cb_colseq g_cb_colseq;
+		#endif
 	#endif
 #endif  /* SHAREFILE_INCLUDED   */

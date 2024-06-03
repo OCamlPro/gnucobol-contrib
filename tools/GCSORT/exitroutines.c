@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2021 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -25,6 +25,7 @@
 #include "file.h"
 #include "exitroutines.h"
 #include "libgcsort.h"
+#include "gcshare.h"
 #include "utils.h"
 
 static unsigned int	    E15initialized = 0;
@@ -248,7 +249,7 @@ static void E15CALL_module_init (cob_module *module)
   module->module_param_cnt = 0;
   /* //-->> module->ebcdic_sign = 0; */
   module->ebcdic_sign = g_cb_ebcdic_sign;
-  module->collating_sequence = g_cb_coltab_ptr;
+  module->collating_sequence = get_collation(g_cb_colseq);
   module->decimal_point = '.';
   module->currency_symbol = '$';
   module->numeric_separator = ',';
@@ -512,7 +513,7 @@ static void E35CALL_module_init(cob_module* module)
     module->module_param_cnt = 0;
     /* module->ebcdic_sign = 0; */
     module->ebcdic_sign = g_cb_ebcdic_sign;
-    module->collating_sequence = g_cb_coltab_ptr;
+    module->collating_sequence = get_collation(g_cb_colseq);
     module->decimal_point = '.';
     module->currency_symbol = '$';
     module->numeric_separator = ',';

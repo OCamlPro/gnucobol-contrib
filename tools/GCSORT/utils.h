@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -83,12 +83,12 @@
 #endif
 
 #if defined(_MSC_VER) 
-  #define INLINE  __forceinline /* use __forceinline (VC++ specific) */
-  #define INLINE2 __forceinline /* use __forceinline (VC++ specific) */
+  #define INLINE  //__forceinline /* use __forceinline (VC++ specific) */
+  #define INLINE2 //__forceinline /* use __forceinline (VC++ specific) */
 #else
 /*  fix for ubuntu envronment  #define INLINE __inline__ //			 inline         use standard inline */
   #define INLINE 
-  #define INLINE2   __inline__  /* __attribute__((always_inline))   */
+  #define INLINE2 //  __inline__  /* __attribute__((always_inline))   */
 #endif
 
 #include <libcob.h>
@@ -191,6 +191,11 @@
 #define ABEND_SKIP      1
 #define ABEND_EXEC      2
 
+#define NOISAM       0
+#define BDB          1
+#define VBISAM       2
+#define CISAM        3
+#define DISAM        4
 
 #ifdef _WIN32
 	#define charSep '\\'
@@ -212,6 +217,7 @@ int utils_parseSortDirection(const char *direction);
 int utils_parseCondCondition(const char *condition);
 int utils_parseCondOperation(const char *operation);
 int utils_parseKeyType(const char *keyType);
+int utils_parseKeyCollating(const char* keyCollating);
 
 const char *utils_getFileFormatName(int format);
 const char *utils_getFileOrganizationName(int organization);
@@ -221,12 +227,15 @@ const char *utils_getSortDirectionName(int direction);
 const char *utils_getCondConditionName(int condition);
 const char *utils_getCondOperationName(int operation);
 const char* utils_getKeyType(int nkeyType);
+const char* utils_getKeyCollating(int nKeyCollating);
 int utils_SetOptionSort(char* optSort, struct outfil_t* outfil, int nValue);
 int utils_SetOptionSortNum(char* optSort, int64_t nNum);
 int utils_SetOptionY2Past(char* optSort, int nNum);
 int utils_SetOptionExRoutine(char* optSort, char* szType, char* sCallName);
 
 void util_print_time_elap( const  char* szMex );
+void util_print_time_elap_thread(const char* szMex, int nT);
+
 void util_convertToUpper(char *strIn, char* strOut);
 /* Function for cob_field & cob_field_attrib    */
 cob_field* util_cob_field_make (int type, int digits, int scale, int flags, int nLen, int nData);
@@ -256,7 +265,7 @@ int utl_copy_realloc(char* out, char* in);
 
 int utl_str_searchreplace(char* orig, char* search, char* replace, char* result);
 
-void sort_temp_name(const char* ext);
+void sort_temp_name(struct job_t* job, const char* ext);
 
 void util_view_numrek(void);
 

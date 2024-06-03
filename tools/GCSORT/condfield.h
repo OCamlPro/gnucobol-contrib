@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -84,6 +84,9 @@ int condField_setFormatFieldsTypeAll(int nTypeFormat, int nVal);
 int condField_setFormat(struct condField_t *condField, int nVal);
 int condField_addIncludeOutfil(struct outfil_t* outfil, struct condField_t* condField);
 int condField_addOmitOutfil(struct outfil_t* outfil, struct condField_t* condField);
+/* int condField_getLen(struct condField_t* condField); */
+int condField_checkLen(struct condField_t* condField, int nLen);
+
 
 
 #endif /* CONDFIELD_H_INCLUDED */

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -37,12 +37,13 @@ struct KeyIdx_t {
                                     /*     1 = A  Alternative,                      */
                                     /*     2 = AD Alternative with duplicates,      */
                                     /*     3 = C  Continue previous definition      */
+    int             nCollatingSeq;  /* Collating Sequence 0=Native  1=Ascii, 2=EBCDIC       */
     cob_field* pCobFieldKey;        /* Field                                        */
     struct KeyIdx_t* next;          /* Next                                         */
 }; /* KeyIdx;   */
 
 
-struct KeyIdx_t *KeyIdx_constructor(int position, int length, int type);
+struct KeyIdx_t* KeyIdx_constructor(int position, int length, int type, int sColSeq);
 void KeyIdx_destructor(struct KeyIdx_t *KeyIdx);
 void KeyIdx_setDataForKey(struct KeyIdx_t *KeyIdx, unsigned char* szBuf);
 struct KeyIdx_t *KeyIdx_getNext(struct KeyIdx_t *KeyIdx);

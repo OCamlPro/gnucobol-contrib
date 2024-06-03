@@ -73,8 +73,7 @@
            copy prenvfield1.
       *        
            sort file-sort
-                on ascending  key    srt-ch-field         
-                                     srt-ch-field 
+                on ascending  key    srt-ch-field 
                                      srt-bi-field 
                                      srt-fi-field 
                                      srt-fl-field 

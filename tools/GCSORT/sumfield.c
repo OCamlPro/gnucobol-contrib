@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -266,7 +266,7 @@ int SumFields_KeyCheck(struct job_t* job,
 						int nSplit)
 {
     int useRecord = 1;
-        if (job_compare_key(szKeyPrec, szKeyCurr) == 0) {	/* Compare Keys */
+        if (job_compare_key(job, szKeyPrec, szKeyCurr) == 0) {	/* Compare Keys */
             *nLenPrec = *nLenRek;
             SumField_SumField((unsigned char*)szBuffRek+nSplit);
             memcpy(szPrecSumFields, szBuffRek, *nLenRek+nSplit);

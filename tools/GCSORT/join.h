@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2016-2022 Sauro Menna
+	Copyright (C) 2016-2024 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -152,6 +152,7 @@ int join_F1_read(void);
 int join_F1_write(void);
 int join_F2_read(void);
 int join_F2_write(void);
+int join_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLenOut, int nLenRek);
 
 
 

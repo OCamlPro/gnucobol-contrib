@@ -508,6 +508,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            CALL 'CBL_COPY_FILE' USING 
                 env-set-value
                 '../files/fsqf01.dat'
+           display " copy " env-set-value "  ../files/fsqf01.dat"
            move space            to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
@@ -516,6 +517,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            CALL 'CBL_COPY_FILE' USING 
                 env-set-value
                 '../files/fsqf02.dat'
+           display " copy " env-set-value "  ../files/fsqf02.dat"
            move space            to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
@@ -524,6 +526,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            CALL 'CBL_COPY_FILE' USING 
                 env-set-value
                 '../files/fsqf03.dat'
+           display " copy " env-set-value "  ../files/fsqf03.dat"
       **
            move 'dd_infile1'              to env-set-name
            move '../files/fsqf01.dat'     to env-set-value

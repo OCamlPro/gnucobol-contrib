@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -334,25 +334,36 @@ int inrec_getLength(struct inrec_t *inrec) {
 	for (o=inrec;o!=NULL;o=o->next) {
 		switch (o->type) {
 			case INREC_TYPE_RANGE:
-				length+=o->range.length;
+				length =o->range.position + o->range.length;
 				break;
 			case INREC_TYPE_CHANGE_POSITION:
 				length+=fieldValue_getGeneratedLength(o->change_position.fieldValue);
 				break;
 			case INREC_TYPE_CHANGE:
-				length+=fieldValue_getGeneratedLength(o->change.fieldValue);
+				/* length += fieldValue_getGeneratedLength(o->change.fieldValue); */
+				if (o->change.posAbsRec == -1)
+					length += o->change.fieldValue->occursion;
+				else
+					if (o->change.posAbsRec == -2)
+						if (atoi(o->change.fieldValue->value) < 2)
+							length += o->change.fieldValue->generated_length;
+						else
+							length += o->change.fieldValue->occursion;
+					else
+						length = o->change.posAbsRec;
 				break;
 			case INREC_TYPE_CHANGE_ABSPOS:
-				length += o->change.posAbsRec+ fieldValue_getGeneratedLength(o->change.fieldValue);
+				length =o->change.posAbsRec+ fieldValue_getGeneratedLength(o->change.fieldValue);
 				break;
 			case INREC_TYPE_RANGE_POSITION:
-				length+=o->range_position.length;
+				length =o->range.position + o->range_position.length;
 				break;
 			case INREC_TYPE_CHANGE_CMDOPT:
+				/* 20240201 length = o->changeCmd.position + o->changeCmd.length; */ /* s.m. 20231120 o->changeCmd.changeCmdOpt->vlen; */
 				length += o->changeCmd.changeCmdOpt->vlen;
                 break;
 			case INREC_TYPE_JOIN:
-				length += o->joinCmd.length;
+				length =o->joinCmd.position + o->joinCmd.length;
 				break;
 				/* FINDREP */
 			case INREC_TYPE_FINDREP:
@@ -468,7 +479,7 @@ int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *inpu
 				if (i->findrepCmd.findrepCmdOpt->nEndPos > 0)
 					nIRangeLen = i->findrepCmd.findrepCmdOpt->nEndPos - i->findrepCmd.findrepCmdOpt->nStartPos;
 				else
-					nIRangeLen = globalJob->LenCurrRek;
+					nIRangeLen = job->LenCurrRek;
 				gc_memcpy(i->szChangeBufIn, input + i->findrepCmd.findrepCmdOpt->nStartPos + nSplitPos + nSplit, nIRangeLen);
 				findrep_search_replace(i->findrepCmd.findrepCmdOpt, i->szChangeBufIn, i->szChangeBufOut, nIRangeLen, nIRangeLen, input + nSplitPos, i->findrepCmd.findrepCmdOpt->nDo);
 				/* save in output all data from input */
@@ -477,7 +488,7 @@ int inrec_copy(struct inrec_t *inrec, unsigned char *output, unsigned char *inpu
 				memcpy(output + i->findrepCmd.findrepCmdOpt->nStartPos + nSplitPos + nSplit, i->szChangeBufOut, nIRangeLen);
 
 				if (i->findrepCmd.findrepCmdOpt->nEndPos > 0)
-					position = globalJob->LenCurrRek;
+					position = job->LenCurrRek;
 				else
 					position = nIRangeLen;
 			}

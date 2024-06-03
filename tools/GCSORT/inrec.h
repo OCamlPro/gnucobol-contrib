@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -43,12 +43,12 @@ struct inrec_t {
 	union {
 		struct {
 			int nFileJoin;			/*  1=F1, 2=F2 */
-			int position;
-			int length;
-			int posAbsRec;
-			struct fieldValue_t* fieldValue;
-			char type;
-			struct change_t* changeCmdOpt;
+			int position;	 
+			int length;		 
+			int posAbsRec;   
+			struct fieldValue_t* fieldValue;	 
+			char type;							 
+			struct change_t* changeCmdOpt;		 
 			struct findrep_t* findrepCmdOpt;
 		} range;				/* 0	INREC_TYPE_RANGE    */
 		struct {
@@ -65,16 +65,16 @@ struct inrec_t {
 			int nFileJoin;			/*  1=F1, 2=F2 */
 			int position;
 			int length;
-			int posAbsRec;
-			struct fieldValue_t *fieldValue;
-			char type;
+			int posAbsRec;	
+			struct fieldValue_t *fieldValue;	
+			char type;		
 			struct change_t* changeCmdOpt;
 			struct findrep_t* findrepCmdOpt;
-		} change;				/*  2	INREC_TYPE_CHANGE   */
+		} change;				/*  2	INREC_TYPE_CHANGE   */ /* 4 INREC_TYPE_CHANGE_ABSPOS */
 		struct {		
 			int nFileJoin;			/*  1=F1, 2=F2 */
-			int position;
-			int length;
+			int position; 
+			int length;   
 			int posAbsRec;
 			struct fieldValue_t* fieldValue;
 			char type;
@@ -84,23 +84,23 @@ struct inrec_t {
 		struct {
 			int nFileJoin;			/*  1=F1, 2=F2 */
 			int position;
-			int length;
+			int length;		
 			int posAbsRec;
 			struct fieldValue_t* fieldValue;
 			char type;
-			struct change_t* changeCmdOpt;
+			struct change_t* changeCmdOpt;	
 			struct findrep_t* findrepCmdOpt;
 		} changeCmd;			/*  5	INREC_TYPE_CHANGE_CMDOPT   */
 		struct {
-			int nFileJoin;			/*  1=F1, 2=F2 */
-			int position;
-			int length;
+			int nFileJoin;		/*  1=F1, 2=F2 */
+			int position;	
+			int length;		
 			int posAbsRec;
 			struct fieldValue_t* fieldValue;
 			char type;
-			struct change_t* changeCmdOpt;
+			struct change_t* changeCmdOpt;		
 			struct findrep_t* findrepCmdOpt;
-		} joinCmd;			/*  6	INREC_TYPE_JOIN   */
+		} joinCmd;				/*  6	INREC_TYPE_JOIN   */
 		struct {
 			int nFileJoin;			/*  1=F1, 2=F2 */
 			int position;
@@ -109,8 +109,8 @@ struct inrec_t {
 			struct fieldValue_t* fieldValue;
 			char type;
 			struct change_t* changeCmdOpt;
-			struct findrep_t* findrepCmdOpt;
-		} findrepCmd;			/*  7	OUTREC_TYPE_FINDREP   */
+			struct findrep_t* findrepCmdOpt; 
+		} findrepCmd;			/*  7	INREC_TYPE_FINDREP   */
 	};
 	unsigned char* szChangeBufIn;
 	unsigned char* szChangeBufOut;

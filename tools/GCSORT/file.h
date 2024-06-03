@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -26,6 +26,7 @@
 #include <stdint.h>
 #include <libcob.h>
 #include "keyidxrel.h"
+#include "utils.h"
 
 struct file_t {
 	char *name;
@@ -68,6 +69,8 @@ int file_setInputFile(struct file_t *file);
 int file_setXSUMFile(struct file_t* file);
 int file_SetInfoForFile(struct file_t* fkey, int nMode);
 int file_clone(struct file_t* fout, struct file_t* fin);
+int file_checkFSRead(char* op, char* caller, struct file_t* file, int nLenRecOut, int nLenRek);
+int file_checkFSWrite(char* op, char* caller, struct file_t* file, int nLenRecOut, int nLenRek);
 
 
 #endif /* FILE_H_INCLUDED   */

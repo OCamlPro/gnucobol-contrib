@@ -104,10 +104,10 @@
                 ' SORT FIELDS=(10,8,Y2T,A) '.
             07 ar-ele-take-row-01003      pic x(10) value 'Y2T8  '.
             07 ar-ele-take-row-01004      pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-01005      pic x(10) value 'Y2T8  '.
             07 ar-ele-take-row-01006      pic x(80) value 
-                'GIVE ../files/FDate.dat.Y2T8.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2T8.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-01007      pic x(10) value 'Y2T8  '.
             07 ar-ele-take-row-01008      pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -117,10 +117,10 @@
                 ' SORT FIELDS=(19,4,Y2T,A) '.
             07 ar-ele-take-row-02003    pic x(10) value 'Y2T4 '.
             07 ar-ele-take-row-02004    pic x(80) value
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-02005    pic x(10) value 'Y2T4 '.
             07 ar-ele-take-row-02006    pic x(80) value
-                'GIVE ../files/FDate.dat.Y2T4.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2T4.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-02007    pic x(10) value 'Y2T4 '.
             07 ar-ele-take-row-02008    pic x(80) value
                 ' OPTION Y2PAST=80 '. 
@@ -130,10 +130,10 @@
                 ' SORT FIELDS=(24,2,Y2T,A) '.
             07 ar-ele-take-row-03003    pic x(10) value 'Y2T2 '.
             07 ar-ele-take-row-03004    pic x(80) value
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-03005    pic x(10) value 'Y2T2 '.
             07 ar-ele-take-row-03006    pic x(80) value
-                'GIVE ../files/FDate.dat.Y2T2.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2T2.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-03007    pic x(10) value 'Y2T2 '.
             07 ar-ele-take-row-03008    pic x(80) value
                 ' OPTION Y2PAST=80 '. 
@@ -143,10 +143,10 @@
                 ' SORT FIELDS=(27,3,Y2T,A) '.
             07 ar-ele-take-row-04003    pic x(10) value 'Y2T3 '.
             07 ar-ele-take-row-04004    pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-04005    pic x(10) value 'Y2T3 '.
             07 ar-ele-take-row-04006    pic x(80) value  
-                'GIVE ../files/FDate.dat.Y2T3.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2T3.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-04007    pic x(10) value 'Y2T3 '.
             07 ar-ele-take-row-04008    pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -156,10 +156,10 @@
                 ' SORT FIELDS=(31,5,Y2T,A) '.
             07 ar-ele-take-row-05003    pic x(10) value 'Y2T5 '.
             07 ar-ele-take-row-05004    pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-05005    pic x(10) value 'Y2T5 '.
             07 ar-ele-take-row-05006    pic x(80) value  
-                'GIVE ../files/FDate.dat.Y2T5.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2T5.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-05007    pic x(10) value 'Y2T5 '.
             07 ar-ele-take-row-05008    pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -169,10 +169,10 @@
                 ' SORT FIELDS=(37,6,Y2T,A) '.
             07 ar-ele-take-row-06003    pic x(10) value 'Y2T6 '.
             07 ar-ele-take-row-06004    pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-06005    pic x(10) value 'Y2T6 '.
             07 ar-ele-take-row-06006    pic x(80) value  
-                'GIVE ../files/FDate.dat.Y2T6.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2T6.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-06007    pic x(10) value 'Y2T6 '.
             07 ar-ele-take-row-06008    pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -182,10 +182,10 @@
                 ' SORT FIELDS=(44,7,Y4T,A) '.
             07 ar-ele-take-row-07003    pic x(10) value 'Y4T7 '.
             07 ar-ele-take-row-07004    pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-07005    pic x(10) value 'Y4T7 '.
             07 ar-ele-take-row-07006    pic x(80) value  
-                'GIVE ../files/FDate.dat.Y4T7.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y4T7.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-07007    pic x(10) value 'Y4T7 '.
             07 ar-ele-take-row-07008    pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -195,10 +195,10 @@
                 ' SORT FIELDS=(52,1,Y2B,A)  '.
             07 ar-ele-take-row-08003    pic x(10) value 'Y2B '.
             07 ar-ele-take-row-08004    pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-08005    pic x(10) value 'Y2B '.
             07 ar-ele-take-row-08006    pic x(80) value  
-                'GIVE ../files/FDate.dat.Y2B.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2B.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-08007    pic x(10) value 'Y2B '.
             07 ar-ele-take-row-08008    pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -208,10 +208,10 @@
                 ' SORT FIELDS=(54,2,Y2C,A) '.
             07 ar-ele-take-row-09003    pic x(10) value 'Y2C '.
             07 ar-ele-take-row-09004    pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-09005    pic x(10) value 'Y2C '.
             07 ar-ele-take-row-09006    pic x(80) value  
-                'GIVE ../files/FDate.dat.Y2C.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2C.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-09007    pic x(10) value 'Y2C '.
             07 ar-ele-take-row-09008    pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -221,10 +221,10 @@
                 ' SORT FIELDS=(57,1,Y2D,A) '.
             07 ar-ele-take-row-10003    pic x(10) value 'Y2D '.
             07 ar-ele-take-row-10004    pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-10005    pic x(10) value 'Y2D '.
             07 ar-ele-take-row-10006    pic x(80) value  
-                'GIVE ../files/FDate.dat.Y2D.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2D.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-10007    pic x(10) value 'Y2D '.
             07 ar-ele-take-row-10008    pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -234,10 +234,10 @@
                 ' SORT FIELDS=(59,2,Y2P,A) '.
             07 ar-ele-take-row-11003    pic x(10) value 'Y2P '.
             07 ar-ele-take-row-11004    pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-11005    pic x(10) value 'Y2P '.
             07 ar-ele-take-row-11006    pic x(80) value  
-                'GIVE ../files/FDate.dat.Y2P.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2P.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-11007    pic x(10) value 'Y2P '.
             07 ar-ele-take-row-11008    pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -247,10 +247,10 @@
                 ' SORT FIELDS=(62,2,Y2S,A) '.
             07 ar-ele-take-row-12003    pic x(10) value 'Y2S '.
             07 ar-ele-take-row-12004    pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-12005    pic x(10) value 'Y2S '.
             07 ar-ele-take-row-12006    pic x(80) value  
-                'GIVE ../files/FDate.dat.Y2S.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2S.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-12007    pic x(10) value 'Y2S '.
             07 ar-ele-take-row-12008    pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -260,10 +260,10 @@
                 ' SORT FIELDS=(65,3,Y2U,A) '.
             07 ar-ele-take-row-13003    pic x(10) value 'Y2U '.
             07 ar-ele-take-row-13004    pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-13005    pic x(10) value 'Y2U '.
             07 ar-ele-take-row-13006    pic x(80) value  
-                'GIVE ../files/FDate.dat.Y2U.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2U.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-13007    pic x(10) value 'Y2U '.
             07 ar-ele-take-row-13008    pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -273,10 +273,10 @@
                 ' SORT FIELDS=(69,4,Y2V,A)  '.
             07 ar-ele-take-row-14003    pic x(10) value 'Y2V '.
             07 ar-ele-take-row-14004    pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-14005    pic x(10) value 'Y2V '.
             07 ar-ele-take-row-14006    pic x(80) value  
-                'GIVE ../files/FDate.dat.Y2V.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2V.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-14007    pic x(10) value 'Y2V '.
             07 ar-ele-take-row-14008    pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -286,10 +286,10 @@
                 ' SORT FIELDS=(74,3,Y2X,A) '.
             07 ar-ele-take-row-15003    pic x(10) value 'Y2X '.
             07 ar-ele-take-row-15004    pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-15005    pic x(10) value 'Y2X '.
             07 ar-ele-take-row-15006    pic x(80) value  
-                'GIVE ../files/FDate.dat.Y2X.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2X.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-15007    pic x(10) value 'Y2X '.
             07 ar-ele-take-row-15008    pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -299,10 +299,10 @@
                 ' SORT FIELDS=(78,4,Y2Y,A) '.
             07 ar-ele-take-row-16003    pic x(10) value 'Y2Y '.
             07 ar-ele-take-row-16004    pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-16005    pic x(10) value 'Y2Y '.
             07 ar-ele-take-row-16006    pic x(80) value  
-                'GIVE ../files/FDate.dat.Y2Y.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2Y.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-16007    pic x(10) value 'Y2Y '.
             07 ar-ele-take-row-16008    pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -312,10 +312,10 @@
                 ' SORT FIELDS=(83,2,Y2Z,A) '.
             07 ar-ele-take-row-17003    pic x(10) value 'Y2Z '.
             07 ar-ele-take-row-17004    pic x(80) value 
-                ' USE ../files/FDate.dat   RECORD F,85 ORG SQ  '. 
+                ' USE ../files/fdate.dat   RECORD F,85 ORG SQ  '. 
             07 ar-ele-take-row-17005    pic x(10) value 'Y2Z '.
             07 ar-ele-take-row-17006    pic x(80) value  
-                'GIVE ../files/FDate.dat.Y2Z.srt RECORD F,85 ORG SQ'. 
+                'GIVE ../files/fdate.dat.Y2Z.srt RECORD F,85 ORG SQ'. 
             07 ar-ele-take-row-17007    pic x(10) value 'Y2Z '.
             07 ar-ele-take-row-17008    pic x(80) value 
                 ' OPTION Y2PAST=80 '. 
@@ -506,10 +506,10 @@ Win        if (ntype = 1)
       *---------------------------------------------------------*
        gein-00.
            move 'dd_infile'                     to env-set-name
-           move '../filesin/FDate_Struct.txt'   to env-set-value
+           move '../filesin/fdate_struct.txt'   to env-set-value
            perform set-value-env
            move 'dd_outfile'          to env-set-name
-           move '../files/FDate.dat' to env-set-value
+           move '../files/fdate.dat' to env-set-value
            perform set-value-env
            move 'genfiledate' to cmd-string
 Win        if (ntype = 1)
@@ -543,14 +543,14 @@ TEST00           display cmd-go
       *---------------------------------------------------------*
        stgc-00.
            move 99  to ar-tst-rtc02(idx)  
-      ** set dd_infile=%filedir%\FDate.dat 
+      ** set dd_infile=%filedir%\fdate.dat 
            move 'dd_infile'              to env-set-name
-           move '../files/FDate.dat'     to env-set-value
+           move '../files/fdate.dat'     to env-set-value
            perform set-value-env
       ** set dd_outfile=%filedir%\susesqf01_gcs.srt
            move 'dd_outfile'              to env-set-name
            move space                    to env-set-value
-           string '../files/FDate.dat.'       delimited by size
+           string '../files/fdate.dat.'       delimited by size
                     ar-ele-vet(idx) delimited by space
                     '.srt'      delimited by size
                     into env-set-value
@@ -558,7 +558,7 @@ TEST00           display cmd-go
       *
       **--*          
            move space                to wk-fcmd
-           string   '../takefile/tmp/FDate_'    delimited by size
+           string   '../takefile/tmp/fdate_'    delimited by size
                     ar-ele-vet(idx) delimited by space
                     '.prm'    delimited by size
                     into wk-fcmd
@@ -573,7 +573,7 @@ TEST00           display cmd-go
            close fcmd
       ** 
            move space              to cmd-string
-           string  'gcsort TAKE ../takefile/tmp/FDate_'
+           string  'gcsort TAKE ../takefile/tmp/fdate_'
                                   delimited by size
                    ar-ele-vet(idx)  delimited by space
                    '.prm'         delimited by size
@@ -646,7 +646,7 @@ TEST00               display ' cmd:' cmd-go
       ** set dd_incobol=%filedir%\
            move 'dd_infile'              to env-set-name
            move space                    to env-set-value
-           string '../files/FDate.dat.'  delimited by size
+           string '../files/fdate.dat.'  delimited by size
                     ar-ele-vet(idx)      delimited by space
                     '.srt'               delimited by size
                     into env-set-value

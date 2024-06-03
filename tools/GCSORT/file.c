@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2023 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -24,6 +24,7 @@
 #include <string.h>
 #include <libcob.h>
 #include "gcsort.h"
+#include "libgcsort.h"
 #include "job.h"
 #include "file.h"
 #include "utils.h"
@@ -126,7 +127,7 @@ int file_print(struct file_t *file) {
 			fprintf(stdout," KEY (");
 			ki = file->stKeys;
 			for (k=0;k<(int)file->stFileDef->nkeys;k++) {
-				fprintf(stdout,"%d,%d,%s", ki->position+1, ki->length, utils_getKeyType(ki->type));
+				fprintf(stdout,"%d,%d,%s,%s", ki->position+1, ki->length, utils_getKeyType(ki->type), utils_getKeyCollating(ki->nCollatingSeq));
 				ki = ki->next;
 				if (ki != NULL)
 					fprintf(stdout,",");
@@ -304,7 +305,7 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 		case FILE_ORGANIZATION_LINESEQUFIXED:
 			file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 			file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
-			cob_putenv("COB_LS_FIXED=1");	 /* change value of environment value GNUCobol*/
+		/*	cob_putenv("COB_LS_FIXED=1");	*/ /* change value of environment value GNUCobol*/
 			break;
 		case FILE_ORGANIZATION_RELATIVE:
 			tKeys =  file->stKeys;
@@ -344,7 +345,9 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 					file->stFileDef->keys[k].char_suppress = 0;
 					file->stFileDef->keys[k].count_components = 0;      /* count_components */
 					file->stFileDef->keys[k].component[0] = NULL;
-
+	#if __LIBCOB_VERSION_MINOR >= 3 || __LIBCOB_VERSION >= 4
+					file->stFileDef->keys[k].collating_sequence = get_collation(tKeys->nCollatingSeq);
+    #endif  
 					/* s.m. 20210215    */
 					file->stFileDef->extfh_ptr = NULL;
 					file->stFileDef->linorkeyptr = NULL;
@@ -370,6 +373,9 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 	return 0;
 }
 int file_clone(struct file_t* fout, struct file_t* fin) {
+	/* 2024 s.m. */
+	/* fout->name = fin->name; */
+	/* */
 	fout->bIsSeqMF = fin->bIsSeqMF;
 	fout->file_length = fin->file_length;
 	fout->format = fin->format;
@@ -391,4 +397,107 @@ int file_clone(struct file_t* fout, struct file_t* fin) {
 		fout->stFileDef->fcd = NULL;
 #endif	
 	return 0;
+}
+
+/* 20231120 */
+/* Check file status values for operation READ */
+/* Return Code
+	0 = OK
+	1 = End of file (Warning)
+   -1 = Fatal Error
+*/
+/* int file_checkFSRead(cob_file* stFileDef) */
+int file_checkFSRead(char* op, char* caller, struct file_t* file, int nLenRecOut, int nLenRek) {
+	int nRc = 0;
+	switch (atol((char*)file->stFileDef->file_status))
+	{
+	case 0:
+		break;
+	case  4:		/* record successfully read, but too short or too long */
+		fprintf(stdout, "*GCSORT*S755*ERROR: Operation %s, Caller %s, File %s \n Record successfully read, but too short or too long. Record: %s \nFile Status (%c%c)\n",
+			op, caller, file_getName(file), file->stFileDef->assign->data, file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+		util_view_numrek();
+		nRc = -1;	/* Error stop execution */
+		break;
+	case 10:		/* EOF  */
+		nRc = 1;
+		break;
+	case 71:
+		fprintf(stdout, "*GCSORT*S756*ERROR: Operation %s, Caller %s, File %s \n Record contains bad character. Record: %s \nFile Status (%c%c)\n",
+			op, caller, file_getName(file),
+			file->stFileDef->assign->data, file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+		util_view_numrek();
+		nRc = -1;	/* Error stop execution */
+		break;
+	default:
+		if (atol((char*)file->stFileDef->file_status) < 10) {
+			fprintf(stdout, "*GCSORT*W758* WARNING : Warning reading file %s - File Status (%c%c) \n", file->stFileDef->assign->data,
+				file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+			util_view_numrek();
+			nRc = 0;
+		}
+		else {
+			fprintf(stdout, "*GCSORT*S757*ERROR: Operation %s, Caller %s, File %s \n Cannot read file. \nFile Status (%c%c)\n",
+				op, caller, file_getName(file),
+				file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+			util_view_numrek();
+			nRc = -1;  /* Error stop execution */
+		}
+	}
+	return nRc;
+}
+
+/* 20231120 */
+/* Check file status values for operations */
+/* Return Code
+	0 = OK
+	1 = End of file (Warning)
+   -1 = Fatal Error
+*/
+int file_checkFSWrite(char* op, char* caller, struct file_t* file, int nLenRecOut, int nLenRek) {
+	int nRc = 0;
+	switch (atol((char*)file->stFileDef->file_status))
+	{
+	case 0:
+		break;
+	case  4:		/* record successfully read, but too short or too long */
+		fprintf(stdout, "*GCSORT*S750*ERROR: Operation %s, Caller %s, File %s \n Record successfully read, but too short or too long. Record: %s \nFile Status (%c%c)\n",
+			op, caller, file_getName(file), file->stFileDef->assign->data, file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+		util_view_numrek();
+		job_print_error_file(file->stFileDef, nLenRek);
+		job_print_error_file(file->stFileDef, nLenRecOut);
+		nRc = -1;	/* Error stop execution */
+		break;
+	case 10:		/* EOF  */
+		nRc = 1;
+		break;
+	case 71:
+		fprintf(stdout, "*GCSORT*S751*ERROR: Operation %s, Caller %s, File %s \n Record contains bad character. Record: %s \nFile Status (%c%c)\n",
+			op, caller, file_getName(file),
+			file->stFileDef->assign->data, file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+		util_view_numrek();
+		util_view_numrek();
+		job_print_error_file(file->stFileDef, nLenRek);
+		job_print_error_file(file->stFileDef, nLenRecOut);
+		nRc = -1;	/* Error stop execution */
+		break;
+	default:
+		if (atol((char*)file->stFileDef->file_status) < 10) {
+			fprintf(stdout, "*GCSORT*W753* WARNING : Warning writing file %s - File Status (%c%c) \n", file->stFileDef->assign->data,
+				file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+			util_view_numrek();
+			nRc = 0;
+		}
+		else {
+			fprintf(stdout, "*GCSORT*S752*ERROR: Operation %s, Caller %s, File %s \n Cannot write file. \nFile Status (%c%c)\n",
+				op, caller, file_getName(file),
+				file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
+			util_view_numrek();
+			util_view_numrek();
+			job_print_error_file(file->stFileDef, nLenRek);
+			job_print_error_file(file->stFileDef, nLenRecOut);
+			nRc = -1;  /* Error stop execution */
+		}
+	}
+	return nRc;
 }

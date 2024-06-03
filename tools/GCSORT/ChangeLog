@@ -1,3 +1,21 @@
+2024-05-27  Sauro Menna  <smenna@users.sourceforge.net>
+    * Version 1.03.10 - Multithread version
+    * Enabled Multithread in command line (parameter -mt=<n> where n > 1 and <= 16)
+      Multithread features valid only for Sequential (Fixed and Variable) anche Line Sequential (Fixed and Variable)
+      
+    * New parameter in indexed file definition. Collating sequence in single field. (Thanks to David Declerck)
+      ASCII data with EBCDIC order. 
+    * Performance optimization in sort key control phase
+    * update configuration file for testing
+    * Revision management file status return code from cob_read / cob_write
+    * Revised JOIN features
+    * Test case new features (new module gctestcmd) 
+    * Test case Multithread features
+    * File  gctestcmd.cfg in ../test/cfg contains test case to verify join features
+      gctestcmd.cfg with 67 test case JOIN features
+      gctestcmd.cfg with 4 test case multithread: Sequential, Line Sequential, Fixed e Variable
+    * Revised criteria for memory allocation sort
+
 2023-11-17  Sauro Menna  <smenna@users.sourceforge.net>
     * Version 1.03.09
     * Alternative Key description - fix error in gcsorthelp.c and documentation
@@ -12,7 +30,7 @@
     
 2023-09-12  Sauro Menna  <smenna@users.sourceforge.net>
     * Version 1.03.07
-    * Review test case EBCDIC ( -fsign=EBCDIC  -fdefault-colseq=EBCDIC -febcdic-table=DEFAULT)
+    * Revised test case EBCDIC ( -fsign=EBCDIC  -fdefault-colseq=EBCDIC -febcdic-table=DEFAULT)
     * Update README and INSTALL files
     
 2023-05-10  Sauro Menna  <smenna@users.sourceforge.net>

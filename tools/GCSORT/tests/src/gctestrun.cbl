@@ -34,7 +34,7 @@
       *
       *  array-name
        01    array-name.
-          03 ar-name-max-ele          pic 99  value 10.
+          03 ar-name-max-ele          pic 99  value 12.
           03 ar-ele-name.
             05 ar-ele-name-01         pic x(11) value 'gctestrun1'.
             05 ar-ele-name-02         pic x(11) value 'gctestrun2'.
@@ -46,12 +46,14 @@
             05 ar-ele-name-08         pic x(11) value 'gctestrun1A'.
             05 ar-ele-name-09         pic x(11) value 'gctestrun1E'.
             05 ar-ele-name-10         pic x(11) value 'gctestrun3E'.
+            05 ar-ele-name-11         pic x(11) value 'gctestrun8'.
+            05 ar-ele-name-12         pic x(11) value 'gctestcmd'.
           03 ar-ele-vet redefines ar-ele-name
-                        occurs 10 times pic x(11).
+                        occurs 12 times pic x(11).
       **  
       *  array-name-version
        01    array-name-ver.
-          03 ar-name-max-ele-version          pic 99  value 10.
+          03 ar-name-max-ele-version          pic 99  value 12.
           03 ar-ele-name-version.
             05 ar-ele-name-ver-01         pic 9(9) value 000020200.
             05 ar-ele-name-ver-02         pic 9(9) value 000020200.
@@ -63,12 +65,14 @@
             05 ar-ele-name-ver-08         pic 9(9) value 000030200.
             05 ar-ele-name-ver-09         pic 9(9) value 000030200.
             05 ar-ele-name-ver-10         pic 9(9) value 000030200.
+            05 ar-ele-name-ver-11         pic 9(9) value 000030300.
+            05 ar-ele-name-ver-12         pic 9(9) value 000030200.
           03 ar-ele-vet-ver redefines ar-ele-name-version
-                        occurs 10 times pic 9(9).
+                        occurs 12 times pic 9(9).
       **                
       *
        01       array-retcode-epilog-gr05.
-          03    ar-retcode-ele occurs 10 times.
+          03    ar-retcode-ele occurs 12 times.
            05   ar-tst-name           pic x(11).
            05   ar-tst-rtc01          USAGE BINARY-LONG.
       *

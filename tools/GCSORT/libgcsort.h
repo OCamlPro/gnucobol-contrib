@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -29,20 +29,21 @@ static int g_cb_ebcdic_sign = 0;
 
 #include <libcob.h>
 
-#if __LIBCOB_RELEASE >= 30200
-
 enum cb_colseq {
 	CB_COLSEQ_NATIVE = 0,
 	CB_COLSEQ_ASCII = 1,
 	CB_COLSEQ_EBCDIC = 2
 };
 
-static enum cb_colseq g_cb_colseq = CB_COLSEQ_NATIVE;
 
-static cob_u8_t g_cb_coltab[256]; 
+//static cob_u8_t  g_cb_fieldcollatingseq[256];
+extern cob_u8_t* g_cb_fieldcollatingseq_ptr;
+extern cob_u8_t  g_cb_fieldcollatingseq[256];
 
+#if __LIBCOB_RELEASE >= 30200
+	const cob_u8_t * get_collation(enum cb_colseq colseq);
+#else
+	 #define get_collation(cs) NULL
 #endif /* __LIBCOB_RELEASE >= 30200 */
-
-static const cob_u8_t *g_cb_coltab_ptr = NULL;
 
 #endif /* LIBGCSORT_H_INCLUDED  */

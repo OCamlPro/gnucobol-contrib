@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -310,14 +310,19 @@ int utils_parseFieldValueType(const char type)
 {
 	switch (type) {
 		case 'Z':
+		case 'z':
 			return FIELD_VALUE_TYPE_Z;
 		case 'X':
+		case 'x':
 			return FIELD_VALUE_TYPE_X;
 		case 'C':
+		case 'c':
 			return FIELD_VALUE_TYPE_C;
 		case 'F':
+		case 'f':
 			return FIELD_VALUE_TYPE_F;
 		case 'Y':
+		case 'y':
 			return FIELD_VALUE_TYPE_Y;
 		default:
 			return -1;
@@ -349,6 +354,35 @@ int utils_parseKeyType(const char *keyType)
 	}
 }
 
+
+int utils_parseKeyCollating(const char* keyCollating)
+{
+	if (strlen(keyCollating) == 0) {
+		return CB_COLSEQ_NATIVE;
+	}
+	if (!strcasecmp(keyCollating, "ASCII"))  {
+		return CB_COLSEQ_ASCII;
+	}
+	else if (!strcasecmp(keyCollating, "EBCDIC")) {
+		return CB_COLSEQ_EBCDIC;
+	}
+	else {
+		return -1;
+	}
+}
+
+const char* utils_getKeyCollating(int nKeyCollating)
+{
+	switch (nKeyCollating) {
+	case 0:
+			return "NATIVE";
+	case 1:
+		return "ASCII";
+	case 2:
+		return "EBCDIC";
+	}
+	return "NotFound";
+}
 const char* utils_getKeyType(int nkeyType) 
 {
 
@@ -702,12 +736,22 @@ unsigned long int Endian_DWord_Conversion(unsigned long int dword)
    return ((dword>>24)&0x000000FF) | ((dword>>8)&0x0000FF00) | ((dword<<8)&0x00FF0000) | ((dword<<24)&0xFF000000);
 }
 */
+void util_print_time_elap_thread(const char* szMex, int nT)
+{
+	time_t st;
+	struct tm* info;
+	time(&st);
+	info = localtime(&st);
+	fprintf(stdout, "Thread %d - %s - %s", nT, szMex, asctime(info));
+	return;
+}
+
 void util_print_time_elap( const char* szMex )
 {
    time_t st;
    struct tm *info;
    time( &st );
-   info = localtime( &st );
+   info = localtime(&st);
    fprintf(stdout,"%s - %s", szMex, asctime(info));
    return;
 }
@@ -1218,11 +1262,11 @@ int utl_replace_findrep(unsigned char* str, unsigned char* find, unsigned char* 
 	return nSubs;
 }
 
-void sort_temp_name(const char* ext)
+void sort_temp_name(struct job_t* job, const char* ext)
 {
 #if defined(_MSC_VER)  ||  defined(__MINGW32__) || defined(__MINGW64__)
-	/* s.m. 202101 if (globalJob->strPathTempFile == NULL)  */
-	if (strlen(globalJob->strPathTempFile) == 0) {
+	/* s.m. 202101 if (job->strPathTempFile == NULL)  */
+	if (strlen(job->strPathTempFile) == 0) {
 		GetTempPath(FILENAME_MAX, cob_tmp_temp);
 		if (strlen(cob_tmp_temp) == 0) {
 			cob_tmp_temp[0] = '.';
@@ -1231,7 +1275,7 @@ void sort_temp_name(const char* ext)
 		}
 	}
 	else
-		strcpy(cob_tmp_temp, globalJob->strPathTempFile);
+		strcpy(cob_tmp_temp, job->strPathTempFile);
 	GetTempFileName(cob_tmp_temp, "Srt", 0, cob_tmp_buff);
 	DeleteFile(cob_tmp_buff);
 	strcpy(cob_tmp_temp, cob_tmp_buff);
@@ -1242,14 +1286,15 @@ void sort_temp_name(const char* ext)
 	char* cob_tmpdir = NULL;
 	char* p = NULL;
 	pid_t			cob_process_id = 0;
-	int                  cob_iteration;
+	int             cob_iteration=0;
+	int			    cob_nTh = job->nCurrThread;
 	cob_process_id = getpid();
-	cob_iteration = globalJob->nIndextmp;
+	cob_iteration = job->nIndextmp;
 	memset(cob_tmp_temp, 0x00, FILENAME_MAX + 8);
-	/* -->>printf("globalJob->strPathTempFile %s \n", globalJob->strPathTempFile);  */
+	/* -->>printf("job->strPathTempFile %s \n", job->strPathTempFile);  */
 
-/* linux 	if (globalJob->strPathTempFile == NULL){    */
-	if (strlen(globalJob->strPathTempFile) == 0) {
+/* linux 	if (job->strPathTempFile == NULL){    */
+	if (strlen(job->strPathTempFile) == 0) {
 		if ((p = getenv("TMPDIR")) != NULL) {
 			cob_tmpdir = p;
 		}
@@ -1257,15 +1302,15 @@ void sort_temp_name(const char* ext)
 			cob_tmpdir = p;
 		}
 		if (p == NULL)
-			sprintf(cob_tmp_temp, "./Srt%d_%d%s", (int)cob_process_id,
-				(int)cob_iteration, ext);
+			sprintf(cob_tmp_temp, "./Srt%d_%d_%d%s", (int)cob_process_id,
+				(int)cob_iteration, (int)cob_nTh, ext);
 		else
-			sprintf(cob_tmp_temp, "%s/Srt%d_%d%s", cob_tmpdir, (int)cob_process_id,
-				(int)cob_iteration, ext);
+			sprintf(cob_tmp_temp, "%s/Srt%d_%d_%d%s", cob_tmpdir, (int)cob_process_id,
+				(int)cob_iteration, (int)cob_nTh, ext);
 
 	}
 	else
-		sprintf(cob_tmp_temp, "%s/Srt%d_%d%s", globalJob->strPathTempFile, (int)cob_process_id, (int)cob_iteration, ext);
+		sprintf(cob_tmp_temp, "%s/Srt%d_%d_%d%s", job->strPathTempFile, (int)cob_process_id, (int)cob_iteration, (int)cob_nTh, ext);
 
 	/* -->>	printf(" Temporary File \n%s\n", cob_tmp_temp );    */
 

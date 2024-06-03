@@ -3,11 +3,11 @@ MKDIR=mkdir -p
 INSTALL=cp
 BISON=bison
 FLEX=flex
-CC=gcc -std=gnu99 -D_FILE_OFFSET_BITS="64" -c -o
+CC=gcc -std=gnu99 -pthread -D_FILE_OFFSET_BITS="64" -c -o
 CCFLAGS= -fkeep-inline-functions
 LD=gcc -o
 LDFLAGS= -O3
-LIBS=-L${exec_prefix}/lib -L/usr/local/lib/ -lcob -lm
+LIBS=-L${exec_prefix}/lib -L/usr/local/lib/ -lcob -lm -lpthread
 OUTDIR=tests/bin
 
 #FLEX_FLAGS=--debug
@@ -38,6 +38,7 @@ OBJS=\
 	datediff.o \
 	gcsorthelp.o \
 	gcsort.o \
+	gcthread.o \
 	exitroutines.o \
 	fieldvalue.o \
 	findreplace.o \
@@ -98,8 +99,9 @@ file.o:file.h gcshare.h gcsort.h job.h utils.h
 findreplace.o:fieldvalue.h findreplace.h utils.h
 gcsort.o:libgcsort.h gcsort.h job.h utils.h file.h gcshare.h exitroutines.h copyfile.h datediff.h join.h
 gcsorthelp.o:gcsort.h job.h
+gcthread.o:gcthread.h job.h file.h gcsort.h sumfield.h outrec.h
 inrec.o:fieldvalue.h gcshare.h gcsort.h inrec.h job.h utils.h changefield.h join.h
-job.o:libgcsort.h gcsort.h utils.h job.h file.h sortfield.h condfield.h outrec.h inrec.h parser.h scanner.h sortfield.h sumfield.h outfil.h mmfioc.h exitroutines.h join.h gcshare.h 
+job.o:libgcsort.h gcsort.h gcthread.h utils.h job.h file.h sortfield.h condfield.h outrec.h inrec.h parser.h scanner.h sortfield.h sumfield.h outfil.h mmfioc.h exitroutines.h join.h gcshare.h 
 join.o:job.h join.h sortfield.h utils.h gcshare.h job.h file.h sumfield.h outrec.h
 keyidxrel.o: keyidxrel.h file.h
 mmfioc.o:gcshare.h gcsort.h mmfioc.h job.h utils.h

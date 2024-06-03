@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2021 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -119,6 +119,8 @@ CHARTYPE        C|X|Z
 ORDER           A|D				
             /*  Key Tye for indexed file P=Primary, A= ALternative, AD = Alternative with duplicates, C = Continue */
 KEYTYPE         P|A|AD|C	
+            /* Collating Sequence */
+COLLATING	    ASCII|EBCDIC
             /* Fixed record */
 RECTYPEFIX	    F
             /* Variable record */
@@ -304,6 +306,7 @@ ERRTRUNC        ERROR|TRUNC
 					 return STRING;}
 
 <KEYV>{KEYTYPE}		yylval.string = _strdup(yytext) ; return KEYTYPE; 
+{COLLATING}		    yylval.string = _strdup(yytext) ; return COLLATING; 
 {STRING}			yylval.string = _strdup(yytext) ; return STRING;
 {BLANK}
 .			        return yytext[0];

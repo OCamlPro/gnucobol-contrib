@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -33,8 +33,8 @@
 #include "job.h"
 #include "outrec.h"
 
-extern cob_field* g_ckfdate1;
-extern cob_field* g_ckfdate2;
+//extern cob_field* g_ckfdate1;
+//extern cob_field* g_ckfdate2;
 
 struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF, int datetype) {
 	int i,j;
@@ -238,7 +238,7 @@ int fieldValue_print(struct fieldValue_t *fieldValue) {
     first  parameter value from command
     second parameter value from record 
 */    
-int fieldValue_checkvalue(struct fieldValue_t *fieldValue, cob_field* pField, int length) {
+int fieldValue_checkvalue(struct job_t* job, struct fieldValue_t *fieldValue, cob_field* pField, int length) {
 	int used_length;
 	int result;
 	int64_t						mValue64 = 0;
@@ -261,11 +261,11 @@ int fieldValue_checkvalue(struct fieldValue_t *fieldValue, cob_field* pField, in
 		   Y2T Fix len to working field - Zoned - size = digit = length
         */ 
 		case FIELD_VALUE_TYPE_Y:
-			job_cob_field_reset(g_ckfdate1, COB_TYPE_NUMERIC_DISPLAY, length, length);
-			job_cob_field_reset(g_ckfdate2, COB_TYPE_NUMERIC_DISPLAY, length, length);
-			cob_set_int(g_ckfdate2, (int)fieldValue->value64);							/* Command Condition				*/
-			cob_move(pField, g_ckfdate1);											    /* Record Value                     */
-			result = job_CheckTypeDate(FIELD_TYPE_NUMERIC_Y2T, (cob_field*)g_ckfdate1, (cob_field*)g_ckfdate2);
+			job_cob_field_reset(job->g_ckfdate1, COB_TYPE_NUMERIC_DISPLAY, length, length);
+			job_cob_field_reset(job->g_ckfdate2, COB_TYPE_NUMERIC_DISPLAY, length, length);
+			cob_set_int(job->g_ckfdate2, (int)fieldValue->value64);							/* Command Condition				*/
+			cob_move(pField, job->g_ckfdate1);											    /* Record Value                     */
+			result = job_CheckTypeDate(FIELD_TYPE_NUMERIC_Y2T, (cob_field*)job->g_ckfdate1, (cob_field*)job->g_ckfdate2);
 			break;
 
 		case FIELD_VALUE_TYPE_X:

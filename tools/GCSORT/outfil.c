@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -352,6 +352,7 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 	unsigned int nLenRecOut=0;
 	int nFS = 0; /* file status */
 	cob_file* pFile = NULL;
+	int retcode_func = 0;
 	
 	/* check if present SAVE e memorize pointer */
 	if (job->pSaveOutfil == NULL){
@@ -416,39 +417,22 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 					/* OUTFIL not check LRECL for padding and truncating    */
 					if (pOutfil->nSplit == 0) {
 						if (pOutfil->isVirtualFile == 1) {	/* OUTFIL without file name */
-							outfil_set_area(globalJob->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut);
-							cob_write(globalJob->outputFile->stFileDef, globalJob->outputFile->stFileDef->record, globalJob->outputFile->opt, NULL, 0);
+							outfil_set_area(job->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut);
+							cob_write(job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
 							/* switch (atol((char*)pOutfil->outfil_File->stFileDef->file_status)) */
-							pFile = (cob_file *) globalJob->outputFile->stFileDef;
-							nFS = atol((char*)globalJob->outputFile->stFileDef->file_status);
+							pFile = (cob_file *) job->outputFile->stFileDef;
+							retcode_func = file_checkFSWrite("Write", "outfil_write_buffer", job->outputFile , nLenRecOut, byteRead);
+							if (retcode_func < 0)
+								return -1;
 						}
 						else {
 							outfil_set_area(pOutfil->outfil_File, recordBuffer + nSplitPosPnt, nLenRecOut);
 							cob_write(pOutfil->outfil_File->stFileDef, pOutfil->outfil_File->stFileDef->record, pOutfil->outfil_File->opt, NULL, 0);
 							/* switch (atol((char*)pOutfil->outfil_File->stFileDef->file_status)) */
 							pFile = (cob_file*)pOutfil->outfil_File->stFileDef;
-							nFS = atol((char*)pOutfil->outfil_File->stFileDef->file_status);
-						}
-						switch (nFS)
-						{
-						case 0:
-							break;
-						case  4:		/* record successfully read, but too short or too long */
-							fprintf(stdout, "*GCSORT*S402*ERROR:record successfully read, but too short or too long. %s - File Status (%d)\n", pFile->assign->data, nFS);
-							util_view_numrek();
-							job_print_error_file(pFile, nLenRecOut);
-							return -1;
-						case 71:
-							fprintf(stdout, "*GCSORT*S402*ERROR: Record contains bad character %s - File Status (%d)\n", pFile->assign->data, nFS);
-							util_view_numrek();
-							job_print_error_file(pFile, nLenRecOut);
-							return -1;
-							break;
-						default:
-							fprintf(stdout, "*GCSORT*S402*ERROR: Cannot write to file %s - File Status (%d)\n", pFile->assign->data, nFS);
-							util_view_numrek();
-							job_print_error_file(pFile, nLenRecOut);
-							return -1;
+							retcode_func = file_checkFSWrite("Write", "outfil_write_buffer(2)", pOutfil->outfil_File, nLenRecOut, byteRead);
+							if (retcode_func < 0)
+								return -1;
 						}
 						pOutfil->recordWriteOutTotal++;
 						job->recordWriteOutTotal++;
@@ -470,39 +454,22 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 		if (byteRead > 0)
 		{
 			if (job->pSaveOutfil->isVirtualFile == 1) {	/* OUTFIL without file name */
-				outfil_set_area(globalJob->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut);
-				cob_write(globalJob->outputFile->stFileDef, globalJob->outputFile->stFileDef->record, globalJob->outputFile->opt, NULL, 0);
+				outfil_set_area(job->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut);
+				cob_write(job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
 				/* switch (atol((char*)pOutfil->outfil_File->stFileDef->file_status)) */
-				pFile = globalJob->outputFile->stFileDef;
-				nFS = atol((char*)globalJob->outputFile->stFileDef->file_status);
+				pFile = job->outputFile->stFileDef;
+				retcode_func = file_checkFSWrite("Write", "outfil_write_buffer(3)", job->outputFile, nLenRecOut, byteRead);
+				if (retcode_func < 0)
+					return -1;
 			}
 			else
 			{
 				outfil_set_area(job->pSaveOutfil->outfil_File, recordBuffer + nSplitPosPnt, nLenRecOut);
 				cob_write(job->pSaveOutfil->outfil_File->stFileDef, job->pSaveOutfil->outfil_File->stFileDef->record, job->pSaveOutfil->outfil_File->opt, NULL, 0);
 				pFile = job->pSaveOutfil->outfil_File->stFileDef;
-				nFS = (atol((char*)job->pSaveOutfil->outfil_File->stFileDef->file_status));
-			}
-			switch (nFS)
-			{
-				 case 0 : 
-					 break;
-				 case  4:		/* record successfully read, but too short or too long */
-					 fprintf(stdout, "*GCSORT*S403*ERROR:record successfully read, but too short or too long. %s - File Status (%d)\n", job->pSaveOutfil->outfil_File->stFileDef->assign->data, nFS);
-					 util_view_numrek();
-					 job_print_error_file(pFile, nLenRecOut);
-					 return -1;
-				 case 71 :
-					fprintf(stdout,"*GCSORT*S403*ERROR: Record contains bad character %s - File Status (%d)\n",file_getName(job->pSaveOutfil->outfil_File), nFS);
-					util_view_numrek();
-					job_print_error_file(pFile, nLenRecOut);
+				retcode_func = file_checkFSWrite("Write", "outfil_write_buffer(4)", job->pSaveOutfil->outfil_File, nLenRecOut, byteRead);
+				if (retcode_func < 0)
 					return -1;
-					break;
-				 default :
-					fprintf(stdout,"*GCSORT*S403*ERROR: Cannot write to file %s - File Status (%d)\n",file_getName(job->pSaveOutfil->outfil_File), nFS);
-					util_view_numrek();
-					job_print_error_file(pFile, nLenRecOut);
-            		return -1;
 			}
 			job->pSaveOutfil->recordWriteOutTotal++;
 			job->recordWriteOutTotal++;
@@ -520,6 +487,7 @@ int outfil_write_buffer_split ( struct job_t *job, struct outfil_t* outfil, unsi
 	int useRecord;
 	int nNumWrite;
 	unsigned int nLenRecOut=0;
+	int retcode_func = 0;
     /* get istance of file  */
 	if (outfil->pLastFileSplit != NULL) {
 		file = outfil->pLastFileSplit;
@@ -540,31 +508,9 @@ int outfil_write_buffer_split ( struct job_t *job, struct outfil_t* outfil, unsi
 
 	outfil_set_area(file, recordBuffer+nSplitPosPnt, nLenRecOut);
 	cob_write (file->stFileDef, file->stFileDef->record, file->opt, NULL, 0);
-	switch (atol((char *)file->stFileDef->file_status))
-	{
-		case 0 : 
-			break;
-		case  4:		/* record successfully read, but too short or too long */
-			fprintf(stdout,"*GCSORT*S404*ERROR:record successfully read, but too short or too long. %s - File Status (%c%c)\n", file->stFileDef->assign->data,
-				file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
-			util_view_numrek();
-			job_print_error_file(file->stFileDef, nLenRecOut);
-			return -1;
-			break;
-		case 71 :
-			fprintf(stdout,"*GCSORT*S404*ERROR: Record contains bad character %s - File Status (%c%c)\n",file_getName(file),
-				file->stFileDef->file_status[0],file->stFileDef->file_status[1]);
-			util_view_numrek();
-			job_print_error_file(file->stFileDef, nLenRecOut);
-			return -1;
-            break;
-		default :
-			fprintf(stdout,"*GCSORT*S404*ERROR: Cannot write to file %s - File Status (%c%c)\n",file_getName(file), 
-				file->stFileDef->file_status[0],file->stFileDef->file_status[1]);
-			util_view_numrek();
-			job_print_error_file(file->stFileDef, nLenRecOut);
-			return -1;
-	}
+	retcode_func = file_checkFSWrite("Write", "outfil_write_buffer_split", file, nLenRecOut, byteRead);
+	if (retcode_func < 0)
+		return -1;
 	outfil->recordWriteOutTotal++;
     file->nCountRow++;  /* for single file  */
 	nNumWrite++;

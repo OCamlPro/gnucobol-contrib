@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -49,7 +49,7 @@ int sortField_getType(struct sortField_t *sortField);
 int sortField_getDirection(struct sortField_t *sortField);
 int sortField_addDefinition(struct sortField_t *sortField);
 int sortField_setDefinition(struct sortField_t *sortField);
-int sortField_addDefinitionJoin(struct sortField_t* sortField);
+/* s.m. 20231120 int sortField_addDefinitionJoin(struct sortField_t* sortField); */
 
 
 #endif /* SORTFIELD_H_INCLUDED  */

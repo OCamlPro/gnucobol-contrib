@@ -12,4 +12,4 @@
       *-------------------------------------------------------------------------------*
       * ssrtsqf01.cpy
            select file-sort assign to external dd_sortwork
-                file status is fs-sort.
+                sort status is fs-sort.

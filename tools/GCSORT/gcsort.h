@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2020 Sauro Menna
+    Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -60,6 +60,13 @@ _LIB
 #undef  GCSDEBUG 
     /* */
 
+
+/* GCSTHREAD   used to view info details Thread - DISABLE release*/
+#define GCSTHREAD 
+    /* */
+#undef  GCSTHREAD 
+   /* */
+
 #if defined(snprintf) && defined(_MSC_VER) 
         #undef snprintf
 #endif
@@ -78,8 +85,8 @@ _LIB
 /* value 1 : generate temp file fixed name : cob17, cob18, cob19, cob1a, cob1b  */
 #define GCSORT_DEBUG   0        /* 0 no debug - 1 debug */
 #define GCSORT_TESTCMD 0
-#define GCSORT_VERSION "01.03.09"
-#define GCSORT_TAR_DATE "Nov. 14 2023 19:35:00 UTC"
+#define GCSORT_VERSION "01.04.00"
+#define GCSORT_TAR_DATE "May 30 2024 20:00:00 UTC"
 
 /* Return Code */
 #define GC_RTC_OK	 0
