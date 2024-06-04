@@ -124,10 +124,10 @@
                 move 25 to RETURN-CODE
                 stop run
            end-if
-           
+           move zero to bError
            perform view-data until  (fs-infile1 not equal "00"  and 
-                                     fs-infile2 not equal "00" )or 
-                                     bError     equal 1
+                                     fs-infile2 not equal "00" ) or 
+                                      bError     > 15
            close sortcbl
            close sortgcs
            display "*===============================================* "
@@ -190,8 +190,8 @@
                 add 1 to record-counter-ingcs
            end-if
            if (fs-infile1 = "00" and fs-infile2 = "00")
-test00**                perform check-key
-                perform check-key-dett
+      **          perform check-key
+test00                perform check-key-dett
            end-if
            .
        90.
@@ -201,19 +201,19 @@ test00**                perform check-key
        check-key section.
       * ============================= *
        10.
-           
-           if (in1-ch-field not = in2-ch-field   or
-               in1-bi-field not = in2-bi-field   or
-               in1-fi-field not = in2-fi-field   or
-               in1-pd-field not = in2-pd-field   or
-               in1-zd-field not = in2-zd-field   or
-               in1-fl-field not = in2-fl-field   or
+      **     move zero to bError
+           if (in1-ch-field   not = in2-ch-field   or
+               in1-bi-field   not = in2-bi-field   or
+               in1-fi-field   not = in2-fi-field   or
+               in1-pd-field   not = in2-pd-field   or
+               in1-zd-field   not = in2-zd-field   or
+               in1-fl-field   not = in2-fl-field   or
                in1-fl-field-1 not = in2-fl-field-1 or
-               in1-clo-field not = in2-clo-field or               
-               in1-cst-field not = in2-cst-field or 
-               in1-csl-field not = in2-csl-field )
-
-               move 1 to bError
+               in1-clo-field  not = in2-clo-field  or               
+               in1-cst-field  not = in2-cst-field  or 
+               in1-csl-field  not = in2-csl-field )
+      
+               add 1 to bError
                display "============== # Error # ============== "
                display "  Record COBOL  num " record-counter-incbl
                display " sq="    in1-seq-record 
@@ -250,7 +250,7 @@ test00**                perform check-key
        check-key-dett section.
       * ============================= *
        10.
-           move zero to bError
+      **     move zero to bError
       **     if (
            if in1-ch-field not = in2-ch-field   
             move 1 to bError

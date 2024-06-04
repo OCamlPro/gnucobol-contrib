@@ -88,7 +88,7 @@ int gcthread_start(int argc, char** argv, int nMaxThread, time_t* timeStart)
 			return nRC;
 
 		nSkipRec = t * nBlock + nBlock;
-		struct pParam* pPar = (struct pParam*)malloc(sizeof(pParam));
+		struct pParam* pPar = (struct pParam*)malloc(sizeof(struct pParam));
 		pParThread[t] = pPar;
 		pPar->thJob = jArJob[t];
 		pPar->nRet = 0;

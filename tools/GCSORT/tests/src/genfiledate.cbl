@@ -136,8 +136,8 @@
            perform check-env-var
       *                
            open input infile.
-           if fs-outfile not = "00"
-                display "outfile file status error : " fs-outfile
+           if fs-infile not = "00"
+                display "input file status error : " fs-infile
                 move 25 to RETURN-CODE
                 stop run
            end-if

@@ -239,7 +239,7 @@ test00                 perform check-key
        10.
       **     move zero to bError
            if in1-ch-field not = in2-ch-field   
-            move 1 to bError
+            move 1 to bError.
            if  in1-bi-field not = in2-bi-field   
             move 2 to bError.
            if  in1-fi-field not = in2-fi-field   

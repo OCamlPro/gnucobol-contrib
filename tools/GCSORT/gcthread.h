@@ -46,7 +46,7 @@ struct sortField_t;
 struct pParam {
     struct job_t* thJob;
     int nRet;
-} pParam;
+};
 
 
 #ifdef  _THREAD_WIN_ENV_
