@@ -36,6 +36,8 @@ struct findrep_t* findrep_constructor( int nType ) {
         field->nShift = 1;      /* Default SHIFT YES     */
 		field->pFindRepField = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1012, ABEND_EXEC);
 	return field;
 }
 
@@ -179,12 +181,10 @@ int findrep_search_replace(struct findrep_t* CmdOpt, unsigned char* BufIn, unsig
 {
 	/* unsigned char szRekIn[COB_FILE_BUFF]; */
 	int nSubs = 0;
-	int nOc = nMaxOcc;
 	int nOverChar = 0;
 	int nShift = CmdOpt->nShift;
 	if (nMaxOcc == 0)
 		nMaxOcc = 1000;  /* Standard DFSort */
-	int nMaxLen = CmdOpt->nMaxLen;
 	struct findrepfield_t* f;
 	if (CmdOpt != NULL) {
 		for (f = CmdOpt->pFindRepField; f != NULL; f = f->next) {
@@ -219,6 +219,8 @@ struct findrepfield_t *findrepfield_constructor(struct fieldValue_t* in, struct 
         field->out = out;
         field->next = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1013, ABEND_EXEC);
 	return field;
 }
 

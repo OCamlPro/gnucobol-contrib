@@ -59,6 +59,8 @@ struct outrec_t *outrec_constructor_range(int position, int length)
 		outrec->changeCmd.changeCmdOpt = NULL;
 		
     }
+	else
+		utl_abend_terminate(MEMORYALLOC, 1750, ABEND_EXEC);
 	return outrec;
 }
 /*
@@ -86,6 +88,8 @@ struct outrec_t *outrec_constructor_change(struct fieldValue_t *fieldValue)
 	    outrec->next=NULL;
 		outrec->changeCmd.changeCmdOpt = NULL;
     }
+	else
+		utl_abend_terminate(MEMORYALLOC, 1751, ABEND_EXEC);
 	return outrec;
 }
 struct outrec_t *outrec_constructor_range_position(int posAbsRec, int position, int length) 
@@ -100,12 +104,12 @@ struct outrec_t *outrec_constructor_range_position(int posAbsRec, int position, 
 	    outrec->next=NULL;
 		outrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1752, ABEND_EXEC);
 	return outrec;
 }
 struct outrec_t *outrec_constructor_padding(int nAbsPos, unsigned char *chfieldValue, int nPosAbsRec) 
 {
-	int nDif=0;
-	int nsp=0;
 	char szVal[12];
 	struct outrec_t *outrec=(struct outrec_t *)malloc(sizeof(struct outrec_t));
     if (outrec != NULL) {
@@ -130,12 +134,14 @@ struct outrec_t *outrec_constructor_padding(int nAbsPos, unsigned char *chfieldV
 	    outrec->next=NULL;
 		outrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1753, ABEND_EXEC);
+
 	return outrec;
 }
  
 struct outrec_t *outrec_constructor_subst(unsigned char *chfieldValue) 
 {
-	int nj=0;
 	int nsp=0;
 	char szSubstType[128];
 	char szSubstValue[128];
@@ -157,6 +163,8 @@ struct outrec_t *outrec_constructor_subst(unsigned char *chfieldValue)
 	    outrec->next=NULL;
 		outrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1754, ABEND_EXEC);
 	return outrec;
 }
  
@@ -172,6 +180,8 @@ struct outrec_t *outrec_constructor_substnchar(unsigned char* ntch, unsigned cha
 	    outrec->next=NULL;
 		outrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1755, ABEND_EXEC);
 	return outrec;
 
 }
@@ -187,6 +197,8 @@ struct outrec_t* outrec_constructor_possubstnchar(int npos, unsigned char* ntch,
 		outrec->next = NULL;
 		outrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1756, ABEND_EXEC);
 	return outrec;
 }
 
@@ -201,6 +213,8 @@ struct outrec_t* outrec_constructor_findrep( void )
 		outrec->next = NULL;
 		outrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1757, ABEND_EXEC);
 	return outrec;
 }
 
@@ -311,7 +325,7 @@ int outrec_getLength(struct outrec_t *outrec) {
 	for (o=outrec;o!=NULL;o=o->next) {
 		switch (o->type) {
 			case OUTREC_TYPE_RANGE:	
-				//length = o->range.position + o->range.length;  /* o->range.length; */
+				/* //length = o->range.position + o->range.length;  */ /* o->range.length; */
 				length += o->range.length;  /* o->range.length; */
 				break;
 			case OUTREC_TYPE_CHANGE_POSITION:
@@ -459,7 +473,7 @@ int outrec_copy(struct outrec_t *outrec, unsigned char *output, unsigned char *i
 				gc_memcpy(o->szChangeBufIn, input + o->findrepCmd.findrepCmdOpt->nStartPos + nSplitPos + nSplit, nORangeLen);
 				findrep_search_replace(o->findrepCmd.findrepCmdOpt, o->szChangeBufIn, o->szChangeBufOut, nORangeLen, nORangeLen, input + nSplitPos, o->findrepCmd.findrepCmdOpt->nDo);
 				/* save in output all data from input */
-				//-->>memcpy(output + nSplitPos + nSplit, input + nSplitPos + nSplit, globalJob->LenCurrRek);
+				/* //-->>memcpy(output + nSplitPos + nSplit, input + nSplitPos + nSplit, globalJob->LenCurrRek); */
 				memcpy(output + nSplitPos + nSplit, input + nSplit, globalJob->LenCurrRek);
 				/* copy data modified from replace   */
 				memcpy(output + o->findrepCmd.findrepCmdOpt->nStartPos + nSplitPos + nSplit, o->szChangeBufOut, nORangeLen);
@@ -584,8 +598,14 @@ int outrec_SetChangeCmdOpt(struct outrec_t* Outrec, struct change_t* chg)
 		Outrec->changeCmd.changeCmdOpt = chg;
 		Outrec->type = OUTREC_TYPE_CHANGE_CMDOPT;
 		Outrec->szChangeBufIn = malloc(COB_FILE_BUFF);
+		if (Outrec->szChangeBufIn == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1758, ABEND_EXEC);
 		Outrec->szChangeBufOut = malloc(COB_FILE_BUFF);
+		if (Outrec->szChangeBufOut == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1759, ABEND_EXEC);
 		Outrec->szChangeBufNoMatch = malloc(COB_FILE_BUFF);
+		if (Outrec->szChangeBufNoMatch == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1760, ABEND_EXEC);
 	}
 	return 0;
 }
@@ -593,7 +613,11 @@ int outrec_SetFindRepCmdOpt(struct outrec_t* Outrec)
 {
 	if (Outrec != NULL) {
 		Outrec->szChangeBufIn = malloc(COB_FILE_BUFF);
+		if (Outrec->szChangeBufIn == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1761, ABEND_EXEC);
 		Outrec->szChangeBufOut = malloc(COB_FILE_BUFF);
+		if (Outrec->szChangeBufOut == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1762, ABEND_EXEC);
 	}
 	return 0;
 }

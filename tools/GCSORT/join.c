@@ -42,6 +42,8 @@ struct join_t* join_constructor(void) {
 	struct join_t* join = (struct join_t*)malloc(sizeof(struct join_t));
 	if (join != NULL) {
 		join->joinkeysF1 = (struct joinkeys_t*)malloc(sizeof(struct joinkeys_t));
+		if (join->joinkeysF1 == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1200, ABEND_EXEC);
 		join->joinkeysF1->includeCondField = NULL;
 		join->joinkeysF1->joinField = NULL;
 		join->joinkeysF1->omitCondField = NULL;
@@ -55,6 +57,8 @@ struct join_t* join_constructor(void) {
 
 		/* F2 */
 		join->joinkeysF2 = (struct joinkeys_t*)malloc(sizeof(struct joinkeys_t));
+		if (join->joinkeysF2 == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1201, ABEND_EXEC);		
 		join->joinkeysF2->includeCondField = NULL;
 		join->joinkeysF2->joinField = NULL;
 		join->joinkeysF2->omitCondField = NULL;
@@ -67,6 +71,8 @@ struct join_t* join_constructor(void) {
 		join->joinkeysF2->nNumRowWriteSort = 0;
 
 		join->joinunpaired = (struct joinunpaired_t*)malloc(sizeof(struct joinunpaired_t));
+		if (join->joinunpaired == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1202, ABEND_EXEC);
 		join->joinunpaired->cF1 = 'I';		/* default */
 		join->joinunpaired->cF2 = 'I';		/* default */
 
@@ -75,17 +81,35 @@ struct join_t* join_constructor(void) {
 
 		/* file name */
 		join->pNameFileF1 = malloc(GCSORT_SIZE_FILENAME);
-		memset(join->pNameFileF1, 0x00, GCSORT_SIZE_FILENAME);
+		if (join->pNameFileF1 != NULL)
+			memset(join->pNameFileF1, 0x00, GCSORT_SIZE_FILENAME);
+		else
+			utl_abend_terminate(MEMORYALLOC, 1203, ABEND_EXEC);
 		join->pNameFileF2 = malloc(GCSORT_SIZE_FILENAME);
-		memset(join->pNameFileF2, 0x00, GCSORT_SIZE_FILENAME);
+		if (join->pNameFileF2 != NULL)
+			memset(join->pNameFileF2, 0x00, GCSORT_SIZE_FILENAME);
+		else
+			utl_abend_terminate(MEMORYALLOC, 1204, ABEND_EXEC);
 		join->pNameTmpF1 = malloc(GCSORT_SIZE_FILENAME);
-		memset(join->pNameTmpF1, 0x00, GCSORT_SIZE_FILENAME);
+		if (join->pNameTmpF1 != NULL)
+			memset(join->pNameTmpF1, 0x00, GCSORT_SIZE_FILENAME);
+		else
+			utl_abend_terminate(MEMORYALLOC, 1205, ABEND_EXEC);
 		join->pNameTmpF2 = malloc(GCSORT_SIZE_FILENAME);
-		memset(join->pNameTmpF2, 0x00, GCSORT_SIZE_FILENAME);
+		if (join->pNameTmpF2 != NULL)
+			memset(join->pNameTmpF2, 0x00, GCSORT_SIZE_FILENAME);
+		else
+			utl_abend_terminate(MEMORYALLOC, 1206, ABEND_EXEC);
 		join->pNameTmpOut = malloc(GCSORT_SIZE_FILENAME);
-		memset(join->pNameTmpOut, 0x00, GCSORT_SIZE_FILENAME);
+		if (join->pNameTmpOut != NULL)
+			memset(join->pNameTmpOut, 0x00, GCSORT_SIZE_FILENAME);
+		else
+			utl_abend_terminate(MEMORYALLOC, 1207, ABEND_EXEC);
 		join->pNameFileOut = malloc(GCSORT_SIZE_FILENAME);
-		memset(join->pNameFileOut, 0x00, GCSORT_SIZE_FILENAME);
+		if (join->pNameFileOut != NULL)
+			memset(join->pNameFileOut, 0x00, GCSORT_SIZE_FILENAME);
+		else
+			utl_abend_terminate(MEMORYALLOC, 1208, ABEND_EXEC);
 
 		join->fileF1 = NULL;	/* malloc(sizeof(struct file_t)); */
 		join->fileF2 = NULL;	/* malloc(sizeof(struct file_t)); */
@@ -105,6 +129,8 @@ struct join_t* join_constructor(void) {
 		join->cFill = ' ';			/* default */
 
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1100, ABEND_EXEC);
 	return join;
 }
 
@@ -1194,7 +1220,7 @@ int join_join_files(struct job_t* job) {
 
 				job->recordNumberTotal++;
 
-				memset(recordBuffer, 0x20, recordBufferLength + nSplitPosPnt);
+				utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength + nSplitPosPnt);
 
 				nPosPtr = 0;   /* F1 */
 				if (bIsEof[nPosPtr] == 0) {
@@ -1266,9 +1292,11 @@ int join_join_files(struct job_t* job) {
 				if ((useRecord == 0) || (nFWrite == 0)) {
 					continue;
 				}
-				memset(szBuffRek, 0x20, recordBufferLength);
+				utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
+
 				/* Fill buffer with fill character ( blank default */
 				memset(recordBuffer, join->cFill, join->fileSaveOut->maxLength);
+
 				/* set len output */
 				nbyteRead = join_reformat(job, recordBufferF1, recordBufferF2, recordBuffer, nSplitPosPnt, nFrom);
 
@@ -1279,16 +1307,19 @@ int join_join_files(struct job_t* job) {
 				if (job->outrec != NULL) {
 					/* check overlay    */
 					if (job->outrec->nIsOverlay == 0) {
-						memset(szBuffRek, 0x20, recordBufferLength);
+						utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
+
 						nbyteRead = outrec_copy(job->outrec, szBuffRek, recordBuffer, nLenRecOut, nbyteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
-						memset(recordBuffer, 0x20, recordBufferLength); /* s.m. 202101  */
+						utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength);
+
 						memcpy(recordBuffer, szBuffRek, nbyteRead + nSplitPosPnt);
 						job->LenCurrRek = nbyteRead;
 						nLenRek = nbyteRead;
 					}
 					else
 					{		/* Overlay  */
-						memset(szBuffRek, 0x20, recordBufferLength);
+						utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
+
 						memmove(szBuffRek, recordBuffer, nLenRek + nSplitPosPnt);	/* s.m. 202101 copy input record    */
 						nbyteRead = outrec_copy_overlay(job->outrec, szBuffRek, recordBuffer, nLenRecOut, nbyteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 						nbyteRead++;
@@ -1296,7 +1327,9 @@ int join_join_files(struct job_t* job) {
 							nbyteRead = nLenRek;
 						if (recordBufferLength < nbyteRead)
 							recordBuffer = (unsigned char*)realloc(recordBuffer, nLenInRec + 1);
-						memset(recordBuffer, 0x20, recordBufferLength); /* s.m. 202101  */
+						//memset(recordBuffer, 0x20, recordBufferLength); /* s.m. 202101  */
+						utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength);
+
 						memcpy(recordBuffer + nSplitPosPnt, szBuffRek + nSplitPosPnt, nbyteRead);
 						job->LenCurrRek = nbyteRead;
 						nLenRek = nbyteRead;
@@ -2090,7 +2123,8 @@ int join_ReadFileSingleRow(struct join_t* join, int nF, struct file_t* file, int
 			}
 	}
 
-	memset(szBuffRek, 0x20, nLenRek);
+	utl_resetbuffer((unsigned char*)szBuffRek, nLenRek);
+
 	/* -->> s.m. 20240201 gc_memcpy(szBuffRek, file->stFileDef->record->data, nLenRek); */
 	gc_memcpy(szBuffRek, file->stFileDef->record->data, file->stFileDef->record->size);
 
@@ -2189,7 +2223,8 @@ int join_ReadFile(struct join_t* join, int nF, struct file_t* file, int* descTmp
 		/* Check EOF */
 		if (nRetCode == 1)
 			break;
-		memset(szBuffRek, 0x20, nLenRek);
+		utl_resetbuffer((unsigned char*)szBuffRek, nLenRek);
+
 		gc_memcpy(szBuffRek, file->stFileDef->record->data, nLenRek);
 
 		/* s.m. 20240201 *nLR = file->stFileDef->record->size;  */
@@ -2262,35 +2297,27 @@ int join_empty_fileF1(struct job_t* job) {
 
 	char szNameTmp[MAX_RECSIZE];
 	int	bIsEof[MAX_FILES_INPUT];
-	int	bIsFirstSumFields = 0;
-	int	bTempEof = 0;
 	int	handleFile[MAX_FILES_INPUT];
-	int	nCompare = 1;
 	int	nSumEof;
 	unsigned int	recordBufferLength;
 	int bFirstRound = 0;
 	int bIsFirstTimeF1 = 1;
 	int bIsFirstTimeF2 = 1;
-	int bcheckF1 = 0;
 	int bcheckF2 = 0;
-	int bIsWrited = 0;
 	int byteReadFile[MAX_RECSIZE];
 	int k;
 	int kj;
 	int nIdx1;
-	int nIdxFileIn = 0;
 	int nLastRead = 0;
 	unsigned int nLenInRec = 0;
 	int nMaxEle;
 	int nMaxFiles = MAX_FILES_INPUT;		/* size of elements */
-	int nNumBytes = 0;
 	int nPosPtr, nIsEOF;
 	int nPosition = 0;
 	int nSplitPosPnt = 0;	/* for pospnt   */
 	unsigned int nbyteRead;
 	int previousRecord = -1;
 	int retcode_func = 0;
-	int64_t			lPosPnt = 0;
 	struct file_t* file;
 	struct file_t* Arrayfile_s[MAX_FILES_INPUT];
 	unsigned char	szBufKey[MAX_FILES_INPUT][GCSORT_KEY_MAX + SZPOSPNT];	/* key  */
@@ -2303,7 +2330,6 @@ int join_empty_fileF1(struct job_t* job) {
 	unsigned int	nLenRecOut = 0;
 	unsigned int	nLenRek = 0;
 	int				nFrom = 0;
-	int				nLenKey = 0;
 	struct join_t* join;
 	struct joinunpaired_t* unp;
 	int				nSequenceRek = 0;
@@ -2481,9 +2507,9 @@ int join_empty_fileF1(struct job_t* job) {
 		bIsFirstTimeF1 = 0;
 		bIsFirstTimeF2 = 0;
 
-		memset(recordBufferF1, 0x20, job->inputFile->next->maxLength);
-		memset(recordBufferF2, 0x20, job->inputFile->next->maxLength);
-		memset(recordBuffer, 0x20, recordBufferLength + nSplitPosPnt);
+		utl_resetbuffer((unsigned char*)recordBufferF1, job->inputFile->next->maxLength);
+		utl_resetbuffer((unsigned char*)recordBufferF2, job->inputFile->next->maxLength);
+		utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength + nSplitPosPnt);
 
 
 		gc_memcpy(recordBufferF2, szBufRek[1], job->inputFile->next->maxLength);
@@ -2502,7 +2528,8 @@ int join_empty_fileF1(struct job_t* job) {
 			useRecord = 0;
 		/*  */
 		if (useRecord == 1) {
-			memset(szBuffRek, 0x20, recordBufferLength);
+			utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
+
 			/* Fill buffer with fill character ( blank default */
 			memset(recordBuffer, join->cFill, join->fileSaveOut->maxLength);
 			/* set len output */
@@ -2514,16 +2541,19 @@ int join_empty_fileF1(struct job_t* job) {
 			if (job->outrec != NULL) {
 				/* check overlay    */
 				if (job->outrec->nIsOverlay == 0) {
-					memset(szBuffRek, 0x20, recordBufferLength);
+					utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
+
 					nbyteRead = outrec_copy(job->outrec, szBuffRek, recordBuffer, nLenRecOut, nbyteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
-					memset(recordBuffer, 0x20, recordBufferLength);  
+					utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength);
+
 					memcpy(recordBuffer, szBuffRek, nbyteRead + nSplitPosPnt);
 					job->LenCurrRek = nbyteRead;
 					nLenRek = nbyteRead;
 				}
 				else
 				{		/* Overlay  */
-					memset(szBuffRek, 0x20, recordBufferLength);
+					utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
+
 					memmove(szBuffRek, recordBuffer, nLenRek + nSplitPosPnt);	/* s.m. 202101 copy input record    */
 					nbyteRead = outrec_copy_overlay(job->outrec, szBuffRek, recordBuffer, nLenRecOut, nbyteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 					nbyteRead++;
@@ -2531,7 +2561,8 @@ int join_empty_fileF1(struct job_t* job) {
 						nbyteRead = nLenRek;
 					if (recordBufferLength < nbyteRead)
 						recordBuffer = (unsigned char*)realloc(recordBuffer, nLenInRec + 1);
-					memset(recordBuffer, 0x20, recordBufferLength);  
+					utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength);
+
 					memcpy(recordBuffer + nSplitPosPnt, szBuffRek + nSplitPosPnt, nbyteRead);
 					job->LenCurrRek = nbyteRead;
 					nLenRek = nbyteRead;
@@ -2600,10 +2631,7 @@ int join_empty_fileF2(struct job_t* job) {
 
 	char szNameTmp[MAX_RECSIZE];
 	int	bIsEof[MAX_FILES_INPUT];
-	int	bIsFirstSumFields = 0;
-	int	bTempEof = 0;
 	int	handleFile[MAX_FILES_INPUT];
-	int	nCompare = 1;
 	int	nSumEof;
 	unsigned int	recordBufferLength;
 	int bFirstRound = 0;
@@ -2611,24 +2639,19 @@ int join_empty_fileF2(struct job_t* job) {
 	int bIsFirstTimeF2 = 1;
 	int bcheckF1 = 0;
 	int bcheckF2 = 0;
-	int bIsWrited = 0;
 	int byteReadFile[MAX_RECSIZE];
 	int k;
 	int kj;
 	int nIdx1;
-	int nIdxFileIn = 0;
 	int nLastRead = 0;
 	unsigned int nLenInRec = 0;
 	int nMaxEle;
 	int nMaxFiles = MAX_FILES_INPUT;		/* size of elements */
-	int nNumBytes = 0;
 	int nPosPtr, nIsEOF;
 	int nPosition = 0;
 	int nSplitPosPnt = 0;	/* for pospnt   */
 	unsigned int nbyteRead;
-	int previousRecord = -1;
 	int retcode_func = 0;
-	int64_t			lPosPnt = 0;
 	struct file_t* file;
 	struct file_t* Arrayfile_s[MAX_FILES_INPUT];
 	unsigned char	szBufKey[MAX_FILES_INPUT][GCSORT_KEY_MAX + SZPOSPNT];	/* key  */
@@ -2641,7 +2664,7 @@ int join_empty_fileF2(struct job_t* job) {
 	unsigned int	nLenRecOut = 0;
 	unsigned int	nLenRek = 0;
 	int				nFrom = 0;
-	int				nLenKey = 0;
+//	int				nLenKey = 0;
 	struct join_t* join;
 	struct joinunpaired_t* unp;
 	int				useRecord = 1;
@@ -2814,7 +2837,8 @@ int join_empty_fileF2(struct job_t* job) {
 		bIsFirstTimeF1 = 0;
 		bIsFirstTimeF2 = 0;
 
-		memset(recordBufferF2, 0x20, job->inputFile->next->maxLength);
+		utl_resetbuffer((unsigned char*)recordBufferF2, job->inputFile->next->maxLength);
+
 
 		/* -- */
 		/* F1 */
@@ -2830,7 +2854,8 @@ int join_empty_fileF2(struct job_t* job) {
 		}
 		gc_memcpy(recordBufferF1, szBufRek[0], job->inputFile->next->maxLength);
 		job->recordNumberTotal++;
-		memset(recordBuffer, 0x20, recordBufferLength + nSplitPosPnt);
+		utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength + nSplitPosPnt);
+
 
 		nPosPtr = 0;   /* F1 */
 		if (bIsEof[nPosPtr] == 0) {
@@ -2845,7 +2870,7 @@ int join_empty_fileF2(struct job_t* job) {
 			useRecord = 0;
 		/*  */
 		if (useRecord == 1) {
-			memset(szBuffRek, 0x20, recordBufferLength);
+			utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
 			/* Fill buffer with fill character ( blank default */
 			memset(recordBuffer, join->cFill, join->fileSaveOut->maxLength);
 			/* set len output */
@@ -2856,16 +2881,19 @@ int join_empty_fileF2(struct job_t* job) {
 			if (job->outrec != NULL) {
 				/* check overlay    */
 				if (job->outrec->nIsOverlay == 0) {
-					memset(szBuffRek, 0x20, recordBufferLength);
+					utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
+
 					nbyteRead = outrec_copy(job->outrec, szBuffRek, recordBuffer, nLenRecOut, nbyteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
-					memset(recordBuffer, 0x20, recordBufferLength);
+					utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength);
+
 					memcpy(recordBuffer, szBuffRek, nbyteRead + nSplitPosPnt);
 					job->LenCurrRek = nbyteRead;
 					nLenRek = nbyteRead;
 				}
 				else
 				{		/* Overlay  */
-					memset(szBuffRek, 0x20, recordBufferLength);
+					utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
+
 					memmove(szBuffRek, recordBuffer, nLenRek + nSplitPosPnt);	/* s.m. 202101 copy input record    */
 					nbyteRead = outrec_copy_overlay(job->outrec, szBuffRek, recordBuffer, nLenRecOut, nbyteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 					nbyteRead++;
@@ -2873,7 +2901,9 @@ int join_empty_fileF2(struct job_t* job) {
 						nbyteRead = nLenRek;
 					if (recordBufferLength < nbyteRead)
 						recordBuffer = (unsigned char*)realloc(recordBuffer, nLenInRec + 1);
-					memset(recordBuffer, 0x20, recordBufferLength);
+				//emset(recordBuffer, 0x20, recordBufferLength);
+					utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength);
+
 					memcpy(recordBuffer + nSplitPosPnt, szBuffRek + nSplitPosPnt, nbyteRead);
 					job->LenCurrRek = nbyteRead;
 					nLenRek = nbyteRead;
@@ -2949,7 +2979,7 @@ int join_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, 
 	/* s.m. 20220202  if ((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) && (nLenRek < nLen)) { */
 	if (((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) || (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUFIXED)) &&
 		(file->stFileDef->record->size > (unsigned int)nLenOut)) {
-		memset(file->stFileDef->record->data + nLenOut, 0x20, file->stFileDef->record->size - nLenOut); /* padding with blank (0x20)   */
+		utl_resetbuffer((unsigned char*)file->stFileDef->record->data + nLenOut, file->stFileDef->record->size - nLenOut);
 	}
 	/* 20180511 s.m. end    */
 	if (job->outputFile->format == FILE_TYPE_VARIABLE) {
@@ -2958,47 +2988,9 @@ int join_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, 
 	}
 	else
 	{
-		// s.m. 20240201 		
+		/* s.m. 20240201 	*/	
 		job->outputFile->stFileDef->record->size = nLenOut;
 	}
 	return 0;
 }
 
-//int join_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLenOut, int nLenRek)
-//{
-//	/* 20180511 s.m. start                                                      */
-//	/* s.m. 20201226 int nLenRek = job->inputFile->stFileDef->record->size;     */
-//	/* 20220202 s.m. int nLenRek = job->outputFile->stFileDef->record->size; */
-///* 20180511 s.m. end    */
-///* set area data        */
-//	/* s.m. 20230510 review length */
-//// s.m. 20231120 if lenoutput is minor of leninput  , why change len for copy ?????
-//	if (((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) || (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUFIXED)) &&
-//		(file->stFileDef->record->size < (unsigned int)nLenRek)) {
-//		file->stFileDef->record->size = nLenRek;
-//	}
-//	gc_memcpy(file->stFileDef->record->data, szBuf, nLenRek);
-//	/* s.m. 20240201 gc_memcpy(file->stFileDef->record->data, szBuf, file->stFileDef->record->size); */
-//
-//	/* 20180511 s.m. start
-//
-//		 Padding - Only for FILE_ORGANIZATION_LINESEQUENTIAL, Fixed and Variable Len, and when length not equal for input/output
-//
-//	*/
-//	/* s.m. 20220202  if ((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) && (nLenRek < nLen)) { */
-//	if (((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) || (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUFIXED)) &&
-//		(file->stFileDef->record->size > (unsigned int)nLenRek)) {
-//		memset(file->stFileDef->record->data + nLenRek, 0x20, file->stFileDef->record->size - nLenRek); /* padding with blank (0x20)   */
-//	}
-//	/* 20180511 s.m. end    */
-//	if (job->outputFile->format == FILE_TYPE_VARIABLE) {
-//		job->outputFile->stFileDef->record->size = nLenOut;
-//		cob_set_int(job->outputFile->stFileDef->variable_record, (int)nLenOut);
-//	}
-//	else
-//	{
-//		// s.m. 20240201 		
-//		job->outputFile->stFileDef->record->size = nLenOut;
-//	}
-//	return 0;
-//}

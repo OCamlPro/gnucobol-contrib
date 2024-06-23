@@ -43,6 +43,8 @@ extern int gcMultiThreadIsFirst;
 
 #if defined(_THREAD_LINUX_ENV)
 	pthread_mutex_t main_thread_mutex = PTHREAD_MUTEX_INITIALIZER;
+#else
+ 	HANDLE ghMutex; 
 #endif 
 
 
@@ -65,7 +67,6 @@ int gcthread_start(int argc, char** argv, int nMaxThread, time_t* timeStart)
 
 	int nThread = nMaxThread;  /* job_nThread*/
 	int nSkipRec = 0;
-	int nStopAft = 0;
 	int nBlock=0;
 	int nRC = 0;
 
@@ -89,6 +90,8 @@ int gcthread_start(int argc, char** argv, int nMaxThread, time_t* timeStart)
 
 		nSkipRec = t * nBlock + nBlock;
 		struct pParam* pPar = (struct pParam*)malloc(sizeof(struct pParam));
+		if (pPar == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1015, ABEND_EXEC);
 		pParThread[t] = pPar;
 		pPar->thJob = jArJob[t];
 		pPar->nRet = 0;
@@ -101,7 +104,9 @@ int gcthread_start(int argc, char** argv, int nMaxThread, time_t* timeStart)
 
 
 #ifdef  _THREAD_WIN_ENV_
-		hThread[t] = (HANDLE)_beginthread(&gcthread_run, 0, (void*)pPar);
+		/* s.m. 20240610 hThread[t] = (HANDLE)_beginthread(&gcthread_run, 0, (void*)pPar); */
+		/* s.m. 20240610 */
+		hThread[t] = (HANDLE)_beginthreadex(NULL,0,  &gcthread_run, (void*)pPar, CREATE_SUSPENDED, NULL);
 		if (hThread[t] == NULL)
 		{
 			printf("ERROR; return code from _beginthread() is %p\n", hThread[t]);
@@ -118,17 +123,24 @@ int gcthread_start(int argc, char** argv, int nMaxThread, time_t* timeStart)
 
 		/* Wait n second between loops. */
 #ifdef  _THREAD_WIN_ENV_
-		Sleep(500L);
+	//-->> s.m.			Sleep(500L);
 #else
-		sleep(1); /* 1 second */
+		/* //sleep(1); */ /* 1 second */
 #endif
 	}
 
 #ifdef  _THREAD_WIN_ENV_
-	DWORD dwRet = WaitForMultipleObjects(nThread, hThread, TRUE, INFINITE);
-	if (dwRet != 0)
-		fprintf(stdout, "*GCSort*gcthread*S001* ERROR in WaitForMultipleObjects  - Return code %lu\n", dwRet);
 
+	for (int s = 0; s < nThread; s++) {
+		ResumeThread(hThread[s]);
+		Sleep(100L); 
+	}
+
+	DWORD dwRet = WaitForMultipleObjects(nThread, hThread, TRUE, INFINITE);
+	if (dwRet != 0) {
+		fprintf(stdout, "*GCSort*gcthread*S001* ERROR in WaitForMultipleObjects  - Return code %lu\n", dwRet);
+		fprintf(stdout, "*GCSort*gcthread*S001* SetEvent failed (%d)\n", GetLastError());
+	}
 	#else
 for (int s = 0; s < nThread; s++)
 {
@@ -160,6 +172,10 @@ for (int s = 0; s < nThread; s++)
 	for (int t = 0; t < nThread; t++)
 	{
 
+		/* s.m. 20240610 */
+#ifdef  _THREAD_WIN_ENV_
+		CloseHandle(hThread[t]);
+#endif
 		job_destroy(jArJob[t]);
 		job_destructor(jArJob[t]);
 
@@ -172,7 +188,8 @@ for (int s = 0; s < nThread; s++)
 
 
 #ifdef  _THREAD_WIN_ENV_
-	void gcthread_run(void* pArguments)
+	// void gcthread_run(void* pArguments)
+	unsigned __stdcall gcthread_run(void* pArguments)
 #else
 	void* gcthread_run(void* pArguments)
 #endif
@@ -200,14 +217,8 @@ for (int s = 0; s < nThread; s++)
 		if (pJob->nStatistics == 2)
 			util_print_time_elap_thread("Before  Thread job_sort          ", pParThread->thJob->nCurrThread);
 
-#ifdef _THREAD_LINUX_ENV
-		pthread_mutex_lock(&main_thread_mutex);
-#endif
 		nRC = job_sort_data(pJob);
 
-#ifdef _THREAD_LINUX_ENV
-	 	pthread_mutex_unlock(&main_thread_mutex);
-#endif
 		if (pJob->nStatistics == 2)
 			util_print_time_elap_thread("After   Thread job_sort          ", pParThread->thJob->nCurrThread);
 		if (nRC == -1)
@@ -229,8 +240,12 @@ for (int s = 0; s < nThread; s++)
 #ifdef  _THREAD_WIN_ENV_
 	_endthread();
 #else
-/*	pthread_exit((void*)0); */
 	pthread_exit((void*)NULL);
+#endif
+#ifdef  _THREAD_WIN_ENV_
+	return 0;
+#else
+	return NULL;
 #endif
 }
 
@@ -287,22 +302,13 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 	int bFirstRound = 0;
 	int bIsFirstTime = 0;
 	int bIsWrited = 0;
-	int bTempEof = 0;
 	int byteRead = 0;
-	int byteReadTemp = 0;
 	int byteReadTmpFile[MAX_HANDLE_THREAD];
 	int desc = 0;
 	int kj = 0;
-	int nCompare = 1;
 	int nIdx1, nIdx2, k;
 	int nLastRead = 0;
-	int nLenRekTemp = 0;
-	int nNumBytes = 0;
-	int nNumBytesTemp = 0;
 	int nPosPtr;
-	int p = 0;
-	int posAr = 0;
-	int position_buf_read = 0;
 	int previousRecord = -1;
 	int recordBufferLength;
 	int retcode_func = 0;
@@ -327,10 +333,6 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 	unsigned int   nLenSave = 0;
 	unsigned int   bIsFirstKeySumField = 0;
 	int nTypeSource = 0;        /* 0 = Memory, 1 = File Temp (MMF) */
-
-	int nPosIdArray = -1;
-	int nCountEle = 0;
-
 
 	if (job->bIsPresentSegmentation == 0)
 		nTypeSource = 0;
@@ -419,7 +421,8 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 					retcode_func = -1;
 					goto gcthread_save_tempfinal_exit;
 				}
-				handleTmpFile[j] = (int)ArrayFile[j]->m_hFile;
+				/* s.m 20240620 handleTmpFile[j] = (int)ArrayFile[j]->m_hFile; */
+				handleTmpFile[j] = (size_t)ArrayFile[j]->m_hFile;
 			}
 		}
 	}
@@ -448,7 +451,7 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 		fprintf(stdout, "jobArray[%d]\n", s);
 		for (k = 0; k < MAX_HANDLE_TEMPFILE; k++) {
 			if (job->nCountSrt[k] > 0) {
-				fprintf(stdout, "job->nCountSrt[%d] = %d\n", k,  job->nCountSrt[k]);
+				fprintf(stdout, "job->nCountSrt[%d] = %d - %s\n", k,  job->nCountSrt[k], , job->array_FileTmpName[k]);
 			}
 		}
 	}
@@ -476,7 +479,7 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 	if (nTypeSource == 1) {
 		for (kj = 0; kj < MAX_HANDLE_THREAD; kj++) {
 			if (bIsEof[kj] == 0) {
-				bIsEof[kj] = job_ReadFileTemp(ArrayFile[kj], &byteReadTmpFile[kj], szBufRekTmpFile[kj], bIsFirstTime);  /* bIsEof = 0 ok, 1 = eof   */
+				bIsEof[kj] = job_ReadFileTemp(ArrayFile[kj], &byteReadTmpFile[kj], szBufRekTmpFile[kj]);  /* bIsEof = 0 ok, 1 = eof   */
 				if (bIsEof[kj] == 1) {
 					ptrBuf[kj] = 0x00;
 				}
@@ -488,7 +491,7 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 	{
 		for (kj = 0; kj < MAX_HANDLE_THREAD; kj++) {
 			if (bIsEof[kj] == 0) {
-				bIsEof[kj] = gcthread_ReadFileMem(jobArray[kj], &byteReadTmpFile[kj], szBufRekTmpFile[kj], bIsFirstTime);  /* bIsEof = 0 ok, 1 = eof   */
+				bIsEof[kj] = gcthread_ReadFileMem(jobArray[kj], &byteReadTmpFile[kj], szBufRekTmpFile[kj]);  /* bIsEof = 0 ok, 1 = eof   */
 				if (bIsEof[kj] == 1) {
 					ptrBuf[kj] = 0x00;
 				}
@@ -566,9 +569,9 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 			if (useRecord == 0) {	/* skip record  */
 				if (bIsEof[nLastRead] == 0) {
 					if (nTypeSource == 1)
-						bIsEof[nLastRead] = job_ReadFileTemp(ArrayFile[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead], bIsFirstTime);  /* bIsEof = 0 ok, 1 = eof   */
+						bIsEof[nLastRead] = job_ReadFileTemp(ArrayFile[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead]);  /* bIsEof = 0 ok, 1 = eof   */
 					else
-						bIsEof[nLastRead] = gcthread_ReadFileMem(jobArray[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead], bIsFirstTime);  /* bIsEof = 0 ok, 1 = eof   */
+						bIsEof[nLastRead] = gcthread_ReadFileMem(jobArray[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead]);  /* bIsEof = 0 ok, 1 = eof   */
 					if (bIsEof[nLastRead] == 1) {
 						nSumEof = nSumEof + bIsEof[nLastRead];
 						ptrBuf[nLastRead] = 0x00;
@@ -597,9 +600,9 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 		if ((useRecord == 1) && (job->outrec != NULL)) {
 			/* check overlay    */
 			if (job->outrec->nIsOverlay == 0) {
-				memset((unsigned char*)szBuffRekOutRec, 0x20, recordBufferLength);
+				utl_resetbuffer((unsigned char*)szBuffRekOutRec, recordBufferLength);
 				nLenRek = outrec_copy(job->outrec, szBuffRekOutRec, szBufRekTmpFile[nPosPtr], job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
-				memset(szBufRekTmpFile[nPosPtr], 0x20, recordBufferLength); /* s.m. 202101  */
+				utl_resetbuffer((unsigned char*)szBufRekTmpFile[nPosPtr], recordBufferLength);
 				memcpy(szBufRekTmpFile[nPosPtr], szBuffRekOutRec, nLenRek + nSplitPosPnt);
 				byteReadTmpFile[nPosPtr] = nLenRek;
 				byteRead = nLenRek;
@@ -607,13 +610,15 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 			}
 			else
 			{		/* Overlay  */
-				memset(szBuffRek, 0x20, recordBufferLength);
+				// memset(szBuffRek, 0x20, recordBufferLength);
+				utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
 				memmove(szBuffRek, recordBuffer, byteRead + nSplitPosPnt);	/* s.m. 202101 copy record  */
 				nLenRek = outrec_copy_overlay(job->outrec, szBuffRekOutRec, szBufRekTmpFile[nPosPtr], job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 				nLenRek++;
 				if (nLenRek < job->outputLength)
 					nLenRek = job->outputLength;
-				memset(szBufRekTmpFile[nPosPtr], 0x20, recordBufferLength); /* s.m. 202101  */
+				//memset(szBufRekTmpFile[nPosPtr], 0x20, recordBufferLength); /* s.m. 202101  */
+				utl_resetbuffer((unsigned char*)szBufRekTmpFile[nPosPtr], recordBufferLength);
 				memcpy(szBufRekTmpFile[nPosPtr], szBuffRekOutRec, nLenRek + nSplitPosPnt);
 				byteReadTmpFile[nPosPtr] = nLenRek;
 				byteRead = nLenRek;
@@ -658,9 +663,9 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 		}
 		if (bIsEof[nLastRead] == 0) {
 			if (nTypeSource == 1)
-				bIsEof[nLastRead] = job_ReadFileTemp(ArrayFile[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead], bIsFirstTime);  /* bIsEof = 0 ok, 1 = eof   */
+				bIsEof[nLastRead] = job_ReadFileTemp(ArrayFile[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead]);  /* bIsEof = 0 ok, 1 = eof   */
 			else
-				bIsEof[nLastRead] = gcthread_ReadFileMem(jobArray[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead], bIsFirstTime);  /* bIsEof = 0 ok, 1 = eof   */
+				bIsEof[nLastRead] = gcthread_ReadFileMem(jobArray[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead]);  /* bIsEof = 0 ok, 1 = eof   */
 			if (bIsEof[nLastRead] == 1) {
 				ptrBuf[nLastRead] = 0x00;
 				nSumEof = nSumEof + bIsEof[nLastRead];
@@ -744,8 +749,6 @@ int gcthread_print_final(struct job_t* jobArray[], time_t* timeStart)
 	job = jobArray[0];
 
 	/* Open files Tmp   */
-
-	int j = -1;
 	/* Max Thread*/
 	for (int s = 0; s < job->nMaxThread; s++) {
 		job = jobArray[s];
@@ -789,7 +792,7 @@ if (job->nStatistics == 2) {
 				job = jobArray[s];
 				for (nIdx = 0; nIdx < MAX_HANDLE_TEMPFILE; nIdx++) {
 					if (job->nCountSrt[nIdx] > 0)
-						fprintf(stdout, "Thread %d - job->nCountSrt[%02d] %d\n", s+1, nIdx, job->nCountSrt[nIdx]);
+						fprintf(stdout, "Thread %d - job->nCountSrt[%02d] %d - %s \n", s+1, nIdx, job->nCountSrt[nIdx], job->array_FileTmpName[nIdx]);
 				}
 			} 
 			fprintf(stdout, "\n");
@@ -806,7 +809,7 @@ if (job->nStatistics == 2) {
 		{
 			for (nIdx = 0; nIdx < MAX_HANDLE_TEMPFILE; nIdx++) {
 				if (job->nCountSrt[nIdx] > 0)
-					fprintf(stdout, "job->nCountSrt[%02d] %d\n", nIdx, job->nCountSrt[nIdx]);
+					fprintf(stdout, "job->nCountSrt[%02d] %d - %s\n", nIdx, job->nCountSrt[nIdx], job->array_FileTmpName[nIdx]);
 			}
 			fprintf(stdout, "\n");
 			fprintf(stdout, " Memory size for GCSORT data.......: " NUM_FMT_LLD "\n", (long long)job->ulMemSizeAllocData);
@@ -936,9 +939,8 @@ void gcthread_ReviewMemAlloc(struct job_t* job)
 	/* s.m. 202402 */
 
 }
-INLINE int gcthread_ReadFileMem(struct job_t* job, int* nLR, unsigned char* szBuffRek, int nFirst)
+INLINE int gcthread_ReadFileMem(struct job_t* job, int* nLR, unsigned char* szBuffRek)
 {
-	unsigned int lenBE = 0;
 	int bTempEof = 0;
 	if (job->recordReadInCurrent < job->recordNumber) {
 		/* check data from job_ReadFileTemp */
@@ -951,8 +953,8 @@ INLINE int gcthread_ReadFileMem(struct job_t* job, int* nLR, unsigned char* szBu
 		gc_memcpy(job->phSrt, job->buffertSort + (job->recordReadInCurrent) * ((int64_t)job->nLenKeys + SIZESRTBUFF) + job->nLenKeys, SIZESRTBUFF); /* Pointer Data Area    */
 
 		/* LenRek 4 byte */
-		gc_memcpy(szBuffRek, (unsigned char*)job->phSrt->pAddress, job->phSrt->nLenRek); /* buffer           */
-		gc_memcpy(szBuffRek+SZLENREC, job->phSrt->pAddress, job->phSrt->nLenRek);		/* buffer   */
+		gc_memcpy(szBuffRek, (unsigned char*)job->phSrt->pAddress, SZLENREC);				/* buffer */
+		gc_memcpy(szBuffRek + SZLENREC, job->phSrt->pAddress, job->phSrt->nLenRek);		 /* buffer */
 
 		job->recordReadInCurrent++;
 	}

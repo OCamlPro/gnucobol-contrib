@@ -85,7 +85,9 @@ struct outfil_t *outfil_constructor( void)
 		outfil->isVirtualFile = 1;
 	    outfil->next=NULL;
     }
-return outfil;
+	else
+		utl_abend_terminate(MEMORYALLOC, 1650, ABEND_EXEC);
+	return outfil;
 }
 void outfil_destructor(struct outfil_t *outfil) 
 {
@@ -196,8 +198,6 @@ int outfil_open_files( struct job_t *job )
 	/* check if present SAVE e memorize pointer */
 	struct outfil_t *pOutfil;
 	struct file_t  *file;
-	char* pEnvFileName = NULL;
-	int nbyteRead=0;
 	for (pOutfil=job->outfil; pOutfil != NULL; pOutfil=outfil_getNext(pOutfil)) {
 		for (file=pOutfil->outfil_File; file != NULL; file=file_getNext(file)) {
 			/* clone info from GIVE outfile  */
@@ -205,7 +205,7 @@ int outfil_open_files( struct job_t *job )
             strcpy((char*) file->stFileDef->assign->data, (char*) file_getName(file));
 			
 			/* Check if outfile is equal to GIVE file */
-			if (strcmp(file_getName(file), job->outputFile->stFileDef->assign->data) == 0)	/* Outfile file name is identical to output GIVE FILE */
+			if (strcmp(file_getName(file), (char*) job->outputFile->stFileDef->assign->data) == 0)	/* Outfile file name is identical to output GIVE FILE */
 				pOutfil->isVirtualFile = 1;	/* Reset value to virtual file */
 
 			/* Check if OUTFIL has file definition */
@@ -233,7 +233,7 @@ int outfile_clone_output(struct job_t* job, struct file_t* file)
 	if (file->stFileDef == NULL) { 
 		file_SetInfoForFile(file, COB_OPEN_OUTPUT);
 		/* Set organization in standard LIBCOB */
-		file->stFileDef->organization = utl_fileConvertFileType(job->outputFile->organization);
+		file->stFileDef->organization = (unsigned char) utl_fileConvertFileType(job->outputFile->organization);
 		/* disable warning - fprintf(stdout, "*GCSORT*W680* WARNING : OUTFIL without FILES/FNAMES, forced GIVE definition %s\n", file_getName(file)); */
 		job->nOutFileSameOutFile = 1; /* In this case Output file skipped, name is used for OutFil  */
         /* disable warning - g_retWarn = 4; */
@@ -262,11 +262,13 @@ int outfile_clone_output(struct job_t* job, struct file_t* file)
 		file->stFileDef->variable_record = util_cob_field_make( COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA);
 	else
 		file->stFileDef->variable_record = NULL;
-	if (job->outputFile->nNumKeys > 0)
-		file->stFileDef->keys = (cob_file_key*)(malloc (sizeof (cob_file_key) * job->outputFile->nNumKeys));
-
+	if (job->outputFile->nNumKeys > 0) {
+		file->stFileDef->keys = (cob_file_key*)(malloc(sizeof(cob_file_key) * job->outputFile->nNumKeys));
+		if (file->stFileDef->keys == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1651, ABEND_EXEC);
+	}
 	/* Set organization in standard LIBCOB */
-	file->stFileDef->organization = utl_fileConvertFileType(job->outputFile->organization);
+	file->stFileDef->organization = (unsigned char) utl_fileConvertFileType(job->outputFile->organization);
 
 	if (job->outputFile->organization == FILE_ORGANIZATION_INDEXED) {
 		tKeys =  job->outputFile->stKeys;
@@ -312,6 +314,9 @@ int outfile_clone_output(struct job_t* job, struct file_t* file)
 		tKeys =  job->outputFile->stKeys;
 		tKeys =  file->stKeys;
 		file->stFileDef->keys = (cob_file_key*)(malloc (sizeof (cob_file_key) * 1));
+		if (file->stFileDef->keys == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1652, ABEND_EXEC);
+
 		file->stFileDef->keys[0].field = util_cob_field_make( COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA);
 		file->stFileDef->keys[0].flag = 0;
 		file->stFileDef->keys[0].offset = 0;
@@ -324,7 +329,6 @@ int outfil_close_files(  struct job_t *job  )
 	/* check if present SAVE e memorize pointer */
 	struct outfil_t *pOutfil;
 	struct file_t  *file;
-	int nbyteRead=0;
 	for (pOutfil=job->outfil; pOutfil != NULL; pOutfil=outfil_getNext(pOutfil)) {
 		for (file=pOutfil->outfil_File; file != NULL; file=file_getNext(file)) {
 			if (pOutfil->isVirtualFile == 0) {	/* Not Is virtual file use GIVE file */
@@ -347,10 +351,8 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 	struct outfil_t *pOutfil;
 	int useRecord;
 	int nNumWrite;
-	int nUseWriteSave = 0;
 	int nWritedRec = 0;
 	unsigned int nLenRecOut=0;
-	int nFS = 0; /* file status */
 	cob_file* pFile = NULL;
 	int retcode_func = 0;
 	
@@ -441,7 +443,7 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 					}
 					else
 					{
-						outfil_write_buffer_split(job, pOutfil, recordBuffer, byteRead, szBuffRek, nSplitPosPnt);
+						outfil_write_buffer_split(job, pOutfil, recordBuffer, byteRead, nSplitPosPnt);
 					}
 				}
 			}			
@@ -481,7 +483,7 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 
 /* Write for OUTFIL Split   */
 /* don't use buffered       */
-int outfil_write_buffer_split ( struct job_t *job, struct outfil_t* outfil, unsigned char* recordBuffer, unsigned int  byteRead, unsigned char* szBuffRek, int nSplitPosPnt) 
+int outfil_write_buffer_split ( struct job_t *job, struct outfil_t* outfil, unsigned char* recordBuffer, unsigned int  byteRead, int nSplitPosPnt) 
 {
     struct file_t* file;	
 	int useRecord;

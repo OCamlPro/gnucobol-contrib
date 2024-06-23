@@ -33,11 +33,11 @@ struct KeyIdx_t *KeyIdx_constructor(int position, int length, int type, int nCol
     if (KeyIdx != NULL) {
 	    pCobFAttrKey = (cob_field_attr *)malloc(sizeof(cob_field_attr));
         if (pCobFAttrKey == NULL) 
-            return NULL;
-	    KeyIdx->pCobFieldKey = (cob_field *)malloc(sizeof(cob_field));
+			utl_abend_terminate(MEMORYALLOC, 1601, ABEND_EXEC);
+		KeyIdx->pCobFieldKey = (cob_field *)malloc(sizeof(cob_field));
         if (KeyIdx->pCobFieldKey == NULL) 
-            return NULL;
-   	    KeyIdx->position=position-1;	/* Position -1  */
+			utl_abend_terminate(MEMORYALLOC, 1602, ABEND_EXEC);
+		KeyIdx->position=position-1;	/* Position -1  */
 	    KeyIdx->length=length;
 	    KeyIdx->type=type;              /*     0=P Primary,                         */
                                         /*     1=A Alternative,                     */
@@ -57,6 +57,9 @@ struct KeyIdx_t *KeyIdx_constructor(int position, int length, int type, int nCol
 	    KeyIdx->pCobFieldKey->data = NULL;
  	    KeyIdx->pCobFieldKey->attr =  pCobFAttrKey;
     }
+	else
+		utl_abend_terminate(MEMORYALLOC, 1600, ABEND_EXEC);
+
 	return KeyIdx;
 }
 

@@ -488,6 +488,10 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            call     "SYSTEM" using  cmd-go
       *
       D    display  "RETURN-CODE Value : " RETURN-CODE
+           if (ar-tst-rtc01(idx) > 256)
+                divide ar-tst-rtc01(idx) by 256
+                giving ar-tst-rtc01(idx)
+           end-if
       * reset 
            move 'dd_infile'      to env-set-name
            move space            to env-set-value

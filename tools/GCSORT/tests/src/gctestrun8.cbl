@@ -319,11 +319,11 @@ Win        if (ntype = 1)
       *---------------------------------------------------------*
        gein-00.
            move space                   to cmd-string
-           move 'infile'            to env-set-name
+           move 'dd_infile'             to env-set-name
            move '../files/inpix01.txt'  to env-set-value
            perform set-value-env
            move space                   to cmd-string
-           move 'inpix01'            to env-set-name
+           move 'dd_ix01'               to env-set-name
            move '../files/inpix01_cbl.dat'  to env-set-value
            perform set-value-env
            move 'ixwrite01' to cmd-string

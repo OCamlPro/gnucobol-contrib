@@ -21,15 +21,16 @@
        environment division.
        input-output section.
        file-control.
-             select infile assign to  external infile
+             select infile assign to  external dd_infile
                  organization is line sequential
+                 access is sequential
                  file status is f-s.
                  
      **        alternate record key is msr-03
      **        alternate record key is msr-04 with duplicates
      **        alternate record key is msr-05 with duplicates
       *        .
-           SELECT masterseqfile ASSIGN TO external inpix01
+           SELECT masterseqfile ASSIGN TO external dd_ix01
                COLLATING SEQUENCE OF msr-01 IS ASCII
                COLLATING SEQUENCE OF msr-99 IS EBCDIC
                ORGANIZATION IS INDEXED
@@ -70,19 +71,27 @@
        procedure division.
        begin-00.
       *  check if defined environment variables
-           move 'infile'  to env-pgm
+           move 'dd_infile'  to env-pgm
           perform check-env-var
       *        
-          move 'inpix01'  to env-pgm
+          move 'dd_ix01'  to env-pgm
           perform check-env-var
       *           
           open input  infile
+          if f-s not = "00"
+             display ' Open input file file status ' f-s
+                go lb-50.
           open output masterseqfile.
+          if f-s-ix not = "00"
+             display ' Open output file file status ' f-s-ix
+                go lb-50.
           perform cycle-00 thru cycle-01 
                 until f-s not = "00".
           go cycle-50.
        cycle-00.
-          read infile.
+          read infile at end display 'EOF input file'.
+      **    display "f-s input = " f-s
+      **    display "rekin = " rekin
           if f-s = "00"
               move space      to masterseqrecord
               move f01        to msr-01
@@ -94,6 +103,9 @@
           close masterseqfile.
           close infile
           open input masterseqfile.
+          if f-s-ix not = "00"
+             display ' Open input file ix file status ' f-s-ix
+                go lb-50.          
            move low-value to      msr-01
            start masterseqfile
               key is greater than or equal to
@@ -103,6 +115,7 @@
                       "bad start: " msr-01 
                       upon syserr
                   end-display
+                        go lb-50
            end-start           
           perform cycle-80 
                 until f-s not = "00"          
@@ -111,6 +124,9 @@
           display "*=======================*"
           close masterseqfile.
           open input masterseqfile.
+          if f-s-ix not = "00"
+             display ' Open input file ix file status ' f-s-ix
+                go lb-50.          
            move low-value to      msr-99
            start masterseqfile
               key is greater than or equal to
@@ -120,6 +136,7 @@
                       "bad start: " msr-99 
                       upon syserr
                   end-display
+                        go lb-50
            end-start           
           perform cycle-90 
                 until f-s not = "00" 

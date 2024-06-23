@@ -59,7 +59,4 @@ int SumField_SumField(const void *pRek);
 int SumField_SumFieldUpdateRek(const void *pRek);
 int SumField_ResetTot(struct job_t* job);
 void SumField_setTypeCobField(struct SumField_t *SumField, int type, int length);
-int SumFields_KeyCheck(struct job_t* job, int* bIsWrited, unsigned char* szKeyPrec, unsigned int* nLenPrec, 
-                        unsigned char* szKeyCurr,  unsigned int* nLenRek, unsigned char* szKeySave,  unsigned int* nLenSave, 
-                        unsigned char* szPrecSumFields, unsigned char* szSaveSumFields, unsigned char* szBuffRek, int nSplit);
 #endif /* SUMFIELD_H_INCLUDED   */

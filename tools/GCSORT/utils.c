@@ -876,10 +876,10 @@ cob_field* util_MakeAttrib_call(int type, int digits, int scale, int flags, int 
 	attrArea = (cob_field_attr*)malloc(sizeof(cob_field_attr));
 	if (attrArea == NULL)
 		utl_abend_terminate(MEMORYALLOC, 11, ABEND_EXEC);
-	attrArea->type = type;
-	attrArea->digits = digits;
-	attrArea->scale = scale;
-	attrArea->flags = flags;
+	attrArea->type = (unsigned short) type;
+	attrArea->digits = (unsigned short)digits;
+	attrArea->scale = (unsigned short)scale;
+	attrArea->flags = (unsigned short)flags;
 	attrArea->pic = NULL;
 	field_ret = (cob_field*)malloc(sizeof(cob_field));
 	if (field_ret == NULL)
@@ -894,7 +894,7 @@ cob_field* util_MakeAttrib_call(int type, int digits, int scale, int flags, int 
 	}
 	field_ret->size = nLen;
 	/* fix value for single type of field   */
-	attrArea->digits = digits;
+	attrArea->digits = (unsigned short)digits;
 	switch (type) {
 	case COB_TYPE_ALPHANUMERIC_ALL:
 	case COB_TYPE_ALPHANUMERIC:
@@ -960,7 +960,7 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
 	    	    	attrArea->digits = (nLen*2)-1;
              }
 			*/
-			attrArea->digits = (nLen * 2) - 1;	/* digits number */
+			attrArea->digits = (unsigned short) (nLen * 2) - 1;	/* digits number */
             attrArea->scale = 0;
     	    attrArea->flags  = attrArea->flags | COB_FLAG_HAVE_SIGN;
             break;
@@ -1013,7 +1013,7 @@ void util_resetAttrib(cob_field_attr* attrArea, int type, int digits)
 		return;
 	}
 	if (digits >= 0)
-		attrArea->digits = digits;
+		attrArea->digits = (unsigned short)digits;
 
 	return;
 }
@@ -1026,10 +1026,10 @@ void util_resetAttrib(cob_field_attr* attrArea, int type, int digits)
 	attrArea = (cob_field_attr*) malloc(sizeof(cob_field_attr));
     if (attrArea == NULL)
         utl_abend_terminate(MEMORYALLOC, 11, ABEND_EXEC);
-	attrArea->type   = type;
-	attrArea->digits = digits;
-	attrArea->scale  = scale;
-	attrArea->flags  = flags;
+	attrArea->type   = (unsigned short)type;
+	attrArea->digits = (unsigned short)digits;
+	attrArea->scale  = (unsigned short)scale;
+	attrArea->flags  = (unsigned short)flags;
 	attrArea->pic    = NULL;
 	field_ret = (cob_field*)malloc(sizeof(cob_field));
     if (field_ret == NULL)
@@ -1486,4 +1486,30 @@ char* utl_strinsstr(const char* str1, const char* str2)
 	}
 
 	return *p2 == 0 ? (char*)r : 0;
+}
+
+int utl_GetCpuCount(void)
+{
+	unsigned lcpucount;
+#ifdef _WIN32
+	SYSTEM_INFO systeminfo;
+	GetSystemInfo(&systeminfo);
+
+	lcpucount = systeminfo.dwNumberOfProcessors;
+
+#else
+	lcpucount = sysconf(_SC_NPROCESSORS_ONLN);
+#endif
+	return lcpucount;
+}
+
+/* reset buffer */
+void utl_resetbuffer(unsigned char* recordBuffer, size_t len)
+{
+	/* check ASCII/EBCDIC */
+	if (0x20 == ' ')
+		memset(recordBuffer, 0x20, len);
+	else
+		memset(recordBuffer, 0x40, len);
+	return;
 }

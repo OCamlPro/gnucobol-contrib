@@ -31,15 +31,23 @@
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	#include <io.h>
 	#define _strtoll    _strtoi64
-	#define GCThread __declspec( thread )
+	/* #define GCThread __declspec( thread ) */
 #else
 	#include <limits.h>
 	#include <sys/io.h>
 	#include <time.h>
 	#include <fcntl.h>
 	#define _strtoll   strtoll
+	/* #define GCThread __thread */
+#endif
+
+#if	defined(_MSC_VER)
+	#define GCThread __declspec( thread )
+#else
 	#define GCThread __thread 
 #endif
+
+
 
 
 #include "utils.h"
@@ -85,6 +93,8 @@ struct job_t;
 
 #define MAXFILEIN 100
 
+#define  READ_BLOCK_CHUNK	10
+#define  READ_ROUND_ROBIN	21
 
 struct hSrtMem_t {
 	int64_t lPosPnt;			/* Pointer RRN file*/
@@ -96,14 +106,12 @@ struct job_t {
 	char arrayFileInCmdLine[MAXFILEIN][FILENAME_MAX];
     char arrayFileOutCmdLine[MAXFILEIN][FILENAME_MAX];
 	char arrayFileOutFilCmdLine[MAXFILEIN][FILENAME_MAX];
-	// char array_FileTmpName[MAX_HANDLE_TEMPFILE][FILENAME_MAX];
 	char array_FileTmpName[MAX_HANDLE_THREAD][FILENAME_MAX];
 	char FileNameXSUM[FILENAME_MAX];
 	char job_typeOP;				        /* 'S' for sort, 'M' for Merge, 'C' for Copy, 'J' for Join    */
 	char strPathTempFile[FILENAME_MAX];     /* path temporary file                          */
 	char szCmdLineCommand[8192];	        /* Copy from command line                       */
 	char szTakeFileName[8192];	            /* Take FileName                                */
-	//int	 array_FileTmpHandle[MAX_HANDLE_TEMPFILE];
 	int	 array_FileTmpHandle[MAX_HANDLE_THREAD];
 	int	 bIsFieldCopy;		                /* SORT-MERGE FIELDS=COPY                       */
 	int	 bIsPresentSegmentation;		    /* File segmentation                            */
@@ -198,7 +206,7 @@ struct job_t {
 	int     nMultiThread;		/* flag MultiThread 0=no, 1=yes*/
 	int     nCurrThread;		/* current Thread */
 	int		nMaxThread;			/* num max Thread */
-	int     nTypeLoadThread;	/* 10 = block/chuck, 21 = round robin */
+	int     nTypeLoadThread;	/* READ_BLOCK_CHUNK = 10 = block/chunk, READ_ROUND_ROBIN = 21 = round robin */
 
 	struct join_t* join;
 
@@ -242,10 +250,6 @@ struct job_t {
 	int	nLenMemory;
 
 	struct hSrtMem_t* phSrt;
-	/*int64_t lPosPnt;
-	unsigned int   nLenRek;
-	unsigned char* pAddress;*/
-
 	int bThreadIsFirstRound;
 
 	int64_t	nCountRecThread;
@@ -276,7 +280,7 @@ int job_save_out(struct job_t *job);
 int job_save_tempfile(struct job_t *job);
 int job_save_tempfinal(struct job_t *job);
 
-INLINE2 int job_ReadFileTemp(struct mmfio_t* descTmp, int* nLR, unsigned char* szBuffRek, int nFirst);
+INLINE2 int job_ReadFileTemp(struct mmfio_t* descTmp, int* nLR, unsigned char* szBuffRek);
 
 int job_print(struct job_t *job);
 int job_GetTypeOp(struct job_t *job);
@@ -292,7 +296,7 @@ int job_GetTypeOp(struct job_t *job);
 int job_GetLenKeys( struct job_t* job );
 int job_GetLastPosKeys( struct job_t* job );
 
-int job_Verify_EOF(int* nState, struct job_t* job, struct file_t* stFileDef, unsigned char* szVectorRead1, int* nLenVR1, unsigned char* szVectorRead2, int* nLenVR2);
+int job_Verify_EOF(int* nState, struct file_t* stFileDef, unsigned char* szVectorRead1, int* nLenVR1, unsigned char* szVectorRead2, int* nLenVR2);
 
 /* static INLINE */
 
@@ -328,7 +332,7 @@ int job_PutIntoArrayFile(char* pszBufOut, char* pszBufIn, int nLength);
 int job_RedefinesFileName( struct job_t *job);
 int job_NormalOperations(struct job_t *job);
 int job_CloneFileForOutfil( struct job_t *job);
-void job_CloneFileForOutfilSet(struct job_t *job, struct file_t* file);
+void job_CloneFileForOutfilSet(struct file_t* file);
 int job_CloneFileForXSUMFile(struct job_t* job);
 
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
@@ -356,18 +360,24 @@ int job_skip_record(struct job_t* job, struct file_t* file, long* nRec);
 
 	/* INLINE int job_compare_key(struct job_t* job, const void* first, const void* second); */
 
-int job_compare_key(struct job_t* job, const void* first, const void* second);
+#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+	INLINE int job_compare_key(struct job_t* job, const void* first, const void* second);
+#else
+	INLINE  int job_compare_key(struct job_t* job, const void* first, const void* second);
+#endif
+
 
 INLINE int job_compare_rek(struct job_t* job, const void *first, const void *second, int bCheckPosPnt, int nSplit);
+
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
-	 INLINE  int job_compare_qsort(struct job_t* job, const void* first, const void* second);
+	 INLINE  int job_compare_qsort(void* jobparam, const void* first, const void* second);
 #else
-	 INLINE2 int job_compare_qsort(const void* first, const void* second, void* jobparam);
+	 INLINE  int job_compare_qsort(const void* first, const void* second, void* jobparam);
 #endif
 
 int job_IdentifyBufMerge(struct job_t* job, unsigned char** ptrBuf, int nMaxElements, int* nCmp);
 
-INLINE int job_ReadFileMerge(struct file_t* file, int* descTmp, int* nLR, unsigned char* szBuffRek, int nFirst);
+INLINE int job_ReadFileMerge(struct file_t* file, int* nLR, unsigned char* szBuffRek);
 INLINE cob_field* job_cob_field_create ( void );
 void job_cob_field_set (cob_field* field_ret, int type, int digits, int scale, int flags, int nLen);
 INLINE void job_cob_field_reset(cob_field* field_ret, int type, int size, int digits);
@@ -394,6 +404,10 @@ int job_AllocateDataKey(struct job_t* job);
 INLINE int write_buffered(int desc, unsigned char* buffer_pointer, int nLenRek, unsigned char* bufferwriteglobal, int* position_buf_write);
 INLINE int write_buffered_final(int  desc, unsigned char* bufferwriteglobal, int* position_buf_write);
 INLINE int write_buffered_save_final(int		desc, unsigned char* buffer_pointer, int nLenRek, unsigned char* bufferwriteglobal, int* position_buf_write);
+
+int SumFields_KeyCheck(struct job_t* job, int* bIsWrited, unsigned char* szKeyPrec, unsigned int* nLenPrec, 
+                        unsigned char* szKeyCurr,  unsigned int* nLenRek, unsigned char* szKeySave,  unsigned int* nLenSave, 
+                        unsigned char* szPrecSumFields, unsigned char* szSaveSumFields, unsigned char* szBuffRek, int nSplit);
 
 /*  #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)   */
 /*

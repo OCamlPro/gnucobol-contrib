@@ -34,7 +34,7 @@ struct file_t *file_constructor(char *name) {
 	struct file_t *file=(struct file_t *)malloc(sizeof(struct file_t));
     if (file != NULL) {
         /* s.m. 202202 file->name = _strdup(name); */
-		file->name = ((unsigned char*)malloc((sizeof(unsigned char) * GCSORT_SIZE_FILENAME)));
+		file->name = ((char*)malloc((sizeof(char) * GCSORT_SIZE_FILENAME)));
 		if (file->name == NULL)
 			utl_abend_terminate(MEMORYALLOC, 1, ABEND_EXEC);
 		else
@@ -61,7 +61,10 @@ struct file_t *file_constructor(char *name) {
 			file->stFileDef->fcd = NULL;
 #endif
 
-	}
+	} 
+	else
+		utl_abend_terminate(MEMORYALLOC, 1011, ABEND_EXEC);
+
 	return file;
 }
 void file_destructor(struct file_t *file) {

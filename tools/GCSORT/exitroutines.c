@@ -79,7 +79,9 @@ struct E15Call_t* E15Call_constructor(int nLenRecSize)
     pE15c->pExitAreaLen = util_MakeAttrib_call(COB_TYPE_NUMERIC_BINARY, 4, 0, 0, 2, ALLOCATE_DATA);
     memset(pE15c->pExitAreaLen->data, 0x00, 2);
     pE15c->pExitArea = util_MakeAttrib_call(COB_TYPE_ALPHANUMERIC, 256, 0, 0, 256, ALLOCATE_DATA);
-    memset(pE15c->pExitArea->data, 0x20, 256);      /* Set space in area    */
+    /* memset(pE15c->pExitArea->data, 0x20, 256);     */ /* Set space in area    */
+    utl_resetbuffer(pE15c->pExitArea->data, 256);
+
    /* Check initialized, check module allocated, */
    /* set global pointer, */
    /* push module stack, save call parameter count */
@@ -233,61 +235,61 @@ int	E15Run(const int entry, struct E15Call_t* pE15C, int nRecFlag, int nLen, uns
 /* End PROGRAM-ID 'E15CALL' */
  
 /* Initialize module structure for E15CALL */
-static void E15CALL_module_init (cob_module *module)
+static void E15CALL_module_init (cob_module *mod)
 {
-  module->module_name = "E15";
-  module->module_formatted_date = COB_MODULE_FORMATTED_DATE;
-  module->module_source = COB_SOURCE_FILE;
-  module->module_entry.funcptr = (void *(*)())E15Run;
-  module->module_cancel.funcptr = (void *(*)())E15Run;
-  module->module_ref_count = NULL;
-  module->module_path = &cob_module_path2;
-  module->module_active = 0;
-  module->module_date = COB_MODULE_DATE;
-  module->module_time = COB_MODULE_TIME;
-  module->module_type = 0;
-  module->module_param_cnt = 0;
+  mod->module_name = "E15";
+  mod->module_formatted_date = COB_MODULE_FORMATTED_DATE;
+  mod->module_source = COB_SOURCE_FILE;
+  mod->module_entry.funcptr = (void *(*)())E15Run;
+  mod->module_cancel.funcptr = (void *(*)())E15Run;
+  mod->module_ref_count = NULL;
+  mod->module_path = &cob_module_path2;
+  mod->module_active = 0;
+  mod->module_date = COB_MODULE_DATE;
+  mod->module_time = COB_MODULE_TIME;
+  mod->module_type = 0;
+  mod->module_param_cnt = 0;
   /* //-->> module->ebcdic_sign = 0; */
-  module->ebcdic_sign = g_cb_ebcdic_sign;
-  module->collating_sequence = get_collation(g_cb_colseq);
-  module->decimal_point = '.';
-  module->currency_symbol = '$';
-  module->numeric_separator = ',';
-  module->flag_filename_mapping = 1;
-  module->flag_binary_truncate = 1;
-  module->flag_pretty_display = 1;
-  module->flag_host_sign = 0;
-  module->flag_no_phys_canc = 0;
-  module->flag_main = 0;
-  module->flag_fold_call = 0;
-  module->flag_exit_program = 0;
+  mod->ebcdic_sign = g_cb_ebcdic_sign;
+  mod->collating_sequence = get_collation(g_cb_colseq);
+  mod->decimal_point = '.';
+  mod->currency_symbol = '$';
+  mod->numeric_separator = ',';
+  mod->flag_filename_mapping = 1;
+  mod->flag_binary_truncate = 1;
+  mod->flag_pretty_display = 1;
+  mod->flag_host_sign = 0;
+  mod->flag_no_phys_canc = 0;
+  mod->flag_main = 0;
+  mod->flag_fold_call = 0;
+  mod->flag_exit_program = 0;
 #if __LIBCOB_VERSION >= 3
-      module->flag_debug_trace = 0;
-      module->flag_dump_ready = 0;
-      module->module_stmt = 0;
-      module->module_sources = NULL;
+      mod->flag_debug_trace = 0;
+      mod->flag_dump_ready = 0;
+      mod->module_stmt = 0;
+      mod->module_sources = NULL;
 #endif /* __LIBCOB_VERSION >= 3  */
 #if __LIBCOB_VERSION > 3 || \
    ( __LIBCOB_VERSION == 3  && __LIBCOB_VERSION_MINOR >= 2 )	
-      module->gc_version = "3.2-dev"; /* COB_PACKAGE_VERSION; */
-      module->xml_mode = 1;
-      module->xml_code = NULL;
-      module->xml_event = NULL;
-      module->xml_information = NULL;
-      module->xml_namespace = NULL;
-      module->xml_namespace_prefix = NULL;
-      module->xml_nnamespace = NULL;
-      module->xml_nnamespace_prefix = NULL;
-      module->xml_ntext = NULL;
-      module->xml_text = NULL;
-      module->json_code = NULL;
-      module->json_status = NULL;
+      mod->gc_version = "3.2-dev"; /* COB_PACKAGE_VERSION; */
+      mod->xml_mode = 1;
+      mod->xml_code = NULL;
+      mod->xml_event = NULL;
+      mod->xml_information = NULL;
+      mod->xml_namespace = NULL;
+      mod->xml_namespace_prefix = NULL;
+      mod->xml_nnamespace = NULL;
+      mod->xml_nnamespace_prefix = NULL;
+      mod->xml_ntext = NULL;
+      mod->xml_text = NULL;
+      mod->json_code = NULL;
+      mod->json_status = NULL;
 #endif
 }
 /* END Routine E15 */
 
 /* START Routine E35 */
-static void		E35CALL_module_init(cob_module* module);
+static void		E35CALL_module_init(cob_module* mod);
 
 struct E35Call_t* E35Call_constructor(int nLenRecSize)
 {
@@ -319,7 +321,8 @@ struct E35Call_t* E35Call_constructor(int nLenRecSize)
     pE35c->pExitAreaLen = util_MakeAttrib_call(COB_TYPE_NUMERIC_BINARY, 4, 0, 0, 2, ALLOCATE_DATA);
     memset(pE35c->pExitAreaLen->data, 0x30, 2);
     pE35c->pExitArea = util_MakeAttrib_call(COB_TYPE_ALPHANUMERIC, 256, 0, 0, 256, ALLOCATE_DATA);
-    memset(pE35c->pExitArea->data, 0x20, 256);      /* Set space in area    */
+    /* memset(pE35c->pExitArea->data, 0x20, 256); */     /* Set space in area    */
+    utl_resetbuffer(pE35c->pExitArea->data, 256);
 
    /* Check initialized, check module allocated, */
    /* set global pointer, */
@@ -497,55 +500,55 @@ int	E35Run(const int entry, struct E35Call_t* pE35C, int nRecFlag, int nLen, uns
 /* End PROGRAM-ID 'E35CALL' */
 
 /* Initialize module structure for E35CALL */
-static void E35CALL_module_init(cob_module* module)
+static void E35CALL_module_init(cob_module* mod)
 {
-    module->module_name = "E35";
-    module->module_formatted_date = COB_MODULE_FORMATTED_DATE;
-    module->module_source = COB_SOURCE_FILE;
-    module->module_entry.funcptr = (void* (*)())E35Run;
-    module->module_cancel.funcptr = (void* (*)())E35Run;
-    module->module_ref_count = NULL;
-    module->module_path = &cob_module_path2;
-    module->module_active = 0;
-    module->module_date = COB_MODULE_DATE;
-    module->module_time = COB_MODULE_TIME;
-    module->module_type = 0;
-    module->module_param_cnt = 0;
+    mod->module_name = "E35";
+    mod->module_formatted_date = COB_MODULE_FORMATTED_DATE;
+    mod->module_source = COB_SOURCE_FILE;
+    mod->module_entry.funcptr = (void* (*)())E35Run;
+    mod->module_cancel.funcptr = (void* (*)())E35Run;
+    mod->module_ref_count = NULL;
+    mod->module_path = &cob_module_path2;
+    mod->module_active = 0;
+    mod->module_date = COB_MODULE_DATE;
+    mod->module_time = COB_MODULE_TIME;
+    mod->module_type = 0;
+    mod->module_param_cnt = 0;
     /* module->ebcdic_sign = 0; */
-    module->ebcdic_sign = g_cb_ebcdic_sign;
-    module->collating_sequence = get_collation(g_cb_colseq);
-    module->decimal_point = '.';
-    module->currency_symbol = '$';
-    module->numeric_separator = ',';
-    module->flag_filename_mapping = 1;
-    module->flag_binary_truncate = 1;
-    module->flag_pretty_display = 1;
-    module->flag_host_sign = 0;
-    module->flag_no_phys_canc = 0;
-    module->flag_main = 0;
-    module->flag_fold_call = 0;
-    module->flag_exit_program = 0;
+    mod->ebcdic_sign = g_cb_ebcdic_sign;
+    mod->collating_sequence = get_collation(g_cb_colseq);
+    mod->decimal_point = '.';
+    mod->currency_symbol = '$';
+    mod->numeric_separator = ',';
+    mod->flag_filename_mapping = 1;
+    mod->flag_binary_truncate = 1;
+    mod->flag_pretty_display = 1;
+    mod->flag_host_sign = 0;
+    mod->flag_no_phys_canc = 0;
+    mod->flag_main = 0;
+    mod->flag_fold_call = 0;
+    mod->flag_exit_program = 0;
 #if __LIBCOB_VERSION >= 3
-        module->flag_debug_trace = 0;
-        module->flag_dump_ready = 0;
-        module->module_stmt = 0;
-        module->module_sources = NULL;
+        mod->flag_debug_trace = 0;
+        mod->flag_dump_ready = 0;
+        mod->module_stmt = 0;
+        mod->module_sources = NULL;
 #endif /* __LIBCOB_VERSION >= 3 */
 #if __LIBCOB_VERSION > 3 || \
    ( __LIBCOB_VERSION == 3  && __LIBCOB_VERSION_MINOR >= 2 )	
-        module->gc_version = "3.2-dev"; /* COB_PACKAGE_VERSION; */
-        module->xml_mode = 1;
-        module->xml_code = NULL;
-        module->xml_event = NULL;
-        module->xml_information = NULL;
-        module->xml_namespace = NULL;
-        module->xml_namespace_prefix = NULL;
-        module->xml_nnamespace = NULL;
-        module->xml_nnamespace_prefix = NULL;
-        module->xml_ntext = NULL;
-        module->xml_text = NULL;
-        module->json_code = NULL;
-        module->json_status = NULL;
+        mod->gc_version = "3.2-dev"; /* COB_PACKAGE_VERSION; */
+        mod->xml_mode = 1;
+        mod->xml_code = NULL;
+        mod->xml_event = NULL;
+        mod->xml_information = NULL;
+        mod->xml_namespace = NULL;
+        mod->xml_namespace_prefix = NULL;
+        mod->xml_nnamespace = NULL;
+        mod->xml_nnamespace_prefix = NULL;
+        mod->xml_ntext = NULL;
+        mod->xml_text = NULL;
+        mod->json_code = NULL;
+        mod->json_status = NULL;
 #endif
 }
 

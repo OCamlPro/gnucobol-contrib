@@ -58,6 +58,8 @@ struct inrec_t *inrec_constructor_range(int position, int length) {
 	    inrec->next=NULL;
 		inrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1020, ABEND_EXEC);
 	return inrec;
 }
 
@@ -71,7 +73,10 @@ struct inrec_t* inrec_constructor_range_join(int nField, int position, int lengt
 		inrec->next = NULL;
 		inrec->joinCmd.changeCmdOpt = NULL;
 		inrec->joinCmd.nFileJoin = nField;
-	}
+	} 
+	else
+		utl_abend_terminate(MEMORYALLOC, 1021, ABEND_EXEC);
+
 	return inrec;
 }
 
@@ -85,6 +90,8 @@ struct inrec_t *inrec_constructor_change_position(int position, struct fieldValu
 	    inrec->next=NULL;
 		inrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1022, ABEND_EXEC);
 	return inrec;
 }
 struct inrec_t *inrec_constructor_change(struct fieldValue_t *fieldValue) {
@@ -98,6 +105,8 @@ struct inrec_t *inrec_constructor_change(struct fieldValue_t *fieldValue) {
 	    inrec->next=NULL;
 		inrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1023, ABEND_EXEC);
 	return inrec;
 }
 /*
@@ -114,6 +123,8 @@ struct inrec_t *inrec_constructor_range_position(int posAbsRec, int position, in
 	    inrec->next=NULL;
 		inrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1024, ABEND_EXEC);
 	return inrec;
 }
 
@@ -153,6 +164,8 @@ struct inrec_t *inrec_constructor_padding(int nAbsPos, unsigned char *chfieldVal
 	    inrec->next=NULL;
 		inrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1025, ABEND_EXEC);
 	return inrec;
 }
 
@@ -184,6 +197,8 @@ struct inrec_t *inrec_constructor_subst(unsigned char *chfieldValue) {
 	    inrec->next=NULL;
 		inrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1026, ABEND_EXEC);
 	return inrec;
 }
 
@@ -198,6 +213,8 @@ struct inrec_t* inrec_constructor_possubstnchar(int npos, unsigned char* ntch, u
 		inrec->next = NULL;
 		inrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1027, ABEND_EXEC);
 	return inrec;
 }
 
@@ -213,6 +230,8 @@ struct inrec_t *inrec_constructor_substnchar(unsigned char* ntch, unsigned char 
 	    inrec->next=NULL;
 		inrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1028, ABEND_EXEC);
 	return inrec;
 }
 
@@ -227,6 +246,8 @@ struct inrec_t* inrec_constructor_findrep(void)
 		inrec->next = NULL;
 		inrec->changeCmd.changeCmdOpt = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1029, ABEND_EXEC);
 	return inrec;
 }
 
@@ -625,7 +646,11 @@ int inrec_SetChangeCmdOpt(struct inrec_t* inrec, struct change_t* chg)
 		inrec->type = INREC_TYPE_CHANGE_CMDOPT;
 		/* Allocate field to compare values CHANGE */
 		inrec->szChangeBufIn = malloc(COB_FILE_BUFF);
+		if (inrec->szChangeBufIn == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1032, ABEND_EXEC);
 		inrec->szChangeBufOut = malloc(COB_FILE_BUFF);
+		if (inrec->szChangeBufOut == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1033, ABEND_EXEC);
 	}
 	return 0;
 }
@@ -633,7 +658,11 @@ int inrec_SetFindRepCmdOpt(struct inrec_t* Inrec)
 {
 	if (Inrec != NULL) {
 		Inrec->szChangeBufIn = malloc(COB_FILE_BUFF);
+		if (Inrec->szChangeBufIn == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1030, ABEND_EXEC);
 		Inrec->szChangeBufOut = malloc(COB_FILE_BUFF);
+		if (Inrec->szChangeBufOut == NULL)
+			utl_abend_terminate(MEMORYALLOC, 1031, ABEND_EXEC);
 	}
 	return 0;
 }

@@ -40,6 +40,9 @@ struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF,
 	int i,j;
 	unsigned char buffer[3];
 	struct fieldValue_t *fieldValue=(struct fieldValue_t *)malloc(sizeof(struct fieldValue_t));
+	if (fieldValue == NULL) 
+		utl_abend_terminate(MEMORYALLOC, 1010, ABEND_EXEC);
+
 	fieldValue->datetype = datetype;
 	fieldValue->type=utils_parseFieldValueType(type[strlen(type)-1]);
 	if (strlen(type)>1) {
@@ -242,9 +245,6 @@ int fieldValue_checkvalue(struct job_t* job, struct fieldValue_t *fieldValue, co
 	int used_length;
 	int result;
 	int64_t						mValue64 = 0;
-    int                         mValueint=0;
-	int lenFieldSize	= 0;
-	int lenFieldDigit	= 0;
 	/* checktype of field for compare */
 	used_length=(length<fieldValue->generated_length?length:fieldValue->generated_length);
 	switch (fieldValue->type) {
@@ -332,10 +332,6 @@ int fieldValue_ss_value(struct fieldValue_t *fieldValue, cob_field* pField, int 
 
 int fieldValue_checksubstring(struct fieldValue_t *fieldValue, cob_field* pField, int length) {
 	int result;
-	int64_t						mValue64 = 0;
-    int                         mValueint=0;
-	int lenFieldSize	= 0;
-	int lenFieldDigit	= 0;
 
     if (fieldValue->generated_length > length)      
         result = fieldValue_ss_array(fieldValue, pField, length);                                        /* search value */

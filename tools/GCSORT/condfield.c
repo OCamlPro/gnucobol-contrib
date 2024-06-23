@@ -48,6 +48,9 @@ struct condField_t *condField_constructor_condition(int position, int length, in
 
         condField->next=NULL; 
     }
+	else
+		utl_abend_terminate(MEMORYALLOC, 1004, ABEND_EXEC);
+
 	return condField;
 } 
 struct condField_t* condField_constructor_condition4Date(int position, int length, int type, int condition, struct fieldValue_t* fieldValue) {
@@ -71,6 +74,9 @@ struct condField_t* condField_constructor_condition4Date(int position, int lengt
 
 		condField->next = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1005, ABEND_EXEC);
+
 	return condField;
 }
 struct condField_t *condField_constructor_operation(int operation, struct condField_t *first, struct condField_t *second) {
@@ -82,6 +88,9 @@ struct condField_t *condField_constructor_operation(int operation, struct condFi
 	    condField->operation.second=second;
 	    condField->next=NULL;
     }
+	else
+		utl_abend_terminate(MEMORYALLOC, 1006, ABEND_EXEC);
+
 	return condField;
 }
 
@@ -106,6 +115,9 @@ struct condField_t *condField_constructor_conditionfield(int position1, int leng
 	
 	    condField->next=NULL;
     }
+	else
+		utl_abend_terminate(MEMORYALLOC, 1007, ABEND_EXEC);
+
 	return condField;
 }
 
@@ -227,7 +239,7 @@ int condField_checkLen(struct condField_t* condField, int nInputLen) {
 */
 int condField_test(struct condField_t *condField, unsigned char *record, struct job_t* job) {
 	int result;
-	int nVerify=0;
+	//int nVerify=0;
 	char szBufVLSCMP[MAX_RECSIZE+1];
 	int nTcmp = 0;
 	switch (condField->type) {

@@ -83,12 +83,12 @@
 #endif
 
 #if defined(_MSC_VER) 
-  #define INLINE  //__forceinline /* use __forceinline (VC++ specific) */
-  #define INLINE2 //__forceinline /* use __forceinline (VC++ specific) */
+  #define INLINE   __forceinline /* use __forceinline (VC++ specific) */
+  #define INLINE2  __forceinline /* use __forceinline (VC++ specific) */
 #else
 /*  fix for ubuntu envronment  #define INLINE __inline__ //			 inline         use standard inline */
   #define INLINE 
-  #define INLINE2 //  __inline__  /* __attribute__((always_inline))   */
+  #define INLINE2  // __inline__  /* __attribute__((always_inline))   */
 #endif
 
 #include <libcob.h>
@@ -274,6 +274,9 @@ int64_t util_UFFSFF(unsigned char* pData, int nFieldLen, int nUS);
 void utl_GetPathFileName(char* str, char* sep, char* chPathRet);
 
 char* utl_strinsstr(const char* str1, const char* str2);
+int utl_GetCpuCount(void);
+
+void utl_resetbuffer(unsigned char* recordBuffer, size_t len);
 
 
 #endif /* UTILS_H_INCLUDED  */

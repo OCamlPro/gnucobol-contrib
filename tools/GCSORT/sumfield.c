@@ -37,6 +37,7 @@
 static const cob_field_attr cob_all_attr = {0x22, 0, 0, 0, NULL};
 static cob_field cob_all_zero	= {1, (cob_u8_ptr)"0", &cob_all_attr};
 
+
 struct SumField_t *SumField_constructor(int position, int length, int type) 
 {
 
@@ -51,11 +52,14 @@ struct SumField_t *SumField_constructor(int position, int length, int type)
 	    SumField->pCobFieldTotRes.data=NULL;
 	    SumField->pCobFieldTotRes.data = (unsigned char*)malloc(COB_MAX_BINARY);
         if (SumField->pCobFieldTotRes.data == NULL)
-            return NULL;
+			utl_abend_terminate(MEMORYALLOC, 1351, ABEND_EXEC);
+
 	    SumField->pCobFieldTotRes.attr = &SumField->pCobFAttrTotRes;
 
 	    SumField_setTypeCobField(SumField, type, length);
     }
+	else
+		utl_abend_terminate(MEMORYALLOC, 1350, ABEND_EXEC);
 	return SumField;
 }
 void SumField_destructor(struct SumField_t *SumField) 
@@ -251,44 +255,3 @@ int SumField_ResetTot(struct job_t* job)
 	return 0;
 }
 
-
-int SumFields_KeyCheck(struct job_t* job, 
-						int* bIsWrited, 
-                        unsigned char* szKeyPrec, 
-                        unsigned int*  nLenPrec, 
-                        unsigned char* szKeyCurr,  
-                        unsigned int*  nLenRek, 
-                        unsigned char* szKeySave,  
-                        unsigned int*  nLenSave, 
-                        unsigned char* szPrecSumFields, 
-                        unsigned char* szSaveSumFields, 
-                        unsigned char* szBuffRek,
-						int nSplit)
-{
-    int useRecord = 1;
-        if (job_compare_key(job, szKeyPrec, szKeyCurr) == 0) {	/* Compare Keys */
-            *nLenPrec = *nLenRek;
-            SumField_SumField((unsigned char*)szBuffRek+nSplit);
-            memcpy(szPrecSumFields, szBuffRek, *nLenRek+nSplit);
-            useRecord=0;
-            *bIsWrited = 1;
-        }
-        else /* Keys not equal write buffer to file */
-        {
-            useRecord = 1;
-            /* Save */
-            memcpy(szKeySave,		szKeyPrec,      job->nLenKeys+SZPOSPNT);			    /*   lPosPnt + Key  */
-            memcpy(szSaveSumFields, szPrecSumFields, *nLenPrec+nSplit);
-            *nLenSave = *nLenPrec;
-            /* Previous */
-            memcpy(szKeyPrec,		szKeyCurr,      job->nLenKeys+SZPOSPNT);			    /* lPosPnt + key    */
-            memcpy(szPrecSumFields, (unsigned char*) szBuffRek, *nLenRek+nSplit);           /*  PosPnt          */
-            *nLenPrec = *nLenRek;
-            /* Current  */
-            memcpy(szKeyCurr,       szKeySave,      job->nLenKeys+SZPOSPNT);			    /*  lPosPnt + Key   */
-            memcpy(szBuffRek,       szSaveSumFields, *nLenSave+nSplit);
-            *nLenRek = *nLenSave;
-            *bIsWrited = 0;
-    }
-    return useRecord;
-}

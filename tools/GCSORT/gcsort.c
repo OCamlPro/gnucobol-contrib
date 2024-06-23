@@ -38,6 +38,8 @@
 	#include <time.h>
 #endif
 
+#include<signal.h> 
+
 #include "libgcsort.h"
 #include "gcsort.h"
 #include "job.h"
@@ -97,15 +99,28 @@ ioixpafix_(const int entry) {
 #define  COB_MODULE_DATE		20210104
 #define  COB_MODULE_TIME		184615
 
+int g_nMaxlogicalcpucount = 1;
 
 extern int yydebug;
 void yyset_debug(int ndbg);
 
 int main_prod(int argc, char **argv);
+
 int main(int argc, char **argv) 
 {
 	int rtc = 0;
 	g_retWarn = 0;
+
+
+	/* flush stdout immediately */
+	setvbuf(stdout, NULL, _IONBF, 0);
+
+	/* Get system info */
+	/* Set num of thread default */
+	g_nMaxlogicalcpucount = utl_GetCpuCount();
+
+	/* fprintf(stdout, " Max logical cpu count=%d\n", g_nMaxlogicalcpucount); */
+
 
 	/* new data type
 	unsigned char szBOut[45];
@@ -209,7 +224,6 @@ int main(int argc, char **argv)
 		fprintf(stdout,"              Print values of environment variables\n");
 		return GC_RTC_ERROR;
 	}
-
 	rtc = main_prod(argc,argv);
 #ifdef _DEBUG
 	#ifdef _MSC_VER
@@ -220,7 +234,8 @@ int main(int argc, char **argv)
 		rtc = rtc + g_retWarn;	/* verify warning   */
   	return rtc;
 }
-  
+
+
 int main_prod(int argc, char **argv) {	 
 	time_t timeStart;
 	struct job_t *job;
@@ -381,6 +396,8 @@ void verify_options(int numargs, char** args)
 {
 	char* pch;
 	char szOpt[1024];
+	char cBufNum[10];
+	int bcommandjoin = 0;
 	szOpt[sizeof(szOpt) - 1] = '\0';
 	for (int i = 1; i < numargs; ++i) {
 		strncpy(szOpt, args[i], sizeof(szOpt) - 1);
@@ -450,6 +467,31 @@ void verify_options(int numargs, char** args)
 
 			}
 #endif /* __LIBCOB_RELEASE >= 30200 */
+			/* s.m. 20240302 */
+			if (!strcasecmp(pch, "-mt")) {
+				pch = strtok(NULL, "=");
+				if (pch != NULL) {
+					memset(cBufNum, 0x00, sizeof(cBufNum));
+					strcpy(cBufNum, pch);
+					gcMaxThread = atol((char*)cBufNum);		/* numbers of threads*/
+					gcMultiThreadIsFirst = 0;				/* first */
+					gcMultiThread = 1;						/* multithread enabled*/
+					if ((gcMaxThread < 1) || (gcMaxThread > 16))
+					{
+						fprintf(stdout, "*GCSORT* ERROR: invalid parameter in command line with option -mt (MultiThread), value is incorrect. -mt=<n> - <n> from 1 to 16\n");
+						exit(GC_RTC_ERROR);
+					}
+				}
+				else {
+					/* use default 
+					fprintf(stdout, "*GCSORT* ERROR: invalid parameter in command line with option -mt (MultiThread)\n");
+					exit(GC_RTC_ERROR);
+					*/
+					gcMultiThreadIsFirst = 0;				/* first */
+					gcMultiThread = 1;						/* multithread enabled*/
+					gcMaxThread = g_nMaxlogicalcpucount; /* reserve 1 for system ? */
+				}
+			}
 		}
 	}
 }
@@ -484,4 +526,3 @@ void verify_options(int numargs, char** args)
 	return NULL;
 }
 #endif /* __LIBCOB_RELEASE >= 30200 */
-

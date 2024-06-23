@@ -2843,7 +2843,7 @@ yyreduce:
         nRecCase=0;
         strcpy(szMexToken, " join fill clause ");
         /* fill character * */
-        join_fillbuff(current_filejoin, current_join, (yyvsp[(2) - (3)].string), (yyvsp[(3) - (3)].string));
+        join_fillbuff(current_filejoin, current_join, (unsigned char*) (yyvsp[(2) - (3)].string), (unsigned char*) (yyvsp[(3) - (3)].string));
         free((yyvsp[(2) - (3)].string));
         free((yyvsp[(3) - (3)].string));
 }
@@ -3420,7 +3420,7 @@ yyreduce:
             strcpy(szMexToken, " inrec clause ");
             if (current_outrec==1) {
                 /* struct outrec_t * */
-                outrec=outrec_constructor_possubstnchar((yyvsp[(1) - (4)].number), (yyvsp[(3) - (4)].string), (yyvsp[(4) - (4)].string));
+                outrec=outrec_constructor_possubstnchar((yyvsp[(1) - (4)].number), (unsigned char*) (yyvsp[(3) - (4)].string), (unsigned char*) (yyvsp[(4) - (4)].string));
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 124, ABEND_SKIP);
                     YYABORT;
@@ -3438,7 +3438,7 @@ yyreduce:
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
                 /* struct inrec_t * */
-                inrec=inrec_constructor_possubstnchar((yyvsp[(1) - (4)].number), (yyvsp[(3) - (4)].string), (yyvsp[(4) - (4)].string));
+                inrec=inrec_constructor_possubstnchar((yyvsp[(1) - (4)].number), (unsigned char*) (yyvsp[(3) - (4)].string), (unsigned char*) (yyvsp[(4) - (4)].string));
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 125, ABEND_SKIP);
                     YYABORT;
@@ -3506,7 +3506,7 @@ yyreduce:
             strcpy(szMexToken, " outrec clause ");
             if (current_outrec==1) {
                 /* struct outrec_t * */
-                outrec=outrec_constructor_subst((yyvsp[(1) - (1)].string));
+                outrec=outrec_constructor_subst((unsigned char*) (yyvsp[(1) - (1)].string));
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 122, ABEND_SKIP);
                     YYABORT;
@@ -3524,7 +3524,7 @@ yyreduce:
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
                 /* struct inrec_t * */
-                inrec=inrec_constructor_subst((yyvsp[(1) - (1)].string));
+                inrec=inrec_constructor_subst((unsigned char*) (yyvsp[(1) - (1)].string));
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 123, ABEND_SKIP);
                     YYABORT;
@@ -3550,7 +3550,7 @@ yyreduce:
             strcpy(szMexToken, " inrec clause ");
             if (current_outrec==1) {
                 /* struct outrec_t * */
-                outrec=outrec_constructor_substnchar((yyvsp[(1) - (2)].string),(yyvsp[(2) - (2)].string));
+                outrec=outrec_constructor_substnchar((unsigned char*) (yyvsp[(1) - (2)].string), (unsigned char*) (yyvsp[(2) - (2)].string));
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 124, ABEND_SKIP);
                     YYABORT;
@@ -3568,7 +3568,7 @@ yyreduce:
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
                 /* struct inrec_t * */
-                inrec=inrec_constructor_substnchar((yyvsp[(1) - (2)].string),(yyvsp[(2) - (2)].string));
+                inrec=inrec_constructor_substnchar((unsigned char*) (yyvsp[(1) - (2)].string),(unsigned char*) (yyvsp[(2) - (2)].string));
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 125, ABEND_SKIP);
                     YYABORT;
@@ -3595,7 +3595,7 @@ yyreduce:
             strcpy(szMexToken, " outrec clause ");
             if (current_outrec==1) {
                 /* struct outrec_t * */
-                outrec=outrec_constructor_padding((yyvsp[(1) - (3)].number), (yyvsp[(3) - (3)].string), nPosAbsRec);
+                outrec=outrec_constructor_padding((yyvsp[(1) - (3)].number), (unsigned char*) (yyvsp[(3) - (3)].string), nPosAbsRec);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 126, ABEND_SKIP);
                     YYABORT;
@@ -3614,7 +3614,7 @@ yyreduce:
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
                 /* struct inrec_t * */
-                inrec=inrec_constructor_padding((yyvsp[(1) - (3)].number), (yyvsp[(3) - (3)].string), nPosAbsRec);
+                inrec=inrec_constructor_padding((yyvsp[(1) - (3)].number), (unsigned char*) (yyvsp[(3) - (3)].string), nPosAbsRec);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 127, ABEND_SKIP);
                     YYABORT;
@@ -3646,7 +3646,7 @@ yyreduce:
                 szType01[0]='1';
                 strcat(szType01, (yyvsp[(1) - (1)].string));
                 /* struct outrec_t * */
-                outrec=outrec_constructor_subst(szType01);
+                outrec=outrec_constructor_subst((unsigned char*) szType01);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 128, ABEND_SKIP);
                     YYABORT;
@@ -3669,7 +3669,7 @@ yyreduce:
                 memset(szType01, 0x00, 3);
                 szType01[0]='1';
                 strcat(szType01, (yyvsp[(1) - (1)].string));
-                inrec=inrec_constructor_subst(szType01);
+                inrec=inrec_constructor_subst((unsigned char*)szType01);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 129, ABEND_SKIP);
                     YYABORT;

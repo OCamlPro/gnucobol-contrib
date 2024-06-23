@@ -35,6 +35,9 @@ struct changefield_t *changefield_constructor(struct fieldValue_t *find, struct 
         field->set = set;
         field->next = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC,1001, ABEND_EXEC);
+
 	return field;
 }
 struct changefield_t* changefield_constructorPosLen(struct fieldValue_t* find,int pos, int len) {
@@ -47,6 +50,9 @@ struct changefield_t* changefield_constructorPosLen(struct fieldValue_t* find,in
 		field->set = NULL;
 		field->next = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1002, ABEND_EXEC);
+
 	return field;
 }
 void changefield_destructor(struct changefield_t *fv) {
@@ -127,6 +133,9 @@ struct change_t* change_constructor(int v) {
 		field->sNoMatch = NULL;
 		field->pairs = NULL;
 	}
+	else
+		utl_abend_terminate(MEMORYALLOC, 1003, ABEND_EXEC);
+
 	return field;
 }
 

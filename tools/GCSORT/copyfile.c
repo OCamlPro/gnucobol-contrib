@@ -93,7 +93,6 @@ int job_copy (struct job_t* job)
 int job_copyFile(struct job_t *job) 
 {
 /* -------------------- */
-	int	bSkip = 0;
 	int	nSplitPosPnt = 0;
 	int	retcode_func = 0;
 	int desc=-1;
@@ -115,36 +114,18 @@ int job_copyFile(struct job_t *job)
 	 Record buffered 
 	  for E35
     */
-	int nFS = 0;
-	int nLastRecord = 0;  /* 0 no, 1 yes is last record input           */
-	int nInsE35 = 0;      /* 0 no record from E35, 1 record from E35    */
-	int nState = 0;
-	int nPosArray = 0;	  /* 1 = Position 1(szVectorRead1)              */
-						  /* 2 = Position 2(szVectorRead2)              */
-	int nLenVR1 = 0;
-	int nLenVR2 = 0;
-	int nFSRead = 0;
-	int nNewLen = 0;
-	int rcE35 = 0;
 	int nrekE35 = 0;
 	int nrekFlagE35 = 0;
-	int rc = 0;
 	int nIsFileVariable = 0;
 	int nOutLen = 0;
 
 	int bEOF, nEOFFileIn;
 	int bIsFirstTime=1;
-    int bIsFirstLoop=0;    
 	int nIdxFileIn = 0;
 	unsigned int nbyteRead;
-	int nk=0;
 	int64_t lPosSeqLS = 0;							
-	int64_t lPosBuf=0;
-	long int nMemAllocate = 0;
 	long nRecCount = 0;
 	struct file_t* file;
-	unsigned int   nPosCurrentSeek = 0;
-
 	unsigned char* pBufRek;
 	unsigned char* pBufData;
 
@@ -259,15 +240,13 @@ int job_copyFile(struct job_t *job)
 		nbyteRead=0;
 		pBufRek=job->buffertSort;
         pBufData = job->recordData;
-		int np = 0;
-		int retc = 0;
 		short ninrec = 0;
 		short nomitcondfield = 0;
 		short includecondfield = 0;
-		int rcE15 = 0;
 		int nrekE15 = 0;
 		int nrekFlagE15 = 0;
 		int rc = 0;
+		
 		if (job->includeCondField != NULL)
 			includecondfield = 1;
 		if (job->omitCondField != NULL)
@@ -282,10 +261,7 @@ int job_copyFile(struct job_t *job)
         */
 		int nFS = 0;
 		int nLastRecord = 0;  /* 0 no, 1 yes is last record input           */
-		int nInsE15 = 0;      /* 0 no record from E15, 1 record from E15    */
 		int nState = 0;
-		int nPosArray = 0;	  /* 1 = Position 1(szVectorRead1)              */
-		                      /* 2 = Position 2(szVectorRead2)              */
 		int nLenVR1 = 0;
 		int nLenVR2 = 0;
 		int nFSRead = 0;
@@ -309,7 +285,7 @@ int job_copyFile(struct job_t *job)
 			}
 			else 
 			{
-				nFS = job_Verify_EOF(&nState, job, file, szVectorRead1, &nLenVR1, szVectorRead2, &nLenVR2);
+				nFS = job_Verify_EOF(&nState, file, szVectorRead1, &nLenVR1, szVectorRead2, &nLenVR2);
 				if ((nFS == 99) && (nLastRecord == 1)) {
 					bEOF = 1;
 					nbyteRead = 0;
@@ -318,6 +294,11 @@ int job_copyFile(struct job_t *job)
 				if (nFS != 0)
 					nLastRecord = 1;
 			}
+
+			/* s.m. 20240620 - Line sequential EOL problem  */
+			utl_resetbuffer(szBuffRek, GCSORT_MAX_BUFF_REK);
+			utl_resetbuffer(recordBuffer, GCSORT_MAX_BUFF_REK);
+
 			nLenRek = file->stFileDef->record->size;
 			gc_memcpy(szBuffRek, file->stFileDef->record->data, file->stFileDef->record->size);
 
@@ -435,14 +416,14 @@ int job_copyFile(struct job_t *job)
 */
 			if (ninrec == 1) {
 				if (job->inrec->nIsOverlay == 0) {
-					memset(recordBuffer, 0x20, GCSORT_MAX_BUFF_REK);
+					utl_resetbuffer(recordBuffer, GCSORT_MAX_BUFF_REK);
 					nbyteRead = inrec_copy(job->inrec, recordBuffer, szBuffRek, job->outputLength, file_getMaxLength(file), file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, 0);
 					memmove(szBuffRek, recordBuffer, nbyteRead);
 					nLenRek = nbyteRead;
 				}
 				else
 				{	/* Overlay */
-					memset(recordBuffer, 0x20, GCSORT_MAX_BUFF_REK);
+					utl_resetbuffer(recordBuffer, GCSORT_MAX_BUFF_REK);
 					memmove(recordBuffer, szBuffRek, file_getMaxLength(file));	/* copy input record    */
 					nbyteRead = inrec_copy_overlay(job->inrec, recordBuffer, szBuffRek, job->outputLength, file_getMaxLength(file), file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, 0);
 					nbyteRead++;
@@ -459,26 +440,28 @@ int job_copyFile(struct job_t *job)
 
 /* Start output */
 		/* E35 End  */
+		utl_resetbuffer(szBuffOut, recordBufferLength);
 		gc_memmove(szBuffOut, szBuffRek, nLenRek );		/* save previous record for E35    */
 		nOutLen = nLenRek;								/* save len                        */
 
 		byteRead = nLenRek + nSplitPosPnt;
 		nNumBytes = nNumBytes + byteRead;
+		utl_resetbuffer(recordBuffer, recordBufferLength);
 		gc_memcpy(recordBuffer, szBuffRek, byteRead);
 		nLenRecOut = job->outputLength;
 
 		if (job->outrec != NULL) {
 			/* check overlay    */
 			if (job->outrec->nIsOverlay == 0) {
-				memset(szBuffRek, 0x20, recordBufferLength);
+				utl_resetbuffer(recordBuffer, recordBufferLength);
 				nLenRek = outrec_copy(job->outrec, szBuffRek, recordBuffer, job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
-				memset(recordBuffer, 0x20, recordBufferLength); /* s.m. 202101  */
+				utl_resetbuffer(recordBuffer, recordBufferLength);
 				gc_memcpy(recordBuffer, szBuffRek, nLenRek + nSplitPosPnt);
 				nLenRecOut = nLenRek;
 			}
 			else
 			{		/* Overlay  */
-				memset(szBuffRek, 0x20, recordBufferLength);
+				utl_resetbuffer(szBuffRek, recordBufferLength);
 				gc_memcpy((unsigned char*)szBuffRek, recordBuffer, nLenRek + nSplitPosPnt);	/* s.m. 202101 copy record  */
 				nbyteOvl = outrec_copy_overlay(job->outrec, szBuffRek, recordBuffer, job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 				nbyteOvl++;
@@ -486,7 +469,7 @@ int job_copyFile(struct job_t *job)
 					nbyteOvl = nLenRek;
 				if (recordBufferLength < nbyteOvl)
 					recordBuffer = (unsigned char*)realloc(recordBuffer, nbyteOvl + 1);
-				memset(recordBuffer, 0x20, recordBufferLength); /* s.m. 202101  */
+				utl_resetbuffer(recordBuffer, recordBufferLength);
 				gc_memcpy(recordBuffer + nSplitPosPnt, szBuffRek + nSplitPosPnt, nbyteOvl);
 				nLenRecOut = nbyteOvl;
 			}

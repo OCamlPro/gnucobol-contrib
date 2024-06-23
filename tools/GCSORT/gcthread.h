@@ -50,7 +50,9 @@ struct pParam {
 
 
 #ifdef  _THREAD_WIN_ENV_
-void gcthread_run(void* pArguments);
+//void gcthread_run(void* pArguments);
+unsigned __stdcall gcthread_run(void* pArguments);
+
 #else
 void* gcthread_run(void* pArguments);
 #endif
@@ -61,7 +63,7 @@ int gcthreadSkipStop(struct job_t* job);
 int gcthread_save_final(struct job_t* jobArray[]);
 int gcthread_print_final(struct job_t* jobArray[], time_t* timeStart);
 void gcthread_ReviewMemAlloc(struct job_t* job);
-INLINE int gcthread_ReadFileMem(struct job_t* job, int* nLR, unsigned char* szBuffRek, int nFirst);
+INLINE int gcthread_ReadFileMem(struct job_t* job, int* nLR, unsigned char* szBuffRek);
 
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	INLINE  int  gcthread_GetKeys(struct job_t* job, unsigned char* szBufferIn, unsigned char* szKeyOut);

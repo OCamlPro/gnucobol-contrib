@@ -769,7 +769,7 @@ fill_char:
         nRecCase=0;
         strcpy(szMexToken, " join fill clause ");
         /* fill character * */
-        join_fillbuff(current_filejoin, current_join, $2, $3);
+        join_fillbuff(current_filejoin, current_join, (unsigned char*) $2, (unsigned char*) $3);
         free($2);
         free($3);
 }
@@ -1302,7 +1302,7 @@ inoutrec:
             strcpy(szMexToken, " inrec clause ");
             if (current_outrec==1) {
                 /* struct outrec_t * */
-                outrec=outrec_constructor_possubstnchar($1, $3, $4);
+                outrec=outrec_constructor_possubstnchar($1, (unsigned char*) $3, (unsigned char*) $4);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 124, ABEND_SKIP);
                     YYABORT;
@@ -1320,7 +1320,7 @@ inoutrec:
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
                 /* struct inrec_t * */
-                inrec=inrec_constructor_possubstnchar($1, $3, $4);
+                inrec=inrec_constructor_possubstnchar($1, (unsigned char*) $3, (unsigned char*) $4);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 125, ABEND_SKIP);
                     YYABORT;
@@ -1389,7 +1389,7 @@ inoutrec:
             strcpy(szMexToken, " outrec clause ");
             if (current_outrec==1) {
                 /* struct outrec_t * */
-                outrec=outrec_constructor_subst($1);
+                outrec=outrec_constructor_subst((unsigned char*) $1);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 122, ABEND_SKIP);
                     YYABORT;
@@ -1407,7 +1407,7 @@ inoutrec:
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
                 /* struct inrec_t * */
-                inrec=inrec_constructor_subst($1);
+                inrec=inrec_constructor_subst((unsigned char*) $1);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 123, ABEND_SKIP);
                     YYABORT;
@@ -1433,7 +1433,7 @@ inoutrec:
             strcpy(szMexToken, " inrec clause ");
             if (current_outrec==1) {
                 /* struct outrec_t * */
-                outrec=outrec_constructor_substnchar($1,$2);
+                outrec=outrec_constructor_substnchar((unsigned char*) $1, (unsigned char*) $2);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 124, ABEND_SKIP);
                     YYABORT;
@@ -1451,7 +1451,7 @@ inoutrec:
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
                 /* struct inrec_t * */
-                inrec=inrec_constructor_substnchar($1,$2);
+                inrec=inrec_constructor_substnchar((unsigned char*) $1,(unsigned char*) $2);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 125, ABEND_SKIP);
                     YYABORT;
@@ -1477,7 +1477,7 @@ inoutrec:
             strcpy(szMexToken, " outrec clause ");
             if (current_outrec==1) {
                 /* struct outrec_t * */
-                outrec=outrec_constructor_padding($1, $3, nPosAbsRec);
+                outrec=outrec_constructor_padding($1, (unsigned char*) $3, nPosAbsRec);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 126, ABEND_SKIP);
                     YYABORT;
@@ -1496,7 +1496,7 @@ inoutrec:
             strcpy(szMexToken, " inrec clause ");
             if (current_inrec==1) {
                 /* struct inrec_t * */
-                inrec=inrec_constructor_padding($1, $3, nPosAbsRec);
+                inrec=inrec_constructor_padding($1, (unsigned char*) $3, nPosAbsRec);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 127, ABEND_SKIP);
                     YYABORT;
@@ -1527,7 +1527,7 @@ inoutrec:
                 szType01[0]='1';
                 strcat(szType01, $1);
                 /* struct outrec_t * */
-                outrec=outrec_constructor_subst(szType01);
+                outrec=outrec_constructor_subst((unsigned char*) szType01);
                 if (outrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 128, ABEND_SKIP);
                     YYABORT;
@@ -1550,7 +1550,7 @@ inoutrec:
                 memset(szType01, 0x00, 3);
                 szType01[0]='1';
                 strcat(szType01, $1);
-                inrec=inrec_constructor_subst(szType01);
+                inrec=inrec_constructor_subst((unsigned char*)szType01);
                 if (inrec == NULL) {
                     utl_abend_terminate(MEMORYALLOC, 129, ABEND_SKIP);
                     YYABORT;

@@ -1,3 +1,11 @@
+2024-06-22  Sauro Menna  <smenna@users.sourceforge.net>
+    * Version 1.04.00 - Multithread version
+    * Fixed End of Line problem for sequential line files
+    * Reset buffer with space (ASCII/EBCDIC)
+    * Enabled Multithread in command line (parameter -mt without =<n>) to define dynamically number of threads 
+    * Review Cobol modules gctestrun8, ixwrite01
+    * Revision to eliminate unused variables
+
 2024-05-27  Sauro Menna  <smenna@users.sourceforge.net>
     * Version 1.03.10 - Multithread version
     * Enabled Multithread in command line (parameter -mt=<n> where n > 1 and <= 16)

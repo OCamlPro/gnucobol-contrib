@@ -132,6 +132,10 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
               display '       test command ok '
            end-if
            display '----------------------------------------------'
+           
+           if  count-errors not = zero
+                move 25  to RETURN-CODE
+           end-if
            .
        end-99.
            goback.
@@ -210,7 +214,9 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
       **................................................................................. gentake
                when 'gentake'
                    move TRIM(ar-commandline(idx), TRAILING) to cmd-cmd 
-                   inspect cmd-cmd replacing all chrsl by chrbs
+Win                if (ntype = 1)
+                    inspect cmd-cmd replacing all chrsl by chrbs
+                   end-if
                    move cmd-cmd to t-defline
                    write t-defline
                    move t-defline to cmd-cmd 

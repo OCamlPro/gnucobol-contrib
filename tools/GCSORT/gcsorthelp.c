@@ -327,7 +327,7 @@ void GCSORT_Usage_all(void)
 #if __LIBCOB_RELEASE >= 30200
     printf("-fcolseq=[NATIVE|ASCII|EBCDIC] collating sequence to use\n");
     printf("-febcdic-table=<cconv-table>/<file>\tEBCDIC/ASCII translation table\n");
-    printf("-mt=<num> \t<num>  number of threads to be used \n");
+    printf("-mt=<num>  number of threads to be used | -mt dynamical number of threads to be used \n");
 #endif /* __LIBCOB_RELEASE >= 30200 */
     printf("________________________________________________________________________________________\n");
     printf("gcsort control statements\n");
@@ -590,7 +590,7 @@ void gcsort_help_header2(void) {
 #if __LIBCOB_RELEASE >= 30200
     printf("-fcolseq=[NATIVE|ASCII|EBCDIC] collating sequence to use\n");
     printf("-febcdic-table=<cconv-table>/<file>\tEBCDIC/ASCII translation table\n");
-    printf("-mt=<num> \t<num>  number of threads to be used \n");
+    printf("-mt=<num>  number of threads to be used | -mt dynamical number of threads to be used \n");
 #endif /* __LIBCOB_RELEASE >= 30200 */
     printf("________________________________________________________________________________________\n");
     return;

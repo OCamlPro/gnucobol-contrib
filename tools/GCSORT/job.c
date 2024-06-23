@@ -26,13 +26,13 @@
 
 #include "libgcsort.h"
 /*  #ifdef	_WIN32  */
+
 #if defined(_MSC_VER) ||  defined(__MINGW32__) || defined(__MINGW64__)
 	#include <share.h>
 	#include <fcntl.h> 
 	#include <process.h>
 	#include <windows.h>
 #else
-
     #include <sys/types.h>
     #include <unistd.h>
     #include <inttypes.h>
@@ -80,6 +80,11 @@
 	#include <crtdbg.h>
 #endif
  
+#if defined(_THREAD_LINUX_ENV)
+pthread_mutex_t job_thread_mutex = PTHREAD_MUTEX_INITIALIZER;
+#else
+HANDLE ghMutexJob;
+#endif 
 
 int yyparse ( void );
 
@@ -145,7 +150,8 @@ int job_EmuleMFSort( void ) {
 
 struct job_t* job_constructor(void) {
 	struct job_t* job = (struct job_t*)malloc(sizeof(struct job_t));
-
+	if (job == NULL)
+		utl_abend_terminate(MEMORYALLOC, 1040, ABEND_EXEC);
 	char* pEnvMemSize;
 	char* pEnvEmule;
 	char chPath[FILENAME_MAX];
@@ -199,7 +205,8 @@ struct job_t* job_constructor(void) {
 	job->nStopAft = 0;
 	job->strPathTempFile[0] = 0x00; /*    NULL;   */
 	memset(job->arrayFileInCmdLine, 0x00, (MAXFILEIN * FILENAME_MAX));
-	memset(job->szTakeFileName, 0x20, 8192);
+	utl_resetbuffer((unsigned char*)job->szTakeFileName, 8192);
+
 	job->bIsTake = 0;
 	job->nMaxFileIn = 0;
 	memset(job->arrayFileOutCmdLine, 0x00, (MAXFILEIN * FILENAME_MAX));
@@ -346,9 +353,9 @@ struct job_t* job_constructor(void) {
 		/* check errors */
 		if ((job->nY2Year < 1000) || (job->nY2Year > 3000)) {
 			fprintf(stderr, "GCSORT Warning : Value of Year error, set current year %d\n", job->nY2Year);
-			time_t t = time(NULL);
-			struct tm tm = *localtime(&t);
-			job->nY2Year = tm.tm_year + 1900;
+			time_t t1 = time(NULL);
+			struct tm tm1 = *localtime(&t1);
+			job->nY2Year = tm1.tm_year + 1900;
 		}
 	}
 
@@ -385,6 +392,8 @@ struct job_t* job_constructor(void) {
 	job->nLenFutureUseL7 = 0;
 
 	job->phSrt = (struct hSrtMem_t*)malloc(sizeof(struct hSrtMem_t));
+	if (job->phSrt == NULL)
+		utl_abend_terminate(MEMORYALLOC, 1042, ABEND_EXEC);
 
 	job->phSrt->lPosPnt = 0;
 	job->phSrt->nLenRek = 0;
@@ -575,7 +584,8 @@ int job_load(struct job_t *job, int argc, char **argv) {
 	int   returnCode=-1;
 
 	globalJob=job;
- 	buffer=(char *) malloc(COB_MEDIUM_BUFF);	/* CommandLine  */
+
+	buffer=(char *) malloc(COB_MEDIUM_BUFF);	/* CommandLine  */
 	if (buffer == 0)
  		fprintf(stdout,"*GCSORT*S001*ERROR: Cannot Allocate buffer : %s\n", strerror(errno));
 	memset(buffer, 0x00, COB_MEDIUM_BUFF);
@@ -628,8 +638,28 @@ int job_load(struct job_t *job, int argc, char **argv) {
 	{  /* version with modify name  */
 		if (job_scanCmdLineFile(job, buffer, bufnew) != -1) {
 			job_scanCmdSpecialChar(bufnew);  
+#ifdef _THREAD_LINUX_ENV
+			pthread_mutex_lock(&job_thread_mutex);
+#else
+			ghMutexJob = CreateMutex(
+			NULL,              // default security attributes
+			FALSE,             // initially not owned
+			NULL);             // unnamed mutex
+		if (ghMutexJob == NULL)
+		{
+			fprintf(stdout, "*GCSORT*S048J*ERROR: CreateMutex error: %d\n", GetLastError());
+			returnCode = -1;
+		}
+		
+#endif
 			yy_scan_string(bufnew);
 			returnCode=yyparse();
+
+#ifdef _THREAD_LINUX_ENV
+			pthread_mutex_unlock(&job_thread_mutex);
+#else
+			CloseHandle(ghMutexJob); 
+#endif
 			if (returnCode == 0)
 				returnCode = job_RedefinesFileName(job); 
 		} 
@@ -698,6 +728,8 @@ int job_getIndexedFileHandler(struct job_t* job)
 	char szNameTmp[FILENAME_MAX];
 	FILE* stream;
 	char* pszRek = (char*)malloc(sizeof(char) * (4096));
+	if (pszRek == NULL)
+		utl_abend_terminate(MEMORYALLOC, 1050, ABEND_EXEC);
 	memset(pszRek, 4096, 0x00);
 
 	sort_temp_name(job, ".cobccfg");
@@ -781,7 +813,7 @@ int job_MakeExitRoutines(struct job_t* job)
 	return 0;
 }
 
-void job_CloneFileForOutfilSet(struct job_t *job, struct file_t* file) 
+void job_CloneFileForOutfilSet(struct file_t* file) 
 {
     switch(file->organization) {
     case FILE_ORGANIZATION_SEQUENTIAL:		
@@ -896,7 +928,7 @@ int job_CloneFileForOutfil( struct job_t *job)
 					file->recordLength = fileJob->recordLength ;
 					file->maxLength = fileJob->maxLength ;
 					file->bIsSeqMF = fileJob->bIsSeqMF ;
-                    job_CloneFileForOutfilSet(job, file);
+                    job_CloneFileForOutfilSet(file);
                 }
 			}
 		}
@@ -1058,6 +1090,8 @@ int	job_scanPrioritySearch(char* buffer)
 	char*  pBufUpp;
 
 	pBufUpp = (char*) malloc(sizeof(char)*(strlen(buffer) + 1));
+	if (pBufUpp == NULL)
+		utl_abend_terminate(MEMORYALLOC, 1051, ABEND_EXEC);
 	util_convertToUpper(buffer, pBufUpp);
 
 	/* Priority Search
@@ -1089,7 +1123,8 @@ int	job_scanCmdLineFile(struct job_t *job, char* buffer, char* bufnew)
 	memset(bufnew,   0x00, COB_MEDIUM_BUFF);
 	memset(szBufNew2, 0x00, COB_MEDIUM_BUFF+1);
 	/* problem with " USE "     */
-	memset(szSearch, 0x20, 5);
+	utl_resetbuffer((unsigned char*)szSearch, 5);
+
 	memcpy(szSearch+5, buffer, COB_MEDIUM_BUFF);
 
 	for (n=0; szSearch[n] > 0x00;n++) {
@@ -1169,6 +1204,8 @@ int	job_RescanCmdSpecialChar(char* bufnew)
 	int nN = 0;
 	int nF = 0;
 	char* pNewBuf = (char*) malloc(strlen(bufnew)+1);
+	if (pNewBuf == NULL)
+		utl_abend_terminate(MEMORYALLOC, 1052, ABEND_EXEC);
 	memset(pNewBuf, 0x00, strlen(bufnew)+1);
 	do {
 		/* verify sequence ''   */
@@ -1233,6 +1270,8 @@ int	job_FileInputBuffer (struct job_t *job, char* szBuffIn, char* bufnew, int nP
 
 	/* sanitizer */
 	szSearch = (char*)malloc((COB_MEDIUM_BUFF));
+	if (szSearch == NULL)
+		utl_abend_terminate(MEMORYALLOC, 1053, ABEND_EXEC);
 
 	util_convertToUpper(szBuffIn, szSearch);
 
@@ -1335,6 +1374,8 @@ int	job_FileOutputBuffer (struct job_t *job, char* szBuffIn, char* bufnew, int n
 
 	/* sanitizer */
 	szSearch = (char*)malloc(COB_MEDIUM_BUFF);
+	if (szSearch == NULL)
+		utl_abend_terminate(MEMORYALLOC, 1054, ABEND_EXEC);
 	util_convertToUpper(szBuffIn, szSearch);
 
 	pch1=szSearch+nPosStart;
@@ -1409,7 +1450,6 @@ int	job_XSUMFileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, in
 {
 	char  strXSUM[] = "XSUM";
 	char  strFNAMES[] = "FNAMES";
-	char  strRECORD[] = " RECORD ";
 	char  szFileName[GCSORT_SIZE_FILENAME];
 	char  szFileName_sv[GCSORT_SIZE_FILENAME];
 	char  sep1[] = " ,\n\t";
@@ -1420,21 +1460,18 @@ int	job_XSUMFileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, in
 	char* pch3;
 	char* szSearch;
 	char* pBufUpp;
-	int   bFound = 0;
-	int   nFirstRound = 0;
 	int   nPosNull = 0;
 	int   nSp1 = 1;
-	int   nSp2 = 0;
-	int   nSp3 = 0;
 	int   pk = 0;
 	int	  nSp9 = 0;
-
-	int   ncmp = 0;
 
 	memset(szFileName, 0x00, GCSORT_SIZE_FILENAME);
 	memset(szFileName_sv, 0x00, GCSORT_SIZE_FILENAME);
 
 	szSearch = (char*)malloc(sizeof(char) * (strlen(szBuffIn) + 1));
+	if (szSearch == NULL)
+		utl_abend_terminate(MEMORYALLOC, 1055, ABEND_EXEC);
+
 	memset(szSearch, 0x00, sizeof(char) * (strlen(szBuffIn) + 1));
 	strcpy(szSearch, szBuffIn);
 	
@@ -1491,6 +1528,8 @@ int	job_XSUMFileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, in
 	}
 
 	pBufUpp = (char*)malloc(sizeof(char) * (strlen(szBuffIn) + 1));
+	if (pBufUpp == NULL)
+		utl_abend_terminate(MEMORYALLOC, 1056, ABEND_EXEC);
 	strcpy(pBufUpp, szBuffIn);
 
 	pch1 = pBufUpp;
@@ -1539,7 +1578,12 @@ int	job_FileOutFilBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nP
 	int   ncrtFil = 0;
 	int nLenszb = strlen(szBuffIn) * 2;
 	szSearch = (char*)malloc(sizeof(char) * nLenszb);
+	if (szSearch == NULL)
+		utl_abend_terminate(MEMORYALLOC, 1057, ABEND_EXEC);
+
 	szReplace = (char*)malloc(sizeof(char) * nLenszb);
+	if (szReplace == NULL)
+		utl_abend_terminate(MEMORYALLOC, 1058, ABEND_EXEC);
 	memset(szSearch, 0x00, nLenszb);
 	memset(szReplace, 0x00, nLenszb);
 
@@ -1626,7 +1670,7 @@ int	job_FileOutFilBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nP
 						pch0 = pch2;
 						if (pchSplit == NULL)
 							break;
-						if (strlen((unsigned char*)pch0) == 0)
+						if (strlen((char*)pch0) == 0)
 							break;
 					}
 					else
@@ -1756,7 +1800,7 @@ int job_MakeCmdLine(char* szF, char* buf)
 				continue;
 			}
 			if (nComm == 0) {
-				buf[maxLen+1] = c;
+				buf[maxLen+1] = (char)c;
 				maxLen+=1;
 				nNewLine = 0;
                 if ((globalJob->nStatistics > 1) && (gcMultiThreadIsFirst == 0))
@@ -1793,6 +1837,10 @@ int job_check(struct job_t *job)
 		return -1;
 	}
 
+	if ((job->join != NULL) && (job->nMultiThread > 0)) {
+		fprintf(stdout, "*GCSORT*S010J*ERROR: Multithread is not enabled on JOIN feature\n");
+		return -1;
+	}
 
 	/* review info from Record Control Statement*/
 	/* Start */
@@ -1946,7 +1994,6 @@ int job_check(struct job_t *job)
 	/* check len of sortfield */
 	/* s.m. 20231120 */
 	struct sortField_t* f;
-	struct outfil_t* of;
 	unsigned int nLen = 0;
 	if (job->sortField != NULL) {
 		for (f = job->sortField; f != NULL; f = f->next) {
@@ -2041,13 +2088,18 @@ int job_check(struct job_t *job)
 			(file_getOrganization(job->inputFile) != FILE_ORGANIZATION_LINESEQUENTIAL) &&
 			(file_getOrganization(job->inputFile) != FILE_ORGANIZATION_LINESEQUFIXED))
 		{
-			job->nMultiThread = 0;	/* Force no MultiThread*/
-			fprintf(stdout, "*GCSORT*S017L*ERROR: Input file isn't SEQUENTIAL or LINE SEQUENTIAL or LINE SEQUENTIAL FIXED, force use singlie Thread \n");
+			/* job->nMultiThread = 0;*/	/* Force no MultiThread*/
+			/* fprintf(stdout, "*GCSORT*S017L*ERROR: Input file isn't SEQUENTIAL or LINE SEQUENTIAL or LINE SEQUENTIAL FIXED, force use singlie Thread \n"); */
+			/* Force Round Robin read */
+			job->nTypeLoadThread = READ_ROUND_ROBIN;	/* Round Robin*/
 		}
-		job->nTypeLoadThread = 10; /* Block / Chunk*/
-		if (file_getFormat(job->inputFile) == FILE_TYPE_VARIABLE)
-			job->nTypeLoadThread = 21;	/* Round Robin*/
+		else
+		{
+			job->nTypeLoadThread = READ_BLOCK_CHUNK; /* Block / Chunk */
+			if (file_getFormat(job->inputFile) == FILE_TYPE_VARIABLE)
+				job->nTypeLoadThread = READ_ROUND_ROBIN;	/* Round Robin*/
 
+		}
 	}
 
 	/* Verify errors */
@@ -2107,7 +2159,7 @@ int job_print_final(struct job_t* job, time_t* timeStart)
 		if (job->bIsPresentSegmentation == 1) {
 			for (nIdx=0; nIdx<MAX_HANDLE_TEMPFILE; nIdx++) {
 				if (job->nCountSrt[nIdx] > 0)
-					fprintf(stdout,"job->nCountSrt[%02d] %d\n", nIdx, job->nCountSrt[nIdx]);
+					fprintf(stdout,"job->nCountSrt[%02d] %d - %s\n", nIdx, job->nCountSrt[nIdx], job->array_FileTmpName[nIdx]);
 			}
 		}
 
@@ -2586,18 +2638,13 @@ int job_loadFiles(struct job_t* job) {
 
 	int bEOF, nEOFFileIn;
 	int bIsFirstTime = 1;
-	int bIsFirstLoop = 0;
 	int nIdxFileIn = 0;
 	unsigned int nbyteRead;
-	int nk = 0;
 	int useRecord;
 	int64_t lPosSeqLS = 0;
 	int64_t lPosBuf = 0;
-	long int nMemAllocate = 0;
 	int nIsFileVariable = 0;
 	int retcode = 0;
-
-	int arSrtFldPosLen[MAXFIELDSORT * 2];
 
 	/*  perf2. 	unsigned char  recordBuffer[GCSORT_MAX_BUFF_REK];       */
 	/*  perf2. 	unsigned char  szBuffKey[GCSORT_MAX_BUFF_REK];          */
@@ -2605,7 +2652,7 @@ int job_loadFiles(struct job_t* job) {
 	/*  perf2. 	unsigned char  szBuffRek[GCSORT_MAX_BUFF_REK];          */
 
 	unsigned int   nLenRek;
-	unsigned int   nPosCurrentSeek = 0;
+	//unsigned int   nPosCurrentSeek = 0;
 
 	unsigned char* pBufRek;
 	unsigned char* pBufData;
@@ -2740,13 +2787,9 @@ int job_loadFiles(struct job_t* job) {
 
 		pBufData = job->recordData;
 
-		int nNumFiledSort = job_SetPosLenKeys(job, arSrtFldPosLen);
-		int np = 0;
-		int retc = 0;
 		short ninrec = 0;
 		short nomitcondfield = 0;
 		short includecondfield = 0;
-		int rcE15 = 0;
 		int nrekE15 = 0;
 		int nrekFlagE15 = 0;
 		int rc = 0;
@@ -2763,10 +2806,7 @@ int job_loadFiles(struct job_t* job) {
 		*/
 		int nFS = 0;
 		int nLastRecord = 0;  /* 0 no, 1 yes is last record input           */
-		int nInsE15 = 0;      /* 0 no record from E15, 1 record from E15    */
 		int nState = 0;
-		int nPosArray = 0;	  /* 1 = Position 1(szVectorRead1)              */
-							  /* 2 = Position 2(szVectorRead2)              */
 		int nLenVR1 = 0;
 		int nLenVR2 = 0;
 		int nFSRead = 0;
@@ -2788,14 +2828,14 @@ int job_loadFiles(struct job_t* job) {
 		/* ======================================================================================= */
 
 		/*  Skip records before read loop */
-		if (job->nTypeLoadThread == 10) {
+		if (job->nTypeLoadThread == READ_BLOCK_CHUNK) {
 			if ((job->nMTSkipRec > 0) && (job->bThreadIsFirstRound == 0)) {
 				nFSRead = job_skip_record(job, job->fileLoad, &job->nRecCount);
 				job->bThreadIsFirstRound = 1;
 			}
 		}
 		else {
-			if (job->nTypeLoadThread == 21) {
+			if (job->nTypeLoadThread == READ_ROUND_ROBIN) {
 				/* MultiThread */
 				/* Round Robin record read */
 				if (job->bIsPresentSegmentation == 0) {
@@ -2803,10 +2843,6 @@ int job_loadFiles(struct job_t* job) {
 				}
 			}
 		}
-
-
-		int nDebug = 0;
-
 
 		while (bEOF == 0)
 		{
@@ -2851,13 +2887,13 @@ int job_loadFiles(struct job_t* job) {
 						/* s.m. 20220701 return -1; exit(GC_RTC_ERROR);  */
 						retcode = -1;
 						goto lbex;
-						return -1; /*   exit(GC_RTC_ERROR); */
+					/* 	return -1; */ /*   exit(GC_RTC_ERROR); */
 					}
 				}
 			}
 			else
 			{
-				nFS = job_Verify_EOF(&nState, job, job->fileLoad, szVectorRead1, &nLenVR1, szVectorRead2, &nLenVR2);
+				nFS = job_Verify_EOF(&nState, job->fileLoad, szVectorRead1, &nLenVR1, szVectorRead2, &nLenVR2);
 				if ((nFS == 99) && (nLastRecord == 1)) {
 					bEOF = 1;
 					nbyteRead = 0;
@@ -2896,7 +2932,7 @@ int job_loadFiles(struct job_t* job) {
 				}
 			}
 
-			if (job->nTypeLoadThread == 10) {
+			if (job->nTypeLoadThread == READ_BLOCK_CHUNK) {
 				if (job->nMTSkipRec > 0) {
 					if (job->nRecCount <= job->nMTSkipRec) {
 						continue;
@@ -2914,7 +2950,7 @@ int job_loadFiles(struct job_t* job) {
 			}
 			else
 			{
-				if (job->nTypeLoadThread == 21) {
+				if (job->nTypeLoadThread == READ_ROUND_ROBIN) {
 					/* MultiThread */
 					/* Round Robin record read */
 					/* Evaluate for Variable File type */
@@ -2930,6 +2966,9 @@ int job_loadFiles(struct job_t* job) {
 				}
 			}
 
+			/* s.m. 20240620 - Line sequential EOL problem  */
+			utl_resetbuffer(szBuffRek, GCSORT_MAX_BUFF_REK);
+			utl_resetbuffer(recordBuffer, GCSORT_MAX_BUFF_REK);
 
 			/* s.m. 20240302 */
 			job->recordNumberTotal++;
@@ -3006,14 +3045,15 @@ int job_loadFiles(struct job_t* job) {
 			*/
 			if (ninrec == 1) {
 				if (job->inrec->nIsOverlay == 0) {
-					memset(recordBuffer, 0x20, sizeof(recordBuffer));
+					utl_resetbuffer((unsigned char*)recordBuffer, GCSORT_MAX_BUFF_REK);
+
 					nbyteRead = inrec_copy(job->inrec, recordBuffer, szBuffRek, job->outputLength, file_getMaxLength(job->fileLoad), file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, 0);
 					memmove(szBuffRek, recordBuffer, nbyteRead);
 					nLenRek = nbyteRead;
 				}
 				else
 				{		/* Overlay  */
-					memset(recordBuffer, 0x20, sizeof(recordBuffer));
+					utl_resetbuffer((unsigned char*)recordBuffer, GCSORT_MAX_BUFF_REK);
 					memmove(recordBuffer, szBuffRek, file_getMaxLength(job->fileLoad));	/* copy input record    */
 					nbyteRead = inrec_copy_overlay(job->inrec, recordBuffer, szBuffRek, job->outputLength, file_getMaxLength(job->fileLoad), file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, 0);
 					nbyteRead++;
@@ -3031,7 +3071,7 @@ int job_loadFiles(struct job_t* job) {
 			*/
 			job_GetKeys(job, szBuffRek, szBuffKey);
 
-			/* Area = Buffer Key + Absolute Position from biginning file + Recorld Length   */
+			/* Area = Buffer Key + Absolute Position from beginning file + Recorld Length   */
 			/* Buffer Key + 2 len record + 2 position key                                   */
 
 			job->LenCurrRek = nLenRek;
@@ -3052,7 +3092,7 @@ int job_loadFiles(struct job_t* job) {
 			job->phSrt->lPosPnt = job->lPosAbsRead;
 			job->phSrt->nLenRek = job->LenCurrRek;
 
-			gc_memmove((unsigned char*)job->buffertSort + lPosBuf, (unsigned char*)szBuffKey, job->nLenKeys);
+			gc_memmove((unsigned char*) job->buffertSort + lPosBuf, (unsigned char*)szBuffKey, job->nLenKeys);
 			gc_memmove((unsigned char*)(job->buffertSort + lPosBuf + job->nLenKeys), job->phSrt, nSplitBuf);
 
 			job->ulMemSizeRead += (int64_t)nLenRek;        /* key + pointer record + record length */
@@ -3145,7 +3185,7 @@ lbex:
  Verify last record 
  Read record and swap with state value
 */
-int job_Verify_EOF(int* nState, struct job_t* job, struct file_t* stFile, unsigned char* szVectorRead1, int* nLenVR1, unsigned char* szVectorRead2, int* nLenVR2)
+int job_Verify_EOF(int* nState, struct file_t* stFile, unsigned char* szVectorRead1, int* nLenVR1, unsigned char* szVectorRead2, int* nLenVR2)
 {
     /*
 	   nState
@@ -3253,7 +3293,6 @@ int job_Verify_EOF(int* nState, struct job_t* job, struct file_t* stFile, unsign
 int job_skip_record_LS_LSF(struct job_t* job, struct file_t* file, long* nRec) 
 {
 	int nFSRead = 0;
-	int bEOF = 0;
 
 	* nRec = *nRec + job->nMTSkipRec;
 
@@ -3271,7 +3310,6 @@ int job_skip_record(struct job_t* job, struct file_t* file, long* nRec)
 	/* save data				*/
 	/* review record number		*/
 	int nFSRead = 0;
-	int bEOF = 0;
 
 	if ((file_getOrganization(job->inputFile) != FILE_ORGANIZATION_SEQUENTIAL) &&
 		(file_getOrganization(job->inputFile) != FILE_ORGANIZATION_LINESEQUENTIAL) &&
@@ -3357,7 +3395,6 @@ int job_skip_record(struct job_t* job, struct file_t* file, long* nRec)
 	}
 	if (file->stFileDef->record != NULL)
 		util_cob_field_del(file->stFileDef->record, ALLOCATE_DATA);
-		// free(file->stFileDef->record);
 
 	/* reset initial values */
 	file->stFileDef->record = svrecord; /* save area */
@@ -3385,7 +3422,6 @@ INLINE   int job_sort_data(struct job_t* job)
 INLINE2  int job_sort_data(struct job_t* job)
 #endif
 {
-	int i=0;
 	job->g_first_sort=0;
 
 	/*
@@ -3420,7 +3456,7 @@ INLINE2  int job_sort_data(struct job_t* job)
 		/* s.m. 20240302 qsort(job->buffertSort, (size_t)job->recordNumber, job->nLenKeys + SIZESRTBUFF, job_compare_qsort);  */   /* check record position   */
 		/* s.m. 20240302 */
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
-		qsort_s(job->buffertSort, (size_t)job->recordNumber, job->nLenKeys + SIZESRTBUFF, job_compare_qsort, job);
+		qsort_s(job->buffertSort, (size_t)job->recordNumber, job->nLenKeys + SIZESRTBUFF, &job_compare_qsort, job);
 #else
 		qsort_r(job->buffertSort, (size_t)job->recordNumber, job->nLenKeys + SIZESRTBUFF, job_compare_qsort, (void*)job);
 #endif  
@@ -3438,19 +3474,13 @@ return 0;
 
 int job_save_out(struct job_t *job)
 {
-	int	bSkip = 0;
 	int	nSplitPosPnt = 0;
 	int	retcode_func = 0;
 	int bIsFirstSumFields = 0;
 	int bIsWrited = 0;
 	int bTempEof=0;
-	int byteReadTemp = 0;
 	int desc=-1;
-	int nCompare = 1;
-	unsigned int nLenInRec = 0;
 	int nNumBytes = 0;
-	int nNumBytesTemp = 0;
-	int position_buf_write=0;
 	unsigned int recordBufferLength;
 	int useRecord;
 	int64_t	nReadTmpFile;
@@ -3469,10 +3499,8 @@ int job_save_out(struct job_t *job)
 	unsigned char* szFirstRek;
 	unsigned char* szBuffReceive;
 	unsigned int   byteRead = 0;
-	unsigned int   lpntTemp = 0;
 	unsigned int   nLenPrec = 0;
 	unsigned int   nLenRecOut=0;
-	unsigned int   nLenRekTemp = 0;
 	unsigned int   nLenSave = 0;	/* recordBufferLength=(job->outputLength>job->inputLength?job->outputLength:job->inputLength);  */
     unsigned int   bIsFirstKeySumField = 0;
 	unsigned int   nbyteOvl = 0;
@@ -3481,17 +3509,8 @@ int job_save_out(struct job_t *job)
 	 Record buffered 
 	 for E35
     */
-	int nFS = 0;
 	int nLastRecord = 0;  /* 0 no, 1 yes is last record input           */
-	int nInsE35 = 0;      /* 0 no record from E35, 1 record from E35    */
-	int nState = 0;
-	int nPosArray = 0;	  /* 1 = Position 1(szVectorRead1)              */
-						  /* 2 = Position 2(szVectorRead2)              */
-	int nLenVR1 = 0;
-	int nLenVR2 = 0;
-	int nFSRead = 0;
 	int nNewLen = 0;
-	int rcE35 = 0;
 	int nrekE35 = 0;
 	int nrekFlagE35 = 0;
 	int rc = 0;
@@ -3547,6 +3566,7 @@ int job_save_out(struct job_t *job)
 	szBuffRekE35 = (unsigned char*)malloc((size_t)GCSORT_MAX_BUFF_REK);
 	if (szBuffRekE35 == 0)
 		fprintf(stdout,"*GCSORT*S025C*ERROR: Cannot Allocate szBuffRekE35 : %s\n", strerror(errno));
+
 
 	/*  DEBUG */
 
@@ -3683,15 +3703,15 @@ int job_save_out(struct job_t *job)
 		if (job->outrec != NULL) {
 			/* check overlay    */
 			if (job->outrec->nIsOverlay == 0) {
-				memset(szBuffRek, 0x20, recordBufferLength);
+				utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
 				job->phSrt->nLenRek = outrec_copy(job->outrec, szBuffRek, recordBuffer, job->outputLength, byteRead - nSplitPosPnt, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
-				memset(recordBuffer, 0x20, recordBufferLength); 
+				utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength);
 				gc_memcpy(recordBuffer, szBuffRek, job->phSrt->nLenRek + nSplitPosPnt);
 				nLenRecOut = job->phSrt->nLenRek;
 			}
 			else
 			{		/* Overlay  */
-				memset(szBuffRek, 0x20, recordBufferLength);
+				utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
 				gc_memcpy((unsigned char*)szBuffRek, recordBuffer, job->phSrt->nLenRek + nSplitPosPnt);	/* s.m. 202101 copy record  */
 				nbyteOvl = outrec_copy_overlay(job->outrec, szBuffRek, recordBuffer, job->outputLength, byteRead - nSplitPosPnt, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 				nbyteOvl++;
@@ -3699,7 +3719,8 @@ int job_save_out(struct job_t *job)
 					nbyteOvl = job->phSrt->nLenRek;
 				if (recordBufferLength < nbyteOvl)
 					recordBuffer = (unsigned char*)realloc(recordBuffer, nbyteOvl + 1);
-				memset(recordBuffer, 0x20, recordBufferLength); /* s.m. 202101  */
+				utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength);
+
 				gc_memcpy(recordBuffer + nSplitPosPnt, szBuffRek + nSplitPosPnt, nbyteOvl);
 				nLenRecOut = nbyteOvl;
 			}
@@ -3853,6 +3874,12 @@ job_save_exit:
 }
 
 
+/* ============================================ */
+/* Copy input to output                         */
+/*      input len  < outut len     pad output   */
+/*      input len  = outut len     nothing      */
+/*      input len  > outut len     truncate len */
+/* ============================================ */
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 INLINE int job_set_area(struct job_t* job, struct file_t* file, unsigned char* szBuf, int nLenOut, int nLenRek)
 #else
@@ -3891,7 +3918,8 @@ INLINE2 int job_set_area(struct job_t* job, struct file_t* file, unsigned char* 
     /* s.m. 20220202  if ((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) && (nLenRek < nLen)) { */
     if (((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) || (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUFIXED)) && 
 		 (file->stFileDef->record->size > (unsigned int) nLenRek)) {
-            memset(file->stFileDef->record->data+nLenRek, 0x20, file->stFileDef->record->size - nLenRek); /* padding with blank (0x20)   */
+           // memset(file->stFileDef->record->data+nLenRek, 0x20, file->stFileDef->record->size - nLenRek); /* padding with blank (0x20)   */
+			utl_resetbuffer((unsigned char*)file->stFileDef->record->data + nLenRek, file->stFileDef->record->size - nLenRek);
     }
 	/* 20180511 s.m. end    */
 	if (job->outputFile->format == FILE_TYPE_FIXED)
@@ -3913,7 +3941,6 @@ int job_save_tempfile(struct job_t *job)
 {
 	char szNameTmp[FILENAME_MAX];
 	int	 bSkip = 0;
-	int	 nLenRecOut=0;
 	int	 nSplitPosPnt = 0;
 	int	 retcode_func = 0;
 	int  bIsFirstSumFields = 0;
@@ -3923,7 +3950,6 @@ int job_save_tempfile(struct job_t *job)
 	int  desc=-1;
 	int  descTmp=-1;
 	int  nCompare = 1;
-	int  nLenInRec = 0;
 	int  nLenPrec = 0;
 	int  nLenSave = 0;
 	int  nNumBytes = 0;
@@ -3933,7 +3959,6 @@ int job_save_tempfile(struct job_t *job)
 	int  useRecord;
 	int64_t	nReadTmpFile;
 	int64_t i;
-	int64_t previousRecord=-1;
 	struct mmfio_t* mmfTmp;
 	unsigned char  szKeyPrec[GCSORT_KEY_MAX+SZPOSPNT];
 	unsigned char  szKeySave[GCSORT_KEY_MAX+SZPOSPNT];
@@ -3945,7 +3970,6 @@ int job_save_tempfile(struct job_t *job)
 	unsigned char* szSaveSumFields; /* save */
 	unsigned char* szFirstRek;
 	unsigned int   byteRead = 0;
-	unsigned int   lpntTemp = 0;
 	unsigned int   nLenRekTemp = 0;
 
 
@@ -4031,7 +4055,7 @@ int job_save_tempfile(struct job_t *job)
             goto job_save_exit;
         }
 /* buffered vs mmf */
-        descTmp = (int)mmfTmp->m_hFile;
+        descTmp = (size_t)mmfTmp->m_hFile;
     }
     nSplitPosPnt = SZPOSPNT;
 	bIsFirstSumFields = 0;
@@ -4068,9 +4092,8 @@ int job_save_tempfile(struct job_t *job)
 			POSPNT
 			Position
 		*/
-		gc_memcpy((unsigned char*)szBuffRek, (unsigned char*)(job->phSrt->pAddress), (job->phSrt->nLenRek));						 /* buffer				  */
-		gc_memcpy((unsigned char*)szBuffRek + (job->phSrt->nLenRek), &(job->phSrt->lPosPnt), SZPOSPNT);              /* PosPnt				  */
-		gc_memcpy((unsigned char*)szBuffRek + (job->phSrt->nLenRek) + SZPOSPNT, &(job->nIndextmp), SIZEINT);    /* idarray  force LenRek , adjust in function read */
+		gc_memcpy((unsigned char*)szBuffRek, (unsigned char*)(job->phSrt->pAddress), (job->phSrt->nLenRek));		/* buffer				  */
+		gc_memcpy((unsigned char*)szBuffRek + (job->phSrt->nLenRek), &(job->phSrt->lPosPnt), SZPOSPNT);             /* PosPnt				  */
 
 		byteRead = (job->phSrt->nLenRek) + nSplitPosPnt;
 		nNumBytes = nNumBytes + byteRead;
@@ -4295,27 +4318,17 @@ int job_save_tempfinal(struct job_t *job) {
 	int bFirstRound=0;
 	int bIsFirstTime = 0;
 	int bIsWrited = 0;
-	int bTempEof=0;
 	int byteRead = 0;
-	int byteReadTemp = 0;
 	int byteReadTmpFile[MAX_HANDLE_TEMPFILE];
 	int desc=0;
 	int kj=0;
-	int nCompare = 1;
 	int nIdx1, nIdx2, k;
 	int nLastRead=0;
-	int nLenRekTemp = 0;
-	int nNumBytes = 0;
-	int nNumBytesTemp = 0;
 	int nPosPtr;
-	int p=0;
-	int posAr=0;
-	int position_buf_read=0;
 	int previousRecord=-1;
 	int recordBufferLength;
 	int retcode_func=0;
 	int useRecord;
-	int64_t   lPosPnt = 0;
 
 	struct mmfio_t* ArrayFile[MAX_HANDLE_TEMPFILE];
 	unsigned char  szKeyCurr[GCSORT_KEY_MAX+SZPOSPNT];
@@ -4337,8 +4350,6 @@ int job_save_tempfinal(struct job_t *job) {
 	unsigned int   nLenRecOut = 0;
 	unsigned int   nLenSave=0;
 	unsigned int   bIsFirstKeySumField = 0;
-	int nPosIdArray = -1;
-	int nCountEle = 0;
 	int nTypeSource = 0;
 
     if (job->bIsPresentSegmentation == 0)
@@ -4426,7 +4437,7 @@ int job_save_tempfinal(struct job_t *job) {
 			retcode_func = -1;
 			goto job_save_tempfinal_exit;
 		}
-		handleTmpFile[k] = (int)ArrayFile[k]->m_hFile; 
+		handleTmpFile[k] = (size_t)ArrayFile[k]->m_hFile; 
 	}
 
 
@@ -4442,7 +4453,7 @@ int job_save_tempfinal(struct job_t *job) {
 
 	for (kj = 0; kj < MAX_HANDLE_TEMPFILE; kj++) {
 		if (bIsEof[kj] == 0) {
-			bIsEof[kj] = job_ReadFileTemp(ArrayFile[kj], &byteReadTmpFile[kj], szBufRekTmpFile[kj], bIsFirstTime);  /* bIsEof = 0 ok, 1 = eof   */
+			bIsEof[kj] = job_ReadFileTemp(ArrayFile[kj], &byteReadTmpFile[kj], szBufRekTmpFile[kj]);  /* bIsEof = 0 ok, 1 = eof   */
 			if (bIsEof[kj] == 1) {
 				ptrBuf[kj] = 0x00;
 			}
@@ -4512,7 +4523,7 @@ int job_save_tempfinal(struct job_t *job) {
 
 			if (useRecord == 0) {	/* skip record  */
 				if (bIsEof[nLastRead] == 0) {
-					bIsEof[nLastRead] = job_ReadFileTemp(ArrayFile[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead], bIsFirstTime);  /* bIsEof = 0 ok, 1 = eof   */
+					bIsEof[nLastRead] = job_ReadFileTemp(ArrayFile[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead]);  /* bIsEof = 0 ok, 1 = eof   */
 					if (bIsEof[nLastRead] == 1) {
 						ptrBuf[nLastRead] = 0x00;
 						nSumEof = nSumEof + bIsEof[nLastRead];
@@ -4542,9 +4553,9 @@ int job_save_tempfinal(struct job_t *job) {
 		if ((useRecord == 1) && (job->outrec != NULL)) {
 			/* check overlay    */
 			if (job->outrec->nIsOverlay == 0) {
-				memset((unsigned char*)szBuffRekOutRec, 0x20, recordBufferLength);
+				utl_resetbuffer((unsigned char*)szBuffRekOutRec, recordBufferLength);
 				nLenRek = outrec_copy(job->outrec, szBuffRekOutRec, szBufRekTmpFile[nPosPtr], job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
-				memset(szBufRekTmpFile[nPosPtr], 0x20, recordBufferLength); /* s.m. 202101  */
+				utl_resetbuffer((unsigned char*)szBufRekTmpFile[nPosPtr], recordBufferLength);
 				memcpy(szBufRekTmpFile[nPosPtr], szBuffRekOutRec, nLenRek + nSplitPosPnt);
 				byteReadTmpFile[nPosPtr] = nLenRek;
 				byteRead = nLenRek;
@@ -4552,13 +4563,13 @@ int job_save_tempfinal(struct job_t *job) {
 			}
 			else
 			{		/* Overlay  */
-				memset(szBuffRek, 0x20, recordBufferLength);
+				utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
 				memmove(szBuffRek, recordBuffer, byteRead + nSplitPosPnt);	/* s.m. 202101 copy record  */
 				nLenRek = outrec_copy_overlay(job->outrec, szBuffRekOutRec, szBufRekTmpFile[nPosPtr], job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 				nLenRek++;
 				if (nLenRek < job->outputLength)
 					nLenRek = job->outputLength;
-				memset(szBufRekTmpFile[nPosPtr], 0x20, recordBufferLength); /* s.m. 202101  */
+				utl_resetbuffer((unsigned char*)szBufRekTmpFile[nPosPtr], recordBufferLength);
 				memcpy(szBufRekTmpFile[nPosPtr], szBuffRekOutRec, nLenRek + nSplitPosPnt);
 				byteReadTmpFile[nPosPtr] = nLenRek;
 				byteRead = nLenRek;
@@ -4602,7 +4613,7 @@ int job_save_tempfinal(struct job_t *job) {
 			}
 		}
 		if (bIsEof[nLastRead] == 0){
-			bIsEof[nLastRead] = job_ReadFileTemp(ArrayFile[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead], bIsFirstTime);  /* bIsEof = 0 ok, 1 = eof   */
+			bIsEof[nLastRead] = job_ReadFileTemp(ArrayFile[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead]);  /* bIsEof = 0 ok, 1 = eof   */
 			if (bIsEof[nLastRead] == 1) {
 				ptrBuf[nLastRead] = 0x00;
 				nSumEof = nSumEof + bIsEof[nLastRead];
@@ -4662,7 +4673,7 @@ job_save_tempfinal_exit:
 	return retcode_func;
 }
 
-INLINE2 int job_ReadFileTemp(struct mmfio_t* descTmp, int* nLR, unsigned char* szBuffRek, int nFirst)
+INLINE2 int job_ReadFileTemp(struct mmfio_t* descTmp, int* nLR, unsigned char* szBuffRek)
 {
 	int byteReadTemp=0;
 	unsigned int lenBE = 0;
@@ -4697,7 +4708,7 @@ INLINE2 int job_ReadFileTemp(struct mmfio_t* descTmp, int* nLR, unsigned char* s
 		*nLR = 0;
 		return bTempEof;
 	}
-	if (byteReadTemp != (lenBE + SZPOSPNT)) {
+	if ((unsigned int)byteReadTemp != (lenBE + SZPOSPNT)) {
 		bTempEof = 1;
 		*nLR = 0;
 		fprintf(stdout, "*GCSORT*S659*ERROR: job_ReadFileTemp MMF len of record header:" NUM_FMT_LLD " not equal len readed : %d - error message : %s\n", (long long) lenBE + SZPOSPNT, byteReadTemp, descTmp->m_strErrMsg);
@@ -4883,14 +4894,14 @@ int job_SetPosLenKeys(struct job_t* job, int* arPosLen) {
 		}
     return ;
 }
-int job_compare_key(struct job_t* job, const void* first, const void* second)
-/*
+// int job_compare_key(struct job_t* job, const void* first, const void* second)
+/**/
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
-	INLINE int job_compare_key(struct job_t* job, const void *first, const void *second)
+INLINE int job_compare_key(struct job_t* job, const void* first, const void* second)
 #else
-	INLINE2 int job_compare_key(struct job_t* job, const void* first, const void* second)
+INLINE2 int job_compare_key(struct job_t* job, const void* first, const void* second)
 #endif
-*/
+/**/
 {
     int nType, nLen, nFlags;
 	job->result=0;
@@ -5086,15 +5097,12 @@ INLINE int job_compare_rek(struct job_t* job, const void *first, const void *sec
 }
 
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
-	INLINE  int job_compare_qsort(struct job_t* job, const void* first, const void* second)
+	INLINE  int job_compare_qsort(void* jobparam, const void* first, const void* second)
 #else
 	INLINE2 int job_compare_qsort(const void* first, const void* second, void* jobparam )  
 #endif
 {
-#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
-#else
 	 struct job_t* job = jobparam;
-#endif
 	job->lPosA = 0;
 	job->lPosB = 0;
 	job->g_nSp = 0;
@@ -5340,7 +5348,6 @@ int job_compare_date_Y2T(cob_field* fk2, cob_field* fk1)
 /* Format : YYDDD*/
 int job_compare_date_YYDDD(cob_field* fk2, cob_field* fk1)
 {
-	int result = 0;
 	/*  check limit and Y2PAST elements
         use two variables for check value
         Field nn (two digits)  
@@ -5386,7 +5393,6 @@ int job_compare_date_YYDDD(cob_field* fk2, cob_field* fk1)
 /* Format : YYMMDD  */
 int job_compare_date_YYMMDD(cob_field* fk2, cob_field* fk1)
 {
-	int result = 0;
 	/*  check limit and Y2PAST elements
 	    use two variables for check value
 	    Field nn (two digits)  
@@ -5433,7 +5439,6 @@ int job_compare_date_YYMMDD(cob_field* fk2, cob_field* fk1)
 
 int job_compare_date_YY(cob_field* fk2, cob_field* fk1)
 {
-	int result = 0;
 	/*  check limit and Y2PAST elements
 	    use two variables for check value
 	    Field nn (two digits)  
@@ -5470,7 +5475,6 @@ int job_compare_date_YY(cob_field* fk2, cob_field* fk1)
 /* Format :  P'dddyy'   */
 int job_compare_date_Y2X(cob_field* fk2, cob_field* fk1)
 {
-	int result = 0;
 	/*  check limit and Y2PAST elements
         use two variables for check value
         Field nn (two digits)  
@@ -5482,8 +5486,6 @@ int job_compare_date_Y2X(cob_field* fk2, cob_field* fk1)
 	int ndays2 = ndate2 / 100;
 	int nyear1 = ndate1 - ndays1 * 100;
 	int nyear2 = ndate2 - ndays2 * 100;
-
-
 
 	if (nyear1 < globalJob->nY2PastLimInfyy2)
 		nyear1 += globalJob->nY2PastLimInfyy2;
@@ -5509,7 +5511,6 @@ int job_compare_date_Y2X(cob_field* fk2, cob_field* fk1)
 int job_compare_date_Y2Y(cob_field* fk2, cob_field* fk1)
 {
 	/* Format : P'mmddyy'	*/
-	int result = 0;
 	/*  check limit and Y2PAST elements
 	    use two variables for check value
 	    Field nn (two digits)  
@@ -5583,9 +5584,7 @@ int job_merge_files(struct job_t *job) {
     char szNameTmp[FILENAME_MAX];
     int	bIsEof[MAX_FILES_INPUT];
     int	bIsFirstSumFields = 0;
-    int	bTempEof=0;
     int	handleFile[MAX_FILES_INPUT];
-    int	nCompare = 1;
     int	nSumEof;
     unsigned int	recordBufferLength;
     int bFirstRound=0;
@@ -5595,12 +5594,10 @@ int job_merge_files(struct job_t *job) {
     int k;
     int kj;
     int nIdx1; 
-    int nIdxFileIn = 0;
     int nLastRead=0;
     unsigned int nLenInRec = 0;
     int nMaxEle;
     int nMaxFiles = MAX_FILES_INPUT;		/* size of elements */
-    int nNumBytes = 0;
     int nPosPtr, nIsEOF;
     int nPosition = 0;
     int nSplitPosPnt = SZPOSPNT;		/* for pospnt   */
@@ -5608,7 +5605,6 @@ int job_merge_files(struct job_t *job) {
     int previousRecord=-1;
     int retcode_func=0;
     int useRecord;
-    int64_t			lPosPnt = 0;
     struct file_t *file;
     struct file_t*  Arrayfile_s[MAX_FILES_INPUT];
     unsigned char	szBufKey[MAX_FILES_INPUT][GCSORT_KEY_MAX+SZPOSPNT];	/* key  */
@@ -5629,8 +5625,6 @@ int job_merge_files(struct job_t *job) {
     unsigned int	nLenRek = 0;
     unsigned int	nLenSave=0;
 	int				nCmp = 0;
-	int				nPosIdArray = -1;
-	int nCountEle = 0;
 
 	recordBufferLength=MAX_RECSIZE;
 
@@ -5720,7 +5714,8 @@ int job_merge_files(struct job_t *job) {
 			retcode_func = -1;
 			goto job_merge_files_exit;
 		}
-		bIsEof[nIdx1] = job_ReadFileMerge(Arrayfile_s[nIdx1], &handleFile[nIdx1], &byteReadFile[nIdx1], szBufRek[nIdx1], bIsFirstTime);  /* bIsEof = 0 ok, 1 = eof  */
+		//bIsEof[nIdx1] = job_ReadFileMerge(Arrayfile_s[nIdx1], &handleFile[nIdx1], &byteReadFile[nIdx1], szBufRek[nIdx1]);  /* bIsEof = 0 ok, 1 = eof  */
+		bIsEof[nIdx1] = job_ReadFileMerge(Arrayfile_s[nIdx1], &byteReadFile[nIdx1], szBufRek[nIdx1]);  /* bIsEof = 0 ok, 1 = eof  */
 		if (bIsEof[nIdx1] == 0)
 			ptrBuf[nIdx1] = (unsigned char*)szBufRek[nIdx1];
 		nIdx1++;
@@ -5774,6 +5769,10 @@ int job_merge_files(struct job_t *job) {
 		nPosPtr = job_IdentifyBufMerge(job, ptrBuf, nMaxEle, &nCmp);
 /* Setting fields for next step (Record, Position, Len) */
 /* Setting buffer for type file                         */
+
+			/* s.m. 20240620 - Line sequential EOL problem  */
+		utl_resetbuffer(recordBuffer, MAX_RECSIZE);
+
 		gc_memcpy(recordBuffer, szBufRek[nPosPtr], byteReadFile[nPosPtr]+nSplitPosPnt);
 		nLastRead = nPosPtr;
 		nbyteRead = byteReadFile[nPosPtr];
@@ -5792,7 +5791,7 @@ int job_merge_files(struct job_t *job) {
 			if (job->inrec!=NULL) {
 				/* check overlay    */
 				if (job->inrec->nIsOverlay == 0) {
-					memset(szBuffRek, 0x20, recordBufferLength);
+					utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
 					nLenInRec = inrec_copy(job->inrec, szBuffRek, recordBuffer, nLenRecOut, nbyteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 					if (recordBufferLength < nLenInRec)
 						recordBuffer= (unsigned char*) realloc(recordBuffer,nLenInRec+1);
@@ -5802,7 +5801,7 @@ int job_merge_files(struct job_t *job) {
 				}
 				else
 				{		/* Overlay  */
-					memset(szBuffRek, 0x20, recordBufferLength);
+					utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
 					memmove(szBuffRek, recordBuffer, nLenRek + nSplitPosPnt);	/* s.m. 202101 copy input record    */
 					nLenInRec = inrec_copy_overlay(job->inrec, szBuffRek, recordBuffer, nLenRecOut, nbyteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 					nLenInRec++;
@@ -5843,7 +5842,7 @@ int job_merge_files(struct job_t *job) {
 
 			if (useRecord==0){	/* skip record  */
 				if (bIsEof[nLastRead] == 0){
-					bIsEof[nLastRead] = job_ReadFileMerge(Arrayfile_s[nLastRead], &handleFile[nLastRead], &byteReadFile[nLastRead], szBufRek[nLastRead], bIsFirstTime);  /* bIsEof = 0 ok, 1 = eof  */
+					bIsEof[nLastRead] = job_ReadFileMerge(Arrayfile_s[nLastRead], &byteReadFile[nLastRead], szBufRek[nLastRead]);  /* bIsEof = 0 ok, 1 = eof  */
 					if (bIsEof[nLastRead] == 1) {
 						ptrBuf[nLastRead] = 0x00;
 						nSumEof = nSumEof + bIsEof[nLastRead];
@@ -5868,16 +5867,17 @@ int job_merge_files(struct job_t *job) {
 			if (job->outrec != NULL) {
 				/* check overlay    */
 				if (job->outrec->nIsOverlay == 0) {
-					memset(szBuffRek, 0x20, recordBufferLength);
+					utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
 					nbyteRead = outrec_copy(job->outrec, szBuffRek, recordBuffer, nLenRecOut, nbyteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
-					memset(recordBuffer, 0x20, recordBufferLength); /* s.m. 202101  */
+					utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength);
+
 					memcpy(recordBuffer, szBuffRek, nbyteRead + nSplitPosPnt);
 					job->LenCurrRek = nbyteRead;
 					nLenRek = nbyteRead;
 				}
 				else
 				{		/* Overlay  */
-					memset(szBuffRek, 0x20, recordBufferLength);
+					utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
 					memmove(szBuffRek, recordBuffer, nLenRek + nSplitPosPnt);	/* s.m. 202101 copy input record    */
 					nbyteRead = outrec_copy_overlay(job->outrec, szBuffRek, recordBuffer, nLenRecOut, nbyteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 					nbyteRead++;
@@ -5885,7 +5885,8 @@ int job_merge_files(struct job_t *job) {
 						nbyteRead = nLenRek;
 					if (recordBufferLength < nbyteRead)
 						recordBuffer = (unsigned char*)realloc(recordBuffer, nLenInRec + 1);
-					memset(recordBuffer, 0x20, recordBufferLength); /* s.m. 202101  */
+					utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength);
+
 					memcpy(recordBuffer + nSplitPosPnt, szBuffRek + nSplitPosPnt, nbyteRead);
 					job->LenCurrRek = nbyteRead;
 					nLenRek = nbyteRead;
@@ -5915,7 +5916,7 @@ int job_merge_files(struct job_t *job) {
 			}
 		}
 		if (bIsEof[nLastRead] == 0){
-			bIsEof[nLastRead] = job_ReadFileMerge(Arrayfile_s[nLastRead], &handleFile[nLastRead], &byteReadFile[nLastRead], szBufRek[nLastRead], bIsFirstTime);  /* bIsEof = 0 ok, 1 = eof */
+			bIsEof[nLastRead] = job_ReadFileMerge(Arrayfile_s[nLastRead], &byteReadFile[nLastRead], szBufRek[nLastRead]);  /* bIsEof = 0 ok, 1 = eof */
 			if (bIsEof[nLastRead] == 1) {
 				ptrBuf[nLastRead] = 0x00;
 				nSumEof = nSumEof + bIsEof[nLastRead];
@@ -5959,7 +5960,7 @@ job_merge_files_exit:
 
 	return retcode_func;
 }
-INLINE int job_ReadFileMerge(struct file_t* file, int* descTmp, int* nLR, unsigned char* szBuffRek, int nFirst)
+INLINE int job_ReadFileMerge(struct file_t* file, int* nLR, unsigned char* szBuffRek)
 {
 /* LIBCOB for all files */
 	cob_read_next(file->stFileDef,  NULL, COB_READ_NEXT);
@@ -6016,10 +6017,10 @@ INLINE void job_cob_field_set (cob_field* field_ret, int type, int digits, int s
 {
 	cob_field_attr	*attrArea;
 	attrArea = (cob_field_attr*)field_ret->attr;
-	attrArea->type   = type;
-	attrArea->digits = digits;
-	attrArea->scale  = scale;
-	attrArea->flags  = flags;
+	attrArea->type   = (unsigned short) type;
+	attrArea->digits = (unsigned short) digits;
+	attrArea->scale  = (unsigned short) scale;
+	attrArea->flags  = (unsigned short) flags;
 	attrArea->pic    = NULL;
 	field_ret->size = nLen;
 
@@ -6149,5 +6150,46 @@ INLINE int write_buffered_final(int  desc,
 	}
 	*position_buf_write = 0;
 	return 0;
+}
+
+int SumFields_KeyCheck(struct job_t* job, 
+						int* bIsWrited, 
+                        unsigned char* szKeyPrec, 
+                        unsigned int*  nLenPrec, 
+                        unsigned char* szKeyCurr,  
+                        unsigned int*  nLenRek, 
+                        unsigned char* szKeySave,  
+                        unsigned int*  nLenSave, 
+                        unsigned char* szPrecSumFields, 
+                        unsigned char* szSaveSumFields, 
+                        unsigned char* szBuffRek,
+						int nSplit)
+{
+    int useRecord = 1;
+        if (job_compare_key(job, szKeyPrec, szKeyCurr) == 0) {	/* Compare Keys */
+            *nLenPrec = *nLenRek;
+            SumField_SumField((unsigned char*)szBuffRek+nSplit);
+            memcpy(szPrecSumFields, szBuffRek, *nLenRek+nSplit);
+            useRecord=0;
+            *bIsWrited = 1;
+        }
+        else /* Keys not equal write buffer to file */
+        {
+            useRecord = 1;
+            /* Save */
+            memcpy(szKeySave,		szKeyPrec,      job->nLenKeys+SZPOSPNT);			    /*   lPosPnt + Key  */
+            memcpy(szSaveSumFields, szPrecSumFields, *nLenPrec+nSplit);
+            *nLenSave = *nLenPrec;
+            /* Previous */
+            memcpy(szKeyPrec,		szKeyCurr,      job->nLenKeys+SZPOSPNT);			    /* lPosPnt + key    */
+            memcpy(szPrecSumFields, (unsigned char*) szBuffRek, *nLenRek+nSplit);           /*  PosPnt          */
+            *nLenPrec = *nLenRek;
+            /* Current  */
+            memcpy(szKeyCurr,       szKeySave,      job->nLenKeys+SZPOSPNT);			    /*  lPosPnt + Key   */
+            memcpy(szBuffRek,       szSaveSumFields, *nLenSave+nSplit);
+            *nLenRek = *nLenSave;
+            *bIsWrited = 0;
+    }
+    return useRecord;
 }
 
