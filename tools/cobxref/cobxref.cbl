@@ -1,4 +1,4 @@
-       >>source free
+       >>SOURCE FREE
 *>
 *> CONFIGURATION SETTINGS: Set these switches / values before compiling:
 *>  GnuCOBOL CONSTANTS section.
@@ -25,17 +25,17 @@
 >>SET CONSTANT C-Testing-3    0    *> Not testing (default), change to AS 1 if wanted.
 >>SET CONSTANT C-Testing-4    0    *> Not testing (default), change to AS 1 if wanted.
 *>
-*> Used in cobxref  -  produces a lot of screen output displays from printcbl & cobxref modules
+*> Used in cobxref  -  produces A lot of screen output displays from printcbl & cobxref modules
 *>    This can be over ridden by Param 5 use of -TEST
 *>
 >>SET CONSTANT X-Testing      "N"  *> Not testing (default) change to AS "Y" if wanted.
 *>
-*> Usage of the testing options can and will produce a LOT of output.
+*> Usage of the testing options can and will produce A LOT of output.
 *>    100's of megs.
 *>  Only use if requested by the programmer / Development team.
 *>
 *>  After testing completes consider removing the statement :
-*>       go       to  aa070-Bypass-File-Deletes
+*>       go       to  AA070-Bypass-File-Deletes
 *>      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 *> to allow the temp Partnn.tmp files to be deleted at end of sources for program
 *>
@@ -44,12 +44,12 @@
 *>
  Identification division.
  program-id.            cobxref.
- author.                Vincent Bryan Coen, Applewood Computers, FBCS,
+ author.                Vincent Bryan Coen, Applewood Computers, FBCS (ret),
 *>                      17 Stag Green Avenue, Hatfield, Herts, AL9 5EB, UK.
  Date-Written.          28 July 1983 with code going back to 1967.
 *> Date-Rewriten.       10 March 2007 with code going back to 1983.
  Date-Compiled.         Today & Dont forget to update prog-name for builds.
-*> Security.            Copyright (C) 1967-2022, Vincent Bryan Coen.
+*> Security.            Copyright (C) 1967-2024 and later, Vincent Bryan Coen.
 *>                      Distributed under the GNU General Public License.
 *>                      See the file COPYING for details but
 *>                      for use with GnuCOBOL ONLY.
@@ -65,13 +65,13 @@
 *>                      otherwise you might get compiler induced errors when running.
 *>
 *>                      This version (v1.99.nn and v2.00+ ) used (ONLY)
-*>                      as a stand alone tool see the readme and manual
+*>                      as A stand alone tool see the readme and manual
 *>                      for more parameter details but can be run as
 *>                      cobxref sourcefilename.cbl FREE
 *>                      ===================== WARNING =====================
 *>                      Must only be used after running the source file
 *>                      that is to be cross referenced, through the compiler
-*>                      that results in a warning and error free compile.
+*>                      that results in A warning and error free compile.
 *>                      ^^^^^^^^^^^^^^^^^^^^^ WARNING ^^^^^^^^^^^^^^^^^^^^^
 *>**
 *> Calls.               As nested programs,
@@ -93,13 +93,13 @@
 *>*****************
 *>
 *> This file/program is part of Cobxref AND GNU Cobol and is copyright
-*> (c) Vincent B Coen 1967-2022. This version bears no resemblance to the
+*> (c) Vincent B Coen 1967-2024. This version bears no resemblance to the
 *> original versions running on ICL 1501/1901 and IBM 1401 & 360/30 in the
 *> 1960's and 70's.
 *>
 *> A version for running with MVS 3.8J and ANSI Cobol is available for those
 *> users running IBM emulation with Hercules.
-*> This uses a modified version of the original code from the 60s and will
+*> This uses A modified version of the original code from the 60s and will
 *>  ONLY run with IBM's ANSI Cobol.
 *>
 *> This program is free software; you can redistribute it and/or modify it
@@ -118,7 +118,7 @@
 *> for more details. If it breaks, you own both pieces but I will endevor
 *> to fix it, providing you tell me about the problem.
 *>
-*> You should have received a copy of the GNU General Public License along
+*> You should have received A copy of the GNU General Public License along
 *> with Cobxref; see the file COPYING.  If not, write to the Free Software
 *> Foundation, 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 *>*************************************************************************
@@ -140,7 +140,7 @@
 *>            These two files are NOT deleted at EOJ but code is present
 *>            currently remarked out to do so.
 *>
-*>  A new pair is created for every nested program within a source file
+*>  A new pair is created for every nested program within A source file
 *>    and this is used for testing as the next program will overwrite
 *>      previous programs data
 *>
@@ -163,7 +163,7 @@
 *>
 *> Used to o/p source with copy includes, CURRENTLY ONLY DURING TESTING
 *>  this file is free format, stripped of more than one space between words.
-*>    Similar (ok the same as produced for a filename.i file via cobc
+*>    Similar (ok the same as produced for A filename.i file via cobc
 *>      when using command / steering --save-temps, with comments removed
 *>        and blank lines
 *>
@@ -227,22 +227,22 @@
 *>
  fd  Supplemental-Part1-Out.
  01  SortRecord.
-     03  SkaProgramName    pic x(32).   *> 27/2/19 added program name max 31+1 chars
+     03  SkaProgramName    pic x(64).   *> 27/2/19 added program name max 31+1 chars
      03  SkaDataName       pic x(64).   *> updated 12/5/19 for 63 chars (rounded to 64)
      03  SkaWSorPD         pic 99.       *>  updated 17/3/22
      03  SkaWSorPD2        pic 99.       *>  Ditto  but only using 1, 2
      03  SkaRefNo          pic 9(6).
 *>
  fd  Supplemental-Part2-In.
- 01  filler                pic x(106).  *> updated 17/3/22.
+ 01  filler                pic x(138).  *> updated 17/3/22, 17/10/22 (+32 for progname.
 *>
  sd  SortFile.
  01  filler.
-     03  SdProgranName     pic x(32).
+     03  SdProgranName     pic x(64).
      03  SdSortKey         pic x(74).           *>  22/3/22  x(106).  *> updated 10/3/22.
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v2.03.05".
+ 77  Prog-Name             pic x(13) value "Xref v2.03.15".
  77  Page-No               Binary-long  value zero.
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
@@ -251,7 +251,7 @@
  77  S-Pointer3            Binary-long  value zero.
  77  Line-Count            Binary-char  value 70.
  77  Compiler-Line-Cnt     Binary-char  value C-Compiler-Line-Cnt.   *> from CDF value
- 77  ws-Return-Code        binary-char  value zero.
+ 77  WS-Return-Code        binary-char  value zero.
  77  Word-Length           Binary-long  value zero.
  77  Line-End              Binary-long  value zero.
  77  Source-Line-End       Binary-long  value zero.
@@ -259,9 +259,9 @@
  77  F-Pointer             Binary-long  value zero.
  77  HoldFoundWord2-Size   binary-long  value zero.
  77  HoldFoundWord2-Type   binary-long  value zero.
- 77  a                     Binary-Long  value zero.
- 77  a1                    Binary-Long  value zero.
- 77  a2                    Binary-char  value zero.
+ 77  A                     Binary-Long  value zero.
+ 77  A1                    Binary-Long  value zero.
+ 77  A2                    Binary-char  value zero.
  77  b                     Binary-Long  value zero.
  77  c                     Binary-Long  value zero.
  77  d                     Binary-Long  value zero.
@@ -269,83 +269,93 @@
  77  E2                    Binary-Long  value zero.
  77  E3                    Binary-Long  value zero.
  77  s                     Binary-Long  value zero.
- 77  s2                    Binary-Long  value zero.
+ 77  S2                    Binary-Long  value zero.
  77  t                     Binary-Long  value zero.
- 77  t2                    Binary-Long  value zero.
- 77  t3                    Binary-Long  value zero.
+ 77  T2                    Binary-Long  value zero.
+ 77  T3                    Binary-Long  value zero.
+ 77  T4                    Binary-Long  value zero.
  77  y                     Binary-Long  value zero.
  77  z                     Binary-Long  value zero.
- 77  z2                    Binary-Long  value zero.
- 77  z3                    Binary-Long  value zero.
- 77  q                     Binary-Long  value zero.
- 77  q2                    Binary-Long  value zero.
+ 77  Z2                    Binary-Long  value zero.
+ 77  Z3                    Binary-Long  value zero.
+ 77  Q                     Binary-Long  value zero.
+ 77  Q2                    Binary-Long  value zero.
 *> Temp for testing
  77  TD                    pic 9(5)     value zero.
  77  Z2D                   pic 9(5)     value zero.
  77  Word-LengthD          pic 9(5)     value zero.
 *>
+*> for testing and displays only
+*>
+ 77  Z3A                   pic zzz9.
+ 77  Z3B                   pic zzz9.
+*>
 *> System parameters control how xref works or reports
 *>  May be add extra func for default.conf ?
 *>
- 77  sw-1                  pic x           value "N".
+ 77  SW-1                  pic x           value "N".
 *>  command line input -G
      88 All-Reports                        value "A".
- 77  sw-2                  pic x           value "Y".
+ 77  SW-2                  pic x           value "Y".
      88 List-Source                        value "Y".
  77  SW-3                  pic x           value "N".
 *> command line input -E
      88  Create-Compressed-Src             value "Y".
 *>
- 77  sw-4                  pic 9           value zero.
+ 77  SW-4                  pic 9           value zero.
      88  Dump-Reserved-Words               value 1.
- 77  sw-5                  pic x           value X-Testing.         *>  "N" from CDF value AND from -TEST.
+ 77  SW-5                  pic x           value X-Testing.         *>  "N" from CDF value AND from -TEST.
      88 We-Are-Testing                     value "Y".
- 77  sw-6                  pic 9           value zero.
+ 77  SW-6                  pic 9           value zero.
      88  Reports-In-Lower                  value 1.
 *> XREF reporting at end of all sources                      -  NOT YET IMPLEMENTED.
  77  SW-7                  pic x           value "N".          *> Needed ???
      88  Xrefs-At-End                      value "Y".
 *>
- 77  SW-8                  pic x           value "N".          *> Y = free, N = Fixed
+ 77  SW-8                  pic x.   *>           value "N".          *> Y = free, N = Fixed, V = Variable
      88 SW-Free                            value "Y".
      88 SW-Fixed                           value "N".
-*>   set if free/fixed used as against defaulting
- 77  sw-8-usd              pic x           value "N".
-     88 sw-8-inuse                         value "Y".
- 77  sw-9                  pic x           value "N".
+     88 SW-Variable                        value "V".
+*>   set if free/fixed/variable used as against defaulting
+ 77  SW-8-usd              pic x           value "N".
+     88 SW-8-inuse                         value "Y".
+ 77  SW-9                  pic x           value "N".
      88 No-Table-Update-displays           value "Y".
- 77  sw-11                 pic x           value "N".
+ 77  SW-11                 pic x           value "N".
      88 Verbose-Output                     value "Y".
 *>
- 77  sw-12                 pic x           value space.
+ 77  SW-12                 pic x           value space.
      88 Both-Xrefs                         value "Y".
 *>
 *> Switches used during processing
 *>
 *> And these two are the size of any Cobol word currently set
 *> to value specified in PL22.4 20xx
-*> There still a limit of the WS data size used for any
+*> There still A limit of the WS data size used for any
 *>   and this is fixed.
 *>
  78  Cobol-Word-Size                       value 31.
  78  CWS                                   value Cobol-Word-Size.
 *>
- 77  sw-Source-Eof         pic 9           value 0.
+ 77  SW-Source-Eof         pic 9           value zero.
      88 Source-Eof                         value 1.
 *> got end of program
- 77  sw-End-Prog           pic 9           value zero.
+ 77  SW-End-Prog           pic 9           value zero.
      88 End-Prog                           value 1.
 *> Had end of program (nested) - Confused yet? you will be!
- 77  sw-Had-End-Prog       pic 9           value zero.
+ 77  SW-Had-End-Prog       pic 9           value zero.
      88 Had-End-Prog                       value 1.
-*> We have found a Global verb
- 77  sw-Git                pic 9           value zero.
+*>
+ 77  SW-Got-End-Prog       pic 9           value zero.
+*> We have found A Global verb
+ 77  SW-Git                pic 9           value zero.
      88 Global-Active                      value 1.
-*> We have found a External verb
+*> We have found A External verb
  77  SW-External           pic 9           value zero.    *> New 3/2/19
      88  External-Active                   value 1.
 *>
  77  SW-Found-External     pic 9           value zero.
+ 77  SW-Found-Global       pic 9           value zero.     *> 21/10/22
 *>
  77  SW-Found-CDF          pic x           value space.    *> New 18/3/22
  77  SW-Found-Git          pic x           value space.    *> New 24/3/22
@@ -354,7 +364,7 @@
 *>
 *>  Multi modules in one source file flag
 *>
- 77  sw-Nested             pic 9           value zero.
+ 77  SW-Nested             pic 9           value zero.
      88 Have-Nested                        value 1.
 *>
  77  Arg-Number            pic 99          value zero.
@@ -423,7 +433,7 @@
 *> outside scope but for get-a-word
      03  filler            pic xxxx.
 *>
- 01  SourceInWS2           pic x(65).   *> for fixed format - temp area.
+ 01  SourceInWS2           pic x(249).   *> for fixed  AND variable format - temp area.
 *>
  01  wsFoundWord.
      03  wsf1-3.
@@ -574,7 +584,7 @@
      03 Msg10     pic x(42) value "Msg10 Error: Git Table size exceeds 10,000".
 *> Msg11 - 16 in get-reserved-lists
      03 Msg17     pic x(39) value "Msg17 Error: Cobol Syntax missing space".
-     03 Msg18     pic x(71) value "Msg18 Error: Eof on source possible logic error at aa047 ASSUMING again".
+     03 Msg18     pic x(71) value "Msg18 Error: Eof on source possible logic error at AA047 ASSUMING again".
      03 Msg19     pic x(79) value "Msg19 Possible prob. with cobc and therefore with no reserved word list updates".
 *> Msg21 - 31 in printcbl
 *>
@@ -721,7 +731,7 @@
      03  filler pic x(31) value "1VARIANCE                   ".
      03  filler pic x(31) value "1WHEN-COMPILED              ".
      03  filler pic x(31) value "1YEAR-TO-YYYY               ".  *>  92
-     03  filler    values high-values.
+     03  filler    value high-values.
          05  filler pic x(31) occurs 164.                        *> pad to 256 entries
 *>
  01  Function-Table-R redefines Function-Table.                  *> updated by Get-Reserved-Lists
@@ -791,7 +801,7 @@
      03  filler pic x(30) value "E5".
      03  filler pic x(30) value "F4".
      03  filler pic x(30) value "F5".                  *> 60
-     03  filler    values high-values.
+     03  filler    value high-values.
          05  filler pic x(30) occurs 68.                        *> pad to 128 entries
 *>
  01  System-Table-R redefines System-Table.                  *> updated by Get-Reserved-Lists
@@ -1400,23 +1410,25 @@
  01  Con-Tab-Size          Binary-Long value 10.
  01  Con-Tab-Count         Binary-Long value zero.
 *>
+*> Used for Global, External and CDF (DEFINES)
+*>
  01  Global-Item-Table                         value high-values.
-     03  Git-Elements  occurs 10 to 10001 depending on Git-Table-Size.
+     03  Git-Elements  occurs 10001.
 *> +1 used, when testing for max table size
-         05  Git-Word        pic x(32).
+         05  Git-Word        pic x(64).   *> Increased from 32 - 64 in case uses long var names USED FOR Sorting
          05  Git-Prog-Name   pic x(64).   *> + 32  12/5/19
          05  Git-RefNo       pic 9(6).
          05  Git-HoldWSorPD  pic 99.      *> 9 -> 99  17/3/22
          05  Git-HoldWSorPD2 pic 99.      *>    ditto
          05  Git-Build-No    pic 99.
          05  Git-In-Use-Flag pic x.
-         05  Git-External    pic x.     *> space or Y to indicate a EXTERNAL found
-         05  Git-Used-By-CDF pic x.     *> space ot Y to indicate a CDF var found
-         05  filler          pic x.     *> maintain Word boundary but not in use
+         05  Git-External    pic x.     *> space or Y to indicate A EXTERNAL found
+         05  Git-Global      pic x.     *> Space or Y to indicate A GLOBAL   found
+         05  Git-Used-By-CDF pic x.     *> space ot Y to indicate A CDF var  found
 *>
- 01  Git-Table-Size        Binary-Long value 10.
+ 01  Git-Table-Size        Binary-Long value 10000.    *> Matches above table size -1.
  01  Git-Table-Count       Binary-Long value zero.
- 01  Git-Table-Deleted-Cnt Binary-Long value zero.  *> count # CDF's removed by Git-Word & Git-Prog-Name = spaces
+ 01  Git-Table-Deleted-Cnt Binary-Long value zero.  *> count # CDF's removed by Git-Word & Git-Prog-Name = HV
 *>
 *>==================================
 *> 01  Linked-Data
@@ -1426,8 +1438,11 @@
  01  LS-Prog-Format     pic x.                *>  Ditto P3
  01  LS-SW-11           pic x     value "N".  *>  Ditto P4
 *>
+ 01  LS-Nested-Start-Points.
+     03  LS-Nested-Point     pic 9(6) occurs 50.
+*>
  procedure division.
- aa000-xref-Data    section.
+ AA000-xref-Data    section.
 *>**************************
 *>  TODO & BUGS:
 *>************************************************************************
@@ -1440,8 +1455,8 @@
 *> SUGGEST COMMON CODE LEFT HERE WITH NEW SECTIONS DEALING WITH EACH
 *>  SECTION OR MAIN ENTRY
 *> Also
-*>  routines for source reads, get a word, parsers and tokeniser must be rewritten,
-*>   they are still a mess.
+*>  routines for source reads, get A word, parsers and tokeniser must be rewritten,
+*>   they are still A mess.
 *>
 *>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 *>
@@ -1458,11 +1473,12 @@
              subtract 4 from Compiler-Line-Cnt.   *> added 9/3/22 for Letter paper
 *>
      perform  zz180-Open-Source-File thru zz180-Exit.
+*>
      if       No-Table-Update-displays
               move       36 to WS-Return-Code     *> Turn off table updating
      else
-              move     zero to ws-Return-Code.
-     call     "get-reserved-lists" using ws-Return-Code
+              move     zero to WS-Return-Code.
+     call     "get-reserved-lists" using WS-Return-Code
                                          Function-Table-R
                                          Function-Table-Size
                                          Additional-Reserved-Words-R
@@ -1470,7 +1486,7 @@
                                          System-Table-R
                                          System-Table-Size.
 *>
-     if       ws-Return-Code not = zero
+     if       WS-Return-Code not = zero
               display Msg19.         	*> Possible problem with cobc not in path
 *>
 *> Just in case someones added names in source code (or in cobc) out of sort order
@@ -1486,22 +1502,22 @@
               display space
               display "Reserved Word Table"
               display space
-              perform varying a from 1 by 1 until a > Resvd-Table-Size
-                    display Resvd-Word (a)
+              perform varying A from 1 by 1 until A > Resvd-Table-Size
+                    display Resvd-Word (A)
                     end-display
               end-perform
               display space
               display "Function Table"
               display space
-              perform varying a from 1 by 1 until a > Function-Table-Size
-                    display P-Function (a)
+              perform varying A from 1 by 1 until A > Function-Table-Size
+                    display P-Function (A)
                     end-display
               end-perform
               display space
               display "System Table"
               display space
-              perform varying a from 1 by 1 until a > System-Table-Size
-                    display P-System (a)
+              perform varying A from 1 by 1 until A > System-Table-Size
+                    display P-System (A)
                     end-display
               end-perform
               close SourceInput
@@ -1511,9 +1527,9 @@
      open output Source-Listing
 *>
      if       Reports-In-Lower
-              move function LOWER-CASE (Prog-BaseName (1:CWS)) to HoldID
+              move FUNCTION LOWER-CASE (Prog-BaseName (1:CWS)) to HoldID
      else
-              move function UPPER-CASE (Prog-BaseName (1:CWS)) to HoldID
+              move FUNCTION UPPER-CASE (Prog-BaseName (1:CWS)) to HoldID
      end-if
      move     HoldID to HoldID-Module.
      move     spaces to Arg-Vals.
@@ -1530,37 +1546,34 @@
                      into CopySourceFileName2
               open output CopySourceInput2.
 *>
- aa020-Bypass-Open.
+ AA020-Bypass-Open.
      open     output Supplemental-Part1-Out.
 *>
 *> Now add in contents of Global table if processing nested modules
 *>   and we have processed first one by loading sort file
 *>
-*> We should check if we have had a END PRORAM holdid here and remove any entries related to it
-*>    27/3/22
-*>
      if       Git-Table-Count not = zero
               initialize SortRecord
-              perform varying a from 1 by 1 until a > Git-Table-Count
-                   if   Git-Word (a) = spaces      or = high-values      *> check for deleted entry
-                     or Git-Prog-Name (a) = spaces or = high-values      *>  Ditto
+              perform varying A from 1 by 1 until A > Git-Table-Count
+                   if   Git-Word (A) = spaces      or = high-values      *> check for deleted entry
+                     or Git-Prog-Name (A) = spaces or = high-values      *>  Ditto
                         exit perform cycle
                    end-if
-                   move Git-HoldWSorPD  (a) to SkaWSorPD
-                   move Git-HoldWSorPD2 (a) to SkaWSorPD2
+                   move Git-HoldWSorPD  (A) to SkaWSorPD
+                   move Git-HoldWSorPD2 (A) to SkaWSorPD2
                    if Reports-In-Lower
-                      move function LOWER-CASE (Git-Word (a)) to SkaDataName
+                      move FUNCTION LOWER-CASE (Git-Word (A)) to SkaDataName
                    else
-                      move Git-Word (a) to SkaDataName
+                      move Git-Word (A) to SkaDataName
                    end-if
-                   move Git-RefNo (a) to SkaRefNo
-                   if   Git-Used-By-CDF (a) = "Y"
+                   move Git-RefNo (A) to SkaRefNo
+                   if   Git-Used-By-CDF (A) = "Y"
                         move 10 to E2         *> 10 = CDF DEFINES (from zero by zz100)
                    else
-                        move Git-HoldWSorPD (a) to E2
+                        move Git-HoldWSorPD (A) to E2
                    end-if
                    move 1 to USect (E2)
-                   move Git-Prog-Name (a) to SkaProgramName
+                   move Git-Prog-Name (A) to SkaProgramName
     *>               move HoldID  to SkaProgramName     *> This is wrong if clearing out END PROGRAM entries
                    if  SkaDataName not = spaces
                        write SortRecord
@@ -1570,18 +1583,18 @@
 *>
 *> HoldID gets updated with program-id name when found later
 *>   but we can print 1st report headings using the sourcefile name
-*>    we are assuming the user knows what s/he is doing......:)
+*>    we are assuming the cobxref user knows what s/he is doing......:)
 *>
      move     Prog-Name to H1Prog-Name.
      if       List-Source
               perform  zz150-WriteHdb.
 *>
      perform  zz100-Get-A-Source-Record thru zz100-Exit.
-     move     1 to q
+     move     1 to Q
                    S-Pointer
                    F-Pointer.
 *>
- aa030-ReadLoop1.
+ AA030-ReadLoop1.
      if       Source-Eof
            or End-Prog
               display Msg2
@@ -1595,19 +1608,19 @@
                        or  "FILE SECTION.   "
                        or  "WORKING-STORAGE SECTION."
                        or  "PROCEDURE DIVISION."
-              go to aa060-ReadLoop3a.
+              go to AA060-ReadLoop3a.
 *>
-*> The above should never happen, as all modules have a program-id
+*> The above should never happen, as all modules have A program-id
 *>   but who knows what new standards will allow
 *>
      if       wsFoundWord2 not = "PROGRAM-ID"
          and               not = "FUNCTION-ID"
-              go to aa030-ReadLoop1.
+              go to AA030-ReadLoop1.
      perform  zz110-Get-A-Word thru zz110-Exit.
 *>
-*> got program or function name so if 1st prog id -> hold-id
+*> got program or function name so if 1st prog id -> holdid
 *>               else -> holdid-module (for reports)
-*>  but 1st check if its a literal & if so remove quotes and use 1st CWS chars
+*>  but 1st check if its A literal & if so remove quotes and use 1st CWS chars
 *>
      if       wsf1-1 = quote or = "'"
               unstring wsFoundWord2 (2:32) delimited by quote or "'"  into wsFoundNewWord
@@ -1616,134 +1629,134 @@
      end-if
      if       not Have-Nested
         if       Reports-In-Lower
-                 move function LOWER-CASE (wsFoundWord2)  to HoldID
+                 move FUNCTION LOWER-CASE (wsFoundWord2)  to HoldID
         else
-                 move function UPPER-CASE (wsFoundWord2)  to HoldID
+                 move FUNCTION UPPER-CASE (wsFoundWord2)  to HoldID
         end-if
         move     HoldID  to HoldID-Module                *> For sort keys
      end-if
      if       Have-Nested            *> found more than 1 module in source
         if       Reports-In-Lower
-                 move function LOWER-CASE (wsFoundWord2) to HoldID-Module
+                 move FUNCTION LOWER-CASE (wsFoundWord2) to HoldID-Module
         else
-                 move function UPPER-CASE (wsFoundWord2) to HoldID-Module.
+                 move FUNCTION UPPER-CASE (wsFoundWord2) to HoldID-Module.
 *>
 *> We now have the program-id name so update our info, for reports
 *> WARNING: we are ignoring optional AS literal sub-clause
 *>
 *> Next block of interest is special-names and then file-control
 *>
- aa040-ReadLoop2.
+ AA040-ReadLoop2.
      perform  zz100-Get-A-Source-Record thru zz100-Exit.
      if       SourceInWS (1:14) = "SPECIAL-NAMES."
-       if We-Are-Testing display "Found aa040 SPECIAL-NAMES" end-if
-              go to aa041-Get-SN.
+       if We-Are-Testing display "Found AA040 SPECIAL-NAMES" end-if
+              go to AA041-Get-SN.
      if       SourceInWS (1:13) = "FILE-CONTROL."   *> selects
-       if We-Are-Testing display "Found aa040 FILE-CONTROL" end-if
-              go to aa047-GetIO.
+       if We-Are-Testing display "Found AA040 FILE-CONTROL" end-if
+              go to AA047-GetIO.
      if       SourceInWS (1:12) = "I-O-CONTROL."    *> same area etc
-       if We-Are-Testing display "Found aa040 I-O-CONTROL" end-if
-              go to aa048-GetIOC.
+       if We-Are-Testing display "Found AA040 I-O-CONTROL" end-if
+              go to AA048-GetIOC.
      if       SourceInWS (1:12) = "DATA DIVISIO"
-       if We-Are-Testing display "Found aa040 DATA DIVISIO" end-if
-              go to aa041-Get-SN.
-     perform  aa045-Test-Section thru aa045-Exit.
+       if We-Are-Testing display "Found AA040 DATA DIVISIO" end-if
+              go to AA041-Get-SN.
+     perform  AA045-Test-Section thru AA045-Exit.
 *>
 *> if not zero we have got Data Div onwards otherwise ignore everything else.
 *>
-     if       a not = zero
-              go to aa060-ReadLoop3a.
-     go       to aa040-ReadLoop2.
+     if       A not = zero
+              go to AA060-ReadLoop3a.
+     go       to AA040-ReadLoop2.
 *>
- aa041-Get-SN.
+ AA041-Get-SN.
 *>
 *> Get special names
 *>
      perform  zz100-Get-A-Source-Record thru zz100-Exit.
-     perform  aa045-Test-Section thru aa045-Exit.
-     if       a not = zero
-              go to aa060-ReadLoop3a.
+     perform  AA045-Test-Section thru AA045-Exit.
+     if       A not = zero
+              go to AA060-ReadLoop3a.
      if       SourceInWS (1:13) = "INPUT-OUTPUT " or = "DATA DIVISION"
-       if We-Are-Testing display "Found aa041 I-O or DATA DIV" end-if
-              go to aa041-Get-SN.
+       if We-Are-Testing display "Found AA041 I-O or DATA DIV" end-if
+              go to AA041-Get-SN.
      IF       SourceInWS (1:13) = "FILE-CONTROL."
-       if We-Are-Testing display "Found aa041 FILE-CONTROL" end-if
-              go to aa047-GetIO.
+       if We-Are-Testing display "Found AA041 FILE-CONTROL" end-if
+              go to AA047-GetIO.
      IF       SourceInWS (1:12) = "I-O-CONTROL."
-       if We-Are-Testing display "Found aa041 I_O_CONTROL" end-if
-              go to aa048-GetIOC.
+       if We-Are-Testing display "Found AA041 I_O_CONTROL" end-if
+              go to AA048-GetIOC.
 *>
- aa042-Getword.
+ AA042-Getword.
      perform  zz110-Get-A-Word thru zz110-Exit.
      if       Word-Delimit = "."
-              go to aa041-Get-SN.
+              go to AA041-Get-SN.
      if       wsFoundWord2 (1:9) = "CURRENCY "
-              perform aa046-Get-Currency
-              go to aa042-Getword.
+              perform AA046-Get-Currency
+              go to AA042-Getword.
      if       wsFoundWord2 (1:3) not = "IS "
-              go to aa042-Getword.
+              go to AA042-Getword.
 *>
      perform  zz110-Get-A-Word thru zz110-Exit.
      if       wsf1-1 = quote or = "'" or wsf1-1-number
-              go to aa042-Getword.
+              go to AA042-Getword.
      perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
-     if       a not = zero
-              go to aa042-Getword.
+     if       A not = zero
+              go to AA042-Getword.
      move     wsFoundWord2 (1:CWS) to Saved-Variable.
 *>
- aa044-Getword3.
+ AA044-Getword3.
      perform  zz110-Get-A-Word thru zz110-Exit.
      if       Word-Delimit = "."
-              go to aa041-Get-SN.
+              go to AA041-Get-SN.
      if       wsFoundWord2 (1:9) = "CURRENCY "
-              perform aa046-Get-Currency
-              go to aa044-Getword3.
+              perform AA046-Get-Currency
+              go to AA044-Getword3.
      if       wsFoundWord2 (1:2) not = "ON"
           and wsFoundWord2 (1:3) not = "OFF"
-              go to aa044-Getword3.
+              go to AA044-Getword3.
      perform  zz110-Get-A-Word thru zz110-Exit.
      if       wsf1-1 = quote or = "'" or wsf1-1-number
-              go to aa044-Getword3.
+              go to AA044-Getword3.
      perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
-     if       a not = zero
-              go to aa044-Getword3.
+     if       A not = zero
+              go to AA044-Getword3.
 *>
      if       Con-Tab-Size not < Con-Tab-Count
               add 10 to Con-Tab-Size.
      add      1 to Con-Tab-Count.
-
+*>
      if       Reports-In-Lower
-              move function LOWER-CASE (Saved-Variable) to  Variables (Con-Tab-Count)
-              move function LOWER-CASE (wsFoundWord2 (1:CWS)) to Conditions (Con-Tab-Count)
+              move FUNCTION LOWER-CASE (Saved-Variable) to  Variables (Con-Tab-Count)
+              move FUNCTION LOWER-CASE (wsFoundWord2 (1:CWS)) to Conditions (Con-Tab-Count)
      else
               move Saved-Variable to Variables (Con-Tab-Count)
               move wsFoundWord2 (1:CWS) to Conditions (Con-Tab-Count)
      end-if
      move     Space  to CT-In-Use-Flag (Con-Tab-Count).
      if       Word-Delimit = "."
-              go to aa041-Get-SN.
-     go       to aa044-Getword3.
+              go to AA041-Get-SN.
+     go       to AA044-Getword3.
 *>
- aa045-Test-Section.
-     perform  varying a from 1 by 1 until a > 8
-              if SourceInWS (1:24) = Full-Section-Name (a)
+ AA045-Test-Section.
+     perform  varying A from 1 by 1 until A > 8
+              if SourceInWS (1:24) = Full-Section-Name (A)
                   exit perform
               end-if
      end-perform.
-     if       a > 8
+     if       A > 8
               move zero to a.
 *>
- aa045-Exit.
+ AA045-Exit.
      exit.
 *>
- aa046-Get-Currency.
+ AA046-Get-Currency.
 *>
 *> Got 'Currency', so process as needed for pic tests in zz110
 *>
      perform  zz110-Get-A-Word thru zz110-Exit.
      if       wsFoundWord2 (1:5) = "SIGN "
            or wsFoundWord2 (1:3) = "IS "
-              go to aa046-Get-Currency.
+              go to AA046-Get-Currency.
 *>
 *> Now Ive got the literal "x"
 *>
@@ -1752,43 +1765,43 @@
         display " Now got currency = " Currency-Sign
      end-if.
 *>
- aa047-GetIO.
+ AA047-GetIO.
 *>
 *> now got file control so its SELECT ..
 *>
      perform  zz100-Get-A-Source-Record thru zz100-Exit.
-     perform  aa045-Test-Section thru aa045-Exit.
-     if       a not = zero
-              go to aa060-ReadLoop3a.
+     perform  AA045-Test-Section thru AA045-Exit.
+     if       A not = zero
+              go to AA060-ReadLoop3a.
      IF       SourceInWS (1:12) = "I-O-CONTROL."
-       if We-Are-Testing display "Found aa047 I-O-CONTROL" end-if
-              go to aa048-GetIOC.
+       if We-Are-Testing display "Found AA047 I-O-CONTROL" end-if
+              go to AA048-GetIOC.
      if       SourceInWS (1:12) = "DATA DIVISIO"
-       if We-Are-Testing display "Found aa047 DATA DIVISIO" end-if
-              go to aa050-ReadLoop3.
+       if We-Are-Testing display "Found AA047 DATA DIVISIO" end-if
+              go to AA050-ReadLoop3.
      if       SourceInWS (1:12) = "FILE SECTION"
-       if We-Are-Testing display "Found aa047 FILE SECTION" end-if
-              go to aa060-ReadLoop3a.
-*>  go to aa047-getio.   *> skip selects during test
+       if We-Are-Testing display "Found AA047 FILE SECTION" end-if
+              go to AA060-ReadLoop3a.
+*>  go to AA047-getio.   *> skip selects during test
 *>
- aa047-Getword.
+ AA047-Getword.
      perform  zz110-Get-A-Word thru zz110-Exit.
      if       Word-Delimit = "."
-              go to aa047-GetIO.
+              go to AA047-GetIO.
 *>
 *> now looking at selects: so looking for non reserved words
 *>
      perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
-     if       a not = zero
-              go to aa047-Getword.
+     if       A not = zero
+              go to AA047-Getword.
      if       Word-Delimit = "."
-              go to aa047-GetIO.
+              go to AA047-GetIO.
 *> Now have filename-1
      move     1 to HoldWSorPD.
      move     0 to HoldWSorPD2.
      perform  zz030-Write-Sort.
 *>
- aa047-Getword2.
+ AA047-Getword2.
      perform  zz110-Get-A-Word thru zz110-Exit.
      if       Source-Eof
               display Msg18
@@ -1800,21 +1813,21 @@
 *> should have assign
 *>
      if       wsFoundWord2 (1:7) not = "ASSIGN "
-              go to aa047-Getword2.
+              go to AA047-Getword2.
 *>
- aa047-Getword3.
+ AA047-Getword3.
      perform  zz110-Get-A-Word thru zz110-Exit.
      if       (wsf1-1 = quote or = "'") AND Word-Delimit = "."
-              go to aa047-GetIO.                               *> End of a SELECT
+              go to AA047-GetIO.                               *> End of A SELECT
      if       wsf1-1 = quote or = "'" or wsf1-1-number
-              go to aa047-Getword3.
+              go to AA047-Getword3.
      perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
-     if       a not = zero and Word-Delimit = "."
-              go to aa047-GetIO.
-     if       a not = zero
-              go to aa047-Getword3.
+     if       A not = zero and Word-Delimit = "."
+              go to AA047-GetIO.
+     if       A not = zero
+              go to AA047-Getword3.
      if       word-length = zero
-              go to aa047-GetIO.
+              go to AA047-GetIO.
 *>
 *> Now have filename
 *> filenames / datanames declared in Selects are shown as in data division
@@ -1823,56 +1836,63 @@
      move     0 to HoldWSorPD2.
      perform  zz030-Write-Sort.
      if       Word-Delimit = "."
-              go to aa047-GetIO.
-     go       to aa047-Getword3.
+              go to AA047-GetIO.
+     go       to AA047-Getword3.
 *>
- aa048-GetIOC.
+ AA048-GetIOC.
      perform  zz110-Get-A-Word thru zz110-Exit.
      if       wsf1-1 = quote or = "'" or wsf1-1-number
-              go to aa048-GetIOC.
- aa048-Get-Next.
+              go to AA048-GetIOC.
+ AA048-Get-Next.
      if       Word-Delimit = "."
               perform zz100-Get-A-Source-Record thru zz100-Exit
-              perform aa045-Test-Section thru aa045-Exit
-              if      a not = zero
-                      go to aa060-ReadLoop3a
+              perform AA045-Test-Section thru AA045-Exit
+              if      A not = zero
+                      go to AA060-ReadLoop3a
               else
                       perform  zz110-Get-A-Word thru zz110-Exit
               end-if
      end-if
      if       wsFoundWord2 (1:5) not = "SAME "
-              go to aa048-GetIOC.
+              go to AA048-GetIOC.
 *>
- aa049-Getword.
+ AA049-Getword.
      perform  zz110-Get-A-Word thru zz110-Exit.
      perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
-     if       a not = zero
-              go to aa049-Getword.
+     if       A not = zero
+              go to AA049-Getword.
 *> Now have filename
      move     1 to HoldWSorPD.
      move     0 to HoldWSorPD2.
      perform  zz030-Write-Sort.
      if       Word-Delimit = "."
-              go to aa048-Get-Next.
-     go       to aa049-Getword.
+              go to AA048-Get-Next.
+     go       to AA049-Getword.
 *>
- aa050-ReadLoop3.
+ AA050-ReadLoop3.
 *>
 *>    Now for the data division or beyond
 *>
      perform  zz100-Get-A-Source-Record thru zz100-Exit.
 *>
- aa060-ReadLoop3a.
+ AA060-ReadLoop3a.
      perform  zz170-Check-4-Section thru zz170-Exit.
      if       GotASection = "Y"
         and   HoldWSorPD < 8
-              go to aa050-ReadLoop3.
+              go to AA050-ReadLoop3.
      if       HoldWSorPD > zero and < 8
               move 1 to S-Pointer2
-              perform ba000-Process-WS.
+              perform ba000-Process-WS
+              if      Return-Code = 64               *> Git table exceeded - terminate.
+                      close Supplemental-Part1-Out
+                            Supplemental-Part1-Out
+                            SourceInput
+                            Source-Listing
+                      goback
+              end-if.
 *>
      if       HoldWSorPD = zero
-              go to aa050-ReadLoop3.
+              go to AA050-ReadLoop3.
 *>
      perform  bb000-Process-Procedure.
      if       End-Prog
@@ -1904,25 +1924,25 @@
       and not End-Prog
               close CopySourceInput2.
 *>
-     go       to  aa070-Bypass-File-Deletes.   *> Remark out when testing finished.
+ *>    go       to  AA070-Bypass-File-Deletes.   *> Remark out when testing finished.
 *>
 *>**************************************************************************************
 *>
-*>
 *>  If deleting the Supp files remove all of the '*>' except for the SourceFileName line
-*>    as that could be for a normal input file and not the o/p from the compiler
+*>    as that could be for A normal input file and not the o/p from the compiler
 *>      which is in the form sourcefile.i
+*>
 *>**************************************************************************************
 *>
      if       not We-Are-Testing
           and not End-Prog
-              call "CBL_DELETE_FILE" using SourceFileName  *>  basename + .pro, o/p from printcbl
+ *>             call "CBL_DELETE_FILE" using SourceFileName  *>  basename + .pro, o/p from printcbl
 *> kill temp input file (anything else?) but not yet, Use when in QAR.
               call "CBL_DELETE_FILE" using Supp-File-2
               call "CBL_DELETE_FILE" using Supp-File-1
      end-if.
 *>
- aa070-Bypass-File-Deletes.
+ AA070-Bypass-File-Deletes.
      if       End-Prog
               perform  zz190-Init-Program thru zz190-Exit
               move  spaces to PrintLine
@@ -1930,9 +1950,9 @@
               write PrintLine
               write PrintLine
               add  3 to Line-Count
-              move  zero to sw-End-Prog
+              move  zero to SW-End-Prog
               perform zz183-Sort-File-Names thru zz184-Exit    *> 24/3/22 update the sort FN numbers
-              go    to aa020-Bypass-Open
+              go    to AA020-Bypass-Open
      end-if
      move     zero to return-code.
      goback.
@@ -1958,7 +1978,7 @@
               perform zz100-Get-A-Source-Record thru zz100-Exit
               go to ba020-GetAWord.
 *>
-*> lets get a file section element out of the way
+*> lets get A file section element out of the way
 *>
      if       wsFoundWord2 (1:3) = "FD " or = "RD "
               move zero to Global-Current-Level     *> Global only
@@ -1969,11 +1989,12 @@
 *> Clears Global-Active
 *>
 *> note that for CD & SD setting Global-current-* not needed
-*>                           is it a problem
+*>                           is it A problem
      if       wsFoundWord2 (1:3) = "FD " or = "SD " or = "RD " or = "CD "
               perform zz110-Get-A-Word thru zz110-Exit  *> get fn
               move zero to HoldWSorPD2
-              move zero to sw-Git SW-External           *> reset Global flag
+              move zero to SW-Git
+                           SW-External           *> reset Global & External flags
               move wsFoundWord2 (1:32) to Global-Current-Word
               move Gen-RefNo1          to Global-Current-RefNo
               perform zz030-Write-Sort
@@ -1999,7 +2020,7 @@
       if      Build-Number = 01
          and  (Global-Current-Level = 99
            or HoldWSorPD > 1)
-              move zero to sw-Git
+              move zero to SW-Git
               move 1 to Global-Current-Level.
 *>
       if      Build-Number = 88 or = 78 or = 77 or = 66
@@ -2025,17 +2046,21 @@
      if       Word-Delimit = "."
               go to ba049-Exit.
      perform  zz110-Get-A-Word thru zz110-Exit.
-     if       WasPicture = 1     *> current word is a pic sub-clause
+     if       WasPicture = 1     *> current word is A pic sub-clause
               move zero to WasPicture
               go to ba040-Clear-To-Next-Period.
      if       wsFoundWord2 (1:7) = "GLOBAL "
-              move    1   to sw-Git
-              move   zero to SW-Found-External
+              move    1   to SW-Git
+                             SW-Found-Global
+              move    zero to SW-Found-External
               perform zz200-Load-Git thru zz200-Exit
+              if      Return-Code = 64
+                      goback
+              end-if
               go to ba040-Clear-To-Next-Period.
 *>
      if       wsFoundWord2 (1:9) = "EXTERNAL "
-              move 1 to sw-Git
+              move 1 to SW-Git
                         SW-External
                         SW-Found-External
               perform zz200-Load-Git thru zz200-Exit
@@ -2050,8 +2075,8 @@
      if       HoldWSorPD = 7 and
               (wsFoundWord2 (1:6) = "TO    " or "FROM  " or "USING ")
               perform zz110-Get-A-Word thru zz110-Exit
-              inspect wsFoundWord2 tallying a for all "("
-              if a not = zero
+              inspect wsFoundWord2 tallying A for all "("
+              if A not = zero
                  move wsFoundWord2 to wsFoundNewWord5
                  unstring wsFoundNewWord5 delimited by "(" into wsFoundWord2
               end-if
@@ -2073,7 +2098,7 @@
               go to ba040-Clear-To-Next-Period.
 *> dont have literals or numerics
      perform  zz130-Extra-Reserved-Word-Check thru zz130-Exit.
-     if       a > zero              *> reserved word
+     if       A > zero              *> reserved word
               go to ba040-Clear-To-Next-Period.
 *>
 *> if here must have user defined word (unless I have forgotten anything)
@@ -2098,11 +2123,11 @@
 *> Trap for no dataname, ie reserved word
 *>   this [the 'if'] MUST be left in here
 *>
-     if       a not = zero
+     if       A not = zero
               move "FILLER" to Saved-Variable
               go to ba051-After-New-Word.
 *>
-*> not a reserved word AND a 88, looking for 01 - 49 [ or 77]
+*> not A reserved word AND A 88, looking for 01 - 49 [ or 77]
 *>
      if       (Build-Number > 0 and < 50) or Build-Number = 77
               move wsFoundWord2 (1:CWS) to Saved-Variable.
@@ -2121,8 +2146,8 @@
           and Con-Tab-Count < Con-Tab-Size
               add 1 to Con-Tab-Count
               if  Reports-In-Lower
-                  move function LOWER-CASE (Saved-Variable) to  Variables (Con-Tab-Count)
-                  move function LOWER-CASE (wsFoundWord2 (1:CWS)) to Conditions (Con-Tab-Count)
+                  move FUNCTION LOWER-CASE (Saved-Variable) to  Variables (Con-Tab-Count)
+                  move FUNCTION LOWER-CASE (wsFoundWord2 (1:CWS)) to Conditions (Con-Tab-Count)
               else
                   move Saved-Variable to Variables (Con-Tab-Count)
                   move wsFoundWord2 (1:CWS) to Conditions (Con-Tab-Count)
@@ -2131,7 +2156,7 @@
 *>
  ba050-Bypass-Add-2-Con-Table.
 *>
-*> we dont have a reserved word! a = 0 = no
+*> we dont have A reserved word! A = 0 = no
 *>
       if      Global-Current-Level not = 99
               move Gen-RefNo1          to Global-Current-RefNo
@@ -2161,11 +2186,11 @@
               perform zz030-Write-Sort
      else
       if      wsFoundWord2 (1:7) = "GLOBAL "
-              move 1 to sw-Git
+              move 1 to SW-Git
               perform zz200-Load-Git thru zz200-Exit
       else
        if     wsFoundWord2 (1:9) = "EXTERNAL "
-              move 1 to sw-Git
+              move 1 to SW-Git
                         SW-External
               perform zz200-Load-Git thru zz200-Exit
        else
@@ -2177,8 +2202,8 @@
      if       HoldWSorPD = 7 and
               (wsFoundWord2 (1:6) = "TO    " or "FROM  " or "USING ")
               perform zz110-Get-A-Word thru zz110-Exit
-              inspect wsFoundWord2 tallying a for all "("
-              if a not = zero
+              inspect wsFoundWord2 tallying A for all "("
+              if A not = zero
                  move wsFoundWord2 to wsFoundNewWord5
                  unstring wsFoundNewWord5 delimited by "(" into wsFoundWord2
               end-if
@@ -2221,15 +2246,18 @@
  bb000-Process-Procedure Section.
  bb010-New-Record.
 *>
-*> at this point we need to get a word but have PROCEDURE (as in DIVISION) as wsFoundWord2
+*> at this point we need to get A word but have PROCEDURE (as in DIVISION) as wsFoundWord2
 *> but 1st, sort Global  table prior to running search(es) and I know it will happen for
 *>  every module in src after 1st one
-*>    this needs a rewrite as well as process a word etc is now a complete mess
+*>    this needs A rewrite as well as process A word etc is now A complete mess
 *>
      if       Git-Table-Count > 1
               sort  Git-Elements ascending Git-Word.
 *>
  bb020-GetAWord.
+     if       End-Prog
+       or     Source-Eof
+              go to bb000-Exit.
      perform  zz110-Get-A-Word thru zz110-Exit.
      if       End-Prog
               go to bb000-Exit.
@@ -2245,19 +2273,27 @@
      else
               move zero to a.
 *>
-     if       a > zero
+     if       A > zero
          and  wsFoundWord2 (1:5) = "CALL "
-              perform zz110-Get-A-Word thru zz110-Exit
-              if       wsFoundWord2 (1:1) = quote or = "'"
-                       unstring wsFoundWord2 (2:30) delimited by quote or "'"
-                             into wsFoundNewWord6
-              else
-                       move wsFoundWord2 to wsFoundNewWord6
-              end-if
+              perform until exit
+                       perform  zz110-Get-A-Word thru zz110-Exit
+                       if       wsFoundWord2 (1:1) = quote or = "'"
+                                unstring wsFoundWord2 (2:30) delimited by quote or "'"
+                                         into wsFoundNewWord6
+                                exit perform
+                       else
+                        if      FUNCTION UPPER-CASE (wsFoundWord2) = "STATIC" or "STDCALL"
+                                exit perform cycle   *> get next word
+                        else
+                                move wsFoundWord2 to wsFoundNewWord6
+                                exit perform
+                        end-if
+                       end-if
+              end-perform
               move 5 to SkaWSorPD
               move wsFoundNewWord6 to SkaDataName
               if       Reports-In-Lower
-                       move function LOWER-CASE (wsFoundWord2 (1:CWS)) to SkaDataName
+                       move FUNCTION LOWER-CASE (wsFoundWord2 (1:CWS)) to SkaDataName
               end-if
               move Gen-RefNo1 to SkaRefNo
               move 1 to USect (SkaWSorPD)                 *> Track for analysis - Needed?
@@ -2272,9 +2308,9 @@
               end-if
      end-if.
 *>
-*> Do we have a reserved word? a = 0 means no or a number so ignore
+*> Do we have A reserved word? A = 0 means no or A number so ignore
 *>
-     if       a > zero
+     if       A > zero
               go to bb020-GetAWord.
      if       wsf1-1-Number
               go to bb020-GetAWord.
@@ -2306,15 +2342,15 @@
      if       wsf1-3 = ">= " or = "<= " or = "<> "
               go to bb020-GetAWord.
 *>
-*> we have a dataname and are we at word one with period delimiter
-*> is it a paragraph?
+*> we have A dataname and are we at word one with period delimiter
+*> is it A paragraph?
 *>
      move     2 to HoldWSorPD2.
      if       Word-Delimit = "."
           and Source-Words = 1
               move zero to HoldWSorPD2.
 *>
-*> Check if we have a section name if so set wdorpd2 = 1
+*> Check if we have A section name if so set wdorpd2 = 1
 *>
      string   wsFoundWord2 (1:Word-Length) delimited by size
               " SECTION" delimited by size
@@ -2339,7 +2375,7 @@
 *>   xxx)))
 *>
      move     spaces to wsFoundNewWord3.
-     move     zero to a c d q y s2 z3.   *> 25/3/22 removed s, Z2
+     move     zero to A c d Q y s2 z3.   *> 25/3/22 removed s, Z2
      move     1 to s.                   *> Working Word start point
      move     Word-Length to z z2.      *> Working Word Length
 *>
@@ -2384,10 +2420,10 @@
 *>
      inspect  wsFoundWord2 (s:z2) replacing all ")" by space.
 *>
-     inspect  wsFoundWord2 (s:z2) tallying a for all "(".
-     inspect  wsFoundWord2 (s:z2) tallying a for all ")".
-     if       a > zero                  *> should not have braces now
-              display "bb053:Logic Error (A=" a " B=" b " Z2= " Z2 " on " wsFoundWord2 (1:80)
+     inspect  wsFoundWord2 (s:z2) tallying A for all "(".
+     inspect  wsFoundWord2 (s:z2) tallying A for all ")".
+     if       A > zero                  *> should not have braces now
+              display "bb053:Logic Error (A=" A " B=" b " Z2= " Z2 " on " wsFoundWord2 (1:80)
               go to bb020-GetAWord
      end-if
 *>
@@ -2395,13 +2431,13 @@
      inspect  wsFoundWord2 (s:z2) tallying y for all "'".
 *>
      if       y > zero                  *> quotes?
-              move  zero to b      q t
+              move  zero to b      Q t
               subtract 1 from s giving a
               go to bb060-Scan4-Quotes
      end-if
      inspect  wsFoundWord2 (s:z2) tallying c for all ":".
-     if       c > zero                  *> a colon?
-              move  zero to b q t
+     if       c > zero                  *> A colon?
+              move  zero to b Q t
               go to bb100-scan4-colon.
 *>
  bb054-spaces.
@@ -2419,7 +2455,7 @@
               end-if
               move wsFoundNewWord to wsFoundWord2
               perform zz130-Extra-Reserved-Word-Check thru zz130-Exit
-              if  a > zero              *> reserved word
+              if  A > zero              *> reserved word
                       go to bb020-GetAWord
               end-if
               perform zz030-Write-Sort
@@ -2432,10 +2468,10 @@
 *>
  bb060-Scan4-Quotes.
 *>
-*> we are testing if more than 1 word present inc. a literal but it shouldnt
+*> we are testing if more than 1 word present inc. A literal but it shouldnt
 *>
-     add      1 to a.        *>  q now a = field start,  s now b, z = rightmost char
-     if       a not > z      *> check for end of data in field
+     add      1 to a.        *>  Q now A = field start,  s now b, z = rightmost char
+     if       A not > z      *> check for end of data in field
         and   wsFoundWord2 (a:1) not = quote and not = "'"
               add 1 to b
               move wsFoundWord2 (a:1) to wsFoundNewWord3 (b:1)
@@ -2446,17 +2482,17 @@
  bb070-Got-Quote.        *> starts at 1st quote
      add      1 to a.
      add      1 to t.  *> t = literal length (no quotes)
-     if       a > z                       *> Word-Length
+     if       A > z                       *> Word-Length
               go to bb090-Recover-Word.
      if       wsFoundWord2 (a:1) not = quote and not = "'"
               go to bb070-Got-Quote.
-     add      1 to a. *> a = next char after 2nd quote
+     add      1 to a. *> A = next char after 2nd quote
      add      1 to t.
 *>
 *> t = quoted lit length including quotes
 *>   and we are now at end quote + 1
  bb080-Quote-Clean.
-     if       a > z                       *> Word-Length
+     if       A > z                       *> Word-Length
               go to bb090-Recover-Word.
      if we-are-testing
          display "bb080: found 2nd word in scan=" wsFoundWord2
@@ -2483,7 +2519,7 @@
 *>
      move     spaces to wsFoundNewWord wsFoundNewWord2.
      move     1 to t.
-     unstring wsFoundWord2 (s:z2) delimited by ":" into wsFoundNewWord count q pointer t.
+     unstring wsFoundWord2 (s:z2) delimited by ":" into wsFoundNewWord count Q pointer t.
 *> t now : +1
      unstring wsFoundWord2 (s:z2) delimited by " " into wsFoundNewWord2 count b pointer t.
      if     t not > z2 or not = Word-Length
@@ -2602,9 +2638,9 @@
 *>
  bc050-Check-Q.
      if       XrDataName not = spaces
-         and  q = zero
+         and  Q = zero
               move 1 to q.
-     if       q > zero
+     if       Q > zero
               write PrintLine after 1
               add   1 to Line-Count
               if  Line-Count > Compiler-Line-Cnt
@@ -2616,7 +2652,7 @@
 *>
  bc060-ConnectC.
      move     spaces to PrintLine.
-     if       function STORED-CHAR-LENGTH (SkaDataName) > 32
+     if       FUNCTION STORED-CHAR-LENGTH (SkaDataName) > 32
               move     SkaDataName to XrDataName-Long
               add      1 to Line-Count
               write    PrintLine-OverFlow after 1
@@ -2631,7 +2667,7 @@
      go       to bc080-Exit.
 *>
  bc070-ConnectD.
-     if       q > 11       *> was 7  ditto for all the others in reporting  25/3/22
+     if       Q > 11       *> was 7  ditto for all the others in reporting  25/3/22
               perform bc050-Check-Q.
      add      1 to q.
      add      1 to WS-Xr-Count.
@@ -2642,9 +2678,9 @@
      Exit.
 *>
  bc090-Set-Xr.
-     move WS-Xr-Count to WS-Xr-Countz.
-     move function TRIM (WS-xr-CountZ, LEADING) to Xr-Count.
-     move "x" to Xr-X.
+     move     WS-Xr-Count to WS-Xr-Countz.
+     move     FUNCTION TRIM (WS-xr-CountZ, LEADING) to Xr-Count.
+     move     "x" to Xr-X.
 *>
  bc090-Last-Pass2.
 *>****************
@@ -2718,7 +2754,7 @@
      if       SkaDataName = saveSkaDataName
               go to bc160-ConnectD2.
 *>
-     if       SkaWSorPD not = WS-Anal1   *> did include a > WS-Anal1 but this covers it 20/3/22
+     if       SkaWSorPD not = WS-Anal1   *> did include A > WS-Anal1 but this covers it 20/3/22
               go to bc170-Exit.
 *>
 *> new variable groups 0 (10), 1 thru 7
@@ -2733,9 +2769,9 @@
 *>
  bc140-Check-Q.
      if       XrDataName not = spaces
-         and  q = zero
+         and  Q = zero
               move 1 to q.
-     if       q > zero
+     if       Q > zero
               write PrintLine after 1
               add   1 to Line-Count
               if  Line-Count > Compiler-Line-Cnt
@@ -2753,7 +2789,7 @@
 *>
  bc150-ConnectC2.
      move     spaces to PrintLine.
-     if       function STORED-CHAR-LENGTH (SkaDataName) > 32
+     if       FUNCTION STORED-CHAR-LENGTH (SkaDataName) > 32
               move  SkaDataName to XrDataName-Long
               add   1 to Line-Count
               write Printline-Overflow after 1
@@ -2769,7 +2805,7 @@
      go       to bc170-Exit.
 *>
  bc160-ConnectD2.
-     if       q > 11
+     if       Q > 11
               perform bc140-Check-Q.
      add      1 to q.
      add      1 to WS-Xr-Count.                     *>  25/3/22
@@ -2799,11 +2835,11 @@
      go       to bc194-Now-Reverse.
 *>
  bc192-Print-Conditions.
-     if       a < Con-Tab-Count
+     if       A < Con-Tab-Count
               add 1 to a
               move spaces to PrintLine2
-              move  Conditions (a) to P-Variables
-              move  Variables (a) to P-Conditions
+              move  Conditions (A) to P-Variables
+              move  Variables (A) to P-Conditions
               write PrintLine2 after 1
               add   1 to Line-Count
               if  Line-Count > Compiler-Line-Cnt
@@ -2913,7 +2949,7 @@
 *>
  bc250-ConnectC3.
      move     spaces to PrintLine.
-     if       function STORED-CHAR-LENGTH (SkaDataName) > 32
+     if       FUNCTION STORED-CHAR-LENGTH (SkaDataName) > 32
               move SkaDataName to XrDataName-Long
               add  1 to Line-Count
               write Printline-Overflow after 1
@@ -2932,7 +2968,7 @@
      go       to bc270-Exit.
 *>
  bc260-ConnectD3.
-     if       q > 11
+     if       Q > 11
               perform bc280-Check-Q.
      add      1 to q.
      add      1 to WS-Xr-Count.                     *>  25/3/22
@@ -2944,9 +2980,9 @@
 *>
  bc280-Check-Q.
      if       XrDataName not = spaces
-         and  q = zero
+         and  Q = zero
               move 1 to q.
-     if       q > zero
+     if       Q > zero
               write PrintLine after 1
               add   1 to Line-Count
               if  Line-Count > Compiler-Line-Cnt
@@ -3017,9 +3053,9 @@
 *>
  bc335-Check-Q.
      if       XrDataName not = spaces
-         and  q = zero
+         and  Q = zero
               move 1 to q.
-     if       q > zero
+     if       Q > zero
               write PrintLine after 1
               add   1 to Line-Count
               move zero to q
@@ -3028,7 +3064,7 @@
 *>
  bc340-ConnectC4.
      move     spaces to PrintLine.
-     if       function STORED-CHAR-LENGTH (SkaDataName) > 32
+     if       FUNCTION STORED-CHAR-LENGTH (SkaDataName) > 32
               move SkaDataName to XrDataName-Long
               add  1 to Line-Count
               write Printline-Overflow after 1
@@ -3041,7 +3077,7 @@
      go       to bc360-Exit.
 *>
  bc350-ConnectD4.
-     if       q > 11
+     if       Q > 11
               perform bc335-Check-Q.
      add      1 to q.
      add      1 to WS-Xr-Count.                     *>  25/3/22
@@ -3098,7 +3134,7 @@
      if       SkaDataName = saveSkaDataName
               move 2 to q
               go to bc450-Exit.
-*> 1st copy of a name cant be non w-s
+*> 1st copy of A name cant be non w-s
      if       SkaWSorPD > 7
               go to bc450-Exit.
 *> print Only occurance then store new one
@@ -3106,10 +3142,10 @@
 *>
      move     SkaDataName to saveSkaDataName.
 *>
-*> first record for a given name
+*> first record for A given name
 *>
      move     spaces to PrintLine.
-     if       function STORED-CHAR-LENGTH (SkaDataName) > 32
+     if       FUNCTION STORED-CHAR-LENGTH (SkaDataName) > 32
               move SkaDataName to XrDataName-Long
               add  1 to Line-Count
               write Printline-Overflow after 1
@@ -3117,12 +3153,14 @@
      else
               move     SkaDataName to XrDataName.
      move     SkaRefNo to XrDefn.
+     if       SkaWSorPD = zero          *> CDF is set to zero for sorting
+              move 10 to SkaWSorPD.
      move     LSect (SkaWSorPD) to XrType.
      move     1 to q.
      go       to bc450-Exit.
 *>
  bc440-Check-4Old.
-     if       q = 1
+     if       Q = 1
               move 1 to S-Pointer
               add   1 to Line-Count
               write PrintLine after 1
@@ -3171,7 +3209,7 @@
               move zero to q
               go to bc550-Exit.
 *> print only occurance then store new one
-     if       q = 1
+     if       Q = 1
         and   saveSkaWSorPD = 8
               move 1 to S-Pointer
               add   1 to Line-Count
@@ -3183,10 +3221,10 @@
      move     SkaDataName to saveSkaDataName.
      move     SkaWSorPD to saveSkaWSorPD.
 *>
-*> first record for a given name
+*> first record for A given name
 *>
      move     spaces to PrintLine.
-     if       function STORED-CHAR-LENGTH (SkaDataName) > 32
+     if       FUNCTION STORED-CHAR-LENGTH (SkaDataName) > 32
               move SkaDataName to XrDataName-Long
               add  1 to Line-Count
               write Printline-Overflow after 1
@@ -3194,6 +3232,9 @@
      else
               move     SkaDataName to XrDataName.
      move     SkaRefNo to XrDefn.
+     if       SkaWSorPD = zero          *> CDF is set to zero for sorting
+              move 10 to SkaWSorPD.
+
      if       SkaWSorPD2 not = 1
               move LSect (SkaWSorPD) to XrType
      else
@@ -3202,7 +3243,7 @@
      go       to bc550-Exit.
 *>
  bc540-Check-4Old.
-     if       q = 1
+     if       Q = 1
           and saveSkaWSorPD = 8
               move 1 to S-Pointer
               add   1 to Line-Count
@@ -3233,22 +3274,22 @@
      perform  zz150-WriteHdb thru zz150-Exit.
      perform  zz150-WriteHdb2b thru zz150-Exit.
      move     spaces to PrintLine.
-     perform  varying a from 1 by 1 until a > Git-Table-Count
-              if   Git-Used-By-CDF (a) = "Y"         *> Don't print CDF in Global report
+     perform  varying A from 1 by 1 until A > Git-Table-Count
+              if   Git-Used-By-CDF (A) = "Y"         *> Don't print CDF in Global report
                    exit perform cycle
               end-if
-              if   Git-Word (a) = spaces      or = high-values      *> check for deleted entry
-                or Git-Prog-Name (a) = spaces or = high-values      *>  Ditto
+              if   Git-Word (A) (1:8) = spaces      or = high-values      *> check for deleted entry
+                or Git-Prog-Name (A) (1:8) = spaces or = high-values      *>  Ditto,   Test for 1st 8 chars 17/10/22
                    exit perform cycle
               end-if
-              move Git-RefNo (a)      to XrDefn
-              move Git-HoldWSorPD (a) to b
+              move Git-RefNo (A)      to XrDefn
+              move Git-HoldWSorPD (A) to b
               if Reports-In-Lower
-                  move function LOWER-CASE (Git-Word (a))      to XrDataName
-                  move function LOWER-CASE (Git-Prog-Name (a)) to PL-Prog-Name
+                  move FUNCTION LOWER-CASE (Git-Word (A))      to XrDataName
+                  move FUNCTION LOWER-CASE (Git-Prog-Name (A)) to PL-Prog-Name
               else
-                  move Git-Word (a)      to XrDataName
-                  move Git-Prog-Name (a) to PL-Prog-Name
+                  move Git-Word (A)      to XrDataName
+                  move Git-Prog-Name (A) to PL-Prog-Name
               end-if
               if   XrDataName (1:3) = spaces   *> Only printed once
                    exit perform cycle
@@ -3258,11 +3299,11 @@
               else
                    move LSect (10) to XrType
               end-if
-              if   Git-External (a) = space
+              if   Git-External (A) = space
                    move "G" to XrCond
               else
                    move "E" to XrCond
-                   move spaces to Git-Word (a)  *> so its only done once
+                   move spaces to Git-Word (A)  *> so its only done once
               end-if
               add   1 to Line-Count
               write PrintLine after 1
@@ -3271,6 +3312,15 @@
                   perform  zz150-WriteHdb2b thru zz150-Exit
               end-if
      end-perform.
+*>
+*> New code for 28/09/22 to flush Git tables for CDF DEFINES if
+*>  Only done if we found A END PROGRAM / FUNCTION
+*>
+     if       SW-Got-End-Prog not = zero
+        and   Hold-End-Program not = spaces
+              perform zz210-Remove-CDF-From-Git-Table thru zz210-Exit
+              move zero to SW-Got-End-Prog
+              move spaces to Hold-End-Program.
 *>
  bc600-Exit.
      exit.
@@ -3284,24 +3334,24 @@
 *>
      perform  zz150-WriteHdb thru zz150-Exit.
      perform  zz150-WriteHdb6 thru zz150-Exit.
-     move     zero to a b.
-     perform  varying a from 1 by 1 until a > Git-Table-Count
-              if    Git-In-Use-Flag (a) = space
+     move     zero to A b.
+     perform  varying A from 1 by 1 until A > Git-Table-Count
+              if    Git-In-Use-Flag (A) = space
                     move  spaces to PrintLine
-                    move  Git-Word (a)  to XrDataName
-                    move  git-RefNo (a) to XrDefn
-                    if    Git-HoldWSorPD (a) NOT = zero
-                          move Git-HoldWsorPD (a) to E2
+                    move  Git-Word (A)  to XrDataName
+                    move  git-RefNo (A) to XrDefn
+                    if    Git-HoldWSorPD (A) NOT = zero
+                          move Git-HoldWsorPD (A) to E2
                     else
                           move 10 to E2
                     end-if
                     move LSect (E2) to XrType       *> 17/3/22
-                    if  Git-Build-No (a) = 88
+                    if  Git-Build-No (A) = 88
                         move "C" to XrCond
                     else
                         move space to XrCond
                     end-if
-                    if   Git-Used-By-CDF (a) = "Y"
+                    if   Git-Used-By-CDF (A) = "Y"
                          move "D" to XrCond
                     end-if
                     move 1 to b
@@ -3380,10 +3430,10 @@
 *>
  bc735-Check-Q.
      if       PL4-Name not = spaces
-         and  q = zero
-              move 1 to q            *> data present so force print
+         and  Q = zero
+              move 1 to Q            *> data present so force print
      end-if
-     if       q > zero
+     if       Q > zero
               write PrintLine after 1
               add   1 to Line-Count
               move zero to q
@@ -3391,7 +3441,7 @@
 *>
  bc740-ConnectC4.
      move     spaces to PrintLine.
-     if       function STORED-CHAR-LENGTH (SkaDataName) > 32
+     if       FUNCTION STORED-CHAR-LENGTH (SkaDataName) > 32
               move SkaDataName to XrDataName-Long
               add  1 to Line-Count
               write Printline-Overflow after 1
@@ -3405,7 +3455,7 @@
               move "USER  " to PL4-Type.
 *>
  bc750-ConnectD4.
-     if       q > 11
+     if       Q > 11
               perform bc735-Check-Q.
      add      1 to q.
      add      1 to WS-Xr-Count.                     *>  25/3/22
@@ -3415,7 +3465,8 @@
  bc760-Exit.
      exit.
 *>
- bc799-Exit.  exit.
+ bc799-Exit.
+     exit.
 *>
  bc000-Exit.
      exit.
@@ -3439,7 +3490,7 @@
      move     HoldWSorPD2 to SkaWSorPD2.
      move     wsFoundWord2 (1:CWS) to wsFoundNewWord4.
      if       Reports-In-Lower
-              move function LOWER-CASE (wsFoundWord2 (1:CWS)) to wsFoundNewWord4.
+              move FUNCTION LOWER-CASE (wsFoundWord2 (1:CWS)) to wsFoundNewWord4.
      if       HoldWSorPD > 7
               perform zz140-Function-Check thru zz140-Exit.
 *>
@@ -3461,17 +3512,17 @@
                   write SortRecord
               end-if
               if   HoldWSorPD > 7  *> only do for proc div
-                   perform zz220-Check-For-Globals thru zz229-Exit
+                   perform zz220-Check-For-Globals thru zz229-Exit  *> set Git-In-Use-Flag (A1) to 1 if found
               end-if
      end-if.
 *>
  zz100-Get-A-Source-Record.
 *>*************************
-*> reads a source record, ignoring comments cleans out excessive
+*> reads A source record, ignoring comments cleans out excessive
 *>   spaces, ';', ',' etc
 *>
      if       Had-End-Prog
-              move zero to sw-Had-End-Prog
+              move zero to SW-Had-End-Prog
               go to zz100-New-Program-point.
      if       End-Prog
               go to zz100-Exit.
@@ -3482,19 +3533,19 @@
      move     spaces to SourceRecIn
                         SourceInWS.
      read     SourceInput at end
-              move 1 to sw-Source-Eof
+              move 1 to SW-Source-Eof
               GO TO zz100-Exit.
-     move     function UPPER-CASE (SourceRecIn) to SourceInWS.
+     move     FUNCTION UPPER-CASE (SourceRecIn) to SourceInWS.
 *>
 *>  New code to support FIXED format sources so do comment tests 1st
 *>   then move cc8-72 to cc1 in record area for further processing.
 *>
 *> change tabs to spaces prior to printing & remove GC comment lines eg '#'
 *>
-     if       (SourceInWS (1:1) = "#" or = "$")  *> old stuff when using cobc -E
-              go to zz100-Get-A-Source-Record.   *>  but left in, JIC
+ *>    if       (SourceInWS (1:1) = "#" or = "$")  *> old stuff when using cobc -E
+ *>             go to zz100-Get-A-Source-Record.   *>  but leave in ?, JIC
 *>
-     if       SW-Fixed
+     if       (SW-Fixed or SW-Variable)
         and   (SourceInWS (7:1) = "*" or = "/")
               perform zz000-Inc-CobolRefNo
               perform zz000-Outputsource
@@ -3507,38 +3558,53 @@
      inspect  SourceInWS replacing all x"09" by space.
      inspect  SourceInWS replacing all ";" by space.
 *>
-*> This could cause a problem in ws so do in proc div
+*> This could cause A problem in ws so do in proc div
 *>
      if       HoldWSorPD = 8           *> chk 4 comma
               inspect SourceInWS replacing all "," by space
      end-if
      inspect  SourceInWS replacing all "&" by space.
 *>
-*>  First test if we have a >>SOURCE line from cc8.
-*>   then set sw-8 etc to fixed/free. MUST do before next
+*>  First test if we have A >>SOURCE line
+*>   then set SW-8 etc to fixed/free/variable. MUST do before next
 *>     test This, can be any where in sources.
 *>
-    move      zero to T2 T3.
-    if        function TRIM (SourceInWS) (1:9) = ">>SOURCE "
+    move      zero to T2 T3 T4.
+    if        FUNCTION TRIM (SourceInWS) (1:9) = ">>SOURCE "
+         or   FUNCTION TRIM (SourceInWS) (1:5) = ">>SET" or = "$SET "
               inspect SourceInWS tallying T2 for all "FIXED"
                                           T3 for all "FREE"
+                                          T4 for all "VARIABLE"
               if      T2 > zero
+          display "[1] Found >>SOURCE FIXED"
                       set SW-8-InUse to true
                       Set SW-Fixed to true
               end-if
               if      T3 > zero
+          display "[1] Found >>SOURCE FREE"
                       set SW-8-InUse to true
                       set SW-Free to true
               end-if
+              if      T4 > zero
+          display "[1] Found >>SOURCE VARIABLE"
+                      set SW-8-InUse to true
+                      set SW-Variable to true
+              end-if
      end-if
 *>
-*> Now if src is fixed move left 7 chars via space filled intermediary store
+*> Now if src is fixed or variable move left 7 chars via space filled intermediary store
 *>   We WILL lose hyphen in cc7
 *>
      if       SW-Fixed
               move SourceInWS (8:65) to SourceInWS2
               move spaces            to SourceInWS
               move SourceInWS2       to SourceInWS
+     else
+      if       SW-Variable
+              move SourceInWS (8:249) to SourceInWS2
+              move spaces            to SourceInWS
+              move SourceInWS2       to SourceInWS
+      end-if
      end-if
      perform  zz120-Replace-Multi-Spaces thru zz120-Exit.
      move     Line-End to Source-Line-End.
@@ -3551,18 +3617,21 @@
               go to zz100-Get-A-Source-Record
      end-if
 *>
-*> Will not process comment or CDF command (other than SOURCE earlier)
+*> Will not process comment or CDF command (other than SOURCE types earlier)
 *>
      if       SourceInWS (1:2) = "*>"
-        or   (SourceInWS (1:2) = ">>"                *> 26/3/22 and next 2
-        and   SourceInWS (1:17) not = ">>DEFINE CONSTANT"
-        and   SourceInWS (1:14) not = ">>SET CONSTANT")
+        or    SourceInWS (1:2) = "$I" or = "$E"  *> skip $IF, $ELIF, $ELSE, $END-IF, $ELSE-IF & $END
+ *>       and   (SourceInWS (1:8) not = ">>DEFINE"
+ *>       and   SourceInWS (1:14) not = ">>SET CONSTANT")
+*>        or    SourceInWS (1:4) not = "$SET"        *> ALL BAD CODE ???? but what will happen
+*>        or    SourceInWS (1:7) not = "$DEFINE"      *>  for say A $SET EXEC or SQL etc
+*>        or    SourceInWS (1: ) = ">>SET SOURCE"    *>   ????????
               perform zz000-Inc-CobolRefNo
               perform zz000-Outputsource
               go to zz100-Get-A-Source-Record
      end-if
 *>
-*> Now clear out comment heads in id div but will take up a lot of cpu cycles!!
+*> Now clear out comment heads in id div but will take up A lot of cpu cycles!!
 *>   so is it really NEEDED ??? - Only to match up with cobc.
 *>
      if       SourceInWS (1:7)  = "AUTHOR."
@@ -3595,31 +3664,41 @@
               write CopySourceRecIn2 from SourceInWS
      end-if
 *>
-*>  Should consider removing CDF entries for program after finding this and recording it in a vars
-*> 27/3/22
+*>  This is wrong as its removing CDF values BEFORE doing A xref and should be after !!!!!!!
 *>
+
      if       SourceInWS (1:12) = "END PROGRAM "
+        or    SourceInWS (1:13)  = "END FUNCTION"
               perform zz000-Inc-CobolRefNo
               perform zz000-Outputsource
-              unstring SourceInWS (13:64) delimited by space
-                            into Hold-End-Program
-              perform zz210-Remove-CDF-From-Git-Table thru zz210-Exit
+              perform  zz110-Get-A-Word thru zz110-Exit 3 times
+              if       wsf1-1 = quote or = "'"
+                       unstring wsFoundWord2 (2:32) delimited by quote or "'"
+                                          into wsFoundNewWord
+                       move wsFoundNewWord (1:CWS) to  wsFoundWord2
+              end-if
+              if       Reports-In-Lower
+                       move FUNCTION LOWER-CASE (wsFoundWord2) to Hold-End-Program
+              else
+                       move FUNCTION UPPER-CASE (wsFoundWord2) to Hold-End-Program
+              end-if
+              move    1 to SW-Got-End-Prog
               go to zz100-Get-A-Source-Record
      end-if
 *>
      if       HoldWSorPD > 7
         and   (SourceInWS (1:12) = "ID DIVISION."
          or    SourceInWS (1:20) = "IDENTIFICATION DIVIS")
-              move 1 to sw-End-Prog sw-Had-End-Prog sw-Nested
+              move 1 to SW-End-Prog SW-Had-End-Prog SW-Nested
               move 1 to S-Pointer2
               go to zz100-Exit
      end-if.
 *>
 *>   NOW for CDF processing - YES it is needs to be here as CDF can be any
-*>     where in source and create a GIT table entry as that basically what it
+*>     where in source and create A GIT table entry as that basically what it
 *>      is and if Nested programs exist in source it is the best place for them.
 *>
-*>    Am "ASSUMING" that a CDF DEFINE is valid throughout all nested programs
+*>    Am "ASSUMING" that A CDF DEFINE is valid throughout all nested programs
 *>     starting from the first one.
 *>
      move     spaces to wsFoundNewWord11
@@ -3631,15 +3710,20 @@
 *>
      if       wsFoundNewWord11 = ">>DEFINE"
          or                    = ">>SET"
+         or                    = "$SET"
+         or                    = "$DEFINE"
               unstring SourceInWS    delimited by space
                                 into wsFoundNewWord12  pointer E3
               if       wsFoundNewWord12 = "CONSTANT"
                        unstring SourceInWS    delimited by space
                                 into wsFoundNewWord13  pointer E3
-                       perform zz000-Inc-CobolRefNo
+              else
+                       move     wsFoundNewWord12 to wsFoundNewWord13
+              end-if                                          *> 8/9/22 as CONSTANT may not be present
+                       perform zz000-Inc-CobolRefNo           *>   but treat as the same
                        perform zz000-Outputsource
                        if       Reports-In-Lower
-                                move function LOWER-CASE (wsFoundNewWord13) to wsFoundWord2
+                                move FUNCTION LOWER-CASE (wsFoundNewWord13) to wsFoundWord2
                        else
                                 move    wsFoundNewWord13 to WSFoundWord2
                        end-if
@@ -3655,7 +3739,6 @@
                        perform  zz200-Load-Git thru  zz200-Exit
                        perform  zz030-Write-Sort
                        go to    zz100-Get-A-Source-Record
-              end-if
      end-if.
 *>
  zz100-New-Program-Point.
@@ -3665,7 +3748,7 @@
      move     zero to Source-Words.
 *>
 *> == cobol85/NC/NC113M.CBL   BUG FIX
-*> Check if we have a section name or proc. 1st word name only
+*> Check if we have A section name or proc. 1st word name only
 *> ie SECTION or DIVISION is on next line
 *> but that cant happen if line-end > 15
 *>
@@ -3711,11 +3794,16 @@
  zz110-Get-A-Word.
 *>****************
 *>  S-Pointer2 MUST be set to => 1 prior to call
-*> pointer is a tally of init leading spaces
+*> pointer is A tally of init leading spaces
 *>
      if       Source-Eof
           or  End-Prog
               go to zz110-Exit.
+*> moved from after pointer > end
+     if       S-Pointer2 > Source-Line-End
+          or  S-Pointer2 > 256       *> Was 1024
+              go to zz110-Get-A-Word-OverFlow
+     end-if.
 *> if S-Pointer2 = zero move 1 to S-Pointer2.
      if       S-Pointer2 not < Source-Line-End
          and  SourceInWS (S-Pointer2:1) = "."    *>  was  SourceInWS (S-Pointer2 - 1:1) = "."   00/02/22
@@ -3724,14 +3812,10 @@
               move space to SourceInWS (S-Pointer2:1)
               move spaces to wsFoundWord2
               go to zz110-Exit
-     end-if
+     end-if.
 *>     if       S-Pointer2 < Source-Line-End
 *>              inspect SourceInWS tallying S-Pointer2 for leading spaces.
 *>
-     if       S-Pointer2 > Source-Line-End
-          or  S-Pointer2 > 256       *> Was 1024
-              go to zz110-Get-A-Word-OverFlow
-     end-if.
 *>
 *> S-Pointer2 = 1st non space
 *>
@@ -3778,7 +3862,7 @@
 *> this next test may not be needed ????
 *>**************        and   Word-Delimit = "."
         and   (SourceInWS (s:1) = "$" or = Currency-Sign
-                             or = "£"
+                             or = "ï¿½"
                              or = "/" or = "B" or = "0" or = "."
                              or = "," or = "+" or = "-" or = "C"
                              or = "D" or = "*" or = "Z" or = "9"
@@ -3796,7 +3880,7 @@
               move 1 to WasPicture
      end-if
 *>
-*> This could cause a problem ??????
+*> This could cause A problem ??????
 *>
      if       GotPicture = zero
               inspect  wsFoundWord2 replacing all "," by space
@@ -3864,6 +3948,8 @@
 *>
  zz110-Get-A-Word-OverFlow.
      move     1 to S-Pointer2.
+     if       Source-Eof
+              go to zz110-Exit.
      perform  zz100-Get-A-Source-Record thru zz100-Exit.
      if       Source-Eof
               go to zz110-Exit.
@@ -3896,7 +3982,7 @@
 *>
  zz120-Replace-Multi-Spaces.
 *>**************************
-*> remove any multi spaces within a source line
+*> remove any multi spaces within A source line
 *>   find actual length of record in d
 *>
 *> run profiler against these routines and tidy them up if needed
@@ -3908,7 +3994,7 @@
      if       d < 1                   *> Blank line found
               go to zz120-Exit.
 *>
-     move     zero to a b c.
+     move     zero to A b c.
      move     spaces to wsFoundNewWord5.
      perform  zz120-Kill-Space thru zz120-Kill-Space-Exit.
      move     spaces to SourceInWS.
@@ -3920,7 +4006,7 @@
 *>
  zz120-Kill-Space.
      add      1 to a.
-     if       a > d
+     if       A > d
               go to zz120-Kill-Space-Exit.
      if       SourceInWS (a:1) = space and c = 1
               add 1 to b
@@ -3929,7 +4015,7 @@
 *>
      if       SourceInWS (a:1) = space
               go to zz120-Kill-Space.
-     subtract 1 from a giving E2.         *> a will always be 2 or more here
+     subtract 1 from A giving E2.         *> A will always be 2 or more here
      if       SourceInWS (a:1) = "("
          and  SourceInWS (E2:1) not = space
          and  HoldWSorPD > 7
@@ -3954,9 +4040,9 @@
      move     zero to a.
      search   all Reserved-Names at end go to zz130-exit
               when Resvd-Word (Resvd-Idx) = wsFoundWord2 (1:30)
-                    set a to Resvd-Idx.
-     if       a not = zero
-        and   wsFoundWord2 (1:8) = "FUNCTION" or = "function"
+                    set A to Resvd-Idx.
+     if       A not = zero
+        and   FUNCTION UPPER-CASE (wsFoundWord2 (1:8)) = "FUNCTION"        *>  or = "FUNCTION"
               move 1 to FoundFunction
      else
               move zero to FoundFunction.
@@ -3968,13 +4054,13 @@
 *>*****************
 *> CALLS:  Only after moving all values to SortRecord and before write verb.
 *>
-*> Do we have an System (call) name or a user one?
+*> Do we have an System (call) name or A user one?
 *>           if so modify sort rec for section printing
 *>
      move     zero to S-Pointer3.
      move     2 to SkaWSorPD2.
      search   all All-Systems  at end  go to zz135-exit
-              when P-System (All-System-Idx) = function UPPER-CASE (SkaDataName)
+              when P-System (All-System-Idx) = FUNCTION UPPER-CASE (SkaDataName)
                   move 1 to SkaWSorPD2
                   set S-Pointer3 to All-System-Idx.
 *>
@@ -3988,11 +4074,11 @@
 *> Do we have an intrinsic function name
 *>           if so modify sort rec for section printing
 *> Note that P-oc-implemented = zero if not implemented,
-*>    but treated as the same as its still a reserved word
+*>    but treated as the same as its still A reserved word
 *>
      move     zero to F-Pointer.
      search   all All-Functions  at end go to zz140-exit
-              when P-function (All-Fun-Idx) = function UPPER-CASE (wsFoundNewWord4)
+              when P-function (All-Fun-Idx) = FUNCTION UPPER-CASE (wsFoundNewWord4)
                   move 9 to SkaWSorPD
                   move 1 to SkaWSorPD2
                   set F-Pointer to All-Fun-Idx.
@@ -4003,7 +4089,7 @@
 *>   Heading and sub heading routines.
 *>
  zz150-WriteHdb.
-*> Have a blank line for users reading the listing file avoiding the ugly header placement.
+*> Have A blank line for users reading the listing file avoiding the ugly header placement.
      move     spaces to PrintLine.
      if       Page-No not = zero
               write PrintLine after 1
@@ -4075,7 +4161,7 @@
  zz150-WriteHdb2b.
      move     spaces to PrintLine.
      write    PrintLine.
-     move    "ALL GLOBALS)" to hdr7-variable.
+     move     "ALL GLOBALS)" to hdr7-variable.
      write    PrintLine from hdr7-ws.
      write    PrintLine from hdr3.
      move     spaces to PrintLine.
@@ -4085,7 +4171,7 @@
  zz150-WriteHdb2c.           *> Not used yet.
      move     spaces to PrintLine.
      write    PrintLine.
-     move    "ALL EXTERNALS)" to hdr7-variable.
+     move     "ALL EXTERNALS)" to hdr7-variable.
      write    PrintLine from hdr7-ws.
      write    PrintLine from hdr3.
      move     spaces to PrintLine.
@@ -4184,7 +4270,7 @@
 *> Changed section so we can clear Global flag
 *>
      if       GotASection = "Y"
-              move zero to sw-Git
+              move zero to SW-Git
                            SW-External
      end-if.
 *>
@@ -4211,10 +4297,9 @@
      perform  zz182-Get-Env-Set-TempFiles thru zz184-Exit.
 *>
  zz180-Check-For-Param-Errors.
-     if       SourceFileName = spaces or
-              String-Pointer < 5
+     if       SourceFileName = spaces
               display Prog-Name
-              move function CURRENT-DATE to WS-When-Compiled
+              move FUNCTION CURRENT-DATE to WS-When-Compiled
               display "Copyright (c) 1967-" no advancing
               display WS-WC-YY no advancing
               display " Vincent Bryan Coen"
@@ -4222,29 +4307,28 @@
               display "Parameters are"
               display " "
               display " 1: Source File name (Mandatory)"
-              display " 2: -FREE  Source format otherwise it is set to FIXED"
-              display " 3: -R     Do NOT print out source code prior to xref listings"
-              display " 4: -L     Reports in lowercase otherwise in upper"
-              display " 5: -DR    Display All reserved words & stop"
-              display " 6: -VT    Do not display messages when updating any reserved word tables"
-              display " 7: -E     Create compressed source file (same as cobc -E)"
-              display " 8: -AX    Produce Xrefs at end of all program listings"
+              display " 2: -FREE  Source format otherwise it is set to FIXED OR"
+              display " 3: -VARIABLE Source format"
+              display " 4: -R     Do NOT print out source code prior to xref listings"
+              display " 5: -L     Reports in lowercase otherwise in upper"
+              display " 6: -DR    Display All reserved words & stop"
+              display " 7: -VT    Do not display messages when updating any reserved word tables"
+              display " 8: -E     Create compressed source file (same as cobc -E)"
+              display " 9: -AX    Produce Xrefs at end of all program listings"
               display "           Not yet implemented - Depends on requests for it"
-              display " 9: -G     Produce only group xref: Comp. MF"
-              display "10: -BOTH  Produces as in -G followed by normal xref reports"    *> 24/3/22
-              display "11: -TEST  Produces testing info (for programmers use only)"
+              display "10: -G     Produce only group xref: Comp. MF"
+              display "11: -BOTH  Produces as in -G followed by normal xref reports"    *> 24/3/22
+              display "12: -TEST  Produces testing info (for programmers use only)"
               display "           also produces free format src in source filename.src"
-              display "12: -V     Verbose output - for testing only"
-              display "13: -H     Display this help message"
-              display "   --H     as -H"
+              display "13: -V     Verbose output - for testing only"
               move zero to return-code
               goback.
 *>
      move     1 to String-Pointer String-Pointer2.
-     perform  varying a from 64 by -1 until Sourcefilename (a:1) not = space
+     perform  varying A from 64 by -1 until Sourcefilename (a:1) not = space
               continue
      end-perform
-     move     a to b.
+     move     A to b.
   *>
      perform  varying b from b by -1 until b < 2 or SourceFileName (b:1) = "."
               continue
@@ -4268,18 +4352,7 @@
 *>
 *> Can now convert to UPPER-CASE as source filename is processed
 *>
-     move     function UPPER-CASE (Arg-Vals) to Arg-Vals.
-*>
-*> Check if help requested
-*>
-     if       "-H" = Arg-Value (2) or Arg-Value (3)
-           or Arg-Value (4)
-              move zero to String-Pointer
-              go to zz180-Check-For-Param-Errors.
-     if       "--H" = Arg-Value (2) or Arg-Value (3)
-           or Arg-Value (4)
-              move zero to String-Pointer
-              go to zz180-Check-For-Param-Errors.
+     move     FUNCTION UPPER-CASE (Arg-Vals) to Arg-Vals.
 *>
 *> Check v4 if we are dumping all reserved words then quitting
 *>
@@ -4287,7 +4360,7 @@
            or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
            or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
            or Arg-Value (10) or Arg-Value (11) or Arg-Value (12)
-              move 1 to sw-4
+              move 1 to SW-4
               go to zz180-Exit.
 *>
 *> Check v2 if we are NOT listing the source
@@ -4296,7 +4369,7 @@
            or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
            or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
            or Arg-Value (10) or Arg-Value (11) or Arg-Value (12)
-              move "N" to sw-2.
+              move "N" to SW-2.
 *>
 *> Check if we are producing compressed src
 *>
@@ -4304,7 +4377,7 @@
            or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
            or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
            or Arg-Value (10) or Arg-Value (11) or Arg-Value (12)
-              move "Y" to sw-3.
+              move "Y" to SW-3.
 *>
 *> Check v5 if we are testing
 *>
@@ -4313,7 +4386,7 @@
            or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
            or Arg-Value (10) or Arg-Value (11) or Arg-Value (12)
               display " extra information for testing"
-              move "Y" to sw-5.
+              move "Y" to SW-5.
 *>
 *> Check v6 if we are are doing Lower case reports instead of upper
 *>
@@ -4321,7 +4394,7 @@
            or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
            or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
            or Arg-Value (10) or Arg-Value (11) or Arg-Value (12)
-              move 1 to sw-6.
+              move 1 to SW-6.
 *>
 *> Check if xrefs all at end of source listings  -  NOT YET IMPLEMENTED
 *>
@@ -4329,17 +4402,25 @@
            or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
            or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
            or Arg-Value (10) or Arg-Value (11) or Arg-Value (12)
-              move "Y" to sw-7.
+              move "Y" to SW-7.
 *>
 *> Check v8 if we are using free source format (default is fixed)
-*>    if found then sw-8-inuse will be (sw-8-usd) true
+*>    if found then SW-8-inuse will be (SW-8-usd) true
 *>
      if       "-FREE" = Arg-Value (2) or Arg-Value (3)
-           or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
-           or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
-           or Arg-Value (10) or Arg-Value (11) or Arg-Value (12)
-              move "Y" to sw-8
-                          sw-8-usd.
+              move "Y" to SW-8-usd
+              set SW-Free to true.    *>        SW-8
+*>
+*> Check v8 if we are using Variable source format   V2.03.07
+*>    if found then SW-8-inuse will be (SW-8-usd) true
+*>
+     if       "-VARIABLE" = Arg-Value (2) or Arg-Value (3)
+              move "V" to SW-8-usd
+              set  SW-Variable to true.   *>            SW-8.
+*>
+     if       Arg-Value (2) not = "-FREE" and Arg-Value (3) not = "-FREE"
+       and    Arg-Value (2) not = "-VARIABLE" and Arg-Value (3) not = "-VARIABLE"
+              set  SW-Fixed to true.
 *>
 *> Check if displays for updating reserved word tables are not wanted.
 *>
@@ -4347,7 +4428,7 @@
            or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
            or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
            or Arg-Value (10) or Arg-Value (11) or Arg-Value (12)
-              move "Y" to sw-9.
+              move "Y" to SW-9.
 *>
 *> Check v11 if verbose output required
 *>
@@ -4355,7 +4436,7 @@
            or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
            or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
            or Arg-Value (10) or Arg-Value (11) or Arg-Value (12)
-              move "Y" to sw-11.
+              move "Y" to SW-11.
 *>
      if       Verbose-Output
               display  "Using input = " SourceFileName
@@ -4365,13 +4446,13 @@
 *>  THIS BLOCK FOR TESING and Comparing listing against MF etc  *
 *>***************************************************************
 *>
-*> Check v1 if we are are only doing a group xref ie W-S and procedure
+*> Check v1 if we are are only doing A group xref ie W-S and procedure
 *>
      if       "-G " = Arg-Value (2) or Arg-Value (3)
            or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
            or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
            or Arg-Value (10) or Arg-Value (11) or Arg-Value (12)
-              move "A" to sw-1.
+              move "A" to SW-1.
 *>
 *>  Check for -BOTH implies -G followed by normal xref reporting  24/3/22
 *>
@@ -4379,8 +4460,8 @@
            or Arg-Value (4) or Arg-Value (5) or Arg-Value (6)
            or Arg-Value (7) or Arg-Value (8) or Arg-Value (9)
            or Arg-Value (10) or Arg-Value (11) or Arg-Value (12)
-              move "A" to sw-1
-              move "Y" to sw-12.
+              move "A" to SW-1
+              move "Y" to SW-12.
 *>
 *>***************************************************************
 *>    END OF SPECIAL TEST BLOCK but with bc030 - bc080 also     *
@@ -4399,14 +4480,16 @@
      if       not Verbose-Output
               go to zz180-Test.
 *>
-     if       sw-Free                      *>  = "Y"
-              display " Free Format source"
-      else
+     if       SW-Free                      *>  = "Y"
+              display " Free Format source".
+     if       SW-Variable
+              display " Variable Format source".
+     if       SW-Fixed
               display " Fixed Format source".
      if       Reports-In-Lower
               display " Reports in Lower Case"
       else
-              display " Reports in Upper Case".
+              display " Reports in UPPER CASE".
 *>
  zz180-Test.
 *>
@@ -4414,13 +4497,14 @@
 *>
      move     SourceFileName to LS-Source-File.
      move     Prog-BaseName  to LS-Prog-BaseName.     *> o/p = prog-basename + ".pro"
-     move     sw-8           to LS-Prog-Format.
-     move     sw-11          to LS-SW-11.
+     move     SW-8           to LS-Prog-Format.
+     move     SW-11          to LS-SW-11.
 *>
      call     "printcbl" using LS-Source-File
                                LS-Prog-BaseName
                                LS-Prog-Format
                                LS-SW-11
+                               LS-Nested-Start-Points
                                return-code.
 *>
 *>=================================================================================
@@ -4489,7 +4573,7 @@
            display  "Temp path used is " Temp-PathName.
 *>
  zz184-Exit.
-     Exit.
+     exit.
 *>
  zz180-Exit.
      exit.
@@ -4506,7 +4590,7 @@
               wsFoundNewWord2 wsFoundNewWord.
      move     high-values to Condition-Table.
      move     10 to Con-Tab-Size.
-     move     zeros to GotEndProgram sw-Source-Eof Section-Used-Table
+     move     zeros to GotEndProgram SW-Source-Eof Section-Used-Table
               HoldWSorPD HoldWSorPD2 Con-Tab-Count.
      move     1 to S-Pointer F-Pointer S-Pointer2.
 *>
@@ -4522,30 +4606,31 @@
      if       Global-Current-Level = 99
               go to zz200-Exit.
      add      1 to Git-Table-Count.
-     if       Git-Table-Count > Git-Table-Size
-         and  Git-Table-Size < 10000
-              add 10 to Git-Table-Size.
-     if       Git-Table-Size > 10000
-              move 10001 to Git-Table-Size        *> just in case
+     if       Git-Table-Count > 10000
+              move 64 to Return-Code
               display Msg10
               go to zz200-Exit.
      move     Global-Current-Word  to Git-Word (Git-Table-Count).
      move     space                to Git-In-Use-Flag (Git-Table-Count)
      move     Global-Current-RefNo to Git-RefNo (Git-Table-Count).
-     move     Build-Number         to Git-Build-No (Git-Table-Count).
-     move     HoldID               to Git-Prog-Name (Git-Table-Count).
+     move     Build-Number         to Git-Build-No (Git-Table-Count).    *> Level #
+     if       HoldID-Module (1:8)  not = spaces
+              move  HoldID-Module  to Git-Prog-Name (Git-Table-Count)
+     else
+              move     HoldID      to Git-Prog-Name (Git-Table-Count).
+*>
      move     HoldWSorPD           to Git-HoldWSorPD (Git-Table-Count).
      move     HoldWSorPD2          to Git-HoldWSorPD2 (Git-Table-Count).
      if       SW-Found-External = 1
-              move "Y"             to Git-External (Git-Table-Count)
+              move     "Y"         to Git-External (Git-Table-Count)
      else
               move space           to Git-External (Git-Table-Count).
      if       HoldWSorPD = zero                      *> SW-Found-CDF =  "Y"                *> 18/3/22
-              move "Y" to Git-Used-By-CDF (Git-Table-Count)
-              move "Y" to SW-Found-CDF
-              move zero to Git-Build-No (Git-Table-Count)
+              move     "Y"         to Git-Used-By-CDF (Git-Table-Count)
+              move     "Y"         to SW-Found-CDF
+              move     zero        to Git-Build-No (Git-Table-Count)
      else
-              move "Y" to SW-Found-Git.
+              move     "Y" to SW-Found-Git.
      move     zero  to SW-Found-External.
 *>
  zz200-Exit.
@@ -4554,20 +4639,36 @@
  zz210-Remove-CDF-From-Git-Table.
 *>******************************
 *>
-*>  Removes ALL CDF definitions from GIT table having read a END-PROGRAM
+*>  Removes ALL CDF definitions from GIT table having read A END-PROGRAM
 *>  statement by moving high-value to Git-Word and Git-Prog-Name and
-*>  increasing count in Git-Table-Deleted-Cnt
+*>  increasing count in Git-Table-Deleted-Cnt for all in table where
+*>  GIT-Prog-Name = Hold-End-Program { prog name in END PROGRAM|FUNCTION statement }
+*>
+*>  It is possible to have more than one entry for A vars that is defined
+*>   in multi modules this routine will still work, I think :)
 *>
 *>  Then sort table, deduct Git-Table-Deleted-Cnt from Git-Table-Count.
 *>
+   move    Git-Table-Count to Z3A.
+   display    "GIT table size " Z3A " for "
+              function TRIM (HoldID)
+                      "(" function TRIM (Hold-End-Program) ")".
+
      move     zero to Git-Table-Deleted-Cnt.
-     perform  varying a1 from 1 by 1 until a1 > Git-Table-Count
-              if  Git-Used-By-CDF (Git-Table-Count) = "Y"
-                  move  high-values to Git-Word (a1)
-                                       Git-Prog-Name (a1)
-                  move  space       to Git-Used-By-CDF (a1)
-                  add   1           to Git-Table-Deleted-Cnt
+     perform  varying A1 from 1 by 1 until A1 > Git-Table-Count
+              if       Git-Used-By-CDF (A1) = "Y"
+                AND    Hold-End-Program = Git-Prog-Name (A1)
+                       move  high-values to Git-Word (A1)
+                                            Git-Prog-Name (A1)
+                       move  space       to Git-Used-By-CDF (A1)
+                       add   1           to Git-Table-Deleted-Cnt
      end-perform
+   move   Git-Table-Count to Z3A.
+   move   Git-Table-Deleted-Cnt to Z3B.
+   display    "GIT table size " Z3A " Git deleted " Z3B " for "
+              function TRIM (HoldID)
+              "(" function TRIM (Hold-End-Program) ")".
+
      move     space to SW-Found-CDF
                        SW-CDF-Present.
      if       Git-Table-Deleted-Cnt = Git-Table-Count
@@ -4576,10 +4677,10 @@
       if      Git-Table-Deleted-Cnt not > Git-Table-Count
               subtract Git-Table-Deleted-Cnt from Git-Table-Count
       else
-              display Msg3
+              display Msg3         *> My logic is wrong :(
               stop run.
 *>
-     if       Git-Table-Count > 1
+     if       Git-Table-Count > 1    *> only sort if more than 1 entry, Der
               sort  Git-Elements ascending key Git-Word.
 *>
  zz210-Exit.
@@ -4587,11 +4688,10 @@
 *>
  zz220-Check-For-Globals.     *> Should work for CDF's    18/3/22
 *>**********************
-     move zero to a1.
-     perform  varying a1 from 1 by 1 until a1 > Git-Table-Count
-              if  Git-Word (a1) = wsFoundNewWord4
-                  move "1" to Git-In-Use-Flag (a1)
-                  exit perform
+     perform  varying A1 from 1 by 1 until A1 > Git-Table-Count
+              if       Git-Word (A1) = wsFoundNewWord4
+                       move "1" to Git-In-Use-Flag (A1)
+                       exit perform
               end-if
      end-perform.
 *>
@@ -4694,7 +4794,7 @@
 *> for more details. If it breaks, you own both pieces but I will endevor
 *> to fix it, providing you tell me about the problem.
 *>
-*> You should have received a copy of the GNU General Public License along
+*> You should have received A copy of the GNU General Public License along
 *> with Cobxref; see the file COPYING.  If not, write to the Free Software
 *> Foundation, 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 *>*************************************************************************
@@ -4736,9 +4836,9 @@
  77  Prog-Name              pic x(27)       value "get-reserved-lists v1.00.05".
  77  S-Ptr                  Binary-long     value zero.
  77  Res-Start              Binary-char     value zero.
- 77  ws-Function-Table-Size pic s9(5)  comp value zero.
- 77  ws-Resvd-Table-Size    pic s9(5)  comp value zero.
- 77  ws-System-Table-Size   pic s9(5)  comp value zero.
+ 77  WS-Function-Table-Size pic s9(5)  comp value zero.
+ 77  WS-Resvd-Table-Size    pic s9(5)  comp value zero.
+ 77  WS-System-Table-Size   pic s9(5)  comp value zero.
  77  FS-Reply               pic 99.
  77  WS-Display             pic 9           value zero.
      88  SW-No-Display                      value 1.
@@ -4759,7 +4859,7 @@
 *>**************
 *> On entry if WS-Return-Code preset with 36 the table update messages will not appear.
 *>
- 01  ws-Return-Code          binary-char.
+ 01  WS-Return-Code          binary-char.
 *>
 *> Here for cb_intrinsic_table in GC see cobc/reserved.c in the GnuCOBOL source directory but
 *>    Totally ingoring the system_table as not needed/used by xref
@@ -4789,7 +4889,7 @@
          05  P-System          pic x(30).
  01  System-Table-Size         pic s9(5)  comp.
 *>
- procedure division using ws-Return-Code
+ procedure division using WS-Return-Code
                           Function-Table-R
                           Function-Table-Size
                           Additional-Reserved-Words-R
@@ -4797,20 +4897,20 @@
                           System-Table-R
                           System-Table-Size.
 *>===================================================
- aa000-startup section.
- aa010-Init.
+ AA000-startup section.
+ AA010-Init.
      if       WS-Return-Code = 36
               move 1 to WS-Display                 *> Turn off table update msgs
      end-if
      call     "SYSTEM" using "cobc --list-intrinsics > int.tmp".
      call     "SYSTEM" using "cobc --list-reserved > res.tmp".
      call     "SYSTEM" using "cobc --list-system > sys.tmp".
-     move     zero to ws-return-code.
+     move     zero to WS-return-code.
      perform  ba000-Get-Intrinsics-Words.
-     if       ws-return-code not zero
+     if       WS-return-code not zero
               exit program.
      perform  ca000-Get-Reserved-Words.
-     if       ws-return-code not zero
+     if       WS-return-code not zero
               exit program.
      perform  da000-Get-System-Words.
      call     "CBL_DELETE_FILE" using "res.tmp". *> delete temp files
@@ -4824,19 +4924,19 @@
      if       FS-Reply = 35
               display Msg11.
      if       FS-Reply not = zero
-              move FS-Reply to ws-return-code
+              move FS-Reply to WS-return-code
               exit section.
 *>
-     move     Function-Table-Size to ws-Function-Table-Size.  *> keep old
-     move     high-values to Function-Table-R.                *> there is a data stream so we can clear the table
+     move     Function-Table-Size to WS-Function-Table-Size.  *> keep old
+     move     high-values to Function-Table-R.                *> there is A data stream so we can clear the table
      move     zero to Function-Table-Size.
 *>
  ba020-get-thru-base-data.
      move     spaces to Int-Record.
      read     Intrinsic-Stream at end
-              move zero to ws-return-code
+              move zero to WS-return-code
               close Intrinsic-Stream
-              if    Function-Table-Size > ws-Function-Table-Size
+              if    Function-Table-Size > WS-Function-Table-Size
                 and not SW-No-Display
                     display Msg14
               end-if
@@ -4869,11 +4969,11 @@
      if       FS-Reply = 35
               display Msg12.
      if       FS-Reply not = zero
-              move FS-Reply to ws-return-code
+              move FS-Reply to WS-return-code
               exit section.
 *>
-     move     Resvd-Table-Size to ws-Resvd-Table-Size.
-     move     high-values to Additional-Reserved-Words-R.  *> there is a data stream so we can clear the table
+     move     Resvd-Table-Size to WS-Resvd-Table-Size.
+     move     high-values to Additional-Reserved-Words-R.  *> there is A data stream so we can clear the table
      move     zero to Resvd-Table-Size.
      move     zero to Res-Start.
 *>
@@ -4919,7 +5019,7 @@
       if      Placement-Res-State = "N"
               move "0" to Resvd-Implemented (Resvd-Table-Size)
       else
-       If     Res-Start = 1                         *> have a Extra internal with no implemented flag
+       If     Res-Start = 1                         *> have A Extra internal with no implemented flag
               move "1" to Resvd-Implemented (Resvd-Table-Size)
        else
               move "0" to Resvd-Implemented (Resvd-Table-Size)
@@ -4930,9 +5030,9 @@
      go to ca020-get-thru-base-data.
 *>
  ca030-Clean-Up.
-     move     zero to ws-return-code.
+     move     zero to WS-return-code.
      close    Reserve-Stream.
-     if       Resvd-Table-Size > ws-Resvd-Table-Size
+     if       Resvd-Table-Size > WS-Resvd-Table-Size
           and not SW-No-Display
               display Msg15
      end-if
@@ -4944,19 +5044,19 @@
      if       FS-Reply = 35
               display Msg13.
      if       FS-Reply not = zero
-              move FS-Reply to ws-return-code
+              move FS-Reply to WS-return-code
               exit section.
 *>
-     move     System-Table-Size to ws-System-Table-Size.  *> keep old
-     move     high-values to System-Table-R.              *> there is a data stream so we can clear the table
+     move     System-Table-Size to WS-System-Table-Size.  *> keep old
+     move     high-values to System-Table-R.              *> there is A data stream so we can clear the table
      move     zero to System-Table-Size.
 *>
  da020-get-thru-base-data.
      move     spaces to Sys-Record.
      read     System-Stream at end
-              move zero to ws-return-code
+              move zero to WS-return-code
               close System-Stream
-              if    System-Table-Size > ws-System-Table-Size
+              if    System-Table-Size > WS-System-Table-Size
                 and not SW-No-Display
                     display Msg16
               end-if
@@ -5009,7 +5109,7 @@
 *>
 *> Author.      Vincent B Coen New rewritten version v2.01.18+)
 *>                See Changelog file for all changes.
-*> Copyright.   Vincent B Coen 2011-2022 Rewritten.
+*> Copyright.   Vincent B Coen 2011-2024 Rewritten.
 *>              [Jim C. Currey 2009-2011 Conceptual original programmer,]
 *>
 *> This program is free software; you can redistribute it and/or modify it
@@ -5022,7 +5122,7 @@
 *> for more details. If it breaks, you own both pieces but I will endeavour
 *> to fix it, providing you tell me about the problem.
 *>
-*> You should have received a copy of the GNU General Public License along
+*> You should have received A copy of the GNU General Public License along
 *> with Cobxref & PrintCbl; see the file Copying.pdf.
 *>  If not, write to the Free Software Foundation,
 *>    59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
@@ -5034,11 +5134,15 @@
 *> 18/05/12 vbc - 'Suppress'          working
 *> 18/05/12 vbc - 'Suppress printing' working
 *> 01/06/12 vbc - 'REPLACING'         working
+*> 01/06/12 vbc - 'NOPRINT'           working
+*> 01/06/12 vbc - 'LIST|NOLIST'       working
+*> 02/06/12 vbc - 'EJECT' | '/'       working
+*>           with differing case for the above
 *>
 *>  WARNING: Minimum compiler version is v2.0.
 *>
 *>  Please read all of the notes before use!!!
-*>   Notes transferred to a manual in LibreOffice & PDF formats.
+*>   Notes transferred to A manual in LibreOffice & PDF formats.
 *>
 *>  Make sure that you have tested the GnuCOBOL compiler by running
 *>   make checkall and that you get no errors what so ever
@@ -5046,7 +5150,7 @@
 *>
 *>*************************************************************
 *> Purpose:
-*>         Produces a updated source file) of a
+*>         Produces A updated source file) of a
 *>      Cobol source program with all of its copy books included.
 *>        using the Print-File that is passed to cobxref.
 *>     This includes COPY statements within CDF block but without
@@ -5061,24 +5165,39 @@
 *>
 *>  Changes :
 *>
-*> 22/3/22 vbc - 2.01.38  Changed vars e to E2 as reserved word and confuses cobc creating bugs.
+*> 07/09/2022 vbc - 2.01.38 Updated copyright to 2022 no other changes.
+*>                          Added support for sourceformat Variable
+*>                          Chngd vars e for E2 as it is A reserved word (function).
+*> 27/09/2022 vbc - 2.01.39 Changed Formatted-Line from 160 to 256 supporting variable
+*>                          start creating for LS-Nested-Start-Points - no code yet.
+*>                          THIS is only for within cobxref and not needed for
+*>                          independent printcbl.
+*>                          Near end of zz900 code Changed display using a comp to
+*>                          a z(7)9. cobc v3.2 RC-2 changes !!!
+*> 09/03/2024 vbc - 2.01.40 Updated copyright to 2024 and changed printer spool name.
+*>                          change to match printcbl.cbl.
+*> 17/06/2024 vbc - 2.01.41 From Chuck Haatvedt chg within prtcbl at ba000-Process Section
+*>                          for 2 statements of "move     Input-Record To PL-Text" TO
+*>                          "move     Input-Record (1 : IR-Buffer-Data-Size) To PL-Text"
+*>                          Update standalone version as well.
 *>
  environment division.
  input-output section.
  file-control.
      select Print-File     assign to WS-Print-File-Name
-                           organization line sequential.
+                           organization line sequential
+                           status FS-Reply.
 *>
  data division.
  file section.
 *>
  fd  Print-File.
- 01  Formatted-Line          pic x(160).
+ 01  Formatted-Line          pic x(256).
 *>
  working-storage section.
 *>======================
 *>
- 01  WS-Name-Program        pic x(25) value "Prtcbl (in xref) v2.01.38".  *> ver.rel.build
+ 01  WS-Name-Program        pic x(25) value "Prtcbl (in xref) v2.01.41".  *> ver.rel.build
 *>
  01  PL-Text                pic x(160).       *> printcbl.cbl has 248
 *>
@@ -5112,6 +5231,8 @@
 *>   *************    End of User Changeable Values   ********************
 *>   *********************************************************************
 *>
+ 77  FS-Reply               pic 99          value zeros.
+*>
  01  WS-Print-File-Name     pic x(64)      value spaces.
  01  WS-Input-File-Name     pic x(64)      value spaces.
  01  WS-Copy-File-Name      pic x(768)     value spaces.
@@ -5133,7 +5254,6 @@
  01  filler                 pic 9          value zero.
      88  WS-We-Have-Replaced               value 1  False is 0.
 *>
- *> 01  Found-In               pic 9          value zero.  *> Not used yet
  01  filler                 pic 9          value zero.
      88  Found-Word                        value 1      False is 0.
  01  Filler                 pic 9          value zero.
@@ -5143,6 +5263,7 @@
  01  WS-Free                pic 9          value zero.  *> Source code format
      88  WS-Fixed-Set                      value zero.
      88  WS-Free-Set                       value 1.
+     88  WS-Variable-Set                   value 2.
  01  filler                 pic 9          value zero.  *> Search in copy libs
      88  No-Search                         value 1.     *> Dont, as we are using source file
      88  Yes-Search                        value zero.  *> Do so, as we are using Copy files
@@ -5161,6 +5282,7 @@
  01  WS-P6                  pic s9(7) comp value zero.
  01  WS-P7                  pic s9(7) comp value zero.
  01  WS-P8                  pic s9(7) comp value zero.
+ 01  WS-P9                  pic s9(7) comp value zero.
  01  WS-P11                 pic s9(7) comp value zero.
  01  WS-P12                 pic s9(7) comp value zero.
  01  WS-P13                 pic s9(7) comp value zero.
@@ -5183,8 +5305,8 @@
  01  WS-Disp2               pic zz9.
  01  WS-Disp3               pic ----9.
  01  WS-Disp4               pic z(6)9.
- 01  a                      pic s9(5) comp value zero.
- 01  E2                     pic s9(5) comp value zero.            *> E renamed E2   22/3/22
+ 01  A                      pic s9(5) comp value zero.
+ 01  E2                     pic s9(5) comp value zero.
  01  f                      pic s9(5) comp value zero.
  01  g                      pic s9(7) comp value zero.
 *>
@@ -5195,6 +5317,8 @@
  01  y                      pic 99   comp  value zero.
  01  z                      pic 99   comp  value zero.
 *>
+ 01  Z3A                    pic zz9.
+ 01  Z3B                    pic zz9.
 *>   ******************************************************************
 *>   *  Contents of COBC Env vars if set but usually only one of both *
 *>   *  if both exist AND the same only use one - COBCPY              *
@@ -5255,15 +5379,18 @@
 *>
 *>   **********************************************************    NOTE: that GC only goes 2-5
 *>   *  Now follows the tables needed for the 9 depth levels  *          or does it
-*>   *  that support the copy verb  within a copy verb.       *
+*>   *  that support the copy verb  within A copy verb.       *
 *>   *  First is ALWAYS the source file.                      *
 *>   **********************************************************
 *>
  01  Input-Record.
      05  IR-Buffer          pic x(256).
  01  IR-Buffer-Data-Size    pic 999     comp       value zero.
+ 01  IR-Buffer-Data-Size-2  pic 999     comp       value zero.
  01  Temp-Input-Record.
      03  TIR                pic x(256).
+ 01  Temp-Input-Record-2.
+     03  TIR2               pic x(256).
 *>
 *>   WARNING: Do NOT alter these Structures or Formats!
 *>
@@ -5300,6 +5427,7 @@
              07  Fht-Source-Format pic 9               value zero.
                  88  Fht-Fixed                         value 0.
                  88  Fht-Free                          value 1.
+                 88  Fht-Variable                      value 2.
              07  Fht-Block-Status  pic 9               value zero.
                  88  Fht-Block-Eof                     value 1.
          05  Fht-Current-Rec       pic x(256)          value spaces. *> Max size of free recs + 1
@@ -5358,7 +5486,7 @@
                  88  CRT-RT-Pseudo                     value 2.
                  88  CRT-RT-Else                       value 3.
                  88  CRT-RT-Oops                       value 0.
-             07  CRT-Found-Src     pic 99              value zero.    *> non zero if a replacing target is found
+             07  CRT-Found-Src     pic 99              value zero.    *> non zero if A replacing target is found
              07  CRT-Source-Size   pic 9(4)            value zero.    *> these sizes relate to the replacing-source and target
              07  CRT-Target-Size   pic 9(4)            value zero.    *>   - - - -  ditto - - - -
 *>
@@ -5401,7 +5529,7 @@
  01  Temp-Replacing-Target  pic x(2048).                 *>  - - Ditto for Target
  01  Temp-Record            pic x(256).
 *>
-*> Copy of current Copy table block to save accessing a table when processing COPY
+*> Copy of current Copy table block to save accessing A table when processing COPY
 *>
  01  WS-CRT-Active-Copy-Table     pic s999    comp    value zero.    *> taken from CRT-Table-Size
  01  WS-CRT-Instance.
@@ -5447,9 +5575,8 @@
              88  WS-CRT-RT-Pseudo                     value 2.
              88  WS-CRT-RT-Else                       value 3.
              88  WS-CRT-RT-Oops                       value 0.
-         05  WS-CRT-Found-Src     pic 99              value zero.    *> non zero if a replacing target is found
-         05  WS-CRT-Source-Size   pic 9(4)            value zero.    *> these sizes relate to the
-                                                                     *> replacing-source and target
+         05  WS-CRT-Found-Src     pic 99              value zero.    *> non zero if A replacing target is found
+         05  WS-CRT-Source-Size   pic 9(4)            value zero.    *> replacing-source and target
          05  WS-CRT-Target-Size   pic 9(4)            value zero.    *>   - - - -  ditto - - - -
          05  WS-CRT-Replacing-Source  pic x(2048)     value spaces.  *> Make larger if required
          05  WS-CRT-Replacing-Target  pic x(2048)     value spaces.  *> ditto
@@ -5460,21 +5587,27 @@
  01  LS-Prog-BaseName   pic x(64).               *>  Ditto P2
  01  LS-Prog-Format     pic x.                   *>  Ditto P3
      88  LS-SW-Free               value "Y".
+     88  LS-SW-Fixed              value "N".
+     88  LS-SW-Variable           value "V".
  01  LS-SW-11           pic x.                   *>  Ditto P4
      88  LS-Verbose-Output        value "Y".
  01  LS-Return-Code        binary-char  value zero.
+*>
+ 01  LS-Nested-Start-Points.
+     03  LS-Nested-Point pic 9(6)     occurs 50.
 *>
  Procedure Division using LS-Source-File
                           LS-Prog-BaseName
                           LS-Prog-Format
                           LS-SW-11
+                          LS-Nested-Start-Points
                           LS-return-code.
 *>========================================
 *>
  AA-Main Section.
 *>**************
 *>
-     perform  aa000-Initialization.
+     perform  AA000-Initialization.
      if       return-code not = zero
               move return-code to LS-Return-Code
               goback.
@@ -5483,7 +5616,7 @@
      exit     program.
      goback.                               *> It might be called
 *>
- aa000-Initialization section.
+ AA000-Initialization section.
 *>***************************
 *>
      perform  zz020-Get-Program-Args.
@@ -5492,9 +5625,9 @@
               accept  Hold-Word1 (1:1)
               move    space to Hold-Word1 (1:1)
               move    128 to Return-Code
-              go      to aa000-Exit.
+              goback.
 *>
- aa030-Bypass-Accepts.
+ AA030-Bypass-Accepts.
      set     No-Printing to true.
 *>
      set      No-Search to true.
@@ -5504,13 +5637,13 @@
               set WS-Print-Open to true
      end-if.
 *>
- aa040-Open-Main.
+ AA040-Open-Main.
      perform  zz300-Open-File thru zz300-Exit.
      if       Return-Code  = 26
               display Msg23 at 1301 with foreground-color 3
               move 32 to Return-Code
               close Print-File
-              go      to aa000-Exit.
+              go      to AA000-Exit.
 *>
 *> Next, this should not occur !!
 *>
@@ -5519,12 +5652,12 @@
               display Return-Code    at 1336 with foreground-color 3 highlight
               move 32 to Return-Code
               close Print-File
-              go      to aa000-Exit.
+              go      to AA000-Exit.
 *>
      set      Yes-Search to true.          *>  ?????   <<<< IS IT?
      move     WS-Free to Fht-Source-Format (Fht-Table-Size).   *> copy format to current table record
 *>
- aa000-Exit.
+ AA000-Exit.
      Exit     Section.
 *>
  ba000-Process Section.
@@ -5541,7 +5674,7 @@
 *>        and   Fht-Block-Eof (Fht-Table-Size)
         and   Fht-Table-Size < 2                            *> closing source file
               perform zz500-Close-File thru zz500-Exit
-               perform  bd000-Test-For-Messages
+              perform  bd000-Test-For-Messages
               go to ba999-exit                              *> EOJ
      end-if
 *>
@@ -5553,43 +5686,43 @@
 *>
      move     Fht-Current-Rec (Fht-Table-Size) to Input-Record.
 *>
-*>  Lets see if current source line has a >>SOURCE declaration if so change fixed/free attribute.
+*>  Lets see if current source line has A >>SOURCE declaration if so change fixed/free attribute.
 *>
      perform  da000-Check-For-Source.
      if       Fht-Free (Fht-Table-Size)
               set WS-Free-Set to true
-              move 256 to WS-End
-     else
+              move 256 to WS-End.
+     if       Fht-Variable (Fht-Table-Size)
+              set WS-Variable-Set to true
+              move 256  to WS-End.
+     if       Fht-Fixed (Fht-Table-Size)
               set WS-Fixed-Set to true
-              move 72  to WS-End
-     end-if
+              move 72  to WS-End.
 *>
 *> Find size of source record (max = 255 as per specs) & start of source
 *>
-     perform  varying IR-Buffer-Data-Size from WS-End by -1 until
-                           IR-Buffer (IR-Buffer-Data-Size:1) not = " "
-                        or IR-Buffer-Data-Size < 2
-              continue
-     end-perform
+     move     FUNCTION STORED-CHAR-LENGTH ( IR-Buffer (1:WS-End)) to IR-Buffer-Data-Size.
+     if       IR-Buffer-Data-Size <= zero
+              move 1 to IR-Buffer-Data-Size.
      if       IR-Buffer (IR-Buffer-Data-Size:1) = x"0D" or x"00"
               subtract 1 from IR-Buffer-Data-Size
      end-if
-     if       (WS-Free-Set  and IR-Buffer-Data-Size < 2)              *> Blank line PRINT
-        or    (WS-Fixed-Set and IR-Buffer-Data-Size < 9)
-              move     Input-Record To PL-Text
+     if       (WS-Free-Set and IR-Buffer-Data-Size < 2)
+        or    ((WS-Fixed-Set or WS-Variable-Set) and IR-Buffer-Data-Size < 9)
+              move     Input-Record (1 : IR-Buffer-Data-Size) To PL-Text   *> Modification by Chuck Haatvedt June 24
               perform  zz010-Write-Print-Line2
               go to ba000-Process.
 *>
      move     zero to WS-P2.
      move     1    to WS-P1                                         *> Force Free format in case!!
                       WS-P5.
-     if       WS-Fixed-Set                                          *> Free set above
+     if       WS-Fixed-Set or WS-Variable-Set                       *> Free set above
               move  7 to WS-P1 WS-P5.
 *>
 *> CHANGED for xref
 *>
      perform  zz900-Process-Replace.
-     move     Input-Record To PL-Text.
+     move     Input-Record (1 : IR-Buffer-Data-Size) To PL-Text.  *> Modification by Chuck Haatvedt June 24
      if       WS-We-Have-Replaced            *> chgd 8/3/19
               perform zz010-Check-for-Extended-Record
      else
@@ -5599,14 +5732,14 @@
 *>
 *> If comments, we are done with line
 *>
-     if       (ws-Fixed-Set and IR-Buffer (7:1) = "*")
-         or   (ws-Fixed-Set and IR-Buffer (7:1) = "$")  *> ex MF source/lists
-         or   (ws-Fixed-Set and IR-Buffer (7:1) = "#")  *> can we get them here cc7 ?
-         or   (WS-Fixed-Set and (IR-Buffer (7:1) = "D" or = "d"))     *> Debug with COPY  ????
-         or   (ws-Free-Set  and IR-Buffer (1:2) = "*>")
-         or   (ws-Free-Set  and IR-Buffer (2:2) = "*>")  *> could have space then *>
-         or   (ws-Free-Set  and IR-Buffer (7:2) = "*>")  *> floater format in fixed,
-         or   (ws-Free-Set  and IR-Buffer (1:1) = "$")
+     move     FUNCTION TRIM (IR-Buffer) to TIR2.
+     if       ((ws-Fixed-Set or WS-Variable-Set) and (IR-Buffer (7:1) = "*"
+                                                                  OR = "$"
+                                                                  OR = "#"
+                                                                  OR = "D"
+                                                                  OR = "d"))
+         or   (ws-Free-Set  and TIR2 (1:2) = "*>")
+         or   (ws-Free-Set  and IR-Buffer (1:1) = "$")     *> these two always start in cc1
          or   (ws-Free-Set  and IR-Buffer (1:1) = "#")
               go to ba000-Process
      end-if
@@ -5619,13 +5752,13 @@
           or  = " *> "
               go to ba000-Process.
 *>
-*>   Try to make sure we dont use COPY word in a 'display' but
-*>     accept one after a possible level number. This is NOT bullet proof
+*>   Try to make sure we dont use COPY word in A 'display' but
+*>     accept one after A possible level number. This is NOT bullet proof
 *>       so may need more code!
 *>
      if       NOT Found-Number and Found-Word
-        and   (function UPPER-CASE (IR-Buffer (WS-P1:6)) = " COPY "
-         or   WS-P1 = 1 and function UPPER-CASE (IR-Buffer (1:5)) = "COPY ")
+        and   (FUNCTION UPPER-CASE (IR-Buffer (WS-P1:6)) = " COPY "
+         or   WS-P1 = 1 and FUNCTION UPPER-CASE (IR-Buffer (1:5)) = "COPY ")
               add      1 to WS-P1
               if       WS-P1 < IR-Buffer-Data-Size - 6
                        go to ba010-Compare-Loop
@@ -5639,15 +5772,15 @@
                                 until IR-Buffer (WS-P1:1) = quote
                                   or "'"
                                   or WS-P1 > IR-Buffer-Data-Size - 7
-              continue
+                      continue
               end-perform                                      *> loose the literal or line
               if   WS-P1 > IR-Buffer-Data-Size - 7
                    go to ba000-Process
               end-if
      end-if
 *>
-     if       function UPPER-CASE (IR-Buffer (WS-P1:6)) = " COPY "
-       or     (WS-P1 = 1 and function UPPER-CASE (IR-Buffer (1:5)) = "COPY ")
+     if       FUNCTION UPPER-CASE (IR-Buffer (WS-P1:6)) = " COPY "
+       or     (WS-P1 = 1 and FUNCTION UPPER-CASE (IR-Buffer (1:5)) = "COPY ")
               move zero to Found-Quote-in-Copy
               go to ba020-Copy.
 *>
@@ -5687,7 +5820,7 @@
      if       WS-CRT-Copy-Lib-Found
               perform varying WS-P17 from 510 by -1
                       until WS-CRT-Copy-Library (WS-P17:1) not = space
-              continue
+                      continue
               end-perform
               move    1    to WS-P18
               if      WS-CRT-Copy-Library (1:1) = quote or = "'"
@@ -5709,7 +5842,7 @@
 *>   We can have "abcd.abc"; abcd.abc; abcd - NO Trailing period..
 *>
      inspect  WS-CRT-Copy-Filename tallying E2 for all ".".
-     if       E2 > zero                                        *> its a .ext
+     if       E2 > zero                                        *> its A .ext
               set WS-CRT-Copy-Fname-Ext to true
      end-if
      move     WS-CRT-Copy-Filename to WS-Copy-File-Name.
@@ -5845,7 +5978,7 @@
 *>***********************
 *>
 *>   **********************************************************************
-*>   * Here a ' copy ' word has now been found, we build Input-buffer     *
+*>   * Here A ' copy ' word has now been found, we build Input-buffer     *
 *>   *  containing the entire copy statement instead of reading over      *
 *>   *  multiple source records.                                          *
 *>   * While doing so we can set the found-Replacing flag.                *
@@ -5856,8 +5989,8 @@
 *>   *  to point at next word after 'COPY '                               *
 *>   *                       NOT SURE OF THIS BIT AT ALL!!                *
 *>   *====================================================================*
-*>   * As the standard is that ALL COPY statements end in a period, the   *
-*>   * search will terminate on finding one at the end of a input record. *
+*>   * As the standard is that ALL COPY statements end in A period, the   *
+*>   * search will terminate on finding one at the end of A input record. *
 *>   *                                                                    *
 *>   **********************************************************************
 *>
@@ -5883,7 +6016,7 @@
      end-if
 *>
 *>   WE ARE NOT (YET) SUPPORTING CONTINUE LINES WITH '&' or '-' in cc7 etc in copy statement
-*>       or source but is there a real need ??
+*>       or source but is there A real need ??
 *>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 *>
      perform  varying WS-P3 from WS-P5 by 1 until WS-P3 > IR-Buffer-Data-Size
@@ -5938,7 +6071,7 @@
 *>
      move     zero to IB-Size.
      perform  varying WS-P3 from 1 by 1 until WS-P3 > IR-Buffer-Data-Size
-              if     function UPPER-CASE (IR-Buffer (WS-P3:5)) = "COPY "
+              if     FUNCTION UPPER-CASE (IR-Buffer (WS-P3:5)) = "COPY "
                      set CRT-Copy-Found (CRT-Table-Size) to true
                      set CRT-Active (CRT-Table-Size)    to true
                      compute WS-P4 = IR-Buffer-Data-Size - (WS-P3 - 1)
@@ -5987,10 +6120,10 @@
                   perform zz010-Write-Print-Line2
                   go to ba999-Exit
               end-if
-              if  WS-Fixed-Set                         *> Now to cover butt & make sure a '.' is in record
-                  move "." to Input-Buffer (72:1)
-              else
+              if  WS-Free-Set or WS-Variable-Set
                   move "." to Input-Buffer (255:1)
+              else
+                  move "." to Input-Buffer (72:1)
               end-if
               go to bb030-Got-Full-Copy-Statement
      end-if
@@ -5998,18 +6131,26 @@
      move     Fht-Current-Rec (Fht-Table-Size) to Input-Record.
      perform  da000-Check-For-Source.                  *> JIC >>source inside copy
      if       Fht-Free (Fht-Table-Size)
-              set WS-Free-Set to true
-     else
-              set WS-Fixed-Set to true
-     end-if
+              set WS-Free-Set to true.
+     if       Fht-Variable (Fht-Table-Size)
+              set WS-Variable-Set to true.
+     if       Fht-Fixed (Fht-Table-Size)
+              set WS-Fixed-Set to true.
 *>
 *> Find size of source record (max = 255 as per specs) & start of source
 *>
+     move     FUNCTION STORED-CHAR-LENGTH ( IR-Buffer (1:WS-End)) to IR-Buffer-Data-Size-2.
      perform  varying IR-Buffer-Data-Size from WS-End by -1
                       until  IR-Buffer (IR-Buffer-Data-Size:1) not = " "
                           or IR-Buffer-Data-Size < 2
               continue
      end-perform
+     if  ir-buffer-data-size not = ir-buffer-data-size-2
+          move ir-buffer-data-size to Z3A
+          move ir-buffer-data-size-2 to Z3B
+          display "bb020 length test - " Z3A " Func.length - " Z3B
+     end-if
+
      perform  varying IR-Buffer-Data-Size from IR-Buffer-Data-Size by -1
               until IR-Buffer (IR-Buffer-Data-Size:1) not = X"0D"
                                                   and not = X"0A"   *> For windows 14/12/21
@@ -6024,11 +6165,11 @@
      perform  bb000-Start.                       *>  I NEED TO CONSIDER CODE FOR Lit continuation (-) etc
      perform  varying WS-P3 from 1 by 1 until WS-P3 > IR-Buffer-Data-Size
                                            or IR-Buffer (WS-P3:2) = ". "
-              if     function UPPER-CASE (IR-Buffer (WS-P3:3)) = "IN " or = "OF "
-               or    function UPPER-CASE (IR-Buffer (WS-P3:9)) = "SUPPRESS "
-               or    function UPPER-CASE (IR-Buffer (WS-P3:10)) = "REPLACING "
+              if     FUNCTION UPPER-CASE (IR-Buffer (WS-P3:3)) = "IN " or = "OF "
+               or    FUNCTION UPPER-CASE (IR-Buffer (WS-P3:9)) = "SUPPRESS "
+               or    FUNCTION UPPER-CASE (IR-Buffer (WS-P3:10)) = "REPLACING "
                      compute WS-P4 = IR-Buffer-Data-Size - (WS-P3 - 1)
-                     add 2 to IB-Size                              *> leave a space before next chars
+                     add 2 to IB-Size                              *> leave A space before next chars
                      move IR-Buffer (WS-P3:WS-P4) to Input-Buffer (IB-Size:WS-P4)
                      add WS-P4 to IB-Size
                      if  IR-Buffer (IR-Buffer-Data-Size:2) = ". "  *> End of copy
@@ -6058,7 +6199,7 @@
      move     Input-Buffer to CRT-Copy-Statement (CRT-Table-Size).  *> NEEDED - not yet??
      move     IB-Size      to CRT-Copy-Length (CRT-Table-Size).
 *>
-     move     function UPPER-CASE (Input-Buffer) to CInput-Buffer.   *> 4 testing UPPER-CASE reserved words
+     move     FUNCTION UPPER-CASE (Input-Buffer) to CInput-Buffer.   *> 4 testing UPPER-CASE reserved words
      move     CRT-Instance (CRT-Table-Size) to WS-CRT-Instance.      *> copied 2 current copy area 4 easier working
 *>
      perform  varying WS-P3 from 1 by 1 until WS-P3 not < IB-Size
@@ -6099,12 +6240,12 @@
                                set  WS-CRT-Copy-Fname-Ext to true         *> set regardless so dont check for others
                       end-if
                         if We-Are-Testing4
-                           move WS-P3 to ws-disp4
-                           move WS-P20 to ws-disp3
+                           move WS-P3 to WS-disp4
+                           move WS-P20 to WS-disp3
                            display "In COPY we have fn = "
                                    WS-CRT-Copy-FileName (1:WS-P20) " Delim = " Word-Delimit2
-                                   " pointer = " ws-disp4
-                                   " count = "   ws-disp3
+                                   " pointer = " WS-disp4
+                                   " count = "   WS-disp3
                                    " Buffer = " Input-Buffer (1:IB-Size)
                         end-if
  *>
@@ -6197,16 +6338,16 @@
                       end-if
                       if  we-are-testing3
                           move spaces to formatted-line
-                          move ws-crt-source-size (ws-crt-replacing-count) to ws-disp3
+                          move WS-crt-source-size (ws-crt-replacing-count) to WS-disp3
                           string "*>>ES count="
-                                 ws-disp3
+                                 WS-disp3
                                  " for = "
                                  WS-CRT-Replacing-Source (WS-CRT-Replacing-Count)
                                      into Formatted-Line
                           end-string
                           write formatted-line
                       end-if
-                      perform  varying ws-P3 from Ws-P3 by 1 until Input-Buffer (WS-P3:1) not = " "
+                      perform  varying WS-P3 from WS-P3 by 1 until Input-Buffer (WS-P3:1) not = " "
                                                                or WS-P3 not < IB-Size
                                continue
                       end-perform
@@ -6216,7 +6357,7 @@
                       if       CInput-Buffer (WS-P3:3) = "BY "                *> chgd 28/2/19
                                add 3 to WS-P3
                       end-if
-                      perform  varying ws-P3 from Ws-P3 by 1 until Input-Buffer (WS-P3:1) not = " "
+                      perform  varying WS-P3 from WS-P3 by 1 until Input-Buffer (WS-P3:1) not = " "
                                                                or  WS-P3 not < IB-Size
                                continue
                       end-perform
@@ -6240,9 +6381,9 @@
                       end-if
                       if  we-are-testing3
                           move spaces to formatted-line
-                          move ws-crt-Target-size (ws-crt-replacing-count) to ws-disp3
+                          move WS-crt-Target-size (ws-crt-replacing-count) to WS-disp3
                           string "*>>ET count="
-                                 ws-disp3
+                                 WS-disp3
                                  " for = "
                                  WS-CRT-Replacing-target (WS-CRT-Replacing-Count)
                                  " delim = "
@@ -6253,7 +6394,7 @@
                       end-if
               end-if
               if      Input-Buffer (WS-P3:1) not = " "
-                      subtract 1 from WS-P3                  *> perform will add 1 so will miss a char
+                      subtract 1 from WS-P3                  *> perform will add 1 so will miss A char
               end-if                                         *> if last not pseudo
      end-perform.
 *>
@@ -6427,13 +6568,18 @@
 *>      in Input-Record.  THIS CAN OCCUR MORE THAN ONCE IN A SOURCE FILE.
 *>
      move     zero to WS-P7
-                      WS-P8.
-     move     function UPPER-CASE (Input-Record) to Temp-Input-Record.
-     if       Temp-Input-Record (8:8) not = ">>SOURCE"
+                      WS-P8
+                      WS-P9.
+     move     FUNCTION UPPER-CASE (Input-Record) to Temp-Input-Record.
+     move     FUNCTION TRIM (Temp-Input-Record) to TIR2.         *> 7/9/22
+     if       TIR2 (1:8)  not = ">>SOURCE"       *> was Temp-Input-Record (8:8)
+       and    TIR2 (1:18) not = ">>SET SOURCEFORMAT"
+       and    TIR2 (1:11) not = "$SET SOURCE"
               go to da000-Exit.
-*> DISPLAY "Found >>SOURCE as " Temp-input-record (8:48) end-display
-     inspect  Temp-Input-Record tallying WS-P7 for all "FREE".
-     inspect  Temp-Input-Record tallying WS-P8 for all "FIXED".
+*> DISPLAY "Found >>SOURCE or >>SET SOURCEFORMAT as " Temp-input-record (8:48) end-display
+     inspect  TIR2 tallying WS-P7 for all "FREE".       *> Was Temp-Input-Record
+     inspect  TIR2 tallying WS-P8 for all "FIXED".      *> Was Temp-Input-Record
+     inspect  TIR2 tallying WS-P9 for all "VARIABLE".   *> Was Temp-Input-Record
      if       WS-P8 > zero
               set Fht-Fixed (Fht-Table-Size) to true
               move 72   to WS-End
@@ -6444,7 +6590,12 @@
               move 256  to WS-End
 *>           DISPLAY " Setting free"
      end-if
-     move     zero to WS-P7 WS-P8.
+     if       WS-P9 > zero
+              set Fht-Variable (Fht-Table-Size) to true
+              move 256   to WS-End
+*>           DISPLAY " Setting variable"
+     end-if
+     move     zero to WS-P7 WS-P8 WS-P9.
 *>
  da000-Exit.
      exit     section.
@@ -6455,9 +6606,9 @@
 *> These 3 changed for xref as always no-printing
 *>
      perform  zz030-Test-For-Copy.
-     if       WS-P6 not = zero                           *>  Got a COPY verb
-              move PL-Text to Formatted-Line             *>    if then if does not always work
-              if  WS-Fixed-Set
+     if       WS-P6 not = zero                           *>  Got A COPY verb
+ *>             move PL-Text to Formatted-Line             *>    if then if does not always work
+              if  WS-Fixed-Set or WS-Variable-Set
                   move PL-Text to Formatted-Line
                   move "*" to Formatted-Line (7:1)
               else
@@ -6475,7 +6626,7 @@
  zz010-Check-for-Extended-Record section.
 *>**************************************
 *>
-*> We could have a replace exceeding fixed length.
+*> We could have A replace exceeding fixed length.
 *>  so need to write out shorter blocks for Fixed (cc72)
 *>
 *> Programmer notes:
@@ -6492,14 +6643,14 @@
                   until Input-Record (WS-P21:1) not = space
               continue
      end-perform.
- *>    move   WS-P21 to ws-disp3.
- *>    display "IR size = " ws-disp3.
+ *>    move   WS-P21 to WS-disp3.
+ *>    display "IR size = " WS-disp3.
 *>
      move     space to WS-Quote-Used.
      set      WS-Need-Leading-Quote to false.
      move     1     to WS-P30.                        *> temp-rec pointer
-     move     69  to WS-P25.                          *> DEFAULTS - allows to add '" &' cc70 then quote on new line
      move     12  to WS-P29.                          *> DEFAULTS - FIXED pl-text  pointer
+     move     69  to WS-P25.                          *> DEFAULTS - allows to add '" &' cc70 then quote on new line
 *>
      if       WS-Free-Set                             *> set starting point for target presets
               move      2  to WS-P29
@@ -6521,7 +6672,7 @@
      perform  test after varying WS-P30 from WS-P30 by 1   *> WS-P30 by 1
                 until WS-P30 > WS-P21             *> data length in i/p field
 *>
-              if       WS-P19 = WS-P29                *> for rec 2 onwards is there a odd quote
+              if       WS-P19 = WS-P29                *> for rec 2 onwards is there A odd quote
                  and   WS-Need-Leading-Quote
                        move    WS-Quote-Used to PL-Text (WS-P19:1)
                        add     1         to WS-P19
@@ -6622,9 +6773,9 @@
  zz010-Write-Print-Line3 Section.
 *>******************************
 *>
-*> Only called when processing a COPY statements sub-clauses
+*> Only called when processing A COPY statements sub-clauses
 *>
-     if       WS-Fixed-Set
+     if       WS-Fixed-Set or WS-Variable-Set
               move PL-Text to Formatted-Line
               move "*" to Formatted-Line (7:1)
      else
@@ -6644,6 +6795,7 @@
 *>
 *> Changes here for cobxref.
 *>
+     move     zeros to LS-Nested-Start-Points.   *> 27/09/2022
      accept   Cobcpy        from Environment "COBCPY".
      accept   Cob_Copy_Dir  from Environment "COB_COPY_DIR".
  *>
@@ -6653,10 +6805,11 @@
 *>
      move     LS-Source-File to WS-Input-File-Name.
      if       LS-SW-Free
-              set ws-free-set to true
-     else
-              set ws-fixed-set to true
-     end-if
+              set WS-Free-Set to true.
+     if       LS-SW-Variable
+              set WS-Variable-Set to true.
+     if       LS-SW-Fixed
+              set WS-Fixed-Set to true.
 *>
 *> Testing only
 *>
@@ -6691,13 +6844,12 @@
      display  "Input  = " WS-Input-File-Name.
      display  "Output = " WS-Print-File-Name.
      display  "Format = " no advancing.
-     if       ws-Fixed-Set
-              display "Fixed"
-     else
-      if      ws-free-set
-              display "Free"
-      end-if
-     end-if.
+     if       WS-Fixed-Set
+              display "Fixed".
+     if       WS-Variable-Set
+              display "Variable".
+     if       WS-Free-Set
+              display "Free".
      display  "Copy Libraries to search:".
      move     No-Of-Copy-Dirs to y.
      perform  varying z from 1 by 1 until z > No-Of-Copy-Dirs
@@ -6717,7 +6869,7 @@
      move     zero to No-Of-Copy-Dirs.
      move     "Z" to Uns-Delimiter.
      if       z not = 5
-              go to zz020e-get-cobcpy  *> skip P4 procesing
+              go to zz020e-get-cobcpy      *> skip P4 procesing
      end-if
 *>
      move 1 to x.
@@ -6780,19 +6932,20 @@
      move     zero to WS-P6.                         *> non zero indicates copy statement present
      if       not No-Printing
               go to zz030-Exit.
-     if       (WS-Fixed-Set and IR-Buffer (7:1) = "*")
-         or   (WS-Fixed-Set and IR-Buffer (7:1) = "-")                  *> Literal
-         or   (WS-Fixed-Set and (IR-Buffer (7:1) = "D" or = "d"))     *> Debug with COPY  ????
-         or   (WS-Free-Set and IR-Buffer (1:2) = "*>")                  *> >>D (free) is processed.
-         or   (ws-Free-Set and IR-Buffer (2:2) = "*>")
-         or   (WS-Free-Set and IR-Buffer (1:1) = "$")
-         or   (WS-Free-Set and IR-Buffer (1:1) = "#")
+     move     FUNCTION TRIM (IR-Buffer) to TIR2.
+     if       ((WS-Fixed-Set or WS-Variable-Set) and IR-Buffer (7:1) = "*")
+         or   ((WS-Fixed-Set or WS-Variable-Set) and IR-Buffer (7:1) = "-")                  *> Literal
+         or   ((WS-Fixed-Set or WS-Variable-Set) and (IR-Buffer (7:1) = "D" or = "d"))     *> Debug with COPY  ????
+         or   (WS-Free-Set and TIR2 (1:2) = "*>")                  *> >>D (free) is processed.
+         or   (ws-Free-Set and TIR2 (2:2) = "*>")
+         or   (WS-Free-Set and TIR2 (1:1) = "$")
+         or   (WS-Free-Set and TIR2 (1:1) = "#")
               go to zz030-Exit.
-     inspect  function UPPER-CASE (IR-Buffer) tallying WS-P6 for all "COPY ".
+     inspect  FUNCTION UPPER-CASE (IR-Buffer) tallying WS-P6 for all " COPY ".  *> inserted leading space 10/9/22
      if       WS-P6 = zero
               go to zz030-Exit.
 *>
-*> We have a COPY?   [ WS-P1 = 1 or 7 ( free or fixed format )
+*> We have A COPY?   [ WS-P1 = 1 or 7 ( free or fixed format )
 *>
      set      Found-Word   to false.
      set      Found-Number to false.
@@ -6803,9 +6956,9 @@
                        exit perform
               end-if
               if       NOT Found-Number and Found-Word
-                and    function UPPER-CASE (IR-Buffer (WS-P6:6)) = " COPY "
+                and    FUNCTION UPPER-CASE (IR-Buffer (WS-P6:6)) = " COPY "
   *>              or     (WS-P1 = 1                                         *> Free format
-  *>                 and function UPPER-CASE (IR-Buffer (1:5)) = "COPY ")   *> chg 25/2/19
+  *>                 and FUNCTION UPPER-CASE (IR-Buffer (1:5)) = "COPY ")   *> chg 25/2/19
                        move zero to WS-P6
                        exit perform
               end-if
@@ -6821,10 +6974,10 @@
                             exit perform
                        end-if
               end-if
-              if       function UPPER-CASE (IR-Buffer (WS-P6:6)) = " COPY "
+              if       FUNCTION UPPER-CASE (IR-Buffer (WS-P6:6)) = " COPY "
                        exit perform
               end-if
-              if       WS-P1 = 1 and function UPPER-CASE (IR-Buffer (1:5)) = "COPY "
+              if       WS-P1 = 1 and FUNCTION UPPER-CASE (IR-Buffer (1:5)) = "COPY "
                        exit perform
               end-if
               move     IR-Buffer (WS-P6:1) to WS-Number-Test
@@ -6850,7 +7003,7 @@
 *>
  zz300-Open-File.
 *>**************
-*> Open a Copy file using CBL-OPEN-File
+*> Open A Copy file using CBL-OPEN-File
 *>  filename is using Cbl-File-name
 *>
      move     zero to Return-Code.
@@ -6931,11 +7084,11 @@
         or    No-Search
               go to zz400-Try1
      end-if
-     perform  varying a from 1 by 1  until Return-Code = zero
-                                      or a > Ext-Table-Size
+     perform  varying A from 1 by 1  until Return-Code = zero
+                                      or A > Ext-Table-Size
               move   spaces to Cbl-File-name
               string WS-Copy-File-Name delimited by space
-                     File-Ext (a)      delimited by size into Cbl-File-name
+                     File-Ext (A)      delimited by size into Cbl-File-name
               end-string
               move   zero to Return-Code
               if we-are-testing2
@@ -6950,7 +7103,7 @@
                                             Cbl-File-Details
               end-call
               if   Return-Code not = zero
-               and a = Ext-Table-Size                           *> error 35 (well it should be)
+               and A = Ext-Table-Size                           *> error 35 (well it should be)
                      exit perform                               *> and we tried all combinations
               end-if
      end-perform
@@ -7020,7 +7173,7 @@
 *>**************
 *> Called using file-handle returning  Fht-Current-Rec (Fht-Table-Size)
 *>
-*> If buffer enpty read a block and regardless,
+*> If buffer enpty read A block and regardless,
 *>     move record terminated by x"0a" to Fht-Current-Rec (Fht-Table-Size)
 *>
      if       Fht-Eof (Fht-Table-Size) and Fht-Block-Eof (Fht-Table-Size)
@@ -7038,7 +7191,7 @@
 *>
  zz600-Get-A-Record.
 *>*****************
-*> Now to extract a record from buffer and if needed read a block
+*> Now to extract A record from buffer and if needed read A block
 *>         then extract
 *>
      if       Fht-Eof (Fht-Table-Size)
@@ -7140,7 +7293,7 @@
  zz900-Process-Replace  Section.
 *>*****************************
 *>
-*> Now we have read a RECORD first check if table < 2 (not a copylib)
+*> Now we have read A RECORD first check if table < 2 (not A copylib)
 *>  and check if active copy (active-table) has replacing active!
 *>   IR-Buffer-Data-Size  contains size of record
 *>
@@ -7157,7 +7310,7 @@
      if       not WS-CRT-Replace-Found
               go to zz900-Exit.
 *>
-*> Process one at a time, Cannot see how to do it in one sweep !!
+*> Process one at A time, Cannot see how to do it in one sweep !!
 *>
      perform  varying WS-P11 from 1 by 1 until WS-P11 > WS-CRT-Replacing-Count
                                             or WS-CRT-Replacing-Count > CRT-Replace-Arguments-Size
@@ -7208,7 +7361,7 @@
                     inspect  Input-Record (1:WS-P14) tallying WS-P15
                                   for all Temp-Replacing-Source  (1:WS-P12)
                     if       WS-P15 not = zero
-                             move     function substitute (Input-Record (1:WS-P14)            *> Copy Record
+                             move     FUNCTION substitute (Input-Record (1:WS-P14)            *> Copy Record
                                       Temp-Replacing-Source  (1:WS-P12)
                                       Temp-Replacing-Target  (1:WS-P13)) to Temp-Record
                              if       Input-Record not = Temp-Record (1:256)
@@ -7217,17 +7370,17 @@
                              move     Temp-Record to Input-Record
                              if  We-Are-Testing3
                                  move spaces to Formatted-Line
-                                 move  ws-p12 to ws-disp
-                                 move  ws-p13 to ws-disp2
+                                 move  WS-p12 to WS-disp
+                                 move  WS-p13 to WS-disp2
                                  string "*>>> Rep (LIT) Was ="
                                          Temp-Replacing-Source (1:WS-P12)
                                          " ("
-                                         ws-disp
+                                         WS-disp
                                          ")"
                                          " Now = "
                                          Temp-Replacing-Target (1:WS-P13)
                                          " ("
-                                         ws-disp2
+                                         WS-disp2
                                          ")"
                                                into Formatted-Line
                                  end-string
@@ -7249,11 +7402,11 @@
                                       replacing TRAILING Temp-Replacing-Source (1:WS-P12)
                                                     by   Temp-Replacing-Target (1:WS-P13)
                       else
-                             inspect  function UPPER-CASE (Input-Record (1:WS-P14)) tallying WS-P15
-                                                for all function UPPER-CASE (Temp-Replacing-Source (1:WS-P12))
+                             inspect  FUNCTION UPPER-CASE (Input-Record (1:WS-P14)) tallying WS-P15
+                                                for all FUNCTION UPPER-CASE (Temp-Replacing-Source (1:WS-P12))
                              perform  varying WS-P16 from 1 by 1 until WS-P16 > WS-P15
                                       if       WS-P15 not = zero
-                                               move     function SUBSTITUTE-CASE (Input-Record (1:WS-P14)
+                                               move     FUNCTION SUBSTITUTE-CASE (Input-Record (1:WS-P14)
                                                         Temp-Replacing-Source  (1:WS-P12)
                                                         Temp-Replacing-Target  (1:WS-P13)) to Temp-Record
                                                if       Input-Record not = Temp-Record (1:256)
@@ -7262,20 +7415,20 @@
                                                move     Temp-Record to Input-Record
                                                if  We-Are-Testing3
                                                    move spaces to Formatted-Line
-                                                   move  ws-p12 to ws-disp
-                                                   move  ws-p13 to ws-disp2
-                                                   move  ws-p15 to ws-disp3
+                                                   move  WS-p12 to WS-disp
+                                                   move  WS-p13 to WS-disp2
+                                                   move  WS-p15 to WS-disp3
                                                    string "*>>> Rep (Pseudo) Was ="
                                                            Temp-Replacing-Source (1:WS-P12)
                                                            " ("
-                                                           ws-disp
+                                                           WS-disp
                                                            ")"
                                                            " Now = "
                                                            Temp-Replacing-Target (1:WS-P13)
                                                            " ("
-                                                           ws-disp2
+                                                           WS-disp2
                                                            ") "
-                                                           ws-disp3
+                                                           WS-disp3
                                                            " Times"
                                                                  into Formatted-Line
                                                    end-string
@@ -7290,10 +7443,10 @@
                     add      1 to WS-P12                 *> add 2 for added space before and after texts
                     add      1 to WS-P13                 *>  ditto
                     move     zero to WS-P15
-                    inspect  function UPPER-CASE (Input-Record (1:WS-P14)) tallying WS-P15
-                                  for all function UPPER-CASE (Temp-Replacing-Source (1:WS-P12))
+                    inspect  FUNCTION UPPER-CASE (Input-Record (1:WS-P14)) tallying WS-P15
+                                  for all FUNCTION UPPER-CASE (Temp-Replacing-Source (1:WS-P12))
                     if       WS-P15 not = zero
-                             move     function SUBSTITUTE-CASE (Input-Record (1:WS-P14)
+                             move     FUNCTION SUBSTITUTE-CASE (Input-Record (1:WS-P14)
                                       Temp-Replacing-Source (1:WS-P12)
                                       Temp-Replacing-Target (1:WS-P13)) to Temp-Record
                              if       Input-Record not = Temp-Record (1:256)
@@ -7302,19 +7455,20 @@
                              move     Temp-Record to Input-Record
                              if  We-Are-Testing3
                                  move spaces to Formatted-Line
-                                 move  ws-p12 to ws-disp
-                                 move  ws-p13 to ws-disp2
+                                 move  WS-p12 to WS-disp
+                                 move  WS-p13 to WS-disp2
+                                 move  WS-P15 to WS-Disp4
                                  string "*>>> Rep (Var) Was ="
                                          Temp-Replacing-Source (1:WS-P12)
                                          " ("
-                                         ws-disp
+                                         WS-disp
                                          ")"
                                          " Now = "
                                          Temp-Replacing-Target (1:WS-P13)
                                          " ("
-                                         ws-disp2
+                                         WS-disp2
                                          ") found "
-                                            WS-P15
+                                            WS-Disp4
                                             " Times"
                                                into Formatted-Line
                                  end-string

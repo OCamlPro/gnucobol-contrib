@@ -1,3 +1,53 @@
+2024-08-26  Vincent B Coen <vbcoen@btconnect.com>
+cobxref (v2.03.15)  In para bb030-Chk1 the code for "CALL" did not allow for
+                    words STATIC or STDCALL. This bug produced STATIC or STDCALL
+                    in the Lsting for Called Procedures instead of the actual
+                    routine called.
+                    In bb020-GetAWord test for End-Prog and Source-Eof before
+                    performing zz110-Get-A-Word as trying to stop msg8but leave
+                    in the same tests after. Ditto in zz110-Get-A-Word-OverFlow.
+                    Still not fixed it ...
+
+2024-06-17  Vincent B Coen <vbcoen@btconnect.com>
+printcbl
+       (v2.01.41)   From Chuck Haatvedt chg within prtcbl at ba000-Process Section
+                    for 2 statements of "move     Input-Record To PL-Text" TO
+                    "move     Input-Record (1 : IR-Buffer-Data-Size) To PL-Text"
+                    Update standalone version as well.
+cobxref
+       (v2.03.14)   Remove tests for -H, --H
+                    Default for help is without ANY parameters supplied, i.e.,
+                    calling cobxref
+
+
+2023-06-16  Vincent B Coen <vbcoen@btconnect.com>
+       (v2.03.13)   Changed in 2 tables 'values high-values' to 'value high-value'
+                    due to change in cobc v3.2 RC-2 !! complaining.
+                    In printcbl module zz900 changed display using a comp to a z(7)9
+                    this was changed in printcbl standalone. keeping version #
+                    to match.
+
+2022-10-17  Vincent B Coen <vbcoen@btconnect.com>
+       (v2.03.11)   Increased size of progname and word names for Supp in/out &
+                    sort file.
+                    Ditto Git table entries and made table fixed at 10,000.
+
+2022-09-27  Vincent B Coen <vbcoen@btconnect.com>
+       (v2.03.09)   Extend SourceInWS2 from 65 to 249 for variable format.
+                    Remove bad tests for not ">>" etc  in get-a-source-record
+                    as skipping valid tests for >>DEFINE, $SET etc.
+
+       (v2.03.08)   In zz100-Get-A-Source-Records skip lines with $E and $I (IF,
+                    ELIF, ELSE, END-IF, ELSE-IF and END)
+
+2022-09-23  Vincent B Coen <vbcoen@btconnect.com>
+       (v2.03.07)   Bug: missing test for SW-Variable with test for SW-Fixed.
+
+       (v2.03.06)   Code to support Variable source format taken from updated
+                    printcbl as well as new code.
+                    Support for $SET treated as >>SET, $DEFINE as >>DEFINE and
+                    skip any other $xxxx.
+
 2022-09-01  Vincent B Coen <vbcoen@btconnect.com>
        (v2.03.05)   Replaced all '>>DEFINE' with >>SET'
                     moved END PROGRAM to end of sources.
