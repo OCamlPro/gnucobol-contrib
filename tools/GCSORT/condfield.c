@@ -239,7 +239,6 @@ int condField_checkLen(struct condField_t* condField, int nInputLen) {
 */
 int condField_test(struct condField_t *condField, unsigned char *record, struct job_t* job) {
 	int result;
-	//int nVerify=0;
 	char szBufVLSCMP[MAX_RECSIZE+1];
 	int nTcmp = 0;
 	switch (condField->type) {

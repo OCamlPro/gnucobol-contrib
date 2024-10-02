@@ -30,6 +30,7 @@
 	#include <unistd.h>
 	#include <time.h>
 	#include <strings.h>
+	#include <sys/stat.h>
 	#define NUMCHAREOL 1		/* UNIX */
 	typedef unsigned long DWORD;
 	typedef unsigned short WORD;
@@ -70,9 +71,12 @@
 	#define _stricmp strcasecmp
 	#define strnicmp strncasecmp
 	#define _strdup  strdup
-
+	#define stat_file stat 
+	#define _struct_stat64  stat  
 #else
 	#define NUMCHAREOL 2		/* WINDOWS  */
+	#define _struct_stat64 _stat64
+	#define stat_file _stat64
 
 #endif
 
@@ -88,7 +92,7 @@
 #else
 /*  fix for ubuntu envronment  #define INLINE __inline__ //			 inline         use standard inline */
   #define INLINE 
-  #define INLINE2  // __inline__  /* __attribute__((always_inline))   */
+  #define INLINE2  /* __inline__ */  /* __attribute__((always_inline))   */
 #endif
 
 #include <libcob.h>
@@ -99,6 +103,12 @@
 	#define	NUM_FMT_LLD		"%9I64d"
 #else
 	#define	NUM_FMT_LLD		"%lld"
+#endif
+
+#if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+#define _THREAD_WIN_ENV_
+#else
+#define _THREAD_LINUX_ENV
 #endif
 
 
@@ -246,7 +256,8 @@ cob_field* util_MakeAttrib_call(int type, int digits, int scale, int flags, int 
 void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen);
 void util_resetAttrib(cob_field_attr* attrArea, int type, int digits);
 void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate);
-int utl_GetFileSizeEnvName(struct file_t* file);
+/* 20240926 int utl_GetFileSizeEnvName(struct file_t* file); */
+int64_t utl_GetFileSizeEnvName(struct file_t* file);
 int utl_GetFileEnvName(char * file);
 void utils_SetRecordOptionSortType(char* szType);
 void utils_SetRecordOptionSortLen(int l1, int l2, int l3, int l4, int l5, int l6, int l7);

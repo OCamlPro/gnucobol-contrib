@@ -70,7 +70,7 @@ int gcthread_start(int argc, char** argv, int nMaxThread, time_t* timeStart)
 	int nBlock=0;
 	int nRC = 0;
 
-	fprintf(stdout, " ------------------------------- MultiThread [%d Threads]------------------------------- \n", nThread);
+	fprintf(stdout, " MultiThread execution [%d Threads]\n", nThread);
 
 	nBlock = 0;
 	for (int t = 0; t < nThread; t++) {
@@ -121,12 +121,6 @@ int gcthread_start(int argc, char** argv, int nMaxThread, time_t* timeStart)
 		}
 #endif
 
-		/* Wait n second between loops. */
-#ifdef  _THREAD_WIN_ENV_
-	//-->> s.m.			Sleep(500L);
-#else
-		/* //sleep(1); */ /* 1 second */
-#endif
 	}
 
 #ifdef  _THREAD_WIN_ENV_
@@ -188,7 +182,6 @@ for (int s = 0; s < nThread; s++)
 
 
 #ifdef  _THREAD_WIN_ENV_
-	// void gcthread_run(void* pArguments)
 	unsigned __stdcall gcthread_run(void* pArguments)
 #else
 	void* gcthread_run(void* pArguments)
@@ -198,44 +191,47 @@ for (int s = 0; s < nThread; s++)
 	pParThread = (struct pParam*)pArguments;
 	pJob = pParThread->thJob;
 
-	int nContinueSrtTmp = 0;
-	int nRC = 0;
+	/* 20240927 int nContinueSrtTmp = 0; */
+	/* 20240927 int nRC = 0;			 */
+	pJob->nContinueSrtTmp = 0;
+	pJob->nRC = 0;
+
 	pJob->recordReadInCurrent = 0;
 
 	do {
 		if (pJob->nStatistics == 2)
 			util_print_time_elap_thread("Before  Thread job_loadFiles     ", pParThread->thJob->nCurrThread);
-		nContinueSrtTmp = 0;
-		nRC = job_loadFiles(pJob);
+		pJob->nContinueSrtTmp = 0;
+		pJob->nRC = job_loadFiles(pJob);
 		if (pJob->nStatistics == 2)
 			util_print_time_elap_thread("After   Thread job_loadFiles     ", pParThread->thJob->nCurrThread);
-		 if (nRC == -2)
-			nContinueSrtTmp = 1;
-		if (nRC == -1)
+		 if (pJob->nRC == -2)
+			 pJob->nContinueSrtTmp = 1;
+		if (pJob->nRC == -1)
 			break;
 		/* Sort data */
 		if (pJob->nStatistics == 2)
 			util_print_time_elap_thread("Before  Thread job_sort          ", pParThread->thJob->nCurrThread);
 
-		nRC = job_sort_data(pJob);
+		pJob->nRC = job_sort_data(pJob);
 
 		if (pJob->nStatistics == 2)
 			util_print_time_elap_thread("After   Thread job_sort          ", pParThread->thJob->nCurrThread);
-		if (nRC == -1)
+		if (pJob->nRC == -1)
 			break;
 		if (pJob->bIsPresentSegmentation == 1) {
 			if (pJob->nStatistics == 2)
 				util_print_time_elap_thread("Before  Thread job_save_temp     ", pParThread->thJob->nCurrThread);
-			nRC = job_save_tempfile(pJob);
+			pJob->nRC = job_save_tempfile(pJob);
 			if (pJob->nStatistics == 2)
 				util_print_time_elap_thread("After   Thread job_save_temp     ", pParThread->thJob->nCurrThread);
-			if (nRC == -1)
+			if (pJob->nRC == -1)
 				break;
 	 	}
-	} while (nContinueSrtTmp == 1);
+	} while (pJob->nContinueSrtTmp == 1);
 
 
-	pParThread->nRet = nRC;
+	pParThread->nRet = pJob->nRC;
 
 #ifdef  _THREAD_WIN_ENV_
 	_endthread();
@@ -264,11 +260,13 @@ int gcthreadSkipStop(struct job_t* job)
 	/* nCurrThread;	 */		/* current Thread */
 	/* nMaxThread;	 */		/* num max Thread */
 
-	int nNumRecords = job->inputFile->nFileMaxSize / job->inputLength;
-	int nNumRecordForBlock = nNumRecords / job->nMaxThread;
+	// s.m. 20240930 int nNumRecords = job->inputFile->nFileMaxSize / job->inputLength;
+	// s.m. 20240930 int nNumRecordForBlock = nNumRecords / job->nMaxThread;
+	int64_t nNumRecords = job->inputFile->nFileMaxSize / job->inputLength;
+	int64_t nNumRecordForBlock = nNumRecords / job->nMaxThread;
 
-	job->nMTSkipRec = ((job->nCurrThread-1) * nNumRecordForBlock);
-	job->nMTStopAft = ((job->nCurrThread-1) * nNumRecordForBlock) + nNumRecordForBlock;
+	job->nMTSkipRec = (long) ((job->nCurrThread-1) * nNumRecordForBlock);
+	job->nMTStopAft = (long) ((job->nCurrThread-1) * nNumRecordForBlock) + nNumRecordForBlock;
 
 	/* only for test   
 	job->nSkipRec = (job->nCurrThread * 0);
@@ -451,7 +449,7 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 		fprintf(stdout, "jobArray[%d]\n", s);
 		for (k = 0; k < MAX_HANDLE_TEMPFILE; k++) {
 			if (job->nCountSrt[k] > 0) {
-				fprintf(stdout, "job->nCountSrt[%d] = %d - %s\n", k,  job->nCountSrt[k], , job->array_FileTmpName[k]);
+				fprintf(stdout, "job->nCountSrt[%d] = %d - %s\n", k,  job->nCountSrt[k], job->array_FileTmpName[k]);
 			}
 		}
 	}
@@ -610,14 +608,12 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 			}
 			else
 			{		/* Overlay  */
-				// memset(szBuffRek, 0x20, recordBufferLength);
 				utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
 				memmove(szBuffRek, recordBuffer, byteRead + nSplitPosPnt);	/* s.m. 202101 copy record  */
 				nLenRek = outrec_copy_overlay(job->outrec, szBuffRekOutRec, szBufRekTmpFile[nPosPtr], job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 				nLenRek++;
 				if (nLenRek < job->outputLength)
 					nLenRek = job->outputLength;
-				//memset(szBufRekTmpFile[nPosPtr], 0x20, recordBufferLength); /* s.m. 202101  */
 				utl_resetbuffer((unsigned char*)szBufRekTmpFile[nPosPtr], recordBufferLength);
 				memcpy(szBufRekTmpFile[nPosPtr], szBuffRekOutRec, nLenRek + nSplitPosPnt);
 				byteReadTmpFile[nPosPtr] = nLenRek;
@@ -927,7 +923,8 @@ void gcthread_ReviewMemAlloc(struct job_t* job)
 	job->ulMemSizeAllocSort = job->ulMemSizeAllocSort / job->nMaxThread;
 
 #ifdef GCSTHREAD
-	printf(" job_ReviewMemAlloc - review file_length" NUM_FMT_LLD " \n", (long long)job->file_length);
+	/* not used 202409 printf(" job_ReviewMemAlloc - review file_length" NUM_FMT_LLD " \n", (long long)job->file_length); */
+	printf(" job_ReviewMemAlloc - review nFileMaxSize" NUM_FMT_LLD " \n", (long long)job->inputFile->nFileMaxSize);
 	printf(" job_ReviewMemAlloc - review job->ulMemSizeAllocData     " NUM_FMT_LLD " \n", (long long)job->ulMemSizeAllocData);
 	printf(" job_ReviewMemAlloc - review job->ulMemSizeAllocSort " NUM_FMT_LLD " \n", (long long)job->ulMemSizeAllocSort);
 
@@ -935,7 +932,7 @@ void gcthread_ReviewMemAlloc(struct job_t* job)
 	printf(" job_ReviewMemAlloc - nLenKey : %f\n", nLenKey);
 	printf(" job_ReviewMemAlloc - nPerc : %f\n", dAreaKey);
 #endif
-	// }
+
 	/* s.m. 202402 */
 
 }

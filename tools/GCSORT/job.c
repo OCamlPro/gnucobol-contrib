@@ -642,9 +642,9 @@ int job_load(struct job_t *job, int argc, char **argv) {
 			pthread_mutex_lock(&job_thread_mutex);
 #else
 			ghMutexJob = CreateMutex(
-			NULL,              // default security attributes
-			FALSE,             // initially not owned
-			NULL);             // unnamed mutex
+			NULL,              
+			FALSE,             
+			NULL);             
 		if (ghMutexJob == NULL)
 		{
 			fprintf(stdout, "*GCSORT*S048J*ERROR: CreateMutex error: %d\n", GetLastError());
@@ -822,11 +822,12 @@ void job_CloneFileForOutfilSet(struct file_t* file)
     case FILE_ORGANIZATION_LINESEQUENTIAL:
 		file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 	    file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
+		cob_putenv("COB_LS_FIXED=0");	 /* change value of environment value GNUCobol - Truncate trailing spaces*/
 		break;
 	case FILE_ORGANIZATION_LINESEQUFIXED:
 		file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 		file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
-	/*	cob_putenv("COB_LS_FIXED=1");	*/ /* change value of environment value GNUCobol*/
+		cob_putenv("COB_LS_FIXED=1");	 /* change value of environment value GNUCobol - NO Truncate trailing spaces*/
 		break;
 	case FILE_ORGANIZATION_RELATIVE:
         file->stFileDef->organization = COB_ORG_RELATIVE;
@@ -1833,14 +1834,15 @@ int job_check(struct job_t *job)
 	/* only for MultiThread */
 	if ((job->nExitRoutine > 0) && (job->nMultiThread > 0))
 	{
-		fprintf(stdout, "*GCSORT*S010H*ERROR: Multithread is not enabled for Exit Routine\n");
+		fprintf(stdout, "*GCSORT*S010H*ERROR: Multithread is not enabled for Exit Routines\n");
 		return -1;
 	}
 
-	if ((job->join != NULL) && (job->nMultiThread > 0)) {
-		fprintf(stdout, "*GCSORT*S010J*ERROR: Multithread is not enabled on JOIN feature\n");
+	if ((job_GetTypeOp(job) != 'S') && (job->nMultiThread > 0)) {
+		fprintf(stdout, "*GCSORT*S010J*ERROR: Multithread is  enabled only on SORT control statement\n");
 		return -1;
 	}
+
 
 	/* review info from Record Control Statement*/
 	/* Start */
@@ -2049,37 +2051,38 @@ int job_check(struct job_t *job)
 	/* check outrec outfil definition */
 	/* to refine */
 	
-	//-->>for (of = job->outfil; of != NULL; of = outfil_getNext(of)) {
-	//-->>	if (of->outfil_includeCond != NULL) {
-	//-->>		if (condField_checkLen(of->outfil_includeCond, job->inputLength) != 0) {
-	//-->>			fprintf(stdout, "*GCSORT*S017F*ERROR: Len of Include cond fields Outfil: %d is greater than record len: %d \n", nLen , job->inputLength);
-	//-->>			nErr++;
-	//-->>		}
-	//-->>	}
-	//-->>	/* outfil omit condition */
-	//-->>	if (of->outfil_omitCond != NULL) {
-	//-->>		if (of->outfil_omitCond != NULL) {
-	//-->>			if (condField_checkLen(of->outfil_omitCond, job->inputLength) != 0) {
-	//-->>				fprintf(stdout, "*GCSORT*S017G*ERROR: Len of Omit cond fields Outfil: %d is greater than record len: %d \n", nLen , job->inputLength);
-	//-->>				nErr++;
-	//-->>			}
-	//-->>		}
-	//-->>	}
-	//-->>	/* outfil outrec */
-	//-->>	if (of->outfil_outrec != NULL) {
-	//-->>		if (outrec_getLength(of->outfil_outrec) > of->outfil_File->maxLength) {
-	//-->>			fprintf(stdout, "*GCSORT*S017H*ERROR: Len of outrec fields Outfil: %d is greater than record len: %d \n", outrec_getLength(of->outfil_outrec), of->outfil_File->maxLength);
-	//-->>			nErr++;
-	//-->>		}
-	//-->>	}
-	//-->>
-	//-->>}
-	//-->>if (job->outrec != NULL) {
-	//-->>	if ((unsigned int) outrec_getLength(job->outrec) > job->outputLength) {
-	//-->>		fprintf(stdout, "*GCSORT*S017I*ERROR: Len of outrec fields: %d is greater than record len: %d \n", outrec_getLength(job->outrec), job->outputLength);
-	//-->>		nErr++;
-	//-->>	}
-	//-->>}
+	//for (of = job->outfil; of != NULL; of = outfil_getNext(of)) {
+	//	if (of->outfil_includeCond != NULL) {
+	//		if (condField_checkLen(of->outfil_includeCond, job->inputLength) != 0) {
+	//			fprintf(stdout, "*GCSORT*S017F*ERROR: Len of Include cond fields Outfil: %d is greater than record len: %d \n", nLen , job->inputLength);
+	//			nErr++;
+	//		}
+	//	}
+	//	/* outfil omit condition */
+	//	if (of->outfil_omitCond != NULL) {
+	//		if (of->outfil_omitCond != NULL) {
+	//			if (condField_checkLen(of->outfil_omitCond, job->inputLength) != 0) {
+	//				fprintf(stdout, "*GCSORT*S017G*ERROR: Len of Omit cond fields Outfil: %d is greater than record len: %d \n", nLen , job->inputLength);
+	//				nErr++;
+	//			}
+	//		}
+	//	}
+	//	/* outfil outrec */
+	//	if (of->outfil_outrec != NULL) {
+	//		if (outrec_getLength(of->outfil_outrec) > of->outfil_File->maxLength) {
+	//			fprintf(stdout, "*GCSORT*S017H*ERROR: Len of outrec fields Outfil: %d is greater than record len: %d \n", outrec_getLength(of->outfil_outrec), of->outfil_File->maxLength);
+	//			nErr++;
+	//		}
+	//	}
+	//
+	//}
+	//if (job->outrec != NULL) {
+	//	if ((unsigned int) outrec_getLength(job->outrec) > job->outputLength) {
+	//		fprintf(stdout, "*GCSORT*S017I*ERROR: Len of outrec fields: %d is greater than record len: %d \n", outrec_getLength(job->outrec), job->outputLength);
+	//		nErr++;
+	//	}
+	//}
+	
 	
 
 	/* check information for Multi Thread*/
@@ -2652,7 +2655,6 @@ int job_loadFiles(struct job_t* job) {
 	/*  perf2. 	unsigned char  szBuffRek[GCSORT_MAX_BUFF_REK];          */
 
 	unsigned int   nLenRek;
-	//unsigned int   nPosCurrentSeek = 0;
 
 	unsigned char* pBufRek;
 	unsigned char* pBufData;
@@ -2745,8 +2747,8 @@ int job_loadFiles(struct job_t* job) {
 
 		if ((job->bIsPresentSegmentation == 0) || (nEOFFileIn == 1))
 		{
-			struct stat filestatus;
-			stat(file_getName(job->fileLoad), &filestatus);
+			struct _struct_stat64 filestatus;
+			stat_file(file_getName(job->fileLoad), &filestatus);
 			job->inputFile->nFileMaxSize = filestatus.st_size;
 			if (job->inputFile->nFileMaxSize == 0) {
 				job->inputFile->nFileMaxSize = utl_GetFileSizeEnvName(job->fileLoad);
@@ -2813,18 +2815,18 @@ int job_loadFiles(struct job_t* job) {
 		int nNewLen = 0;
 
 
-		int nLim01 = (((int64_t)job->nLenMemory) * 2);
-		int nLim02 = (((int64_t)job->nLenKeys + (int64_t)SIZESRTBUFF) * 2);
+		int64_t nLim01 = (((int64_t)job->nLenMemory) * 2);
+		int64_t nLim02 = (((int64_t)job->nLenKeys + (int64_t)SIZESRTBUFF) * 2);
 
 		int nSplitBuf = SZPOSPNT + SZLENREC + SZPNTDATA;
 
-		/* s.m. 20210914
+		/* s.m. 20210914 - OK
 		 Condition where file input is empty
 		 */
-		if (job->inputFile->nFileMaxSize == 0) {
-			/* -->>	fprintf(stdout,"*GCSORT*W969* WARNING : File %s is empty \n", file_getName(file)); */
-			bEOF = 1;
-		}
+/* 20240926		if (job->inputFile->nFileMaxSize == 0) { */
+/* 20240926			/* -->>	fprintf(stdout,"*GCSORT*W969* WARNING : File %s is empty \n", file_getName(file)); */
+/* 20240926			bEOF = 1; */
+/* 20240926		} */
 		/* ======================================================================================= */
 
 		/*  Skip records before read loop */
@@ -2973,6 +2975,10 @@ int job_loadFiles(struct job_t* job) {
 			/* s.m. 20240302 */
 			job->recordNumberTotal++;
 			nLenRek = job->fileLoad->stFileDef->record->size;
+
+			/* 20240926 */
+			job->LenCurrRek = nLenRek;
+
 			/* perf. memcpy(szBuffRek, job->fileLoad->stFileDef->record->data, job->fileLoad->stFileDef->record->size);   */
 			gc_memcpy(szBuffRek, job->fileLoad->stFileDef->record->data, job->fileLoad->stFileDef->record->size);
 
@@ -3290,13 +3296,13 @@ int job_Verify_EOF(int* nState, struct file_t* stFile, unsigned char* szVectorRe
 	return nFS;
 }
 
-int job_skip_record_LS_LSF(struct job_t* job, struct file_t* file, long* nRec) 
+int job_skip_record_LS_LSF(struct job_t* job, struct file_t* file, int64_t* nRec)
 {
 	int nFSRead = 0;
 
 	* nRec = *nRec + job->nMTSkipRec;
 
-	for (long nC = 0; nC < job->nMTSkipRec; nC++) {
+	for (int64_t nC = 0; nC < job->nMTSkipRec; nC++) {
 		cob_read_next(file->stFileDef, NULL, COB_READ_NEXT);
 		nFSRead = file_checkFSRead("Read", "job_skip_record_LS_LSF", file, file->recordLength, file->recordLength);
 		if (nFSRead != 0)
@@ -3305,7 +3311,7 @@ int job_skip_record_LS_LSF(struct job_t* job, struct file_t* file, long* nRec)
 	return nFSRead;
 }
 
-int job_skip_record(struct job_t* job, struct file_t* file, long* nRec)
+int job_skip_record(struct job_t* job, struct file_t* file, int64_t* nRec)
 {
 	/* save data				*/
 	/* review record number		*/
@@ -3918,7 +3924,6 @@ INLINE2 int job_set_area(struct job_t* job, struct file_t* file, unsigned char* 
     /* s.m. 20220202  if ((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) && (nLenRek < nLen)) { */
     if (((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) || (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUFIXED)) && 
 		 (file->stFileDef->record->size > (unsigned int) nLenRek)) {
-           // memset(file->stFileDef->record->data+nLenRek, 0x20, file->stFileDef->record->size - nLenRek); /* padding with blank (0x20)   */
 			utl_resetbuffer((unsigned char*)file->stFileDef->record->data + nLenRek, file->stFileDef->record->size - nLenRek);
     }
 	/* 20180511 s.m. end    */
@@ -4126,7 +4131,8 @@ int job_save_tempfile(struct job_t *job)
 				}
 				/* ATTENZIONE CONTROLLO IN ABBINAMENTO  */
 				job->LenCurrRek = byteRead;
-				nCompare = job_compare_rek(job, szBuffTmp, recordBuffer, 1, nSplitPosPnt);	/* check pospnt */
+				/* 20240927 nCompare = job_compare_rek(job, szBuffTmp, recordBuffer, 1, nSplitPosPnt); */	/* check pospnt */
+				nCompare = job_compare_rek(job, szBuffTmp, recordBuffer, 1, 0);	/* check pospnt */
 
 				if (nCompare < 0 )   
 				{
@@ -4894,7 +4900,6 @@ int job_SetPosLenKeys(struct job_t* job, int* arPosLen) {
 		}
     return ;
 }
-// int job_compare_key(struct job_t* job, const void* first, const void* second)
 /**/
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 INLINE int job_compare_key(struct job_t* job, const void* first, const void* second)
@@ -5714,7 +5719,6 @@ int job_merge_files(struct job_t *job) {
 			retcode_func = -1;
 			goto job_merge_files_exit;
 		}
-		//bIsEof[nIdx1] = job_ReadFileMerge(Arrayfile_s[nIdx1], &handleFile[nIdx1], &byteReadFile[nIdx1], szBufRek[nIdx1]);  /* bIsEof = 0 ok, 1 = eof  */
 		bIsEof[nIdx1] = job_ReadFileMerge(Arrayfile_s[nIdx1], &byteReadFile[nIdx1], szBufRek[nIdx1]);  /* bIsEof = 0 ok, 1 = eof  */
 		if (bIsEof[nIdx1] == 0)
 			ptrBuf[nIdx1] = (unsigned char*)szBufRek[nIdx1];

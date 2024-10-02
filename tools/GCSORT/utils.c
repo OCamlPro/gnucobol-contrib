@@ -27,6 +27,7 @@
 /* #ifdef _WIN32    */
 #if	defined(_MSC_VER) /* s.m. 20201021 || defined(__MINGW32__) || defined(__MINGW64__)  */
 	#include <windows.h>
+	#include <process.h>
 #else
 	#include <limits.h>
 	#include <strings.h>
@@ -42,9 +43,9 @@
 #include "exitroutines.h"
 #include "gcshare.h"
 
-/* s.m.                                                     */
-/* inserita funzione per gestione del test case sensitive   */
-
+#ifdef _THREAD_LINUX_ENV
+#include <pthread.h>
+#endif
 
 int utl_counter = 0;
 
@@ -1083,26 +1084,27 @@ void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate)
     return;
 }
 
-int utl_GetFileSizeEnvName(struct file_t* file) {
+/* 20240926 int utl_GetFileSizeEnvName(struct file_t* file) { */
+int64_t utl_GetFileSizeEnvName(struct file_t* file) {
 	char* pEnv;
-	struct stat filestatus;
+	struct _struct_stat64 filestatus;
 	char szname[GCSORT_SIZE_FILENAME];
 	snprintf(szname, (size_t)COB_FILE_MAX, "%s", (const char*)file->stFileDef->assign->data);
 	pEnv = getenv(szname);
 	if (pEnv != NULL) {
-		stat(pEnv, &filestatus);
+		stat_file(pEnv, &filestatus);
 		return filestatus.st_size;
 	}
 	snprintf(szname, (size_t)COB_FILE_MAX, "DD_%s", (const char*)file->stFileDef->assign->data);
 	pEnv = getenv(szname);
 	if (pEnv != NULL) {
-		stat(pEnv, &filestatus);
+		stat_file(pEnv, &filestatus);
 		return filestatus.st_size;
 	}
 	snprintf(szname, (size_t)COB_FILE_MAX, "dd_%s", (const char*)file->stFileDef->assign->data);
 	pEnv = getenv(szname);
 	if (pEnv != NULL) {
-		stat(pEnv, &filestatus);
+		stat_file(pEnv, &filestatus);
 		return filestatus.st_size;
 	}
 	return 0;
@@ -1130,8 +1132,8 @@ int utl_GetFileEnvName( char* szfile) {
 
 int64_t utl_GetFileSize(struct file_t* file) 
 {
-	struct stat filestatus;
-	stat(file->name, &filestatus);
+	struct _struct_stat64 filestatus;
+	stat_file(file->name, &filestatus);
 	return filestatus.st_size;
 }
 
@@ -1264,8 +1266,44 @@ int utl_replace_findrep(unsigned char* str, unsigned char* find, unsigned char* 
 
 void sort_temp_name(struct job_t* job, const char* ext)
 {
+	// s.m. 20240930
+/* s.m.                                                     */
+/* inserita funzione per gestione del test case sensitive   */
+#if defined(_THREAD_LINUX_ENV)
+	pthread_mutex_t ut_thread_mutex = PTHREAD_MUTEX_INITIALIZER;
+#else
+	HANDLE utMutexJob;
+#endif 
+
+
+#ifdef _THREAD_LINUX_ENV
+	pthread_mutex_lock(&ut_thread_mutex);
+#else
+	utMutexJob = CreateMutex(
+		NULL,
+		FALSE,
+		NULL);
+	if (utMutexJob == NULL)
+	{
+		fprintf(stdout, "*GCSORT*S048J*ERROR: CreateMutex error: %d\n", GetLastError());
+		return;
+	}
+
+#endif
+
+	
+
 #if defined(_MSC_VER)  ||  defined(__MINGW32__) || defined(__MINGW64__)
 	/* s.m. 202101 if (job->strPathTempFile == NULL)  */
+// 20240920
+	char szt1[20];
+	memset(szt1, 0x00, 20);
+
+	sprintf(szt1, "Srt%d%02d%02d.tmp", _getpid(), job->nCurrThread, job->nIndextmp);
+
+	memset(cob_tmp_temp, 0x00, COB_MEDIUM_BUFF);
+	memset(cob_tmp_buff, 0x00, COB_MEDIUM_BUFF);
+
 	if (strlen(job->strPathTempFile) == 0) {
 		GetTempPath(FILENAME_MAX, cob_tmp_temp);
 		if (strlen(cob_tmp_temp) == 0) {
@@ -1276,10 +1314,28 @@ void sort_temp_name(struct job_t* job, const char* ext)
 	}
 	else
 		strcpy(cob_tmp_temp, job->strPathTempFile);
-	GetTempFileName(cob_tmp_temp, "Srt", 0, cob_tmp_buff);
+	// 20240930 GetTempFileName(cob_tmp_temp, "Srt", 0, cob_tmp_buff);
+	/* printf("prefisso nome file temporaneo----------------------->%s\n", szt1); */
+	/* GetTempFileName(cob_tmp_temp, (LPCSTR)szt1, 0, cob_tmp_buff); */
+
+	strcat(cob_tmp_buff, cob_tmp_temp);
+	strcat(cob_tmp_buff, szt1);
+
+	/* 
+	printf("	cob_tmp_temp----------------------->%s\n", cob_tmp_temp);
+	printf("	cob_tmp_buff----------------------->%s\n", cob_tmp_buff);
+	*/
+
 	DeleteFile(cob_tmp_buff);
+
 	strcpy(cob_tmp_temp, cob_tmp_buff);
 	strcpy(cob_tmp_temp + strlen(cob_tmp_temp) - 4, ext);
+
+#ifdef _THREAD_LINUX_ENV
+	pthread_mutex_unlock(&ut_thread_mutex);
+#else
+	CloseHandle(utMutexJob);
+#endif
 	return;
 #else
 	char* buff;

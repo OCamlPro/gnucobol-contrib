@@ -50,9 +50,7 @@ struct pParam {
 
 
 #ifdef  _THREAD_WIN_ENV_
-//void gcthread_run(void* pArguments);
 unsigned __stdcall gcthread_run(void* pArguments);
-
 #else
 void* gcthread_run(void* pArguments);
 #endif

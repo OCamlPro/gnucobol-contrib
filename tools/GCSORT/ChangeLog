@@ -1,4 +1,19 @@
-2024-06-22  Sauro Menna  <smenna@users.sourceforge.net>
+
+2024-10-03  Sauro Menna  <saumen2004@libero.it>
+    * Version 1.04.01
+    * Check command line to enable multithread only on SORT Control Statement
+    * Fixed LSF file type (Line Sequential Fixed), enabled COB_LS_FIXED environment variable GNUCobol - NO Truncate trailing spaces
+	* Fixed the problem in TMP files when the number of files is greater than 16
+	* (many thanks to Sergey Kashyrin)
+	* 	- nFileMaxSize from int to int64_t
+	*   - return value utl_GetFileSizeEnvName   from int to int64_t
+	*   - from int to long : long nNumRecords ,       long nNumRecordForBlock
+	*   - from struct start to struct _stat64 (_struct_stat64)
+	*   - from function stat to stat_file (windows _stat64, linux stat)
+	*   - Update for variable file - job->LenCurrRek = nLenRek;
+	*   - Modify struct hSrtMem_t - move unsigned char* pAddress;  before unsigned int   nLenRek;	
+
+2024-06-22  Sauro Menna  <saumen2004@libero.it>
     * Version 1.04.00 - Multithread version
     * Fixed End of Line problem for sequential line files
     * Reset buffer with space (ASCII/EBCDIC)
@@ -6,7 +21,7 @@
     * Review Cobol modules gctestrun8, ixwrite01
     * Revision to eliminate unused variables
 
-2024-05-27  Sauro Menna  <smenna@users.sourceforge.net>
+2024-05-27  Sauro Menna  <saumen2004@libero.it>
     * Version 1.03.10 - Multithread version
     * Enabled Multithread in command line (parameter -mt=<n> where n > 1 and <= 16)
       Multithread features valid only for Sequential (Fixed and Variable) anche Line Sequential (Fixed and Variable)
@@ -24,56 +39,56 @@
       gctestcmd.cfg with 4 test case multithread: Sequential, Line Sequential, Fixed e Variable
     * Revised criteria for memory allocation sort
 
-2023-11-17  Sauro Menna  <smenna@users.sourceforge.net>
+2023-11-17  Sauro Menna  <saumen2004@libero.it>
     * Version 1.03.09
     * Alternative Key description - fix error in gcsorthelp.c and documentation
 
-2023-11-14  Sauro Menna  <smenna@users.sourceforge.net>
+2023-11-14  Sauro Menna  <saumen2004@libero.it>
     * Version 1.03.09
     * XSUM features - Write separate output file with records discarded from SumField
 
-2023-10-12  Sauro Menna  <smenna@users.sourceforge.net>
+2023-10-12  Sauro Menna  <saumen2004@libero.it>
     * Version 1.03.08
     * New fields type SFF (signed free form) and UFF (unsigned free form)
     
-2023-09-12  Sauro Menna  <smenna@users.sourceforge.net>
+2023-09-12  Sauro Menna  <saumen2004@libero.it>
     * Version 1.03.07
     * Revised test case EBCDIC ( -fsign=EBCDIC  -fdefault-colseq=EBCDIC -febcdic-table=DEFAULT)
     * Update README and INSTALL files
     
-2023-05-10  Sauro Menna  <smenna@users.sourceforge.net>
+2023-05-10  Sauro Menna  <saumen2004@libero.it>
     * FIX problem in Line Sequential Fixed (LSF)
 
-2023-03-17  Sauro Menna  <smenna@users.sourceforge.net>
+2023-03-17  Sauro Menna  <saumen2004@libero.it>
     * Version 1.03.06
     * Search Substring (SS) in format field
 
-2023-03-17  Sauro Menna  <smenna@users.sourceforge.net>
+2023-03-17  Sauro Menna  <saumen2004@libero.it>
     * Fixed OUTFIL problem with more definitions
     * Fixed OUTFIL records counter 
 
-2023-03-14  Sauro Menna  <smenna@users.sourceforge.net>
+2023-03-14  Sauro Menna  <saumen2004@libero.it>
     * Version 1.03.05
     * Extended  OUTFIL without filename (FILES or FNAMES),  the data set will be processed in GIVE file also for SAVE option
     * In the OUTFIL option you can also indicate the same GIVE file name 
     
 
-2023-03-13  Sauro Menna  <smenna@users.sourceforge.net>
+2023-03-13  Sauro Menna  <saumen2004@libero.it>
     * Version 1.03.05
     * Changed OUTFIL without filename (FILES or FNAMES),  the data set will be processed in GIVE file
     * Fix problems in OUTFIL START/ENDREC
     * Update Testcase OUTFIL Cobol program  and takefile somisqfmlt03_take.prm 
     * Update Testcase START/ENDREC Cobol program
 
-2023-03-09  Sauro Menna  <smenna@users.sourceforge.net>
+2023-03-09  Sauro Menna  <saumen2004@libero.it>
     * Fix problem in OUTFIL SAVE Option 
 
-2023-03-09  Sauro Menna  <smenna@users.sourceforge.net>
+2023-03-09  Sauro Menna  <saumen2004@libero.it>
     * Fix problem in OUTFIL SAVE Option 
     * Updated testcase COBOL source 
     * Updated header files to include libcob.h
 
-2023-02-20  Sauro Menna  <smenna@users.sourceforge.net>
+2023-02-20  Sauro Menna  <saumen2004@libero.it>
     * New test case EBCDIC option 
     * Modify test case to support libcob 3.2 library and earlier versions
     * Modify gcsysop.c to get GNUCobol version
@@ -90,14 +105,14 @@
 2023-01-04  David Declerck  <david.declerck@ocamlpro.com>
     * New options -fcolseq and -febcdic-table allowing to specify the collating sequence (ASCII/EBCDIC) and EBCDIC table to use for character comparisons (available only if using libcob 3.2)
 
-2022-12-01  Sauro Menna  <smenna@users.sourceforge.net>
+2022-12-01  Sauro Menna  <saumen2004@libero.it>
     * Fixed problem with packed-decimal length
 
-2022-11-27  Sauro Menna  <smenna@users.sourceforge.net>
+2022-11-27  Sauro Menna  <saumen2004@libero.it>
     * Version 1.03.04
     * Fix problem in field compare with fsign=EBCDIC/ASCII
 
-2022-11-14  Sauro Menna  <smenna@users.sourceforge.net>
+2022-11-14  Sauro Menna  <saumen2004@libero.it>
     * Version 1.03.04
     * Fixed reference to __LIBCOB_VERSION and __LIBCOB_VERSION_MINOR
       (Thanks to Simon Sobisch)
@@ -108,17 +123,17 @@
     * Redirecting error messages to stdout 
     * Fixed errors on files used in test environments
 
-2022-05-11  Sauro Menna  <smenna@users.sourceforge.net>
+2022-05-11  Sauro Menna  <saumen2004@libero.it>
     * Modified file.c for compatibility with libcob (GnuCOBOL) version 3.2.
 
-2022-05-08  Sauro Menna  <smenna@users.sourceforge.net>
+2022-05-08  Sauro Menna  <saumen2004@libero.it>
     * Rename gctestsetup.cbl (in tests/src folder) for problems in MinGW environment
     * from gctestsetup.cbl to gctestset.cbl
     * Modified compile scripts compile.sh, compile.bat, compile_mingw.bat
     * Added the source file viewfiledate2.cbl in tests/src folder  
     * Modified job.c, file.c, outfil.c for compatibility with libcob (GnuCOBOL) version 3.2.
 
-2022-04-06  Sauro Menna  <smenna@users.sourceforge.net>
+2022-04-06  Sauro Menna  <saumen2004@libero.it>
     * Version 1.03.03
     * New Statement JOINJKEYS to join two files
     * Test cases for join and examples (testjoin.sh or testjoin.bat in gcsort/tests/script)
@@ -126,7 +141,7 @@
     * Update help GCSORT
     * Updated command gcsort --help 
 
-2022-01-19  Sauro Menna  <smenna@users.sourceforge.net>
+2022-01-19  Sauro Menna  <saumen2004@libero.it>
     * Version 1.03.02
     * Modified MAKEFILE project
     * New option RECORD CONTROL STATEMENT
@@ -137,19 +152,19 @@
     * Update Help (gcsort --help) and documentation
     * Fixed memory leaks on some options and under certain conditions
 
-2021-12-27  Sauro Menna  <smenna@users.sourceforge.net>
+2021-12-27  Sauro Menna  <saumen2004@libero.it>
     * copyfile.c - Fixed problem with file name when name is environment variable
     * job.c - Fixed problem with variables used to compare fields - 
     * gcsorthelp.c - Modified option '--version' with new info 'gcsort 64bit-mode'
 
-2021-09-14  Sauro Menna  <smenna@users.sourceforge.net>
+2021-09-14  Sauro Menna  <saumen2004@libero.it>
     * job.c - Fix problem with empty file
     
-2021-09-03  Sauro Menna  <smenna@users.sourceforge.net>
+2021-09-03  Sauro Menna  <saumen2004@libero.it>
     * job.c - Integrated command with only INCLUDE COND condition
     *         Example: gcsort INCLUDE COND=<condition>    USE <filein>   RECORD ...  GIVE <fileout> RECORD ...
     
-2021-05-21  Sauro Menna  <smenna@users.sourceforge.net>
+2021-05-21  Sauro Menna  <saumen2004@libero.it>
     * Fix problem in INCLUDE/OMIT condition
     * Fix script to compile parser/scanner
     * Exit routine E15 - E35
@@ -161,7 +176,7 @@
     * New format FIELD=COPY  for E15/E35 routines
     * Test Case for Date format
 
-2021-02-01  Sauro Menna  <smenna@users.sourceforge.net>
+2021-02-01  Sauro Menna  <saumen2004@libero.it>
     * Check LIBCOB version (__LIBCOB_VERSION) for variables of cob_modules
     * Management of warning codes (New value 4 for Warning, like DFSORT)
     * Changes to improve performance
@@ -169,24 +184,24 @@
     * Modified MAKEFILE project
     * Updated test COBOL programs (tests/src) 
     
-2021-01-14  Sauro Menna  <smenna@users.sourceforge.net>
+2021-01-14  Sauro Menna  <saumen2004@libero.it>
     * Fix problems with Temporary Files
     * New module to verify result of sort (tests/src)
 
-2021-01-08  Sauro Menna  <smenna@users.sourceforge.net>
+2021-01-08  Sauro Menna  <saumen2004@libero.it>
     * New option OUTREC OVERLAY 
     * Fix problems in MinGW enviro nment
     * Review of test suite (folder tests) 
     * Fix problem in OUTREC
     * Changed Makefile to compile source and not generate parser/scanner
 
-2020-12-28  Sauro Menna  <smenna@users.sourceforge.net>
+2020-12-28  Sauro Menna  <saumen2004@libero.it>
 	* New option INREC OVERLAY 
     * Fix problem in gcc compiler environment
     * Review of the configuration of the parser source
       New folder parser. Modified Makefile.
 
-2020-10-15  Sauro Menna  <smenna@users.sourceforge.net>
+2020-10-15  Sauro Menna  <saumen2004@libero.it>
 	* gcsort.c - new option for sign EBCDIC (-fsign=EBCDIC)
     * gcsort.h - 
     * gcsorthelp.c - Review Help for new option
@@ -198,7 +213,7 @@
 2020-02-05  Sergey Kashyrin <ska@kiska.net>
 	* job.c - fixing small SIGSEGV bug in sort_temp_name for Linux
 
-2019-03-05  Sauro Menna  <smenna@users.sourceforge.net>
+2019-03-05  Sauro Menna  <saumen2004@libero.it>
     * job.c - job_set_area (Error in function name)
     * test environment : .. gcsort -> tests -> src
            somisqf12b.cbl, sfrmsqf18b.cbl soutfsqf02b2.cbl
@@ -208,10 +223,10 @@
     * INSTALL File modified for MinGW/MSYS environment
     * libgcsort.h : define MinGW environment    
 
-2017-05-11  Sauro Menna  <smenna@users.sourceforge.net>
+2017-05-11  Sauro Menna  <saumen2004@libero.it>
     * job.c - Padding text file
 
-2017-01-15  Sauro Menna  <smenna@users.sourceforge.net>
+2017-01-15  Sauro Menna  <saumen2004@libero.it>
 
     * Review test environment (tests folder)
       Created cobol program to setup environment (gctestsetup.cbl)
@@ -226,7 +241,7 @@
 	* general: changed package name to GCSORT and renamed
 	  all files from ocsort -> gcsort in behalf of Sauro Menna
 
-2016-11-12  Sauro Menna  <smenna@users.sourceforge.net>
+2016-11-12  Sauro Menna  <saumen2004@libero.it>
 
 	* Update Version 1.0.0 - by Sauro Menna 
     * New Conditional field  SS = SubString for INCLUDE/OMIT statement
@@ -237,7 +252,7 @@
                     'Str10,Str20,Str30,Str40,Str50'
     * Insert Cobol module and scripts in tests folder
     
-2016-10-23  Sauro Menna  <smenna@users.sourceforge.net>
+2016-10-23  Sauro Menna  <saumen2004@libero.it>
 
 	* Update Version 1.0.0 - by Sauro Menna 
     * Used fields COB_FIELD for data type and integration with LIBCOB:
@@ -269,19 +284,19 @@
     * Command TAKE case insensitive    
     * Check instruction for KEY definition
 
-2016-03-26  Sauro Menna  <smenna@users.sourceforge.net>
+2016-03-26  Sauro Menna  <saumen2004@libero.it>
 
 	* Update Version 1.0.0 - by Sauro Menna 
     * FIX : printf rows file TAKE (last characters)
 
-2016-02-28  Sauro Menna  <smenna@users.sourceforge.net>
+2016-02-28  Sauro Menna  <saumen2004@libero.it>
 
 	* Update Version 1.0.0 - by Sauro Menna 
     * Enabled case insensitive for all commands and statements
     * Insert build_windows for vc10 and vc 14
     * FIX : warnings for vc14
 
-2016-02-11  Sauro Menna  <smenna@users.sourceforge.net>
+2016-02-11  Sauro Menna  <saumen2004@libero.it>
 
 	* Released OCSORT User's Guide  (in doc folder)
 	* Update Version 1.0.0 - by Sauro Menna 
@@ -291,7 +306,7 @@
             SumField - Fix Update Record - ZD (Zoned)
             Sort Field - Fix Sort Key - BI (Binary)
 
-2015-12-01  Sauro Menna  <smenna@users.sourceforge.net>
+2015-12-01  Sauro Menna  <saumen2004@libero.it>
 
 	* Version 1.0.0 released.
     New features:

@@ -98,8 +98,8 @@ struct job_t;
 
 struct hSrtMem_t {
 	int64_t lPosPnt;			/* Pointer RRN file*/
-	unsigned int   nLenRek;		/* Record len */
 	unsigned char* pAddress;	/* Pointer memory record area */
+	unsigned int   nLenRek;		/* Record len */
 };
 
 struct job_t {
@@ -147,7 +147,7 @@ struct job_t {
 	int  nMaxFileOut;
 	int  nMaxFileOutFil;		/* Number of file in OutFIL, used in SAVE option*/
 	int  nMaxHandle;
-	int64_t	file_length;
+	/* not 202409 used int64_t	file_length;*/
 	int64_t	lPosAbsRead;
 	int64_t	nSkipRec;
 	int64_t	nStopAft;
@@ -254,11 +254,14 @@ struct job_t {
 
 	int64_t	nCountRecThread;
 	struct file_t* fileLoad;
-	long	nMTSkipRec;
-	long	nMTStopAft;
+	int64_t nMTSkipRec;
+	int64_t nMTStopAft;
 
-	long nRecCount;
+	int64_t nRecCount;
 
+	/* 20240927 */
+	int nContinueSrtTmp;
+	int nRC;
 };
 
 /* ok ok ok struct job_t* globalJob;    */
@@ -349,8 +352,8 @@ void job_AllocateField(struct job_t* job);
 void job_DestroyField(struct job_t* job);
 int job_MakeExitRoutines(struct job_t* job);
 
-int job_skip_record_LS_LSF(struct job_t* job, struct file_t* file, long* nRec);
-int job_skip_record(struct job_t* job, struct file_t* file, long* nRec);
+int job_skip_record_LS_LSF(struct job_t* job, struct file_t* file, int64_t* nRec);
+int job_skip_record(struct job_t* job, struct file_t* file, int64_t* nRec);
 
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	void job_getTypeFlags(int nTypeField, int* nType, int* nFlags, int nLen);

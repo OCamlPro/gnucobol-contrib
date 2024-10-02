@@ -219,8 +219,8 @@ int job_copyFile(struct job_t *job)
 
 		if ((job->bIsPresentSegmentation == 0) || (nEOFFileIn == 1))
 		{
-			struct stat filestatus;
-		    stat( file_getName(file), &filestatus );
+			struct _struct_stat64 filestatus;
+		    stat_file( file_getName(file), &filestatus );
 			job->inputFile->nFileMaxSize = filestatus.st_size;
 			/* check if filename is a environment variable */
 			if (job->inputFile->nFileMaxSize == 0)

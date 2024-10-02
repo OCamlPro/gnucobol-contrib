@@ -64,7 +64,7 @@ _LIB
 /* GCSTHREAD   used to view info details Thread - DISABLE release*/
 #define GCSTHREAD 
     /* */
-#undef  GCSTHREAD 
+#undef  GCSTHREAD
    /* */
 
 #if defined(snprintf) && defined(_MSC_VER) 
@@ -85,8 +85,8 @@ _LIB
 /* value 1 : generate temp file fixed name : cob17, cob18, cob19, cob1a, cob1b  */
 #define GCSORT_DEBUG   0        /* 0 no debug - 1 debug */
 #define GCSORT_TESTCMD 0
-#define GCSORT_VERSION "01.04.00"
-#define GCSORT_TAR_DATE "May 30 2024 20:00:00 UTC"
+#define GCSORT_VERSION "01.04.01"
+#define GCSORT_TAR_DATE "Oct 02 2024 20:00:00 UTC"
 
 /* Return Code */
 #define GC_RTC_OK	 0

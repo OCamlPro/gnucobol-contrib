@@ -36,7 +36,6 @@ enum cb_colseq {
 };
 
 
-//static cob_u8_t  g_cb_fieldcollatingseq[256];
 extern cob_u8_t* g_cb_fieldcollatingseq_ptr;
 extern cob_u8_t  g_cb_fieldcollatingseq[256];
 

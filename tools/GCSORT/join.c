@@ -1327,7 +1327,6 @@ int join_join_files(struct job_t* job) {
 							nbyteRead = nLenRek;
 						if (recordBufferLength < nbyteRead)
 							recordBuffer = (unsigned char*)realloc(recordBuffer, nLenInRec + 1);
-						//memset(recordBuffer, 0x20, recordBufferLength); /* s.m. 202101  */
 						utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength);
 
 						memcpy(recordBuffer + nSplitPosPnt, szBuffRek + nSplitPosPnt, nbyteRead);
@@ -2664,7 +2663,6 @@ int join_empty_fileF2(struct job_t* job) {
 	unsigned int	nLenRecOut = 0;
 	unsigned int	nLenRek = 0;
 	int				nFrom = 0;
-//	int				nLenKey = 0;
 	struct join_t* join;
 	struct joinunpaired_t* unp;
 	int				useRecord = 1;
@@ -2901,7 +2899,6 @@ int join_empty_fileF2(struct job_t* job) {
 						nbyteRead = nLenRek;
 					if (recordBufferLength < nbyteRead)
 						recordBuffer = (unsigned char*)realloc(recordBuffer, nLenInRec + 1);
-				//emset(recordBuffer, 0x20, recordBufferLength);
 					utl_resetbuffer((unsigned char*)recordBuffer, recordBufferLength);
 
 					memcpy(recordBuffer + nSplitPosPnt, szBuffRek + nSplitPosPnt, nbyteRead);

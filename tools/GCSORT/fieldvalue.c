@@ -33,9 +33,6 @@
 #include "job.h"
 #include "outrec.h"
 
-//extern cob_field* g_ckfdate1;
-//extern cob_field* g_ckfdate2;
-
 struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF, int datetype) {
 	int i,j;
 	unsigned char buffer[3];

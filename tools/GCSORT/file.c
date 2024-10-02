@@ -304,11 +304,13 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 			file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 			file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
 			/* use default value LIBCOB */
+			cob_putenv("COB_LS_FIXED=0");	 /* change value of environment value GNUCobol - Truncate trailing spaces*/
 			break;
 		case FILE_ORGANIZATION_LINESEQUFIXED:
 			file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 			file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
-		/*	cob_putenv("COB_LS_FIXED=1");	*/ /* change value of environment value GNUCobol*/
+			cob_putenv("COB_LS_FIXED=1");	/* change value of environment value GNUCobol - NO Truncate trailing spaces*/
+			
 			break;
 		case FILE_ORGANIZATION_RELATIVE:
 			tKeys =  file->stKeys;
@@ -380,7 +382,7 @@ int file_clone(struct file_t* fout, struct file_t* fin) {
 	/* fout->name = fin->name; */
 	/* */
 	fout->bIsSeqMF = fin->bIsSeqMF;
-	fout->file_length = fin->file_length;
+	/* not used 202409	fout->file_length = fin->file_length; */
 	fout->format = fin->format;
 	fout->maxLength = fin->maxLength;
 	fout->next = NULL;

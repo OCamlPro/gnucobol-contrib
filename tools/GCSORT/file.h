@@ -36,10 +36,11 @@ struct file_t {
 	int maxLength;
 	unsigned char* pHeaderMF;
 	int bIsSeqMF;
-	int64_t file_length;
+	/* not used 202409 int64_t file_length; */
 	int nTypeNameFile;          /* Outfile  */
 	int handleFile;
-	int nFileMaxSize;
+	/* 20240926  int nFileMaxSize; */
+	int64_t nFileMaxSize;
 	int nNumKeys;
 	cob_file* stFileDef;        /* info for cob_open, cob_read, cob_write, cob_close    */
 	int opt;                    /* option for write */
