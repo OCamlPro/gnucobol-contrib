@@ -1299,8 +1299,11 @@ void sort_temp_name(struct job_t* job, const char* ext)
 	char szt1[20];
 	memset(szt1, 0x00, 20);
 
+#if defined(_MSC_VER) 	
 	sprintf(szt1, "Srt%d%02d%02d.tmp", _getpid(), job->nCurrThread, job->nIndextmp);
-
+#else
+	sprintf(szt1, "Srt%d%02d%02d.tmp", GetCurrentProcessId(), job->nCurrThread, job->nIndextmp);
+#endif
 	memset(cob_tmp_temp, 0x00, COB_MEDIUM_BUFF);
 	memset(cob_tmp_buff, 0x00, COB_MEDIUM_BUFF);
 
