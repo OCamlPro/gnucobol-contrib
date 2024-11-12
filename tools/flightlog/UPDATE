@@ -1,4 +1,4 @@
-2.02.12 No requirements for this version but a small file is now ceated holding
+2.02.12 No requirements for this version but a small file is now created holding
 the name and license details of the pilot or crew member for the report.
 It now allows you to specify that you want running grand totals to be created
 after each months totals when using option D.
@@ -80,7 +80,7 @@ A. Preparation for update.
       then you have it in the directory where you run flightlog from.
 
  4. Using your archiver of choice make a back up of the 6 data files AND
-    the flightlog program, replacing 'yyyymmdd' with todays date so:
+    the flightlog program, replacing 'yyyymmdd' with today's date so:
 
     Using zip do :
       zip -9 backup-v2.01-pre-update-yyyymmdd.zip *.dat *.seq flightlog
@@ -97,11 +97,13 @@ A. Preparation for update.
  5.  You can now delete the flightlog file if you copied it in step 3 ONLY by
      rm -f flightlog
 
- 6.  copy the archive created to the backups directory by:
-     cp -vp backups
+ 6.  Create if not already done a backup directory/folder by
+     mkdir backups
+
+ 7.  Copy the archive created to the backups directory by:
+     cp -vp backup-v2.01-pre-update-yyyymmdd.zip (or .rar)  backups
 
      Change the name of 'backups' if different to the one you use.
-
 
 B.  You may want to save the current source file version of flightlog
     if you have not got the downloaded archive of it, check this now.
@@ -130,14 +132,16 @@ B.  You may want to save the current source file version of flightlog
 
  2. The following assumes you installed the cobol compiler from last time so:
     run :
+
     cobc -x afldconv1.cbl
     cobc -x flightlog.cbl
 
     These should have completed with NO error or warning messages but if so find
     out why and fix the issue/s and rerun.
 
- 3. Copy the flightlog executable to the same directory you found it in step 3
-    replacing the old version. Shown here but may not be the correct location :
+ 3. Copy the flightlog executable to the same directory you found the previous
+    one in step A.3 replacing the old version.
+    Shown here, but may not be the correct location for you :
       [ cp -f flightlog ~/bin ]
      but it is the usual one for Linux based systems but yours could be
      different :)
@@ -148,7 +152,7 @@ B.  You may want to save the current source file version of flightlog
     The program needs file airfield.seq and creates a new airfield.dat.
      THIS REPLACES THE ORIGINAL ONE.
 
-    The display should show each of these on their own lines near the bottonm of
+    The display should show each of these on their own lines near the bottom of
     screen as the number of:
 
     records read
@@ -185,14 +189,14 @@ Changelog :
                         anyway.
 
  24/12/18 vbc - 2.02.01 Experiment for using airfield names in place of ICAO
-                        codes   PR11, PH11 ?     from TODO (2).
+                        codes PR11, PH11 ?     from TODO (2).
                         BUG - Using HIDDEN menu options 3 & 4 for C & D
                         respectively. Carried totals not happening chg test for
-                        > 1 instd of > 0
+                        > 1 instead of > 0
 
  31/12/18 vbc - 2.02.03 Mostly typos and added some extra help.
  19/11/19 vbc - 2.02.08 Minor typos, i.e., missing space between words in this
                         document.
  26/11/19 vbc - 2.02-10 Minor typos and alignment in this document.
- 18/03/23 vbc -         Cleaned up this doc to width size 80 chars amd chgd (C)
-                        to 2023.
+ 13/11/23 vbc - 2.02.   Minor typos and grammar etc & keep text to 80 chars per
+                        line. No program change for this document change.

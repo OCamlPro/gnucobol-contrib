@@ -18,7 +18,7 @@
 *>**
  DATE-COMPILED.    TO-DAY.   *> GC does NOT update.
 *>**
-*> Security.       Copyright (C) 1986-2022 and later, Vincent Bryan Coen.
+*> Security.       Copyright (C) 1986-2024 and later, Vincent Bryan Coen.
 *>                 Distributed under the GNU General Public License
 *>                 v2.0. Only. See the file COPYING for details.
 *>**
@@ -185,7 +185,7 @@
 *>
 *> This program is time recording software for air crews as private,
 *> commercial (i.e., holding a CPL or ATPL) and military, World wide and is
-*> Copyright (c) Vincent B Coen. 1986-2022 and later.
+*> Copyright (c) Vincent B Coen. 1986-2024 and later.
 *>
 *> The supplied copyright notices that are displayed and printed MUST be
 *>  maintained at all times.

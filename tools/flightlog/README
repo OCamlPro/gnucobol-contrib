@@ -1,4 +1,4 @@
-READ any file named UPDATE first and do any actions specified
+RREAD any file named UPDATE first and do any actions specified
 BEFORE doing any thing else.
 
 READ any file named UPDATE first and do any actions specified
@@ -10,7 +10,7 @@ Now read any file called README.1st.
 
 
 Yes, done twice to make sure you read it.
-Failure to do so will make your data files un-usable with Flightlog.
+Failure to do so will make your data files unusable with Flightlog.
 
 Finish off reading this file then read the manual.
 
@@ -18,6 +18,40 @@ Yes, the manual should be complete now but may contain errors on both layout
 and content.
 Please report any you find using the Tracker tool on the
 website or use the Forums if you cannot work out how to use it.
+
+
+On the alternative folder for flightlog here is my log book files
+which might prove useful BUT do NOT store them in
+your active folder for your own flight log books etc.
+
+You can find then at :
+applewood.linkpc/net/files/
+then family-1/Flying-Logbook-1
+
+You will see that there are three data files namely :
+aircraft.dat  --  Holds Pilots flown aircraft
+airfield.dat  --  Holds Pilots flown aircraft
+flitelog.dat  --  Hold all flying record one flight = one record in file.
+
+There are my records from 1972 - 1990 excluding military and commercial flying
+as they are on different log books and I store them separately.
+
+If you have problems running the software or would like some changes or new
+functionality, send an email to vbcoen@gmail.com with subject flightlog.
+
+
+You will need to install on your computer the Cobol compiler and any version
+should do from versions 2.2 and up. Note the current version is v3.2 as of
+November 2023. For Linux users see what version is availble using the distro's
+package manager otherwise follow the manual for instructions of obtaining the
+latest from the sourceforge or Andrews website at respectively :
+
+https://sourceforge.net/projects/gnucobol/files/gnucobol/3.2/
+
+or for Windows and Linux etc :
+
+https://www.arnoldtrembley.com/GnuCOBOL.htm
+
 
 Reminders for users to do:
 1. Script changes for your usage based on location or more importantly
@@ -27,21 +61,25 @@ Reminders for users to do:
 A. Copy prtpdf-sh-A4 or prtpdf.sh-Letter to prtpdf.sh depending on
 the paper size you use.
 
-It has been tested using a HP8600 inkjet
-using Linux distro's Mageia v8 X64 and Raspberry Pi 3B+ Debian.
-Where the Pi has an attached USB 1Tb hard drive as the boot drive.
+It has been tested using a HP8600 ink jet and a HP7305 Ink tank printers
+using Linux distro's Mageia v8 X64, Raspberry Pi 3B+ Debian and Pi4B ubuntu as
+well as a Mac Pro 2008 running Apple's OSX.
+Where the Pi3 has an attached USB 1Tb hard drive as the boot drive in a metal
+case and the Pi4B in a Argon 40 M.2 case using a SSD card and the Mac some
+larger drives.
 
 The font sizing for A4 paper has not been copied over to that for US Letter
 because I do not have that paper size any more.
 
-Users of Letter should try both A4 then Letter and see if you get full
+Users of Letter should try both A4 then Letter versions and see if you get full
 coverage but without going outside the size of the paper and if so use it.
 If not try the Letter and see if that works better and if not, adjust one or
-both saving the original files first. IT IS RECOMMENDED that you only change
-ONE SETTING AT A TIME. Then test it using the pdf reader of your choice.
+both saving the original files first.
+IT IS RECOMMENDED that you only change ONE SETTING AT A TIME. Then test it
+using the pdf reader of your choice.
 Above based on my own tampering. :)
 
-Likewise testing for flightlog has been run on the Pi and works exactly
+Likewise testing for flightlog has been run on both Pi's and works exactly
 the same as on Mageia v8 platform (a Redhat sourced version). Also
 tested using Ubuntu.
 
@@ -100,11 +138,11 @@ show times for day, night, IFR, Multi (engine) values where as the totals
 provide a more detailed breakdown. See the manual for more information
 on totalling for month and page brought forward and carried forward.
 
-TODO (2) Compressed flight report using airfield names instead of icao codes
+TODO (2) Compressed flight report using airfield names instead of ICAO codes
          completed as HIDDEN menu options 3 & 4 in place of options C & D.
 
-Don't forget to look at the current Changelog file for up to date changes
-with the latest at the end.
+Don't forget to look at flightlog's current Changelog file for up to date
+changes with the latest at the end of the file.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -117,7 +155,8 @@ with the latest at the end.
                      If application used as a web based system allows for multi
                      pilots by using one database per pilot by name via a login
                      facility.    Priority LOW / MEDIUM as would require users
-                     to install Mysql package, bit OTT for low exp. users.
+                     to install Mysql package, bit OTT for low experienced
+                     computer users.
                      Could consider using Sqlite but err, why ?
 
   07/11/18            6. Consider using a web browser interface for display
@@ -128,7 +167,7 @@ with the latest at the end.
   17/12/18            8. Consider re-introducing on data entry, day and night
                      landings for T & G flights but there again it should be
                      specified in Remarks so is it really needed for the 90 Day
-                     CoE ?.
+                     CoE (Certificate of Experience) ?.
                      CAA / FAA requirement ?
                      The problem with it is that it is not used for commercial
                      or  military aircrew. Opinions ?
@@ -142,5 +181,6 @@ End of README
 17/12/2018 vbc - Minor clean up.
 31/12/2018 vbc - Updated for v2.02.03.
 23/03/2021 vbc - Clean up layouts of above and a typo.
-17/08/2022 vbc - Typo's and aemendments of new changes for 2.02.12.
-
+17/08/2022 vbc - Typo's and amendments of new changes for 2.02.12.
+13/11/2023 vbc - More typo's and spelling changes.
+04/06/2024 vbc - Extra details for data files on other location.
