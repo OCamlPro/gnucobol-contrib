@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Data Processing</title>
+    <style>
+        .form-group { margin: 10px 0; }
+        label { display: inline-block; width: 120px; }
+        .message { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Customer Data Processing</h2>
+    <form action="/cgi-bin/zz/cust01.cgi" method="POST">
+        <div class="form-group">
+            <label>Account No:</label>
+            <input type="text" name="acct_no" maxlength="9" size="9" 
+                   value="" required>
+        </div>
+        <div class="form-group">
+            <label>First Name:</label>
+            <input type="text" name="fname" maxlength="15"  
+                   value="">
+        </div>
+        <div class="form-group">
+            <label>Last Name:</label>
+            <input type="text" name="lname" maxlength="13"  
+                   value="">
+        </div>
+        <div class="form-group">
+            <label>House No:</label>
+            <input type="text" name="house_no" maxlength="8"  
+                   value="">
+        </div>
+        <div class="form-group">
+            <label>Street:</label>
+            <input type="text" name="street" maxlength="30"  
+                   value="">
+        </div>
+        <div class="form-group">
+            <label>City:</label>
+            <input type="text" name="city" maxlength="30"  
+                   value="">
+        </div>
+        <div class="form-group">
+            <label>State:</label>
+            <input type="text" name="state" maxlength="2"  
+                   value="">
+        </div>
+        <div class="form-group">
+            <label>ZIP:</label>
+            <input type="text" name="zip" maxlength="5"  
+                   value="">
+        </div>
+        <div class="form-group">
+            <label>Income:</label>
+            <input type="text" name="income" maxlength="9"  
+                   value="">
+        </div>
+        <div class="form-group">
+            <label>Action:</label>
+            <input type="radio" name="action" value="inquire" checked> Inquire
+            <input type="radio" name="action" value="update"> Change
+            <input type="radio" name="action" value="add"> Add
+            <input type="radio" name="action" value="delete"> Delete
+            <input type="radio" name="action" value="clear"> Clear
+        </div>
+        <div class="message"></div>
+        <div class="form-group">
+            <input type="submit" value="Process">
+        </div>
+    </form>
+</body>
+</html>
+
