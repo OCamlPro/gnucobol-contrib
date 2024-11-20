@@ -7,5 +7,5 @@ cat $FILES/CA.txt $FILES/US.txt > $FILES/CAUS.txt
 cobc -x -W worldcities4.cbl commonroutines.cbl
 ./worldcities4 $FILES/CAUS.txt $FILES/countryInfo.txt
 rm worldcities4
-lpr -P $PRINTQUEUE run-file
-lpr -P $PRINTQUEUE report-file
+#lpr -P $PRINTQUEUE run-file
+#lpr -P $PRINTQUEUE report-file
