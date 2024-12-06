@@ -139,12 +139,18 @@
            TRANSFORM wk-in-ch-filler  FROM case-ebcdic TO case-ascii 
       ** filtering input record 
       * OMIT condition 
-           if ((wk-in-ch-field(1:2) <= "MM")  AND                                 ## filtering data    
-               (wk-in-bi-field >  -10))       OR
-              ((wk-in-fi-field >   10)        AND
-               (wk-in-fl-field <=  40))       OR
-              ((wk-in-pd-field <=  10)        AND
-               (wk-in-zd-field >=  15))
+      ***    if ((wk-in-ch-field(1:2) <= "MM")  AND                                 ## filtering data    
+      ***        (wk-in-bi-field >  -10))       OR
+      ***       ((wk-in-fi-field >   10)        AND
+      ***        (wk-in-fl-field <=  40))       OR
+      ***       ((wk-in-pd-field <=  10)        AND
+      ***        (wk-in-zd-field >=  15))
+           if wk-in-ch-field(1:2) <= "MM"   OR                                 ## filtering data    
+              wk-in-bi-field >  -10         OR
+              wk-in-fi-field >   10         OR
+              wk-in-fl-field <=  40         OR
+              wk-in-pd-field <=  10         OR
+              wk-in-zd-field >=  15  
 			   add 1 to record-counter-skip
            else
                release sort-data from infile-record

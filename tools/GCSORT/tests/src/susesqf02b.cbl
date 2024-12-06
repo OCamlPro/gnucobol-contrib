@@ -132,7 +132,7 @@
                    with duplicates in  order 
                     input procedure  is input-proc
                     output procedure is output-proc.
-                    
+
            display "*===============================================* "
            display " Record input  : "  record-counter-in
            display " Record output : "  record-counter-out
@@ -187,6 +187,8 @@ test00**    close sortout
       * ============================= *
            read sortin
            end-read
+      *    display "sortin fs = " fs-infile
+      *         " in-ch-field " in-ch-field
            if fs-infile equal "00"
                perform release-record
            end-if
@@ -208,6 +210,9 @@ test00**    close sortout
            end-if
            perform outrec-proc-dett until fs-sort  
                    not equal "00".
+				   
+      *		display "bIsPending = " bIsPending
+				   
            if (bIsPending = 1)
               perform write-record-out
            end-if
@@ -220,9 +225,11 @@ test00**    close sortout
            return file-sort at end 
                 display " "
                 end-return
-           if fs-sort equal "00"     
+      * *	   display "file-sort fs = " fs-sort
+      * *	     " srt-ch-field " srt-ch-field				
+          if fs-sort equal "00"     
                perform verify-record-out
-           end-if
+          end-if
            .
       * ============================= *
        verify-record-out.     
@@ -239,10 +246,11 @@ test00**    close sortout
                move sort-data        to save-record-sort              
            end-if
            if (key-prec-ch-field = key-curr-ch-field)
-               move 1            to bIsPending
+               move 1         to bIsPending
                perform add-totalizer
            else
                perform write-record-out
+               move 1	         		to bIsPending
                move sort-data           to save-record-sort              
                move key-curr-ch-field   to key-prec-ch-field
                perform reset-totalizer

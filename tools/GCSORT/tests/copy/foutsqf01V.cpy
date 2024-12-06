@@ -3,19 +3,20 @@
       *  GCSORT Tests
       * **********************************************************
       * Author:    Sauro Menna
-      * Date:      20160821
+      * Date:      20241131
       * License
-      *    Copyright 2016 Sauro Menna
+      *    Copyright 2024 Sauro Menna
       *    GNU Lesser General Public License, LGPL, 3.0 (or greater)
       * Purpose:   Sort COBOL module
       * *********************************************
       *-------------------------------------------------------------------------------*
       * foutsqf01.cpy
-       fd sortout
+       fd sortout                                                                               
             record is varying in size
-            from 31 to 90 characters depending on ws-rec-length.    
+            from 42 to 95 characters depending on ws-rec-length.    
        01 outfile-record.
-           05 out-seq-record     pic  9(07).
+           05 out-lenrec         pic  9(4).
+           05 out-seq-record     pic  9(7).
            05 out-ch-field       pic  x(5).
            05 out-bi-field       pic  9(7) comp.
            05 out-fi-field       pic s9(7) comp.
@@ -27,6 +28,6 @@
            05 out-cst-field      pic s9(7) sign is trailing separate.
            05 out-csl-field      pic s9(7) sign is leading separate.
            05 out-ch-filler      pic  x(25).
-       01 outfile-record-min01   pic x(40).
-       01 outfile-record-min02   pic x(65).
+       01 outfile-record-min01   pic x(42).
+       01 outfile-record-min02   pic x(61).
        

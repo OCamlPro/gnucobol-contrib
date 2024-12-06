@@ -3,9 +3,9 @@
       *  GCSORT Tests
       * **********************************************************
       * Author:    Sauro Menna
-      * Date:      20160821
+      * Date:      20241131
       * License
-      *    Copyright 2016 Sauro Menna
+      *    Copyright 2024 Sauro Menna
       *    GNU Lesser General Public License, LGPL, 3.0 (or greater)
       * Purpose:   Sort COBOL module
       * *********************************************
@@ -13,9 +13,10 @@
       * finsqf01.cpy
        fd sortin
             record is varying in size
-            from 31 to 95 characters depending on ws-rec-length.            
+            from 42 to 95 characters depending on ws-rec-length.            
        01 infile-record.
-           05 in-seq-record       pic  9(07).
+           05 in-lenrec           pic  9(4).
+           05 in-seq-record       pic  9(7).
            05 in-ch-field         pic  x(5).
            05 in-bi-field         pic  9(7) comp.
            05 in-fi-field         pic s9(7) comp.
@@ -27,7 +28,6 @@
            05 in-cst-field        pic s9(7) sign is trailing separate.
            05 in-csl-field        pic s9(7) sign is leading separate.
            05 in-ch-filler        pic  x(25).
-           05 in-lenrec           pic  9(5).
-       01 infile-record-min01   pic x(45).
-       01 infile-record-min02   pic x(70).
+       01 infile-record-min01   pic x(42).
+       01 infile-record-min02   pic x(61).
        

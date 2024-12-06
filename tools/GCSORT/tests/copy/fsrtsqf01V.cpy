@@ -3,9 +3,9 @@
       *  GCSORT Tests
       * **********************************************************
       * Author:    Sauro Menna
-      * Date:      20160821
+      * Date:      20241131
       * License
-      *    Copyright 2016 Sauro Menna
+      *    Copyright 2024 Sauro Menna
       *    GNU Lesser General Public License, LGPL, 3.0 (or greater)
       * Purpose:   Sort COBOL module
       * *********************************************
@@ -15,7 +15,8 @@
       **     record is varying in size
       **     from 31 to 95 characters depending on ws-rec-length.   
        01 sort-data.
-           05 srt-seq-record      pic  9(07).
+           05 srt-lenrec          pic  9(4).
+           05 srt-seq-record      pic  9(7).
            05 srt-xx-seq-record redefines srt-seq-record pic  x(07).
            05 srt-ch-field        pic  x(5).
            05 srt-bi-field        pic  9(7) comp.
@@ -29,7 +30,6 @@
            05 srt-cst-field       pic s9(7) sign is trailing separate.
            05 srt-csl-field       pic s9(7) sign is leading separate.
            05 ch-filler           pic  x(25).
-           05 srt-lenrec          pic  9(5).
       *01 sort-data-record-min01   pic x(45).
       *01 sort-data-record-min02   pic x(70).
        

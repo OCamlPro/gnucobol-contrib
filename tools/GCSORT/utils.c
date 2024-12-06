@@ -967,6 +967,8 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen)
             break;
         case COB_TYPE_NUMERIC_DISPLAY:
             /*  s.m. 20210121 attrArea->digits = 0; */
+			/* 20241203 s.m.*/
+			attrArea->digits = nLen;
             attrArea->scale = 0;
 /* s.m. 20201015    */
     	    attrArea->flags  = attrArea->flags | COB_FLAG_HAVE_SIGN;
@@ -1266,7 +1268,7 @@ int utl_replace_findrep(unsigned char* str, unsigned char* find, unsigned char* 
 
 void sort_temp_name(struct job_t* job, const char* ext)
 {
-	// s.m. 20240930
+	/* s.m. 20240930 */
 /* s.m.                                                     */
 /* inserita funzione per gestione del test case sensitive   */
 #if defined(_THREAD_LINUX_ENV)
@@ -1295,7 +1297,7 @@ void sort_temp_name(struct job_t* job, const char* ext)
 
 #if defined(_MSC_VER)  ||  defined(__MINGW32__) || defined(__MINGW64__)
 	/* s.m. 202101 if (job->strPathTempFile == NULL)  */
-// 20240920
+/*  20240920 */
 	char szt1[20];
 	memset(szt1, 0x00, 20);
 
@@ -1317,7 +1319,7 @@ void sort_temp_name(struct job_t* job, const char* ext)
 	}
 	else
 		strcpy(cob_tmp_temp, job->strPathTempFile);
-	// 20240930 GetTempFileName(cob_tmp_temp, "Srt", 0, cob_tmp_buff);
+	/* 20240930 GetTempFileName(cob_tmp_temp, "Srt", 0, cob_tmp_buff); */
 	/* printf("prefisso nome file temporaneo----------------------->%s\n", szt1); */
 	/* GetTempFileName(cob_tmp_temp, (LPCSTR)szt1, 0, cob_tmp_buff); */
 

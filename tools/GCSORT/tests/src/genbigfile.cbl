@@ -88,9 +88,9 @@
            
            compute RANDOM-NUMBER = 25 + (70 - 25 + 1) * 
                     (FUNCTION RANDOM)
+          
+           perform generate-file-asc ntimes times.           
 
-           
-            perform generate-file-asc ntimes times.           
            move 27          to idx
            move -1          to count-value
            move ntimes      to seq-record 
@@ -156,6 +156,7 @@
            move  count-value    to  fl-field    
            perform add-counter
            move  count-value    to  pd-field    
+      *             display '[pos.] pd-field ' pd-field 
            perform add-counter
            move  count-value    to  zd-field
            perform add-counter
@@ -170,7 +171,7 @@
 
        add-counter.
            add  1            to count-value 
-           add RANDOM-NUMBER to count-value           
+      **-->>     add RANDOM-NUMBER to count-value           
       *    if count-value > 26
       *        move 1 to count-value
       *     end-if
@@ -193,7 +194,8 @@
            perform sub-counter
            move  count-value    to  fl-field    
            perform sub-counter
-           move  count-value    to  pd-field    
+           move  count-value    to  pd-field 
+      **              display '[neg.] pd-field ' pd-field 
            perform sub-counter
            move  count-value    to  zd-field 
            perform sub-counter
@@ -207,7 +209,7 @@
            .
        sub-counter.
            subtract 1 from count-value   
-           subtract RANDOM-NUMBER from  count-value
+      ***--->>>     subtract RANDOM-NUMBER from  count-value
                     giving   count-value
       **     if count-value <= zero
       **         move 26 to count-value

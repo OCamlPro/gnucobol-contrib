@@ -66,6 +66,7 @@
        procedure division.
       * ============================= *
        master-sort.
+           move zero    to RETURN-CODE
            display "*===============================================* "
            display " Sort on ascending  key    srt-ch-field "                 
            display "*===============================================* "

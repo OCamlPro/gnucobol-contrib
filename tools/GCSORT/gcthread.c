@@ -119,6 +119,12 @@ int gcthread_start(int argc, char** argv, int nMaxThread, time_t* timeStart)
 			printf("ERROR; return code from pthread_create() is %d\n", rc);
 			exit(-1);
 		}
+		/* s.m. 20241017 */
+		 /* sleep(1); */
+		struct timespec tim;
+		 tim.tv_sec = 0;
+		 tim.tv_nsec = 125000000L;
+		 nanosleep(&tim, NULL);
 #endif
 
 	}
@@ -127,7 +133,7 @@ int gcthread_start(int argc, char** argv, int nMaxThread, time_t* timeStart)
 
 	for (int s = 0; s < nThread; s++) {
 		ResumeThread(hThread[s]);
-		Sleep(100L); 
+		Sleep(125L); 
 	}
 
 	DWORD dwRet = WaitForMultipleObjects(nThread, hThread, TRUE, INFINITE);
@@ -187,7 +193,6 @@ for (int s = 0; s < nThread; s++)
 	void* gcthread_run(void* pArguments)
 #endif
 {
-
 	pParThread = (struct pParam*)pArguments;
 	pJob = pParThread->thJob;
 
@@ -212,6 +217,7 @@ for (int s = 0; s < nThread; s++)
 		/* Sort data */
 		if (pJob->nStatistics == 2)
 			util_print_time_elap_thread("Before  Thread job_sort          ", pParThread->thJob->nCurrThread);
+
 
 		pJob->nRC = job_sort_data(pJob);
 
@@ -260,8 +266,10 @@ int gcthreadSkipStop(struct job_t* job)
 	/* nCurrThread;	 */		/* current Thread */
 	/* nMaxThread;	 */		/* num max Thread */
 
+	/* 
 	// s.m. 20240930 int nNumRecords = job->inputFile->nFileMaxSize / job->inputLength;
 	// s.m. 20240930 int nNumRecordForBlock = nNumRecords / job->nMaxThread;
+	*/
 	int64_t nNumRecords = job->inputFile->nFileMaxSize / job->inputLength;
 	int64_t nNumRecordForBlock = nNumRecords / job->nMaxThread;
 
@@ -520,12 +528,12 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 		SumField_ResetTot(job); /* reset totalizer  */
 		bIsFirstSumFields = 1;
 		nLenRek = byteReadTmpFile[nPosPtr];
-		memmove(szKeyPrec, szBufRekTmpFile[nPosPtr], SZLENREC);
-		memmove(szKeyPrec + SZLENREC, szKeyTemp, job->nLenKeys);
-		memmove(szPrecSumFields, szBufRekTmpFile[nPosPtr], nLenRek + SZLENREC);
+		/* // memmove(szKeyPrec, szBufRekTmpFile[nPosPtr], SZLENREC); */
+		memmove(szKeyPrec, szKeyTemp, job->nLenKeys);
+		memmove(szPrecSumFields, szBufRekTmpFile[nPosPtr] + SZLENREC, job->nLenKeys + SZPOSPNT);
 		nLenPrec = nLenRek;
-		memmove(szKeySave, szKeyPrec, job->nLenKeys + SZLENREC);			   /*   lPosPnt + Key   */
-		memmove(szSaveSumFields, szPrecSumFields, nLenPrec + SZLENREC);
+		memmove(szKeySave, szKeyPrec, job->nLenKeys);			   /*   lPosPnt + Key   */
+		memmove(szSaveSumFields, szPrecSumFields, job->nLenKeys + SZPOSPNT);
 		nLenSave = nLenPrec;
 	}
 	while ((nSumEof) < MAX_HANDLE_THREAD) /* job->nNumTmpFile)    */
@@ -543,25 +551,27 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 				if (previousRecord != -1) {
 					/* check equal key  */
 					job->LenCurrRek = byteRead;
-					if (job_compare_rek(job, recordBufferPrevious, szBufRekTmpFile[nPosPtr], 0, SZLENREC) == 0)
+					/* s.m. 20241019 */
+					/* if (job_compare_rek(job, recordBufferPrevious, szBufRekTmpFile[nPosPtr], 0, SZLENREC) == 0) */
+					if (job_compare_rek(job, recordBufferPrevious, szBufRekTmpFile[nPosPtr] + SZLENREC, 1, 0) == 0)
 						useRecord = 0;
 				}
 				/* enable check for sum fields  */
 				previousRecord = 1;
-				memmove(recordBufferPrevious, szBufRekTmpFile[nPosPtr], byteRead);
+				memmove(recordBufferPrevious, szBufRekTmpFile[nPosPtr] + SZLENREC, byteRead + SZPOSPNT);
 			}
 			/* SUMFIELD			2 = FIELDS  */
 			if (job->sumFields == 2) {
+				/* s.m. 20241019  */
 				gcthread_GetKeys(job, szBufRekTmpFile[nPosPtr] + SZLENREC, szKeyTemp);
-				memmove(szKeyCurr, szBufRekTmpFile[nPosPtr], SZLENREC);			    /*  lPosPnt */
-				/* ? ? memmove(szKeyCurr + SZPOSPNT, szKeyTemp, job->nLenKeys + SZPOSPNT);	*/	/*  Key     */
-				memmove(szKeyCurr + SZLENREC, szKeyTemp, job->nLenKeys);		/*  Key     */
+				/*  memmove(szKeyCurr, szBufRekTmpFile[nPosPtr], SZLENREC);	*/		    /*  lPosPnt */
+				memmove(szKeyCurr, szKeyTemp, job->nLenKeys);		/*  Key     */
 				if (bIsFirstKeySumField == 0) {			/* Save first key for sum field, use this for write */
-					memcpy(szFirstRek, szBuffRek, nLenRek + nSplitPosPnt);              /* PosPnt + First Record    */
+					memcpy(szFirstRek, szBufRekTmpFile[nPosPtr] + SZLENREC, nLenRek + SZPOSPNT);              /* PosPnt + First Record    */
 					bIsFirstKeySumField = 1;
 				}
 				useRecord = SumFields_KeyCheck(job, &bIsWrited, szKeyPrec, &nLenPrec, szKeyCurr, &nLenRek, szKeySave, &nLenSave,
-					szPrecSumFields, szSaveSumFields, szBufRekTmpFile[nPosPtr], SZLENREC);
+					szPrecSumFields, szSaveSumFields, szBufRekTmpFile[nPosPtr] + SZLENREC, 0); 
 			}
 
 			if (useRecord == 0) {	/* skip record  */
@@ -591,7 +601,7 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 
 			if (bIsFirstKeySumField == 1) {
 				bIsFirstKeySumField = 0;
-				gc_memcpy(recordBuffer, szFirstRek, nLenRek + nSplitPosPnt);
+				gc_memcpy(recordBuffer, szFirstRek, nLenRek + SZPOSPNT);
 			}
 		} /* end performance */
 		/* OUTREC   */
@@ -601,7 +611,7 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 				utl_resetbuffer((unsigned char*)szBuffRekOutRec, recordBufferLength);
 				nLenRek = outrec_copy(job->outrec, szBuffRekOutRec, szBufRekTmpFile[nPosPtr], job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 				utl_resetbuffer((unsigned char*)szBufRekTmpFile[nPosPtr], recordBufferLength);
-				memcpy(szBufRekTmpFile[nPosPtr], szBuffRekOutRec, nLenRek + nSplitPosPnt);
+				memcpy(szBufRekTmpFile[nPosPtr], szBuffRekOutRec, nLenRek + SZPOSPNT);
 				byteReadTmpFile[nPosPtr] = nLenRek;
 				byteRead = nLenRek;
 				nLenRecOut = nLenRek; /* for Outrec force length of record  */
@@ -609,13 +619,13 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 			else
 			{		/* Overlay  */
 				utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
-				memmove(szBuffRek, recordBuffer, byteRead + nSplitPosPnt);	/* s.m. 202101 copy record  */
+				memmove(szBuffRek, recordBuffer, byteRead + SZPOSPNT);	/* s.m. 202101 copy record  */
 				nLenRek = outrec_copy_overlay(job->outrec, szBuffRekOutRec, szBufRekTmpFile[nPosPtr], job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 				nLenRek++;
 				if (nLenRek < job->outputLength)
 					nLenRek = job->outputLength;
 				utl_resetbuffer((unsigned char*)szBufRekTmpFile[nPosPtr], recordBufferLength);
-				memcpy(szBufRekTmpFile[nPosPtr], szBuffRekOutRec, nLenRek + nSplitPosPnt);
+				memcpy(szBufRekTmpFile[nPosPtr], szBuffRekOutRec, nLenRek + SZPOSPNT);
 				byteReadTmpFile[nPosPtr] = nLenRek;
 				byteRead = nLenRek;
 				nLenRecOut = nLenRek;
@@ -630,19 +640,21 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 				bIsWrited = 1;
 				SumField_SumFieldUpdateRek((unsigned char*)szBufRekTmpFile[nPosPtr] + SZLENREC);		/* Update record in memory  */
 				SumField_ResetTot(job);														        /* reset totalizer          */
-				SumField_SumField((unsigned char*)szPrecSumFields + SZLENREC);						/* Sum record in  memory    */
+				/* s.m. 20241019 */
+				/* SumField_SumField((unsigned char*)szPrecSumFields + SZLENREC);		*/				/* Sum record in  memory    */
+				SumField_SumField((unsigned char*)szPrecSumFields);						/* Sum record in  memory    */
 			}
 
 			if (byteRead > 0)
 			{
-				job_set_area(job, job->outputFile, szBufRekTmpFile[nPosPtr] + nSplitPosPnt, nLenRecOut, byteRead);	/* Len output   */
+				job_set_area(job, job->outputFile, szBufRekTmpFile[nPosPtr] + SZLENREC, nLenRecOut, byteRead);	/* Len output   */
 				cob_write(job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
 				retcode_func = file_checkFSWrite("Write", "gcthread_save_final", job->outputFile, nLenRecOut, byteRead);
 				if (retcode_func == -1)
 					goto gcthread_save_tempfinal_exit;
 				/* s.m. 202012  */
 				if (job->sumFields == 2) {
-					memcpy(szFirstRek, szPrecSumFields, nLenRek + nSplitPosPnt);
+					memcpy(szFirstRek, szPrecSumFields, nLenRek + SZPOSPNT);
 					bIsFirstKeySumField = 1;
 				}
 				/* s.m. 202012  */
@@ -653,7 +665,8 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 		{
 			/* Make output for OUTFIL   */
 			if ((useRecord == 1) && (job->outfil != NULL)) {
-				outfil_write_buffer(job, szBufRekTmpFile[nPosPtr] + nSplitPosPnt, byteRead, szBuffRek, nSplitPosPnt, useRecord);
+			/* s.m. 20241019 */	/* outfil_write_buffer(job, szBufRekTmpFile[nPosPtr] + SZLENREC, byteRead, szBuffRek, nSplitPosPnt, useRecord); */
+				outfil_write_buffer(job, szBufRekTmpFile[nPosPtr] + SZLENREC, byteRead, szBuffRek, 0, useRecord);
 				job->recordWriteOutTotal++;
 			}
 		}
@@ -669,12 +682,12 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 		}
 	}
 	if ((job->sumFields == 2) && (bIsWrited == 1)) {   /* pending buffer  */
-		SumField_SumFieldUpdateRek((char*)szFirstRek + SZLENREC);	/* Update record in memory      */
-		memcpy(recordBuffer, szFirstRek, nLenPrec + SZLENREC);		/* Substitute record for write  */
+		SumField_SumFieldUpdateRek((char*)szFirstRek);	/* Update record in memory      */
+		memcpy(recordBuffer, szFirstRek, nLenPrec + SZPOSPNT);		/* Substitute record for write  */
 		/* s.m. 202012  */
 		nLenRek = nLenPrec;
 		nLenRecOut = job->outputLength;
-		job_set_area(job, job->outputFile, recordBuffer + nSplitPosPnt, nLenRecOut, byteRead); /* Len output    */
+		job_set_area(job, job->outputFile, recordBuffer, nLenRecOut, byteRead); /* Len output    */
 		cob_write(job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
 		retcode_func = file_checkFSWrite("Write", "gcthread_save_final", job->outputFile, nLenRecOut, byteRead);
 		if (retcode_func == -1)
@@ -950,8 +963,11 @@ INLINE int gcthread_ReadFileMem(struct job_t* job, int* nLR, unsigned char* szBu
 		gc_memcpy(job->phSrt, job->buffertSort + (job->recordReadInCurrent) * ((int64_t)job->nLenKeys + SIZESRTBUFF) + job->nLenKeys, SIZESRTBUFF); /* Pointer Data Area    */
 
 		/* LenRek 4 byte */
-		gc_memcpy(szBuffRek, (unsigned char*)job->phSrt->pAddress, SZLENREC);				/* buffer */
-		gc_memcpy(szBuffRek + SZLENREC, job->phSrt->pAddress, job->phSrt->nLenRek);		 /* buffer */
+		gc_memcpy(szBuffRek, (unsigned char*)job->phSrt->pAddress, SZLENREC);				/* record len */
+		/* Buffer */
+		gc_memcpy(szBuffRek + SZLENREC, job->phSrt->pAddress, job->phSrt->nLenRek);		    /* buffer */
+		/* PosPnt */
+		gc_memcpy(szBuffRek + SZLENREC + job->phSrt->nLenRek, (unsigned char*)&job->phSrt->lPosPnt, SZPOSPNT);		    /* buffer */
 
 		job->recordReadInCurrent++;
 	}

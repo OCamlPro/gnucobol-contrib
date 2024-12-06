@@ -364,9 +364,9 @@ int job_skip_record(struct job_t* job, struct file_t* file, int64_t* nRec);
 	/* INLINE int job_compare_key(struct job_t* job, const void* first, const void* second); */
 
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
-	INLINE int job_compare_key(struct job_t* job, const void* first, const void* second);
+	INLINE int job_compare_key(struct job_t* job, const void* first, const void* second, int nSplit);
 #else
-	INLINE  int job_compare_key(struct job_t* job, const void* first, const void* second);
+	INLINE  int job_compare_key(struct job_t* job, const void* first, const void* second, int nSplit);
 #endif
 
 
@@ -411,6 +411,9 @@ INLINE int write_buffered_save_final(int		desc, unsigned char* buffer_pointer, i
 int SumFields_KeyCheck(struct job_t* job, int* bIsWrited, unsigned char* szKeyPrec, unsigned int* nLenPrec, 
                         unsigned char* szKeyCurr,  unsigned int* nLenRek, unsigned char* szKeySave,  unsigned int* nLenSave, 
                         unsigned char* szPrecSumFields, unsigned char* szSaveSumFields, unsigned char* szBuffRek, int nSplit);
+int SumFields_KeyCheckMT(struct job_t* job, int* bIsWrited, unsigned char* szKeyPrec, unsigned int* nLenPrec,
+	unsigned char* szKeyCurr, unsigned int* nLenRek, unsigned char* szKeySave, unsigned int* nLenSave,
+	unsigned char* szPrecSumFields, unsigned char* szSaveSumFields, unsigned char* szBuffRek, int nSplit);
 
 /*  #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)   */
 /*

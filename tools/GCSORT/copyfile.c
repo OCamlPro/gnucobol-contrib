@@ -571,9 +571,10 @@ int job_copyFile(struct job_t *job)
 job_save_exit:
 
 	/* if ((job->outputFile != NULL) && (job->nOutFileSameOutFile == 0)) */
-	if (job->outputFile != NULL)
-		cob_close (job->outputFile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
-
+	if (job->outputFile != NULL) 
+	{
+		cob_close(job->outputFile->stFileDef, NULL, COB_CLOSE_NORMAL, 0);
+	}
 	if (desc >= 0){
 		if (close(desc)<0) {
 			fprintf(stdout,"*GCSORT*S629*ERROR: Cannot close file %s : %s\n",file_getName(job->outputFile),strerror(errno));

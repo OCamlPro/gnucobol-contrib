@@ -11,17 +11,29 @@
       * *********************************************
       *-------------------------------------------------------------------------------*
       *    copy wktotsum01.cpy
+      **-->>01  SumFields-00.
+      **-->>  02 Tot-bi-field            pic  9(16) comp.
+      **-->>  02 Tot-fi-field            pic s9(16) comp.
+      **-->>  02 Tot-fl-field            comp-2.
+      **-->>  02 Tot-pd-field            pic s9(18) comp-3.
+      **-->>  02 Tot-zd-field            pic s9(18).
+      **-->>  02 Tot-fl-field-1          COMP-1.
+      **-->>  02 Tot-clo-field           pic s9(7) sign is leading.
+      **-->>  02 Tot-cst-field           pic s9(19) 
+      **-->>         sign is  trailing separate.
+      **-->>  02 Tot-csl-field           pic s9(19) 
+      **-->>         sign is  leading separate.
        01  SumFields-00.
-         02 Tot-bi-field            pic  9(16) comp.
-         02 Tot-fi-field            pic s9(16) comp.
+         02 Tot-bi-field            pic  9(07) comp.
+         02 Tot-fi-field            pic s9(07) comp.
          02 Tot-fl-field            comp-2.
-         02 Tot-pd-field            pic s9(18) comp-3.
-         02 Tot-zd-field            pic s9(18).
+         02 Tot-pd-field            pic s9(07) comp-3.
+         02 Tot-zd-field            pic s9(07).
          02 Tot-fl-field-1          COMP-1.
-         02 Tot-clo-field           pic s9(7) sign is leading.
-         02 Tot-cst-field           pic s9(19) 
+         02 Tot-clo-field           pic s9(07) sign is leading.
+         02 Tot-cst-field           pic s9(07) 
                 sign is  trailing separate.
-         02 Tot-csl-field           pic s9(19) 
+         02 Tot-csl-field           pic s9(07) 
                 sign is  leading separate.
       * key 
        01 key-curr-input.                                             

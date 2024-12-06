@@ -1,7 +1,7 @@
       ****************************************************************
       *
       * AUTHOR   Sauro Menna
-      * DATE     20170103  
+      * DATE     20241018  
       * LICENSE
       *  Copyright (c) 2016 Sauro Menna
       *  GNU Lesser General Public License, LGPL, 3.0 (or superior)
@@ -11,7 +11,7 @@
       *  cobc -x  -std=default -debug -Wall  -o gctestrun1 gctestrun1.cbl 
       ****************************************************************
  	   identification division.
-       program-id.  gctestrun1.
+       program-id.  gctestrun9.
        environment division.
        input-output section.
        file-control.
@@ -34,6 +34,7 @@
        01 env-set-value         pic x(250).
        01 gcsort-tests-ver      pic x(20) value ' version 1.0'.
       *
+       77 idy                   pic 9(3).
        77 idx                   pic 9(3).
        77 idx-take              pic 9(3).
        77 status-test           pic x(9).
@@ -45,31 +46,48 @@
            05   ar-tst-rtc01          USAGE BINARY-LONG.
            05   ar-tst-rtc02          USAGE BINARY-LONG.
            05   ar-tst-rtc03          USAGE BINARY-LONG.
+      *  array-MT
+       01    array-mt.
+          03 ar-mt-max-ele        pic 99  value 4.
+          03 ar-mt-name.
+            05 ar-mt-name-01         pic x(10) value ' -mt=2  '.
+            05 ar-mt-name-02         pic x(10) value ' -mt=4  '.
+            05 ar-mt-name-03         pic x(10) value ' -mt=8  '.
+            05 ar-mt-name-04         pic x(10) value ' -mt=16 '.
+      **      05 ar-mt-name-01         pic x(10) value ' -mt=2  '.
+      **      05 ar-mt-name-02         pic x(10) value ' -mt=4  '.
+      **      05 ar-mt-name-03         pic x(10) value ' -mt=6  '.
+      **      05 ar-mt-name-04         pic x(10) value ' -mt=8  '.
+      **      05 ar-mt-name-05         pic x(10) value ' -mt=10 '.
+      **      05 ar-mt-name-06         pic x(10) value ' -mt=12 '.
+      **      05 ar-mt-name-07         pic x(10) value ' -mt=16 '.
+          03 ar-mt-vet redefines ar-mt-name
+                        occurs 4 times pic x(10).
+		  
       *  array-name
        01    array-name.
           03 ar-name-max-ele        pic 99  value 18.
           03 ar-ele-name.
-            05 ar-ele-name-01         pic x(10) value 'susesqf01 '.
-            05 ar-ele-name-02         pic x(10) value 'susesqf02 '.
-            05 ar-ele-name-03         pic x(10) value 'susesqf03 '.
-            05 ar-ele-name-04         pic x(10) value 'susesqf16 '.
-            05 ar-ele-name-05         pic x(10) value 'sfrmsqf17 '.
-            05 ar-ele-name-06         pic x(10) value 'sfrmsqf18 '.
-            05 ar-ele-name-07         pic x(10) value 'sincsqf04 '.
-            05 ar-ele-name-08         pic x(10) value 'sincsqf05 '.
-            05 ar-ele-name-09         pic x(10) value 'sincsqf06 '.
-            05 ar-ele-name-10         pic x(10) value 'sincsqf07 '.
-            05 ar-ele-name-11         pic x(10) value 'sincsqf08 '.
-            05 ar-ele-name-12         pic x(10) value 'sincsqf19 '.
-            05 ar-ele-name-13         pic x(10) value 'somisqf09 '.
-            05 ar-ele-name-14         pic x(10) value 'somisqf11 '.
-            05 ar-ele-name-15         pic x(10) value 'somisqf12 '.
-            05 ar-ele-name-16         pic x(10) value 'somisqf13 '.
-            05 ar-ele-name-17         pic x(10) value 'sinrsqf14 '.
-            05 ar-ele-name-18         pic x(10) value 'soutsqf10 '.
-            05 ar-ele-name-19         pic x(10) value 'soutfsqf04'.
-          03 ar-ele-vet redefines ar-ele-name
-                        occurs 19 times pic x(10).
+            05 ar-ele-name-01         pic x(10) value 'susesqf01 '. 
+            05 ar-ele-name-02         pic x(10) value 'susesqf02 '. 
+            05 ar-ele-name-03         pic x(10) value 'susesqf03 '. 
+            05 ar-ele-name-04         pic x(10) value 'susesqf16 '. 
+            05 ar-ele-name-05         pic x(10) value 'sfrmsqf17 '. 
+            05 ar-ele-name-06         pic x(10) value 'sfrmsqf18 '. 
+            05 ar-ele-name-07         pic x(10) value 'sincsqf04 '. 
+            05 ar-ele-name-08         pic x(10) value 'sincsqf05 '. 
+            05 ar-ele-name-09         pic x(10) value 'sincsqf06 '. 
+            05 ar-ele-name-10         pic x(10) value 'sincsqf07 '. 
+            05 ar-ele-name-11         pic x(10) value 'sincsqf08 '. 
+            05 ar-ele-name-12         pic x(10) value 'sincsqf19 '. 
+            05 ar-ele-name-13         pic x(10) value 'somisqf09 '. 
+            05 ar-ele-name-14         pic x(10) value 'somisqf11 '. 
+            05 ar-ele-name-15         pic x(10) value 'somisqf12 '. 
+            05 ar-ele-name-16         pic x(10) value 'somisqf13 '. 
+            05 ar-ele-name-17         pic x(10) value 'sinrsqf14 '. 
+            05 ar-ele-name-18         pic x(10) value 'soutsqf10 '. 
+          03 ar-ele-vet redefines ar-ele-name                       
+                        occurs 18 times pic x(10).
        01  array-pgm-diff.
           03 ar-pgm-name.
             05 ar-pgm-name-01         pic x(10) value 'diffile '.
@@ -724,27 +742,45 @@
            display ' GCSort test environment ' gcsort-tests-ver
            display '*===============================================*'
            display '*===============================================*'
-           display '  gctestrun1           SORT'
-           display '                       Group1'
+           display '  gctestrun9           SORT'
+           display '                       Group9 - Multithread'
            display '*===============================================*'
            call 'gctestgetop' using ntype , nver   
            display ' Environment : ' ntype 
            display ' Version     : ' nver 
  
       *
-           perform exec-all-gr01 varying idx from 1 by 1
-                  until idx > ar-name-max-ele
+	       perform exec-all-mt01 varying idy from 1 by 1
+                  until idy > ar-mt-max-ele
       *     
-           perform epilog-gr01
-           perform epilog-calculate-gr01
-           if  retcode-sum not = zero
-                move 25  to RETURN-CODE
-           end-if
+      **     perform epilog-gr01
+      **     perform epilog-calculate-gr01
+      **     if  retcode-sum not = zero
+      **          move 25  to RETURN-CODE
+      **     end-if
            .
        end-99.
            goback.
            
       * 
+      *
+      *---------------------------------------------------------*
+       exec-all-mt01              section.
+      *---------------------------------------------------------*
+       exmt-00.
+           display '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'
+           display '*===============================================*'
+           display ' ID test multithread : ' ar-mt-vet(idy) "   Start "
+           display '*===============================================*'
+			perform exec-all-gr01 varying idx from 1 by 1
+				until idx > ar-name-max-ele
+           perform epilog-gr01
+           perform epilog-calculate-gr01
+           if  retcode-sum not = zero
+                move 25  to RETURN-CODE
+           end-if			.
+       exmt-90.
+	       exit.
       *
       *---------------------------------------------------------*
        exec-all-gr01              section.
@@ -888,9 +924,17 @@ Win        if (ntype = 1)
       *---------------------------------------------------------*
        gein-00.
            move 'dd_outfile'          to env-set-name
-           move '../files/fsqf01.dat' to env-set-value
+           move '../files/fsqf01mt.dat' to env-set-value
            perform set-value-env
-           move 'genfile' to cmd-string
+           move 'numrek'          to env-set-name
+           if ( ar-ele-vet(idx) = 'susesqf02' or 
+                ar-ele-vet(idx) = 'somisqf13')
+              move '000000300' 	  to env-set-value
+           else
+              move '000000500' 	  to env-set-value
+           end-if
+           perform set-value-env
+           move 'genbigfile' to cmd-string
 Win        if (ntype = 1)
                inspect cmd-string replacing all chrsl by chrbs
                move cmd-string to cmd-go
@@ -922,16 +966,16 @@ TEST00***               display ' cmd:>' cmd-go  '<'
        stcb-00.
            move 99  to ar-tst-rtc01(idx)  
        
-      ** set dd_infile=%filedir%\fsqf01.dat 
+      ** set dd_infile=%filedir%\fsqf01mt.dat 
            move 'dd_infile'              to env-set-name
-           move '../files/fsqf01.dat'    to env-set-value
+           move '../files/fsqf01mt.dat'    to env-set-value
            perform set-value-env
       ** 
            move 'dd_outfile'             to env-set-name
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_cbl.srt'      delimited by size
+                    '_cblmt.srt'      delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -939,12 +983,12 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_srt.srt'      delimited by size
+                    '_srtmt.srt'      delimited by size
                     into env-set-value
            perform set-value-env
       *
-      ** %exedir%\susesqf01b 
-      *******     move 'susesqf01b '       to       cmd-string
+      ** %exedir%\mtsesqf01b 
+      *******     move 'mtsesqf01b '       to       cmd-string
            move space               to cmd-string
            string ar-ele-vet(idx) delimited by space
                   'b'             delimited by size
@@ -995,14 +1039,14 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            move 99  to ar-tst-rtc02(idx)  
       ** set dd_infile=%filedir%\fsqf01.dat 
            move 'dd_infile'              to env-set-name
-           move '../files/fsqf01.dat'    to env-set-value
+           move '../files/fsqf01mt.dat'    to env-set-value
            perform set-value-env
-      ** set dd_outfile=%filedir%\susesqf01_gcs.srt
+      ** set dd_outfile=%filedir%\mtsesqf01_gcs.srt
            move 'dd_outfile'              to env-set-name
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_gcs.srt'      delimited by size
+                    '_gcsmt.srt'      delimited by size
                     into env-set-value
            perform set-value-env
       *
@@ -1023,10 +1067,11 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            close fcmd
       ** 
            move space              to cmd-string
-           string  'gcsort TAKE ../takefile/tmp/'
-                                  delimited by size
-                   ar-ele-vet(idx)  delimited by space
-                   '.prm'         delimited by size
+           string  'gcsort '       delimited by size
+				   ar-mt-vet(idy)  delimited by size
+		   'TAKE ../takefile/tmp/' delimited by size
+                   ar-ele-vet(idx) delimited by space
+                   '.prm'          delimited by size
                       into cmd-string
 Win        if (ntype = 1)
                inspect cmd-string replacing all chrsl by chrbs
@@ -1093,19 +1138,19 @@ TEST00***               display ' cmd:>' cmd-go  '<'
       *---------------------------------------------------------*
        diff-00.
            move 99  to ar-tst-rtc03(idx)  
-      ** set dd_incobol=%filedir%\susesqf01_cbl.srt
+      ** set dd_incobol=%filedir%\mtsesqf01_cbl.srt
            move 'dd_incobol'              to env-set-name
            move space                    to env-set-value
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_cbl.srt'      delimited by size
+                    '_cblmt.srt'      delimited by size
                     into env-set-value
            perform set-value-env
-      ** set dd_ingcsort=%filedir%/susesqf01_gcs.srt
+      ** set dd_ingcsort=%filedir%/mtsesqf01_gcs.srt
            move 'dd_ingcsort'              to env-set-name
            string '../files/'       delimited by size
                     ar-ele-vet(idx) delimited by space
-                    '_gcs.srt'      delimited by size
+                    '_gcsmt.srt'      delimited by size
                     into env-set-value
            perform set-value-env
       *

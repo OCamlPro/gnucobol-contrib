@@ -205,13 +205,13 @@
             07 ar-ele-take-row-05003    pic x(11) value 'sfrmsqf17E'.
             07 ar-ele-take-row-05004    pic x(80) value 
       **          'INCLUDE COND=(8,2,CH,LE,C''FF'',AND,      '.
-                'INCLUDE COND=(8,2,CH,LE,X''C6C6'',AND,      '.
+                'INCLUDE COND=(8,2,CH,LE,X''C6C6'',OR,      '.
             07 ar-ele-take-row-05005    pic x(11) value 'sfrmsqf17E'.
             07 ar-ele-take-row-05006    pic x(80) value 
                 '             39,4,FL,GT,-10,OR,           '.
             07 ar-ele-take-row-05007    pic x(11) value 'sfrmsqf17E'.
             07 ar-ele-take-row-05008    pic x(80) value 
-                '             43,7,CLO,GT,10,AND,          '.
+                '             43,7,CLO,GT,10,OR,          '.
             07 ar-ele-take-row-05009    pic x(11) value 'sfrmsqf17E'.
             07 ar-ele-take-row-05010    pic x(80) value 
                 '             50,8,CST,LE,-30,OR,          '.
@@ -231,13 +231,13 @@
             07 ar-ele-take-row-06003    pic x(11) value 'sfrmsqf18E'.
             07 ar-ele-take-row-06004    pic x(80) value 
       **          'OMIT COND=(8,2,CH,LE,C''FF'',AND,         '.
-                'OMIT COND=(8,2,CH,LE,X''C6C6'',AND,         '.
+                'OMIT COND=(8,2,CH,LE,X''C6C6'',OR,         '.
             07 ar-ele-take-row-06005    pic x(11) value 'sfrmsqf18E'.
             07 ar-ele-take-row-06006    pic x(80) value 
                 '             39,4,FL,GT,-10,OR,           '.
             07 ar-ele-take-row-06007    pic x(11) value 'sfrmsqf18E'.
             07 ar-ele-take-row-06008    pic x(80) value 
-                '             43,7,CLO,GT,10,AND,          '.
+                '             43,7,CLO,GT,10,OR,          '.
             07 ar-ele-take-row-06009    pic x(11) value 'sfrmsqf18E'.
             07 ar-ele-take-row-06010    pic x(80) value 
                 '             50,8,CST,LE,-30,OR,          '.
@@ -488,13 +488,13 @@
                 'SORT FIELDS=(8,5,CH,A)                    '.
             07 ar-ele-take-row-14003    pic x(11) value 'somisqf11E'.
             07 ar-ele-take-row-14004    pic x(80) value  
-                'OMIT COND=(8,2,CH,LE,X''D4D4'',AND,         '.
+                'OMIT COND=(8,2,CH,LE,X''D4D4'',OR,         '.
             07 ar-ele-take-row-14005    pic x(11) value 'somisqf11E'.
             07 ar-ele-take-row-14006    pic x(80) value  
-                '13,3,BI,GT,-10,OR,16,4,FI,GT,10,AND,      '.
+                '13,3,BI,GT,-10,OR,16,4,FI,GT,10,OR,      '.
             07 ar-ele-take-row-14007    pic x(11) value 'somisqf11E'.
             07 ar-ele-take-row-14008    pic x(80) value  
-                '20,8,FL,LE,40,OR,28,4,PD,LE,10,AND,       '.
+                '20,8,FL,LE,40,OR,28,4,PD,LE,10,OR,       '.
             07 ar-ele-take-row-14009    pic x(11) value 'somisqf11E'.
             07 ar-ele-take-row-14010    pic x(80) value  
                 '32,7,ZD,GE,15)                            '.
@@ -584,13 +584,13 @@
                 'GIVE dd_outfile    RECORD F,90 ORG SQ     '.                
             07 ar-ele-take-row-16007    pic x(11) value 'somisqf13E'.
             07 ar-ele-take-row-16008    pic x(80) value  
-                ' OMIT COND=(8,2,CH,LE,X''D4D4'',AND,      '.                
+                ' OMIT COND=(8,2,CH,LE,X''D4D4'',OR,      '.                
             07 ar-ele-take-row-16009    pic x(11) value 'somisqf13E'.
             07 ar-ele-take-row-16010    pic x(80) value  
-                '13,3,BI,GT,-10,OR,16,4,FI,GT,10,AND,      '.                
+                '13,3,BI,GT,-10,OR,16,4,FI,GT,10,OR,      '.                
             07 ar-ele-take-row-16011    pic x(11) value 'somisqf13E'.
             07 ar-ele-take-row-16012    pic x(80) value  
-                '20,8,FL,LE,40,OR,28,4,PD,LE,10,AND,       '.                
+                '20,8,FL,LE,40,OR,28,4,PD,LE,10,OR,       '.                
             07 ar-ele-take-row-16013    pic x(11) value 'somisqf13E'.
             07 ar-ele-take-row-16014    pic x(80) value  
                 '32,7,ZD,GE,15)                            '.                

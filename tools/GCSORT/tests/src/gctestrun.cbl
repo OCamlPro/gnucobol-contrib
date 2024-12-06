@@ -34,7 +34,7 @@
       *
       *  array-name
        01    array-name.
-          03 ar-name-max-ele          pic 99  value 12.
+          03 ar-name-max-ele          pic 99  value 13.
           03 ar-ele-name.
             05 ar-ele-name-01         pic x(11) value 'gctestrun1'.
             05 ar-ele-name-02         pic x(11) value 'gctestrun2'.
@@ -48,8 +48,9 @@
             05 ar-ele-name-10         pic x(11) value 'gctestrun3E'.
             05 ar-ele-name-11         pic x(11) value 'gctestrun8'.
             05 ar-ele-name-12         pic x(11) value 'gctestcmd'.
+            05 ar-ele-name-13         pic x(11) value 'gctestrun9'.
           03 ar-ele-vet redefines ar-ele-name
-                        occurs 12 times pic x(11).
+                        occurs 13 times pic x(11).
       **  
       *  array-name-version
        01    array-name-ver.
@@ -67,12 +68,13 @@
             05 ar-ele-name-ver-10         pic 9(9) value 000030200.
             05 ar-ele-name-ver-11         pic 9(9) value 000030300.
             05 ar-ele-name-ver-12         pic 9(9) value 000030200.
+            05 ar-ele-name-ver-13         pic 9(9) value 000020200.
           03 ar-ele-vet-ver redefines ar-ele-name-version
-                        occurs 12 times pic 9(9).
+                        occurs 13 times pic 9(9).
       **                
       *
        01       array-retcode-epilog-gr05.
-          03    ar-retcode-ele occurs 12 times.
+          03    ar-retcode-ele occurs 13 times.
            05   ar-tst-name           pic x(11).
            05   ar-tst-rtc01          USAGE BINARY-LONG.
       *

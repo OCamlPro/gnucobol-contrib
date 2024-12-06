@@ -1,9 +1,9 @@
       *-------------------------------------------------------------------------------*
       * **********************************************************
       * Author:    Sauro Menna
-      * Date:      20160821
+      * Date:      20241131
       * License
-      *    Copyright 2016 Sauro Menna
+      *    Copyright 2024 Sauro Menna
       *    GNU Lesser General Public License, LGPL, 3.0 (or greater)
       * Purpose:   View file 
       * **********************************************************
@@ -29,9 +29,10 @@
        file section.
        fd sortcbl
             record is varying in size
-            from 31 to 90 characters depending on ws-rec-length.    
+            from 42 to 95 characters depending on ws-rec-length.    
        01 infile-record-cbl.
-           05 in1-seq-record    pic  9(07).
+           05 in1-lenrec        pic  9(4).
+           05 in1-seq-record    pic  9(7).
            05 in1-ch-field      pic  x(5).
            05 in1-bi-field      pic  9(7) comp.
            05 in1-fi-field      pic s9(7) comp.
@@ -42,14 +43,14 @@
            05 in1-clo-field     pic s9(7) sign is leading.
            05 in1-cst-field     pic s9(7) sign is trailing separate.
            05 in1-csl-field     pic s9(7) sign is leading separate.
-           05 in1-ch-filler     pic  x(25).
-       01 infile-record-min01   pic x(40).
+           05 in1-ch-filler     pic x(25).
+       01 infile-record-min01   pic x(42).
        01 infile-record-min02   pic x(65).
                   
       *
        working-storage section.
-       01 ws-rec-length                  pic 9(5).
-       77 fs-infile1                 pic xx.
+       01 ws-rec-length             pic 9(5).
+       77 fs-infile1                pic xx.
        77 fs-infile2                pic xx.
        77 fs-sort                   pic xx.
       *

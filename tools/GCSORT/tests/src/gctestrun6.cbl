@@ -652,6 +652,11 @@ TEST00               display ' cmd:' cmd-go
                     into env-set-value
            perform set-value-env
       *
+           move 'typecheck'              to env-set-name
+           move space                    to env-set-value
+           move ar-ele-vet(idx)          to env-set-value
+           perform set-value-env
+      *
       ** %exedir%
            move ar-ele-vetdiff(idx)    to cmd-string
 Win        if (ntype = 1)

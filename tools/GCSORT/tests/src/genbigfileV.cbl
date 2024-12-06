@@ -3,9 +3,9 @@
       *  GCSORT Tests
       * **********************************************************
       * Author:    Sauro Menna
-      * Date:      20160821
+      * Date:      20241131
       * License
-      *    Copyright 2016 Sauro Menna
+      *    Copyright 2024 Sauro Menna
       *    GNU Lesser General Public License, LGPL, 3.0 (or greater)
       * Purpose:   COBOL module generate file.
       *            Sort/Merge COBOL Program and GCSORT data file
@@ -31,9 +31,10 @@
        file section.
        fd outfile
             record is varying in size
-            from 31 to 90 characters depending on ws-rec-length.            
+            from 42 to 95 characters depending on ws-rec-length.            
        01 outfile-record.
-           05 seq-record         pic  9(07).
+           05 in-lenrec          pic  9(4).
+           05 seq-record         pic  9(7).
            05 ch-field           pic  x(5).
            05 bi-field           pic  9(7) COMP.
            05 fi-field           pic s9(7) COMP.
@@ -45,8 +46,8 @@
            05 cst-field          pic s9(7) sign is  trailing separate.
            05 csl-field          pic s9(7) sign is  leading separate.
            05 ch-filler          pic x(25).
-       01 outfile-record-min01   pic x(40).
-       01 outfile-record-min02   pic x(65).
+       01 outfile-record-min01   pic x(42).
+       01 outfile-record-min02   pic x(61).
       * 
        working-storage section.
        01 ws-rec-length               pic 99 comp-x.
@@ -155,7 +156,8 @@
                move 1 to nrl
            end-if
            if (nrl = 1)
-                move 90 to ws-rec-length
+                move 95 to ws-rec-length
+                move 95 to in-lenrec
                 write outfile-record
                 if (fs-outfile NOT = "00")
                     display "*genbigfileV* s001 fs="
@@ -163,7 +165,8 @@
                 end-if
            end-if 
            if (nrl = 2)
-                move 40 to ws-rec-length
+                move 42 to ws-rec-length
+                move 42 to in-lenrec
                 write outfile-record-min01
                 if (fs-outfile NOT = "00")
                     display "*genbigfileV* s002 fs="
@@ -171,7 +174,8 @@
                 end-if
            end-if 
            if (nrl = 3)
-                move 65 to ws-rec-length
+                move 61 to ws-rec-length
+                move 61 to in-lenrec
                 write outfile-record-min02
                 if (fs-outfile NOT = "00")
                     display "*genbigfileV* s003 fs="
@@ -189,7 +193,8 @@
                move 1 to nrl
            end-if
            if (nrl = 1)
-                move 90 to ws-rec-length
+                move 95 to ws-rec-length
+                move 95 to in-lenrec
                 write outfile-record
                 if (fs-outfile NOT = "00")
                     display "*genbigfileV* s005 fs="
@@ -197,7 +202,8 @@
                 end-if
            end-if 
            if (nrl = 2)
-                move 40 to ws-rec-length
+                move 42 to ws-rec-length
+                move 42 to in-lenrec
                 write outfile-record-min01
                 if (fs-outfile NOT = "00")
                     display "*genbigfileV* s006 fs="
@@ -205,7 +211,8 @@
                 end-if
            end-if 
            if (nrl = 3)
-                move 65 to ws-rec-length
+                move 61 to ws-rec-length
+                move 61 to in-lenrec
                 write outfile-record-min02
                 if (fs-outfile NOT = "00")
                     display "*genbigfileV* s007 fs="

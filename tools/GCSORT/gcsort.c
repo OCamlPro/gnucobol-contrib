@@ -80,8 +80,8 @@ static int		ioixpafix_(const int);
 
 /* MultiThread */
 int gcMultiThreadIsFirst = 0;
-int gcMultiThread = 0;	// 1
-int gcMaxThread = 0;	// 2
+int gcMultiThread = 0;	
+int gcMaxThread = 0;	
 /* MultiThread */
 
 static int
@@ -476,7 +476,7 @@ void verify_options(int numargs, char** args)
 					gcMaxThread = atol((char*)cBufNum);		/* numbers of threads*/
 					gcMultiThreadIsFirst = 0;				/* first */
 					gcMultiThread = 1;						/* multithread enabled*/
-					if ((gcMaxThread < 1) || (gcMaxThread > 16))
+					if ((gcMaxThread < 1) || (gcMaxThread > GC_MAX_THREADS))
 					{
 						fprintf(stdout, "*GCSORT* ERROR: invalid parameter in command line with option -mt (MultiThread), value is incorrect. -mt=<n> - <n> from 1 to 16\n");
 						exit(GC_RTC_ERROR);
@@ -491,6 +491,13 @@ void verify_options(int numargs, char** args)
 					gcMultiThread = 1;						/* multithread enabled*/
 					gcMaxThread = g_nMaxlogicalcpucount; /* reserve 1 for system ? */
 				}
+				/* s.m. 20241206 */
+#if		defined(__MINGW32__) || defined(__MINGW64__)
+				if (gcMaxThread > 1) {
+					gcMaxThread = 1;
+					fprintf(stdout, "*GCSORT*W019Q*WARNING: In Mingw environment forced to use read with single thread\n");
+				}
+#endif
 			}
 		}
 	}

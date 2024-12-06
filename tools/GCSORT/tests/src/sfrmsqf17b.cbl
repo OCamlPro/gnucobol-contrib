@@ -115,11 +115,16 @@
       * ============================= *
            add 1 to record-counter-in
       ** filtering input record 
-           if ((in-ch-field(1:2) <= "FF")  AND                                 ## filtering data    
-               (in-fl-field-1 >  -10))     OR
-              ((in-clo-field >   10)       AND
-               (in-cst-field <= -30))      OR
-              ((in-csl-field <=  10))
+      ****    if ((in-ch-field(1:2) <= "FF")  AND                                 ## filtering data    
+      ****        (in-fl-field-1 >  -10))     OR
+      ****       ((in-clo-field >   10)       AND
+      ****        (in-cst-field <= -30))      OR
+      ****       ((in-csl-field <=  10))
+           if in-ch-field(1:2) <= "FF" OR                                 ## filtering data    
+              in-fl-field-1 >  -10     OR
+              in-clo-field >   10      OR
+              in-cst-field <= -30      OR
+              in-csl-field <=  10
                release sort-data from infile-record
            end-if
            .

@@ -3,9 +3,9 @@
       *  GCSORT Tests
       * **********************************************************
       * Author:    Sauro Menna
-      * Date:      20160821
+      * Date:      20241131
       * License
-      *    Copyright 2016 Sauro Menna
+      *    Copyright 2024 Sauro Menna
       *    GNU Lesser General Public License, LGPL, 3.0 (or greater)
       * Purpose:   COBOL module Difference file output.
       *            Check files result. 
@@ -38,9 +38,10 @@
        file section.
        fd sortcbl
             record is varying in size
-            from 31 to 90 characters depending on ws-rec-length.      
+            from 42 to 95 characters depending on ws-rec-length.      
        01 infile-record-cbl.
-           05 in1-seq-record     pic  9(07).
+           05 in1-lenrec         pic  9(4).
+           05 in1-seq-record     pic  9(7).
            05 in1-ch-field       pic  x(5).
            05 in1-bi-field       pic  9(7) comp.
            05 in1-fi-field       pic s9(7) comp.
@@ -51,14 +52,15 @@
            05 in1-clo-field      pic s9(7) sign is leading.
            05 in1-cst-field      pic s9(7) sign is trailing separate.
            05 in1-csl-field      pic s9(7) sign is leading separate.
-           05 in1-ch-filler      pic  x(25).
-       01 infile-record-min01   pic x(40).
-       01 infile-record-min02   pic x(65).           
+           05 in1-ch-filler      pic x(25).
+       01 infile-record-min01    pic x(42).
+       01 infile-record-min02    pic x(65).           
        
        fd sortgcs
             record is varying in size
-            from 31 to 90 characters depending on ws-rec-length.
+            from 42 to 95 characters depending on ws-rec-length.
        01 infile-record-gcs.
+           05 in2-lenrec         pic  9(4).
            05 in2-seq-record     pic  9(07).
            05 in2-ch-field       pic  x(5).
            05 in2-bi-field       pic  9(7) comp.
@@ -71,7 +73,7 @@
            05 in2-cst-field      pic s9(7) sign is trailing separate.
            05 in2-csl-field      pic s9(7) sign is leading separate.
            05 in2-ch-filler      pic  x(25).
-       01 infile2-record-min01   pic x(40).
+       01 infile2-record-min01   pic x(42).
        01 infile2-record-min02   pic x(65).             
       *
        working-storage section.
@@ -191,7 +193,7 @@
            end-if
            if (fs-infile1 = "00" and fs-infile2 = "00")
       **          perform check-key
-test00                perform check-key-dett
+test00            perform check-key-dett
            end-if
            .
        90.
@@ -202,7 +204,9 @@ test00                perform check-key-dett
       * ============================= *
        10.
       **     move zero to bError
-           if (in1-ch-field   not = in2-ch-field   or
+           
+           if (in1-lenrec not = in2-lenrec) or
+              (in1-ch-field   not = in2-ch-field   or
                in1-bi-field   not = in2-bi-field   or
                in1-fi-field   not = in2-fi-field   or
                in1-pd-field   not = in2-pd-field   or
@@ -253,39 +257,39 @@ test00                perform check-key-dett
       **     move zero to bError
       **     if (
            if in1-ch-field not = in2-ch-field   
-            move 1 to bError
+            add 1 to bError.
            if  in1-bi-field not = in2-bi-field   
-            move 2 to bError.
+            add 1 to bError.
            if  in1-fi-field not = in2-fi-field   
-            move 3 to bError.
+            add 1 to bError.
            if  in1-pd-field not = in2-pd-field   
-            move 4 to bError.
-           if ((ws-rec-length > 40)  and
-              (ws-rec-length <= 65))
-               if  in1-zd-field not = in2-zd-field   
-                  move 5 to bError
-               end-if
+            add 1 to bError.
+           if  in1-zd-field not = in2-zd-field   
+            add 1 to bError.
+
+           if ((ws-rec-length >  42)  and
+               (ws-rec-length <= 61))
                if  in1-fl-field not = in2-fl-field   
-                  move 6 to bError
+                add 1 to bError
                end-if
                  if  in1-fl-field-1 not = in2-fl-field-1 
-                move 7 to bError
+                add 1 to bError
                end-if
                if  in1-clo-field not = in2-clo-field                
-                  move 8 to bError
+                  add 1 to bError
+               end-if
+               if  in1-cst-field not = in2-cst-field  
+                  add 1 to bError
                end-if
            end-if
-           if (ws-rec-length > 65)
-               if  in1-cst-field not = in2-cst-field  
-                  move 9 to bError
-               end-if
-               if  in1-csl-field not = in2-csl-field 
-                  move 10 to bError
-               end-if
+           if ((ws-rec-length >  61)  and
+               (in1-csl-field not = in2-csl-field ))
+                  add 1 to bError
            end-if
            
            if bError > 0
                display " error type  " bError
+               display " record len: " ws-rec-length
                display "============== # Error # ============== "
                display "  Record COBOL  num " record-counter-incbl
                display " sq="    in1-seq-record 

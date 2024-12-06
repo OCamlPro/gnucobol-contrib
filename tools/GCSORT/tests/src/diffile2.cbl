@@ -114,7 +114,7 @@
                 move 25 to RETURN-CODE
                 stop run
            end-if
-                move zero to bError
+           move zero to bError
            perform view-data until  (fs-infile1 not equal "00"  and 
                                      fs-infile2 not equal "00" ) OR 
                                      bError     > 15

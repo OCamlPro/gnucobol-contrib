@@ -145,11 +145,16 @@
            TRANSFORM wk-in-ch-filler  FROM case-ebcdic TO case-ascii 
                       
       ** filtering input record 
-           if ((wk-in-ch-field(1:2) <= "FF")  AND                                 ## filtering data    
-               (wk-in-fl-field-1 > -10))      OR
-              ((wk-in-clo-field >   10)       AND
-               (wk-in-cst-field <= -30))      OR
-              ((wk-in-csl-field <=  10))
+      **     if ((wk-in-ch-field(1:2) <= "FF")  AND                                 ## filtering data    
+      **         (wk-in-fl-field-1 > -10))      OR
+      **        ((wk-in-clo-field >   10)       AND
+      **         (wk-in-cst-field <= -30))      OR
+      **        ((wk-in-csl-field <=  10))
+           if wk-in-ch-field(1:2) <= "FF"   OR                                 ## filtering data    
+              wk-in-fl-field-1 > -10        OR
+              wk-in-clo-field >   10        OR
+              wk-in-cst-field <= -30        OR
+              wk-in-csl-field <=  10  
                release sort-data from infile-record
            end-if
            .

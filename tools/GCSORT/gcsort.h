@@ -85,14 +85,15 @@ _LIB
 /* value 1 : generate temp file fixed name : cob17, cob18, cob19, cob1a, cob1b  */
 #define GCSORT_DEBUG   0        /* 0 no debug - 1 debug */
 #define GCSORT_TESTCMD 0
-#define GCSORT_VERSION "01.04.01"
-#define GCSORT_TAR_DATE "Oct 02 2024 20:00:00 UTC"
+#define GCSORT_VERSION "01.04.02"
+#define GCSORT_TAR_DATE "Oct 19 2024 20:00:00 UTC"
 
 /* Return Code */
 #define GC_RTC_OK	 0
 #define GC_RTC_WARN	 4
 #define GC_RTC_ERROR 16
 
+#define GC_MAX_THREADS 16
 
 #if	!defined(_MSC_VER) /* defined(__MINGW32__) || defined(__MINGW64__)  */
 #define strtok_s __strtok_r

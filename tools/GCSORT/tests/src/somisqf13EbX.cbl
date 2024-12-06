@@ -113,12 +113,18 @@
            add 1 to record-counter-in
       ** filtering input record 
       * OMIT condition 
-           if ((in-ch-field(1:2) <= "MM")  AND                                 ## filtering data    
-               (in-bi-field >  -10))       OR
-              ((in-fi-field >   10)        AND
-               (in-fl-field <=  40))       OR
-              ((in-pd-field <=  10)        AND
-               (in-zd-field >=  15))
+      **    if ((in-ch-field(1:2) <= "MM")  AND                                 ## filtering data    
+      **        (in-bi-field >  -10))       OR
+      **       ((in-fi-field >   10)        AND
+      **        (in-fl-field <=  40))       OR
+      **       ((in-pd-field <=  10)        AND
+      **        (in-zd-field >=  15))
+           if  in-ch-field(1:2) <= "MM"   OR                                 ## filtering data    
+               in-bi-field >  -10         OR
+               in-fi-field >   10         OR
+               in-fl-field <=  40         OR
+               in-pd-field <=  10         OR
+               in-zd-field >=  15 
 			   add 1 to record-counter-skip
            else
                release sort-data from infile-record

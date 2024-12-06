@@ -223,13 +223,13 @@
                 'SORT FIELDS=(8,5,CH,A)                    '.
             07 ar-ele-take-row-05003    pic x(11) value 'sfrmsqf17 '.
             07 ar-ele-take-row-05004    pic x(80) value 
-                'INCLUDE COND=(8,2,CH,LE,C''FF'',AND,      '.
+                'INCLUDE COND=(8,2,CH,LE,C''FF'',OR,      '.
             07 ar-ele-take-row-05005    pic x(11) value 'sfrmsqf17 '.
             07 ar-ele-take-row-05006    pic x(80) value 
                 '             39,4,FL,GT,-10,OR,           '.
             07 ar-ele-take-row-05007    pic x(11) value 'sfrmsqf17 '.
             07 ar-ele-take-row-05008    pic x(80) value 
-                '             43,7,CLO,GT,10,AND,          '.
+                '             43,7,CLO,GT,10,OR,          '.
             07 ar-ele-take-row-05009    pic x(11) value 'sfrmsqf17 '.
             07 ar-ele-take-row-05010    pic x(80) value 
                 '             50,8,CST,LE,-30,OR,          '.
@@ -248,13 +248,13 @@
                 'SORT FIELDS=(8,5,CH,A)                    '.
             07 ar-ele-take-row-06003    pic x(11) value 'sfrmsqf18 '.
             07 ar-ele-take-row-06004    pic x(80) value 
-                'OMIT COND=(8,2,CH,LE,C''FF'',AND,         '.
+                'OMIT COND=(8,2,CH,LE,C''FF'',OR,         '.
             07 ar-ele-take-row-06005    pic x(11) value 'sfrmsqf18 '.
             07 ar-ele-take-row-06006    pic x(80) value 
                 '             39,4,FL,GT,-10,OR,           '.
             07 ar-ele-take-row-06007    pic x(11) value 'sfrmsqf18 '.
             07 ar-ele-take-row-06008    pic x(80) value 
-                '             43,7,CLO,GT,10,AND,          '.
+                '             43,7,CLO,GT,10,OR,          '.
             07 ar-ele-take-row-06009    pic x(11) value 'sfrmsqf18 '.
             07 ar-ele-take-row-06010    pic x(80) value 
                 '             50,8,CST,LE,-30,OR,          '.

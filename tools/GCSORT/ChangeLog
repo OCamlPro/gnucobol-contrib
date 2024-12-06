@@ -1,3 +1,15 @@
+2024-12-01  Sauro Menna  <saumen2004@libero.it>
+    * Version 1.04.02
+	* Fixed Thread behaviour - Insert delay in Thread creation
+    * New COBOL multithreaded test program gctestrun9 (runs the same test sequence as the single process, but each sequence runs n times with a different number of threads [2-4-8-16])
+    * Modified file gctestsetup.cfg to compile gctestrun9
+    * Modified config file gctestcmd to generate test for File Variable
+    * SumFields - Test Cobol (copy wktotsum01.cpy) modified totalizer fields with same length of record fields (solved problem with negative numbers)
+    * SumFields - Review buffer area
+    * Review Date test case and fixed proble in function job_compare_date_Y2T
+    * Fixed problem with data type Y2T
+    * Review Cobol test program presents in tests/src
+    * In Mingw environment forced to use read with single thread
 
 2024-10-03  Sauro Menna  <saumen2004@libero.it>
     * Version 1.04.01
@@ -12,6 +24,7 @@
 	*   - from function stat to stat_file (windows _stat64, linux stat)
 	*   - Update for variable file - job->LenCurrRek = nLenRek;
 	*   - Modify struct hSrtMem_t - move unsigned char* pAddress;  before unsigned int   nLenRek;	
+	*  Update source gctestrun4.cbl
 
 2024-06-22  Sauro Menna  <saumen2004@libero.it>
     * Version 1.04.00 - Multithread version
