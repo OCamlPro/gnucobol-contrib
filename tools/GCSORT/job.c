@@ -3668,7 +3668,7 @@ int job_save_out(struct job_t* job)
 		if (job->sumFields == 1) {
 			if (previousRecord != -1) {
 				job->LenCurrRek = job->phSrt->nLenRek;
-				if (job_compare_rek(job, recordBufferPrevious, szBuffRek, 0, SZPOSPNT) == 0)     /* no check pospnt  */
+				if (job_compare_rek(job, recordBufferPrevious, szBuffRek, CHECK_RECORD_POSITION_NO, SZPOSPNT) == 0)     /* no check pospnt  */
 					useRecord = 0;
 			}
 			previousRecord = 1;
@@ -4148,7 +4148,7 @@ int job_save_tempfile(struct job_t* job)
 				/* ATTENZIONE CONTROLLO IN ABBINAMENTO  */
 				job->LenCurrRek = byteRead;
 				/* 20240927 nCompare = job_compare_rek(job, szBuffTmp, recordBuffer, 1, nSplitPosPnt); */	/* check pospnt */
-				nCompare = job_compare_rek(job, szBuffTmp, recordBuffer, 1, 0);	/* check pospnt */
+				nCompare = job_compare_rek(job, szBuffTmp, recordBuffer, CHECK_RECORD_POSITION_YES, 0);	/* check pospnt */
 
 				if (nCompare < 0)
 				{
@@ -4317,7 +4317,7 @@ INLINE2 int job_IdentifyBuf(struct job_t* job, unsigned char** ptrBuf, int nMaxE
 	for (p = posAr + 1; p < nMaxEle; p++) {
 		if (ptrBuf[p] == 0x00)
 			continue;
-		if (job_compare_rek(job, ptr, ptrBuf[p], 1, SZLENREC) > 0) {		/* check pospnt enabled  */
+		if (job_compare_rek(job, ptr, ptrBuf[p], CHECK_RECORD_POSITION_YES, SZLENREC) > 0) {		/* check pospnt enabled  */
 			ptr = ptrBuf[p];
 			posAr = p;
 		}
@@ -4522,7 +4522,7 @@ int job_save_tempfinal(struct job_t* job) {
 				if (previousRecord != -1) {
 					/* check equal key  */
 					job->LenCurrRek = byteRead;
-					if (job_compare_rek(job, recordBufferPrevious, szBufRekTmpFile[nPosPtr], 0, nSplitPosPnt) == 0)
+					if (job_compare_rek(job, recordBufferPrevious, szBufRekTmpFile[nPosPtr], CHECK_RECORD_POSITION_NO, nSplitPosPnt) == 0)
 						useRecord = 0;
 				}
 				/* enable check for sum fields  */
@@ -5596,7 +5596,7 @@ INLINE int job_IdentifyBufMerge(struct job_t* job, unsigned char** ptrBuf, int n
 				continue;
 			/* s.m. 20241019 */
 			/* *nCmp = job_compare_rek( job, ptr,  ptrBuf[p], 0, SZPOSPNT); */	/* No check pospnt  */
-			*nCmp = job_compare_rek(job, ptr, ptrBuf[p], 1, SZPOSPNT);	/* Check pospnt  */
+			*nCmp = job_compare_rek(job, ptr, ptrBuf[p], CHECK_RECORD_POSITION_YES, SZPOSPNT);	/* Check pospnt  */
 			if (*nCmp > 0) {
 				ptr = ptrBuf[p];
 				posAr = p;
@@ -5850,7 +5850,7 @@ int job_merge_files(struct job_t* job) {
 				if (previousRecord != -1) {
 					/* check equal key  */
 
-					if (job_compare_rek(job, recordBufferPrevious, recordBuffer, 0, nSplitPosPnt) == 0)  /* sumfield no check pospnt */
+					if (job_compare_rek(job, recordBufferPrevious, recordBuffer, CHECK_RECORD_POSITION_NO, nSplitPosPnt) == 0)  /* sumfield no check pospnt */
 						useRecord = 0;
 				}
 				/* enable check for sum fields  */

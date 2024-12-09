@@ -96,6 +96,10 @@ struct job_t;
 #define  READ_BLOCK_CHUNK	10
 #define  READ_ROUND_ROBIN	21
 
+#define CHECK_RECORD_POSITION_NO	0
+#define CHECK_RECORD_POSITION_YES	1
+
+
 struct hSrtMem_t {
 	int64_t lPosPnt;			/* Pointer RRN file*/
 	unsigned char* pAddress;	/* Pointer memory record area */

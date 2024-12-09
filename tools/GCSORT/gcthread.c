@@ -553,7 +553,8 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 					job->LenCurrRek = byteRead;
 					/* s.m. 20241019 */
 					/* if (job_compare_rek(job, recordBufferPrevious, szBufRekTmpFile[nPosPtr], 0, SZLENREC) == 0) */
-					if (job_compare_rek(job, recordBufferPrevious, szBufRekTmpFile[nPosPtr] + SZLENREC, 1, 0) == 0)
+					/* check value of record position */
+					if (job_compare_rek(job, recordBufferPrevious, szBufRekTmpFile[nPosPtr] + SZLENREC, CHECK_RECORD_POSITION_NO, 0) == 0)
 						useRecord = 0;
 				}
 				/* enable check for sum fields  */

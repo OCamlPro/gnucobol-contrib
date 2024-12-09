@@ -39,7 +39,21 @@ INSTALL
 	
 	
  *Usage
-    GCSORT --help   for help from command line.
+        gcsort --h
+        Usage: gcsort <option> <command>
+                      Execute command
+        or   : gcsort TAKE <filename params>
+                      Read and execute command from filename params
+        or   : gcsort --help
+                      Print help
+        or   : gcsort --help  SORT | MERGE | COPY | JOIN
+                      Print help for specific control statement
+        or   : gcsort --version
+                      Print version information
+        or   : gcsort --config
+                      Print values of environment variables 
+ 
+ 
     Folder testcase for example of commands.
     
     Check for the functionnality implemented (listed in README) to see in this fit your needs.
@@ -70,7 +84,8 @@ INSTALL
 		7) gctestset  >..\loggenerate.log 				# Generate files and compile cobol programs for test
 		8) Verify last message of log file (If correct last message is : 'setup  ok') 
 		9) gctestrun 1>..\logexec.log 2>..\logexec_err.log   					# Execute all test case
-	   10) check bottom log file (if test is ok message is 'T E S T    P A S S E D'    
+	   10) check bottom log file (if test is ok message is 'T E S T    P A S S E D' )
+       
 		
         
         

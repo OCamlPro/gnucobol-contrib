@@ -1,3 +1,8 @@
+2024-12-10  Sauro Menna  <saumen2004@libero.it>
+    * Version 1.04.03
+	* Reactivated use of multithread in mingw
+    * Fixed problem in SUM FIELDS=NONE
+
 2024-12-01  Sauro Menna  <saumen2004@libero.it>
     * Version 1.04.02
 	* Fixed Thread behaviour - Insert delay in Thread creation
