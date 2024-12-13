@@ -419,6 +419,13 @@ int SumFields_KeyCheckMT(struct job_t* job, int* bIsWrited, unsigned char* szKey
 	unsigned char* szKeyCurr, unsigned int* nLenRek, unsigned char* szKeySave, unsigned int* nLenSave,
 	unsigned char* szPrecSumFields, unsigned char* szSaveSumFields, unsigned char* szBuffRek, int nSplit);
 
+/* Lock_activity */
+/* s.m. 20241210 */
+
+int job_LockResource(void);
+void job_UnlockResource(void);
+
+
 /*  #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)   */
 /*
 #else

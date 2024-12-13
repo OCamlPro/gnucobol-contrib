@@ -80,7 +80,7 @@
            05 sep-19                pic x.
       * 
        working-storage section.
-       77       record-counter-out    pic 9(7) value zero.
+       77       record-counter-out    pic 9(11) value zero.
        77       program-name          pic x(15) value "*genfiledate*".
        77       fs-infile             pic xx.
        77       count-value           pic 9(5) value zero.

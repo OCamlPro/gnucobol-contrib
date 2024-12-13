@@ -1,3 +1,9 @@
+2024-12-14  Sauro Menna  <saumen2004@libero.it>
+    * Version 1.04.04
+    * Fixed problem in GetSize function when used environment variable  
+    * Created two new functions to handle mutexes in the case of shared resource access. [job_LockResource(), job_UnlockResource()]
+    * Modified size of counter fields in test Cobol modules to hold larger values.
+
 2024-12-10  Sauro Menna  <saumen2004@libero.it>
     * Version 1.04.03
 	* Reactivated use of multithread in mingw

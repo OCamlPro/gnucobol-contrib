@@ -26,13 +26,13 @@
            copy fgensqf01.
       * 
        working-storage section.
-       77       record-counter-out    pic 9(7) value zero.
+       77       record-counter-out    pic 9(11) value zero.
        77       program-name          pic x(12) value "*genfile*".
        77       ntimes                pic 9(3)  value 50.
        77       fs-outfile            pic xx.
-       77       rrn                   pic 9(7)  value zero.
+       77       rrn                   pic 9(11)  value zero.
        01       idx                   pic 99    value zero.
-       01       count-value           pic S9(7) value zero.
+       01       count-value           pic S9(11) value zero.
        01       tab-ch.
            02   tab-ele-num           pic 99    value 26.
            02   tab-ele-value         pic x(52) value

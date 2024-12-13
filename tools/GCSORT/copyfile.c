@@ -33,6 +33,7 @@
     #include <sys/types.h>
     #include <unistd.h>
     #include <inttypes.h>
+	#include <sys/stat.h>
 #endif
 
 #include <stdlib.h>
@@ -220,8 +221,12 @@ int job_copyFile(struct job_t *job)
 		if ((job->bIsPresentSegmentation == 0) || (nEOFFileIn == 1))
 		{
 			struct _struct_stat64 filestatus;
-		    stat_file( file_getName(file), &filestatus );
-			job->inputFile->nFileMaxSize = filestatus.st_size;
+			int nr = 0;
+			nr = stat_file( file_getName(file), &filestatus );
+			if (nr != 0)
+				job->inputFile->nFileMaxSize = utl_GetFileSizeEnvName(job->fileLoad);
+			else
+				job->inputFile->nFileMaxSize = filestatus.st_size;
 			/* check if filename is a environment variable */
 			if (job->inputFile->nFileMaxSize == 0)
 				job->inputFile->nFileMaxSize=utl_GetFileSizeEnvName(file);

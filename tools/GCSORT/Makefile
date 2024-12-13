@@ -3,14 +3,14 @@ MKDIR=mkdir -p
 INSTALL=cp
 BISON=bison
 FLEX=flex
-CC=gcc -std=gnu99 -pthread -D_FILE_OFFSET_BITS="64" -c -o
+CC=gcc -std=gnu99 -pthread -D_FILE_OFFSET_BITS="64" -D_LARGEFILE64_SOURCE  -c -o
 CCFLAGS= -fkeep-inline-functions
 LD=gcc -o
 LDFLAGS= -O3
 LIBS=-L${exec_prefix}/lib -L/usr/local/lib/ -lcob -lm -lpthread
 OUTDIR=tests/bin
 
-#FLEX_FLAGS=--debug
+#FLEX_FLAGS=--debug 
 
 # windows:
 #BISON=win_bison
@@ -111,7 +111,7 @@ parser.o:condfield.h fieldvalue.h file.h file.h inrec.h job.h gcshare.h gcsort.h
 scanner.o:gcsort.h parser.h utils.h parser.y scanner.l 
 sortfield.o:gcshare.h gcsort.h job.h sortfield.h sumfield.h utils.h
 sumfield.o:gcshare.h gcsort.h job.h libgcsort.h sumfield.h utils.h
-utils.o:gcshare.h gcsort.h libgcsort.h job.h utils.h outfil.h exitroutines.h
+utils.o:gcshare.h gcsort.h gcthread.h libgcsort.h job.h utils.h outfil.h exitroutines.h
 
 clean:
 	$(RM) $(TARGET) $(OBJS)
@@ -127,6 +127,5 @@ check: all
 	cd tests/script && ./compile.sh || true
 	cd tests/bin    && ./gctestset
 	cd tests/bin    && ./gctestrun
-
 cleanDebug:clean
 cleanRelease:clean

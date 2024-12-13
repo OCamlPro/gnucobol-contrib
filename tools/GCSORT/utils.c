@@ -1094,19 +1094,34 @@ int64_t utl_GetFileSizeEnvName(struct file_t* file) {
 	snprintf(szname, (size_t)COB_FILE_MAX, "%s", (const char*)file->stFileDef->assign->data);
 	pEnv = getenv(szname);
 	if (pEnv != NULL) {
-		stat_file(pEnv, &filestatus);
+		int nr = 0;
+		nr = stat_file(pEnv, &filestatus);
+		if (nr != 0) {
+			fprintf(stdout, "*GCSORT*ERROR*utl_GetFileSizeEnvName*: Environment variable not found: %s: \n", szname);
+			exit(-1);
+		}
 		return filestatus.st_size;
 	}
 	snprintf(szname, (size_t)COB_FILE_MAX, "DD_%s", (const char*)file->stFileDef->assign->data);
 	pEnv = getenv(szname);
 	if (pEnv != NULL) {
-		stat_file(pEnv, &filestatus);
+		int nr = 0;
+		nr = stat_file(pEnv, &filestatus);
+		if (nr != 0) {
+			fprintf(stdout, "*GCSORT*ERROR*utl_GetFileSizeEnvName*: Environment variable not found: %s: \n", szname);
+			exit(-1);
+		}
 		return filestatus.st_size;
 	}
 	snprintf(szname, (size_t)COB_FILE_MAX, "dd_%s", (const char*)file->stFileDef->assign->data);
 	pEnv = getenv(szname);
 	if (pEnv != NULL) {
-		stat_file(pEnv, &filestatus);
+		int nr = 0;
+		nr = stat_file(pEnv, &filestatus);
+		if (nr != 0) {
+			fprintf(stdout, "*GCSORT*ERROR*utl_GetFileSizeEnvName*: Environment variable not found: %s: \n", szname);
+			exit(-1);
+		}
 		return filestatus.st_size;
 	}
 	return 0;
@@ -1135,7 +1150,12 @@ int utl_GetFileEnvName( char* szfile) {
 int64_t utl_GetFileSize(struct file_t* file) 
 {
 	struct _struct_stat64 filestatus;
-	stat_file(file->name, &filestatus);
+	int nr = 0;
+	nr = stat_file(file->name, &filestatus);
+	if (nr != 0) {
+		fprintf(stdout, "*GCSORT*ERROR*utl_GetFileSize*: File not found: %s: \n", file->name);
+		exit(-1);
+	}
 	return filestatus.st_size;
 }
 

@@ -84,10 +84,10 @@
       * 
        working-storage section.
        77       rec-prev              pic x(85).
-       77       record-counter-in     pic 9(7) value zero.
+       77       record-counter-in     pic 9(11) value zero.
        77       program-name          pic x(15) value "*checkfdate*".
        77       fs-infile             pic xx.
-       77       count-value           pic 9(7) value zero.
+       77       count-value           pic 9(11) value zero.
       *
        01       wk-date8              pic 9(8).
        01 filler redefines wk-date8.

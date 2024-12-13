@@ -47,8 +47,8 @@
        77 fs-outfile                pic xx.
        77 fs-sort                   pic xx.
       *
-       77 record-counter-in         pic 9(5).
-       77 record-counter-out        pic 9(5).
+       77 record-counter-in         pic 9(11).
+       77 record-counter-out        pic 9(11).
       *    
            copy wkenvfield.
       *    

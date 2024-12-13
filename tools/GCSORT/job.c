@@ -70,6 +70,7 @@
 #include "gcshare.h"
 /*  #undef  MAIN_FILE */
 
+
 /* #include "bufferedreader.h"  */
 /* #include "bufferedwriter.h"  */
 
@@ -79,13 +80,6 @@
 #ifdef _MSC_VER
 #include <crtdbg.h>
 #endif
-
-#if defined(_THREAD_LINUX_ENV)
-pthread_mutex_t job_thread_mutex = PTHREAD_MUTEX_INITIALIZER;
-#else
-HANDLE ghMutexJob;
-#endif 
-
 
 int yyparse(void);
 
@@ -403,7 +397,6 @@ struct job_t* job_constructor(void) {
 
 	job->bThreadIsFirstRound = 0;
 
-
 	return job;
 }
 
@@ -430,6 +423,7 @@ unsigned int job_defineHeaderRecSize(struct job_t *job) {
 */
 
 void job_destructor(struct job_t* job) {
+
 
 	if (job->recordData != NULL) {
 		free(job->recordData);
@@ -514,6 +508,7 @@ void job_AllocateField(struct job_t* job)
 	/* //-->> s.m. 20221125 g_fdate2 = util_MakeAttrib_call(COB_TYPE_NUMERIC_DISPLAY, 8, 0, 0, 8, NOALLOCATE_DATA); */
 	job->g_fdate2 = util_MakeAttrib_call(COB_TYPE_NUMERIC_DISPLAY, 8, 0, 0, 8, ALLOCATE_DATA);
 	/* cob_set_int(g_fdate2, 0);    */
+
 	return;
 }
 
@@ -528,7 +523,9 @@ int job_sort(struct job_t* job)
 		if (job->nStatistics == 2)
 			util_print_time_elap("Before  job_loadFiles     ");
 		nContinueSrtTmp = 0;
+
 		nRC = job_loadFiles(job);
+
 		if (job->nStatistics == 2)
 			util_print_time_elap("After   job_loadFiles     ");
 		if (nRC == -2)
@@ -640,28 +637,16 @@ int job_load(struct job_t* job, int argc, char** argv) {
 	{  /* version with modify name  */
 		if (job_scanCmdLineFile(job, buffer, bufnew) != -1) {
 			job_scanCmdSpecialChar(bufnew);
-#ifdef _THREAD_LINUX_ENV
-			pthread_mutex_lock(&job_thread_mutex);
-#else
-			ghMutexJob = CreateMutex(
-				NULL,
-				FALSE,
-				NULL);
-			if (ghMutexJob == NULL)
-			{
-				fprintf(stdout, "*GCSORT*S048J*ERROR: CreateMutex error: %d\n", GetLastError());
-				returnCode = -1;
-			}
 
-#endif
+			if (globalJob->nMultiThread == 1) 
+				job_LockResource();
+
 			yy_scan_string(bufnew);
 			returnCode = yyparse();
 
-#ifdef _THREAD_LINUX_ENV
-			pthread_mutex_unlock(&job_thread_mutex);
-#else
-			CloseHandle(ghMutexJob);
-#endif
+			if (globalJob->nMultiThread == 1)
+				job_UnlockResource();
+
 			if (returnCode == 0)
 				returnCode = job_RedefinesFileName(job);
 		}
@@ -2096,6 +2081,7 @@ int job_check(struct job_t* job)
 
 
 	/* check information for Multi Thread*/
+	/* // s.m. 20241211 */
 	if (job->nMultiThread == 1) {
 		if ((file_getOrganization(job->inputFile) != FILE_ORGANIZATION_SEQUENTIAL) &&
 			(file_getOrganization(job->inputFile) != FILE_ORGANIZATION_LINESEQUENTIAL) &&
@@ -2758,11 +2744,20 @@ int job_loadFiles(struct job_t* job) {
 		if ((job->bIsPresentSegmentation == 0) || (nEOFFileIn == 1))
 		{
 			struct _struct_stat64 filestatus;
-			stat_file(file_getName(job->fileLoad), &filestatus);
-			job->inputFile->nFileMaxSize = filestatus.st_size;
-			if (job->inputFile->nFileMaxSize == 0) {
+			int nr = 0;
+			nr = stat_file(file_getName(job->fileLoad), &filestatus);
+			if (nr != 0)
+				job->inputFile->nFileMaxSize = utl_GetFileSizeEnvName(job->fileLoad);
+			else
+				job->inputFile->nFileMaxSize = filestatus.st_size;
+			/* fprintf(stdout, "***+++@@@--------------------------- job->inputFile->nFileMaxSize (1) - %d : %lld \n", nr, job->inputFile->nFileMaxSize); */
+			if (job->inputFile->nFileMaxSize == 0) {nr, 
 				job->inputFile->nFileMaxSize = utl_GetFileSizeEnvName(job->fileLoad);
 			}
+
+		/*	fprintf(stdout, "***+++@@@--------------------------- job->inputFile->nFileMaxSize (2) - %d : %lld \n", nr, job->inputFile->nFileMaxSize); */
+
+
 
 			/* s.m. 20240302 */
 
@@ -2777,6 +2772,9 @@ int job_loadFiles(struct job_t* job) {
 			if (job_AllocateDataKey(job) == -1)
 				goto lbex;
 
+			/* s.m. 20241210 */
+			if (globalJob->nMultiThread == 1)
+				job_LockResource();
 
 			/* s.m. 20240302 */
 			cob_open(job->fileLoad->stFileDef, COB_OPEN_INPUT, 0, NULL);
@@ -2787,6 +2785,10 @@ int job_loadFiles(struct job_t* job) {
 				retcode = -1;
 				goto lbex;
 			}
+			/* s.m. 20241210 */
+			if (globalJob->nMultiThread == 1)
+				job_UnlockResource();
+
 			nEOFFileIn = 0;
 			if (job->fileLoad->stFileDef->variable_record)
 				nIsFileVariable = 1; /* File is Variable Length */
@@ -2887,7 +2889,18 @@ int job_loadFiles(struct job_t* job) {
 
 			if ((job->nExitRoutine == 0) || (job->nExitRoutine == 2)) {		/* 0=normal , 1=E15, 2=E35 , 3=E15+E35 only with 1 call read for E15    */
 				/* Read normal without exit routines    */
+				/* s.m. 20241210 */
+				if (job->nMultiThread == 1) {
+					job_LockResource();
+				}
+
 				cob_read_next(job->fileLoad->stFileDef, NULL, COB_READ_NEXT);
+
+				/* s.m. 20241210 */
+				if (job->nMultiThread == 1) {
+					job_UnlockResource();
+				}
+
 				nFSRead = file_checkFSRead("Read", "job_loadFiles", job->fileLoad, job->fileLoad->recordLength, job->fileLoad->recordLength);
 
 				if (nFSRead != 0) {
@@ -3193,6 +3206,8 @@ lbex:
 	free(szVectorRead1);
 	free(szVectorRead2);
 
+
+
 	/* s.m. 20220701 return 0; */
 	return retcode;
 }
@@ -3216,7 +3231,19 @@ int job_Verify_EOF(int* nState, struct file_t* stFile, unsigned char* szVectorRe
 	int nFS = 0;
 	switch (*nState) {
 	case(0): {		/* First call   */
+
+		/* s.m. 20241210 */
+		if (globalJob->nMultiThread == 1) {
+			job_LockResource();
+		}
+
 		cob_read_next(stFile->stFileDef, NULL, COB_READ_NEXT);
+
+		/* s.m. 20241210 */
+		if (globalJob->nMultiThread == 1) {
+			job_UnlockResource();
+		}
+
 		nFS = file_checkFSRead("Read", "job_Verify_EOF", stFile, stFile->stFileDef->record_max, stFile->stFileDef->record_max);
 		if (nFS > 0) {
 			*nState = 99;
@@ -3225,7 +3252,19 @@ int job_Verify_EOF(int* nState, struct file_t* stFile, unsigned char* szVectorRe
 		*nLenVR1 = stFile->stFileDef->record->size;
 		gc_memcpy(szVectorRead1, stFile->stFileDef->record->data, stFile->stFileDef->record->size);
 
+		/* s.m. 20241210 */
+		if (globalJob->nMultiThread == 1) {
+			job_LockResource();
+		}
+
 		cob_read_next(stFile->stFileDef, NULL, COB_READ_PREVIOUS);
+
+		/* s.m. 20241210 */
+		if (globalJob->nMultiThread == 1) {
+			job_UnlockResource();
+		}
+
+
 		nFS = file_checkFSRead("Read", "job_Verify_EOF(2)", stFile, stFile->stFileDef->record_max, stFile->stFileDef->record_max);
 		if (nFS > 0) {
 			stFile->stFileDef->record->size = *nLenVR1;
@@ -3244,7 +3283,18 @@ int job_Verify_EOF(int* nState, struct file_t* stFile, unsigned char* szVectorRe
 
 	case(1): {		/* Get buffer2, save buffer1    */
 		*nState = 2;
+		/* s.m. 20241210 */
+		if (globalJob->nMultiThread == 1) {
+			job_LockResource();
+		}
+
 		cob_read_next(stFile->stFileDef, NULL, COB_READ_NEXT);
+
+		/* s.m. 20241210 */
+		if (globalJob->nMultiThread == 1) {
+			job_UnlockResource();
+		}
+
 		nFS = file_checkFSRead("Read", "job_Verify_EOF(3)", stFile, stFile->stFileDef->record_max, stFile->stFileDef->record_max);
 		if (nFS > 0) {
 			stFile->stFileDef->record->size = *nLenVR2;
@@ -3263,7 +3313,17 @@ int job_Verify_EOF(int* nState, struct file_t* stFile, unsigned char* szVectorRe
 
 	case(2): {		/* Get buffer1, save buffer2    */
 		*nState = 1;
+		/* s.m. 20241210 */
+		if (globalJob->nMultiThread == 1) {
+			job_LockResource();
+		}
 		cob_read_next(stFile->stFileDef, NULL, COB_READ_NEXT);
+
+		/* s.m. 20241210 */
+		if (globalJob->nMultiThread == 1) {
+			job_UnlockResource();
+		}
+
 		nFS = file_checkFSRead("Read", "job_Verify_EOF(4)", stFile, stFile->stFileDef->record_max, stFile->stFileDef->record_max);
 		if (nFS > 0) {
 			stFile->stFileDef->record->size = *nLenVR1;
@@ -3312,13 +3372,22 @@ int job_skip_record_LS_LSF(struct job_t* job, struct file_t* file, int64_t* nRec
 	int nFSRead = 0;
 
 	*nRec = *nRec + job->nMTSkipRec;
+	/* s.m. 20241210 */
 
+	if (job->nMultiThread == 1) {
+		job_LockResource();
+	}
 	for (int64_t nC = 0; nC < job->nMTSkipRec; nC++) {
 		cob_read_next(file->stFileDef, NULL, COB_READ_NEXT);
 		nFSRead = file_checkFSRead("Read", "job_skip_record_LS_LSF", file, file->recordLength, file->recordLength);
 		if (nFSRead != 0)
 			break;
 	}
+	/* s.m. 20241210 */
+	if (job->nMultiThread == 1) {
+		job_UnlockResource();
+	}
+
 	return nFSRead;
 }
 
@@ -3374,6 +3443,7 @@ int job_skip_record(struct job_t* job, struct file_t* file, int64_t* nRec)
 	nAreaRecordSize = nAreaRecordSize / nRecordSlot;
 
 #ifdef GCSTHREAD	
+	fprintf(stdout, "job->nMTSkipRec  =%ld\n", (long int)job->nMTSkipRec);
 	fprintf(stdout, " *nRec           =%ld\n", (long int)*nRec);
 	fprintf(stdout, " job->nCurrThread=%d\n", job->nCurrThread);
 	fprintf(stdout, " job->nSkipRec   =" NUM_FMT_LLD "\n", (long long)job->nSkipRec);
@@ -3388,7 +3458,7 @@ int job_skip_record(struct job_t* job, struct file_t* file, int64_t* nRec)
 
 
 #ifdef GCSTHREAD
-	fprintf(stdout, " *nRec           =%ld\n", *nRec);
+	fprintf(stdout, " *nRec           =" NUM_FMT_LLD " \n", *nRec);
 #endif
 
 	file->recordLength = nAreaRecordSize;
@@ -3401,12 +3471,16 @@ int job_skip_record(struct job_t* job, struct file_t* file, int64_t* nRec)
 
 	cob_field* svrecord = file->stFileDef->record; /* save area */
 	cob_field* pPnt;
-	pPnt = util_cob_field_make(COB_TYPE_ALPHANUMERIC, nAreaRecordSize, 0, 0, nAreaRecordSize, ALLOCATE_DATA); //recBuff;
+	pPnt = util_cob_field_make(COB_TYPE_ALPHANUMERIC, nAreaRecordSize, 0, 0, nAreaRecordSize, ALLOCATE_DATA); /* recBuff */;
 	/* memcpy(file->stFileDef->record, pPnt, sizeof(cob_field)); */
 
 	file->stFileDef->record = pPnt;
 
 	file->stFileDef->record->size = nAreaRecordSize;
+	/* s.m. 20241210 */
+	if (job->nMultiThread == 1) {
+		job_LockResource();
+	}
 
 	for (int nC = 0; nC < nRecordSlot; nC++) {
 		cob_read_next(file->stFileDef, NULL, COB_READ_NEXT);
@@ -3414,6 +3488,12 @@ int job_skip_record(struct job_t* job, struct file_t* file, int64_t* nRec)
 		if (nFSRead != 0)
 			break;
 	}
+
+	/* s.m. 20241210 */
+	if (job->nMultiThread == 1) {
+		job_UnlockResource();
+	}
+
 	if (file->stFileDef->record != NULL)
 		util_cob_field_del(file->stFileDef->record, ALLOCATE_DATA);
 
@@ -5990,7 +6070,20 @@ job_merge_files_exit:
 INLINE int job_ReadFileMerge(struct file_t* file, int* nLR, unsigned char* szBuffRek)
 {
 	/* LIBCOB for all files */
+	/* s.m. 20241210 */
+	if (globalJob->nMultiThread == 1) {
+		job_LockResource();
+	}
+
+
 	cob_read_next(file->stFileDef, NULL, COB_READ_NEXT);
+
+	/* s.m. 20241210 */
+	if (globalJob->nMultiThread == 1) {
+		job_UnlockResource();
+	}
+
+
 	switch (atol((char*)file->stFileDef->file_status))
 	{
 	case 0:
@@ -6271,4 +6364,72 @@ int SumFields_KeyCheckMT(struct job_t* job,
 	}
 	return useRecord;
 }
+
+
+/* s.m. 20241210 */
+/* Lock_activity */
+#ifdef _THREAD_LINUX_ENV
+int job_LockResource( void ) {
+	int nres = 0;
+	nres = pthread_mutex_lock(&job_thread_mutex);
+	if (nres != 0)
+	{
+		fprintf(stdout, "*GCSORT*S048K*ERROR: pthread_mutex_lock error: %d\n", nres);
+		return -1;
+	}
+	return 0;
+}
+#else
+int job_LockResource( void ) {
+	DWORD dwWaitResult;
+	if (gCreateMutex == 0) {
+		/* s.m. 20241210 */
+		ghMutexJob = CreateMutex(NULL, FALSE, NULL);
+		if (ghMutexJob == NULL)
+		{
+			fprintf(stdout, "*GCSORT*S048K*ERROR: CreateMutex error: %d\n", GetLastError());
+			return -1;
+		}
+		gCreateMutex = 1;
+	}
+	dwWaitResult = WaitForSingleObject(
+		ghMutexJob,  /* handle to mutex */
+		INFINITE);   /* no time-out interval */
+	if (dwWaitResult != 0)
+	{
+		/*  Handle error. */
+		fprintf(stdout, "*GCSORT*S049K*ERROR: WaitForSingleObject error: %d\n", GetLastError());
+		return -1;
+	}
+	return 0;
+}
+#endif
+
+
+/* Unlock_activity */
+#ifdef _THREAD_LINUX_ENV
+void job_UnlockResource( void ) {
+	int nres = 0;
+	nres = pthread_mutex_unlock(&job_thread_mutex);
+	if (nres != 0)
+	{
+		/* Handle error. */
+		fprintf(stdout, "*GCSORT*S048K*ERROR: pthread_mutex_unlock error: %d\n", nres);
+		return;
+	}	
+	return;
+}
+#else
+void job_UnlockResource( void ) {
+	if (!ReleaseMutex(ghMutexJob))
+	{
+		/* Handle error. */
+		fprintf(stdout, "*GCSORT*S048K*ERROR: ReleaseMutex error: %d\n", GetLastError());
+		return;
+	}
+
+	return;
+}
+#endif
+
 

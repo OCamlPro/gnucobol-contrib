@@ -141,8 +141,8 @@
        77 fs-merge                  pic xx.
       *
       * ============================= *
-       77 record-counter-in              pic 9(7) value zero.
-       77 record-counter-out             pic 9(7) value zero.
+       77 record-counter-in              pic 9(11) value zero.
+       77 record-counter-out             pic 9(11) value zero.
        77 bIsFirstTime                   pic 9    value zero.       
        77 bIsPending                     pic 9    value zero.       
        01 current-time.

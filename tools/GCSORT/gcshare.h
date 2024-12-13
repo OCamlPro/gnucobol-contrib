@@ -34,6 +34,12 @@
 		#if __LIBCOB_RELEASE >= 30200
 			enum cb_colseq g_cb_colseq = CB_COLSEQ_NATIVE;
 		#endif
+		static int gCreateMutex = 0;
+		#if defined(_THREAD_LINUX_ENV)
+			static pthread_mutex_t job_thread_mutex = PTHREAD_MUTEX_INITIALIZER;
+		#else
+			static HANDLE ghMutexJob;
+		#endif 
 	#else
 		extern cob_module *module;
 		extern char szMexToken[260];
@@ -44,5 +50,13 @@
 		#if __LIBCOB_RELEASE >= 30200
 			extern enum cb_colseq g_cb_colseq;
 		#endif
+		extern int gCreateMutex;
+#if defined(_THREAD_LINUX_ENV)
+		extern pthread_mutex_t job_thread_mutex;
+#else
+		extern HANDLE ghMutexJob;
+#endif 
+
+
 	#endif
 #endif  /* SHAREFILE_INCLUDED   */

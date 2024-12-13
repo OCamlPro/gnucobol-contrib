@@ -88,9 +88,9 @@
        01  save-record-sort              pic x(38).
       * ============================= *
        01 bError                      pic 999  value zero.
-       77 record-counter-f1           pic 9(9) value zero.
-       77 record-counter-f2           pic 9(9) value zero.
-       77 record-counter-join         pic 9(9) value zero.
+       77 record-counter-f1           pic 9(11) value zero.
+       77 record-counter-f2           pic 9(11) value zero.
+       77 record-counter-join         pic 9(11) value zero.
        77 bIsFirstTime                pic 9    value zero.       
        77 bIsPending                  pic 9    value zero.       
        01 current-time.

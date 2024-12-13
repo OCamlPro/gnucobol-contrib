@@ -59,8 +59,8 @@
        01  save-record-sort              pic x(38).
       * ============================= *
        01 bError                         pic 9    value zero.
-       77 record-counter-incbl           pic 9(7) value zero.
-       77 record-counter-ingcs           pic 9(7) value zero.
+       77 record-counter-incbl           pic 9(11) value zero.
+       77 record-counter-ingcs           pic 9(11) value zero.
        77 bIsFirstTime                   pic 9    value zero.       
        77 bIsPending                     pic 9    value zero.       
        01 current-time.

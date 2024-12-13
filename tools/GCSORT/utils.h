@@ -26,7 +26,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#if	defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
+#if	defined(__GNUC__) && !defined(__MINGW32__) && !defined(__MINGW64__) 
 	#include <unistd.h>
 	#include <time.h>
 	#include <strings.h>
@@ -71,8 +71,8 @@
 	#define _stricmp strcasecmp
 	#define strnicmp strncasecmp
 	#define _strdup  strdup
-	#define stat_file stat 
-	#define _struct_stat64  stat  
+	#define _struct_stat64  stat64  
+	#define stat_file stat64
 #else
 	#define NUMCHAREOL 2		/* WINDOWS  */
 	#define _struct_stat64 _stat64

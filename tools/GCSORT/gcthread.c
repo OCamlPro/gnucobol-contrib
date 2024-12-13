@@ -112,6 +112,7 @@ int gcthread_start(int argc, char** argv, int nMaxThread, time_t* timeStart)
 			printf("ERROR; return code from _beginthread() is %p\n", hThread[t]);
 			exit(-1);
 		}
+
 #else
 		rc = pthread_create(&thread[t], &attr, gcthread_run, (void*)pPar);
 		if (rc)
@@ -140,6 +141,7 @@ int gcthread_start(int argc, char** argv, int nMaxThread, time_t* timeStart)
 	if (dwRet != 0) {
 		fprintf(stdout, "*GCSort*gcthread*S001* ERROR in WaitForMultipleObjects  - Return code %lu\n", dwRet);
 		fprintf(stdout, "*GCSort*gcthread*S001* SetEvent failed (%d)\n", GetLastError());
+		rtc = 1;
 	}
 	#else
 for (int s = 0; s < nThread; s++)
@@ -284,7 +286,10 @@ int gcthreadSkipStop(struct job_t* job)
 		job->nMTStopAft = 0;
 
 #ifdef GCSTHREAD
-	fprintf(stdout,"Thread : %d, MT SkipRec: %ld, MT StopAft: %ld\n", job->nCurrThread, job->nMTSkipRec, job->nMTStopAft);
+	fprintf(stdout, "Thread : %d, MT SkipRec: " NUM_FMT_LLD ", MT StopAft: " NUM_FMT_LLD "\n", job->nCurrThread, job->nMTSkipRec, job->nMTStopAft);
+	fprintf(stdout, "job->inputFile->nFileMaxSize: " NUM_FMT_LLD "\n", job->inputFile->nFileMaxSize);
+	fprintf(stdout, "job->inputLength, job->inputLength:%ld\n", job->inputLength);
+	fprintf(stdout, "nNumRecordForBlock:" NUM_FMT_LLD ",  nNumRecords:" NUM_FMT_LLD "\n", nNumRecordForBlock, nNumRecords);
 #endif
 	return 0;
 }
