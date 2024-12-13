@@ -2747,15 +2747,15 @@ int job_loadFiles(struct job_t* job) {
 			int nr = 0;
 			nr = stat_file(file_getName(job->fileLoad), &filestatus);
 			if (nr != 0)
-				job->inputFile->nFileMaxSize = utl_GetFileSizeEnvName(job->fileLoad);
+				job->fileLoad->nFileMaxSize = utl_GetFileSizeEnvName(job->fileLoad);
 			else
-				job->inputFile->nFileMaxSize = filestatus.st_size;
-			/* fprintf(stdout, "***+++@@@--------------------------- job->inputFile->nFileMaxSize (1) - %d : %lld \n", nr, job->inputFile->nFileMaxSize); */
-			if (job->inputFile->nFileMaxSize == 0) {nr, 
-				job->inputFile->nFileMaxSize = utl_GetFileSizeEnvName(job->fileLoad);
+				job->fileLoad->nFileMaxSize = filestatus.st_size;
+			/* fprintf(stdout, "***+++@@@--------------------------- job->fileLoad->nFileMaxSize (1) - %d : %lld \n", nr, job->fileLoad->nFileMaxSize); */
+			if (job->fileLoad->nFileMaxSize == 0) {nr, 
+				job->fileLoad->nFileMaxSize = utl_GetFileSizeEnvName(job->fileLoad);
 			}
 
-		/*	fprintf(stdout, "***+++@@@--------------------------- job->inputFile->nFileMaxSize (2) - %d : %lld \n", nr, job->inputFile->nFileMaxSize); */
+		/*	fprintf(stdout, "***+++@@@--------------------------- job->fileLoad->nFileMaxSize (2) - %d : %lld \n", nr, job->fileLoad->nFileMaxSize); */
 
 
 
