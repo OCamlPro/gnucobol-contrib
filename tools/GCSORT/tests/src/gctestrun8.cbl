@@ -363,11 +363,11 @@ TEST00***               display ' cmd:>' cmd-go  '<'
       ***     move 99  to ar-tst-rtc01(idx-take)  
            move 99  to ar-tst-rtc01(idx)  
       ** set dd_infile=%filedir%\frsqr01.txt
-           move 'infile'              to env-set-name
-           move '../files/inpix01.txt'    to env-set-value
+           move 'dd_infile'              to env-set-name
+           move '../files/inpix01.txt'   to env-set-value
            perform set-value-env
       ** 
-           move 'inpix01'             to env-set-name
+           move 'dd_ix01'                to env-set-name
            move space                    to env-set-value
            string '../files/inpix01_cbl.dat ' delimited by size
                     into env-set-value
