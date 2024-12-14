@@ -346,10 +346,10 @@ TEST00***               display ' cmd:>' cmd-go  '<'
            call     'SYSTEM' using cmd-go
       D    display  'RETURN-CODE Value : ' RETURN-CODE
       * reset 
-           move 'infile'     to env-set-name
+           move 'dd_infile'     to env-set-name
            move space            to env-set-value
            perform set-value-env
-           move 'inpix01'    to env-set-name
+           move 'dd_ix01'    to env-set-name
            move space            to env-set-value
            perform set-value-env
            .
