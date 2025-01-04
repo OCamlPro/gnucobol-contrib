@@ -1,4 +1,12 @@
-       >>source fixed
+       >>SOURCE FIXED
+       *
+       *
+       * WARNING THIS VERSION v2.3 IS UNDER DEVELOPMENT FOR first line
+       *  of source containing "$SET SQL " followed by MYSQL or MARIADB.
+       *  Later versions MAY support ODBC, POSTGRE, ORACLE and DB2.
+       *  Subject to demand.
+       *
+       *
        IDENTIFICATION  DIVISION.
        PROGRAM-ID.     PRESQL2.
       * AUTHOR.        J C CURREY.
@@ -6,7 +14,7 @@
       *                and others - see notes below.
       ***
       * Security.      Copyright (C) 2009-2018, Jim Currey,
-      *                                         Vincent Coen.
+      *                Copyright (C) 2015-2022, Vincent Coen.
       *                Distributed under the GNU General Public License
       *                v2.0. See the file COPYING for details.
       ***
@@ -56,7 +64,7 @@
       *
       *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*
       *                                                                *
-      *      SQL PRE PROCESSOR FOR GnuCOBOL 2.x & 3.x                  *
+      *      SQL PRE PROCESSOR FOR GnuCOBOL 2.x, 3.x & 4.              *
       *                                                                *
       *      THIS PROGRAM READS A COBOL SOURCE FILE WITH SQL           *
       *        PRE PROCESSOR STATEMENTS IN IT AND CREATES AN           *
@@ -245,13 +253,28 @@
       *              Updated copyright dating.                         *
       *              Subject to testing against Mysql at some point.   *
       *                                                                *
+      * 220729 vbc - 2.30 - Start coding to support exec sql for mysql *
+      *              and other DBMS such as Postgres, ODBC and may be  *
+      *              DB/2 and oracle subject to requests/demand etc.   *
+      *              On completion version will be v3.0.               *
+      *              source saved as presql2.3.cbl                     *
+      *                                                                *
+      *              This release support usage of $SET SQL xxxxx      *
+      *              where xxxxx = rdbms being used currently          *
+      *              supported is :                                    *
+      *              mysql                                             *
+      *              mariadb (Drop in compatable for user programs)    *
+      *              NOTE THAT $SET SQL MUST be with only one space    *
+      *              BETWEEN WORDS $SET and SQL                        *
+      *                                                                *
       ******************************************************************
       *
       * COPYRIGHT NOTICE.
       ******************
       *
       * This file/program is part of the Mysql pre-processor presql
-      * and is copyright (c) Jim Currey. 2009-2019 and later.
+      * and is copyright (c) Jim Currey. 2009-2015.
+      * and Copyright (C) 2015-2022, Vincent Coen.
       *
       * This program is free software; you can redistribute it and/or
       * modify it under the terms of the GNU General Public License as
@@ -299,9 +322,22 @@
       ****************************************************
 160612 01  WS-NAME-PROGRAM.
 160612     03  WS-Program-Name              pic x(7) value "presql2".
-160830     03  ws-Prog-Version              pic x(6) value " 2.22 ".
+160830     03  ws-Prog-Version              pic x(6) value " 2.3  ".
       *> needed 4 read-params call.
 160830 01  ws-parm-prog-name                pic x(7) value "presql2".
+      *
+      * Set by use of optional $SET SQL xxxxx / $set sql xxxxx in first
+      *  line of source file
+      *
+       01  WS-Set-Values                    pic 9    value zero.
+           88  WS-Set-Mysql                          value 1.
+           88  WS-Set-Mariadb                        value 1.
+      *     88  WS-Set-ODBC                           value 3.
+      *     88  WS-Set-Postgres                       value 4.
+      *     88  WS-Set-Oracle                         value 5.
+      *     88  WS-Set-DB2                            value 6.
+      *
+      * OTHERS ADDED IN, AS AND WHEN CODED.
       *
        01  WS-NO-PARAGRAPH                  PIC S9(4) COMP value zero.
 161112 01  WS-LLength                       pic 9(4)  comp value zero.
@@ -355,6 +391,7 @@
        01  WS-RUNTIME                       PIC X          VALUE "N".
       *
        01  WS-IR-Buffer                     pic x(256).
+       01  WS-Temp-IR-Buffer                pic x(256).
       *
 151019* 01  CC-MYSQL-HOST-NAME               PIC X(64).
 151019* 01  CC-MYSQL-IMPLEMENTATION          PIC X(64).
@@ -465,9 +502,6 @@
            05  WS-CA-PICTURE                PIC X(32)      OCCURS 1024.
       *
        COPY MYSQL-VARIABLES.
-      ****************************************************************
-      *                Procedure division                            *
-      ****************************************************************
        PROCEDURE DIVISION chaining ws-name-input-file
                                    ws-name-output-file
                                    ws-Source-Format.
@@ -481,7 +515,7 @@
       ****************************************************************
        1000-INITIALIZATION.
            MOVE     1000 TO WS-NO-PARAGRAPH.
-160612*    if       function upper-case (ws-name-input-file)
+160612*    if       function UPPER-CASE (ws-name-input-file)
 170103*                              not = "HELP"
 170103*             DISPLAY  "I) " WS-NAME-PROGRAM
 170103*                      PSW003 FUNCTION CURRENT-DATE
@@ -490,7 +524,7 @@
                     WS-TABLES-USED
                     WS-COLUMN-ARRAY-BUFFER.
       *
-           if       function upper-case (ws-name-input-file) = "HELP"
+           if       function UPPER-CASE (ws-name-input-file) = "HELP"
                     display WS-NAME-PROGRAM " - - help "
 180203              display "       P1 = Input File Name  "
                     display "       P2 = Output File Name "
@@ -577,23 +611,54 @@
       * Check for a '>>SOURCE' compiler directive lines 1 or 2
       *  yes a bit simple but KISS rules :)
       *
+220729*  Added TRIM code in case it does not start in cc8
+      *   also check for $SET and set value in WS-Set-Values
+      *
            if       WS-Record-Number < 3
-            if      function upper-case (IR-Buffer (8:14))
+220729              move    spaces to WS-IR-Buffer   *> JIC
+220729              move    function TRIM (IR-Buffer) to WS-IR-Buffer
+                    if      function UPPER-CASE (WS-IR-Buffer (1:14))
                                         = ">>SOURCE FREE "
-160817          or  function upper-case (IR-Buffer (8:21))
+160817              or      function UPPER-CASE (WS-IR-Buffer (1:21))
 160817                                  = ">>SOURCE FORMAT FREE "
-                 or function upper-case (IR-Buffer (8:24))
+                    or      function UPPER-CASE (WS-IR-Buffer (1:24))
                                         = ">>SOURCE FORMAT IS FREE "
-                    move "FREE" to ws-Source-Format
-161112              go to 2000-Process
-            else if function upper-case (IR-Buffer (8:14))
+                            move "FREE" to ws-Source-Format
+161112                      go to 2000-Process
+                    else
+                     if     function UPPER-CASE (WS-IR-Buffer (1:14))
                                         = ">>SOURCE FIXED"
-160817           or function upper-case (IR-Buffer (8:21))
+160817               or     function UPPER-CASE (WS-IR-Buffer (1:21))
 160817                                  = ">>SOURCE FORMAT FIXED"
-                 or function upper-case (IR-Buffer (8:24))
+                     or     function UPPER-CASE (WS-IR-Buffer (1:24))
                                         = ">>SOURCE FORMAT IS FIXED"
-                    move "FIXED" to ws-Source-Format
-161112              go to 2000-Process.
+                            move "FIXED" to ws-Source-Format
+161112                      go to 2000-Process
+      *
+      * Test for $SET SQL xxxxxx
+      *
+220729              if      function UPPER-CASE (WS-IR-Buffer (1:8)
+                                        = "$SET SQL"
+                            move function TRIM (WS-IR-Buffer, LEADING)
+                                      to WS-Temp-IR-Buffer
+                            move function UPPER-CASE (WS-Temp-IR-Buffer)
+                                       to WS-Temp-IR-Buffer
+                             if      WS-Temp-IR-Buffer = "MYSQL"
+                              or     WS-Temp-IR-Buffer = "MARIADB"
+                                     move 1 to WS-Set-Values
+                             else
+                              if     WS-Temp-IR-Buffer = "ODBC"
+                                     move 3 to WS-Set-Values
+                             else
+                              if     WS-Temp-IR-Buffer (1:8) = "POSTGRE"
+                                     move 4 to WS-Set-Values
+                             else
+                              if     WS-Temp-IR-Buffer = "ORACLE"
+                                     move 5 to WS-Set-Values
+                             else
+                              if     WS-Temp-IR-Buffer = "DB2"
+                                     move 6 to WS-Set-Values.
+
       *
       **************************************************************
       * Here we need to add in tests for fixed / free and if free
@@ -605,9 +670,9 @@
               and   IR-BUFFER (7:1) = "*"
                     GO TO 2000-PROCESS.
 160612     if       Source-Free
-                    perform 8000-Find-Comment-Lines thru 8010-Exit
-                    if      Comment-Found
-                            go to 2000-Process.
+                    perform  8000-Find-Comment-Lines thru 8010-Exit
+                    if       Comment-Found
+                             go to 2000-Process.
       *
 160612     if       Source-Fixed
                     move 72 to ws-Line-Length.

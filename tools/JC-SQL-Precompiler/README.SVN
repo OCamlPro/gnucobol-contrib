@@ -1,0 +1,33 @@
+2018*04-07   *  Vincent B. Coen
+		Copy of mysql-procedure and -variables taken from ACAS without
+		change now fixed as that was wrong.
+		bldcopy2 updated to v2.08 and all programs copyright 
+		noticed updated.
+
+2018-02-27   *  Vincent B. Coen
+		More grammar, typo's changed program names to include trailing
+		2. More information in building and more source acas examples
+		i.e., coming from printcbl to include the copy books etc.
+
+2017-08-31   *  Vincent B. Coen
+		More grammar, typo's cleaned up as well as some ambiguous 
+		detail in places.
+
+2017-06-27   *  Vincent B. Coen
+		Clean up errors and grammar in the manual.
+		Added notes reqarding nightly builds that have now been turned
+		on by JCL and scripts.
+
+  		This nightly should be copied over a copy of the current
+		presql release (currently 1.14f) so that the original sources
+		are kept in case of any problems allowing you to revert back.
+
+		The nightly sources despite comments elsewere have been tested
+		but not perhaps fully.
+
+2019-09-25   *  Vincent B. Coen
+		Some minor manual changes to presql2 and the ACAS Build document
+		regarding prtschema2 source file and massive values in three 
+		fields used within the RDB as the sizes created are replaced 
+		using a UDF replace verb.
+ 

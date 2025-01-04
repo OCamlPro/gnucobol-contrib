@@ -1,10 +1,3 @@
-      **************************************
-      *  Change lines 151019 to reflect    *
-      *   your RDB set up.                 *
-      *                                    *
-      *  It will assist you in confirming  *
-      *  that your RDB sinstall is working.*
-      **************************************
        identification  division.
        program-id.     test1.
        data            division.

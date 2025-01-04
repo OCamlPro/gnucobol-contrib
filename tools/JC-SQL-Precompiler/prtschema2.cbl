@@ -1,15 +1,20 @@
        >>SOURCE FREE
+*> Next statement a REPLACE fixes a error when using MySQL which inserts
+*>  very large values in 3 fields in TD-COLLUMN block when compiling with GC
+*>  the generated prtschema2.cbl from prtschema2.scb.
+*>
+       REPLACE ==94967295==  BY ==1048576==.
  identification division.
  program-id.    Prtschema2.
 *>Author.       J. C. Currey.
 *>Updates.      V. B. Coen, Applewood Computers.
 *>**
-*> Security.    Copyright (C) 2009-2016, Jim Currey.
+*> Security.    Copyright (C) 2009-2021, Jim Currey.
 *>              Distributed under the GNU General Public License
 *>              v2.0. See the file COPYING for details.
 *>**********************************************************************
 *> PURPOSE:                                                            *
-*>      MySQL schema print for GNU/open cobol 1.1 & v2.0               *
+*>      MySQL schema print for GnuCOBOL 1.1, v2 & v3.                  *
 *>       and MySQL and Mariadb.                                        *
 *>                                                                     *
 *>    This program prints a Full schema from a mysql                   *
@@ -26,12 +31,12 @@
 *>     and is generally used for reference only.                       *
 *>                                                                     *
 *>**                                                                   *
-*>  COMPILE: Using prtschema.sh                                        *
+*>  COMPILE: Using prtschema2.sh                                       *
 *>**                                                                   *
 *>  USAGE:                                                             *
-*>       prtschema DatabaseName PrintSpoolName                         *
+*>       prtschema2 DatabaseName PrintSpoolName                        *
 *>   OR                                                                *
-*>      prtschema                                                      *
+*>      prtschema2                                                     *
 *>           and parameters will be requested.                         *
 *>**                                                                   *
 *> Change Record.                                                      *
@@ -54,7 +59,7 @@
 *>                for landscape + char size etc, now done              *
 *>                using the lpr command, see rev 004 notes.            *
 *>                Changed mysql params at location of                  *
-*> *>                /MYSQL INIT\ so do same for your site.               *
+*>                /MYSQL INIT\ so do same for your site.               *
 *>                 See 1050-Init-RDB                                   *
 *>                                                                     *
 *>                Note tested against mariadb ONLY which is            *
@@ -86,6 +91,8 @@
 *>                  prtschema DataBaseName CupsSpoolName               *
 *>                                                                     *
 *>                 If not present will ask for these.                  *
+*>                  If spoolname not found will just report an error   *
+*>                   and the o/p file is schema.t .                    *
 *>                                                                     *
 *>          1.07 - Change tests on ws-Mysql-Count-Rows from            *
 *>                 'not > zero' to '= zero'                            *
@@ -100,6 +107,11 @@
 *>                    en_GB   for the UK                               *
 *>                    en_US   for the USA                              *
 *>                    other   for Unix format (CCYY/MM/DD)             *
+*>                 NON UK/USA users can change line with if needed :   *
+*>                 01  WS-Local-Time-Zone         pic 9    value 3.    *
+*>                  to 2 for USA or 1 for UK, 3 = unix format which is *
+*>                     ccyy/mm/dd                                      *
+*>                 This is only for date format in headings.           *
 *>                 More tidying up for heads line 1                    *
 *>                 Display a '.' for each table processed              *
 *>                  subject to buffering                               *
@@ -110,10 +122,9 @@
 *>          2.11 - For prtschema2 the Mysql connection set up that     *
 *>                 needs to reflect your MySql site requirements are   *
 *>                 taken from a file found within the current working  *
-*>                 directory BUT the version of cobmysqlapi (taken     *
-*>                 from dbpre) MUST be used instead of                 *
-*>                 cobmysqlapi.005.c and this is included in the       *
-*>                 archive.                                            *
+*>                 directory BUT the version of cobmysqlapi38 (taken   *
+*>                 from dbpre and updated) MUST be used                *
+*>                 and this is included in the archive.                *
 *>                 Unused Format file processing that was commented    *
 *>                 out has now been removed.                           *
 *>                                                                     *
@@ -124,16 +135,25 @@
 *>                 DBPASSWD=PaSsWoRd                                   *
 *>                 DBNAME= any as over ridden                          *
 *>                 DBPORT=03306                                        *
-*> *>                 DBSOCKET=/home/mysql/mysql.sock                     *
+*>                 DBSOCKET=/home/mysql/mysql.sock                     *
 *>                 in file presql2.param                               *
 *>                                                                     *
-*>       Then issues a call to the dbpre version (ONLY) of cobmysqlapi *
+*>       Then issues a call to the cobmysqlapi38 * version             *
 *>        to read in this file that MUST be in the working directory.  *
 *>                                                                     *
-*>       This way prtscema2 can be used for more than one MySQL server *
-*>       on more than one system within a LAN.                         *
+*>       This way prtschema2 can be used for more than one MySQL       *
+*>       server on more than one system within a LAN.                  *
 *>        See the example file called prtschema2.param                 *
 *>                     30 August 2016 (160830)                         *
+*>                                                                     *
+*>          2.12 - Updated copyright notices & change 2.11 comments.   *
+*>                     7 April 2018.                                   *
+*>                                                                     *
+*>          2.13 - Created a UDR REPLACE to change the large values    *
+*>                 created against the RDBMS for BLOBS/GLOBS that are  *
+*>                 too large for the cobol compiler. See 1st few lines *
+*>                                                                     *
+*>                 Extra notes for the REPLACE line.                   *
 *>                                                                     *
 *>**********************************************************************
 *>
@@ -141,7 +161,7 @@
 *>*****************
 *>
 *> This file/program is part of the Mysql pre-processor presql
-*> and is copyright (c) Jim Currey. 2009-2016 and later.
+*> and is copyright (c) Jim Currey. 2009-2021 and later.
 *>
 *> This program is free software; you can redistribute it and/or
 *> modify it under the terms of the GNU General Public License as
@@ -178,7 +198,7 @@
 *>***************************************************
 *>   Constants, Counters And Work Areas             *
 *>***************************************************
- 01  ws-Name-Program                     pic x(15)     value "prtschema2 2.11".
+ 01  ws-Name-Program                     pic x(15) value "prtschema2 2.13".
    *> needed 4 read-params call.
  01  ws-parm-prog-name                   pic x(10) value "prtschema2".
 *>
@@ -215,7 +235,7 @@
  01  WS-Locale                           pic x(16)     value spaces.
  01  WS-Local-Time-Zone                  pic 9         value 3.
 *>
-*> Set WS-Local-Time-Zone ^~^ to one of these 88 value's according to your local requirements
+*> Sets WS-Local-Time-Zone ^~^ to one of these 88 value's according to your local requirements
 *> NOTE Environment var. LC_TIME is checked for "en_GB" for UK (1) and "en_US" for USA (2)
 *>   at start of program. For any other, you can add yours if different but let the author know,
 *>     so it can be added to the master sources
@@ -236,7 +256,7 @@
      "page-top=48 " &     *> '-r ' is before '-o' but want to keep o/p file
      "page-right=10 sides=two-sided-long-edge cpi=12 lpi=8' -P ".
 *>
-*> This is the Cups print spool, change it for yours
+*> This is the Cups print spool, it is updated by param 2.
 *>
      03  psn             pic x(32)      value "HPLJ4TCP ".
 *>
@@ -271,22 +291,24 @@
            05  TB-TABLE-NAME                     PIC X(64).
            05  TB-TABLE-TYPE                     PIC X(64).
            05  TB-ENGINE                         PIC X(64).
-           05  TB-VERSION                        PIC S9(18) COMP.
+           05  TB-VERSION                        PIC  9(18) COMP.
            05  TB-ROW-FORMAT                     PIC X(10).
-           05  TB-TABLE-ROWS                     PIC S9(18) COMP.
-           05  TB-AVG-ROW-LENGTH                 PIC S9(18) COMP.
-           05  TB-DATA-LENGTH                    PIC S9(18) COMP.
-           05  TB-MAX-DATA-LENGTH                PIC S9(18) COMP.
-           05  TB-INDEX-LENGTH                   PIC S9(18) COMP.
-           05  TB-DATA-FREE                      PIC S9(18) COMP.
-           05  TB-AUTO-INCREMENT                 PIC S9(18) COMP.
+           05  TB-TABLE-ROWS                     PIC  9(18) COMP.
+           05  TB-AVG-ROW-LENGTH                 PIC  9(18) COMP.
+           05  TB-DATA-LENGTH                    PIC  9(18) COMP.
+           05  TB-MAX-DATA-LENGTH                PIC  9(18) COMP.
+           05  TB-INDEX-LENGTH                   PIC  9(18) COMP.
+           05  TB-DATA-FREE                      PIC  9(18) COMP.
+           05  TB-AUTO-INCREMENT                 PIC  9(18) COMP.
            05  TB-CREATE-TIME                    PIC X(19).
            05  TB-UPDATE-TIME                    PIC X(19).
            05  TB-CHECK-TIME                     PIC X(19).
            05  TB-TABLE-COLLATION                PIC X(32).
-           05  TB-CHECKSUM                       PIC S9(18) COMP.
-           05  TB-CREATE-OPTIONS                 PIC X(255).
+           05  TB-CHECKSUM                       PIC  9(18) COMP.
+           05  TB-CREATE-OPTIONS                 PIC X(2048).
            05  TB-TABLE-COMMENT                  PIC X(2048).
+           05  TB-MAX-INDEX-LENGTH               PIC  9(18) COMP.
+           05  TB-TEMPORARY                      PIC X(1).
 *>
 *>    Definitions for the COLUMNS Table
 *>
@@ -296,22 +318,24 @@
            05  CB-TABLE-SCHEMA                   PIC X(64).
            05  CB-TABLE-NAME                     PIC X(64).
            05  CB-COLUMN-NAME                    PIC X(64).
-           05  CB-ORDINAL-POSITION               PIC S9(18) COMP.
+           05  CB-ORDINAL-POSITION               PIC  9(18) COMP.
            05  CB-COLUMN-DEFAULT                 PIC X(94967295).
            05  CB-IS-NULLABLE                    PIC X(3).
            05  CB-DATA-TYPE                      PIC X(64).
-           05  CB-CHARACTER-MAXIMUM-LENGTH       PIC S9(18) COMP.
-           05  CB-CHARACTER-OCTET-LENGTH         PIC S9(18) COMP.
-           05  CB-NUMERIC-PRECISION              PIC S9(18) COMP.
-           05  CB-NUMERIC-SCALE                  PIC S9(18) COMP.
-           05  CB-DATETIME-PRECISION             PIC S9(18) COMP.
+           05  CB-CHARACTER-MAXIMUM-LENGTH       PIC  9(18) COMP.
+           05  CB-CHARACTER-OCTET-LENGTH         PIC  9(18) COMP.
+           05  CB-NUMERIC-PRECISION              PIC  9(18) COMP.
+           05  CB-NUMERIC-SCALE                  PIC  9(18) COMP.
+           05  CB-DATETIME-PRECISION             PIC  9(18) COMP.
            05  CB-CHARACTER-SET-NAME             PIC X(32).
            05  CB-COLLATION-NAME                 PIC X(32).
            05  CB-COLUMN-TYPE                    PIC X(94967295).
            05  CB-COLUMN-KEY                     PIC X(3).
-           05  CB-EXTRA                          PIC X(27).
+           05  CB-EXTRA                          PIC X(80).
            05  CB-PRIVILEGES                     PIC X(80).
            05  CB-COLUMN-COMMENT                 PIC X(1024).
+           05  CB-IS-GENERATED                   PIC X(6).
+           05  CB-GENERATION-EXPRESSION          PIC X(94967295).
 *>  /MYSQL-END\
 *>***************************************************************
 *>                Procedure Division                            *
@@ -352,7 +376,7 @@
               end-if
               go to 1050-Init-RDB
      end-if.
-*>
+
  1002-get-base-name-file.
      display  "A) Enter Data Base Name " with no advancing.
      accept   ws-name-data-base.
@@ -389,16 +413,16 @@
 *>     display  "Port=" WS-MYSQL-Port-Number.
 *>     display  "Socket=" WS-MYSQL-Socket.
 *>     display  " ".
-*>
-*> *> /MYSQL INIT\
+
+*> /MYSQL INIT\
 *>     BASE=information_schema
 *>     HOST=localhost
 *>     IMPLEMENTATION=dev-prog-001
 *>     PASSWORD=mysqlpass
-*> *>     SOCKET=/home/mysql/mysql.sock
-*> *> /MYSQL-END\
+*>     SOCKET=/home/mysql/mysql.sock
+*> /MYSQL-END\
      PERFORM  MYSQL-1000-OPEN THRU MYSQL-1090-EXIT.
-*>
+
      move     "select,insert,update,references" to ws-privileges.
      move     "latin1" to ws-character-set-name.
 *>
@@ -469,6 +493,8 @@
                     TB-CHECKSUM
                     TB-CREATE-OPTIONS
                     TB-TABLE-COMMENT
+                    TB-MAX-INDEX-LENGTH
+                    TB-TEMPORARY
 
 *>  /MYSQL-END\
      if       return-code = -1
@@ -625,6 +651,8 @@
                     CB-EXTRA
                     CB-PRIVILEGES
                     CB-COLUMN-COMMENT
+                    CB-IS-GENERATED
+                    CB-GENERATION-EXPRESSION
 
 *>  /MYSQL-END\
      if       return-code = -1
@@ -857,6 +885,7 @@
 *>    Close the Database
 *>
            PERFORM MYSQL-1980-CLOSE THRU MYSQL-1999-EXIT
+*>  /MYSQL-END\
      display  " ".
      display  "I) " ws-name-program " COMPLETED NORMALLY AT--"
               function current-date.

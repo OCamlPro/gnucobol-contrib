@@ -1,135 +1,118 @@
-      *>***********************************************************
-      *> version 001 -- original version.                         *
-      *> version 002 -- unknown changes.                          *
-      *> version 003 -- changes open routine to not hardcode      *
-      *>                connection parameters.                    *
-      *>                1277920--jim currey                       *
-      *>                05/26/2009--jose rosado                   *
-      *> version 004 -- Changed to free format & clean up code    *
-      *>                layout.                                   *
-      *>                12 Jun 2016 -- Vince Coen                 *
-      *> 1000-open Has been changed for ACAS only, as some of     *
-      *>   these params come from the system file so we will need *
-      *>   2 versions of this procedure.                          *
-      *>   Cobol file  OR NOT !!! - The moves are rem'd out here  *
-      *>    as these are coded from within presql or used from    *
-      *>     the filename.scb source file as required.            *
-      *> = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*
-      *>   Change Mysql-1100-Db-Error to suit YOUR application    *
-      *>       requirements                                       *
-      *>***********************************************************
-      *>    Common Mysql Routines                                 *
-      *>***********************************************************
-      *>
-052609*>    Initialize, connect, and select data base
-052609*>
-052609*>      The name of your data base followed by hex 00
-052609*>        needs to be moved into ws-mysql-base-name
-052609*>        before execution.  example:
-052609*>          move "MYNAME" & x"00" to ws-my-sql-base-name
-      *>
-      *>
-       mysql-1000-open.
-           call     "MySQL_init" using ws-mysql-cid.
-           if       return-code not = zero
-                    perform mysql-1100-db-error thru mysql-1190-exit.
-      *>     move     "localhost" & x"00"    to ws-mysql-host-name.
-      *>     move     "dev-prog-001" & x"00" to ws-mysql-implementation.
-      *>     move     "mysqlpass" & x"00"    to ws-mysql-password.
-      *>     move     "3306"                 to ws-mysql-port-number.
-      *>     move     "/home/mysql/mysql.sock" & x"00"
-      *>                                     to ws-mysql-socket.
-      *>
-           call     "MySQL_real_connect" using ws-mysql-host-name
-                                               ws-mysql-implementation
-                                               ws-mysql-password
-                                               ws-mysql-base-name
-                                               ws-mysql-port-number
-                                               ws-mysql-socket.
-           if       return-code not = zero
-                    perform mysql-1100-db-error thru mysql-1190-exit.
-           call     "MySQL_selectdb" using ws-mysql-base-name.
-           if       return-code not = zero
-                    perform mysql-1100-db-error thru mysql-1190-exit.
-      *>
-       mysql-1090-exit.
-           exit.
-      *>
-      *>    Common Error Handling UNCHANGED but Needs to be <<<<<< ??
-      *>
-      *>  Note that we do a stop run even though we got here
-      *>              through a perform thru
-      *>
-       Mysql-1100-Db-Error.
-           call     "MySQL_errno" using ws-mysql-error-number.
-           if       ws-mysql-error-number = "1062"
-                    evaluate ws-mysql-command (1:6)
-                          when "INSERT"
-                          when "insert"
-                               go to mysql-1190-exit.
-           display  "W) SQL Error Number=", ws-mysql-error-number.
-           display  "W) PARAGRAPH=", ws-no-paragraph.
-           display  "W) SQL Command=", ws-mysql-command.
-           call     "MySQL_error" using ws-mysql-error-message.
+       >>source fixed
+      ************************************************************
+      * VERSION 001 -- ORIGINAL VERSION.                         *
+      * VERSION 002 -- UNKNOWN CHANGES.                          *
+      * VERSION 003 -- CHANGES OPEN ROUTINE TO NOT HARDCODE      *
+      *                CONNECTION PARAMETERS.                    *
+      *                1277920--JIM CURREY                       *
+      *                05/26/2009--JOSE ROSADO                   *
+      ************************************************************
+      *    COMMON MYSQL ROUTINES                                 *
+      ************************************************************
+      *
+      *    INITIALIZE, CONNECT, AND SELECT DATA BASE
+      *
+      *      THE NAME OF YOUR DATA BASE FOLLOWED BY HEX 00
+      *        NEEDS TO BE MOVED INTO WS-MYSQL-BASE-NAME
+      *        BEFORE EXECUTION.  EXAMPLE:
+      *          MOVE "MYNAME" & X"00" TO WS-MY-SQL-BASE-NAME
+      *
+      *
+       MYSQL-1000-OPEN.
+           CALL "MySQL_init" USING WS-MYSQL-CID.
+           IF RETURN-CODE IS NOT EQUAL TO ZERO
+             PERFORM MYSQL-1100-DB-ERROR THRU MYSQL-1190-EXIT.
+052609*    MOVE "localhost" & X"00" to WS-MYSQL-HOST-NAME.
+052609*    MOVE "dev-prog-001" & X"00" TO WS-MYSQL-IMPLEMENTATION.
+052609*    MOVE "mysqlpass" & X"00" TO WS-MYSQL-PASSWORD.
+052609*    MOVE "3306" TO WS-MYSQL-PORT-NUMBER.
+052609*    MOVE "/home/mysql/mysql.sock" & X"00"
+052609*      TO WS-MYSQL-SOCKET.
+           CALL "MySQL_real_connect" USING
+             WS-MYSQL-HOST-NAME, WS-MYSQL-IMPLEMENTATION,
+             WS-MYSQL-PASSWORD, WS-MYSQL-BASE-NAME, WS-MYSQL-PORT-NUMBER,
+             WS-MYSQL-SOCKET.
+           IF RETURN-CODE IS NOT EQUAL TO ZERO
+             PERFORM MYSQL-1100-DB-ERROR THRU MYSQL-1190-EXIT.
+           CALL "MySQL_selectdb" USING WS-MYSQL-BASE-NAME.
+           IF RETURN-CODE IS NOT EQUAL TO ZERO
+             PERFORM MYSQL-1100-DB-ERROR THRU MYSQL-1190-EXIT.
+       MYSQL-1090-EXIT.
+           EXIT.
+      *
+      *    COMMON ERROR HANDLING
+      *
+      *      NOTE THAT WE DO A STOP RUN EVEN THOUGH WE GOT HERE
+      *        THROUGH A PERFORM THRU
+      *
+       MYSQL-1100-DB-ERROR.
+           CALL "MySQL_errno" USING WS-MYSQL-ERROR-NUMBER.
+           IF WS-MYSQL-ERROR-NUMBER IS EQUAL TO "1062"
+             EVALUATE WS-MYSQL-COMMAND (1:6)
+               WHEN "INSERT"
+               WHEN "insert"
+                 GO TO MYSQL-1190-EXIT.
+           DISPLAY "W) SQL ERROR NUMBER=", WS-MYSQL-ERROR-NUMBER.
+           DISPLAY "W) PARAGRAPH=", WS-NO-PARAGRAPH.
+           CALL "MySQL_error" USING WS-MYSQL-ERROR-MESSAGE.
            display  "W) SQL Error Message for #" ws-mysql-error-number
-                        "=" ws-mysql-error-message.
-           display  "T) Program Aborted--Contact IT Support".
-           stop     run.
-      *>
-       mysql-1190-exit.
-           exit.
-      *>
-      *>    Execute Select
-      *>
-      *>    Remember to terminate your ws-mysql-command with hex "00"
-      *>
-       mysql-1200-select.
-           call     "MySQL_query" using ws-mysql-command.
-           if       return-code not = zero
-                    perform mysql-1100-db-error thru mysql-1190-exit.
-      *>
-       mysql-1209-exit.
-           exit.
-      *>
-      *>   Execute Command
-      *>
-      *>   Remember to terminate your ws-mysql-command with hex "00"
-      *>
-	      mysql-1210-command.
-           call     "MySQL_query" using ws-mysql-command.
-           if       return-code not = zero
-                    perform mysql-1100-db-error thru mysql-1190-exit.
-           call     "MySQL_affected_rows" using ws-mysql-count-rows.
-      *>
-       mysql-1219-exit.
-           exit.
-      *>
-      *>      Store Result
-      *>
-       mysql-1220-store-result.
-           call     "MySQL_store_result" using ws-mysql-result.
-           if       ws-mysql-result = null
-                    perform mysql-1100-db-error thru mysql-1190-exit.
-           call     "MySQL_num_rows" using ws-mysql-result,
-                                           ws-mysql-count-rows.
-      *>
-       mysql-1239-exit.
-           exit.
-      *>
-      *>      Switch Databases
-      *>
-       mysql-1240-switch-db.
-           call     "MySQL_selectdb" using ws-mysql-base-name.
-           if       return-code not = zero
-                    perform mysql-1100-db-error thru mysql-1190-exit.
-      *>
-       mysql-1249-exit.
-           exit.
-      *>
-      *>      Close Data Base
-      *>
-       mysql-1980-close.
-           call     "MySQL_close".
-      *>
-       mysql-1999-exit.
-           exit.
+                    "=" ws-mysql-error-message.
+      *     DISPLAY "W) SQL ERROR MESSAGE=", WS-MYSQL-ERROR-MESSAGE.
+           DISPLAY "T) PROGRAM ABORTED--CONTACT SUPERVISOR".
+           STOP RUN.
+       MYSQL-1190-EXIT.
+           EXIT.
+      *
+      *    EXECUTE SELECT
+      *
+      *      REMEMBER TO TERMINATE YOUR WS-MYSQL-COMMAND WITH
+      *        HEX "00"
+      *
+       MYSQL-1200-SELECT.
+           CALL "MySQL_query" USING WS-MYSQL-COMMAND.
+           IF RETURN-CODE IS NOT EQUAL TO ZERO
+             PERFORM MYSQL-1100-DB-ERROR THRU MYSQL-1190-EXIT.
+       MYSQL-1209-EXIT.
+           EXIT.
+
+      *
+      *    EXECUTE COMMAND
+      *
+      *      REMEMBER TO TERMINATE YOUR WS-MYSQL-COMMAND WITH
+      *        HEX "00"
+      *
+       MYSQL-1210-COMMAND.
+           CALL "MySQL_query" USING WS-MYSQL-COMMAND.
+           IF RETURN-CODE IS NOT EQUAL TO ZERO
+             PERFORM MYSQL-1100-DB-ERROR THRU MYSQL-1190-EXIT.
+           CALL "MySQL_affected_rows" USING WS-MYSQL-COUNT-ROWS.
+       MYSQL-1219-EXIT.
+           EXIT.
+
+      *
+      *      STORE RESULT
+      *
+       MYSQL-1220-STORE-RESULT.
+           CALL "MySQL_store_result" USING WS-MYSQL-RESULT.
+           IF WS-MYSQL-RESULT IS EQUAL TO NULL
+             PERFORM MYSQL-1100-DB-ERROR THRU MYSQL-1190-EXIT.
+           CALL "MySQL_num_rows" USING WS-MYSQL-RESULT,
+	                               WS-MYSQL-COUNT-ROWS.
+       MYSQL-1239-EXIT.
+           EXIT.
+      *
+      *      SWITCH DATABASES
+      *
+       MYSQL-1240-SWITCH-DB.
+           CALL "MySQL_selectdb" USING WS-MYSQL-BASE-NAME.
+           IF RETURN-CODE IS NOT EQUAL TO ZERO
+             PERFORM MYSQL-1100-DB-ERROR THRU MYSQL-1190-EXIT.
+       MYSQL-1249-EXIT.
+                 EXIT.
+      *
+      *      CLOSE DATA BASE
+      *
+       MYSQL-1980-CLOSE.
+           CALL "MySQL_close".
+       MYSQL-1999-EXIT.
+           EXIT.

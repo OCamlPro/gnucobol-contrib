@@ -5,6 +5,8 @@
 *>Updates.      V. B. Coen, Applewood Computers.
 *>**
 *> Security.    Copyright (C) 2009-2018, Jim Currey.
+*>              Updates Copyright (C) 2015-2022, Vincent Coen.
+*>
 *>              Distributed under the GNU General Public License
 *>              v2.0. See the file COPYING for details.
 *>**
@@ -101,13 +103,18 @@
 *>                 Rebuilt mysql-variables & procedures as I used both *
 *>                 from the ACAS system which is NOT compatable.       *
 *>                                                                     *
+*>          2.10 - Start coding to support exec sql for mysql and      *
+*>                 other DBMS such as Postgres, ODBC and may be DB/2   *
+*>                 and oracle subject to requests & demand etc.        *
+*>                                                                     *
 *>**********************************************************************
 *>
 *> COPYRIGHT NOTICE.
 *> *****************
 *>
 *> This file/program is part of the Mysql pre-processor presql
-*>  and is copyright (c) Jim Currey. 2009-2018 and later.
+*>  and is copyright (c) Jim Currey. 2009-2018,
+*>  All updates copyright  (C) 2015-2022, Vincent Coen.
 *>
 *> This program is free software; you can redistribute it and/or
 *> modify it under the terms of the GNU General Public License as
@@ -142,7 +149,7 @@
 *>***************************************************
 *>   Constants, Counters And Work Areas             *
 *>***************************************************
- 01  ws-name-program                     pic x(13) value "bldcopy2 2.08".
+ 01  ws-name-program                     pic x(13) value "bldcopy2 2.10".
    *> needed 4 read-params call.
  01  ws-parm-prog-name                   pic x(8)  value "bldcopy2".
  01  ws-output-file-name                 pic x(64) value spaces.

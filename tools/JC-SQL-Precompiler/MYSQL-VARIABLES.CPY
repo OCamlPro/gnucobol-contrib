@@ -1,44 +1,43 @@
-      *>*****************************************************
-      *>   variables used to work with mysql api            *
-      *>                                                    *
-      *>   version 001--original version                    *
-      *>   version 002--increased size of mysql command to  *
-      *>                4096.                               *
-      *>                1331214--Jim Currey                 *
-      *>                12/17/2009--Jose Rosado             *
-      *>   version 003--changed count rows variable to      *
-      *>                to comp-5 to correct problem on     *
-      *>                sys0u.                              *
-      *>                1343983--Jim Currey                 *
-      *>                03/09/2010--Jose Rosado             *
-030910*>   version 004--Changed to free format              *
-030910*>                160616-- Vincent Coen               *
-030910*>   version 005--Changed count rows var to unsigned  *
-030910*>                as not handling > 127 column tables *
-      *>                No I don't understand it as well !  *
-      *>                15/09/2016--Vincent Coen            *
-      *>                Increase command buffer for larger  *
-      *>                tables from 4096 to 8192            *
-      *>*****************************************************
-030910*> NOTE! ws-mysql-count-rows must be a comp-5 on ia64 *
-030910*> machines (little endian) and comp on other machines*
-      *> (big-endian)!                                      *
-      *>*****************************************************
-      *>
-       01  Ws-Mysql-Cid                        usage pointer.
-       01  Ws-Mysql-Result                     usage pointer.
-       01  Ws-Mysql-Result-2                   usage pointer.
-       01  Ws-Mysql-Result-3                   usage pointer.
-       01  Ws-Mysql-Count-Rows                 pic 9(9)  comp.
-121709*>01  Ws-Mysql-Count-Rows                 pic 9(9)  comp-5.
-121709 01  Ws-Mysql-Error-Number               pic x(4).
-121709 01  Ws-Mysql-Error-Message              pic x(80).
-121709 01  Ws-Mysql-Host-Name                  pic x(64).
-       01  Ws-Mysql-Implementation             pic x(64).
-       01  Ws-Mysql-Password                   pic x(64).
-       01  Ws-Mysql-Base-Name                  pic x(64).
-       01  Ws-Mysql-Port-Number                pic x(4).
-       01  Ws-Mysql-Socket                     pic x(64).
-       01  Ws-Mysql-Command                    pic x(8192).
-       01  Ws-Mysql-Command-Hold               pic x(8192).
-       01  Ws-Mysql-Data-Buffer                pic x(4096).
+      ******************************************************
+      *   VARIABLES USED TO WORK WITH MYSQL API            *
+      *                                                    *
+      *   VERSION 001--ORIGINAL VERSION                    *
+      *   VERSION 002--INCREASED SIZE OF MYSQL COMMAND TO  *
+      *                4096.                               *
+      *                1331214--JIM CURREY                 *
+      *                12/17/2009--JOSE ROSADO             *
+      *   VERSION 003--CHANGED COUNT ROWS VARIABLE TO      *
+      *                TO COMP-5 TO CORRECT PROBLEM ON     *
+      *                SYS0U.                              *
+      *                1343983--JIM CURREY                 *
+      *                03/09/2010--JOSE ROSADO             *
+      *   version 005--Changed count rows var to unsigned  *
+      *                as not handling > 127 column tables *
+      *                15/09/2016--Vincent Coen            *
+030910******************************************************
+030910* NOTE! WS-MYSQL-COUNT-ROWS MUST BE A COMP-5 ON IA64 *
+030910* MACHINES (LITTLE ENDIAN) AND COMP ON OTHER MACHINES*
+030910* (BIG-ENDIAN)!                                      *
+      ******************************************************
+       01  WS-MYSQL-CID                        USAGE POINTER.
+       01  WS-MYSQL-RESULT                     USAGE POINTER.
+       01  WS-MYSQL-RESULT-2                   USAGE POINTER.
+       01  WS-MYSQL-RESULT-3                   USAGE POINTER.
+030910 01  WS-MYSQL-COUNT-ROWS                 PIC 9(9)  comp. *> S9(9) COMP.
+030910*01  WS-MYSQL-COUNT-ROWS                 PIC S9(9) COMP-5.
+       01  WS-MYSQL-ERROR-NUMBER               PIC X(4).
+       01  WS-MYSQL-ERROR-MESSAGE              PIC X(80).
+121709*01  WS-MYSQL-COMMAND                    PIC X(1024).
+121709 01  WS-MYSQL-COMMAND                    PIC X(4096).
+121709*01  WS-MYSQL-COMMAND-HOLD               PIC X(1024).
+121709 01  WS-MYSQL-COMMAND-HOLD               PIC X(4096).
+       01  WS-MYSQL-DATA-BUFFER                PIC X(4096).
+      *
+061623 01  WS-Mysql-Vars.
+061623     03  Ws-Mysql-Host-Name              pic x(64)   value spaces.
+061623     03  Ws-Mysql-Implementation         pic x(64)   value spaces.
+061623     03  Ws-Mysql-Password               pic x(64)   value spaces.
+061623     03  Ws-Mysql-Base-Name              pic x(64)   value spaces.
+061623     03  Ws-Mysql-Port-Number            pic x(4)    value spaces.
+061623     03  Ws-Mysql-Socket                 pic x(64)   value spaces.
+      *

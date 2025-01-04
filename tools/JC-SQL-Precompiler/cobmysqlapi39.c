@@ -48,7 +48,12 @@
 *                [http://www.applewood.linkpc.net/files/ ]
 *                v3.8 is corrected.
 *
+*   Version 3.9 --Few changes to make it compile under Windows and Linux
+*                08/27/2020--The_Piper@web.de
+*
 **********************************************************************/
+
+# define COBMYSQLAPIVERSION "3.9"
 
 #include        <stdio.h>
 #include        <string.h>
@@ -56,16 +61,33 @@
 #include        <mysql.h>
 #include        <libcob.h>
 #include        <stdlib.h>                                                             //121609
-#include        <syslog.h>                                                             //121609
+#ifndef _WIN32                                                                         //20200820
+// syslog.h does not exist under Windows and dev-cpp
+   #include        <syslog.h>                                                             //121609
+#else
+   // since there is no <syslog.h> for Windows, this is a simple replacement
+   FILE *syslogfp;
+   #define LOG_PERROR 1
+   #define LOG_PID    2
+   #define LOG_NDELAY 3
+   #define LOG_DAEMON 4
+	void openlog(void *ptr, int flag, int type)
+	{
+	   syslogfp=fopen("cobmysqlapi.log", "ab+");
+	}
+   void syslog(int flag, char *msg)
+	{
+	   fprintf(syslogfp, "%s\n", msg);
+	}
+   void closelog(void)
+	{
+		fclose(syslogfp);
+	}
 
-#define min(a,b) ((a) < (b) ? (a) : (b))
+#endif
 
-#ifdef cob_c8_t  // for GnuCobol 2.xx  20140518
-	#define cob_call_params cobglobptr->cob_call_params
-	#define cob_current_module cobglobptr->cob_current_module
-	static
-	//void *cobglobptr;
-	cob_global *cobglobptr;
+#ifndef min
+   #define min(a,b) ((a) < (b) ? (a) : (b))
 #endif
 
 //function pointer prototype should not include paramater names                        //121609
@@ -74,6 +96,16 @@ static int (*func)(char *, const char *);                                       
 
 MYSQL            sql, *mysql=&sql;
 static int       errout;
+
+#ifdef cob_c8_t // 20140527
+  cob_global *cobglobptr;
+  #define cob_call_params cobglobptr->cob_call_params
+  #define cob_current_module cobglobptr->cob_current_module
+  #define COBVER "2.xx cobmysqlapi " COBMYSQLAPIVERSION
+#else
+  #define COBVER "1.xx cobmysqlapi " COBMYSQLAPIVERSION
+#endif
+
 
 static const cob_field_attr MYSQL_FIELD_ATTRIBUTES = {33, 0, 0, 0, NULL};
 
@@ -113,6 +145,11 @@ void cobapi_trim(char *s)
       if(s[0]!=' ' && s[0]!='\t') break;
       memmove(s, s+1, strlen(s));
    }
+}
+/******************************************************************************/
+void cobmysqlapi_get_cobol_version(char cobversion[10])
+{
+   strcpy(cobversion, COBVER);
 }
 /******************************************************************************/
 void read_params(char progname[10], char host[32], char user[32], char passwd[32], char dbname[32], char port[32], char socket[32])
@@ -182,7 +219,7 @@ void read_params(char progname[10], char host[32], char user[32], char passwd[32
 void err_exit(int rc)
 {
 
-    char errno[10];
+    char myerrno[10];
 
     if( !rc ) return;
 
@@ -194,8 +231,8 @@ void err_exit(int rc)
         case 2:
              break;
         case 3:
-             sprintf(errno,"%d", mysql_errno(mysql));
-             func(errno, mysql_error(mysql));
+             sprintf(myerrno,"%d", mysql_errno(mysql));
+             func(myerrno, mysql_error(mysql));
     }
     return;
 }
@@ -589,3 +626,5 @@ int MySQL_use_result(MYSQL_RES **result)
     err_exit(rc);
     return  rc;
 }
+
+

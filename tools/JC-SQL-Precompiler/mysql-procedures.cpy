@@ -56,7 +56,7 @@
  mysql-1090-exit.
      exit.
 *>
-*>    Common Error Handling UNCHANGED but Needs to be <<<<<< ??
+*>    Common Error Handling
 *>
 *>  Note that we do a stop run even though we got here
 *>              through a perform thru
@@ -68,12 +68,11 @@
                     when "INSERT"
                     when "insert"
                          go to mysql-1190-exit.
-     display  "W) SQL Error Number=", ws-mysql-error-number.
-     display  "W) PARAGRAPH=", ws-no-paragraph.
-     display  "W) SQL Command=", ws-mysql-command.
+     display  "W) SQL Error Number=" ws-mysql-error-number.
+     display  "W) PARAGRAPH=" ws-no-paragraph.
+     display  "W) SQL Command=" ws-mysql-command.
      call     "MySQL_error" using ws-mysql-error-message.
-     display  "W) SQL Error Message for #" ws-mysql-error-number "="
-                  ws-mysql-error-message.
+     display  "W) SQL Error Message=" ws-mysql-error-message.
      display  "T) Program Aborted--Contact IT Support".
      stop     run.
 *>
@@ -91,6 +90,7 @@
 *>
  mysql-1209-exit.
      exit.
+
 *>
 *>   Execute Command
 *>
