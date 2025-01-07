@@ -379,6 +379,7 @@ int main_prod(int argc, char **argv) {
 	}
 	else
 	{
+		sprintf(szMex, "Sort");
 		/* s.m. 20240302 */
 		nRC = gcthread_start(argc, argv, gcMaxThread, &timeStart);
 		if (nRC == 0) {

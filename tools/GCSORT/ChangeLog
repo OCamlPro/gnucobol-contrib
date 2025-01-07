@@ -1,3 +1,7 @@
+2025-01-07  Sauro Menna  <saumen2004@libero.it>
+    * Version 1.04.05
+    * Initialize structures in job.c. Detected with Valgrind (Thanks Simon)
+
 2024-12-14  Sauro Menna  <saumen2004@libero.it>
     * Version 1.04.04
     * Fixed problem in GetSize function when used environment variable  

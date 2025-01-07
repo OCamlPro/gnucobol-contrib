@@ -61,7 +61,7 @@ void GCSORT_Config ( void )
 	*/
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-    fprintf(stdout, "Copyright (C) 2016-2024 Sauro Menna\n");
+    fprintf(stdout, "Copyright (C) 2016-2025 Sauro Menna\n");
     fprintf(stdout, "                   2009 Cedric ISSALY\n");
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"\n");
@@ -105,7 +105,7 @@ void GCSORT_Config ( void )
 void GCSORT_Version ( void ) 
 {
 	printf("gcsort Version %s\n", GCSORT_VERSION); 
-    printf("Copyright (C) 2016-2024 Sauro Menna\n");
+    printf("Copyright (C) 2016-2025 Sauro Menna\n");
     printf("                   2009 Cedric ISSALY\n");
 	printf("Packaged  %s\n", GCSORT_TAR_DATE);
 

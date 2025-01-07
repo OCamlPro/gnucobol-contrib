@@ -148,6 +148,11 @@ struct job_t* job_constructor(void) {
 	struct job_t* job = (struct job_t*)malloc(sizeof(struct job_t));
 	if (job == NULL)
 		utl_abend_terminate(MEMORYALLOC, 1040, ABEND_EXEC);
+
+	/* s.m. 20250102 */
+	memset(job, 0x00, sizeof(struct job_t));
+
+
 	char* pEnvMemSize;
 	char* pEnvEmule;
 	char chPath[FILENAME_MAX];
@@ -582,7 +587,10 @@ int job_load(struct job_t* job, int argc, char** argv) {
 	int   nTakeCmd = 0;
 	int   returnCode = -1;
 
-	globalJob = job;
+
+	/* s.m. 20250105 */
+	if (job->nCurrThread <= 1)
+		globalJob = job;
 
 	buffer = (char*)malloc(COB_MEDIUM_BUFF);	/* CommandLine  */
 	if (buffer == 0)
@@ -1261,6 +1269,9 @@ int	job_FileInputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nPo
 	if (szSearch == NULL)
 		utl_abend_terminate(MEMORYALLOC, 1053, ABEND_EXEC);
 
+	/* s.m. 20250102 */
+	memset(szSearch, 0x00, COB_MEDIUM_BUFF);
+
 	util_convertToUpper(szBuffIn, szSearch);
 
 	pch1 = szSearch + nPosStart;
@@ -1364,6 +1375,9 @@ int	job_FileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nP
 	szSearch = (char*)malloc(COB_MEDIUM_BUFF);
 	if (szSearch == NULL)
 		utl_abend_terminate(MEMORYALLOC, 1054, ABEND_EXEC);
+	/* s.m. 20250102 */
+	memset(szSearch, 0x00, COB_MEDIUM_BUFF);
+
 	util_convertToUpper(szBuffIn, szSearch);
 
 	pch1 = szSearch + nPosStart;
@@ -2773,7 +2787,7 @@ int job_loadFiles(struct job_t* job) {
 				goto lbex;
 
 			/* s.m. 20241210 */
-			if (globalJob->nMultiThread == 1)
+			if (job->nMultiThread == 1)
 				job_LockResource();
 
 			/* s.m. 20240302 */
@@ -2786,7 +2800,7 @@ int job_loadFiles(struct job_t* job) {
 				goto lbex;
 			}
 			/* s.m. 20241210 */
-			if (globalJob->nMultiThread == 1)
+			if (job->nMultiThread == 1)
 				job_UnlockResource();
 
 			nEOFFileIn = 0;

@@ -84,6 +84,7 @@ int gcthread_start(int argc, char** argv, int nMaxThread, time_t* timeStart)
 
 		if (t == 0)   /* only first time print output*/
 			nRC = job_print(jArJob[t]);
+
 		nRC = job_check(jArJob[t]);
 		if (nRC != 0)
 			return nRC;

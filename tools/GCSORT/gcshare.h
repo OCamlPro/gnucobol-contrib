@@ -29,8 +29,8 @@
 		char	szMexToken[260]; 
 		char	cob_tmp_buff[COB_MEDIUM_BUFF];
 		char	cob_tmp_temp[COB_MEDIUM_BUFF];
-		struct job_t* globalJob;
-		int     g_retWarn;
+		struct job_t* globalJob = NULL;
+		int     g_retWarn = 0;
 		#if __LIBCOB_RELEASE >= 30200
 			enum cb_colseq g_cb_colseq = CB_COLSEQ_NATIVE;
 		#endif
