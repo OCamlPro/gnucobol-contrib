@@ -1,4 +1,5 @@
 # Matching 2 files - three different ways: Sequential or Indexed or Memory Mapping 
+
 ## Linux or Windows 
 
 This project will provide 3 GnuCOBOL programs that will match file1 to file2. 
@@ -13,6 +14,7 @@ The programs will look up every file1 record to see if it is on file2,
  if it finds a match it prints ( to sysout ) the matched record.
  
 ## Programs 
+
  ### createfile1.cbl
   This program creates a random number for the key and then does an internal 
   sort and dedups the records. The program is set to create 100,000 records 
@@ -44,6 +46,7 @@ The programs will look up every file1 record to see if it is on file2,
    If there is a match, it will write out the matched record to sysout.    
 
  ## Compiling and Running 
+ 
   ### Linux
    All programs were compiled with: 
    ```
