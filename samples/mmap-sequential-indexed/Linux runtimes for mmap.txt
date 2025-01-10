@@ -1,0 +1,110 @@
+Linux runtimes for mmap 
+With the 50 million file2 build... 
+
+jamesw@pop-os:~/Data$ mmapjobs.sh
+date time start mmapjobs.sh  Thu Jan 9 12:28:15 PM CST 2025
+date time start mmapjobs.sh  Thu Jan 9 12:28:15 PM CST 2025
+date time start job1  Thu Jan 9 12:28:15 PM CST 2025
+date time end job1  Thu Jan 9 12:28:15 PM CST 2025
+date time start job2  Thu Jan 9 12:28:15 PM CST 2025
+date time end job2  Thu Jan 9 12:31:57 PM CST 2025
+date time start job3  Thu Jan 9 12:31:57 PM CST 2025
+date time end job3  Thu Jan 9 12:32:53 PM CST 2025
+date time start job4  Thu Jan 9 12:32:53 PM CST 2025
+date time end job4  Thu Jan 9 12:32:54 PM CST 2025
+date time start job5  Thu Jan 9 12:32:54 PM CST 2025
+date time end job5  Thu Jan 9 12:32:54 PM CST 2025
+date time start job6  Thu Jan 9 12:32:54 PM CST 2025
+date time end job6  Thu Jan 9 12:33:04 PM CST 2025
+date time end mmapjobs.sh  Thu Jan 9 12:33:04 PM CST 2025
+ 
+jamesw@pop-os:~/Data$ cat mmapmatch.err
+mmap return code = +000000000
+mmaphndlx = 0000000003
+mmap-ptr  = 0x00007f17ab600000
+mmap size = 000000001414297636
+mmap qnty = 00000000000048768884
+jamesw@pop-os:~/Data$
+ 
+show the files sizes 
+jamesw@pop-os:~/Data$ ls -lrt | tail -11
+-rw-rw-r-- 1 jamesw jamesw           0 Jan  9 12:28 file1.err
+-rw-rw-r-- 1 jamesw jamesw      999970 Jan  9 12:28 file1
+-rw-rw-r-- 1 jamesw jamesw           0 Jan  9 12:28 file2.err
+-rw-rw-r-- 1 jamesw jamesw  1414297636 Jan  9 12:31 file2
+-rw-rw-r-- 1 jamesw jamesw  2420350976 Jan  9 12:32 file2.dat
+-rw-rw-r-- 1 jamesw jamesw           0 Jan  9 12:32 indxmatch.err
+-rw-rw-r-- 1 jamesw jamesw      143434 Jan  9 12:32 indxmatch.out
+-rw-rw-r-- 1 jamesw jamesw         148 Jan  9 12:32 mmapmatch.err
+-rw-rw-r-- 1 jamesw jamesw      143434 Jan  9 12:32 mmapmatch.out
+-rw-rw-r-- 1 jamesw jamesw           0 Jan  9 12:32 seqmatch.err
+-rw-rw-r-- 1 jamesw jamesw      143434 Jan  9 12:33 seqmatch.out
+jamesw@pop-os:~/Data$ ls -lrth | tail -11
+-rw-rw-r-- 1 jamesw jamesw    0 Jan  9 12:28 file1.err
+-rw-rw-r-- 1 jamesw jamesw 977K Jan  9 12:28 file1
+-rw-rw-r-- 1 jamesw jamesw    0 Jan  9 12:28 file2.err
+-rw-rw-r-- 1 jamesw jamesw 1.4G Jan  9 12:31 file2
+-rw-rw-r-- 1 jamesw jamesw 2.3G Jan  9 12:32 file2.dat
+-rw-rw-r-- 1 jamesw jamesw    0 Jan  9 12:32 indxmatch.err
+-rw-rw-r-- 1 jamesw jamesw 141K Jan  9 12:32 indxmatch.out
+-rw-rw-r-- 1 jamesw jamesw  148 Jan  9 12:32 mmapmatch.err
+-rw-rw-r-- 1 jamesw jamesw 141K Jan  9 12:32 mmapmatch.out
+-rw-rw-r-- 1 jamesw jamesw    0 Jan  9 12:32 seqmatch.err
+-rw-rw-r-- 1 jamesw jamesw 141K Jan  9 12:33 seqmatch.out
+jamesw@pop-os:~/Data$
+ 
+show the 3 matches ouput file counts
+jamesw@pop-os:~/Data$ wc -l indxmatch.out mmapmatch.out seqmatch.out
+  4946 indxmatch.out
+  4946 mmapmatch.out
+  4946 seqmatch.out
+
+
+With the 350 million file2 build... 
+jamesw@pop-os:~$ cd Data/
+jamesw@pop-os:~/Data$ mmapjobs.sh
+date time start mmapjobs.sh  Thu Jan 9 12:56:48 PM CST 2025
+date time start mmapjobs.sh  Thu Jan 9 12:56:48 PM CST 2025
+date time start job1  Thu Jan 9 12:56:48 PM CST 2025
+date time end job1  Thu Jan 9 12:56:48 PM CST 2025
+date time start job2  Thu Jan 9 12:56:48 PM CST 2025
+date time end job2  Thu Jan 9 01:24:46 PM CST 2025
+date time start job3  Thu Jan 9 01:24:46 PM CST 2025
+date time end job3  Thu Jan 9 01:30:38 PM CST 2025
+date time start job4  Thu Jan 9 01:30:38 PM CST 2025
+date time end job4  Thu Jan 9 01:30:38 PM CST 2025
+date time start job5  Thu Jan 9 01:30:38 PM CST 2025
+date time end job5  Thu Jan 9 01:30:39 PM CST 2025
+date time start job6  Thu Jan 9 01:30:39 PM CST 2025
+date time end job6  Thu Jan 9 01:31:40 PM CST 2025
+date time end mmapjobs.sh  Thu Jan 9 01:31:40 PM CST 2025
+jamesw@pop-os:~/Data$ ls -lrth | tail -9
+-rw-rw-r-- 1 jamesw jamesw    0 Jan  9 12:56 file2.err
+-rw-rw-r-- 1 jamesw jamesw 8.0G Jan  9 13:24 file2
+-rw-rw-r-- 1 jamesw jamesw  14G Jan  9 13:30 file2.dat
+-rw-rw-r-- 1 jamesw jamesw    0 Jan  9 13:30 indxmatch.err
+-rw-rw-r-- 1 jamesw jamesw 832K Jan  9 13:30 indxmatch.out
+-rw-rw-r-- 1 jamesw jamesw  148 Jan  9 13:30 mmapmatch.err
+-rw-rw-r-- 1 jamesw jamesw 832K Jan  9 13:30 mmapmatch.out
+-rw-rw-r-- 1 jamesw jamesw    0 Jan  9 13:30 seqmatch.err
+-rw-rw-r-- 1 jamesw jamesw 832K Jan  9 13:31 seqmatch.out
+jamesw@pop-os:~/Data$
+jamesw@pop-os:~/Data$ cat mmapmatch.err
+mmap return code = +000000000
+mmaphndlx = 0000000003
+mmap-ptr  = 0x000071af32600000
+mmap size = 000000008563948008
+mmap qnty = 00000000000295308552
+jamesw@pop-os:~/Data$
+jamesw@pop-os:~/Data$ wc -l indxmatch.out mmapmatch.out seqmatch.out
+  29376 indxmatch.out
+  29376 mmapmatch.out
+  29376 seqmatch.out
+  88128 total
+jamesw@pop-os:~/Data$ wc -l file1 file2
+     99994 file1
+ 295308552 file2
+ 295408546 total
+jamesw@pop-os:~/Data$
+
+

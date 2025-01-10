@@ -1,0 +1,180 @@
+Windows run times for 50,000,000 record mapped file
+D:\Old Hard Drive\Documents\Computer Stuff\Data>..\TEMPS\wmmapjobs.bat
+Starting wmmapjobs
+Running Job 1...
+11:54:51.97
+11:54:52.45
+Job 1 completed.
+Running Job 2...
+11:54:52.46
+12:02:52.26
+Job 2 completed.
+12:02:52.26
+Running Job 3...
+12:04:17.24
+Job 3 completed.
+12:04:17.24
+Running Job 4...
+12:04:17.79
+Job 4 completed.
+Running Job 5...
+12:04:17.80
+12:04:19.08
+Job 5 completed.
+Running Job 6...
+12:04:19.08
+12:04:50.06
+Job 6 completed.
+wmmapjobs completed.
+
+D:\Old Hard Drive\Documents\Computer Stuff\Data>
+D:\Old Hard Drive\Documents\Computer Stuff\Data>ls -lrth tail
+ls: cannot access 'tail': No such file or directory
+
+D:\Old Hard Drive\Documents\Computer Stuff\Data>ls -lrth | tail
+-rw-r--r-- 1 19012 19012 1.1M Jan  9 11:54 file1
+-rw-r--r-- 1 19012 19012 1.4G Jan  9 12:02 file2
+-rw-r--r-- 1 19012 19012 2.3G Jan  9 12:04 file2.dat
+-rw-r--r-- 1 19012 19012    0 Jan  9 12:04 indxmatch.err
+-rw-r--r-- 1 19012 19012 142K Jan  9 12:04 indxmatch.out
+-rw-r--r-- 1 19012 19012  133 Jan  9 12:04 wmmapmatch.err
+-rw-r--r-- 1 19012 19012 142K Jan  9 12:04 wmmapmatch.out
+-rw-r--r-- 1 19012 19012    0 Jan  9 12:04 seqmatch.err
+-rw-r--r-- 1 19012 19012 142K Jan  9 12:04 seqmatch.out
+
+D:\Old Hard Drive\Documents\Computer Stuff\Data>ls -lrt | tail
+-rw-r--r-- 1 19012 19012    1099967 Jan  9 11:54 file1
+-rw-r--r-- 1 19012 19012 1463134080 Jan  9 12:02 file2
+-rw-r--r-- 1 19012 19012 2370764800 Jan  9 12:04 file2.dat
+-rw-r--r-- 1 19012 19012          0 Jan  9 12:04 indxmatch.err
+-rw-r--r-- 1 19012 19012     144990 Jan  9 12:04 indxmatch.out
+-rw-r--r-- 1 19012 19012        133 Jan  9 12:04 wmmapmatch.err
+-rw-r--r-- 1 19012 19012     144990 Jan  9 12:04 wmmapmatch.out
+-rw-r--r-- 1 19012 19012          0 Jan  9 12:04 seqmatch.err
+-rw-r--r-- 1 19012 19012     144990 Jan  9 12:04 seqmatch.out
+
+D:\Old Hard Drive\Documents\Computer Stuff\Data> 
+
+
+For the 350 million record mapped file 
+D:\Old Hard Drive\Documents\Computer Stuff\Data>..\TEMPS\wmmapjobs.bat
+Starting wmmapjobs
+Running Job 1...
+12:13:09.24
+12:13:09.70
+Job 1 completed.
+Running Job 2...
+12:13:09.70
+13:24:45.95
+Job 2 completed.
+13:24:45.95
+Running Job 3...
+13:33:28.26
+Job 3 completed.
+13:33:28.26
+Running Job 4...
+13:33:29.40
+Job 4 completed.
+Running Job 5...
+13:33:29.40
+13:33:35.30
+Job 5 completed.
+Running Job 6...
+13:33:35.30
+13:36:43.40
+Job 6 completed.
+wmmapjobs completed.
+
+D:\Old Hard Drive\Documents\Computer Stuff\Data>
+D:\Old Hard Drive\Documents\Computer Stuff\Data>ls -lrth | tail -9
+-rw-r--r-- 1 19012 19012 1.1M Jan  9 12:13 file1
+-rw-r--r-- 1 19012 19012 8.3G Jan  9 13:24 file2
+-rw-r--r-- 1 19012 19012  14G Jan  9 13:33 file2.dat
+-rw-r--r-- 1 19012 19012    0 Jan  9 13:33 indxmatch.err
+-rw-r--r-- 1 19012 19012 861K Jan  9 13:33 indxmatch.out
+-rw-r--r-- 1 19012 19012  133 Jan  9 13:33 wmmapmatch.err
+-rw-r--r-- 1 19012 19012 861K Jan  9 13:33 wmmapmatch.out
+-rw-r--r-- 1 19012 19012    0 Jan  9 13:33 seqmatch.err
+-rw-r--r-- 1 19012 19012 861K Jan  9 13:36 seqmatch.out
+
+D:\Old Hard Drive\Documents\Computer Stuff\Data>cat wmmapmatch.err
+File size high = 0000000002
+File size low = 0269391178
+Record length = 00000000000000000030
+Total records = 00000000000295310858
+
+D:\Old Hard Drive\Documents\Computer Stuff\Data>
+D:\Old Hard Drive\Documents\Computer Stuff\Data>wc -l indxmatch.out wmmapmatch.out seqmatch.out
+  29380 indxmatch.out
+  29380 wmmapmatch.out
+  29380 seqmatch.out
+  88140 total
+
+D:\Old Hard Drive\Documents\Computer Stuff\Data>
+D:\Old Hard Drive\Documents\Computer Stuff\Data>wc -l file1 file2
+     99996 file1
+ 295310859 file2
+ 295410855 total
+
+D:\Old Hard Drive\Documents\Computer Stuff\Data>C:\Chucks64\SSDdata>wmmapjobsSSD.bat
+Starting wmmapjobsSSD
+Running Job 1...
+15:26:25.66
+15:26:26.17
+Job 1 completed.
+Running Job 2...
+15:26:26.17
+16:35:44.70
+Job 2 completed.
+16:35:44.70
+Running Job 3...
+16:44:14.06
+Job 3 completed.
+16:44:14.06
+Running Job 4...
+16:44:16.06
+Job 4 completed.
+Running Job 5...
+16:44:16.06
+16:44:20.84
+Job 5 completed.
+Running Job 6...
+16:44:20.84
+16:47:28.15
+Job 6 completed.
+wmmapjobsSSD completed.
+
+C:\Chucks64\SSDdata>ls -lrth
+total 22G
+-rwxr-xr-x 1 19012 19012 126K Jan  6 13:50 createfile1.exe
+-rwxr-xr-x 1 19012 19012 126K Jan  7 16:21 flat2index.exe
+-rwxr-xr-x 1 19012 19012 125K Jan  7 16:21 seqmatchfile.exe
+-rwxr-xr-x 1 19012 19012 126K Jan  7 16:21 indexmatchfile.exe
+-rwxr-xr-x 1 19012 19012 134K Jan  8 11:50 wmmapmatchfile.exe
+-rwxr-xr-x 1 19012 19012 129K Jan  9 12:12 createfile2.exe
+-rw-r--r-- 1 19012 19012  859 Jan  9 15:26 wmmapjobsSSD.bat
+-rw-r--r-- 1 19012 19012 1.1M Jan  9 15:26 file1
+-rw-r--r-- 1 19012 19012 8.3G Jan  9 16:35 file2
+-rw-r--r-- 1 19012 19012  14G Jan  9 16:44 file2.dat
+-rw-r--r-- 1 19012 19012    0 Jan  9 16:44 indxmatch.err
+-rw-r--r-- 1 19012 19012 866K Jan  9 16:44 indxmatch.out
+-rw-r--r-- 1 19012 19012  133 Jan  9 16:44 wmmapmatch.err
+-rw-r--r-- 1 19012 19012 866K Jan  9 16:44 wmmapmatch.out
+-rw-r--r-- 1 19012 19012    0 Jan  9 16:44 seqmatch.err
+-rw-r--r-- 1 19012 19012 866K Jan  9 16:47 seqmatch.out
+
+C:\Chucks64\SSDdata>
+C:\Chucks64\SSDdata>cat wmmapmatch.err
+File size high = 0000000002
+File size low = 0269340658
+Record length = 00000000000000000030
+Total records = 00000000000295309174
+
+C:\Chucks64\SSDdata>wc -l file1 file2 seqmatch.out
+     99994 file1
+ 295309175 file2
+     29531 seqmatch.out
+ 295438700 total
+
+C:\Chucks64\SSDdata> 
+
