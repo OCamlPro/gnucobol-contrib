@@ -68,9 +68,9 @@ The programs will look up every file1 record to see if it is on file2,
    ```
    cobc -x pgmname.cbl -std=mf 
    ```
-   The wmmapmatch.cbl program was compiled with: 
+   The wmmapmatchfile.cbl program was compiled with: 
    ```
-   cobc -x wmmapfilex2.cbl -lkernel32 -Q "C:\Windows\System32\kernel32.dll" 
+   cobc -x wmmapmatchfile.cbl -lkernel32 -Q "C:\Windows\System32\kernel32.dll" 
    ``` 
    I had to ask Chuck Haatvedt on the Windows compile instructions 
    and other Windows help. Hat tip to Chuck. And I did run my linux mmap program
