@@ -1,3 +1,9 @@
+2025-01-30 Sergey Kashyrin <ska@kiska.net>
+
+	* Adding ocsql390 which should be instead of ocsql2 for a stupid IBM Mainframe z/OS
+	* which have severe limit of the statement handles
+	* I think those guys should not exist on the market.
+
 2024-05-08 Sergey Kashyrin <ska@kiska.net>
 
 	* Correcting SQLCODE - MSSQL is always giving positive value but DB2 on Mainframe giving negative.

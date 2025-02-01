@@ -1,3 +1,6 @@
+2024-11-27 Sergey Kashyrin <ska@kiska.net>
+	* Fix. Don't move from temp vars if SQLCODE is not 0 - decimal data error on S/390.
+
 2024-04-30 Sergey Kashyrin <ska@kiska.net>
 	* IBM COBOL has a limitation of 160 characters in VALUE of PIC X.
 	* Had to split long lines. Flag is "-S"

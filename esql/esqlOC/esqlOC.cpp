@@ -40,7 +40,7 @@
 
 #include "vcache.h"
 
-static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCOBOL Version 3 (2024.04.30) Build " __DATE__ "\n";
+static const char HEADER[] = "%s: ESQL for GnuCOBOL/OpenCOBOL Version 3 (2024.11.27) Build " __DATE__ "\n";
 /**  Version is present in SQLCA. Current is 03 */
 
 static bool bAPOST = true;		// use apostroph instead of quote
@@ -2024,8 +2024,12 @@ private:
 		addln(lineno++, buf);
 		sprintf(buf, "%s                     SQLCA", shift);
 		addln(lineno++, buf);
-		for(int i = 0; i < movesout.size(); ++i) {
-			addln(lineno++, movesout[i]);
+		if(movesout.size() > 0) {
+			addln(lineno++, "           IF SQLCODE = 0");
+			for(int i = 0; i < movesout.size(); ++i) {
+				addln(lineno++, movesout[i]);
+			}
+			addln(lineno++, "           END-IF");
 		}
 		if(cl.conname != NULL) {
 			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
@@ -2162,11 +2166,11 @@ private:
 				} else {
 					iv = v->name.indexof('.');
 					if(iv > 0) {
-						sprintf(buf, "           MOVE %s", (const char *)h->name);
+						sprintf(buf, "             MOVE %s", (const char *)h->name);
 						movesout.add(buf);
-						sprintf(buf, "             TO %s OF %s", (const char *)v->name.substr(iv + 1), (const char *)v->name.substr(0,iv) );
+						sprintf(buf, "               TO %s OF %s", (const char *)v->name.substr(iv + 1), (const char *)v->name.substr(0,iv) );
 					} else {
-						sprintf(buf, "           MOVE %s TO %s", (const char *)h->name, (const char *)v->name);
+						sprintf(buf, "             MOVE %s TO %s", (const char *)h->name, (const char *)v->name);
 					}
 					movesout.add(buf);
 				}
@@ -2248,8 +2252,12 @@ private:
 		sprintf(buf, "           CALL %sOCSQLEXE%s USING SQL-STMT-%d", sSQ, sSQ, cl.sqlnum);
 		addln(lineno++, buf);
 		addln(lineno++, "                               SQLCA");
-		for(int i = 0; i < movesout.size(); ++i) {
-			addln(lineno++, movesout[i]);
+		if(movesout.size() > 0) {
+			addln(lineno++, "           IF SQLCODE = 0");
+			for(int i = 0; i < movesout.size(); ++i) {
+				addln(lineno++, movesout[i]);
+			}
+			addln(lineno++, "           END-IF");
 		}
 		if(cl.conname != NULL) {
 			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
@@ -2858,11 +2866,11 @@ private:
 				// will need to be put on two lines
 				iv = v->name.indexof('.');
 				if(iv > 0) {
-					sprintf(buf, "           MOVE %s ", (const char *)h->name);
+					sprintf(buf, "             MOVE %s ", (const char *)h->name);
 					moves.add(buf);
-					sprintf(buf, "           TO %s OF %s", (const char *)v->name.substr(iv + 1), (const char *)v->name.substr(0,iv) );
+					sprintf(buf, "             TO %s OF %s", (const char *)v->name.substr(iv + 1), (const char *)v->name.substr(0,iv) );
 				} else {
-					sprintf(buf, "           MOVE %s TO %s", (const char *)h->name, (const char *)v->name);
+					sprintf(buf, "             MOVE %s TO %s", (const char *)h->name, (const char *)v->name);
 				}
 				moves.add(buf);
 				v = h;
@@ -2924,8 +2932,12 @@ private:
 		sprintf(buf, "                               SQL-STMT-%d", sqlnum);
 		addln(lineno++, buf);
 		addln(lineno++, "                               SQLCA");
-		for(int i = 0; i < moves.size(); ++i) {
-			addln(lineno++, moves[i]);
+		if(moves.size() > 0) {
+			addln(lineno++, "           IF SQLCODE = 0");
+			for(int i = 0; i < moves.size(); ++i) {
+				addln(lineno++, moves[i]);
+			}
+			addln(lineno++, "           END-IF");
 		}
 		if(cl.conname != NULL) {
 			addln(lineno++, "           SET SQL-HCONN OF SQLCA TO NULL");
