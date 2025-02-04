@@ -42,71 +42,78 @@ Process Flow:
       - Returns updated data and message 
 	 
 APACHE2 system changes: 
- I have updated the apache2 changes here. They are much easier than the old changes: 
+	Here are the directories I had to use for the source, data, programs .... I had to make an new 
+	virtual host called mkat, so that is why some directory paths have mkat in there. That will be 
+	explained after listing the directories. I created a zz directory to keep things separated: 
 
-Here are the steps to configure Apache2 for CGI applications:
+		/var/www/mkat/zz/
+			this is where the HTML pages go
+			cust01.index.html
+			cust02.index.html 
+		
+		/usr/lib/cgi-bin/zz$ 
+			this is where the cgi bash script goes and the index.dat data file goes
+			cust01.cgi
+			testfile1001.dat 
+			
+		/var/log/apache2 
+			this is where apache places the access logs and the error logs (you can find your cobol
+			 syserr files here)
+			 access.log
+			 error.log 
+			 
+		/var/www 
+			this is where the GnuCOBOL program binary goes
+			cust01 
+			
+	You will have to have most permissions on the files set to Read and Execute and the data file
+	read and write.
+	
+	Apache2 system file changes: 
+		All of the apache2 files/directories are in: 
+		/etc 
+			hosts
+			127.0.0.1 localhost
+			127.0.1.1 mickeyw-Meerkat
+			127.0.1.2 mkat		
+				the host file is where I added my MeerKat (my Ubuntu box) and mkat 
+                                which is where the server looks for html (I think)
 
-1. Enable CGI module:
-```bash
-sudo a2enmod cgi
-```
+		/etc/apache2 
+			/etc/apache2/mods-available/
+				here is where you enable and add cgi and pl and sh (I added .bin)  
+                                under AddHandler in the mime.conf file
+				      mime.conf 
+						AddHandler cgi-script .cgi .pl .sh .bin
 
-2. Create directory structure:
-```bash
-sudo mkdir -p /var/www/mkat/zz
-sudo mkdir -p /var/www/cgi-bin/zz
-```
+			/etc/apache2/conf-available
+				serve-cgi-bin.conf 	
+					here I granted and enabled cgi scripts
+				    <IfDefine ENABLE_USR_LIB_CGI_BIN>
+			                ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+							<Directory "/usr/lib/cgi-bin">
+								AllowOverride None
+								Options +ExecCGI +Includes -MultiViews +SymLinksIfOwnerMatch
+								Require all granted
+								SetHandler cgi-script
+							</Directory>
+					</IfDefine>
 
-3. Place files:
-- HTML files: `/var/www/mkat/zz/cust01.index.html` and `/var/www/mkat/zz/cust02.index.html`
-- CGI script: `/var/www/cgi-bin/zz/cust01.cgi`
-- COBOL binary: `/var/www/cust01`
-- Data file:   sudo mv testfile1001.dat /var/www/cgi-bin/zz/
+			/etc/apache2/sites-available 
+				this is where I tell it about mkat 
+					        ServerAdmin webmaster@localhost
+							DocumentRoot /var/www/html 
+				I copied 000-default.conf to mkat.conf and made changes: 
+					        ServerAdmin webmaster@localhost
+							DocumentRoot /var/www/mkat
+							ServerName mkat.example.com
 
-
-4. Set permissions:
-```bash
-sudo chmod 755 /var/www/cgi-bin/zz/cust01.cgi
-sudo chmod 755 /var/www/cust01
-sudo chmod 644 /var/www/mkat/zz/*.html
-sudo chown www-data:www-data /var/www/cgi-bin/zz/testfile1001.dat
-sudo chmod 660 /var/www/cgi-bin/zz/testfile1001.dat
-
-```
-
-5. Create virtual host configuration in `/etc/apache2/sites-available/mkat.conf`:
-```apache
-<VirtualHost *:80>
-    ServerAdmin webmaster@localhost
-    DocumentRoot /var/www/mkat
-    ServerName 10.0.0.78
-
-    <Directory /var/www/mkat>
-        Options Indexes FollowSymLinks
-        AllowOverride None
-        Require all granted
-    </Directory>
-
-    ScriptAlias /cgi-bin/ /var/www/cgi-bin/
-    <Directory "/var/www/cgi-bin">
-        AllowOverride None
-        Options +ExecCGI -MultiViews
-        Require all granted
-    </Directory>
-
-    ErrorLog ${APACHE_LOG_DIR}/mkat_error.log
-    CustomLog ${APACHE_LOG_DIR}/mkat_access.log combined
-</VirtualHost>
-```
-
-6. Enable site and restart Apache:
-```bash
-sudo a2ensite mkat.conf
-sudo systemctl restart apache2
-```
-
-Access your application at: http://10.0.0.78/zz/cust01.index.html
-
+		You have to make changes to apache2 files as Root. so sudo carefully (make copies first)? 
+		You also have to restart apache2 after changing the above. The documents I found on google 
+		gave me excellent instructions for all the above and more.
+		I think that is about all Apache2 changes, but I googled and followed examples from 
+			"Install and Configure Apache" and apache.org - documentation how to cgi.htm 
+			Apache Tutorial: Dynamic Content with CGI 
 			
 End Apache2 info. 
 
