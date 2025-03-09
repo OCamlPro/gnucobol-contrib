@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # 19/11/18 vbc - v1.0 compiles Flightlog
+# 11/01/25 added  -D_FORTIFY_SOURCE=1 2 avoid issues with latest kernels
 #
 #  But check if ~/bin exists for user.
 #
@@ -12,7 +13,7 @@ fi
 #    but not the scripts - lets not clutter up the ~/bin dir.
 #    User can copy if required.
 #
-cobc -x flightlog.cbl
+cobc -x flightlog.cbl -D_FORTIFY_SOURCE=1
 #
 #    Could do a test that compile return no error before the mv
 #
