@@ -1,3 +1,10 @@
+2025-06-18  Sauro Menna  <saumen2004@libero.it>
+    * Version 1.04.06
+    * Removed HEAP error in INREC allocation
+    * Modified cast to int/size_t
+    * Resolved bug in INREC option - incorrect data in record output
+    * SumField_ResetTotSingle function modified to use cob_set_llint
+
 2025-01-07  Sauro Menna  <saumen2004@libero.it>
     * Version 1.04.05
     * Initialize structures in job.c. Detected with Valgrind (Thanks Simon)

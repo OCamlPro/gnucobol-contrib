@@ -145,12 +145,14 @@ int job_EmuleMFSort(void) {
 
 
 struct job_t* job_constructor(void) {
-	struct job_t* job = (struct job_t*)malloc(sizeof(struct job_t));
+	/* s.m. 20250110 */
+	/* struct job_t* job = (struct job_t*)malloc(sizeof(struct job_t)); */
+	struct job_t* job = (struct job_t*)calloc(sizeof(struct job_t), sizeof(char)); 
 	if (job == NULL)
 		utl_abend_terminate(MEMORYALLOC, 1040, ABEND_EXEC);
 
-	/* s.m. 20250102 */
-	memset(job, 0x00, sizeof(struct job_t));
+	/* s.m. 20250110 */
+	/* s.m. 20250110 memset(job, 0x00, sizeof(struct job_t)); */
 
 
 	char* pEnvMemSize;
@@ -607,8 +609,8 @@ int job_load(struct job_t* job, int argc, char** argv) {
 			}
 			if (_stricmp(argv[i], "TAKE") == 0)
 				nTakeCmd = 1;
-
-			argvLength = strlen(argv[i]) + 1;
+			/* s.m. 20250110 */
+			argvLength = (int) strlen(argv[i]) + 1;
 			if (bufferLength + argvLength + 1 > COB_MEDIUM_BUFF)
 				buffer = (char*)realloc(buffer, bufferLength + argvLength + 1);
 			buffer[bufferLength] = ' ';
@@ -716,7 +718,7 @@ int job_load(struct job_t* job, int argc, char** argv) {
 */
 int job_getIndexedFileHandler(struct job_t* job)
 {
-	int nType = NOISAM;
+	int nType = GCS_NOISAM;
 	int nChar = 0;
 	int  fd = dup(fileno(stdout));
 	char* psz = NULL;
@@ -745,7 +747,8 @@ int job_getIndexedFileHandler(struct job_t* job)
 
 	if ((stream = fopen(szNameTmp, "rt")) != NULL)
 	{
-		nChar = fread(pszRek, sizeof(char), (size_t)4096, stream);
+		/* s.m. 20250110 */
+		nChar = (int) fread(pszRek, sizeof(char), (size_t)4096, stream);
 	}
 
 	if (nChar > 0) {
@@ -753,22 +756,22 @@ int job_getIndexedFileHandler(struct job_t* job)
 		if (psz != NULL) {
 			psz = strstr(pszRek, "BDB");
 			if (psz != NULL)
-				nType = BDB; /* BDB */
+				nType = GCS_BDB; /* BDB */
 			else
 			{
 				psz = strstr(pszRek, "VBISAM");
 				if (psz != NULL)
-					nType = VBISAM; /* VBISAM */
+					nType = GCS_VBISAM; /* VBISAM */
 				else
 				{
 					psz = strstr(pszRek, "CISAM");
 					if (psz != NULL)
-						nType = CISAM; /* CISAM */
+						nType = GCS_CISAM; /* CISAM */
 					else
 					{
 						psz = strstr(pszRek, "DISAM");
 						if (psz != NULL)
-							nType = DISAM; /* DISAM */
+							nType = GCS_DISAM; /* DISAM */
 					}
 				}
 			}
@@ -810,6 +813,7 @@ int job_MakeExitRoutines(struct job_t* job)
 
 void job_CloneFileForOutfilSet(struct file_t* file)
 {
+
 	switch (file->organization) {
 	case FILE_ORGANIZATION_SEQUENTIAL:
 		file->stFileDef->organization = COB_ORG_SEQUENTIAL;
@@ -817,12 +821,14 @@ void job_CloneFileForOutfilSet(struct file_t* file)
 	case FILE_ORGANIZATION_LINESEQUENTIAL:
 		file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 		file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
-		cob_putenv("COB_LS_FIXED=0");	 /* change value of environment value GNUCobol - Truncate trailing spaces*/
+		cob_putenv("COB_LS_FIXED=0\0"); 	 /* change value of environment value GNUCobol - Truncate trailing spaces*/
+
 		break;
 	case FILE_ORGANIZATION_LINESEQUFIXED:
 		file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 		file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
-		cob_putenv("COB_LS_FIXED=1");	 /* change value of environment value GNUCobol - NO Truncate trailing spaces*/
+		cob_putenv("COB_LS_FIXED=1\0");		 /* change value of environment value GNUCobol - NO Truncate trailing spaces*/
+
 		break;
 	case FILE_ORGANIZATION_RELATIVE:
 		file->stFileDef->organization = COB_ORG_RELATIVE;
@@ -934,7 +940,8 @@ int job_CloneFileForOutfil(struct job_t* job)
 
 void job_checkslash(char* str)
 {
-	int nL = strlen(str);
+	/* s.m. 20250110 */
+	int nL = (int) strlen(str);
 	for (int k = 0; k < nL; k++) {
 		if (str[k] == '/')
 			str[k] = '\\';
@@ -965,7 +972,7 @@ int job_RedefinesFileName(struct job_t* job)
 				memcpy(file->stFileDef->assign->data, job->arrayFileInCmdLine[nPos], strlen(job->arrayFileInCmdLine[nPos]));
 				/* #ifdef VBISAM */
 				/* #if CONFIGURED_ISAM == VBISAM */
-				if (job->nTypeIndexHandler == VBISAM) {
+				if (job->nTypeIndexHandler == GCS_VBISAM) {
 					/* check if file name from command line contains ".dat" for indexed file    */
 					if (file->organization == FILE_ORGANIZATION_INDEXED) {
 						memset(szExt, 0x00, sizeof(szExt));
@@ -998,7 +1005,7 @@ int job_RedefinesFileName(struct job_t* job)
 				memcpy(file->stFileDef->assign->data, job->arrayFileOutCmdLine[nPos], strlen(job->arrayFileOutCmdLine[nPos]));
 				/* #ifdef VBISAM */
 				/* #if CONFIGURED_ISAM == VBISAM */
-				if (job->nTypeIndexHandler == VBISAM) {
+				if (job->nTypeIndexHandler == GCS_VBISAM) {
 					/* check if file name from command line contains ".dat" for indexed file    */
 					if (file->organization == FILE_ORGANIZATION_INDEXED) {
 						memset(szExt, 0x00, sizeof(szExt));
@@ -1031,7 +1038,7 @@ int job_RedefinesFileName(struct job_t* job)
 					memcpy(file->stFileDef->assign->data, job->arrayFileOutFilCmdLine[nPos], strlen(job->arrayFileOutFilCmdLine[nPos]));
 					/* #ifdef VBISAM */
 					/* #if CONFIGURED_ISAM == VBISAM */
-					if (job->nTypeIndexHandler == VBISAM) {
+					if (job->nTypeIndexHandler == GCS_VBISAM) {
 						/* check if file name from command line contains ".dat" for indexed file    */
 						if (file->organization == FILE_ORGANIZATION_INDEXED) {
 							memset(szExt, 0x00, sizeof(szExt));
@@ -1060,7 +1067,7 @@ int job_RedefinesFileName(struct job_t* job)
 			memcpy(file->stFileDef->assign->data, job->FileNameXSUM, strlen(job->FileNameXSUM));
 			/* #ifdef VBISAM */
 			/* #if CONFIGURED_ISAM == VBISAM */
-			if (job->nTypeIndexHandler == VBISAM) {
+			if (job->nTypeIndexHandler == GCS_VBISAM) {
 				/* check if file name from command line contains ".dat" for indexed file    */
 				if (file->organization == FILE_ORGANIZATION_INDEXED) {
 					memset(szExt, 0x00, sizeof(szExt));
@@ -1097,9 +1104,10 @@ int	job_scanPrioritySearch(char* buffer)
 	pchGive = strstr(pBufUpp, strGIVE);
 
 
-	if ((pchUse == NULL) || (pchGive == NULL))
+	if ((pchUse == NULL) || (pchGive == NULL)) {
+		free(pBufUpp);
 		return -1;
-
+	}
 	free(pBufUpp);
 	if (pchUse <= pchGive)
 		return 0;			/* Before USE, after GIVE   */
@@ -1282,7 +1290,8 @@ int	job_FileInputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nPo
 		pch1 = strstr(pch1, strUSE);
 		if (pch1 != NULL) {
 			bFound = 1;
-			nSp1 = pch1 - szSearch;
+			/* s.m. 20250110 */
+			nSp1 = (int) (pch1 - szSearch);
 			if (nFirstRound == 1) {
 				strncat(bufnew, szBuffIn + (pch2 - szSearch), pch1 - pch2);
 				pch2 = pch2 + (pch1 - pch2);
@@ -1297,16 +1306,19 @@ int	job_FileInputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nPo
 			nSp3 = sizeof(strORG);
 			if (pch3 < pch2) {
 				pch2 = pch3;  /* pch2 pointer to first element RECORD o GIVE    */
-				nSp3 = strlen(strRECORD);
+				/* s.m. 20250110 */
+				nSp3 = (int) strlen(strRECORD);
 			}
 			if (pch2 != NULL) {
-				nSp2 = pch2 - szSearch;
+				/* s.m. 20250110 */
+				nSp2 = (int)(pch2 - szSearch);
 				if (nFirstRound == 0) {
 					strncat(bufnew, szBuffIn, nSp1);
 					nFirstRound = 1;
 				}
 				/* in questo punto aggiungere il nome file */
-				nSp2 = pch2 - pch1 - strlen(strUSE);
+				/* s.m. 20250110 */
+				nSp2 = (int)(pch2 - pch1 - (int)strlen(strUSE));
 				nPosNull = job_PutIntoArrayFile(job->arrayFileInCmdLine[job->nMaxFileIn], szBuffIn + (pch1 - szSearch) + strlen(strUSE), nSp2);
 				job->arrayFileInCmdLine[job->nMaxFileIn][nPosNull] = 0x00;
 				job->nMaxFileIn++;
@@ -1314,10 +1326,12 @@ int	job_FileInputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nPo
 				sprintf(szFileName, " USE FI%03d", job->nMaxFileIn); /* new file name   */
 				/* alloc same dimension of file input for string    */
 				if (nSp2 > (int)(strlen(szFileName) - strlen(strUSE))) {
-					nSp9 = strlen(szFileName);
+					/* s.m. 20250110 */
+					nSp9 = (int) strlen(szFileName);
 					/* -->> s.m. 202105 for (pk=nSp9-strlen(strUSE); pk < nPosNull;pk++) {  */
 					/* -5 FInnn                                                             */
-					for (pk = nSp9 - strlen(strUSE); pk < nPosNull; pk++) {
+					/* s.m. 20250110 */
+					for (pk = nSp9 - (int) strlen(strUSE); pk < nPosNull; pk++) {
 						strcat(szFileName, "A");
 					}
 				}
@@ -1388,7 +1402,8 @@ int	job_FileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nP
 		pch1 = strstr(pch1, strGIVE);
 		if (pch1 != NULL) {
 			bFound = 1;
-			nSp1 = pch1 - szSearch;
+			/* s.m. 20250110 */
+			nSp1 = (int)(pch1 - szSearch);
 			if (nFirstRound == 1) {
 				strncat(bufnew, szBuffIn + (pch2 - szSearch), pch1 - pch2);
 				pch2 = pch2 + (pch1 - pch2);
@@ -1398,16 +1413,19 @@ int	job_FileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nP
 			nSp3 = sizeof(strORG);
 			if (pch3 < pch2) {
 				pch2 = pch3;  /* pch2 pointer to first element RECORD o GIVE    */
-				nSp3 = strlen(strRECORD);
+				/* s.m. 20250110 */
+				nSp3 = (int) strlen(strRECORD);
 			}
 			if (pch2 != NULL) {
-				nSp2 = pch2 - szSearch;
+				/* s.m. 20250110 */
+				nSp2 = (int) (pch2 - szSearch);
 				if (nFirstRound == 0) {
 					strncat(bufnew, szBuffIn, nSp1);
 					nFirstRound = 1;
 				}
 
-				nSp2 = pch2 - pch1 - strlen(strGIVE);
+				/* s.m. 20250110 */
+				nSp2 = (int) (pch2 - pch1 - (int) strlen(strGIVE));
 				nPosNull = job_PutIntoArrayFile(job->arrayFileOutCmdLine[job->nMaxFileOut], szBuffIn + (pch1 - szSearch) + strlen(strGIVE), nSp2);
 				job->arrayFileOutCmdLine[job->nMaxFileOut][nPosNull] = 0x00;
 				job->nMaxFileOut++;
@@ -1415,8 +1433,10 @@ int	job_FileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nP
 				sprintf(szFileName, " GIVE FO%03d", job->nMaxFileOut); /* new file name */
 				/* alloc same dimension of file input for string    */
 				if (nSp2 > (int)(strlen(szFileName) - strlen(strGIVE))) {
-					nSp9 = strlen(szFileName);
-					for (pk = nSp9 - strlen(strGIVE); pk < nPosNull; pk++) {
+					/* s.m. 20250110 */
+					nSp9 = (int)strlen(szFileName);
+					/* s.m. 20250110 */
+					for (pk = nSp9 - (int) strlen(strGIVE); pk < nPosNull; pk++) {
 						strcat(szFileName, "A");
 					}
 				}
@@ -1507,11 +1527,13 @@ int	job_XSUMFileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, in
 
 					strcpy(szFileName_sv, szFileName);
 
-					nPosNull = job_PutIntoArrayFile(job->FileNameXSUM, szFileName, strlen(szFileName));
+					/* s.m. 20250110 */
+					nPosNull = job_PutIntoArrayFile(job->FileNameXSUM, szFileName, (int) strlen(szFileName));
 					memset(szFileName, 0x00, GCSORT_SIZE_FILENAME);
 					sprintf(szFileName, "FX%03d", 1); /* new file name */
 					/* alloc same dimension of file input for string    */
-					nSp9 = strlen(szFileName);
+					/* s.m. 20250110 */
+					nSp9 = (int) strlen(szFileName);
 					for (pk = nSp9; pk < nPosNull; pk++) {
 						strcat(szFileName, "U");
 					}
@@ -1540,7 +1562,8 @@ int	job_XSUMFileOutputBuffer(struct job_t* job, char* szBuffIn, char* bufnew, in
 		fprintf(stdout, "*GCSORT*S010*ERROR: Command XSUM not found or lower case, use uppercase\n");
 		exit(GC_RTC_ERROR);
 	}
-	int nLen = pch1 - pBufUpp;
+	/* s.m. 20250110 */
+	int nLen = (int) (pch1 - pBufUpp);
 	pch2 = szBuffIn;
 	strncpy(bufnew, szBuffIn, nLen);
 	strcat(bufnew, szFileName);
@@ -1578,7 +1601,8 @@ int	job_FileOutFilBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nP
 	int   nSp9;
 	int   pk = 0;
 	int   ncrtFil = 0;
-	int nLenszb = strlen(szBuffIn) * 2;
+	/* s.m. 20250110 */
+	int nLenszb = (int) strlen(szBuffIn) * 2;
 	szSearch = (char*)malloc(sizeof(char) * nLenszb);
 	if (szSearch == NULL)
 		utl_abend_terminate(MEMORYALLOC, 1057, ABEND_EXEC);
@@ -1604,44 +1628,54 @@ int	job_FileOutFilBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nP
 		nSkipFirst = 0;
 		if (pch0 != NULL) {
 			bFound = 1;
-			nSp0 = pch0 - szSearch;
+			/* s.m. 20250110 */
+			nSp0 = (int) (pch0 - szSearch);
 			pch1 = strstr(pch0, strtoken);
 			if (pch1 != NULL) {
 				bFound = 1;
-				nSp1 = pch1 - szSearch;
+				/* s.m. 20250110 */
+				nSp1 = (int) (pch1 - szSearch);
 				if (nFirstRound == 1) {
 					strncat(bufnew, szBuffIn + (pch2 - szSearch), pch1 - pch2);
 					pch2 = pch2 + (pch1 - pch2);
 				}
 
 				pch3 = strstr(szSearch + nSp1 - 1, "=");
-				nSp3 = (pch3 - szSearch);
-				ncrtFil = strlen(strtoken);
+				/* s.m. 20250110 */
+				nSp3 = (int) (pch3 - szSearch);
+				/* s.m. 20250110 */
+				ncrtFil = (int) strlen(strtoken);
 				do {
 
 					if (pch2 != NULL) {
-						nSp2 = pch2 - szSearch;
+						/* s.m. 20250110 */
+						nSp2 = (int) (pch2 - szSearch);
 						if (nFirstRound == 0) {
 							strncat(bufnew, szBuffIn, nSp3 + 1 - ncrtFil);
-							ncrtFil = strlen(strtoken);
+							/* s.m. 20250110 */
+							ncrtFil = (int) strlen(strtoken);
 						}
 						if (nSkipFirst == 0)
 						{
 							strncat(bufnew, strtoken, strlen(strtoken));
-							ncrtFil = strlen(strtoken);
+							/* s.m. 20250110 */
+							ncrtFil = (int) strlen(strtoken);
 						}
 
 						pch2 = job_GetLastCharPath(pch3, &ncrtFil, &nSkipped);
 						if ((nSkipped > 0) && (nSkipFirst == 1))
 							strncat(bufnew, pch3, nSkipped);
 						else
-							ncrtFil = strlen(strtoken);
+							/* s.m. 20250110 */
+							ncrtFil = (int) strlen(strtoken);
 						nSkipFirst = 1;
 						nFirstRound = 1;
 						if (pchSplit == NULL)
-							nSp2 = pch2 - pch1 - strlen(strtoken);
+							/* s.m. 20250110 */
+							nSp2 = (int) (pch2 - pch1 - strlen(strtoken));
 						else
-							nSp2 = pch2 - pch1 - ncrtFil;
+							/* s.m. 20250110 */
+							nSp2 = (int) (pch2 - pch1 - ncrtFil);
 
 						/* check if last field is SPLIT*/
 						if (pchSplit != NULL) {
@@ -1663,7 +1697,8 @@ int	job_FileOutFilBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nP
 						sprintf(szFileName, "FO%03d", job->nMaxFileOutFil); /* new file name */
 						/* alloc same dimension of file input for string    */
 						if (nSp2 > (int)(strlen(szFileName))) {
-							nSp9 = strlen(szFileName);
+							/* s.m. 20250110 */
+							nSp9 = (int) strlen(szFileName);
 							for (pk = nSp9; pk < nPosNull; pk++) {
 								strcat(szFileName, "U");
 							}
@@ -1706,7 +1741,8 @@ int	job_FileOutFilBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int nP
 
 char* job_GetNextToken(char* sz, int* nSkipped) {
 	int j;
-	int nsz = strlen(sz);
+	/* s.m. 20250110 */
+	int nsz = (int) strlen(sz);
 	*nSkipped = 0;
 	for (j = 0; j < nsz; j++) {
 		if (sz[j] == '=')
@@ -1728,7 +1764,8 @@ char* job_GetLastCharPath(char* sz, int* pNum, int* nSkipped)
 {
 	int j, k;
 	int bapo = 0;
-	int nsz = strlen(sz);
+	/* s.m. 20250110 */
+	int nsz = (int) strlen(sz);
 	*nSkipped = 0;
 	for (j = 0; j < nsz; j++) {
 		if ((sz[j] != '=')
@@ -2576,14 +2613,14 @@ int job_destroy(struct job_t* job) {
 			/*	//-->>} */
 		}
 		for (nIdyMaster = 0; nIdyMaster < nIdxMaster; nIdyMaster++) {
-			nIdx = 0;
-			for (file = fPOutfilrec[nIdyMaster]->outfil_File; file != NULL; file = file->next) {
-				fPFile[nIdx] = file;
-				nIdx++;
-			}
-			for (nIdy = 0; nIdy < nIdx; nIdy++) {
-				file_destructor(fPFile[nIdy]);
-			}
+			//nIdx = 0;
+			//for (file = fPOutfilrec[nIdyMaster]->outfil_File; file != NULL; file = file->next) {
+			//	fPFile[nIdx] = file;
+			//	nIdx++;
+			//}
+			//for (nIdy = 0; nIdy < nIdx; nIdy++) {
+			//	file_destructor(fPFile[nIdy]);
+			//}
 			nIdx = 0;
 			for (outfil_includeCond = fPOutfilrec[nIdyMaster]->outfil_includeCond; outfil_includeCond != NULL; outfil_includeCond = outfil_includeCond->next) {
 				fPCond[nIdx] = outfil_includeCond;
@@ -2609,6 +2646,17 @@ int job_destroy(struct job_t* job) {
 			for (nIdy = 0; nIdy < nIdx; nIdy++) {
 				outrec_destructor(fPOut[nIdy]);
 			}
+			nIdx = 0;
+			for (file = fPOutfilrec[nIdyMaster]->outfil_File; file != NULL; file = file->next) {
+				fPFile[nIdx] = file;
+				nIdx++;
+			}
+			for (nIdy = 0; nIdy < nIdx; nIdy++) {
+				file_destructor(fPFile[nIdy]);
+			}
+			/* s.m. 20251210 */
+			//outfil_destructor(fPOutfilrec[nIdyMaster]);
+
 			free(fPOutfilrec[nIdyMaster]);
 		}
 		job->outfil = NULL;
@@ -2812,6 +2860,11 @@ int job_loadFiles(struct job_t* job) {
 		nLenRek = file_getRecordLength(job->fileLoad);
 		nbyteRead = 0;
 
+		/* s.m. 20250618    check input len  record - inrec */
+		if (inrec_getLength(job->inrec) > job->nLenMemory)
+			job->nLenMemory = inrec_getLength(job->inrec);
+
+
 		pBufRek = job->buffertSort;
 
 		pBufData = job->recordData;
@@ -3012,7 +3065,8 @@ int job_loadFiles(struct job_t* job) {
 
 			/* s.m. 20240302 */
 			job->recordNumberTotal++;
-			nLenRek = job->fileLoad->stFileDef->record->size;
+			/* s.m. 20250110 */
+			nLenRek = (int) job->fileLoad->stFileDef->record->size;
 
 			/* 20240926 */
 			job->LenCurrRek = nLenRek;
@@ -3258,12 +3312,15 @@ int job_Verify_EOF(int* nState, struct file_t* stFile, unsigned char* szVectorRe
 			job_UnlockResource();
 		}
 
-		nFS = file_checkFSRead("Read", "job_Verify_EOF", stFile, stFile->stFileDef->record_max, stFile->stFileDef->record_max);
+		/* s.m. 20250110 */
+		nFS = file_checkFSRead("Read", "job_Verify_EOF", stFile, (int) stFile->stFileDef->record_max, (int) stFile->stFileDef->record_max);
 		if (nFS > 0) {
 			*nState = 99;
 			return nFS;
 		}
-		*nLenVR1 = stFile->stFileDef->record->size;
+		/* s.m. 20250110 */
+		*nLenVR1 = (int) stFile->stFileDef->record->size;
+		/* s.m. 20250110 */
 		gc_memcpy(szVectorRead1, stFile->stFileDef->record->data, stFile->stFileDef->record->size);
 
 		/* s.m. 20241210 */
@@ -3279,14 +3336,16 @@ int job_Verify_EOF(int* nState, struct file_t* stFile, unsigned char* szVectorRe
 		}
 
 
-		nFS = file_checkFSRead("Read", "job_Verify_EOF(2)", stFile, stFile->stFileDef->record_max, stFile->stFileDef->record_max);
+		/* s.m. 20250110 */
+		nFS = file_checkFSRead("Read", "job_Verify_EOF(2)", stFile, (int) stFile->stFileDef->record_max, (int) stFile->stFileDef->record_max);
 		if (nFS > 0) {
 			stFile->stFileDef->record->size = *nLenVR1;
 			gc_memcpy(stFile->stFileDef->record->data, szVectorRead1, stFile->stFileDef->record->size);
 			*nState = 99;
 			return nFS;
 		}
-		*nLenVR2 = stFile->stFileDef->record->size;
+		/* s.m. 20250110 */
+		*nLenVR2 = (int) stFile->stFileDef->record->size;
 		gc_memcpy(szVectorRead2, stFile->stFileDef->record->data, *nLenVR2);
 		*nState = 1;
 		/* reset record */
@@ -3309,14 +3368,16 @@ int job_Verify_EOF(int* nState, struct file_t* stFile, unsigned char* szVectorRe
 			job_UnlockResource();
 		}
 
-		nFS = file_checkFSRead("Read", "job_Verify_EOF(3)", stFile, stFile->stFileDef->record_max, stFile->stFileDef->record_max);
+		/* s.m. 20250110 */
+		nFS = file_checkFSRead("Read", "job_Verify_EOF(3)", stFile, (int) stFile->stFileDef->record_max, (int) stFile->stFileDef->record_max);
 		if (nFS > 0) {
 			stFile->stFileDef->record->size = *nLenVR2;
 			gc_memcpy(stFile->stFileDef->record->data, szVectorRead2, stFile->stFileDef->record->size);
 			*nState = 99;
 			return nFS;
 		}
-		*nLenVR1 = stFile->stFileDef->record->size;
+		/* s.m. 20250110 */
+		*nLenVR1 = (int)stFile->stFileDef->record->size;
 		gc_memcpy(szVectorRead1, stFile->stFileDef->record->data, stFile->stFileDef->record->size);
 
 		stFile->stFileDef->record->size = *nLenVR2;
@@ -3338,14 +3399,16 @@ int job_Verify_EOF(int* nState, struct file_t* stFile, unsigned char* szVectorRe
 			job_UnlockResource();
 		}
 
-		nFS = file_checkFSRead("Read", "job_Verify_EOF(4)", stFile, stFile->stFileDef->record_max, stFile->stFileDef->record_max);
+		/* s.m. 20250110 */
+		nFS = file_checkFSRead("Read", "job_Verify_EOF(4)", stFile, (int) stFile->stFileDef->record_max, (int) stFile->stFileDef->record_max);
 		if (nFS > 0) {
 			stFile->stFileDef->record->size = *nLenVR1;
 			gc_memcpy(stFile->stFileDef->record->data, szVectorRead1, stFile->stFileDef->record->size);
 			*nState = 99;
 			return nFS;
 		}
-		*nLenVR2 = stFile->stFileDef->record->size;
+		/* s.m. 20250110 */
+		*nLenVR2 = (int) stFile->stFileDef->record->size;
 		gc_memcpy(szVectorRead2, stFile->stFileDef->record->data, stFile->stFileDef->record->size);
 
 		stFile->stFileDef->record->size = *nLenVR1;
@@ -3426,9 +3489,12 @@ int job_skip_record(struct job_t* job, struct file_t* file, int64_t* nRec)
 	}
 
 	int record_len = file->recordLength;
-	int record_min = file->stFileDef->record_min;
-	int record_max = file->stFileDef->record_min;
-	int nSize = file->stFileDef->record->size;
+	/* s.m. 20250110 */
+	int record_min = (int) file->stFileDef->record_min;
+	/* s.m. 20250110 */
+	int record_max = (int) file->stFileDef->record_min;
+	/* s.m. 20250110 */
+	int nSize = (int) file->stFileDef->record->size;
 
 	/*   dimension slot area */
 	int nSkipArea = (int)job->nMTSkipRec * record_len;
@@ -3555,11 +3621,13 @@ INLINE2  int job_sort_data(struct job_t* job)
 			job_getTypeFlags(job->g_nTypeGC, &job->g_nType, &job->g_nFlags, job->g_nLen);
 			job_cob_field_set(job->g_fd1, job->g_nType, job->g_nLen, 0, job->g_nFlags, job->g_nLen);
 			job_cob_field_set(job->g_fd2, job->g_nType, job->g_nLen, 0, job->g_nFlags, job->g_nLen);
-			job->cob_field_key[job->g_idx] = (cob_field*)util_cob_field_make(job->g_fd1->attr->type, job->g_fd1->attr->digits, job->g_fd1->attr->scale, job->g_fd1->attr->flags, job->g_fd1->size, ALLOCATE_DATA);
+			/* s.m. 20250110 */
+			job->cob_field_key[job->g_idx] = (cob_field*)util_cob_field_make(job->g_fd1->attr->type, job->g_fd1->attr->digits, job->g_fd1->attr->scale, job->g_fd1->attr->flags, (int) job->g_fd1->size, ALLOCATE_DATA);
 			job->g_pdata[job->g_idx] = (unsigned char*)job->cob_field_key[job->g_idx]->data;
 			job->g_idx++;
 
-			job->cob_field_key[job->g_idx] = (cob_field*)util_cob_field_make(job->g_fd2->attr->type, job->g_fd2->attr->digits, job->g_fd2->attr->scale, job->g_fd2->attr->flags, job->g_fd2->size, ALLOCATE_DATA);
+			/* s.m. 20250110 */
+			job->cob_field_key[job->g_idx] = (cob_field*)util_cob_field_make(job->g_fd2->attr->type, job->g_fd2->attr->digits, job->g_fd2->attr->scale, job->g_fd2->attr->flags, (int) job->g_fd2->size, ALLOCATE_DATA);
 			job->g_pdata[job->g_idx] = (unsigned char*)job->cob_field_key[job->g_idx]->data;
 			job->g_idx++;
 		}
@@ -4170,7 +4238,8 @@ int job_save_tempfile(struct job_t* job)
 			goto job_save_exit;
 		}
 		/* buffered vs mmf */
-		descTmp = (size_t)mmfTmp->m_hFile;
+		/* s.m. 20250110 */
+		descTmp = (int) ((size_t)mmfTmp->m_hFile);
 	}
 	nSplitPosPnt = SZPOSPNT;
 	bIsFirstSumFields = 0;
@@ -4553,7 +4622,8 @@ int job_save_tempfinal(struct job_t* job) {
 			retcode_func = -1;
 			goto job_save_tempfinal_exit;
 		}
-		handleTmpFile[k] = (size_t)ArrayFile[k]->m_hFile;
+		/* s.m. 20250110 */
+		handleTmpFile[k] = (int) ((size_t)ArrayFile[k]->m_hFile);
 	}
 
 
@@ -4630,7 +4700,8 @@ int job_save_tempfinal(struct job_t* job) {
 				/* // ???	memmove(szKeyCurr + SZPOSPNT, szKeyTemp, job->nLenKeys + SZPOSPNT);	*/	/*  Key     */
 				memmove(szKeyCurr + SIZEINT, szKeyTemp, job->nLenKeys + SIZEINT);		/*  Key     */
 				if (bIsFirstKeySumField == 0) {			/* Save first key for sum field, use this for write */
-					memcpy(szFirstRek, szBuffRek, nLenRek + nSplitPosPnt);              /* PosPnt + First Record    */
+					/* s.m. 20250618  memcpy(szFirstRek, szBuffRek, nLenRek + nSplitPosPnt);     */         /* PosPnt + First Record    */
+					memcpy(szFirstRek, szBufRekTmpFile[nPosPtr], nLenRek + nSplitPosPnt);     
 					bIsFirstKeySumField = 1;
 				}
 				useRecord = SumFields_KeyCheck(job, &bIsWrited, szKeyPrec, &nLenPrec, szKeyCurr, &nLenRek, szKeySave, &nLenSave,
@@ -4738,6 +4809,8 @@ int job_save_tempfinal(struct job_t* job) {
 	}
 	if ((job->sumFields == 2) && (bIsWrited == 1)) {   /* pending buffer  */
 		SumField_SumFieldUpdateRek((char*)szFirstRek + SIZEINT);	/* Update record in memory      */
+		/* s.m. 20250618 */
+		memset(recordBuffer, 0x00, recordBufferLength);
 		memcpy(recordBuffer, szFirstRek, nLenPrec + SIZEINT);		/* Substitute record for write  */
 		/* s.m. 202012  */
 		nLenRek = nLenPrec;
@@ -5395,7 +5468,8 @@ int job_compare_date_Y2T(cob_field * fk2, cob_field * fk1)
 	int ndate2 = cob_get_int(fk2);
 
 	/* s.m. 20241204 int nLenDate = fk1->attr->digits; */
-	int nLenDate = fk1->size; 
+	/* s.m. 20250110 */
+	int nLenDate = (int)fk1->size;
 	int ndivisor = 1;
 	int ncent = 0;
 
@@ -6132,7 +6206,8 @@ INLINE int job_ReadFileMerge(struct file_t* file, int* nLR, unsigned char* szBuf
 	}
 
 	gc_memcpy(szBuffRek + SZPOSPNT, file->stFileDef->record->data, file->stFileDef->record->size);
-	*nLR = file->stFileDef->record->size;
+	/* s.m. 20250110 */
+	*nLR = (int)file->stFileDef->record->size;
 	return 0;
 }
 
@@ -6221,6 +6296,8 @@ int job_AllocateDataKey(struct job_t* job)
 			/* s.m. 20220701 return -1; */
 			retcode = -1;
 			free(job->recordData);
+			/* s.m. 20250618 */
+			job->recordData = NULL;
 			return retcode;
 		}
 	}

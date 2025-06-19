@@ -34,7 +34,8 @@ struct fieldValue_t {
 	int datetype;					/* Date Type */
 	char *value;
 	int64_t value64;
-	int generated_length;
+	/* s.m. 20250110 int generated_length; */
+	size_t generated_length; 
 	char *generated_value;
 	cob_field_attr pCobFAttr;
 	cob_field	  pCobField;

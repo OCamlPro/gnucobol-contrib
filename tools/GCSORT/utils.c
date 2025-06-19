@@ -877,6 +877,10 @@ cob_field* util_MakeAttrib_call(int type, int digits, int scale, int flags, int 
 	attrArea = (cob_field_attr*)malloc(sizeof(cob_field_attr));
 	if (attrArea == NULL)
 		utl_abend_terminate(MEMORYALLOC, 11, ABEND_EXEC);
+	
+	/* s.m. 20250110 */
+	memset(attrArea, 0x00, sizeof(cob_field_attr));
+
 	attrArea->type = (unsigned short) type;
 	attrArea->digits = (unsigned short)digits;
 	attrArea->scale = (unsigned short)scale;
@@ -885,6 +889,9 @@ cob_field* util_MakeAttrib_call(int type, int digits, int scale, int flags, int 
 	field_ret = (cob_field*)malloc(sizeof(cob_field));
 	if (field_ret == NULL)
 		utl_abend_terminate(MEMORYALLOC, 12, ABEND_EXEC);
+	/* s.m. 20250110 */
+	memset(field_ret, 0x00, sizeof(cob_field));
+
 	field_ret->attr = attrArea;
 	field_ret->data = NULL;
 	if (nData == ALLOCATE_DATA) {
@@ -1029,6 +1036,9 @@ void util_resetAttrib(cob_field_attr* attrArea, int type, int digits)
 	attrArea = (cob_field_attr*) malloc(sizeof(cob_field_attr));
     if (attrArea == NULL)
         utl_abend_terminate(MEMORYALLOC, 11, ABEND_EXEC);
+	/* s.m. 20250110 */
+	memset(attrArea, 0x00, sizeof(cob_field_attr));
+
 	attrArea->type   = (unsigned short)type;
 	attrArea->digits = (unsigned short)digits;
 	attrArea->scale  = (unsigned short)scale;
@@ -1037,6 +1047,9 @@ void util_resetAttrib(cob_field_attr* attrArea, int type, int digits)
 	field_ret = (cob_field*)malloc(sizeof(cob_field));
     if (field_ret == NULL)
         utl_abend_terminate(MEMORYALLOC, 12, ABEND_EXEC);
+	/* s.m. 20250110 */
+	memset(field_ret, 0x00, sizeof(cob_field));
+
 	field_ret->attr = attrArea;
 	field_ret->data = NULL;
 	if (nData == ALLOCATE_DATA) {
@@ -1189,13 +1202,16 @@ int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned 
 		utl_abend_terminate(MEMORYALLOC, 16, ABEND_EXEC);
 	}
 	memset(pCheck, 0x00, COB_FILE_BUFF);
-	if (strlen(find) > 0 ) {
+	/* s.m. 20250110 */
+	if ((int) strlen(find) > 0 ) {
 		strcpy(pCheck, str);
-		nS = utl_replace_findrep(pCheck, find, set, result, strlen(find), strlen(set), lenIn, lenOut, nCurrOcc, nMaxOcc, nShift);
+		/* s.m. 20250110 */
+		nS = utl_replace_findrep(pCheck, find, set, result, (int)strlen(find), (int)strlen(set), lenIn, lenOut, nCurrOcc, nMaxOcc, nShift);
 		strncpy(pCheck, result, lenOut);
 	}
 	free(pCheck);
-	*nOverChar = (strlen(find) - strlen(set)) * nS;		/* Calculate difference record length  */
+	/* s.m. 20250110 */
+	*nOverChar = (int) ((strlen(find) - strlen(set)) * nS);		/* Calculate difference record length  */
 
 	return nS;
 }
@@ -1402,7 +1418,8 @@ void sort_temp_name(struct job_t* job, const char* ext)
 /* check len and realloc data out */
 int  utl_copy_realloc(char* out, char* in) {
 	strcpy(out, in);
-	return strlen(out);
+	/* s.m. 20250110 */
+	return (int) strlen(out);
 }
 
 /* String  search - replace */
@@ -1417,12 +1434,14 @@ int utl_str_searchreplace(char* orig, char* search, char* replace, char* result)
 	/* sanity checks and initialization */
 	if (!orig || !search)
 		return 0;
-	len_search = strlen(search);
+	/* s.m. 20250110 */
+	len_search = (int) strlen(search);
 	if (len_search == 0)
 		return 0; /* empty search causes infinite loop during count */
 	if (!replace)
 		replace = "";
-	len_replace = strlen(replace);
+	/* s.m. 20250110 */
+	len_replace = (int) strlen(replace);
 
 	/* count the number of searchlacements needed */
 	ins = orig;
@@ -1440,7 +1459,8 @@ int utl_str_searchreplace(char* orig, char* search, char* replace, char* result)
 	*/
 	while (count--) {
 		ins = strstr(orig, search);
-		len_front = ins - orig;
+		/* s.m. 20250110 */
+		len_front = (int) (ins - orig);
 		tmp = strncpy(tmp, orig, len_front) + len_front;
 		tmp = strcpy(tmp, replace) + len_replace;
 		orig += len_front + len_search; /* move to next "end of search" */
@@ -1480,7 +1500,8 @@ int64_t util_UFFSFF(unsigned char* pData, int nFieldLen, int nUS) {
 }
 void utl_GetPathFileName(char* str, char* sep, char* chPathRet)
 {
-	int ns = strlen(str);
+	/* s.m. 20250110 */
+	int ns = (int) strlen(str);
 	int s = 0;
 	int nc = 0;
 	memset(chPathRet, 0x00, GCSORT_SIZE_FILENAME);

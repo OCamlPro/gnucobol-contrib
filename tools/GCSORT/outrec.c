@@ -149,7 +149,8 @@ struct outrec_t *outrec_constructor_subst(unsigned char *chfieldValue)
     if (outrec != NULL) {
 		outrec_initialize(outrec);
 		outrec->type=OUTREC_TYPE_CHANGE;
-	    nsp = strlen((char*)chfieldValue)-1;
+		/* s.m. 20250110 */
+		nsp = (int) strlen((char*)chfieldValue)-1;
 	    memset(szSubstValue, 0x00, nsp+1);
 	    memset(szSubstType, 0x00,  2);
 	    memcpy(szSubstValue, chfieldValue, nsp);
@@ -248,6 +249,7 @@ void outrec_destructor(struct outrec_t *outrec)
 				change_destructor(outrec->changeCmd.changeCmdOpt);
 				free(outrec->szChangeBufIn);
 				free(outrec->szChangeBufOut);
+				free(outrec->szChangeBufNoMatch);	/* s.m. 20250110 */
 			}		
 			break;
 		case OUTREC_TYPE_FINDREP:
@@ -340,7 +342,8 @@ int outrec_getLength(struct outrec_t *outrec) {
 					if (o->change.posAbsRec == -2)
 						if (atoi(o->change.fieldValue->value) < 2)
 							/* printf("%s", utils_getFieldValueTypeName(o->change.fieldValue->type)); */
-							length += o->change.fieldValue->generated_length;
+							/* s.m. 20250110 */
+							length += (int) o->change.fieldValue->generated_length;
 						else
 							/* printf("%d%s", o->change.fieldValue->occursion, utils_getFieldValueTypeName(o->change.fieldValue->type)); */
 							length += o->change.fieldValue->occursion;

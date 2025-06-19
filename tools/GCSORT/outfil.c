@@ -242,15 +242,19 @@ int outfile_clone_output(struct job_t* job, struct file_t* file)
 	file->stFileDef->record_min = job->outputFile->recordLength;                         
 	file->stFileDef->record_max = job->outputFile->maxLength;            
 	file->nNumKeys = job->outputFile->nNumKeys;
-	if (file->stFileDef->record != NULL)
-		free(file->stFileDef->record->data);
+	if (file->stFileDef->record != NULL) {
+		util_cob_field_del(file->stFileDef->record, ALLOCATE_DATA);	/* s.m. 20240110 */
+	}
 	if (file->stFileDef->record_max > 0)
 		file->stFileDef->record = util_cob_field_make(COB_TYPE_ALPHANUMERIC, file->maxLength, 0, 0, file->maxLength, ALLOCATE_DATA);
-
-	/*  record->data allocated in util_cob_field_make 
-		if (file->stFileDef->record != NULL)
-			file->stFileDef->record->data = (unsigned char*) malloc((sizeof(unsigned char)*job->outputFile->maxLength)+1);
-	*/
+	else
+	{
+		/* s.m. 20240110 */
+		/* In this case forced len of output file */
+		file->stFileDef->record = util_cob_field_make(COB_TYPE_ALPHANUMERIC, globalJob->outputFile->recordLength, 0, 0, globalJob->outputFile->recordLength, ALLOCATE_DATA);
+		file->recordLength = globalJob->outputFile->recordLength;
+		file->maxLength = globalJob->outputFile->recordLength;
+	}
 
 #if __LIBCOB_VERSION > 3 || \
    ( __LIBCOB_VERSION == 3  && __LIBCOB_VERSION_MINOR >= 2 )
@@ -273,8 +277,9 @@ int outfile_clone_output(struct job_t* job, struct file_t* file)
 	if (job->outputFile->organization == FILE_ORGANIZATION_INDEXED) {
 		tKeys =  job->outputFile->stKeys;
 		for(nP=0; nP< file->nNumKeys;nP++) {
-				file->stFileDef->keys[nP].field = util_cob_field_make( tKeys->pCobFieldKey->attr->type, tKeys->pCobFieldKey->attr->digits, 
-					tKeys->pCobFieldKey->attr->scale, tKeys->pCobFieldKey->attr->flags, tKeys->pCobFieldKey->size, NOALLOCATE_DATA);
+			/* s.m. 20250110 */
+			file->stFileDef->keys[nP].field = util_cob_field_make( tKeys->pCobFieldKey->attr->type, tKeys->pCobFieldKey->attr->digits,
+					tKeys->pCobFieldKey->attr->scale, tKeys->pCobFieldKey->attr->flags, (int) tKeys->pCobFieldKey->size, NOALLOCATE_DATA);
 				file->stFileDef->keys[nP].field->data = file->stFileDef->record->data+tKeys->position;
 				file->stFileDef->keys[nP].flag = 0;
 				/* s.m. 202101 start    */

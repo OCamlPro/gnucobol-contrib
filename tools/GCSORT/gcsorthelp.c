@@ -112,11 +112,12 @@ void GCSORT_Version ( void )
 #if __LIBCOB_VERSION >= 3
     print_version_summary();        /* GnuCOBOL Version */
 #endif
-    if (sizeof(void*) > 4U) 
+    /* s.m. 20250109 if (sizeof(void*) > 4U) */
+#if defined(_WIN64)
         printf("gcsort 64bit-mode %s\n", "yes");
-    else
+#else
         printf("gcsort 64bit-mode %s\n", "no");
-
+#endif
     return;
 } 
 /*

@@ -34,8 +34,8 @@
 #include "gcshare.h"
 
 /* ##-->> s.m. 20201021 typedef cob_field_attr cob_field_attr;  */
-static const cob_field_attr cob_all_attr = {0x22, 0, 0, 0, NULL};
-static cob_field cob_all_zero	= {1, (cob_u8_ptr)"0", &cob_all_attr};
+/* s.m. 20250110   static const cob_field_attr cob_all_attr = {0x22, 0, 0, 0, NULL};		*/
+/* s.m. 20250110   static cob_field cob_all_zero	= {1, (cob_u8_ptr)"0", &cob_all_attr};  */
 
 
 struct SumField_t *SumField_constructor(int position, int length, int type) 
@@ -50,8 +50,9 @@ struct SumField_t *SumField_constructor(int position, int length, int type)
 	    SumField->pCobField.data=NULL;
 	    SumField->pCobField.attr = &SumField->pCobFAttr;
 	    SumField->pCobFieldTotRes.data=NULL;
-	    SumField->pCobFieldTotRes.data = (unsigned char*)malloc(COB_MAX_BINARY);
-        if (SumField->pCobFieldTotRes.data == NULL)
+	    /* s.m. 20250110 SumField->pCobFieldTotRes.data = (unsigned char*)malloc(COB_MAX_BINARY); */
+		SumField->pCobFieldTotRes.data = (unsigned char*)calloc(COB_MAX_BINARY, sizeof(char));
+		if (SumField->pCobFieldTotRes.data == NULL)
 			utl_abend_terminate(MEMORYALLOC, 1351, ABEND_EXEC);
 
 	    SumField->pCobFieldTotRes.attr = &SumField->pCobFAttrTotRes;
@@ -195,7 +196,9 @@ int SumField_getType(struct SumField_t *SumField)
 void SumField_ResetTotSingle(struct SumField_t *SumField) 
 {
 	/* set zero to totalizer    */
-	cob_move (&cob_all_zero, &SumField->pCobFieldTotRes);
+	/* s.m. 20250110 cob_move(&cob_all_zero, &SumField->pCobFieldTotRes); */
+
+	cob_set_llint(&SumField->pCobFieldTotRes, (int64_t) 0L);
 
 	return ;
 }

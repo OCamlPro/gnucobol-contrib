@@ -2681,6 +2681,7 @@ filesgroup:
 		else
             file_addQueue(&current_outfil->outfil_File, file);
         file_SetInfoForFile(file, COB_OPEN_OUTPUT); 
+        /* verify current_outfil or file */
         outfil_SetVirtualFile(current_outfil, 0);       /* OUTFIL has file name */
         free($1);
         strcpy(szMexToken, " files clause ");

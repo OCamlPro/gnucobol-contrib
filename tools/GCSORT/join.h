@@ -93,8 +93,8 @@ struct join_t {
 	struct joinkeys_t*		joinkeysF2;
 	struct joinunpaired_t*	joinunpaired;
 	struct joinreformat_t*	joinreformat;
-	struct sortField_t*		outsortField;	/* sort field for final output not allocated but copy from SORT if presents */
-	struct outrec_t* outrec_save;	/* Save outrec for final sort (Not Used in sort in join phases */
+	struct sortField_t*		outsortField;	/* Sort field for final output not allocated but copy from SORT if presents */
+	struct outrec_t* outrec_save;			/* Save outrec for final sort (Not Used in sort in join phases */
 	struct outfil_t* outfil_save;
 	int64_t	nStopAfterSave;
 

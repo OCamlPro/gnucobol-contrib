@@ -239,7 +239,8 @@ int fieldValue_print(struct fieldValue_t *fieldValue) {
     second parameter value from record 
 */    
 int fieldValue_checkvalue(struct job_t* job, struct fieldValue_t *fieldValue, cob_field* pField, int length) {
-	int used_length;
+	/* s.m. 20250110 int used_length; */
+	size_t used_length;
 	int result;
 	int64_t						mValue64 = 0;
 	/* checktype of field for compare */
@@ -288,10 +289,11 @@ int fieldValue_checkvalue(struct job_t* job, struct fieldValue_t *fieldValue, co
    len of single element is equal length parameter
 */  
 int fieldValue_ss_array(struct fieldValue_t *fieldValue, cob_field* pField, int length) {
-    int n, nLenValue, nElements;
-    int res, bFound;
-    nLenValue = strlen((char*)fieldValue->generated_value);     /* len of array     */
-    nElements = (nLenValue / (length+1))+1;                     /* num of elements  */
+	int n, nLenValue, nElements; 
+	int res, bFound;
+	/* s.m. 20250110 */
+	nLenValue = (int) strlen((char*)fieldValue->generated_value);     /* len of array     */
+    nElements = ((int)nLenValue / (length+1))+1;                     /* num of elements  */
     bFound=0;
     for(n=0; n < nElements; n++) {
         res = memcmp((char*)pField->data, (char*)fieldValue->generated_value+(n*(length+1)), length);
@@ -311,7 +313,7 @@ int fieldValue_ss_value(struct fieldValue_t *fieldValue, cob_field* pField, int 
     int n, res;
     res=1;
     nLenBufA = (int)pField->size;
-    nLenBufB = strlen((char*)fieldValue->generated_value);
+    nLenBufB = (int)strlen((char*)fieldValue->generated_value);
     bFound=0;
     for(n=0; n<nLenBufA;n++){
         if (pField->data[n] != fieldValue->generated_value[0])      /* verify single char   */
@@ -338,7 +340,8 @@ int fieldValue_checksubstring(struct fieldValue_t *fieldValue, cob_field* pField
 }
 
 int fieldValue_getGeneratedLength(struct fieldValue_t *fieldValue) {
-	return fieldValue->generated_length;
+	/* s.m. 20250110 */
+	return (int)fieldValue->generated_length;
 }
 char *fieldValue_getGeneratedValue(struct fieldValue_t *fieldValue) {
 

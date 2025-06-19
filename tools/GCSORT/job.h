@@ -76,7 +76,7 @@ struct job_t;
 #define MAX_RECSIZE			32752 
 #define MAX_HANDLE_TEMPFILE	16
 #define MAX_HANDLE_THREAD   16*16
-#define SIZEINT				sizeof(int)     /* 4    */
+#define SIZEINT				sizeof(int)     /* 4 32bit - 8  64bit   */
 #define SIZEINT64			sizeof(int64_t) /* 8    */
 
 #define MAX_FIELDSIZE		4092  /* DFSort limits */

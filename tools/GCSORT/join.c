@@ -610,6 +610,11 @@ int job_joiner(struct job_t* job)
 	join = job->join;
 	/* Save file name */
 	struct file_t* pFile = job->inputFile;			/* First File */
+
+	struct file_t* pFile1 = NULL;
+	struct file_t* pFile2 = NULL;
+	struct file_t* pFile3 = NULL;
+
 	/* join_clonefile(join->fileF1, pFile, 1); */
 
 	join->fileF1 = pFile;			/* first file  */
@@ -687,17 +692,17 @@ int job_joiner(struct job_t* job)
 	/* Include and Omit condition if presents mandatory sort step*/
 	if ((join->joinkeysF1->nIsSorted == NOTSORTED) && (job->includeCondField == NULL) && (job->omitCondField == NULL)) {
 		/* input */
-		pFile = job->inputFile;
-		utl_copy_realloc(pFile->name, join->pNameFileF1);
-		pFile->stFileDef->assign->size = utl_copy_realloc(pFile->stFileDef->assign->data, join->pNameFileF1);
+		pFile1 = job->inputFile;
+		utl_copy_realloc(pFile1->name, join->pNameFileF1);
+		pFile1->stFileDef->assign->size = utl_copy_realloc(pFile1->stFileDef->assign->data, join->pNameFileF1);
 		/* strcpy(join->pNameFileOut, join->pNameTmpF1); */
 
 		/* Set STOPAFTER */
 		job->nStopAft = join->joinkeysF1->nStopAfter;
 		/* output */
-		pFile = job->outputFile;
-		utl_copy_realloc(pFile->name, join->pNameTmpF1);
-		pFile->stFileDef->assign->size = utl_copy_realloc(pFile->stFileDef->assign->data, join->pNameTmpF1);
+		pFile1 = job->outputFile;
+		utl_copy_realloc(pFile1->name, join->pNameTmpF1);
+		pFile1->stFileDef->assign->size = utl_copy_realloc(pFile1->stFileDef->assign->data, join->pNameTmpF1);
 		job->sortField = join->joinkeysF1->joinField;
 
 		job->includeCondField = join->joinkeysF1->includeCondField;
@@ -730,16 +735,16 @@ int job_joiner(struct job_t* job)
 	/* Include and Omit condition if presents mandatory sort step*/
 	if ((join->joinkeysF2->nIsSorted == NOTSORTED) && (job->includeCondField == NULL) && (job->omitCondField == NULL)) {
 		/* input */
-		pFile = job->inputFile;
-		utl_copy_realloc(pFile->name, join->pNameFileF2);
-		pFile->stFileDef->assign->size = utl_copy_realloc(pFile->stFileDef->assign->data, join->pNameFileF2);
+		pFile2 = job->inputFile;
+		utl_copy_realloc(pFile2->name, join->pNameFileF2);
+		pFile2->stFileDef->assign->size = utl_copy_realloc(pFile2->stFileDef->assign->data, join->pNameFileF2);
 		/* strcpy(join->pNameFileOut, join->pNameTmpF2); */
 		/* Set STOPAFTER */
 		job->nStopAft = join->joinkeysF2->nStopAfter;
 		/* output */
-		pFile = job->outputFile;
+		pFile2 = job->outputFile;
 		utl_copy_realloc(job->outputFile->name, join->pNameTmpF2);
-		pFile->stFileDef->assign->size = utl_copy_realloc(pFile->stFileDef->assign->data, join->pNameTmpF2);
+		pFile2->stFileDef->assign->size = utl_copy_realloc(pFile2->stFileDef->assign->data, join->pNameTmpF2);
 		job->sortField = join->joinkeysF2->joinField;
 		job->includeCondField = join->joinkeysF2->includeCondField;
 		job->omitCondField = join->joinkeysF2->omitCondField;
@@ -821,28 +826,30 @@ int job_joiner(struct job_t* job)
 	/* SORT OUTPUT JOIN FILE */
 	if (job->sortField != NULL) {
 		/* prepare file info (Input to sort is output from join */
-		pFile = file_constructor(join->pNameTmpOut);
-		file_clone(pFile, join->fileTmpOut);		/* Input file is output JOIN Phase */
-		file_SetInfoForFile(pFile, COB_OPEN_INPUT);
+		pFile3 = file_constructor(join->pNameTmpOut);
+		file_clone(pFile3, join->fileTmpOut);		/* Input file is output JOIN Phase */
+		file_SetInfoForFile(pFile3, COB_OPEN_INPUT);
 		/* input */
-		utl_copy_realloc(pFile->name, join->pNameTmpOut);
-		pFile->stFileDef->assign->size = utl_copy_realloc(pFile->stFileDef->assign->data, join->pNameTmpOut);
+		utl_copy_realloc(pFile3->name, join->pNameTmpOut);
+		pFile3->stFileDef->assign->size = utl_copy_realloc(pFile3->stFileDef->assign->data, join->pNameTmpOut);
 		/* job->sortField = join->joinkeysF2->joinField; */
 		/* reset next on first file (struct file_t) */
-		pFile->next = NULL;
-		job->inputFile = pFile;
+		pFile3->next = NULL;
+
+		job->inputFile = pFile3;
 		/* output */
-		pFile = job->outputFile;
-		utl_copy_realloc(pFile->name, join->pNameFileOut);
-		pFile->stFileDef->assign->size = utl_copy_realloc(pFile->stFileDef->assign->data, join->pNameFileOut);
+		pFile3 = job->outputFile;
+		utl_copy_realloc(pFile3->name, join->pNameFileOut);
+		pFile3->stFileDef->assign->size = utl_copy_realloc(pFile3->stFileDef->assign->data, join->pNameFileOut);
 
 		job->includeCondField = NULL;		/* Reset Include */
 		job->omitCondField = NULL;			/* Reset Omit */
 
 		join_sortFile(job);
+
 		/* TODO */
-		pFile = job->inputFile;
-		file_destructor(pFile);
+		pFile3 = job->inputFile;
+		file_destructor(pFile3);
 		job->inputFile = join->fileSaveF1;
 		/* reset file - free file ....*/
 		job->inputFile->next = join->fileF2;
@@ -2127,7 +2134,8 @@ int join_ReadFileSingleRow(struct join_t* join, int nF, struct file_t* file, int
 	/* -->> s.m. 20240201 gc_memcpy(szBuffRek, file->stFileDef->record->data, nLenRek); */
 	gc_memcpy(szBuffRek, file->stFileDef->record->data, file->stFileDef->record->size);
 
-	*nLR = file->stFileDef->record->size;
+	/* s.m. 20250110 */
+	*nLR = (int) file->stFileDef->record->size;
 
 	if (nF == 0) {
 		g_nSkipReadF1 = nSkipRead;
@@ -2227,7 +2235,8 @@ int join_ReadFile(struct join_t* join, int nF, struct file_t* file, int* descTmp
 		gc_memcpy(szBuffRek, file->stFileDef->record->data, nLenRek);
 
 		/* s.m. 20240201 *nLR = file->stFileDef->record->size;  */
-		*nLR = file->stFileDef->record_max; 
+		/* s.m. 20250110 */
+		*nLR = (int) file->stFileDef->record_max;
 
 		/* s.m. 20240201 */
 		file->stFileDef->record->size = file->stFileDef->record_max;

@@ -201,11 +201,11 @@
 #define ABEND_SKIP      1
 #define ABEND_EXEC      2
 
-#define NOISAM       0
-#define BDB          1
-#define VBISAM       2
-#define CISAM        3
-#define DISAM        4
+#define GCS_NOISAM       0
+#define GCS_BDB          1
+#define GCS_VBISAM       2
+#define GCS_CISAM        3
+#define GCS_DISAM        4
 
 #ifdef _WIN32
 	#define charSep '\\'

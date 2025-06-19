@@ -434,7 +434,8 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 					goto gcthread_save_tempfinal_exit;
 				}
 				/* s.m 20240620 handleTmpFile[j] = (int)ArrayFile[j]->m_hFile; */
-				handleTmpFile[j] = (size_t)ArrayFile[j]->m_hFile;
+				/* s.m. 20250110 */
+				handleTmpFile[j] = (int)(size_t)ArrayFile[j]->m_hFile;
 			}
 		}
 	}

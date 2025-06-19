@@ -128,22 +128,35 @@ void condField_destructor(struct condField_t *condField) {
 	if (condField->type == COND_TYPE_CONDITION) {
 		fieldValue = condField->condition.fieldValue;
 		util_cob_field_del(condField->condition.cb_fd, NOALLOCATE_DATA);
-		if (fieldValue != NULL)
+		if (fieldValue != NULL) {
 			fieldValue_destructor(fieldValue);
+			/* s.m. 20250110 */
+			condField->condition.fieldValue = NULL;
+		}
 	} 
 	if (condField->type == COND_TYPE_OPERATION) {
 		condFieldTemp = condField->operation.first;
-		if (condFieldTemp != NULL)
+		if (condFieldTemp != NULL) {
 			condField_destructor(condFieldTemp);
+			/* s.m. 20250110 */
+			condField->operation.first = NULL;
+		}
 		condFieldTemp = condField->operation.second;
-		if (condFieldTemp != NULL)
+		if (condFieldTemp != NULL) {
 			condField_destructor(condFieldTemp);
+			/* s.m. 20250110 */
+			condField->operation.second = NULL;
+		}
 	}
 	if (condField->type == COND_TYPE_COND_FIELDS) {
 		util_cob_field_del(condField->condition_field.cb_fd1, NOALLOCATE_DATA);
 		util_cob_field_del(condField->condition_field.cb_fd2, NOALLOCATE_DATA);
+		condField->condition_field.cb_fd1 = NULL;
+		condField->condition_field.cb_fd2 = NULL;
 	}
 	free(condField);
+	/* s.m. 20250110 */
+	condField = NULL;
 }
  
 int condField_addDefinition(struct condField_t *condField) {

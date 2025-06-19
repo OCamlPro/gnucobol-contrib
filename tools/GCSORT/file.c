@@ -113,6 +113,8 @@ void file_destructor(struct file_t *file) {
 		}
 	}
 	free(file);
+	/* s.m. 20250110 */
+	file = NULL;
 }
 
 
@@ -223,9 +225,12 @@ int file_setXSUMFile(struct file_t* file) {
 int file_SetInfoForFile(struct file_t* file, int nMode) {
 
 	struct KeyIdx_t* tKeys; 
-	
+
 	int	k=0;
-	file->stFileDef = (cob_file*) malloc(sizeof(cob_file));
+	/* s.m. 20250110 file->stFileDef = (cob_file*)malloc(sizeof(cob_file)); */
+	/* s.m. 20250110 */
+	file->stFileDef = (cob_file*)calloc(sizeof(cob_file), sizeof(char));
+
 
 #if __LIBCOB_VERSION > 3
 	memset(file->stFileDef->file_status, 0x00, sizeof(file->stFileDef->file_status));
@@ -236,7 +241,8 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 #endif
 	file->stFileDef->select_name = (const char *)"masterseqfile";
 	/* Problem with Join file name //-->>file->stFileDef->assign = util_cob_field_make( COB_TYPE_ALPHANUMERIC, strlen(file->name), 0, 0, strlen(file->name), ALLOCATE_DATA); */
-	file->stFileDef->assign = util_cob_field_make( COB_TYPE_ALPHANUMERIC, strlen(file->name), 0, 0, GCSORT_SIZE_FILENAME, ALLOCATE_DATA);
+	/* s.m. 20250110 */
+	file->stFileDef->assign = util_cob_field_make( COB_TYPE_ALPHANUMERIC, (int)strlen(file->name), 0, 0, GCSORT_SIZE_FILENAME, ALLOCATE_DATA);
 
 	file->stFileDef->record = NULL;
 
@@ -304,13 +310,12 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 			file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 			file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
 			/* use default value LIBCOB */
-			cob_putenv("COB_LS_FIXED=0");	 /* change value of environment value GNUCobol - Truncate trailing spaces*/
+			cob_putenv("COB_LS_FIXED=0\0"); /* change value of environment value GNUCobol - Truncate trailing spaces*/
 			break;
 		case FILE_ORGANIZATION_LINESEQUFIXED:
 			file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
 			file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
-			cob_putenv("COB_LS_FIXED=1");	/* change value of environment value GNUCobol - NO Truncate trailing spaces*/
-			
+			cob_putenv("COB_LS_FIXED=1\0"); 	/* change value of environment value GNUCobol - NO Truncate trailing spaces*/
 			break;
 		case FILE_ORGANIZATION_RELATIVE:
 			tKeys =  file->stKeys;
@@ -335,8 +340,9 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 
 			file->stFileDef->keys = (cob_file_key*)(malloc (sizeof (cob_file_key) * file->nNumKeys));
 			for (k=0; k<file->nNumKeys;k++) {
-					file->stFileDef->keys[k].field = util_cob_field_make( tKeys->pCobFieldKey->attr->type, tKeys->pCobFieldKey->attr->digits, 
-						tKeys->pCobFieldKey->attr->scale, tKeys->pCobFieldKey->attr->flags, tKeys->pCobFieldKey->size, NOALLOCATE_DATA);
+				/* s.m. 20250110 */
+				file->stFileDef->keys[k].field = util_cob_field_make( tKeys->pCobFieldKey->attr->type, tKeys->pCobFieldKey->attr->digits,
+						tKeys->pCobFieldKey->attr->scale, tKeys->pCobFieldKey->attr->flags, (int) tKeys->pCobFieldKey->size, NOALLOCATE_DATA);
 					file->stFileDef->keys[k].field->data = file->stFileDef->record->data+tKeys->position;
                     file->stFileDef->keys[k].field->size = tKeys->length;
 					file->stFileDef->keys[k].flag = 0;		/* ASCENDING/DESCENDING (for SORT) */

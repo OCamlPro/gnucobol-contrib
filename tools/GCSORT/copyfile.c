@@ -304,7 +304,8 @@ int job_copyFile(struct job_t *job)
 			utl_resetbuffer(szBuffRek, GCSORT_MAX_BUFF_REK);
 			utl_resetbuffer(recordBuffer, GCSORT_MAX_BUFF_REK);
 
-			nLenRek = file->stFileDef->record->size;
+			/* s.m. 20250110 */
+			nLenRek = (int) file->stFileDef->record->size;
 			gc_memcpy(szBuffRek, file->stFileDef->record->data, file->stFileDef->record->size);
 
 			/* new for OutFil */

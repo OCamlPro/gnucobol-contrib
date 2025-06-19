@@ -178,7 +178,8 @@ struct inrec_t *inrec_constructor_subst(unsigned char *chfieldValue) {
     if (inrec != NULL) {
 		inrec_initialize(inrec);
 		inrec->type=INREC_TYPE_CHANGE;
-	    nsp = strlen((char*)chfieldValue)-1;
+		/* s.m. 20250110 */
+	    nsp = (int) strlen((char*)chfieldValue)-1;
 	    memset(szSubstValue, 0x00, 10);
 	    memset(szSubstType, 0x00,  2);
 	    memcpy(szSubstValue, chfieldValue, nsp);
@@ -367,7 +368,8 @@ int inrec_getLength(struct inrec_t *inrec) {
 				else
 					if (o->change.posAbsRec == -2)
 						if (atoi(o->change.fieldValue->value) < 2)
-							length += o->change.fieldValue->generated_length;
+							/* s.m. 20250110 */
+							length += (int) o->change.fieldValue->generated_length;
 						else
 							length += o->change.fieldValue->occursion;
 					else
