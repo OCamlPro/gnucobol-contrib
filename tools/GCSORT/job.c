@@ -2046,6 +2046,46 @@ int job_check(struct job_t* job)
 			}
 		}
 	}
+
+	struct SumField_t* s;
+	int nPosS = 0;
+	int nPosE = 0;
+	if (job->SumField != NULL) {
+		/* check overlapping sumfield/sortfield */
+		for (f = job->sortField; f != NULL; f = f->next) {
+			nPosS = sortField_getPosition(f);
+			nPosE = sortField_getPosition(f) + sortField_getLength(f); /* last position */
+			for (s = job->SumField; s != NULL; s = SumField_getNext(s)) {
+				if (((s->position >= nPosS) && (s->position < nPosE)) ||
+					((s->position + s->length >= nPosS) && (s->position + s->length < nPosE))) {
+					/* error */
+					fprintf(stdout, "*GCSORT*S017X*ERROR: The SUM FIELD overlaps the control field. \n");
+					nErr++;
+				}
+				if (nErr > 0)
+					break;
+			}
+			if (nErr > 0)
+				break;
+		}
+		/* check if SUMFIELDS definition is into record length */
+		int nLenRek = file_getRecordLength(job->inputFile);
+		/* s.m. 20250618    check input len  record - inrec */
+		if (inrec_getLength(job->inrec) > nLenRek)
+			nLenRek = inrec_getLength(job->inrec);
+		for (s = job->SumField; s != NULL; s = SumField_getNext(s)) {
+			if ((s->position + s->length > nLenRek)) {
+				/* error */
+				fprintf(stdout, "*GCSORT*S017Y*ERROR: The position and length of the SUM field exceeds the size of the record. \n");
+				nErr++;
+			}
+			if (nErr > 0)
+				break;
+		}
+	}
+
+
+
 	/* check inrec definition */
 	/* to refine *
 	/*

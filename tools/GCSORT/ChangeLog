@@ -1,3 +1,8 @@
+2025-06-20  Sauro Menna  <saumen2004@libero.it>
+    * Version 1.04.06b
+    * check overlapping SUM FIELDS control field 
+    * check if SUM FIELDS definition is into record length
+
 2025-06-18  Sauro Menna  <saumen2004@libero.it>
     * Version 1.04.06
     * Removed HEAP error in INREC allocation
