@@ -113,7 +113,8 @@ void GCSORT_Version ( void )
     print_version_summary();        /* GnuCOBOL Version */
 #endif
     /* s.m. 20250109 if (sizeof(void*) > 4U) */
-#if defined(_WIN64)
+/* 20250815 #if defined(_WIN64) */
+#if defined(__x86_64__)
         printf("gcsort 64bit-mode %s\n", "yes");
 #else
         printf("gcsort 64bit-mode %s\n", "no");

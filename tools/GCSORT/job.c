@@ -2054,10 +2054,10 @@ int job_check(struct job_t* job)
 		/* check overlapping sumfield/sortfield */
 		for (f = job->sortField; f != NULL; f = f->next) {
 			nPosS = sortField_getPosition(f);
-			nPosE = sortField_getPosition(f) + sortField_getLength(f); /* last position */
+			nPosE = sortField_getPosition(f) + sortField_getLength(f) - 1; /* last position */
 			for (s = job->SumField; s != NULL; s = SumField_getNext(s)) {
 				if (((s->position >= nPosS) && (s->position < nPosE)) ||
-					((s->position + s->length >= nPosS) && (s->position + s->length < nPosE))) {
+					((s->position + s->length - 1 >= nPosS) && (s->position + s->length - 1 <= nPosE))) {
 					/* error */
 					fprintf(stdout, "*GCSORT*S017X*ERROR: The SUM FIELD overlaps the control field. \n");
 					nErr++;
