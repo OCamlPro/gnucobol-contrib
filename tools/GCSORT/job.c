@@ -2056,7 +2056,7 @@ int job_check(struct job_t* job)
 			nPosS = sortField_getPosition(f);
 			nPosE = sortField_getPosition(f) + sortField_getLength(f) - 1; /* last position */
 			for (s = job->SumField; s != NULL; s = SumField_getNext(s)) {
-				if (((s->position >= nPosS) && (s->position < nPosE)) ||
+				if (((s->position >= nPosS) && (s->position <= nPosE)) ||
 					((s->position + s->length - 1 >= nPosS) && (s->position + s->length - 1 <= nPosE))) {
 					/* error */
 					fprintf(stdout, "*GCSORT*S017X*ERROR: The SUM FIELD overlaps the control field. \n");
@@ -2074,7 +2074,7 @@ int job_check(struct job_t* job)
 		if (inrec_getLength(job->inrec) > nLenRek)
 			nLenRek = inrec_getLength(job->inrec);
 		for (s = job->SumField; s != NULL; s = SumField_getNext(s)) {
-			if ((s->position + s->length > nLenRek)) {
+			if ((s->position + s->length - 1 > nLenRek)) {
 				/* error */
 				fprintf(stdout, "*GCSORT*S017Y*ERROR: The position and length of the SUM field exceeds the size of the record. \n");
 				nErr++;

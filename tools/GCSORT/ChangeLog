@@ -1,3 +1,7 @@
+2025-08-21  Sauro Menna  <saumen2004@libero.it>
+    * Version 1.04.07b
+    * fix issue - check exceeds the size of the record SUM FIELDS control field 
+
 2025-08-20  Sauro Menna  <saumen2004@libero.it>
     * Version 1.04.07
     * fix issue - check overlapping SUM FIELDS control field 
