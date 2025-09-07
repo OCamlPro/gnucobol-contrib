@@ -10,9 +10,16 @@ PROGRAM-ID. GC03YESNODEMO.
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
 *> License:    (c)2021.02.02 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    2.0 20210202
+*> Version:    2.1 20230601
 *> Changelog:  1.0 first release.
 *>             2.0 mouse management added
+*>             2.1 set environment 'COB_LEGACY' TO '1' is added as first PROCEDURE DIVISION statement.
+*>                 This is explained as follows.
+*>                 from GnuCOBOL 3.2 BLINK and HIGHLIGHT do by default what they should (blinking and bolding) !
+*>                 And using the "extended" color numbers just set the additional attributes blink and highlight
+*>                 before GnuCOBOL 3.2 BLINK was highlithning the backgound color ! (for windows)
+*>                 Please set COB_LEGACY=1 and the old blink/highlight behavior is used
+*>                 (which adjusts the colors internally new extended colors also for background - not portable)
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -61,19 +68,25 @@ copy 'GC97KEYCODEGC.CPY'  suppress.
 *> **************************************************************
 PROCEDURE DIVISION.
 
+*> ********************************** WARNING ! *****************
+   set environment 'COB_LEGACY'  TO '1'
+*> COB_LEGACY = 1 activate the possibility of using color codes from 8 to 15
+*> for FOREGROUND (same result as HIGHLIGHT) and for BACKGROUND to have extended colors
+*> this setting must be made at the beginning of the program that "calls" the TUI-TOOL
+*> and cannot be changed while the program is running
+*> **************************************************************
+
 perform InitialSettings thru InitialSettingsEx
-*> clear the screen
-*> display wDummy at 2579 with blank screen end-display
 
 *> BIG BOX as BACKGROUD
 move red   to Box-bco
 move white to Box-fco
 move 'S'   to Box-style
-move 'N'   to Yn-Shadow
+move 'N'   to Box-Shadow
 move '001001025080' to Box-rc
 call GC01BOX using BOX-AREA
 
-Display ' GnuCOBOL TUI-TOOLS: GC02YESNO at work.'
+Display ' GnuCOBOL TUI-TOOLS: GC03YESNO at work.'
         at 003002 :BCOL: red :FCOL: yellow highlight end-display
 Display " use cursor keys,mouse left singleclcik,tab/backtab,pgup/dn to change button"
         at 018002 :BCOL: red :FCOL: yellow highlight end-display
@@ -83,7 +96,7 @@ Display " use ESC or other char or mouse right single or doubleclick to to exit"
         at 020002 :BCOL: red :FCOL: yellow highlight end-display
 Display " to change colors: ALT-F2/F3 back/foreground of TOOL "
         at 021002 :BCOL: red :FCOL: yellow highlight end-display
-Display " to change colors: ALT-F4/F5 back/foreground of active button "
+Display " to change colors: ALT-F5/F6 back/foreground of active button "
         at 022002 :BCOL: red :FCOL: yellow highlight end-display
 Display " to reset colors: ALT-F9 "
         at 023002 :BCOL: red :FCOL: yellow highlight end-display
@@ -91,10 +104,10 @@ Display " to reset colors: ALT-F9 "
 *> **************************************************************
 *>          CALL THE  YESNO  TOOL
 *> **************************************************************
-set Yn-BcoNonSel to Yellow
-set Yn-FcoNonSel to LightRed
-set Yn-BcoSel    to LightMagenta
-set Yn-FcoSel    to LightWhite
+set Yn-BcoNonSel to Green
+set Yn-FcoNonSel to White
+set Yn-BcoSel    to LightWhite
+set Yn-FcoSel    to Green
 move '006033' to Yn-rc
 call GC03YESNO using YESNO-AREA
 
@@ -130,7 +143,7 @@ accept omitted
     move 'D'      to Box-style move 'N'      to Box-3D
     perform callGC01BOX thru callGC01BOX-ex
 
-    display ' GnuCOBOL TUI-TOOLS (from DILO - Italy): GC02YESNO at work.'
+    display ' GnuCOBOL TUI-TOOLS (from DILO - Italy): GC03YESNO at work.'
              at 003003 with      :FCOL: white :BCOL: cyan
     display ' < End of Demo > ... Enter to exit ...'
              at 023003 with      :FCOL: white :BCOL: cyan
