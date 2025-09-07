@@ -11,7 +11,7 @@ PROGRAM-ID. GC03YESNO is initial.
 *> Parameters: look at GC03YESNO.cpy
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *> License:    Copyright 2021 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    2.0 20210202
+*> Version:    2.1 20230601
 *> Changelog:  1.0 first release.
 *>             2.0 - mouse management is added:
 *>                   changed from "call getch" to ACCEPT a DUMMY field
@@ -21,6 +21,13 @@ PROGRAM-ID. GC03YESNO is initial.
 *>                 - YES and NO labels of buttons are now available as parameters
 *>                 - colors from 9(01) to 9(02) to manage also colors fron 08 to 15
 *>                 - added use of ALT-F2/3/4/5 to change colors
+*>             2.1 just to add a note
+*>                 SET ENVIRONMENT'COB_LEGACY' TO '1' must be added as first PROCEDURE DIVISION statement.
+*>                 of the caller program (see GC03YESNODEMO as example of use). This is explained as follows.
+*>                 From GnuCOBOL 3.2 BLINK and HIGHLIGHT do by default what they should (blinking and bolding) !
+*>                 And using the "extended" color numbers just set the additional attributes blink and highlight
+*>                 Please set COB_LEGACY=1 and the old blink/highlight behavior is used
+*>                 (which adjusts the colors internally new extended colors also for background - not portable)
 *> ***********************************************************************************
 *> Displays a Box with a YES and NO options and returns the choice to caller
 *> the BOX has a fixed size of 10 rows and 40 cols (included row/col for shadow)
@@ -46,16 +53,12 @@ SPECIAL-NAMES.
     CURSOR     IS wCursorRowCol.  *> Cursor Position
 DATA DIVISION.
 WORKING-STORAGE SECTION.
-copy GC00COLORS.CPY.
+copy 'GC00COLORS.CPY'.
 
 01 wVisibilityNew  BINARY-SHORT . *> SIGNED.
 01 wVisibilityOld  BINARY-SHORT . *> SIGNED.
 01 wVisibilityNew9  pic 9(8).
 01 wVisibilityOld9  pic 9(8).
-*> 01 bco-sel     PIC 9.
-*> 01 fco-sel     PIC 9.
-*> 01 bco-nonsel  PIC 9.
-*> 01 fco-nonsel  PIC 9.
 
 01  j          pic s9(02) comp-5 value  +0.
 01  x          pic s9(02) comp-5 value  +0.
@@ -101,7 +104,7 @@ copy GC00COLORS.CPY.
 01 wNO-Box-r2  pic 999 value zero.
 01 wNO-Box-c2  pic 999 value zero.
 
-COPY 'GC01BOX.CPY'.
+COPY 'GC01BOX.CPY'        suppress.
 copy 'GC97KEYCODEGC.CPY'  suppress.
 
 LINKAGE SECTION.
@@ -206,11 +209,11 @@ Accept-UserAction.
             add 1 to Yn-FcoNonSel
             If Yn-FcoNonSel > 15 move 0 to Yn-FcoNonSel end-if
             go to DisplayBox-and-Buttons
-      when wCRT-STATUS = K-ALT-F4    *> change Back Color of "active" BUTTON
+      when wCRT-STATUS = K-ALT-F5    *> change Back Color of "active" BUTTON
             add 1 to Yn-BcoSel
             If Yn-BcoSel > 15 move 0 to Yn-BcoSel end-if
             go to DisplayBox-and-Buttons
-      when wCRT-STATUS = K-ALT-F5   *> change Fore Color of "active" BUTTON
+      when wCRT-STATUS = K-ALT-F6   *> change Fore Color of "active" BUTTON
             add 1 to Yn-FcoSel
             If Yn-FcoSel > 15 move 0 to Yn-FcoSel end-if
             go to DisplayBox-and-Buttons
@@ -248,7 +251,7 @@ DisplayBox.
     move Yn-FcoNonSel to Box-fco
     move Yn-r1        to Box-r1
     move Yn-c1        to Box-c1
-    compute Box-r2 = Yn-r1 + 8
+    compute Box-r2 = Yn-r1 +  8
     compute Box-c2 = Yn-c1 + 37
     CALL GC01BOX USING BY CONTENT Box-AREA.
 DisplayBox-Ex. exit.
