@@ -9,15 +9,15 @@
 *> Version:    2.0 2021.02.02
 *> Changelog:  1.0 first release.
 *>             2.0 back-fore colors from 9(01) to 9(02) to manage colors from 08 to 15.
-*>                 hilight field now i snot funcional (deprecated)
+*>                 highlight field now is not funcional (deprecated)
 *> ***********************************************************************************
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
 *> r1,c1     row & column of upper left corner   - DEFAULT: 01,01
 *> r2,c2     row & column of lower right corner  - DEFAULT: 25, 80
-*> bco,fco   box background & foreground (the frame) color
+*> bco,fco   box background & foreground (the frame) color  (also from 8 to 15)
 *> hilight   Y= the foreground (the frame of the box) is highlighted
-*>           this option now is not functional (you can use colors fron 08 to 15 to highlight)
+*>           this option now is no more functional (you can use 08 to 15 colors to highlight)
 *> style     S= Single line, D= Double line, 1,2=character box, 3=a solid frame
 *>           N= noline (to colour a zone), C= custom
 *> custom    if style=C, here are 9 chars to draw the box:
@@ -42,7 +42,7 @@
 *>                                       c1
 *>           Example               r1 ->  ABBBBBBBBBBBB TTTTTTTTT BBBBBBBBBBBBC
 *>           style = C         displays:  DEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEF
-*>           custom = ABCDEFGHZ           DEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEF
+*>           custom = ABCDEFGHI           DEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEF
 *>                                        DEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEF
 *>                                        GHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHI <- r2
 *>                                                                           c2
@@ -58,7 +58,7 @@
    03 Box-Parameters.
       05 Box-bco     pic 9(02) value 07.          *> back color of the box
       05 Box-fco     pic 9(02) value 07.          *> fore color of the box  (the frame)
-      05 Box-fcoH    pic X(01) value "Y".         *> Y = Hilight Foreground (the frame of the box)
+      05 Box-fcoH    pic X(01) value "Y".         *> Y = Hilight Foreground (the frame of the box). deprecated.
       05 Box-style   pic X(01) value "D".         *> S, D, 1, 2, 3, N, C
       05 Box-custom  PIC X(09) VALUE "ABCDEFGHI". *> UL, UC, UR, ML, MC, MR, LL, LC, LR
       05 Box-fill    pic X(01) value "Y".         *> Y = filled box
@@ -69,5 +69,5 @@
       05 Box-tit     pic x(01) value 'N'.         *> Y = display a title at top of the box
       05 Box-titBco  pic 9(02) value 07.          *> back color of titlebox
       05 Box-titFco  pic 9(02) value 07.          *> fore color of titlebox
-      05 Box-titFcoH pic X(01) value "Y".         *> hiligth fore color of titlebox ?
+      05 Box-titFcoH pic X(01) value "Y".         *> hiligth fore color of titlebox ? (deprecated)
       05 Box-titDes  pic x(80) value space.       *> string from 1 to 80 char, to be used as a box title
