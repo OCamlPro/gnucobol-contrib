@@ -22,10 +22,11 @@ You can choose objects attributes: position on screen, size, colors, borders, sh
 Source files are well commented. Documentation of parameters is inside the copybooks.
 Each TUI TOOL have one or more corresponding demo programs to show how to use the TOOL.
 The GnuCOBOL sources have been compiled with GnuCOBOL 3.1.
-Mouse management wass already added to some of TUI TOOLS. 
+Mouse management was already added to some of TUI TOOLS. 
 The implementation of the various Tools to add mouse management is currently underway.
 Let me know if you have any suggestion or idea to improve/extend the tools.
 Your suggestions will be very useful and welcome.
+Please mail to eugenio.dilo
 
 The collection has following TOOLS.
 
@@ -35,7 +36,7 @@ This function is mainly developed to be used by other following tools.
 
 GC02BOXMEX.COB - call it to display messages on screen, you can specify back/fore 
 colors, size, position, single/double/custom box borders, 3D effect and so on.
-Use mouse key to exit frome message box.
+Use Enter or mouse key to exit from message box.
 
 GC03YESNO.COB - it display a BOX with a message and two big buttons: 
 YES and NO on screen, you can specify back/fore colors, size, position, and so on.
@@ -57,7 +58,7 @@ GC15OFFON.COB - call it to display OFF or ON items (switches) on screen, you can
 specify number of items, back/fore colors, size, position, symbol, brackets and so on.
 Mouse management in included to select items and to put switches ON or OFF.
 
-GC18RADIOBUTTON.COB - call it to display rediobutton items (options) on screen, you can 
+GC18RADIOBUTTON.COB - call it to display radiobutton items (options) on screen, you can 
 specify number of items, back/fore colors, size, position, symbol , brackets and so on.
 2020: Mouse management was added: use mouse to select the options.
 
@@ -69,7 +70,7 @@ GC22MENU.COB - (now is obsolete) version of GC21MENU.
 It use "call getch" instead of ACCEPT OMITTED to detect keypress from user.
 
 GC26LISTVIEW.COB - call it to display a window with an item list on screen. 
-The user can scrolll/browse vertical and horizontal the list and select one of the items.
+The user can scroll/browse vertical and horizontal the list and select one of the items.
 
 GC51CALYEAR.COB - call it to display a one year calendar on screen.
 User can browse days, months and years to pick-up a date.
@@ -92,6 +93,7 @@ The user can also select and navigate Up and Down on directories
 GC56DATEPICKER.COB - call it to display a one month calendar (regular or small size)
 You can specify starting date, back/fore colors, size, position, single/double/custom 
 borders, 3D effect and so on. User can browse days, months and years to pick-up a date.
+Mouse management in included to select months, years, dates.
 
 GC58SAVERCLOCK.COB - call it to display a screen saver with a big clock and a scrolling 
 string. the big clock will move randomly on screen. you can specify back/fore colors, 
@@ -114,7 +116,7 @@ It is a real application (it manage a "master data" file) showing also:
 Copying and modifying this programs you can develop a lot of other type of applications. 
 
 GC74HELPxxxx.COB - A "HELP" system. You can write text help files , load it on indexed files.
-List the indexde file , access to this HELP messages from any CRUDE application.
+List the indexed file, access to this HELP messages from any CRUDE application.
 
 GC76TABxxxxx.COB - A "TABLE" system. You can insert/write, edit, delete, list "TABLE" data.
 
