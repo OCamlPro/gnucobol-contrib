@@ -5,11 +5,13 @@
 *> Purpose:    WORK-AREA FOR GC02BOXMEX.COB - DISPLAY MESSAGE IN A BOX
 *> Usage:      call GC02BOXMEX using Boxmex-Area
 *> Author:     Eugenio Di Lorenzo - Italia (DILO)
-*> License:    Copyright 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
-*> Version:    2.0 2021.01.01
+*> License:    (C) 2016 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
+*> Version:    2.1 2021.02.02
 *> Changelog:  1.0 first release.
 *>             1.1 added OkButton
 *>             2.0 mouse management was added. Mouse click is same as Enter
+*>             2.1 color fields: Bxm-bco Bxm-fco Bxm-bcoM Bxm-fcoM Bxm-titBco Bxm-titFco
+*>                 from 9(01) to 9(02) to manage also color codes fron 08 to 15
 *> ***********************************************************************************
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
@@ -17,6 +19,7 @@
 *> r2,c2     row & column of lower right corner  - DEFAULT: 25, 80
 *> bco,fco   box background & foreground (the frame) color
 *> hilight   Y= the foreground (the frame of the box) is highlighted
+*>           this feature is no more functional (you can use 08 to 15 colors to highlight)
 *> wait      Y= display the message and wait for a user keypress
 *>           N= diisplay the message and returns to caller without wait for a keypress by the user
 *>           in that case the caller can display 2 or more buttons associated to the message
@@ -41,7 +44,7 @@
 *> titDes    string to be displayed as title
 *> OkButton  Y= display a single OK button at row = r2 -2 . N = not display the single button.
 *> click     Y= when hit enter on the single button you will have a "click effect":
-*>           re-display the button 1 char to right, in black/white color and without shadow
+*>           (re-display the button 1 char to right, in black/white color and without shadow)
 *> tabmex    table of 1 to 20 strings to be displayed in the box
 *>           firts element will be displayed 1 row under the box frame
 *>           and 1 column right of the box frame. see following sample:
@@ -60,8 +63,8 @@
 *>           +-----------------------------------+ r2
 *>                                               c2
 *>       r2 has to be at least = r1 + 'n.of non blank rows of messages' + 3
-*>       max 20 rows,  max 78 chars each one. Strings have to be
-*>       in ASCIIZ format = last byte is x'00'(low-value).
+*>       max 20 rows,  max 78 chars each one.
+*>       Strings have to be in ASCIIZ format = last byte is x'00'(low-value).
 *> ***********************************************************************************
    03 Bxm-rc.
       05 Bxm-r1c1.
@@ -71,9 +74,9 @@
          07 Bxm-r2   pic 9(03) value 025.
          07 Bxm-c2   pic 9(03) value 080.
    03 Bxm-Parameters.
-      05 Bxm-bco     pic 9(01) value white.       *> back color of box
-      05 Bxm-fco     pic 9(01) value white.       *> fore color of box
-      05 Bxm-fcoH    pic X(01) value 'Y'.         *> Hilight Foreground ? (frame of the box)
+      05 Bxm-bco     pic 9(02) value white.       *> back color of the box
+      05 Bxm-fco     pic 9(02) value white.       *> fore color of the box
+      05 Bxm-fcoH    pic X(01) value 'Y'.         *> Hilight Foreground ? (frame of the box). deprecated.
       05 Bxm-style   pic X(01) value 'S'.         *> single line frame
       05 Bxm-custom  PIC X(09) VALUE 'ABCDEFGHI'. *> UL, UC, UR, ML, MC, MR, LL, LC, LR
       05 Bxm-fill    pic X(01) value 'Y'.         *> filled Box
@@ -82,18 +85,18 @@
       05 Bxm-add1c   pic x(01) value 'N'.         *> enlarge box for a better 3D effect
       05 Bxm-beep    pic x(01) value 'N'.         *> Y = bell
       *> colors of the message
-      05 Bxm-bcoM       pic 9(01) value white.    *> back color of message text (use same of box )
-      05 Bxm-fcoM       pic 9(01) value black.    *> fore color of message text
-      05 Bxm-fcoMH      pic X(01) value 'Y'.      *> Hilight Foreground  (message text)
+      05 Bxm-bcoM       pic 9(02) value white.    *> back color of message text (use same of box )
+      05 Bxm-fcoM       pic 9(02) value black.    *> fore color of message text
+      05 Bxm-fcoMH      pic X(01) value 'Y'.      *> Hilight Foreground  (message text) - deprecated.
 
       05 Bxm-wait       pic x(01) value 'Y'.
       05 Bxm-savescr    pic x(01) value 'Y'.
       05 Bxm-OkButton   pic x(01) value 'Y'.
       05 Bxm-Click      pic x(01) value 'Y'.
       05 Bxm-tit        pic x(01) value 'N'.         *> Y = display a title at top of the box
-      05 Bxm-titBco     pic 9(01) value white.       *> back color of titlebox
-      05 Bxm-titFco     pic 9(01) value white.       *> fore color of titlebox
-      05 Bxm-titFcoH    pic X(01) value 'Y'.         *> hiligth fore color of titlebox ?
+      05 Bxm-titBco     pic 9(02) value white.       *> back color of titlebox
+      05 Bxm-titFco     pic 9(02) value white.       *> fore color of titlebox
+      05 Bxm-titFcoH    pic X(01) value 'Y'.         *> hiligth fore color of titlebox. deprecated.
       05 Bxm-titDes     pic x(80) value space.       *> string from 1 to 80 char, to be used as a box title
    *> 80 columns - 2 cols for box frame + 1 column for x'00' to have an ASCIIZ string = 79
    03 Bxm-tabmex.
