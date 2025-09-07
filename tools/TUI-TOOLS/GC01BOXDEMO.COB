@@ -38,7 +38,7 @@ COPY 'GC00COLORS.CPY'.
 
 01  wCRT-STATUS         PIC 9(04) VALUE 9999.
 
-01  wCursorRowCol       PIC 9(06) value 0000.
+01  wCursorRowCol       PIC 9(06) value 000000.
 01  redefines wCursorRowCol .
     05 wCursorRow       Pic 9(03).
     05 wCursorCol       Pic 9(03).
