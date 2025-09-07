@@ -42,7 +42,7 @@ SPECIAL-NAMES.
     CURSOR     IS wCursorRowCol.  *> Cursor Position
 DATA DIVISION.
 WORKING-STORAGE SECTION.
-copy GC00COLORS.CPY.
+copy 'GC00COLORS.CPY'.
 
 01 wVisibilityNew  BINARY-SHORT . *> SIGNED.
 01 wVisibilityOld  BINARY-SHORT . *> SIGNED.
