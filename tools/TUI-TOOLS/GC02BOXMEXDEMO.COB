@@ -9,7 +9,7 @@ PROGRAM-ID. GC02BOXMEXDEMO.
 *> Tectonics:  cobc -x GC01BOXMEXDEMO.COB -lpdcurses (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      GC02BOXMEXDEMO
 *> Parameters: none
-*> Author:     Eugenio Di Lorenzo - Italia (DILO)
+*> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *> License:    Copyright 2021 E.Di Lorenzo - GNU Lesser General Public License, LGPL, 3.0 (or greater)
 *> Version:    2.0 2021.01.01
 *> Changelog:  1.0 first release.
@@ -18,14 +18,8 @@ PROGRAM-ID. GC02BOXMEXDEMO.
 
 DATA DIVISION.
 WORKING-STORAGE SECTION.
-01 black   constant as 0.
-01 blue    constant as 1.
-01 green   constant as 2.
-01 cyan    constant as 3.
-01 red     constant as 4.
-01 magenta constant as 5.
-01 yellow  constant as 6.  *> or Brown
-01 white   constant as 7.
+copy 'GC00COLORS.CPY'.
+
 01 wDummy            pic x(01) VALUE     ' '.
 01  i    pic 999.
 01  j    pic 999.
@@ -37,6 +31,20 @@ WORKING-STORAGE SECTION.
 01 wCursorShow  BINARY-SHORT value 2. *>  SIGNED.
 01 wVisibility  BINARY-SHORT.         *>  SIGNED.
 
+*>  mouse mask, apply to COB_MOUSE_FLAGS
+78  COB-AUTO-MOUSE-HANDLING   VALUE 1.
+78  COB-ALLOW-LEFT-DOWN       VALUE 2.
+78  COB-ALLOW-LEFT-UP         VALUE 4.
+78  COB-ALLOW-LEFT-DOUBLE     VALUE 8.
+78  COB-ALLOW-MIDDLE-DOWN     VALUE 16.
+78  COB-ALLOW-MIDDLE-UP       VALUE 32.
+78  COB-ALLOW-MIDDLE-DOUBLE   VALUE 64.
+78  COB-ALLOW-RIGHT-DOWN      VALUE 128.
+78  COB-ALLOW-RIGHT-UP        VALUE 256.
+78  COB-ALLOW-RIGHT-DOUBLE    VALUE 512.
+78  COB-ALLOW-MOUSE-MOVE      VALUE 1024.
+01  COB-MOUSE-FLAGS           PIC 9(04).
+
 copy 'GC01BOX.CPY'.
 copy 'GC02BOXMEX.CPY'.
 COPY 'GC09BUTTONS.CPY'.
@@ -45,15 +53,13 @@ COPY 'GC09BUTTONS.CPY'.
 *>           P R O C E D U R E   D I V I S I O N
 *> ***********************************************************************************
 PROCEDURE DIVISION.
-    *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
-    set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
-    set environment 'COB_SCREEN_ESC'        TO 'Y'.
+    perform InitialSettings thru InitialSettingsEx
 
     *> clear screen
     display wDummy at 2579 with blank screen end-display
-    *> hide the cursor (use always a display or an accept at .... before to have a call to "initscr"
-    call static 'curs_set' using by value wCursorHide returning wVisibility end-call
-    *> BELL
+    *> *> hide the cursor (use always a display or an accept at .... before to have a call to "initscr"
+    *> call static 'curs_set' using by value wCursorHide returning wVisibility end-call
+    *> *> BELL
     if Bxm-beep = 'Y' CALL X"E5"  end-if.
 
 message1.
@@ -61,25 +67,29 @@ message1.
     move white          to Box-fco
     move '001001025080' to Box-rc
     move 'S'            to Box-style
-    call GC01BOX using Box-Area
+    perform callGC01BOX thru callGC01BOX-ex
     display 'GnuCOBOL TUI TOOL to display messages on screen. See the GC02BOXMEX at work.'
-          at 2203 with foreground-color white background-color green
-
+            at 2203 :BCOL: green :FCOL: yellow highlight
+    display 'ALT-F2/3 change back/fore color of message. ALT-F4/5 back/fore of box.      '
+            at 2303 :BCOL: green :FCOL: yellow highlight
+    display "Mouse left single or doubleclick on a Button                                "
+          at 2403 :BCOL: green :FCOL: yellow highlight
     *> ***********************************************************************************
     *>      MESSAGE N.1
     *> ***********************************************************************************
     initialize Boxmex-Area ALL TO VALUE
     move low-value to Bxm-tabmex
-    move '                                ' & x'00' to Bxm-mex(01)
-    move '     GnuCOBOL TUI TOOLS DEMO    ' & x'00' to Bxm-mex(02)
-    move '       Copyright (c) 2021       ' & x'00' to Bxm-mex(03)
-    move '       ------------------       ' & x'00' to Bxm-mex(04)
-    move '           GC02BOXMEX           ' & x'00' to Bxm-mex(05)
-    move '           - Italia -           ' & x'00' to Bxm-mex(06)
-    move '                                ' & x'00' to Bxm-mex(07)
-    move ' move message with cursor keys  ' & x'00' to Bxm-mex(08)
+    move '                                  ' & x'00' to Bxm-mex(01)
+    move '      GnuCOBOL TUI TOOLS DEMO     ' & x'00' to Bxm-mex(02)
+    move '        Copyright (c) 2021        ' & x'00' to Bxm-mex(03)
+    move '        ------------------        ' & x'00' to Bxm-mex(04)
+    move '            GC02BOXMEX            ' & x'00' to Bxm-mex(05)
+    move '            - Italia -            ' & x'00' to Bxm-mex(06)
+    move '                                  ' & x'00' to Bxm-mex(07)
+    move '  move message with cursor keys   ' & x'00' to Bxm-mex(08)
     move '005020017055' to Bxm-rc
-    move white to Bxm-bco  move black to Bxm-fco
+    move Cyan          to Bxm-bco Bxm-bcoM Bxm-titBco
+    move Lightyellow   to Bxm-fco Bxm-fcoM Bxm-titFco
     move 'N' to Bxm-Shadow Bxm-3D Bxm-fcoMH
     move 'D' to Bxm-Style  move 'Y' to Bxm-tit
     move ' First Message ' & x'00'  to Bxm-titDes
@@ -91,7 +101,11 @@ message1.
     *> ***********************************************************************************
 message2.
       display 'See the click effect on the ''OK single button''  '
-          at 2303 with foreground-color yellow background-color green  highlight
+          at 2203 :BCOL: green :FCOL: yellow highlight
+    display 'ALT-F2/3 change back/fore color of message. ALT-F4/5 back/fore of box.      '
+          at 2303 :BCOL: green :FCOL: yellow highlight
+    display "Mouse left single or doubleclick on a Button                                "
+          at 2403 :BCOL: green :FCOL: yellow highlight
     initialize Boxmex-Area ALL TO VALUE
     move low-value to Bxm-tabmex
     move z' This message is to show some feature of the tools utilities on screen ' to Bxm-mex(01)
@@ -101,10 +115,9 @@ message2.
     move z' This message is to show some feature of the tools utilities on screen ' to Bxm-mex(05)
     move z' This message is to show some feature of the tools utilities on screen ' to Bxm-mex(06)
     move z'                                                                       ' to Bxm-mex(06)
-    move '005003015075' to Bxm-rc
-    move white to Bxm-bco
-    move black to Bxm-fco
-    move black to Bxm-fcoM
+    move '005003014075' to Bxm-rc
+    move Magenta       to Bxm-bco Bxm-bcoM Bxm-titBco
+    move Lightyellow   to Bxm-fco Bxm-fcoM Bxm-titFco
     move 'N' to Bxm-fcoMH
     move 'Y' to Bxm-Shadow Bxm-click
     move 'E' to Bxm-3D
@@ -118,7 +131,7 @@ message2.
 *> ***********************************************************************************
 message3.
         display 'GC02BOXMEX used with GC09BUTTONS ... message text and three buttons.     '
-          at 2403 with foreground-color yellow background-color green  highlight
+          at 2303 :BCOL: green :FCOL: yellow highlight
     initialize Boxmex-Area ALL TO VALUE
     move low-value to Bxm-tabmex
     *>    123456789012345678901234567890123456789012345678901234567890123456789012
@@ -140,22 +153,22 @@ message3.
     move space & x'00' to Bxm-mex(14)
 
     move '003003018077' to Bxm-rc
-    move red    to Bxm-bco Bxm-titBco
-    move black  to Bxm-fco Bxm-titFco
+    move Red    to Bxm-bco Bxm-titBco
+    move LightWhite  to Bxm-fco Bxm-titFco
     move red    to Bxm-bcoM
-    move yellow to Bxm-fcoM
+    move LightYellow to Bxm-fcoM
     move 'Y' to Bxm-fcoMH
     move 'N' to Bxm-Shadow Bxm-click
     move 'N' to Bxm-3D Bxm-wait Bxm-OkButton
     move 'D' to Bxm-Style
     perform callGC02BOXMEX thru callGC02BOXMEX-ex
 
-
-    display 'Cursor/Page/Tab and spacebar keys change active Button.                      '
-          at 2303 with foreground-color white background-color green
+    display 'Cursor/Page/Tab and spacebar keys change active Button.                     '
+          at 2203 :BCOL: green :FCOL: yellow highlight
     display "Activate an item also with hot keys (letters in red )                        "
-          at 2403 with foreground-color white background-color green end-display
-
+          at 2303 :BCOL: green :FCOL: yellow highlight
+    display "Mouse left single or doubleclick on a Button                                "
+          at 2403 :BCOL: green :FCOL: yellow highlight
     *> DISPLAY BUTTONS
     initialize Buttons-area ALL TO VALUE
     move red       to Bu-bcoShadow
@@ -181,7 +194,7 @@ message3.
 *> ***********************************************************************************
 message3.
         display 'GC02BOXMEX used with GC09BUTTONS ... message text and vertical buttons.     '
-          at 2203 with foreground-color yellow background-color green  highlight
+                    at 2203 :BCOL: green :FCOL: yellow highlight
     initialize Boxmex-Area ALL TO VALUE
     move low-value to Bxm-tabmex
     *>    123456789012345678901234567890123456789012345678901234567890123456789012
@@ -202,10 +215,10 @@ message3.
     move z' are Keisuke Nishida, Roger While and Simon Sobisch.                     ' to Bxm-mex(13)
     move space & x'00' to Bxm-mex(14)
     move '003003019077' to Bxm-rc
-    move red    to Bxm-bco Bxm-titBco
-    move black  to Bxm-fco Bxm-titFco
-    move red    to Bxm-bcoM
-    move yellow to Bxm-fcoM
+    move red         to Bxm-bco Bxm-titBco
+    move LightWhite  to Bxm-fco Bxm-titFco
+    move red         to Bxm-bcoM
+    move LightYellow to Bxm-fcoM
     move 'Y' to Bxm-fcoMH
     move 'N' to Bxm-Shadow Bxm-click Bxm-3D Bxm-wait Bxm-OkButton
     move 'D' to Bxm-Style
@@ -231,7 +244,7 @@ message3.
     Move ' 04013062   Ignore    ' & x'00' to Bu-Ele(05)
     Move ' 05015062    Help     ' & x'00' to Bu-Ele(06)
     call GC09BUTTONS using BUTTONS-AREA
-    .
+    continue.
 
 
 *> ***********************************************************************************
@@ -244,8 +257,8 @@ message4.
     set  Box-fco        to white
     move '002003024078' to Box-rc
     move 'S'            to Box-style
-    call GC01BOX using Box-Area.
-
+    perform callGC01BOX thru callGC01BOX-ex
+    continue.
 
 *> ***********************************************************************************
 *>      MESSAGE N.5
@@ -253,16 +266,15 @@ message4.
 message5.
     initialize Boxmex-Area ALL TO VALUE
     move low-value to Bxm-tabmex
-    move space & x'00' to Bxm-mex(01)
-    move '            __________________________________________         '  & x'00' to Bxm-mex(02)
-    move '   ________|               GnuCOBOL 3.1               |_______ '  & x'00' to Bxm-mex(03)
-    move '   \       |           TUI TOOLS COLLECTION           |      / '  & x'00' to Bxm-mex(04)
-    move '    \      |                  (DILO)                  |     /  '  & x'00' to Bxm-mex(05)
-    move '    /      |__________________________________________|     \  '  & x'00' to Bxm-mex(06)
-    move '   /__________)                                    (_________\ '  & x'00' to Bxm-mex(07)
-    move space & x'00' to Bxm-mex(08)
-    move space & x'00' to Bxm-mex(09)
-
+    move '                                                                   '  & x'00' to Bxm-mex(01)
+    move '             __________________________________________            '  & x'00' to Bxm-mex(02)
+    move '    ________|               GnuCOBOL 3.1               |_______    '  & x'00' to Bxm-mex(03)
+    move '    \       |           TUI TOOLS COLLECTION           |      /    '  & x'00' to Bxm-mex(04)
+    move '     \      |                  (DILO)                  |     /     '  & x'00' to Bxm-mex(05)
+    move '     /      |__________________________________________|     \     '  & x'00' to Bxm-mex(06)
+    move '    /__________)                                    (_________\    '  & x'00' to Bxm-mex(07)
+    move '                                                                   '  & x'00' to Bxm-mex(08)
+    move '                                                                   '  & x'00' to Bxm-mex(09)
     move '005005017073' to Bxm-rc
     move blue    to Bxm-bco
     move black   to Bxm-fco
@@ -283,46 +295,52 @@ message6.
   initialize Boxmex-Area ALL TO VALUE
   move low-value to Bxm-tabmex
 
-  move '           __________________               '  & x'00' to Bxm-mex(01)
-  move '          /\  ______________ \              '  & x'00' to Bxm-mex(02)
-  move '         /::\ \ZZZZZZZZZZZZ/\ \             '  & x'00' to Bxm-mex(03)
-  move '        /:/\.\ \        /:/\:\ \            '  & x'00' to Bxm-mex(04)
-  move '       /:/Z/\:\ \      /:/Z/\:\ \           '  & x'00' to Bxm-mex(05)
-  move '      /:/Z/__\:\ \____/:/Z/  \:\ \          '  & x'00' to Bxm-mex(06)
-  move '     /:/Z/____\:\ \___\/Z/    \:\ \         '  & x'00' to Bxm-mex(07)
-  move '     \:\ \ZZZZZ\:\ \ZZ/\ \     \:\ \        '  & x'00' to Bxm-mex(08)
-  move '      \:\ \     \:\ \ \:\ \     \:\ \       '  & x'00' to Bxm-mex(09)
-  move '       \:\ \     \:\ \_\;\_\_____\;\ \      '  & x'00' to Bxm-mex(10)
-  move '        \:\ \     \:\_________________\     '  & x'00' to Bxm-mex(11)
-  move '         \:\ \    /:/ZZZZZZZZZZZZZZZZZ/     '  & x'00' to Bxm-mex(12)
-  move '          \:\ \  /:/Z/    \:\ \  /:/Z/      '  & x'00' to Bxm-mex(13)
-  move '           \:\ \/:/Z/      \:\ \/:/Z/       '  & x'00' to Bxm-mex(14)
-  move '            \:\/:/Z/________\;\/:/Z/        '  & x'00' to Bxm-mex(15)
-  move '             \::/Z/____________\/Z/         '  & x'00' to Bxm-mex(16)
-  move '              \/ZZZZZZZZZZZZZZZZZ/          '  & x'00' to Bxm-mex(17)
+  move '           __________________                '  & x'00' to Bxm-mex(01)
+  move '          /\  ______________ \               '  & x'00' to Bxm-mex(02)
+  move '         /::\ \ZZZZZZZZZZZZ/\ \              '  & x'00' to Bxm-mex(03)
+  move '        /:/\.\ \        /:/\:\ \             '  & x'00' to Bxm-mex(04)
+  move '       /:/Z/\:\ \      /:/Z/\:\ \            '  & x'00' to Bxm-mex(05)
+  move '      /:/Z/__\:\ \____/:/Z/  \:\ \           '  & x'00' to Bxm-mex(06)
+  move '     /:/Z/____\:\ \___\/Z/    \:\ \          '  & x'00' to Bxm-mex(07)
+  move '     \:\ \ZZZZZ\:\ \ZZ/\ \     \:\ \         '  & x'00' to Bxm-mex(08)
+  move '      \:\ \     \:\ \ \:\ \     \:\ \        '  & x'00' to Bxm-mex(09)
+  move '       \:\ \     \:\ \_\;\_\_____\;\ \       '  & x'00' to Bxm-mex(10)
+  move '        \:\ \     \:\_________________\      '  & x'00' to Bxm-mex(11)
+  move '         \:\ \    /:/ZZZZZZZZZZZZZZZZZ/      '  & x'00' to Bxm-mex(12)
+  move '          \:\ \  /:/Z/    \:\ \  /:/Z/       '  & x'00' to Bxm-mex(13)
+  move '           \:\ \/:/Z/      \:\ \/:/Z/        '  & x'00' to Bxm-mex(14)
+  move '            \:\/:/Z/________\;\/:/Z/         '  & x'00' to Bxm-mex(15)
+  move '             \::/Z/____________\/Z/          '  & x'00' to Bxm-mex(16)
+  move '              \/ZZZZZZZZZZZZZZZZZ/           '  & x'00' to Bxm-mex(17)
 
   move '002020023066' to Bxm-rc
-  move red    to Bxm-bco
+  move red    to Bxm-bco Bxm-bcoM
   move white  to Bxm-fco
-  move red  to Bxm-bcoM
-  move yellow   to Bxm-fcoM
+  move LightYellow to Bxm-fcoM
   move 'Y' to Bxm-fcoMH Bxm-Shadow Bxm-click
   move 'N' to Bxm-3D
   move 'D' to Bxm-Style
   perform callGC02BOXMEX thru callGC02BOXMEX-ex
   continue.
 
+    initialize Box-area ALL TO VALUE
+    *> display a big box as background
+    move cyan     to Box-bco   set Box-fco to white
+    move '001001' to Box-r1c1  move '025080' to Box-r2c2
+    move 'D'      to Box-style move 'N'      to Box-3D
+    perform callGC01BOX thru callGC01BOX-ex
 
-*> DISPLAY ITALIAN FLAG
-  display ' GnuCOBOL TUI-TOOLS (from DILO - Italy): GC02BOXMEX at work.'
-            at 003006 with      :FCOL: white :BCOL: cyan
-  display ' < End of Demo > ... Enter to exit ...'
-            at 023006 with      :FCOL: white :BCOL: cyan
+    *> DISPLAY ITALIAN FLAG
+      display ' GnuCOBOL TUI-TOOLS (from DILO - Italy): GC02BOXMEX at work.'
+                at 003006 with      :FCOL: white :BCOL: cyan
+      display ' < End of Demo > ... Enter to exit ...'
+                at 023006 with      :FCOL: white :BCOL: cyan
 
+     initialize Box-area ALL TO VALUE
      move '009036014049' to Box-rc
      move black to Box-bco
      move 'S' to Box-style
-     call  GC01BOX using BOX-AREA
+     perform callGC01BOX thru callGC01BOX-ex
 
      display '    ' at 010037 :BCOL: Green :FCOL: white
      display '    ' at 011037 :BCOL: Green :FCOL: white
@@ -337,7 +355,6 @@ message6.
      display '    ' at 012045 :BCOL: red   :FCOL: white blink
      display '    ' at 013045 :BCOL: red   :FCOL: white blink
      accept wDummy at 2479
-
 
     continue.
 END-OF-PROGRAM.
@@ -354,5 +371,30 @@ callGC02BOXMEX.
     end-call
     continue.
 callGC02BOXMEX-ex. exit.
+
+callGC01BOX.
+    call GC01BOX using by reference BOX-AREA
+         on exception     display ' CALL GC01BOX error. Module GC01BOX not Found !' at 0501
+                          display ' type Enter to continue without boxes ...      ' at 0601
+                          accept OMITTED
+         not on exception continue
+    end-call
+    continue.
+callGC01BOX-ex. exit.
+
+InitialSettings.
+  *> sets in order to detect the PgUp, PgDn, PrtSc(screen print), Esc keys,
+  set environment 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
+  set environment 'COB_SCREEN_ESC'        TO 'Y'.
+
+  *> make mouse active
+  COMPUTE COB-MOUSE-FLAGS = COB-AUTO-MOUSE-HANDLING
+                      + COB-ALLOW-LEFT-DOWN   + COB-ALLOW-MIDDLE-DOWN   + COB-ALLOW-RIGHT-DOWN
+                      + COB-ALLOW-LEFT-UP     + COB-ALLOW-MIDDLE-UP     + COB-ALLOW-RIGHT-UP
+                      + COB-ALLOW-LEFT-DOUBLE + COB-ALLOW-MIDDLE-DOUBLE + COB-ALLOW-RIGHT-DOUBLE
+                      + COB-ALLOW-MOUSE-MOVE
+  SET environment     "COB_MOUSE_FLAGS"         to COB-MOUSE-FLAGS
+  continue.
+InitialSettingsEx. exit.
 
 End Program GC02BOXMEXDEMO.
