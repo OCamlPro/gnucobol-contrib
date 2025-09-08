@@ -9,6 +9,7 @@
 *> Version:    1.0 2017.12.01
 *> Changelog:  1.0 first release.
 *>             2.0 Mouse management added
+*>             2.1 colors from 9(01) to 9(02)
 *> ***********************************************************************************
 *> PARAMETER DESCRIPTION
 *> --------- -------------------------------------------------------------------------
@@ -43,8 +44,8 @@
          07 Cop-c1   pic 9(03) value 015.
 
    03 Cop-Parameters.                               *> see also GC01BOX.CPY for same descriptions
-      05 Cop-bco     pic 9(01) value black.         *> back color of the colorpicker
-      05 Cop-fco     pic 9(01) value white.         *> fore color of the colorpicker
+      05 Cop-bco     pic 9(02) value black.         *> back color of the colorpicker
+      05 Cop-fco     pic 9(02) value white.         *> fore color of the colorpicker
       05 Cop-fcoH    pic X(01) value "Y".           *> Hilight Foreground ?
       05 Cop-style   pic X(01) value "S".           *> S, D, 1, 2, 3, N, C
       05 Cop-custom  PIC X(09) VALUE "ABCDEFGHI".   *> UL, UC, UR, ML, MC, MR, LL, LC, LR
@@ -54,8 +55,8 @@
       05 Cop-add1c   pic x(01) value 'N'.           *> enlarge box for a better 3D effect
       05 Cop-beep    pic x(01) value 'N'.           *> Y = ring the bell
       05 Cop-tit     pic x(01) value 'Y'.           *> Y = display a title at top of the box
-      05 Cop-titBco  pic 9(01) value cyan.          *> back color of titleBox
-      05 Cop-titFco  pic 9(01) value white.         *> fore color of titleBox
+      05 Cop-titBco  pic 9(02) value cyan.          *> back color of titleBox
+      05 Cop-titFco  pic 9(02) value white.         *> fore color of titleBox
       05 Cop-titFcoH pic X(01) value "Y".           *> hiligth fore color of titleBox ?
       05 Cop-titDes  pic x(80) value x'B4' & ' Color Pair Picker (F1=Help) '  & x'C3' & x'00' .
 *> *************************************************************
