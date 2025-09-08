@@ -50,7 +50,7 @@
         05 Yn-ButtonNO-label  pic  x(10) value '    NO    '.
         05 Yn-Mess1           pic  x(34) value '              -------             '.
         05 Yn-Mess.
-           05 Yn-Mess2        pic  x(34) value '          DO YOU CONFIRM ?        '.
+           07 Yn-Mess2        pic  x(34) value '          DO YOU CONFIRM ?        '.
         05 Yn-Mess3           pic  x(34) value '           - o - O - o -          '.
 
 
