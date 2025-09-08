@@ -95,29 +95,23 @@ set Ync-FcoNonSel to LightRed
 set Ync-BcoSel    to LightMagenta
 set Ync-FcoSel    to LightWhite
 move '006034'     to Ync-rc
+move '    Save changes to the document ?     ' to Ync-Mess2
 call GC05YESNOCANC using YESNOCANC-AREA
 
-move  Ync-BcoNonSel to wColorCode
-perform DecodeColor thru DecodeColorEx
-move wColorDes to wYnc-BcoNonSelDes
-display "BcoNonSel"  at 006003 Ync-BcoNonSel at 006013 wYnc-BcoNonSelDes at 006016
-move  Ync-FcoNonSel to wColorCode
-perform DecodeColor thru DecodeColorEx
-move wColorDes to wYnc-FcoNonSelDes
-display "FcoNonSel"  at 007003 Ync-FcoNonSel at 007013 wYnc-FcoNonSelDes at 007016
+perform DisplayResult thru DisplayResultEx
 
-move  Ync-BcoSel to wColorCode
-perform DecodeColor thru DecodeColorEx
-move wColorDes to wYnc-BcoSelDes
-display "BcoSel"  at 008003 Ync-BcoSel at 008013 wYnc-BcoSelDes at 008016
-move  Ync-FcoSel to wColorCode
-perform DecodeColor thru DecodeColorEx
-move wColorDes to wYnc-FcoSelDes
-display "FcoSel"  at 009003 Ync-FcoSel at 009013 wYnc-FcoSelDes at 009016
+set Ync-BcoNonSel to Cyan
+set Ync-FcoNonSel to Yellow
+set Ync-BcoSel    to Yellow
+set Ync-FcoSel    to Black
+move '006034'     to Ync-rc
+move '  Abort   ' to Ync-ButtonYES-label
+move '  Retry   ' to Ync-ButtonNo-label
+move '  Ignore  ' to Ync-ButtonCanc-label
+move '        Are you sure to proceed ?       ' to Ync-Mess2
+call GC05YESNOCANC using YESNOCANC-AREA
 
-display "return value = "  at 011003  Ync-YesNoCanc at 011019
-display "return Key   = "  at 012003  Ync-Key       at 012019
-accept omitted
+perform DisplayResult thru DisplayResultEx
 
 *> ***********************************************************************************************
 *> DISPLAY END OF PROGRAM SCREEN
@@ -207,5 +201,30 @@ DecodeColor.
    end-evaluate
    continue.
 DecodeColorEx. exit.
+
+DisplayResult.
+move  Ync-BcoNonSel to wColorCode
+perform DecodeColor thru DecodeColorEx
+move wColorDes to wYnc-BcoNonSelDes
+display "BcoNonSel"  at 006003 Ync-BcoNonSel at 006013 wYnc-BcoNonSelDes at 006016
+move  Ync-FcoNonSel to wColorCode
+perform DecodeColor thru DecodeColorEx
+move wColorDes to wYnc-FcoNonSelDes
+display "FcoNonSel"  at 007003 Ync-FcoNonSel at 007013 wYnc-FcoNonSelDes at 007016
+
+move  Ync-BcoSel to wColorCode
+perform DecodeColor thru DecodeColorEx
+move wColorDes to wYnc-BcoSelDes
+display "BcoSel"  at 008003 Ync-BcoSel at 008013 wYnc-BcoSelDes at 008016
+move  Ync-FcoSel to wColorCode
+perform DecodeColor thru DecodeColorEx
+move wColorDes to wYnc-FcoSelDes
+display "FcoSel"  at 009003 Ync-FcoSel at 009013 wYnc-FcoSelDes at 009016
+
+display "return value = "  at 011003  Ync-YesNoCanc at 011019
+display "return Key   = "  at 012003  Ync-Key       at 012019
+accept omitted
+continue.
+DisplayResultEx. exit.
 
 End Program GC05YESNOCANCDEMO.
