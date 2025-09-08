@@ -6,7 +6,7 @@ IDENTIFICATION DIVISION.
 PROGRAM-ID. GC15OFFON is initial.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) AND UTILITIES COLLECTION
-*> Purpose:    DISPLAYS AND MANAGE A GROUP OF OFF/ON ITEMS (SWITCHES) ON SCREEN
+*> Purpose:    DISPLAYS AND MANAGE A GROUP OF OFF/ON ITEMS (SWITCHES) ON THE SCREEN
 *>             make OFFON items active with cursor keys or left mousekey singleclick
 *>             change to OFF or ON the item with spacebar or enter or left mousekey doubleclick
 *>             exit with: ESC, TAB/BACKTAB, PAGEUP/DOWN, single or doubleclick of right mousekey
