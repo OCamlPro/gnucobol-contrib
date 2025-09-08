@@ -11,7 +11,7 @@ PROGRAM-ID. GC56DATEPICKER is initial.
 *>             ALT-F7= togge 3D borders; ALT-F8= toggle Legend
 *>             mouse click on month or on year. Left/right = next or previous
 *>             mouse leftclick on a date. double click to exit.
-*> Tectonics:  cobc -m GC56DATEPICKER.COB  (use GnuCOBOL 3.1 or greater)
+*> Tectonics:  cobc -m GC56DATEPICKER.COB -lpdcurses (compile with GnuCOBOL 3.1 or greater)
 *> Calls:      GC01BOX, GC02BOXMEX and curs_set, scr_dump, scr_restore from pdcurses library
 *> Usage:      call GC56DATEPICKER using DatePicker-Area
 *> Parameters: look at GC56DATEPICKER.cpy
@@ -283,8 +283,6 @@ Accept-User-Action.
        move space to wDummy
       *> use same forecolor  as backcolor to have invisible Accept
        perform AcceptDummy thru AcceptDummyEx
-       *> accept wDummy at line wDtp-r1 col wDtp-c1
-              *> auto-skip prompt character is wPrompt :BCOL: Dtp-bco :FCOL: Dtp-bco
     else
        *> after displayed calendar on screen, return to caller without waiting for user action
        *> useful when you have just to display a one month calendar on screen
@@ -329,7 +327,6 @@ Accept-User-Action.
            and ( wCursorRow = wMM-Row and ( wCursorCol = wMM-R-Arr-col) ) )
       or (wCRT-STATUS = K-LEFT-PRESSED *> if left clicked on  Right MM arrow
            and ( wCursorRow = wMM-Row and ( wCursorCol = wMM-R-Arr-col) ) )
-      *> or wDummy = space
          compute date-aRMM = date-aRMM + 1
          if date-aRMM > 12
             compute date-aRYYYY = date-aRYYYY + 1
@@ -483,11 +480,6 @@ Accept-User-Action.
          compute wCol = Box-c1 + 1
          perform Set-Language thru Set-LanguageEx
          go to Display-Fixed-Data
-         *> evaluate true
-            *> when Dtp-Dim = 'B' perform Display-wDayDes  thru Display-wDayDesEx
-            *> when Dtp-Dim = 'S' perform Display-wDayDesS thru Display-wDayDesSEx
-         *> end-evaluate
-         *> go to Display-Variable-Data
 
      *> ALT-F7 toggle 3D box calendar borders
      when wCRT-STATUS = K-ALT-F7
