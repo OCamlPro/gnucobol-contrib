@@ -11,7 +11,7 @@
 *>             1.1 added beep parameter
 *>             1.2 added hot key management
 *>             1.3 Bu-Hot changed from 9(01) to 9(02)
-*>             2.0 Little changes fro mouse management
+*>             2.0 Little changes for mouse management
 *> ***********************************************************************************
 *> on screen You can manage max 24 buttons of 1 row .
 *> Each button has tobe inserted in a table with 25 elements
@@ -19,7 +19,7 @@
 *>
 *> Example of use.
 *>
-*> step 1. display a box (not mandatory ) but good to have a better user interface
+*> step 1. display a box (not mandatory) but good to have a better user interface
 *>     move 08    to box-r1
 *>     move 47    to box-c1
 *>     move 18    to box-r2
@@ -61,7 +61,9 @@
 *>           = move button 1 char to right, change colors to black/white and have no shadow
 *> Bu-beep   Y= when hit enter or mouse doubleclcik on a button sound a beep
 *> Bu- bcoshadow set it to the same back color of the underlying background
-*>
+*> Bu-Wait   Y= (default) display buttons and wait for a user action (normal use)
+*>           N= display buttons and returns to caller without wait for a user action
+*>           useful to just display buttons at first full screen display of the program
 *> Bu-selected Returns to caller the number of selected button by the user 01, 02, 03, ..
 *> Bu-Key    key pressed by user: 0000 = Enter, 2005 = Escape, 2043 = mouse left doubleclick
 *>           Caller pgm will know if user selected a button
@@ -98,6 +100,7 @@
         05 Bu-fcoHH          pic X(01) Value 'Y'.    *> default foreground hotkey in Highlight ?
         *> back color of shadow background (it has tobe settled to the same of box background)
         05 Bu-bcoShadow      pic 9(01) value white.  *> default backcolor for "shadow" of buttons
+        05 Bu-Wait           pic x(01) value 'Y'.
      *> *************************************************************
      *> RETURNS TO CALLER
      *> *************************************************************
