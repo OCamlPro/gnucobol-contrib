@@ -55,11 +55,6 @@ WORKING-STORAGE SECTION.
 01 wScreenName PIC X(256).
 01 wiScrOk     BINARY-LONG.
 
-*> 01 wCursorHide  BINARY-SHORT value 0.
-*> 01 wCursorShow  BINARY-SHORT value 2.
-*> 01 wVisibility  BINARY-SHORT.
-
-
 01  wVisibilityNot   BINARY-SHORT  value 0.  *> 0 = hide cursor
 01  wVisibilityYes   BINARY-SHORT  value 2.  *> 2 = cursor visible full
 01  wVisibilityNew   BINARY-SHORT .
@@ -82,8 +77,7 @@ WORKING-STORAGE SECTION.
 copy         'GC01BOX.CPY'.
 copy      'GC02BOXMEX.CPY'.
 copy 'GC52COLORPICKER.CPY'.
-*> COPY     'GC98KEYCODE.CPY'.
-COPY 'GC97KEYCODEGC.CPY'   suppress.
+COPY   'GC97KEYCODEGC.CPY'   suppress.
 
 *> ***********************************************************************************
 *>           P R O C E D U R E   D I V I S I O N
