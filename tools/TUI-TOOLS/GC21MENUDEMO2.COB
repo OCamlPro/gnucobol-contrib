@@ -112,7 +112,7 @@ copy 'GC97KEYCODEGC.CPY'  suppress.
 78  COB-ALLOW-RIGHT-DOUBLE           VALUE 512.
 78  COB-ALLOW-MOUSE-MOVE             VALUE 1024.
 
-*> 01  MOUSE-FLAGS         PIC 9(04).
+01  MOUSE-FLAGS         PIC 9(04).
 01  wCRT-STATUS         PIC 9(04) VALUE 9999.
 01  wCursorRowCol       PIC 9(06) value 0000.
 01  redefines wCursorRowCol .
@@ -236,7 +236,7 @@ MenuManager.
          *> when pressed escape on menu bar ask if to exit
          WHEN mn-Key = K-ESCAPE or mn-Key = K-RIGHT-PRESSED or mn-Key = K-RIGHT-DBL-CLICK
            move 09 to Yn-r1
-           move '        Confirm the exit ?       ' to Yn-mess
+           move '        Confirm the exit ?       ' to Yn-mess2
            call GC03YESNO using YESNO-AREA
            if   Yn-Yesno = "Y"
                 go to MainEx
@@ -296,7 +296,7 @@ RunChoice.
       when 8
       when 9
       move 09 to Yn-r1
-           move '        Confirm the exit ?       ' to Yn-mess
+           move '        Confirm the exit ?       ' to Yn-mess2
            call GC03YESNO using YESNO-AREA
            if   Yn-Yesno = "Y" go to MainEx
            else                go to MenuManager
