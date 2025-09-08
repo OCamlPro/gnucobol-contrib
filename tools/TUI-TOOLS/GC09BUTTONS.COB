@@ -22,6 +22,7 @@ PROGRAM-ID. GC09BUTTONS is initial.
 *>                 left click on a BUTTON to make it "active" similar to cursor keys;
 *>                 double left-click similar to Enter ( select a Button)
 *>                 right click or double-right-click is similar to ESCAPE
+*>             2.1 Bu-wait management added
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 CONFIGURATION SECTION.
@@ -148,16 +149,22 @@ MainEx.
   perform HideCursor thru HideCursorEx
   continue.
 
-*> ***********************************************************************************
-*> after displayed all buttons WAIT FOR USER INPUT
-*> ***********************************************************************************
+
 Accept-a-Key.
+
+ if Bu-wait = 'Y' continue else go to END-PROGRAM end-if
+
+ *> ***********************************************************************************
+ *> after displayed all buttons WAIT FOR USER ACTION
+ *> ***********************************************************************************
  *> accept of a 1 byte dummy field.
  *> the dummy field is at cursor position of the 1st byte of the first Button
  *> it has same back end fore color of 1st Button so it is invisible
  *> the "with Auto" option is useful to detect if cursor up/down/left/right is pressed
  move Bu-Item(1) (1:1) to wPrompt
  move space to wDummy
+
+
 
  if Bu-Selected = 1
     accept wDummy at line Bu-r(1) col Bu-c(1)
@@ -178,7 +185,7 @@ Accept-a-Key.
 *> ENTER = A BUTTON IS SELECTED
 *> *************************************************************************
 *> detect Enter or ESCAPE key only if user has not typed a letter or a digit
-*> if user has typed a letter or a digit then WDummy is just une char and has the "AUTO" attribute
+*> if user has typed a letter or a digit then WDummy is just one char and has the "AUTO" attribute
 *> then the wCRT-STATUS is = 00000 (K-ENTER) !
 If wDummy = space
    IF wCRT-STATUS = K-ENTER
@@ -195,7 +202,7 @@ If wDummy = space
 end-if
 
 *> *************************************************************************
-*> EVALUATE THE USER ACTION (A KEY OR A MOUSE KEY WASS PRESSED)
+*> EVALUATE THE USER ACTION (A KEY OR A MOUSE KEY WAS PRESSED)
 *> *************************************************************************
    EVALUATE TRUE
 
@@ -203,7 +210,6 @@ end-if
        or wCRT-STATUS = K-DOWN
        or wCRT-STATUS = K-TAB
        or wCRT-STATUS = K-PAGEDOWN
-       *> or wCRT-STATUS = barra spaziatrice
 
           move Bu-Selected to i
           move space       to Bu-Act(Bu-Selected)
@@ -362,7 +368,6 @@ end-if
                 end-if
         end-perform
 
-
    END-EVALUATE
 
    go to Accept-a-Key
@@ -371,15 +376,10 @@ end-if
 END-PROGRAM.
    perform ShowCursor thru ShowCursorEx
    Goback.
-*> ***********************************************************************************
-*>                              E N D   O F   P R O G R A M
-*> ***********************************************************************************
-
-
 
 
 *> ***********************************************************************************
-*> DISPLAY A BUTTON
+*>                                 ROUTINES AREA
 *> ***********************************************************************************
 DisplayButton.
    if Bu-Arrow = '1' or '2'
@@ -441,7 +441,7 @@ DisplayButtonEx. exit.
 
 
 *> *******************************************************************************
-*> SHADOW EFFETCT
+*> SHADOW EFFECT
 *> *******************************************************************************
 ShadowButton.
 *> the shadow is made of Ascii chars x'DF' & x'DC' with same background color of existing background
