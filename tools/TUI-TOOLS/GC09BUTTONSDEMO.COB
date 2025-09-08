@@ -53,12 +53,13 @@ PROCEDURE DIVISION.
     call GC01BOX using BOX-AREA
     move 2 to Wr
     display ' GnuCOBOL TUI TOOL to display buttons on screen. GC09BUTTONS at work.'
+          at 2003 with foreground-color white background-color blue
+    display ' Cursor/Page/Tab or hot keys (red characters): change active Button. '
           at 2103 with foreground-color white background-color blue
-    display ' Cursor/Page/Tab and spacebar keys change active Button.'
+    display " Activate an item (give the 'focus to') also with left mouse click.  "
           at 2203 with foreground-color white background-color blue
-    display " Activate an item (give the 'focus to') also with hot keys (red characters) "
+    display " Enter, ESC, space,or left mouse double click to select and exit.    "
           at 2303 with foreground-color white background-color blue
-
 *> *********************************************************************************
 *> DISPLAY BUTTONS NUMBER 1
 *> *********************************************************************************
@@ -66,7 +67,7 @@ display ' BU-1: 4 Vertical buttons ' at 2403 with foreground-color white backgro
 
 *> DISPLAY A BOX AS BACKGROUND OF BUTTONS
 set  Box-bco   Box-fco to white
-move '006005015026' to Box-rc
+move '005005015026' to Box-rc
 move 'S' to Box-style; move 'N' to Box-3D Box-shadow; move 'E' to Box-3D
 call GC01BOX using BOX-AREA
 
@@ -90,7 +91,7 @@ accept wDummy at 0202
 *> *********************************************************************************
 display ' BU-2: 6 Vertical buttons other colors and active ''button marker'' '
         at 2403 with foreground-color yellow highlight background-color blue
-set  Box-bco  Box-fco  to white; move '004031' to Box-r1c1; move '019053' to Box-r2c2
+set  Box-bco  Box-fco  to white; move '004031' to Box-r1c1; move '018053' to Box-r2c2
 move 'S'      to Box-style; move 'N'     to Box-3D Box-shadow; Move 'Y' to Box-tit
 Move ' Select a Button ' & x'00' to Box-titDes
 call GC01BOX using BOX-AREA
@@ -265,7 +266,6 @@ call GC01BOX using BOX-AREA
 
 DISPLAY '   Buttons with ''click effect''     '
         AT line 04 col 06 with foreground-color white background-color blue
-
 display ' GnuCOBOL TUI TOOL to display buttons on screen. GC09BUTTONS at work.'
         at 2103 with foreground-color white background-color blue
 display ' Cursor/Page/Tab keys to change active Button.'
@@ -339,10 +339,6 @@ call GC09BUTTONS using BUTTONS-AREA
 
 call static 'scr_restore' using by reference szScreenName returning iScrOk end-call
 CALL 'CBL_DELETE_FILE' USING szScreenName
-*> display "return code " at 0103
-*> move return-code to wRetCod
-*> display wRetCod at 0116
-*> accept omitted.
 
 *> *********************************************************************************
 *> DISPLAY BUTTONS NUMBER 8
