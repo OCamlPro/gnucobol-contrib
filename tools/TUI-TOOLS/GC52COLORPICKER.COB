@@ -17,6 +17,7 @@ REPLACE ==:BCOL:== BY ==BACKGROUND-COLOR== ==:FCOL:== BY ==FOREGROUND-COLOR==.
 *>                 added single click of left mousekey on a colormap to make it active
 *>                 double left-click is same as Enter (select a new color pair)
 *>                 single or doubleclick of right mousekey is same as ESCAPE
+*>             2.1 colors from 9(01) to 9(02)
 *> ***********************************************************************************
 ID DIVISION.
 PROGRAM-ID. GC52COLORPICKER.
@@ -53,13 +54,13 @@ WORKING-STORAGE SECTION.
 01  BG1     PIC 999.
 01  FG1     PIC 999.
 
-01 wBackCol   pic 9  value zero.
-01 wForeCol   pic 9  value zero.
+01 wBackCol   pic 99  value zero.
+01 wForeCol   pic 99  value zero.
 01 wColorPair pic 99 value zero.
 
 01 wLin      Pic 99    value zero.
 01 wCol      Pic 99    value zero.
-01 wColor    pic 9     value zero.
+01 wColor    pic 99     value zero.
 01 wColorDes pic x(08) value space.
 
 01  wVisibilityNot   BINARY-SHORT  value 0.  *> 0 = hide cursor
@@ -232,7 +233,7 @@ Accept-a-Key.
    *> ***********************************************************************************
    *> (use always a "display ...at ..."  or an "accept ... at ..." before to have a call to "initscr"
       accept wDummy at line Cop-r1 col Cop-c1
-             with auto-skip prompt character is wPrompt :BCOL: Cop-bco :FCOL: Cop-fco
+             with auto-skip prompt character is wPrompt :BCOL: Cop-bco :FCOL: Cop-bco
 
    EVALUATE TRUE
 
