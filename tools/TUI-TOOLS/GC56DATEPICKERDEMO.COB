@@ -5,7 +5,7 @@ PROGRAM-ID. GC56DATEPICKERDEMO.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    DEMO OF GC56DATEPICKER
-*> Tectonics:  cobc -x GC56DATEPICKERDEMO.COB (use GnuCOBOL 3.1 or greater)
+*> Tectonics:  cobc -x GC56DATEPICKERDEMO.COB -lpdcurses (compile with GnuCOBOL 3.1 or greater)
 *> Usage:      GC56DATEPICKERDEMO
 *> Parameters: none
 *> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
