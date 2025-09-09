@@ -23,7 +23,7 @@
 *>                Note there is a trailing space that is NEEDED.
 *>
 
->>SET CONSTANT PSN-1          "Officejet-Pro-8600 "   *> Change to your printer spool name
+>>SET CONSTANT PSN-1          "Smart_Tank_7300 "   *> Change to your printer spool name
 *>                                                          if needed.
 *>
 
@@ -58,7 +58,7 @@
 *>  ===============================================================
 *> Author.      Vincent B Coen New rewritten verson v2.01.18+)
 *>                See Changelog file for all changes.
-*> Copyright.   Vincent B Coen 2011-2022 Rewritten.
+*> Copyright.   Vincent B Coen 2011-2024 Rewritten.
 *>              [Jim C. Currey 2009-2011 Conceptual original programmer,]
 *>
 *> This program is free software; you can redistribute it and/or modify it
@@ -127,6 +127,14 @@
 *>                          Added support for sourceformat Variable
 *>                          Chngd vars e for E2 as it is a reserved word (FUNCTION).
 *>
+*> 15/01/2023 vbc - 2.01.39 Updated copyright to 2023.
+*> 09/03/2024 vbc - 2.01.40 Updated copyright to 2024 and changed printer spool name.
+*> 17/06/2024 vbc - 2.01.41 From Chuck Haatvedt chg within prtcbl at ba000-Process Section
+*>                          for 2 statements of "move     Input-Record To PL-Text" TO
+*>                          "move     Input-Record (1 : IR-Buffer-Data-Size) To PL-Text"
+*>                          Update embedded in cobxref version as well.
+*> 09/09/2205 vbc - 2.01.42 Increased size of PL-Text from 160 to 256 to match cobxref.
+*>
  environment division.
  input-output section.
  file-control.
@@ -149,7 +157,7 @@
  working-storage section.
 *>======================
 *>
- 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.38".  *> ver.rel.build
+ 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.41".  *> ver.rel.build
 *>
 *>   *******************************************
 *>   *     User changeable values here:       **
@@ -221,7 +229,7 @@
 *>   *    End of User Changeable Values   ****************************************************
 *>   **************************************
 *>
- 01  PL-Text2               pic x(248).  *> was  x(152). chgd  28/2/19
+ 01  PL-Text2               pic x(256).  *> was  x(152). chgd  28/2/19 & again 09/09/25
 *>
  01  WS-Print-File-Name     pic x(64)      value spaces.
  01  WS-Input-File-Name     pic x(64)      value spaces.
@@ -435,7 +443,7 @@
          05  Fht-File-Name         pic x(768)          value spaces.
          05  Fht-Buffer.
              07  filler            pic x(1024)  occurs 1024.         *> same as Fht-Buffer-Size
-             07  filler            pic x.                            *> Fht-Buffer-Size + 1
+             07  filler            pic xx.                            *> Fht-Buffer-Size + 2
          05  filler                pic x               value x"FF".  *> Trap for buffer overflow Hopefully!
 *>
  01  Fht-Buffer-Size               pic s9(7)   comp    value 1048576.
@@ -475,6 +483,7 @@
          05  CRT-Copy-Length       pic 9(7)    comp    value zero.
          05  CRT-Copy-Statement                        value spaces. *> The entire copy statement but not really needed
              07  filler            pic x(1024)  occurs 1024.         *> 1 MB                      except during testing
+             07  filler            pic xx.
          05  CRT-Copy-FileName     pic x(256)          value spaces.
          05  CRT-Copy-Library      pic x(512)          value spaces.
          05  CRT-Replace-Arguments      occurs  50.                  *>  Fixed size, Usage is CRT-Replacing-Count.
@@ -523,12 +532,16 @@
  01  IB-Size                pic 9(7)               value zero.
  01  Input-Buffer.
      03  filler             pic x(1024)    occurs 1024.  *> 1 MB buffers
+     03  filler             pic xx.
  01  CInput-Buffer.                                      *> Converted to uppercase for test
      03  filler             pic x(1024)    occurs 1024.  *> 1 MB buffers
+     03  filler             pic xx.
  01  OB-Size                pic 9(7)               value zero.
  01  Temp-Replacing-Source  pic x(2048).                 *> same as size of CRT-Replacing-Source
  01  Temp-Replacing-Target  pic x(2048).                 *>  - - Ditto for Target
- 01  Temp-Record            pic x(1024).
+ 01  Temp-Record.
+     03  FILLER             pic x(1024).
+     03  filler             pic xx.
 *>
 *> Copy of current Copy table block to save accessing a table when processing COPY
 *>
@@ -540,9 +553,9 @@
          88  WS-CRT-Copy-Found                        value 1     False is 0.
      03  WS-CRT-Copy-Library-Flag pic 9               value zero.
          88  WS-CRT-COPY-Lib-Found                    value 1     False is 0.
-     03  filler                       pic 9           value zero.
+     03  filler                   pic 9               value zero.
          88  WS-CRT-Copy-Fname-Ext                    value 1     False is 0.
-     03  WS-CRT-Replace-Found-Flag    pic 9           value zero.
+     03  WS-CRT-Replace-Found-Flag pic 9              value zero.
          88  WS-CRT-Replace-Found                     value 1     False is 0.
      03  WS-CRT-Quote-Found-Flag  pic 9               value zero.
          88  WS-CRT-Quote-Found                       value 1     False is 0.
@@ -564,6 +577,7 @@
      03  WS-CRT-Copy-Length       pic 9(7)    comp    value zero.
      03  WS-CRT-Copy-Statement                        value spaces.
          05  filler               pic x(1024)  occurs 1024.          *> 1 MB
+         05  filler               pic xx.
      03  WS-CRT-Copy-FileName     pic x(256)          value spaces.
      03  WS-CRT-Copy-Library      pic x(512)          value spaces.
      03  WS-CRT-Replace-Arguments      occurs  50.                   *>  Usage WS-CRT-Replacing-Count
@@ -736,16 +750,13 @@
 *>
 *> Find size of source record (max = 255 as per specs) & start of source
 *>
-     perform  varying IR-Buffer-Data-Size from WS-End by -1 until
-                           IR-Buffer (IR-Buffer-Data-Size:1) not = " "
-                        or IR-Buffer-Data-Size < 2
-              continue
-     end-perform
+     move     FUNCTION STORED-CHAR-LENGTH ( IR-Buffer (1:WS-End)) to IR-Buffer-Data-Size.
+     if       IR-Buffer-Data-Size <= zero
+              move 1 to IR-Buffer-Data-Size.
      if       IR-Buffer (IR-Buffer-Data-Size:1) = x"0D" or x"00"
               subtract 1 from IR-Buffer-Data-Size
      end-if
      if       (WS-Free-Set and IR-Buffer-Data-Size < 2)
-
         or    ((WS-Fixed-Set or WS-Variable-Set) and IR-Buffer-Data-Size < 9)
               add      1 to WS-Line-Number
               move     ws-line-number to PL-line-number
@@ -753,7 +764,7 @@
               if       Fht-Table-Size > 1
                        move Fht-Table-Size to PL-Level
               end-if
-              move     Input-Record To PL-Text
+              move     Input-Record (1 : IR-Buffer-Data-Size) To PL-Text
               perform  zz010-Write-Print-Line2
               perform  zz100-Headings
               go to ba000-Process.
@@ -825,10 +836,11 @@
 *> If comments, we are done with line
 *>
      move     FUNCTION TRIM (IR-Buffer) to TIR2.
-     if       ((ws-Fixed-Set or WS-Variable-Set) and IR-Buffer (7:1) = "*")
-         or   ((ws-Fixed-Set or WS-Variable-Set) and IR-Buffer (7:1) = "$")  *> ex MF source/lists
-         or   ((ws-Fixed-Set or WS-Variable-Set) and IR-Buffer (7:1) = "#")  *> can we get them here cc7 ?
-         or   ((WS-Fixed-Set or WS-Variable-Set) and (IR-Buffer (7:1) = "D" or = "d"))     *> Debug with COPY  ????
+     if       ((ws-Fixed-Set or WS-Variable-Set) and (IR-Buffer (7:1) = "*"
+                                                                  OR = "$"
+                                                                  OR = "#"
+                                                                  OR = "D"
+                                                                  or = "d"))
          or   (ws-Free-Set  and TIR2 (1:2) = "*>")
          or   (ws-Free-Set  and IR-Buffer (1:1) = "$")     *> these two always start in cc1
          or   (ws-Free-Set  and IR-Buffer (1:1) = "#")
@@ -1257,7 +1269,9 @@
 *>
      perform  bb000-Start.                       *>  WE NEED TO CONSIDER CODE FOR Lit continuation (-) etc
      perform  varying WS-P3 from 1 by 1 until WS-P3 > IR-Buffer-Data-Size
-                                           or IR-Buffer (WS-P3:2) = ". "
+              if     IR-Buffer (WS-P3:2) = ". "
+                     exit perform
+              end-if
               if     FUNCTION UPPER-CASE (IR-Buffer (WS-P3:3)) = "IN " or = "OF "
                or    FUNCTION UPPER-CASE (IR-Buffer (WS-P3:9)) = "SUPPRESS "
                or    FUNCTION UPPER-CASE (IR-Buffer (WS-P3:10)) = "REPLACING "
@@ -1308,7 +1322,9 @@
      end-if
  *>
      perform  varying WS-P3 from 1 by 1 until WS-P3 not < IB-Size
-                                           or CInput-Buffer (WS-P3:2) = ". "
+              if      CInput-Buffer (WS-P3:2) = ". "
+                      exit perform
+              end-if
               if      CInput-Buffer (WS-P3:1) = " "
                       exit perform cycle
               end-if
@@ -1461,19 +1477,19 @@
                           end-string
                           write formatted-line
                       end-if
-                      perform  varying ws-P3 from Ws-P3 by 1 until Input-Buffer (WS-P3:1) not = " "
-                                                               or WS-P3 not < IB-Size
-                               continue
+                      perform  varying ws-P3 from Ws-P3 by 1 until WS-P3 not < IB-Size
+                               if      Input-Buffer (WS-P3:1) not = " "
+                                       exit perform
                       end-perform
-                      if       WS-P3 not < IB-Size                           *> chgd 28/2/19
-                               exit perform cycle
-                      end-if
+ *>                     if       WS-P3 not < IB-Size    >* CHNG 22/01/23           *> chgd 28/2/19
+ *>                              exit perform cycle
+ *>                     end-if
                       if       CInput-Buffer (WS-P3:3) = "BY "                *> chgd 28/2/19
                                add 3 to WS-P3
                       end-if
-                      perform  varying ws-P3 from Ws-P3 by 1 until Input-Buffer (WS-P3:1) not = " "
-                                                               or  WS-P3 not < IB-Size
-                               continue
+                      perform  varying ws-P3 from Ws-P3 by 1 until WS-P3 not < IB-Size
+                               if       Input-Buffer (WS-P3:1) not = " "
+                               exit perform
                       end-perform
                       if       Input-Buffer (WS-P3:2) = "=="
                                add 2 to WS-P3
@@ -2786,6 +2802,7 @@
                                  move spaces to Formatted-Line
                                  move  ws-p12 to ws-disp
                                  move  ws-p13 to ws-disp2
+                                 move  ws-p15 to ws-disp4
                                  string "*>>> Rep (Var) Was ="
                                          Temp-Replacing-Source (1:WS-P12)
                                          " ("
@@ -2796,7 +2813,7 @@
                                          " ("
                                          ws-disp2
                                          ") found "
-                                            WS-P15
+                                            ws-disp4         *>  15/1/23   WS-P15
                                             " Times"
                                                into Formatted-Line
                                  end-string
