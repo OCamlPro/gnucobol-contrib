@@ -89,7 +89,7 @@ message1.
     move '  move message with cursor keys   ' & x'00' to Bxm-mex(08)
     move '005020017055' to Bxm-rc
     move Cyan          to Bxm-bco Bxm-bcoM Bxm-titBco
-    move Lightyellow   to Bxm-fco Bxm-fcoM Bxm-titFco
+    move Yellow        to Bxm-fco Bxm-fcoM Bxm-titFco
     move 'N' to Bxm-Shadow Bxm-3D Bxm-fcoMH
     move 'D' to Bxm-Style  move 'Y' to Bxm-tit
     move ' First Message ' & x'00'  to Bxm-titDes
@@ -117,7 +117,7 @@ message2.
     move z'                                                                       ' to Bxm-mex(06)
     move '005003014075' to Bxm-rc
     move Magenta       to Bxm-bco Bxm-bcoM Bxm-titBco
-    move Lightyellow   to Bxm-fco Bxm-fcoM Bxm-titFco
+    move Yellow        to Bxm-fco Bxm-fcoM Bxm-titFco
     move 'N' to Bxm-fcoMH
     move 'Y' to Bxm-Shadow Bxm-click
     move 'E' to Bxm-3D
@@ -156,7 +156,7 @@ message3.
     move Red    to Bxm-bco Bxm-titBco
     move LightWhite  to Bxm-fco Bxm-titFco
     move red    to Bxm-bcoM
-    move LightYellow to Bxm-fcoM
+    move Yellow to Bxm-fcoM
     move 'Y' to Bxm-fcoMH
     move 'N' to Bxm-Shadow Bxm-click
     move 'N' to Bxm-3D Bxm-wait Bxm-OkButton
@@ -176,7 +176,7 @@ message3.
     move green     to Bu-bcoN
     move white     to Bu-fcoN
     move blue      to Bu-bcoS
-    move yellow    to Bu-fcoS
+    move Brown     to Bu-fcoS
     move '1' to Bu-Arrow
     move "<" to Bu-Arrow-Char1
     move ">" to Bu-Arrow-Char2
@@ -218,7 +218,7 @@ message3.
     move red         to Bxm-bco Bxm-titBco
     move LightWhite  to Bxm-fco Bxm-titFco
     move red         to Bxm-bcoM
-    move LightYellow to Bxm-fcoM
+    move Yellow      to Bxm-fcoM
     move 'Y' to Bxm-fcoMH
     move 'N' to Bxm-Shadow Bxm-click Bxm-3D Bxm-wait Bxm-OkButton
     move 'D' to Bxm-Style
@@ -316,7 +316,7 @@ message6.
   move '002020023066' to Bxm-rc
   move red    to Bxm-bco Bxm-bcoM
   move white  to Bxm-fco
-  move LightYellow to Bxm-fcoM
+  move Yellow to Bxm-fcoM
   move 'Y' to Bxm-fcoMH Bxm-Shadow Bxm-click
   move 'N' to Bxm-3D
   move 'D' to Bxm-Style
