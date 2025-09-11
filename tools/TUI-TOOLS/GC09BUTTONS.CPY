@@ -87,19 +87,19 @@
         05 Bu-Click              pic x(01) value 'N'.
         05 Bu-Beep               pic x(01) value 'N'.
         *> colors for Normal button (non active)
-        05 Bu-bcoN           pic 9(01) value green.  *> default backcolor for "normal" button
-        05 Bu-fcoN           pic 9(01) value black.  *> default forecolor for "normal" button
+        05 Bu-bcoN           pic 9(02) value green.  *> default backcolor for "normal" button
+        05 Bu-fcoN           pic 9(02) value black.  *> default forecolor for "normal" button
         05 Bu-fcoNH          pic X(01) Value 'N'.    *> default foreground Normal in Highlight ?
         *> colors for active (to be selected) button
-        05 Bu-bcoS           pic 9(01) value green.  *> default backcolor for "active" button
-        05 Bu-fcoS           pic 9(01) value white.  *> default forecolor for "active" button
+        05 Bu-bcoS           pic 9(02) value green.  *> default backcolor for "active" button
+        05 Bu-fcoS           pic 9(02) value white.  *> default forecolor for "active" button
         05 Bu-fcoSH          pic X(01) Value 'Y'.    *> default forecolor of active in Highlight ?
         *> colors for hot key char of a button
-        05 Bu-bcoH           pic 9(01) value white.  *> default backcolor for "hot key" char
-        05 Bu-fcoH           pic 9(01) value red.    *> defalut forecolor for "hot key" char
+        05 Bu-bcoH           pic 9(02) value white.  *> default backcolor for "hot key" char
+        05 Bu-fcoH           pic 9(02) value red.    *> defalut forecolor for "hot key" char
         05 Bu-fcoHH          pic X(01) Value 'Y'.    *> default foreground hotkey in Highlight ?
         *> back color of shadow background (it has tobe settled to the same of box background)
-        05 Bu-bcoShadow      pic 9(01) value white.  *> default backcolor for "shadow" of buttons
+        05 Bu-bcoShadow      pic 9(02) value white.  *> default backcolor for "shadow" of buttons
         05 Bu-Wait           pic x(01) value 'Y'.
      *> *************************************************************
      *> RETURNS TO CALLER
