@@ -4,10 +4,6 @@
 
 IDENTIFICATION DIVISION.
 PROGRAM-ID.   GC64CALCULATOR is initial.
-author.       Eugenio Di Lorenzo. Italy. - eugenio.dilo@gmail.com
-date-written. 2020-04-10.
-security.     Copyright 2020 E.Di Lorenzo.
-remarks.      Calculator written in GnuCOBOL.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
 *> Purpose:    CALCULATOR ON SCREEN (USE MOUSE TO CLICK BUTTONS)
@@ -115,7 +111,8 @@ WORKING-STORAGE SECTION.
 01 wMemory          PIC S9(16)V999.
 01 wMemory2         PIC S9(16)V999.
 01 wResult          PIC S9(16)V999.
-01 wResultRows.
+
+  01 wResultRows.
    05 wResultDigit3E  PIC -----.---.---.---.--9,999 value 0 blank when zero.
    05 wResultDigit2E  PIC -----.---.---.---.--9,999 value 0 blank when zero.
    05 wResultDigit1E  PIC -----.---.---.---.--9,999 value 0.
@@ -135,20 +132,6 @@ WORKING-STORAGE SECTION.
 *> SAVE/RESTORE SCREEN VARIABLES
 01 wScreenName        PIC X(256).
 01 wiScrOk            BINARY-LONG.
-
-*>  mouse mask, apply to COB_MOUSE_FLAGS
-78  SET-AUTO-MOUSE-HANDLING    VALUE 1.
-78  SET-LEFT-DOWN              VALUE 2.
-78  SET-LEFT-UP                VALUE 4.
-78  SET-LEFT-DOUBLE            VALUE 8.
-78  SET-MIDDLE-DOWN            VALUE 16.
-78  SET-MIDDLE-UP              VALUE 32.
-78  SET-MIDDLE-DOUBLE          VALUE 64.
-78  SET-RIGHT-DOWN             VALUE 128.
-78  SET-RIGHT-UP               VALUE 256.
-78  SET-RIGHT-DOUBLE           VALUE 512.
-78  SET-MOUSE-MOVE             VALUE 1024.
-01  MOUSE-FLAGS      PIC 9(04).
 
 COPY 'GC01BOX.CPY'        suppress.
 copy 'GC02BOXMEX.CPY'     suppress.
@@ -477,7 +460,7 @@ DigitAdd.
        *> integer part digits
        if wResult = 0
           move wDigit        to  wResult
-       else
+       else continue
           move wResult(2:15) to wResult(1:15)
           move wDigit        to wResult(16:1)
        end-if
@@ -510,20 +493,20 @@ DigitCancel.
        *> integer part digits
        if wResult = 0
           continue
-       else
+       else continue
           move wResult(1:15) to wResult(2:15)
        end-if
    else
        *> decimal part digits
        if wDec = 3
-          move 0 to wResult(19:1)
+          move '0' to wResult(19:1)
           subtract 1 from wDec
        else if wDec = 2
                subtract 1 from wDec
-               move 0 to wResult(18:1)
+               move '0' to wResult(18:1)
             else if wDec = 1
                     move 1 to wDec
-                    move 0 to wResult(17:1)
+                    move '0' to wResult(17:1)
                     *> move 'N' to wDecimalPoint
                  end-if
             end-if
@@ -592,8 +575,6 @@ DisplayCalculatorButtons.
   display ' M<-  sqr   1    2    3    - ' at line wRow col wCol :BCOL: 7 :FCOL: red highlight
   compute wRow = Ca-r1 + 17
   display ' M<>  log   0    ,    =    + ' at line wRow col wCol :BCOL: 7 :FCOL: red highlight
-
-
 
   move 'N' to Box-shadow Box-fill Box-tit
   move 'E' to Box-3D
@@ -780,14 +761,14 @@ InitSettings.
   *> display ' ' at 001001 with erase eos.
 
   *> set mouse mask  - make mouse active
-  COMPUTE MOUSE-FLAGS = SET-AUTO-MOUSE-HANDLING
+  COMPUTE SET-MOUSE-FLAGS = SET-AUTO-MOUSE-HANDLING
                       + SET-LEFT-DOWN   + SET-MIDDLE-DOWN   + SET-RIGHT-DOWN
                       + SET-LEFT-UP     + SET-MIDDLE-UP     + SET-RIGHT-UP
                       + SET-LEFT-DOUBLE + SET-MIDDLE-DOUBLE + SET-RIGHT-DOUBLE
                       + SET-MOUSE-MOVE
-  SET environment     "COB_MOUSE_FLAGS"   to MOUSE-FLAGS
+  SET environment     "COB_MOUSE_FLAGS"   to SET-MOUSE-FLAGS
   continue.
-InitSettingsEx. exit.
+InitSettingsEx. exit. *>
 
 DisplayHelp.
     perform ScreenSave thru ScreenSaveEx
