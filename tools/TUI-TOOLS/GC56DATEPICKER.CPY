@@ -83,7 +83,7 @@
 
    03 Dtp-Parameters.
       05 Dtp-bco     pic 9(02) value Cyan.          *> back color of the calendar
-      05 Dtp-fco     pic 9(02) value LightWhite.    *> fore color of the calendar
+      05 Dtp-fco     pic 9(02) value White.         *> fore color of the calendar
       05 Dtp-fcoH    pic X(01) value "Y".           *> Hilight Foreground ?
       05 Dtp-style   pic X(01) value "S".           *> S, D, 1, 2, 3, N, C
       05 Dtp-custom  PIC X(09) VALUE "ABCDEFGHI".   *> UL, UC, UR, ML, MC, MR, LL, LC, LR
