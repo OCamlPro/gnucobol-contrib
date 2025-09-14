@@ -5,11 +5,12 @@ IDENTIFICATION DIVISION.
 program-id. GC26LISTVIEW is initial.
 *> ***********************************************************************************
 *> GnuCOBOL TT (TUI TOOLS) COLLECTION
-*> Purpose:    list ITEMS at a window on screen and let the user pick-up one
-*> Tectonics:  cobc -m GC26LISTVIEW.COB  (use GnuCOBOL 2.0 or greater)
+*> Purpose:    display a list of ITEMS (rows) in a window on screen.
+*>             let the user scroll the list up/down and left/right or pick-up one row
+*> Tectonics:  cobc -m GC26LISTVIEW.COB  -lpdcurses (use GnuCOBOL 2.0 or greater)
 *> Usage:      call GC26LISTVIEW using Listview-Area
 *> Parameters: look at GC26LISTVIEW.CPY
-*> Author:     Eugenio Di Lorenzo - Italia (DILO)
+*> Author:     Eugenio Di Lorenzo - Italia (DILO) - eugenio.dilo@gmail.com
 *> License:    Copyright 2018 E.Di Lorenzo - LGPL, 3.0 (or greater)
 *> Version:    1.4 2018.12.16  with GC26LISTVIEW.CPY version 1.3
 *> Changelog:  1.0 first release.
@@ -18,6 +19,7 @@ program-id. GC26LISTVIEW is initial.
 *>             1.3 added Lv-Dis management (itmes non selectable)
 *>             1.4 Lv-NoSelTxt added  (message "item non available" now is not fixed)
 *>                 Lv-PtrCursor added (cursor position at first call)
+*>                 use also F2 F3 ...keys to exit (caller can take different action)
 *> ***********************************************************************************
 ENVIRONMENT DIVISION.
 Configuration Section.
@@ -81,7 +83,8 @@ PROCEDURE DIVISION using ListView-Area.
    set environment 'COB_SCREEN_ESC'        TO 'Y'
 
    if Lv-Box = 'Y'
-           perform DisplayBox  thru DisplayBoxEx end-if
+      perform DisplayBox  thru DisplayBoxEx
+   end-if
    perform DisplayRowHeader    thru DisplayRowHeaderEx
    perform DisplayRowCmd       thru DisplayRowCmdEx
    perform DisplayList         thru DisplayListEx
@@ -216,9 +219,12 @@ Loop-Wait-for-a-Key.
              go End-Program
           end-if
      *> *************************************************************
-     *> ESCAPE= EXIT
+     *> ESCAPE OR Fx KEY = EXIT
+     *> caller can take an action on Fx key
      *> *************************************************************
      when Key-Pressed = Key-Escape
+          or Key-F2 or Key-F3 or Key-F4 or Key-F5  or Key-F6
+          or Key-F7 or Key-F8 or Key-F9 or Key-F10 or Key-F11 or Key-F12
           move Key-Pressed    to Lv-Key
           compute Lv-Selected = wBase + Lv-PtrCursor
           go End-program
