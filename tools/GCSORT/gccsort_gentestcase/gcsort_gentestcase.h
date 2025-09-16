@@ -21,6 +21,8 @@
 #define _GCSORT_GENTESTCASE_H_
 //#ifdef _WIN32
 
+#include <stdio.h>	// for "FILE *" and "FILENAME_MAX"
+
 #if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	#include <windows.h>
 #endif
@@ -90,7 +92,7 @@ struct key_t {
 	char    order[5];
 	char	type[12];
 	char	value[128];
-} keysort;
+};
 
 struct params_t {
 	char PgmCheckData[50];
@@ -109,7 +111,7 @@ struct params_t {
 	unsigned long  nNumRec;
 	int  byteorder;
 	int  nNumKeys;
-} params;
+};
 
 
 char gen_char ( int nT ) ;

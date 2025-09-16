@@ -1,23 +1,25 @@
 RM=rm -f 
 MKDIR=mkdir -p
 INSTALL=cp
-CC=gcc  -D_FILE_OFFSET_BITS="64"  -c -o  
-CCFLAGS=-W -I./ -I/opt/open-cobol-2.0/libcob
-LD=gcc -o 
+CC=gcc  -D_FILE_OFFSET_BITS=64
+# note: add -I "path" where libcob.h is to be found here, if necessary
+CCFLAGS=-W -I./
+LD=gcc
 LDFLAGS= -O3
-LIBS=-L${exec_prefix}/lib -L/usr/local/lib/ -L/opt/open-cobol-2.0/libcob/.libs -lcob -lm -lgmp -lncurses -ldl
+# note: add -L "path" where libcob.so is to be found here, if necessary
+LIBS=-L${exec_prefix}/lib -L/usr/local/lib/ -lcob -lm -lgmp -lncurses -ldl
 
 ifeq ($(MAKECMDGOALS),Debug)
-        DEBUG=YES
+	DEBUG=YES
 endif
 ifeq ($(MAKECMDGOALS),cleanDebug)
-        DEBUG=YES
+	DEBUG=YES
 endif
 
 ifeq ($(DEBUG),YES)
-    DEBUGFLAGS=-g
+	DEBUGFLAGS=-g
 else
-    DEBUGFLAGS=
+	DEBUGFLAGS=
 endif
 
 TARGET=gcsort_gentestcase
@@ -26,7 +28,7 @@ OBJS=\
 	genscript.o \
 	gencob4sort.o \
 	gencob4check.o \
-	gencfg.o  
+	gencfg.o
 
 
 all: $(TARGET)
@@ -35,11 +37,11 @@ Release:all
 
 
 $(TARGET): $(OBJS)
-		$(LD) $(TARGET) $(LDFLAGS) $(OBJS) $(LIBS) $(DEBUGFLAGS)
+		$(LD) -o $(TARGET) $(LDFLAGS) $(OBJS) $(LIBS) $(DEBUGFLAGS)
 
 
 %.o: %.c
-		$(CC) $@ $< $(CCFLAGS) $(DEBUGFLAGS)
+		$(CC) -c -o $@ $< $(CCFLAGS) $(DEBUGFLAGS)
 
 gcsort_gentestcase.o: gcsort_gentestcase.h libgcsort.h genscript.h  gencob4sort.h  gencob4check.h  gencfg.h 
 genscript.o: genscript.h

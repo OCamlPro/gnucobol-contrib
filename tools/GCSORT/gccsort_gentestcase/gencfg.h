@@ -19,15 +19,15 @@
 */
 #ifndef _GENCFG_H_
 #define _GENCFG_H_
-	char szscripthead[50][256];		// 50 rows, 256 characters for rows
-	int b_scripthead;
-	int n_scripthead;
+	static char szscripthead[50][256];		// 50 rows, 256 characters for rows
+	static int b_scripthead;
+	static int n_scripthead;
 
-	char szgcsort_top[50][256];		// 50 rows, 256 characters for rows
-	int b_gcsort_top;
-	int n_gcsort_top;
+ 	static char szgcsort_top[50][256];		// 50 rows, 256 characters for rows
+	static int b_gcsort_top;
+	static int n_gcsort_top;
 
-	char szgcsort_bottom[50][256];		// 50 rows, 256 characters for rows
-	int b_gcsort_bottom;
-	int n_gcsort_bottom;
+ 	static char szgcsort_bottom[50][256];		// 50 rows, 256 characters for rows
+	static int b_gcsort_bottom;
+	static int n_gcsort_bottom;
 #endif // _GENCFG_H_
