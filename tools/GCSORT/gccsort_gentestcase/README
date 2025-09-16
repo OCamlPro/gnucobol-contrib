@@ -26,25 +26,25 @@ gcsort_gentestcase creates:
   
 **
 Requirements
-       gcc   - c compiler installed
-       cobc  - GnuCOBOL installed
-       ocort - installed
+       gcc    - c compiler installed
+       cobc   - GnuCOBOL installed
+       gcsort - installed
 **
 Installation:
 1) Check/Make folder in gcsort_gentestcase
         subfolder:
-              bin           - executable
-              config        - config file (structure of file) 
-              files         - file output
-              script        - script for execution
-              scr           - source Cobol
-              take          - file script for GCSORT.
+              bin      - executable [will be created]
+              config   - config file (structure of file)  [will be created]
+              files    - file output
+              script   - script for execution
+              scr      - source Cobol
+              take     - file script for GCSORT.
               
 2) Compile gcsort_gentestcase
     After checkout in folder build_linux modify 
     1) compile.sh # change the paths according to your needs
     2) Makefile   # change the paths according to your needs / local setup
-    3) chmod 777 compile.sh  #enable for execution only for linux
+    3) chmod 777 compile.sh  # enable for execution only for linux
     
     Copy compile.sh file
     For linux   :     ./compile.sh 

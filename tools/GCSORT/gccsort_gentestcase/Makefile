@@ -22,7 +22,7 @@ endif
 
 TARGET=gcsort_gentestcase
 OBJS=\
-       gcsort_gentestcase.o \
+	gcsort_gentestcase.o \
 	genscript.o \
 	gencob4sort.o \
 	gencob4check.o \
