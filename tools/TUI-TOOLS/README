@@ -159,3 +159,16 @@ It will create the corresponding COBOL Copy in a .CPY text file.
 3. the generated COBOL Copy should be used directly in the COBOL program 
 that will display / accept the SCREEN, or you can change it before, 
 to enhance the COBOL Copy for a better SCREEN display of individual fields.
+
+GC99SCREENPAINTER.COB - Uset his program to draw a 25x80 screen layout based on your needs, 
+by setting constants, variable alphanumeric or numeric fields and back/foreground colors.
+Upon user request it saves the screen layout to a TXT file of 25 records where each record
+contains an entire 80 chars screen line with back and foreground color codes.
+Upon user request this program, from the TXT file:
+- automatically generates the copy for the SCREEN SECTION and for WORKING-STORAGE SECTION
+  the color of a string (of spaces, constants or variables) is taken from its 1st character
+- automatically generates, compile and execute a simple GnuCOBOL program to test the new SCREEN
+  (you need the GnuCOBOL 3.2 or greater compiler available)
+SCREEN-101.TXT contains a demo screen.
+Note: at the moment a screen of 25 rows and 80 columns is supported.
+
