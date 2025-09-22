@@ -197,8 +197,15 @@ void SumField_ResetTotSingle(struct SumField_t *SumField)
 {
 	/* set zero to totalizer    */
 	/* s.m. 20250110 cob_move(&cob_all_zero, &SumField->pCobFieldTotRes); */
+#if defined (__LIBCOB_VERSION)	/* only defined for 3+ */
+#if __LIBCOB_RELEASE >= 30200
+	cob_set_llint(&SumField->pCobFieldTotRes, (int64_t)0L);
+#else
+	cob_set_int(&SumField->pCobFieldTotRes, 0);
+#endif
+#endif
 
-	cob_set_llint(&SumField->pCobFieldTotRes, (int64_t) 0L);
+
 
 	return ;
 }

@@ -104,9 +104,30 @@ void GCSORT_Config ( void )
 
 void GCSORT_Version ( void ) 
 {
-	printf("gcsort Version %s\n", GCSORT_VERSION); 
+    int		status, day, year;
+    char	month[64];
+    char	gc_build_stamp[COB_MINI_BUFF];
+    /* Set up build time stamp */
+    memset(gc_build_stamp, 0, (size_t)COB_MINI_BUFF);
+    memset(month, 0, sizeof(month));
+    day = 0;
+    year = 0;
+    status = sscanf(__DATE__, "%63s %d %d", month, &day, &year);
+    if (status == 3) {
+        snprintf(gc_build_stamp, (size_t)COB_MINI_MAX,
+            "%s %2.2d %4.4d %s", month, day, year, __TIME__);
+    }
+    else {
+        snprintf(gc_build_stamp, (size_t)COB_MINI_MAX,
+            "%s %s", __DATE__, __TIME__);
+    }
+
+    
+    
+    printf("gcsort Version %s\n", GCSORT_VERSION); 
     printf("Copyright (C) 2016-2025 Sauro Menna\n");
     printf("                   2009 Cedric ISSALY\n");
+    printf("Built     %s\n", gc_build_stamp);
 	printf("Packaged  %s\n", GCSORT_TAR_DATE);
 
 #if __LIBCOB_VERSION >= 3

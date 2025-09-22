@@ -1,3 +1,12 @@
+2025-09-21  Sauro Menna  <saumen2004@libero.it>
+    * Version 1.04.08
+    * Insert Build date in command : gcsort --version 
+    * Update Manual (Thanks Mickey)
+    * Changed sorting criteria for SUM FIELDS parameters in files: sftsqffl01_take.prm, ssumsqfbi03_take.prm 
+           problems in test suite (overlaps the control field)
+    * Changes (Thanks Simon) to Cobol modules: genbigfile.cbl, sbig001.cbl, sbig001V.cbl
+           and to scripts: compile_single.sh, runbigfile001.sh
+
 2025-08-21  Sauro Menna  <saumen2004@libero.it>
     * Version 1.04.07b
     * fix issue - check exceeds the size of the record SUM FIELDS control field 

@@ -21,7 +21,8 @@
 #define LIBGCSORT_H_INCLUDED
 
 
-#ifdef	_WIN32
+// -- #ifdef	_WIN32
+#if defined(_WIN32) && ( !defined(__MINGW32__) && !defined(__MINGW64__))
 	#ifdef	_MSC_VER
 	#pragma warning(disable: 4800)
 	#endif

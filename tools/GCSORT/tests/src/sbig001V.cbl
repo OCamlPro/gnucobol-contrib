@@ -9,8 +9,8 @@
       * Instruction use,sum fields
       * *********************************************
       * option:
-      * cobc -x -t ..\listing\%1.lst -I ..\copy -Wall -fbinary-size=1--8 
-      *      -fnotrunc -fbinary-byteorder=big-endian -o ..\bin\%1 ..\src\%1.CBL 
+      * cobc -x -t ..\listing\%1.lst -I ..\copy -Wall -fbinary-size=1--8
+      *      -fnotrunc -fbinary-byteorder=big-endian -o ..\bin\%1 ..\src\%1.CBL
       * **********************************************************
       *-------------------------------------------------------------------------------*
        identification division.
@@ -44,54 +44,54 @@
        77 fs-infile                      pic xx.
        77 fs-outfile                     pic xx.
        77 fs-sort                        pic xx.
-      *  
+      *
            copy wktotsum01.
       *
-      
+
       * ============================= *
        01  save-record-sort              pic x(90).
       * ============================= *
        77 record-counter-skip            pic 9(11) value zero.
        77 record-counter-in              pic 9(11) value zero.
        77 record-counter-out             pic 9(11) value zero.
-       77 bIsFirstTime                   pic 9    value zero.       
-       77 bIsPending                     pic 9    value zero.       
+       77 bIsFirstTime                   pic 9    value zero.
+       77 bIsPending                     pic 9    value zero.
        01 current-time.
            05 ct-hours                   pic 99.
            05 ct-minutes                 pic 99.
            05 ct-seconds                 pic 99.
-           05 ct-hundredths              pic 99.       
-      *    
+           05 ct-hundredths              pic 99.
+      *
            copy wkenvfield.
-      *    
+      *
       * ============================= *
        procedure division.
       * ============================= *
        master-sort.
            display "*===============================================* "
-           display " Sort on ascending  key    srt-ch-field "                 
+           display " Sort on ascending  key    srt-ch-field "
            display "*===============================================* "
       *
            copy prenvfield1.
-      *        
+      *
            sort file-sort
-                on ascending  key    srt-ch-field 
-                                     srt-bi-field 
-                                     srt-fi-field 
-                                     srt-fl-field 
-                                     srt-pd-field 
-                                     srt-zd-field                 
-                   with duplicates in  order 
+                on ascending  key    srt-ch-field
+                                     srt-bi-field
+                                     srt-fi-field
+                                     srt-fl-field
+                                     srt-pd-field
+                                     srt-zd-field
+                   with duplicates in  order
                     input procedure  is input-proc
                     output procedure is output-proc.
-                    
+
            display "*===============================================* "
            display " Record input  : "  record-counter-in
            display " Record output : "  record-counter-out
            display "*===============================================* "
            goback
            .
-      *       
+      *
            copy prenvfield2.
       *
       *
@@ -117,7 +117,7 @@
        release-record.
       * ============================= *
            add 1 to record-counter-in
-      ** filtering input record 
+      ** filtering input record
       **     display "release - ws-rec-length = " ws-rec-length
       **++     if (ws-rec-length = 90)
                 move ws-rec-length to  in-lenrec
@@ -138,7 +138,7 @@
       * ============================= *
            move zero to ws-rec-length
            open output sortout.
-           perform outrec-proc-dett until fs-sort  
+           perform outrec-proc-dett until fs-sort
                    not equal "00".
            if (bIsPending = 1)
               perform write-record-out
@@ -149,38 +149,38 @@
        outrec-proc-dett.
       * ============================= *
       *
-           return file-sort at end 
+           return file-sort
+              at end
                 display " "
-                end-return
-           move srt-lenrec to ws-rec-length 
-           if fs-sort equal "00"     
-      **-->>         display "return -  ws-rec-length = "  ws-rec-length
-               perform verify-record-out
-           end-if
+              not at end
+                move srt-lenrec to ws-rec-length
+      **-->>    display "return -  ws-rec-length = "  ws-rec-length
+                perform verify-record-out
+           end-return
            .
       * ============================= *
-       verify-record-out.     
+       verify-record-out.
       * ============================= *
       *
-      * ## filtering data 
+      * ## filtering data
       *
       **++     if (ws-rec-length = 90)
       **         move sort-data to outfile-record
-               
-           move srt-seq-record   to  out-seq-record    
-           move srt-ch-field     to  out-ch-field      
-           move srt-bi-field     to  out-bi-field      
-           move srt-fi-field     to  out-fi-field      
-           move srt-fl-field     to  out-fl-field      
-           move srt-pd-field     to  out-pd-field      
-           move srt-zd-field     to  out-zd-field      
-           move srt-fl-field-1   to  out-fl-field-1    
-           move srt-clo-field    to  out-clo-field     
-           move srt-cst-field    to  out-cst-field     
-           move srt-csl-field    to  out-csl-field     
-           move ch-filler        to  out-ch-filler     
-                      
-           write outfile-record 
+
+           move srt-seq-record   to  out-seq-record
+           move srt-ch-field     to  out-ch-field
+           move srt-bi-field     to  out-bi-field
+           move srt-fi-field     to  out-fi-field
+           move srt-fl-field     to  out-fl-field
+           move srt-pd-field     to  out-pd-field
+           move srt-zd-field     to  out-zd-field
+           move srt-fl-field-1   to  out-fl-field-1
+           move srt-clo-field    to  out-clo-field
+           move srt-cst-field    to  out-cst-field
+           move srt-csl-field    to  out-csl-field
+           move ch-filler        to  out-ch-filler
+
+           write outfile-record
       **++     end-if
       **++     if (ws-rec-length = 65)
       **++          move sort-data-record-min02 to outfile-record-min02
@@ -188,24 +188,24 @@
       **++     end-if
       **++     if (ws-rec-length = 40)
       **++          move sort-data-record-min01 to outfile-record-min01
-      **++          write outfile-record-min01 
-      **++     end-if            
-      **++**     move sort-data        to outfile-record              
+      **++          write outfile-record-min01
+      **++     end-if
+      **++**     move sort-data        to outfile-record
       **++**-->>     display "write - ws-rec-length = " ws-rec-length
-      **++**     write outfile-record 
+      **++**     write outfile-record
            add 1 to record-counter-out
            .
 
       * ============================= *
        add-totalizer.
       * ============================= *
-      * Sum all Fields  
+      * Sum all Fields
       *  copy   prsrttot.cpy
            copy  praddsrttot.
            move 1            to bIsPending
            .
       * ============================= *
-       reset-totalizer.    
+       reset-totalizer.
       * ============================= *
       *  copy   przerotot.cpy
            copy   przerotot.
@@ -221,22 +221,22 @@
       *  copy   prtotout.cpy
            copy   prtotout.
            move zero                to bIsPending
-           write outfile-record 
+           write outfile-record
            .
       * ============================= *
        view-data.
       * ============================= *
-           read sortout at end 
+           read sortout
+             at end
                 display " "
-           end-read
-           if fs-outfile equal "00"
+             not at end
                    display "============== ## ============== "
-                   display " sq="   out-seq-record 
-                           " ch="   out-ch-field 
-                           " bi="   out-bi-field      
-                           " fi="   out-fi-field      
-                           " pd="   out-pd-field      
-                           " zd="   out-zd-field 
-                           " fl="   out-fl-field      
-           end-if
+                   display " sq="   out-seq-record
+                           " ch="   out-ch-field
+                           " bi="   out-bi-field
+                           " fi="   out-fi-field
+                           " pd="   out-pd-field
+                           " zd="   out-zd-field
+                           " fl="   out-fl-field
+           end-read
            .

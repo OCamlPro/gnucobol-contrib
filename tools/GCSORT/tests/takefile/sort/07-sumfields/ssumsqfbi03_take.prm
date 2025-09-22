@@ -1,9 +1,9 @@
 * sort all field for file SQBI03  
   * SSUMSQFBI03
 SORT FIELDS(3,1,CH,A) 
-SUM FIELDS=(  1,1,BI,        *  MSR-02S 
-              3,1,BI,        *  MSR-02
-              5,2,BI,        *  MSR-04S 
+***SUM FIELDS=(  1,1,BI,        *  MSR-02S 
+***              5,2,BI,        *  MSR-04S 
+SUM FIELDS=(  5,2,BI,        *  MSR-04S   
               8,2,BI,        *  MSR-04  
              11,3,BI,        *  MSR-06S 
              15,3,BI,        *  MSR-06  
