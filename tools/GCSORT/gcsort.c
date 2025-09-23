@@ -372,10 +372,17 @@ int main_prod(int argc, char **argv) {
 		}
 
 		/* new from Chuck */
-		cob_tidy();
+		 //cob_tidy();
 
 		job_destroy(job);
 		job_destructor(job);
+		if (module->module_active) {
+			module->module_active--;
+		}
+		//cob_module_free(&module);
+
+		cob_tidy();
+
 	}
 	else
 	{

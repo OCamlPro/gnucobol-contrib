@@ -371,7 +371,8 @@ ________________________________________________________________________________
 COB_VARSEQ_FORMAT  Used by GnuCOBOL
 GCSORT_DEBUG       0 no print info, 1 info DEBUG, 2 for info Parser
 GCSORT_MEMSIZE     Memory Allocation in byte (Default 512000000 byte)
-GCSORT_PATHTMP     Pathname for temporary files     (Default TMP / TEMP / TMPDIR)
+GCSORT_MLT         Numbers of page for cache MemoryMappedFile
+GCSORT_PATHTMP     Pathname for temporary files     (Default TMPDIR / TMP / TEMP)
 GCSORT_STATISTICS  0 minimal informations, 1 for Summary, 2 for Details
 GCSORT_TESTCMD     0 for normal operations , 1 for ONLY test command line (NO SORT)
 ________________________________________________________________________________________

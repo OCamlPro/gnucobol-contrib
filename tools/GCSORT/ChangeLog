@@ -1,3 +1,10 @@
+2025-09-23  Sauro Menna  <saumen2004@libero.it>
+    * Version 01.04.08b
+    * file.c: Review file_SetInfoForFile() function to use cob_file_malloc().
+    * job.c:  drop unused headers, actually handle GCSORT_PATHTMP.
+    * README: add GCSORT_MLT, correct GCSORT_PATHTMP
+    * job.c, gcthread.c review end of execution (cob_tidy())
+
 2025-09-21  Sauro Menna  <saumen2004@libero.it>
     * Version 1.04.08
     * Insert Build date in command : gcsort --version 

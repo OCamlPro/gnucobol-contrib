@@ -86,23 +86,27 @@ void file_destructor(struct file_t *file) {
 	}
 
 	if (file->stFileDef != NULL) {
-			free(file->stFileDef->file_status);  
-
-			/* cob_field    */
-			util_cob_field_del(file->stFileDef->assign, ALLOCATE_DATA);
-			util_cob_field_del(file->stFileDef->record, ALLOCATE_DATA);
-            if (file->stFileDef->variable_record != NULL)
-			    util_cob_field_del(file->stFileDef->variable_record, ALLOCATE_DATA);
-            if (file->organization == FILE_ORGANIZATION_RELATIVE)  /* delete field for relative */
-            	    util_cob_field_del(file->stFileDef->keys[0].field, ALLOCATE_DATA);
- 			for (k=0; k<file->nNumKeys;k++) {
-                 if (file->stFileDef->keys != NULL)
-				    util_cob_field_del(file->stFileDef->keys[k].field, NOALLOCATE_DATA);
-			}
-			if (file->stFileDef->keys != NULL)
-				free(file->stFileDef->keys); 
-			free(file->stFileDef); 
+		free(file->stFileDef->file_status);  
+		/* cob_field    */
+		util_cob_field_del(file->stFileDef->assign, ALLOCATE_DATA);
+		util_cob_field_del(file->stFileDef->record, ALLOCATE_DATA);
+           if (file->stFileDef->variable_record != NULL)
+		    util_cob_field_del(file->stFileDef->variable_record, ALLOCATE_DATA);
+           if (file->organization == FILE_ORGANIZATION_RELATIVE)  /* delete field for relative */
+           	    util_cob_field_del(file->stFileDef->keys[0].field, ALLOCATE_DATA);
+ 		for (k=0; k<file->nNumKeys;k++) {
+                if (file->stFileDef->keys != NULL)
+			    util_cob_field_del(file->stFileDef->keys[k].field, NOALLOCATE_DATA);
+		}
+		if (file->stFileDef->keys != NULL) {
+			free(file->stFileDef->keys);
+			file->stFileDef->keys = NULL;
+		}
+		cob_file_free(&file->stFileDef, NULL);
+		/* //-->>free(file->stFileDef); */
+		file->stFileDef = NULL;
 	}
+	
 
 	if (file->name != NULL)
 		free(file->name);
@@ -222,33 +226,48 @@ int file_setXSUMFile(struct file_t* file) {
 	globalJob->XSUMfile = file;
 	return 0;
 }
+
 int file_SetInfoForFile(struct file_t* file, int nMode) {
 
-	struct KeyIdx_t* tKeys; 
+	//struct file_t* file = (struct file_t*)malloc(sizeof(struct file_t));
 
-	int	k=0;
+	struct KeyIdx_t* tKeys = NULL;
+	cob_file_key* keyfield = NULL;
+
+	int	k = 0;
 	/* s.m. 20250110 file->stFileDef = (cob_file*)malloc(sizeof(cob_file)); */
-	/* s.m. 20250110 */
-	file->stFileDef = (cob_file*)calloc(sizeof(cob_file), sizeof(char));
+	/* s.m. 20250110 file->stFileDef = (cob_file*)calloc(sizeof(cob_file), sizeof(char)); */
 
+	/* s.m. 20250922 (by Simon)*/
+	/* cob_file_malloc(&file->stFileDef, NULL, 0, 0); */
+
+	if (file->nNumKeys == 0)
+		cob_file_malloc(&file->stFileDef, NULL, 0, 0);
+	else
+	{
+		if (file->organization == FILE_ORGANIZATION_RELATIVE)
+			cob_file_malloc(&file->stFileDef, &file->stFileDef->keys, 1, 0);
+		else
+			cob_file_malloc(&file->stFileDef, &keyfield, file->nNumKeys, 0);
+	}
 
 #if __LIBCOB_VERSION > 3
 	memset(file->stFileDef->file_status, 0x00, sizeof(file->stFileDef->file_status));
 #else
-	file->stFileDef->file_status = NULL; 
-	file->stFileDef->file_status = ((unsigned char*)malloc((sizeof(unsigned char)*3)));
-	memset (file->stFileDef->file_status, 0x00, 3);
+	file->stFileDef->file_status = NULL;
+	file->stFileDef->file_status = ((unsigned char*)malloc((sizeof(unsigned char) * 3)));
+	memset(file->stFileDef->file_status, 0x00, 3);
 #endif
-	file->stFileDef->select_name = (const char *)"masterseqfile";
+	file->stFileDef->select_name = (const char*)"masterseqfile";
 	/* Problem with Join file name //-->>file->stFileDef->assign = util_cob_field_make( COB_TYPE_ALPHANUMERIC, strlen(file->name), 0, 0, strlen(file->name), ALLOCATE_DATA); */
 	/* s.m. 20250110 */
-	file->stFileDef->assign = util_cob_field_make( COB_TYPE_ALPHANUMERIC, (int)strlen(file->name), 0, 0, GCSORT_SIZE_FILENAME, ALLOCATE_DATA);
+	file->stFileDef->assign = util_cob_field_make(COB_TYPE_ALPHANUMERIC, (int)strlen(file->name), 0, 0, GCSORT_SIZE_FILENAME, ALLOCATE_DATA);
 
 	file->stFileDef->record = NULL;
 
 	/* new option Record Control Statement */
 	if (file->maxLength > 0)
-		file->stFileDef->record = util_cob_field_make( COB_TYPE_ALPHANUMERIC, file->maxLength, 0, 0, file->maxLength, ALLOCATE_DATA);
+		file->stFileDef->record = util_cob_field_make(COB_TYPE_ALPHANUMERIC, file->maxLength, 0, 0, file->maxLength, ALLOCATE_DATA);
 	else
 	{
 		/* In this case forced len of output file */
@@ -258,16 +277,16 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 	}
 
 	if (file->format == FILE_TYPE_VARIABLE)
-		file->stFileDef->variable_record = util_cob_field_make(COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA); 
+		file->stFileDef->variable_record = util_cob_field_make(COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA);
 	else
 		file->stFileDef->variable_record = NULL;
 
-	file->stFileDef->record_min = file->recordLength;                         
-	file->stFileDef->record_max = file->maxLength;            
-	file->stFileDef->nkeys = file->nNumKeys;            
+	file->stFileDef->record_min = file->recordLength;
+	file->stFileDef->record_max = file->maxLength;
+	file->stFileDef->nkeys = file->nNumKeys;
 	file->stFileDef->keys = NULL;
-	file->stFileDef->file = NULL;  
-	file->stFileDef->fd = -1;  
+	file->stFileDef->file = NULL;
+	file->stFileDef->fd = -1;
 	file->stFileDef->access_mode = COB_ACCESS_SEQUENTIAL;
 	file->stFileDef->lock_mode = 0; /* COB_LOCK_AUTOMATIC;   	COB_FILE_EXCLUSIVE;  0; */
 	file->stFileDef->open_mode = COB_OPEN_CLOSED;
@@ -275,13 +294,13 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 	file->stFileDef->last_open_mode = 0;
 	file->stFileDef->flag_operation = 0;
 	file->stFileDef->flag_nonexistent = 0;
-	file->stFileDef->flag_end_of_file = 0;           
-	file->stFileDef->flag_begin_of_file = 0;           
-	file->stFileDef->flag_first_read = 0;           
-	file->stFileDef->flag_read_done = 0;           
-	file->stFileDef->flag_select_features = 0;           
-	file->stFileDef->flag_needs_nl = 0;           
-	file->stFileDef->flag_needs_top = 0;           
+	file->stFileDef->flag_end_of_file = 0;
+	file->stFileDef->flag_begin_of_file = 0;
+	file->stFileDef->flag_first_read = 0;
+	file->stFileDef->flag_read_done = 0;
+	file->stFileDef->flag_select_features = 0;
+	file->stFileDef->flag_needs_nl = 0;
+	file->stFileDef->flag_needs_top = 0;
 	file->stFileDef->file_version = 1;
 
 
@@ -297,92 +316,259 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 		file->stFileDef->fcd = NULL;
 #endif
 
-    /* default: */
-    file->stFileDef->organization = COB_ORG_SEQUENTIAL;
+	/* default: */
+	file->stFileDef->organization = COB_ORG_SEQUENTIAL;
 
-	switch(file->organization) {
+	switch (file->organization) {
 
-		case FILE_ORGANIZATION_SEQUENTIAL:		
-			file->stFileDef->organization = COB_ORG_SEQUENTIAL;
-			break;
+	case FILE_ORGANIZATION_SEQUENTIAL:
+		file->stFileDef->organization = COB_ORG_SEQUENTIAL;
+		break;
 
-		case FILE_ORGANIZATION_LINESEQUENTIAL:
-			file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
-			file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
-			/* use default value LIBCOB */
-			cob_putenv("COB_LS_FIXED=0\0"); /* change value of environment value GNUCobol - Truncate trailing spaces*/
-			break;
-		case FILE_ORGANIZATION_LINESEQUFIXED:
-			file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
-			file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
-			cob_putenv("COB_LS_FIXED=1\0"); 	/* change value of environment value GNUCobol - NO Truncate trailing spaces*/
-			break;
-		case FILE_ORGANIZATION_RELATIVE:
-			tKeys =  file->stKeys;
-			file->stFileDef->keys = (cob_file_key*)(malloc (sizeof (cob_file_key) * 1));
-			file->stFileDef->keys[0].field = util_cob_field_make( COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA);
-			file->stFileDef->keys[0].flag = 0;
-			file->stFileDef->keys[0].offset = 0;
-			file->stFileDef->organization = COB_ORG_RELATIVE;
-			break;
-		case FILE_ORGANIZATION_INDEXED:
-			tKeys =  file->stKeys;
-			/* check keys - for indexed file is mandatory   */
-			if (file->nNumKeys == 0) {
-				fprintf(stdout,"*GCSORT*S300*ERROR: KEY definitions are not specified for Indexed file. \n");
-				exit(GC_RTC_ERROR);
-			}
-			/* check keys - for indexed file Primary is first definition    */
-			if (tKeys->type != KEY_IDX_PRIMARY) {
-				fprintf(stdout,"*GCSORT*S301*ERROR: KEY specifications error. First field is not primary key.\n");
-				exit(GC_RTC_ERROR);
-			}
+	case FILE_ORGANIZATION_LINESEQUENTIAL:
+		file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
+		file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
+		/* use default value LIBCOB */
+		cob_putenv("COB_LS_FIXED=0\0"); /* change value of environment value GNUCobol - Truncate trailing spaces*/
+		break;
+	case FILE_ORGANIZATION_LINESEQUFIXED:
+		file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
+		file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
+		cob_putenv("COB_LS_FIXED=1\0"); 	/* change value of environment value GNUCobol - NO Truncate trailing spaces*/
+		break;
+	case FILE_ORGANIZATION_RELATIVE:
+		tKeys = file->stKeys;
+		file->stFileDef->keys = (cob_file_key*)(malloc(sizeof(cob_file_key) * 1));
+		file->stFileDef->keys[0].field = util_cob_field_make(COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA);
+		file->stFileDef->keys[0].flag = 0;
+		file->stFileDef->keys[0].offset = 0;
+		file->stFileDef->organization = COB_ORG_RELATIVE;
+		break;
+	case FILE_ORGANIZATION_INDEXED:
+		tKeys = file->stKeys;
+		/* check keys - for indexed file is mandatory   */
+		if (file->nNumKeys == 0) {
+			fprintf(stdout, "*GCSORT*S300*ERROR: KEY definitions are not specified for Indexed file. \n");
+			exit(GC_RTC_ERROR);
+		}
+		/* check keys - for indexed file Primary is first definition    */
+		if (tKeys->type != KEY_IDX_PRIMARY) {
+			fprintf(stdout, "*GCSORT*S301*ERROR: KEY specifications error. First field is not primary key.\n");
+			exit(GC_RTC_ERROR);
+		}
 
-			file->stFileDef->keys = (cob_file_key*)(malloc (sizeof (cob_file_key) * file->nNumKeys));
-			for (k=0; k<file->nNumKeys;k++) {
-				/* s.m. 20250110 */
-				file->stFileDef->keys[k].field = util_cob_field_make( tKeys->pCobFieldKey->attr->type, tKeys->pCobFieldKey->attr->digits,
-						tKeys->pCobFieldKey->attr->scale, tKeys->pCobFieldKey->attr->flags, (int) tKeys->pCobFieldKey->size, NOALLOCATE_DATA);
-					file->stFileDef->keys[k].field->data = file->stFileDef->record->data+tKeys->position;
-                    file->stFileDef->keys[k].field->size = tKeys->length;
-					file->stFileDef->keys[k].flag = 0;		/* ASCENDING/DESCENDING (for SORT) */
-/* s.m. 202101 start    */
+		file->stFileDef->keys = (cob_file_key*)(malloc(sizeof(cob_file_key) * file->nNumKeys));
+		for (k = 0; k < file->nNumKeys; k++) {
+			/* s.m. 20250110 */
+			file->stFileDef->keys[k].field = util_cob_field_make(tKeys->pCobFieldKey->attr->type, tKeys->pCobFieldKey->attr->digits,
+				tKeys->pCobFieldKey->attr->scale, tKeys->pCobFieldKey->attr->flags, (int)tKeys->pCobFieldKey->size, NOALLOCATE_DATA);
+			file->stFileDef->keys[k].field->data = file->stFileDef->record->data + tKeys->position;
+			file->stFileDef->keys[k].field->size = tKeys->length;
+			file->stFileDef->keys[k].flag = 0;		/* ASCENDING/DESCENDING (for SORT) */
+			/* s.m. 202101 start    */
 #if __LIBCOB_VERSION >= 3
-					file->stFileDef->keys[k].tf_duplicates = 0;
-					if (tKeys->type == KEY_IDX_ALTERNATIVE_DUP)
-						file->stFileDef->keys[k].tf_duplicates = 1;		/* with duplicates  */
-					file->stFileDef->keys[k].tf_ascending=0;
-					file->stFileDef->keys[k].tf_suppress=0;
-					file->stFileDef->keys[k].char_suppress = 0;
-					file->stFileDef->keys[k].count_components = 0;      /* count_components */
-					file->stFileDef->keys[k].component[0] = NULL;
-	#if __LIBCOB_VERSION_MINOR >= 3 || __LIBCOB_VERSION >= 4
-					file->stFileDef->keys[k].collating_sequence = get_collation(tKeys->nCollatingSeq);
-    #endif  
-					/* s.m. 20210215    */
-					file->stFileDef->extfh_ptr = NULL;
-					file->stFileDef->linorkeyptr = NULL;
-					file->stFileDef->sort_collating = NULL;
+			file->stFileDef->keys[k].tf_duplicates = 0;
+			if (tKeys->type == KEY_IDX_ALTERNATIVE_DUP)
+				file->stFileDef->keys[k].tf_duplicates = 1;		/* with duplicates  */
+			file->stFileDef->keys[k].tf_ascending = 0;
+			file->stFileDef->keys[k].tf_suppress = 0;
+			file->stFileDef->keys[k].char_suppress = 0;
+			file->stFileDef->keys[k].count_components = 0;      /* count_components */
+			file->stFileDef->keys[k].component[0] = NULL;
+#if __LIBCOB_VERSION_MINOR >= 3 || __LIBCOB_VERSION >= 4
+			file->stFileDef->keys[k].collating_sequence = get_collation(tKeys->nCollatingSeq);
+#endif  
+			/* s.m. 20210215    */
+			file->stFileDef->extfh_ptr = NULL;
+			file->stFileDef->linorkeyptr = NULL;
+			file->stFileDef->sort_collating = NULL;
 #endif
-/* s.m. 202101 end  */
-					file->stFileDef->keys[k].offset = tKeys->position;
-					tKeys =  tKeys->next;
-			}
-/* s.m. 202101 start    */
+			/* s.m. 202101 end  */
+			file->stFileDef->keys[k].offset = tKeys->position;
+			tKeys = tKeys->next;
+		}
+		/* s.m. 202101 start    */
 #if __LIBCOB_VERSION >= 3
-			file->stFileDef->flag_line_adv=0;
-			file->stFileDef->curkey=-1;
-			file->stFileDef->mapkey=-1;
+		file->stFileDef->flag_line_adv = 0;
+		file->stFileDef->curkey = -1;
+		file->stFileDef->mapkey = -1;
 #endif
-/* s.m. 202101 end  */
+		/* s.m. 202101 end  */
 
-            file->stFileDef->access_mode = COB_ACCESS_DYNAMIC;  
-			file->stFileDef->organization = COB_ORG_INDEXED;
-			break;
+		file->stFileDef->access_mode = COB_ACCESS_DYNAMIC;
+		file->stFileDef->organization = COB_ORG_INDEXED;
+		break;
 	}
-
 	return 0;
 }
+
+//int file_SetInfoForFile(struct file_t* file, int nMode) {
+//
+//	struct KeyIdx_t* tKeys;
+//
+//	int	k = 0;
+//	/* s.m. 20250110 file->stFileDef = (cob_file*)malloc(sizeof(cob_file)); */
+//	/* s.m. 20250110 */
+//	/* 	*/
+//	file->stFileDef = (cob_file*)calloc(sizeof(cob_file), sizeof(char));
+//
+//	/* s.m. 20250922 (by Simon)*/
+//	/* cob_file_malloc(&file->stFileDef, NULL, 0, 0); */
+//
+//
+//
+//#if __LIBCOB_VERSION > 3
+//	memset(file->stFileDef->file_status, 0x00, sizeof(file->stFileDef->file_status));
+//#else
+//	file->stFileDef->file_status = NULL;
+//	file->stFileDef->file_status = ((unsigned char*)malloc((sizeof(unsigned char) * 3)));
+//	memset(file->stFileDef->file_status, 0x00, 3);
+//#endif
+//	file->stFileDef->select_name = (const char*)"masterseqfile";
+//	/* Problem with Join file name //-->>file->stFileDef->assign = util_cob_field_make( COB_TYPE_ALPHANUMERIC, strlen(file->name), 0, 0, strlen(file->name), ALLOCATE_DATA); */
+//	/* s.m. 20250110 */
+//	file->stFileDef->assign = util_cob_field_make(COB_TYPE_ALPHANUMERIC, (int)strlen(file->name), 0, 0, GCSORT_SIZE_FILENAME, ALLOCATE_DATA);
+//
+//	file->stFileDef->record = NULL;
+//
+//	/* new option Record Control Statement */
+//	if (file->maxLength > 0)
+//		file->stFileDef->record = util_cob_field_make(COB_TYPE_ALPHANUMERIC, file->maxLength, 0, 0, file->maxLength, ALLOCATE_DATA);
+//	else
+//	{
+//		/* In this case forced len of output file */
+//		file->stFileDef->record = util_cob_field_make(COB_TYPE_ALPHANUMERIC, globalJob->outputFile->recordLength, 0, 0, globalJob->outputFile->recordLength, ALLOCATE_DATA);
+//		file->recordLength = globalJob->outputFile->recordLength;
+//		file->maxLength = globalJob->outputFile->recordLength;
+//	}
+//
+//	if (file->format == FILE_TYPE_VARIABLE)
+//		file->stFileDef->variable_record = util_cob_field_make(COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA);
+//	else
+//		file->stFileDef->variable_record = NULL;
+//
+//	file->stFileDef->record_min = file->recordLength;
+//	file->stFileDef->record_max = file->maxLength;
+//	file->stFileDef->nkeys = file->nNumKeys;
+//	file->stFileDef->keys = NULL;
+//	file->stFileDef->file = NULL;
+//	file->stFileDef->fd = -1;
+//	file->stFileDef->access_mode = COB_ACCESS_SEQUENTIAL;
+//	file->stFileDef->lock_mode = 0; /* COB_LOCK_AUTOMATIC;   	COB_FILE_EXCLUSIVE;  0; */
+//	file->stFileDef->open_mode = COB_OPEN_CLOSED;
+//	file->stFileDef->flag_optional = 0;
+//	file->stFileDef->last_open_mode = 0;
+//	file->stFileDef->flag_operation = 0;
+//	file->stFileDef->flag_nonexistent = 0;
+//	file->stFileDef->flag_end_of_file = 0;
+//	file->stFileDef->flag_begin_of_file = 0;
+//	file->stFileDef->flag_first_read = 0;
+//	file->stFileDef->flag_read_done = 0;
+//	file->stFileDef->flag_select_features = 0;
+//	file->stFileDef->flag_needs_nl = 0;
+//	file->stFileDef->flag_needs_top = 0;
+//	file->stFileDef->file_version = 1;
+//
+//
+//#if __LIBCOB_VERSION >= 3
+//	file->stFileDef->linorkeyptr = NULL;
+//	file->stFileDef->sort_collating = NULL;
+//	file->stFileDef->extfh_ptr = NULL;
+//#endif
+//
+//#if __LIBCOB_VERSION > 3 || \
+//   ( __LIBCOB_VERSION == 3  && __LIBCOB_VERSION_MINOR >= 2 )
+//	if (file->stFileDef != NULL)
+//		file->stFileDef->fcd = NULL;
+//#endif
+//
+//	/* default: */
+//	file->stFileDef->organization = COB_ORG_SEQUENTIAL;
+//
+//	switch (file->organization) {
+//
+//	case FILE_ORGANIZATION_SEQUENTIAL:
+//		file->stFileDef->organization = COB_ORG_SEQUENTIAL;
+//		break;
+//
+//	case FILE_ORGANIZATION_LINESEQUENTIAL:
+//		file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
+//		file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
+//		/* use default value LIBCOB */
+//		cob_putenv("COB_LS_FIXED=0\0"); /* change value of environment value GNUCobol - Truncate trailing spaces*/
+//		break;
+//	case FILE_ORGANIZATION_LINESEQUFIXED:
+//		file->opt = COB_WRITE_BEFORE | COB_WRITE_LINES | 1;
+//		file->stFileDef->organization = COB_ORG_LINE_SEQUENTIAL;
+//		cob_putenv("COB_LS_FIXED=1\0"); 	/* change value of environment value GNUCobol - NO Truncate trailing spaces*/
+//		break;
+//	case FILE_ORGANIZATION_RELATIVE:
+//		tKeys = file->stKeys;
+//		file->stFileDef->keys = (cob_file_key*)(malloc(sizeof(cob_file_key) * 1));
+//		file->stFileDef->keys[0].field = util_cob_field_make(COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA);
+//		file->stFileDef->keys[0].flag = 0;
+//		file->stFileDef->keys[0].offset = 0;
+//		file->stFileDef->organization = COB_ORG_RELATIVE;
+//		break;
+//	case FILE_ORGANIZATION_INDEXED:
+//		tKeys = file->stKeys;
+//		/* check keys - for indexed file is mandatory   */
+//		if (file->nNumKeys == 0) {
+//			fprintf(stdout, "*GCSORT*S300*ERROR: KEY definitions are not specified for Indexed file. \n");
+//			exit(GC_RTC_ERROR);
+//		}
+//		/* check keys - for indexed file Primary is first definition    */
+//		if (tKeys->type != KEY_IDX_PRIMARY) {
+//			fprintf(stdout, "*GCSORT*S301*ERROR: KEY specifications error. First field is not primary key.\n");
+//			exit(GC_RTC_ERROR);
+//		}
+//
+//		file->stFileDef->keys = (cob_file_key*)(malloc(sizeof(cob_file_key) * file->nNumKeys));
+//		for (k = 0; k < file->nNumKeys; k++) {
+//			/* s.m. 20250110 */
+//			file->stFileDef->keys[k].field = util_cob_field_make(tKeys->pCobFieldKey->attr->type, tKeys->pCobFieldKey->attr->digits,
+//				tKeys->pCobFieldKey->attr->scale, tKeys->pCobFieldKey->attr->flags, (int)tKeys->pCobFieldKey->size, NOALLOCATE_DATA);
+//			file->stFileDef->keys[k].field->data = file->stFileDef->record->data + tKeys->position;
+//			file->stFileDef->keys[k].field->size = tKeys->length;
+//			file->stFileDef->keys[k].flag = 0;		/* ASCENDING/DESCENDING (for SORT) */
+//			/* s.m. 202101 start    */
+//#if __LIBCOB_VERSION >= 3
+//			file->stFileDef->keys[k].tf_duplicates = 0;
+//			if (tKeys->type == KEY_IDX_ALTERNATIVE_DUP)
+//				file->stFileDef->keys[k].tf_duplicates = 1;		/* with duplicates  */
+//			file->stFileDef->keys[k].tf_ascending = 0;
+//			file->stFileDef->keys[k].tf_suppress = 0;
+//			file->stFileDef->keys[k].char_suppress = 0;
+//			file->stFileDef->keys[k].count_components = 0;      /* count_components */
+//			file->stFileDef->keys[k].component[0] = NULL;
+//#if __LIBCOB_VERSION_MINOR >= 3 || __LIBCOB_VERSION >= 4
+//			file->stFileDef->keys[k].collating_sequence = get_collation(tKeys->nCollatingSeq);
+//#endif  
+//			/* s.m. 20210215    */
+//			file->stFileDef->extfh_ptr = NULL;
+//			file->stFileDef->linorkeyptr = NULL;
+//			file->stFileDef->sort_collating = NULL;
+//#endif
+//			/* s.m. 202101 end  */
+//			file->stFileDef->keys[k].offset = tKeys->position;
+//			tKeys = tKeys->next;
+//		}
+//		/* s.m. 202101 start    */
+//#if __LIBCOB_VERSION >= 3
+//		file->stFileDef->flag_line_adv = 0;
+//		file->stFileDef->curkey = -1;
+//		file->stFileDef->mapkey = -1;
+//#endif
+//		/* s.m. 202101 end  */
+//
+//		file->stFileDef->access_mode = COB_ACCESS_DYNAMIC;
+//		file->stFileDef->organization = COB_ORG_INDEXED;
+//		break;
+//	}   
+//
+//	return 0;
+//}
+
 int file_clone(struct file_t* fout, struct file_t* fin) {
 	/* 2024 s.m. */
 	/* fout->name = fin->name; */

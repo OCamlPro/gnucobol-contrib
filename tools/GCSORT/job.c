@@ -22,9 +22,7 @@
 #include <sys/stat.h>
 #include <malloc.h>
 #include <time.h>
-#include <ctype.h>
 
-#include "libgcsort.h"
 /*  #ifdef	_WIN32  */
 
 #if defined(_MSC_VER) ||  defined(__MINGW32__) || defined(__MINGW64__)
@@ -42,7 +40,6 @@
 #include <string.h>
 #include <stddef.h>
 #include <string.h>
-#include <math.h>
 #include <time.h>
 #include <errno.h>
 #include "gcsort.h"
@@ -74,10 +71,8 @@
 /* #include "bufferedreader.h"  */
 /* #include "bufferedwriter.h"  */
 
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-
 #ifdef _MSC_VER
+#define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 #endif
 
@@ -309,7 +304,18 @@ struct job_t* job_constructor(void) {
 	/**/
 
 	pEnvEmule = getenv("GCSORT_PATHTMP");
-	if (pEnvEmule != NULL)
+	if (pEnvEmule == NULL) 	{
+		pEnvEmule = getenv("TMPDIR");
+	}
+	if (pEnvEmule == NULL) 	{
+		pEnvEmule = getenv("TMP");
+	}
+	if (pEnvEmule == NULL) 	{
+		pEnvEmule = getenv("TEMP");
+	}
+	if (pEnvEmule == NULL) 	{
+		pEnvEmule = "/tmp";
+	}
 	{
 		strcpy(job->strPathTempFile, pEnvEmule);
 		strcpy(chPath, job->strPathTempFile);
@@ -322,6 +328,7 @@ struct job_t* job_constructor(void) {
 		nOp = open(chPath, O_CREAT | O_WRONLY | O_BINARY | _O_TRUNC, _S_IREAD | _S_IWRITE);
 		if (nOp < 0) {
 			fprintf(stderr, "GCSORT Warning : Path not found %s\n", job->strPathTempFile);
+			job->strPathTempFile[0] = 0;
 		}
 		else
 		{
@@ -615,7 +622,7 @@ int job_load(struct job_t* job, int argc, char** argv) {
 				buffer = (char*)realloc(buffer, bufferLength + argvLength + 1);
 			buffer[bufferLength] = ' ';
 			/*
-			 controllo se i parametri sono raggruppati tra doppi apici (2° parametro riga comando)
+			 controllo se i parametri sono raggruppati tra doppi apici (2ï¿½ parametro riga comando)
 			 s.m. 20201015
 			 skip option
 			 */
@@ -5449,7 +5456,7 @@ int job_CheckTypeDate(int nTypeGC, cob_field * fk1, cob_field * fk2)
 	int result = 0;
 	/*
 * Y2T8 = Y4T8(? ) C'ccyymmdd' or Z'ccyymmdd'		05 Y2T8   pic 9(8).
-* Y2T4 : C'yyxx' or Z'yyxx'							05 Y2T4   pic 9(4).
+* Y2T4 :ï¿½C'yyxx' or Z'yyxx'							05 Y2T4   pic 9(4).
 * Y2T2 'yy'											05 Y2T2   pic 9(2).
 * Y2T2 'yyx'  (? ? ? )								05 Y2T3   pic 9(3).
 * 5, Y2T: C'yyddd' or Z'yyddd'						05 Y2T5   pic 9(5).

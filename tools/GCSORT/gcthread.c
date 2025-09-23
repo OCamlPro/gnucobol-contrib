@@ -169,7 +169,8 @@ for (int s = 0; s < nThread; s++)
 
 	nRC = gcthread_print_final(jArJob, timeStart);
 
-	cob_tidy();
+
+	/* s.m. 20250923  cob_tidy();  */
 
 /* Destroy the thread object. */
 	for (int t = 0; t < nThread; t++)
@@ -185,6 +186,12 @@ for (int s = 0; s < nThread; s++)
 		if (pParThread[t] != NULL)
 			free(pParThread[t]);
 	}
+
+	if (module->module_active) {
+		module->module_active--;
+	}
+	cob_tidy();
+
 
 	return rtc;
 }
