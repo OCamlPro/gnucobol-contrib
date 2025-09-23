@@ -1,0 +1,39 @@
+A simple program to read from the current folder all source file listings that
+end with .prn and count the total number of Cobol code lines.
+
+It will ignore any secondary listing within each one that starts with 000001 as
+it assumes that any such are in fact c object packs as GC lists those as well -
+yes a bug in gc listing routine - must get around to reporting it.
+
+As well as blank lines at least where the first six character only have spaces
+as against a numeric value in the range - 000000 to 999999 etc as anything else
+is ignored.
+
+Note that listings containing nested program will work as the number increases
+by one for the next nested program / module.
+
+I have tested it against my ACAS accouting sources and manually checking one sub
+systems folder with only 10 -12 sources and the .prn files and then running
+cntlines in the same folder - was the same.
+
+Note that cntlines must be run from the top folder holding your sources where
+you have previously run cobc -x|-x progname.cbl -T progname.prn on all your
+source code files that you want counted.
+
+It only looks for files ending with .prn and only lower case.
+
+As ACAS has scripts for compiling the system by sub system which in my case is
+irs, general, purchase, sales and stock it workds as advertised. By running it
+in just one lower level folder it will do the same as it issues command  -
+
+find . -name '*.prn' | sort > cnt.tmp
+
+Then reads the file cnt.tmp counting and searching for non number cc1-6 etc.
+
+Easy, but why I want a total size of the applications cobol source code in
+lines.
+
+Note as is, it will not work under Windows, only *nix platforms.
+
+Vincent Coen
+23 September 2025.
