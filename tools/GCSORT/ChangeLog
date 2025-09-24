@@ -1,3 +1,8 @@
+2025-09-24  Sauro Menna  <saumen2004@libero.it>
+    * Version 01.04.08c
+    * file.c: Review file_SetInfoForFile() function to use cob_file_malloc()
+    * job.c: check file type and key definition 
+
 2025-09-23  Sauro Menna  <saumen2004@libero.it>
     * Version 01.04.08b
     * file.c: Review file_SetInfoForFile() function to use cob_file_malloc().

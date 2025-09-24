@@ -2008,7 +2008,7 @@ int job_check(struct job_t* job)
 	if (job_NormalOperations(job) == 0) {  /* Not for test command line    */
 		for (file = job->inputFile; file != NULL; file = file_getNext(file)) {
 			/* check file type  */
-			if ((file->stFileDef->nkeys > 0) && (file->organization != FILE_ORGANIZATION_INDEXED)) {
+			if ((file->stFileDef->nkeys > 0) && (file->organization != FILE_ORGANIZATION_INDEXED) && (file->organization != FILE_ORGANIZATION_RELATIVE)) {
 				fprintf(stdout, "*GCSORT*S070*ERROR: KEY clause definition not allowed for file  %s - Type: %s\n", file->name, utils_getFileOrganizationName(file->organization));
 				return -1;
 			}
@@ -2024,7 +2024,7 @@ int job_check(struct job_t* job)
 		}
 		for (file = job->outputFile; file != NULL; file = file_getNext(file)) {
 			/* check file type  */
-			if ((file->stFileDef->nkeys > 0) && (file->organization != FILE_ORGANIZATION_INDEXED)) {
+			if ((file->stFileDef->nkeys > 0) && (file->organization != FILE_ORGANIZATION_INDEXED) && (file->organization != FILE_ORGANIZATION_RELATIVE)) {
 				fprintf(stdout, "*GCSORT*S071*ERROR: KEY clause definition not allowed for file  %s - Type: %s\n", file->name, utils_getFileOrganizationName(file->organization));
 				return -1;
 			}
