@@ -17,6 +17,8 @@
 *>    Remarks.            Copyright (c) 2025, Vincent B Coen.
 *>    Changes.
 *> 20/09/25 vbc - 1.0.00  First written.
+*> 25/09/25 vbc - 1.0.01  Add activity marker but commented out as not needed
+*>                        here.
 *>
  environment             division.
  copy  "envdiv.cob".
@@ -61,19 +63,24 @@
 *>
  01  WS-Data.
      03  FS-StatusX.                              *>  File status returned from file ops
-         05  FS-Status           pic 99.
+         05  FS-Status   pic 99.
+ *>    03  WS-Stacked-Disp pic x(4)      value "|/-\".
+ *>    03  WS-Stacked-Char redefines WS-Stacked-Disp
+ *>                        pic x   occurs 4.
+ *>    03  A               binary-char   value zero.
+ *>
 *>
 *> For FILE_EXIST intrinsic FUNCTION.
 *>
  01  File-Info                          value zero.
-     03 File-Size-Bytes      pic 9(18) comp.
-     03 Mod-DD               pic 9(2)  comp.
-     03 Mod-MO               pic 9(2)  comp.
-     03 Mod-YYYY             pic 9(4)  comp.
-     03 Mod-HH               pic 9(2)  comp.
-     03 Mod-MM               pic 9(2)  comp.
-     03 Mod-SS               pic 9(2)  comp.
-     03 filler               pic 9(2)  comp. *> Always 00
+     03 File-Size-Bytes  pic 9(18) comp.
+     03 Mod-DD           pic 9(2)  comp.
+     03 Mod-MO           pic 9(2)  comp.
+     03 Mod-YYYY         pic 9(4)  comp.
+     03 Mod-HH           pic 9(2)  comp.
+     03 Mod-MM           pic 9(2)  comp.
+     03 Mod-SS           pic 9(2)  comp.
+     03 filler           pic 9(2)  comp. *> Always 00
 *>
  procedure division.
 *>
@@ -83,6 +90,7 @@
      set      ENVIRONMENT "COB_EXIT_WAIT"  to "N".
      initialise
               Current-Cnt
+ *>             A
               Total-Cnt.  *> JIC
      call     "SYSTEM" using WS-Find-Cmd.
      call     "CBL_CHECK_FILE_EXIST" using "cnt.tmp"
@@ -103,20 +111,26 @@
               stop run
      end-if
 *>
+ *>    display  "Active " at 0501.
      perform  forever
               read     File-Stream at end
                        move     Total-Cnt to Disp-Total-Cnt
                        display  "Total Cobol lines found = " at 0301
                        display  Disp-Total-Cnt  at 0326
-                       display  space at 0501
+                       display  space at 0801
                        close    File-Stream
 *> rem out the next line if you wish to keep this temp file
-                       CALL     "CBL_DELETE_FILE" USING "cnt.tmp".
+                       CALL     "CBL_DELETE_FILE" USING "cnt.tmp"
                        stop run
               end-read
               move     FS-Data to WS-Input-File-Name
               open     input Input-File
               move     zero to Current-Cnt
+  *>            add      1 to A
+  *>            if       A > 4
+  *>                     move     1 to A
+  *>            end-if
+  *>            display  WS-Stacked-Char (A) at 0508
               perform  forever
                        read     Input-File at end
                                 close    Input-File

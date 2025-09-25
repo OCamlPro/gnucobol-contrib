@@ -20,7 +20,7 @@ Note that cntlines must be run from the top folder holding your sources where
 you have previously run cobc -x|-x progname.cbl -T progname.prn on all your
 source code files that you want counted.
 
-It only looks for files ending with .prn and only lower case.
+It only looks for files ending with .prn and ONLY lower case.
 
 As ACAS has scripts for compiling the system by sub system which in my case is
 irs, general, purchase, sales and stock it workds as advertised. By running it
@@ -30,10 +30,26 @@ find . -name '*.prn' | sort > cnt.tmp
 
 Then reads the file cnt.tmp counting and searching for non number cc1-6 etc.
 
-Easy, but why I want a total size of the applications cobol source code in
-lines.
+It starts with a display of the program name and version and finishes with a
+total count on line 3.
 
-Note as is, it will not work under Windows, only *nix platforms.
+During procesing and when starting to reading each source file it can display
+a progress marker but as at least for my ACAS application it is very quick,
+around 1 second (but I run using a M.2 SSD so on a slow HDD will may be longer)
+I have commented this code out.
+
+IF needed, you can alway remove the comment markers (*>) and recompile.
+Having moved to the folder containg the source, to compile is just :
+cobc -x cntlines.cbl then cp cntlines to your active bin/executable folder.
+
+Easy, but as to why, I needed a total size of the applications cobol source code
+in lines of Cobol code to include in my documentation for ACAS (which is on the
+sourceforge website under ACAS - sourceforge.net/p/acas.
+
+Note as is, it will not work under Windows, only *nix platforms as it uses
+a *nix s/ript and that would need to be changed for a windows version of the
+find bash command.
 
 Vincent Coen
-23 September 2025.
+Created 23 September 2025.
+Updated 25 September 2025.
