@@ -1,0 +1,26 @@
+There is a complete accounting system called ACAS available that supports:
+
+General/Nominal ledger processing in the names of IRS and General (handles
+profit centers and branch accounting) although both can be processed within IRS
+by making use of the sub-nominal account numbers to break down both.
+
+Sales Ledger (Receivables) including invoicing and payment processing to name
+but a few.
+
+Purchase Ledger (Payables) including automatic payment processing as well as
+manual payment processing.
+
+Stock Control (Inventory) support service type items as well as item bought for
+sale utilising Sales Ledger.
+
+The Cobol code for this system is around 500,000 lines of Cobol code plus some
+code written in C / C++.
+
+You can find this system also on sourceforge.net, as acas at :
+sourceforge.net/p/acas
+
+I will not be placing it here as it will be just another area that I have to
+keep up to date etc.
+
+Vincent B. Coen
+25 September 2025.
