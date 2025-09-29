@@ -90,7 +90,7 @@ int  findrep_getOverRun ( struct findrep_t *fr);
 void findrep_setShift ( struct findrep_t *fr, int n);
 int  findrep_getShift ( struct findrep_t *fr);
 void findrep_setpairs(struct findrep_t* field, struct findrepfield_t* p);
-int findrep_search_replace(struct findrep_t* CmdOpt, unsigned char* BufIn, unsigned char* BufOut, int lenIn, int lenOut, unsigned char* inputrec,int nMaxOcc);
+int findrep_search_replace(struct findrep_t* CmdOpt, unsigned char* BufIn, unsigned char* BufOut, int lenIn, int lenOut, unsigned char* inputrec,int nMaxOcc, char cIO);
 void findrepfield_setOutForAll(struct findrepfield_t* fin, struct fieldValue_t* out);
 struct findrepfield_t *findrepfield_constructor(struct fieldValue_t *in, struct fieldValue_t *out);
 void findrepfield_destructor(struct findrepfield_t *field);

@@ -177,7 +177,7 @@ void findrep_fields_setout(struct findrepfield_t* p, struct fieldValue_t* field)
 	return;
 }
 
-int findrep_search_replace(struct findrep_t* CmdOpt, unsigned char* BufIn, unsigned char* BufOut, int lenIn, int lenOut, unsigned char* inputrec, int nMaxOcc)
+int findrep_search_replace(struct findrep_t* CmdOpt, unsigned char* BufIn, unsigned char* BufOut, int lenIn, int lenOut, unsigned char* inputrec, int nMaxOcc, char cIO)
 {
 	/* unsigned char szRekIn[COB_FILE_BUFF]; */
 	int nSubs = 0;
@@ -188,9 +188,13 @@ int findrep_search_replace(struct findrep_t* CmdOpt, unsigned char* BufIn, unsig
 	struct findrepfield_t* f;
 	if (CmdOpt != NULL) {
 		for (f = CmdOpt->pFindRepField; f != NULL; f = f->next) {
-			nSubs += utl_replace_recursive_str(BufIn, (unsigned char*)f->in->generated_value, (unsigned char*) f->out->generated_value, BufOut, lenIn, lenOut, nSubs, nMaxOcc, &nOverChar, nShift);
+			nSubs += utl_replace_recursive_str(BufIn, (unsigned char*)f->in->generated_value, (unsigned char*) f->out->generated_value, BufOut, lenIn, lenOut, nSubs, nMaxOcc, &nOverChar, nShift, cIO);
 			/* Check OverRun */
-			memcpy(BufIn, BufOut, lenIn);
+			if (cIO == 'I')
+				memcpy(BufIn, BufOut, lenIn);
+			else
+				memcpy(BufIn, BufOut, lenOut);
+
 			if (nSubs > nMaxOcc)
 				break;	/* Stop after n substitution  VERIFY */
 		}

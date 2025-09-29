@@ -47,6 +47,7 @@
        77 chrsl                 pic x value '/'.
        77 chrbs                 pic x value '\'.
        77 wk-group              pic x(10) value space.
+       77 wk-group-disp         pic x(10) value space.
        77 wk-commandtype        pic x(10) value space.
        77 f-s                   pic xx.
 	   77 retcode               BINARY-LONG SIGNED.
@@ -55,7 +56,7 @@
        01 gcsort-tests-ver      pic x(20) value ' version 1.0'.
        01 cmd-line              pic x(512).
        01 cmd-cmd               pic x(512).
-       77 count-errors          pic 9(3) value zero.
+       77 count-errors          pic 9(5) value zero.
        77 group-errors          pic 9(5) value zero.
       *
        77 evide                 pic x(10).
@@ -65,21 +66,21 @@
        77   cmd-go              pic x(1024) value space.
       *
       *
-       77 idx                   pic 9(3) value zero.
-       77 idx-sep               pic 9(3) value zero.
-       77 idx-rc                pic 9(3) value zero.
+       77 idx                   pic 9(5) value zero.
+       77 idx-sep               pic 9(5) value zero.
+       77 idx-rc                pic 9(5) value zero.
       *
        01      array-def-cmd.
-          03   ar-max-ele       pic 9(3).
-          03   ar-def-cmd occurs 1024 times.
+          03   ar-max-ele       pic 9(5).
+          03   ar-def-cmd occurs 4096 times.
             05 ar-prefix        pic x.
             05 ar-groupcmd      pic x(10).
             05 ar-commandtype   pic x(10).
             05 ar-commandline   pic x(512).
       *
        01      array-retcode.
-          03   rc-max-ele       pic 9(3).
-          03   rc-def-cmd occurs 1024 times.
+          03   rc-max-ele       pic 9(5).
+          03   rc-def-cmd occurs 4096 times.
             05 rc-groupcmd      pic x(10).
             05 rc-commandtype   pic x(10).
             05 rc-retcode       BINARY-LONG SIGNED.
@@ -92,7 +93,7 @@
        master                     section.
        begin-00.
            display '*===============================================*'
-           display ' GCSort test JOIN environment ' gcsort-tests-ver
+           display ' GCSort test environment ' gcsort-tests-ver
            display '*===============================================*'
            display '*===============================================*'
            display '  gctestcmd           '
@@ -114,11 +115,13 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
       *      
            move idx  to idx-sep
            move zero to idx
-           move zero to rc-max-ele.
+           move 1 to rc-max-ele.
            
            perform read-array-cmd until idx > idx-sep
            close ftake
-           move idx-rc to rc-max-ele.
+           move idx-rc  to rc-max-ele.
+           
+      *    display "count idx-rc=" idx-rc "  rc-max-ele" rc-max-ele
            
            perform print-final
            
@@ -193,11 +196,15 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
                    close ftake
                    perform open-out-takefile
                    move ar-groupcmd(idx) to wk-group
+                   display "========================="
+                   display "== ID: " wk-group
+                   display "========================="
                end-if
                
                if (wk-commandtype not = ar-commandtype(idx))
                     move ar-commandtype(idx) to wk-commandtype
                     add 1 to idx-rc
+
                end-if
              move ar-groupcmd(idx)    to rc-groupcmd(idx-rc)
              move ar-commandtype(idx) to rc-commandtype(idx-rc)
@@ -224,7 +231,8 @@ Win                if (ntype = 1)
       **................................................................................. gcsort
                when 'gcsort'
                    close ftake
-                   move space to wk-group, cmd-cmd 
+      **             move space to wk-group, cmd-cmd 
+                   move space to cmd-cmd 
                    move TRIM(ar-commandline(idx), TRAILING) to cmd-cmd 
 Win                if (ntype = 1)
                         move 1 to ntype
@@ -260,7 +268,8 @@ Linux                if (ntype = 2)
       **-->>                   display TRIM(cmd-cmd, TRAILING) 
 
                when 'exec'
-                   move space to wk-group, cmd-cmd 
+      **             move space to wk-group, cmd-cmd 
+                   move space to cmd-cmd 
                    move TRIM(ar-commandline(idx), TRAILING) to cmd-cmd 
 Win                if (ntype = 1)
                         move 1 to ntype
@@ -427,6 +436,9 @@ Win                if (ntype = 1)
            display
            '========================================================='
            move space to wk-group
+           
+      *    display "rc-max-ele=" rc-max-ele
+           
            perform varying idx-rc from 1 by 1 
                 until idx-rc > rc-max-ele
               if (wk-group  = SPACE)
@@ -438,6 +450,7 @@ Win                if (ntype = 1)
                 move '  <------ ' to evide
               end-if
               
+      *       display "wk-group " wk-group " not = " rc-groupcmd(idx-rc)
               if (wk-group not = rc-groupcmd(idx-rc))
                
                  display ' ' wk-group    '      ' 

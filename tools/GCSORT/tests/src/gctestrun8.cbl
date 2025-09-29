@@ -342,7 +342,7 @@ TEST00***               display ' cmd:>' cmd-go  '<'
                  goback
              end-if             
            end-if            
-      D    display ' cmd line : '  cmd-go
+           display ' cmd line : '  cmd-go
            call     'SYSTEM' using cmd-go
       D    display  'RETURN-CODE Value : ' RETURN-CODE
       * reset 

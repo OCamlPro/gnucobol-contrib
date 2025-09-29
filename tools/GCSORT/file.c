@@ -231,19 +231,17 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 	cob_file_key* keyfield = NULL;
 
 	int	k = 0;
-	/* s.m. 20250110 file->stFileDef = (cob_file*)malloc(sizeof(cob_file)); */
-	/* s.m. 20250110 file->stFileDef = (cob_file*)calloc(sizeof(cob_file), sizeof(char)); */
 
-	/* s.m. 20250922 (by Simon)*/
-	/* cob_file_malloc(&file->stFileDef, NULL, 0, 0); */
-
-	if (file->organization == FILE_ORGANIZATION_RELATIVE)
+	if (file->organization == FILE_ORGANIZATION_RELATIVE) {
 		cob_file_malloc(&file->stFileDef, &keyfield, 1, 0);
+	}
 	else
+	{
 		if (file->organization == FILE_ORGANIZATION_INDEXED)
 			cob_file_malloc(&file->stFileDef, &keyfield, file->nNumKeys, 0);
 		else
 			cob_file_malloc(&file->stFileDef, NULL, 0, 0);
+	}
 	
 
 #if __LIBCOB_VERSION > 3
@@ -289,39 +287,10 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 	file->stFileDef->access_mode = COB_ACCESS_SEQUENTIAL;
 	file->stFileDef->lock_mode = 0; /* COB_LOCK_AUTOMATIC;   	COB_FILE_EXCLUSIVE;  0; */
 	file->stFileDef->open_mode = COB_OPEN_CLOSED;
-	/* --> because all values are set to binary zero in the previous call. */
-	/*
-	file->stFileDef->flag_optional = 0;
-	file->stFileDef->last_open_mode = 0;
-	file->stFileDef->flag_operation = 0;
-	file->stFileDef->flag_nonexistent = 0;
-	file->stFileDef->flag_end_of_file = 0;
-	file->stFileDef->flag_begin_of_file = 0;
-	file->stFileDef->flag_first_read = 0;
-	file->stFileDef->flag_read_done = 0;
-	file->stFileDef->flag_select_features = 0;
-	file->stFileDef->flag_needs_nl = 0;
-	file->stFileDef->flag_needs_top = 0;
-	file->stFileDef->file_version = 1;
-	*/
-
 
 #if __LIBCOB_VERSION >= 3
-	file->stFileDef->linorkeyptr = NULL;
-	/* --> because all values are set to binary zero in the previous call. */
-	/*
-	file->stFileDef->sort_collating = NULL;
-	file->stFileDef->extfh_ptr = NULL;
-	*/
+	// file->stFileDef->linorkeyptr = NULL;
 #endif
-
-	/*
-#if __LIBCOB_VERSION > 3 || \
-   ( __LIBCOB_VERSION == 3  && __LIBCOB_VERSION_MINOR >= 2 )
-	if (file->stFileDef != NULL)
-		file->stFileDef->fcd = NULL;
-#endif
-*/
 
 	/* default: */
 	file->stFileDef->organization = COB_ORG_SEQUENTIAL;
@@ -347,8 +316,8 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 		tKeys = file->stKeys;
 		/* (cob_file_malloc) file->stFileDef->keys = (cob_file_key*)(malloc(sizeof(cob_file_key) * 1)); */
 		file->stFileDef->keys[0].field = util_cob_field_make(COB_TYPE_NUMERIC_DISPLAY, 5, 0, 0, 5, ALLOCATE_DATA);
-		file->stFileDef->keys[0].flag = 0;
-		file->stFileDef->keys[0].offset = 0;
+		//file->stFileDef->keys[0].flag = 0;
+		//file->stFileDef->keys[0].offset = 0;
 		file->stFileDef->organization = COB_ORG_RELATIVE;
 		break;
 	case FILE_ORGANIZATION_INDEXED:
@@ -374,21 +343,12 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 			file->stFileDef->keys[k].flag = 0;		/* ASCENDING/DESCENDING (for SORT) */
 			/* s.m. 202101 start    */
 #if __LIBCOB_VERSION >= 3
-			file->stFileDef->keys[k].tf_duplicates = 0;
+			//file->stFileDef->keys[k].tf_duplicates = 0;
 			if (tKeys->type == KEY_IDX_ALTERNATIVE_DUP)
 				file->stFileDef->keys[k].tf_duplicates = 1;		/* with duplicates  */
-			file->stFileDef->keys[k].tf_ascending = 0;
-			file->stFileDef->keys[k].tf_suppress = 0;
-			file->stFileDef->keys[k].char_suppress = 0;
-			file->stFileDef->keys[k].count_components = 0;      /* count_components */
-			file->stFileDef->keys[k].component[0] = NULL;
 #if __LIBCOB_VERSION_MINOR >= 3 || __LIBCOB_VERSION >= 4
 			file->stFileDef->keys[k].collating_sequence = get_collation(tKeys->nCollatingSeq);
 #endif  
-			/* s.m. 20210215    */
-			file->stFileDef->extfh_ptr = NULL;
-			file->stFileDef->linorkeyptr = NULL;
-			file->stFileDef->sort_collating = NULL;
 #endif
 			/* s.m. 202101 end  */
 			file->stFileDef->keys[k].offset = tKeys->position;
@@ -515,7 +475,6 @@ int file_checkFSWrite(char* op, char* caller, struct file_t* file, int nLenRecOu
 		fprintf(stdout, "*GCSORT*S751*ERROR: Operation %s, Caller %s, File %s \n Record contains bad character. Record: %s \nFile Status (%c%c)\n",
 			op, caller, file_getName(file),
 			file->stFileDef->assign->data, file->stFileDef->file_status[0], file->stFileDef->file_status[1]);
-		util_view_numrek();
 		util_view_numrek();
 		job_print_error_file(file->stFileDef, nLenRek);
 		job_print_error_file(file->stFileDef, nLenRecOut);

@@ -1,3 +1,19 @@
+2025-09-28  Sauro Menna  <saumen2004@libero.it> 
+    * Version 01.04.09
+    * changed copyfile.c problem in parameter function: outrec_copy_overlay
+    * review outrec.c (thanks David) in function outrec_copy (FINDREP), delete variable in outrec_copy, outrec_copy_overlay functions
+    * review inrec.c (thanks David) in function inrec_copy (FINDREP), delete variable in inrec_copy, inrec_copy_overlay functions
+    * file.c review cob_file_malloc
+    * INREC/OUTREC FINDREP New tests case 
+        gctestcmd.cbl update for array in memory
+        Updated config file gctestcmd.cfg  
+        Insert new files to compare result in files_cmp 
+        Insert new file in filesin 
+    * gctestrun8.cbl condition some displays for debugging
+    * findreplace.h/findreplace.c  new parameter in findrep_search_replace function to find record length
+    * review parser.y e scanner.l for FINDREP Control Statement
+    * review utils.c utl_replace_recursive_str(), utl_replace_findrep()
+
 2025-09-24  Sauro Menna  <saumen2004@libero.it>
     * Version 01.04.08c
     * file.c: Review file_SetInfoForFile() function to use cob_file_malloc()

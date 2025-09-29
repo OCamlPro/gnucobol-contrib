@@ -6317,7 +6317,7 @@ void job_cob_field_destroy_NOData(cob_field * field_ret)
 	}
 }
 void job_print_error_file(cob_file * cobF, int nLenOut) {
-	fprintf(stdout, "*GCSORT* record write          : %d \n", nLenOut);
+	fprintf(stdout, "*GCSORT* record len write      : %d \n", nLenOut);
 	fprintf(stdout, "*GCSORT* record defition min   : " NUM_FMT_LLD  "\n", (long long)cobF->record_min);
 	fprintf(stdout, "*GCSORT* record defition max   : " NUM_FMT_LLD  "\n", (long long)cobF->record_max);
 	return;

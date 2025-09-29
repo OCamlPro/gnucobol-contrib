@@ -460,7 +460,8 @@ int job_copyFile(struct job_t *job)
 			/* check overlay    */
 			if (job->outrec->nIsOverlay == 0) {
 				utl_resetbuffer(recordBuffer, recordBufferLength);
-				nLenRek = outrec_copy(job->outrec, szBuffRek, recordBuffer, job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
+				/* s.m. 202509 nLenRek = outrec_copy(job->outrec, szBuffRek, recordBuffer, job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt); */
+				nLenRek = outrec_copy(job->outrec, recordBuffer, szBuffRek, job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 				utl_resetbuffer(recordBuffer, recordBufferLength);
 				gc_memcpy(recordBuffer, szBuffRek, nLenRek + nSplitPosPnt);
 				nLenRecOut = nLenRek;
@@ -469,7 +470,8 @@ int job_copyFile(struct job_t *job)
 			{		/* Overlay  */
 				utl_resetbuffer(szBuffRek, recordBufferLength);
 				gc_memcpy((unsigned char*)szBuffRek, recordBuffer, nLenRek + nSplitPosPnt);	/* s.m. 202101 copy record  */
-				nbyteOvl = outrec_copy_overlay(job->outrec, szBuffRek, recordBuffer, job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
+				/* s.m. 202509 nbyteOvl = outrec_copy_overlay(job->outrec, szBuffRek, recordBuffer, job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt); */
+				nbyteOvl = outrec_copy_overlay(job->outrec, recordBuffer, szBuffRek, job->outputLength, byteRead, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
 				nbyteOvl++;
 				if (nbyteOvl < nLenRek)
 					nbyteOvl = nLenRek;

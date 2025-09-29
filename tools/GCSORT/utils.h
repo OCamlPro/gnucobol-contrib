@@ -268,9 +268,9 @@ int  utl_fileConvertFileType(int organization);
 	unsigned long  GetTickCount(void);  
 #endif
 
-int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut, int nCurrOcc, int nMaxOcc, int* nOverChar, int nShift);
+int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut, int nCurrOcc, int nMaxOcc, int* nOverChar, int nShift, char cIO);
 int utl_replace_single_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut);
-int utl_replace_findrep(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int find_len, int repl_len, int lenIn, int lenOut, int nCurrOcc, int nMaxOcc, int nShift);
+int utl_replace_findrep(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int find_len, int repl_len, int lenIn, int lenOut, int nCurrOcc, int nMaxOcc, int nShift, char cIO);
 int utl_replace_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut);
 int utl_copy_realloc(char* out, char* in);
 

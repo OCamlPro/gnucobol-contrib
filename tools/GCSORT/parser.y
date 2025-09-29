@@ -108,7 +108,7 @@
     char szBuf[30];
 
 	extern int nTypeFieldsCmd;
-	char szTmp[5];
+	char szTmp[256];
 	int	 nIntTmp;
 	int  nTypeFormat;			/* 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields  */
 	int  nTypeIncludeOmit;		/* 0= Nothing, 1 = Include, Omit=2                              */
@@ -474,7 +474,21 @@ fieldvaluerec:
 		}
 		free($1); 
 		free($2); 
-}		
+}
+        /* 20250926 */
+      /* ########################## */
+      /*  CharType = C|X|Z <String>   */
+      /*  nC'-' or nX'hh...hh' or nZ'nn' */
+      /* ########################## */
+    |   OCCURFILL  STRING  { 
+  		$$=fieldValue_constructor($1, $2, TYPE_STRUCT_STD, 0);
+  		if ($$ == NULL) {
+              utl_abend_terminate(MEMORYALLOC, 105, ABEND_SKIP);
+  			YYABORT;
+  		}
+  		free($1); 
+  		free($2); 
+  }       /* 20250926 */
 ;
 
 fieldvalueconst:  
@@ -1427,46 +1441,46 @@ inoutrec:
     /* nC'string'  n times of string						    */
     /* 5C'XYZ'	-> XYZXYZXYZXYZXYZ   						    */
     /* #######################################################  */
-    | OCCURFILL STRING {
-        switch(nRecCase) {
-        case OUTREC_CASE :
-            strcpy(szMexToken, " inrec clause ");
-            if (current_outrec==1) {
-                /* struct outrec_t * */
-                outrec=outrec_constructor_substnchar((unsigned char*) $1, (unsigned char*) $2);
-                if (outrec == NULL) {
-                    utl_abend_terminate(MEMORYALLOC, 124, ABEND_SKIP);
-                    YYABORT;
-                }
-                if (nstate_outfil==1) {
-                    outfil_addoutfilrec(current_outfil, outrec);
-                } else {
-                    outrec->nIsOverlay=outrec_overlay;
-                    outrec_addDefinition(outrec);
-                }
-                nPosAbsRec += fieldValue_getGeneratedLength(outrec->change.fieldValue);
-            }
-            break;
-        case INREC_CASE :
-            strcpy(szMexToken, " inrec clause ");
-            if (current_inrec==1) {
-                /* struct inrec_t * */
-                inrec=inrec_constructor_substnchar((unsigned char*) $1,(unsigned char*) $2);
-                if (inrec == NULL) {
-                    utl_abend_terminate(MEMORYALLOC, 125, ABEND_SKIP);
-                    YYABORT;
-                }
-                inrec->nIsOverlay=inrec_overlay;
-                inrec_addDefinition(inrec);
-                nPosAbsRec += fieldValue_getGeneratedLength(inrec->change.fieldValue);
-            }
-           break;
-        default:
-            break;
-        }
-		free($1); 
-		free($2); 
-}
+    // | OCCURFILL STRING {
+    //    switch(nRecCase) {
+    //    case OUTREC_CASE :
+    //        strcpy(szMexToken, " inrec clause ");
+    //        if (current_outrec==1) {
+    //            /* struct outrec_t * */
+    //            outrec=outrec_constructor_substnchar((unsigned char*) $1, (unsigned char*) $2);
+    //            if (outrec == NULL) {
+    //                utl_abend_terminate(MEMORYALLOC, 124, ABEND_SKIP);
+    //                YYABORT;
+    //            }
+    //            if (nstate_outfil==1) {
+    //                outfil_addoutfilrec(current_outfil, outrec);
+    //            } else {
+    //                outrec->nIsOverlay=outrec_overlay;
+    //                outrec_addDefinition(outrec);
+    //            }
+    //            nPosAbsRec += fieldValue_getGeneratedLength(outrec->change.fieldValue);
+    //        }
+    //        break;
+    //    case INREC_CASE :
+    //        strcpy(szMexToken, " inrec clause ");
+    //        if (current_inrec==1) {
+    //            /* struct inrec_t * */
+    //            inrec=inrec_constructor_substnchar((unsigned char*) $1,(unsigned char*) $2);
+    //            if (inrec == NULL) {
+    //                utl_abend_terminate(MEMORYALLOC, 125, ABEND_SKIP);
+    //                YYABORT;
+    //            }
+    //            inrec->nIsOverlay=inrec_overlay;
+    //            inrec_addDefinition(inrec);
+    //            nPosAbsRec += fieldValue_getGeneratedLength(inrec->change.fieldValue);
+    //        }
+    //       break;
+    //    default:
+    //        break;
+    //    }
+	//	free($1); 
+	//	free($2); 
+    //}
     /* ######################################################## */    
     /* position absolute (output) : (C|X|Z) CharType	        */
     /* case 80:X                                                */
@@ -1866,14 +1880,16 @@ inoutrec:
                 outrec_SetFindRepCmdOpt(outrec);  
                /* inserire la costruzione di findrep */
                 if (findrep == NULL) {
-                    findrep = findrep_constructor(FINDREP_TYPE_ININOUT);
+                    /* findrep = findrep_constructor(FINDREP_TYPE_ININOUT); */
+                     findrep = findrep_constructor(FINDREP_TYPE_INOUTPAIR); 
                     if (findrep == NULL){
                         utl_abend_terminate(MEMORYALLOC, 132, ABEND_SKIP);
                         YYABORT;
                     }
                 }
                 else
-                    findrep_setType(findrep, FINDREP_TYPE_ININOUT);
+                   /* findrep_setType(findrep, FINDREP_TYPE_ININOUT); */
+                    findrep_setType(findrep, FINDREP_TYPE_INOUTPAIR);
                 /* //-->>findrepfield_setOutForAll(findrep_field, $9); */
                 findrep_setpairs(findrep, findrep_field);
                 outrec_set_findrep(outrec, findrep);
@@ -1909,14 +1925,16 @@ inoutrec:
                 inrec_SetFindRepCmdOpt(inrec);  
                /* inserire la costruzione di findrep */
                 if (findrep == NULL) {
-                    findrep = findrep_constructor(FINDREP_TYPE_ININOUT);
+                  /*  findrep = findrep_constructor(FINDREP_TYPE_ININOUT); */
+                    findrep = findrep_constructor(FINDREP_TYPE_INOUTPAIR); 
                     if (findrep == NULL){
                         utl_abend_terminate(MEMORYALLOC, 132, ABEND_SKIP);
                         YYABORT;
                     }
                 }
                 else
-                    findrep_setType(findrep, FINDREP_TYPE_ININOUT);
+                   /* findrep_setType(findrep, FINDREP_TYPE_ININOUT); */
+                    findrep_setType(findrep, FINDREP_TYPE_INOUTPAIR);
                 /* //-->>findrepfield_setOutForAll(findrep_field, $9); */
                 findrep_setpairs(findrep, findrep_field);
                 inrec_set_findrep(inrec, findrep);
@@ -2408,7 +2426,7 @@ outrecclause:
         current_outrec=1;
         nRecCase=OUTREC_CASE;
 		nPosAbsRec = 0;
-} allinoutrec ')' {
+} allinoutrec ')' findrep_options_all {     /* 202509 */
         current_outrec=0;
         nRecCase=0;
 		nPosAbsRec = 0;
@@ -2531,7 +2549,7 @@ inrecclause:
         current_inrec=1;
         nRecCase=INREC_CASE;
 		nPosAbsRec = 0;
-} allinoutrec ')' {
+} allinoutrec ')'  findrep_options_all {     /* 202509 */
         current_inrec=0;
         nRecCase=0;
 		nPosAbsRec = 0;

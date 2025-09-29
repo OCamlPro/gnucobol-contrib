@@ -1193,7 +1193,7 @@ void utils_SetRecordOptionSortLen(int l1, int l2, int l3, int l4, int l5, int l6
 	return;
 }
 
-int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut, int nCurrOcc, int nMaxOcc, int *nOverChar, int nShift)
+int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int lenIn, int lenOut, int nCurrOcc, int nMaxOcc, int *nOverChar, int nShift, char cIO)
 {
 	int nS = 0;
 	int nSizeFRT = 0;
@@ -1206,12 +1206,15 @@ int utl_replace_recursive_str(unsigned char* str, unsigned char* find, unsigned 
 	if ((int) strlen(find) > 0 ) {
 		strcpy(pCheck, str);
 		/* s.m. 20250110 */
-		nS = utl_replace_findrep(pCheck, find, set, result, (int)strlen(find), (int)strlen(set), lenIn, lenOut, nCurrOcc, nMaxOcc, nShift);
-		strncpy(pCheck, result, lenOut);
+		nS = utl_replace_findrep(pCheck, find, set, result, (int)strlen(find), (int)strlen(set), lenIn, lenOut, nCurrOcc, nMaxOcc, nShift, cIO);
+		if (cIO == 'I')
+			strncpy(pCheck, result, lenIn);
+		else
+			strncpy(pCheck, result, lenOut);
 	}
 	free(pCheck);
 	/* s.m. 20250110 */
-	*nOverChar = (int) ((strlen(find) - strlen(set)) * nS);		/* Calculate difference record length  */
+	*nOverChar = (int) (abs((int)(strlen(find) - strlen(set))) * nS);		/* Calculate difference record length  */
 
 	return nS;
 }
@@ -1257,7 +1260,7 @@ int utl_replace_str(unsigned char* str, unsigned char* find, unsigned char* set,
 	return 0;
 }
 
-int utl_replace_findrep(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int find_len, int repl_len, int lenIn, int lenOut, int nCurrOcc, int nMaxOcc, int nShift)
+int utl_replace_findrep(unsigned char* str, unsigned char* find, unsigned char* set, unsigned char* result, int find_len, int repl_len, int lenIn, int lenOut, int nCurrOcc, int nMaxOcc, int nShift, char cIO)
 {
 	char buffer[COB_FILE_BUFF];
 	memset(buffer, 0x00, COB_FILE_BUFF);
@@ -1265,8 +1268,12 @@ int utl_replace_findrep(unsigned char* str, unsigned char* find, unsigned char* 
 	const char* tmp = str;
 	int nSubs = nCurrOcc;
 	int nNumShift = 0;
+	const char* p;
+	int nDiff = 0;
+	int nM = 0;
+	int nStart = 0;
 	while (1) {
-		const char* p = strstr(tmp, find);
+		p = strstr(tmp, find);
 
 		/* walked past last occurrence of find; copy remaining part */
 		if (p == NULL) {
@@ -1296,8 +1303,30 @@ int utl_replace_findrep(unsigned char* str, unsigned char* find, unsigned char* 
 		}
 	}
 
+	/* check record  length */
+	/* pad record with spaces when len(find) >  len(set) */
+	if (nSubs > 0) {
+		if (cIO == 'I')
+			nM = lenIn;
+		else
+			nM = lenOut;
+		nDiff = (int)(strlen(find) - strlen(set));
+		if (nDiff > 0) {	/* compress record */
+			nStart = nM - (nDiff * nSubs);
+			for (int y = nStart; y < nM; y++)
+				buffer[y] = ' ';
+		}
+		else     /* expanded record */
+		{
+			/* In this point, the record length is less than the buffer length. */
+			/* truncate buffer in memcpy */
+		}
+	}
 	/* write altered string back to str */
-	memcpy(result, buffer, lenOut);
+	if (cIO == 'I')
+		memcpy(result, buffer, lenIn);
+	else
+		memcpy(result, buffer, lenOut);
 
 	return nSubs;
 }
