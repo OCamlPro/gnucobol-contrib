@@ -5,6 +5,7 @@ program-id. changeformat.
 *> Copyright (C) 2014 Steve Williams <stevewilliams38@gmail.com>
 *> Copyright (C) 2014 Vincent Coen
 *> Copyright (C) 2019 Simon Sobisch
+*>      and      2022-01-01 - .04 - Chuck Haatvedt
 *>
 *> This program is free software; you can redistribute it and/or
 *> modify it under the terms of the GNU General Public License
@@ -120,7 +121,7 @@ program-id. changeformat.
 *>               stay in existing lines with area A
 *>               not un-indent lines without it
 *>
-*> 2022-01-01 - .04 - Chuck Haatvedt
+*> 2022-01-01 - .5 - Chuck Haatvedt
 *>            1) change the CONVERT-TO-FIXED paragraph
 *>               to move the check for a blank line to the
 *>               beginning of the paragraph and if it is a
@@ -129,8 +130,10 @@ program-id. changeformat.
 *>
 *>               This avoids falling in a zero subscript
 *>               problem in the next if statement.
-*>=======================================================
-
+*> 2025-10-10 - .5 - Vincent Coen
+*>               Updated version between Simon and Chuck versioning.
+*>===================================================================
+*>
 environment division.
 configuration section.
 repository. function all intrinsic.
@@ -157,7 +160,7 @@ fd  output-file.
 01  output-record-fixed  pic x(80).
 
 working-storage section.
- 01  Program-Version     pic x(15)     value "chgfmt v1.00.04".
+ 01  Program-Version     pic x(15)     value "chgfmt v1.00.05".
  01  Output-File-Name    pic x(512)    value spaces.
  01  output-file-status  pic xx.
 *>
@@ -1324,4 +1327,3 @@ start-dumpscancontrol.
     goback
     .
 end program dumpscancontrol.
-
