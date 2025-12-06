@@ -337,7 +337,8 @@ int outrec_getLength(struct outrec_t *outrec) {
 				/* length += fieldValue_getGeneratedLength(o->change.fieldValue); */
 				if (o->change.posAbsRec == -1)
 					/* fieldValue_print(o->change.fieldValue); */
-					length += o->change.fieldValue->occursion;
+					/* s.m. 202511 length += o->change.fieldValue->occursion; */
+					length += (int) o->change.fieldValue->generated_length;
 				else
 					if (o->change.posAbsRec == -2)
 						if (atoi(o->change.fieldValue->value) < 2)

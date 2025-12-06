@@ -1979,23 +1979,29 @@ int job_check(struct job_t* job)
 	/**/
 	if (job->outrec != NULL) {
 		job->outputLength = outrec_getLength(job->outrec);
-		if ((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) || (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUFIXED)) {
-			if (job->outputLength != file_getMaxLength(job->outputFile) && file_getMaxLength(job->outputFile) > 0) {
-				fprintf(stdout, "*GCSORT*S013B* WARNING : Outrec clause define a file with a different length than give record clause. Len output:%d, File len:%d\n",
-					job->outputLength, file_getMaxLength(job->outputFile));
-				g_retWarn = 4;
-				nErr++;
+		if (job->outrec->nIsOverlay == 0) {
+			if ((file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUENTIAL) || (file_getOrganization(job->outputFile) == FILE_ORGANIZATION_LINESEQUFIXED)) {
+				if (job->outputLength != file_getMaxLength(job->outputFile) && file_getMaxLength(job->outputFile) > 0) {
+					fprintf(stdout, "*GCSORT*S013B* WARNING : Outrec clause define a file with a different length than give record clause. Len output:%d, File len:%d\n",
+						job->outputLength, file_getMaxLength(job->outputFile));
+					g_retWarn = 4;
+					nErr++;
+				}
+			}
+			else
+			{
+				if (file_getOrganization(job->outputFile) == FILE_TYPE_FIXED) {
+					if (job->outputLength != file_getMaxLength(job->outputFile) && file_getMaxLength(job->outputFile) > 0) {
+						fprintf(stdout, "*GCSORT*S014*ERROR: Outrec clause define a file with a different length than give record clause. Len output:%d, File len:%d\n",
+							job->outputLength, file_getMaxLength(job->outputFile));
+						return -1;
+					}
+				}
 			}
 		}
 		else
 		{
-			if (file_getOrganization(job->outputFile) == FILE_TYPE_FIXED) {
-				if (job->outputLength != file_getMaxLength(job->outputFile) && file_getMaxLength(job->outputFile) > 0) {
-					fprintf(stdout, "*GCSORT*S014*ERROR: Outrec clause define a file with a different length than give record clause. Len output:%d, File len:%d\n",
-						job->outputLength, file_getMaxLength(job->outputFile));
-					return -1;
-				}
-			}
+			job->outputLength = job->outputFile->maxLength;
 		}
 	}
 	else {
@@ -3944,7 +3950,7 @@ int job_save_out(struct job_t* job)
 				utl_resetbuffer((unsigned char*)szBuffRek, recordBufferLength);
 				gc_memcpy((unsigned char*)szBuffRek, recordBuffer, job->phSrt->nLenRek + nSplitPosPnt);	/* s.m. 202101 copy record  */
 				nbyteOvl = outrec_copy_overlay(job->outrec, szBuffRek, recordBuffer, job->outputLength, byteRead - nSplitPosPnt, file_getFormat(job->outputFile), file_GetMF(job->outputFile), job, nSplitPosPnt);
-				nbyteOvl++;
+				/* s.m. 202512 nbyteOvl++; */
 				if (nbyteOvl < job->phSrt->nLenRek)
 					nbyteOvl = job->phSrt->nLenRek;
 				if (recordBufferLength < nbyteOvl)

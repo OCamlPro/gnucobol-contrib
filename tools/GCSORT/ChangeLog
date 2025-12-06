@@ -1,3 +1,11 @@
+2025-12-06  Sauro Menna  <saumen2004@libero.it> 
+    * Version 01.04.10
+    * review copyfile.c (thanks David) in function outrec_copy (FINDREP), Fixed the order of parameters in the function call
+    * inrec.c in inrec_copy_overlay function 
+    * job.c check record length in overlay case
+    * uptaded gctestcmd.cfg in tests/cfg  (test case FINDREP)
+    * outrec_getLength in outrec.c  check length 
+
 2025-09-28  Sauro Menna  <saumen2004@libero.it> 
     * Version 01.04.09
     * changed copyfile.c problem in parameter function: outrec_copy_overlay
