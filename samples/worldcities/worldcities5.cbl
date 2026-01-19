@@ -52,7 +52,7 @@
                assign to report-file-name
                file status is report-file-status.
 
-            select sort-file.
+            select sort-file assign sortwork.
 
        data division.
        file section.
@@ -63,7 +63,7 @@
        01  country-record pic x(1000).
 
        fd  city-file.
-       01  city-record pic x(1000).
+       copy city-record.
 
        sd  sort-file.
        01  sort-record.
@@ -153,6 +153,7 @@
                05  end-longitude pic s9(3)v9(6).
 
        01  end-sort-file pic x.
+       01  sqlcode-string pic 9(10).
 
        01  print-run-control.
            03  print-run-function pic x(5) value 'open'.
@@ -704,7 +705,8 @@
            when sqlstate = spaces
                move 'undefined error' to run-line
            when other
-               string 'sqlcode: ' sqlcode
+               move sqlcode to sqlcode-string
+               string 'sqlcode: ' sqlcode-string
                    ' sqlerrmc: ' sqlerrmc
                    delimited by size into run-line end-string
            end-evaluate

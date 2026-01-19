@@ -69,10 +69,10 @@ fd  report-file.
 01  report-record pic x(72).
 
 fd  country-file.
-01  country-record pic x(1000).
+copy country-record.
 
 fd  city-file.
-01  city-record pic x(1000).
+copy city-record.
 
 working-storage section.
 01  command-file-name pic x(128) value 'worldcities2.sh'.

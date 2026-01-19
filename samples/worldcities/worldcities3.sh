@@ -14,6 +14,6 @@ export FILES=$HOME/worldcityfiles
 cobc -x -W worldcities3.cbl commonroutines.cbl
 ./worldcities3 $FILES/allCountries.txt $FILES/countryInfo.txt ErrorContinent
 ./worldcities3 $FILES/allCountries.txt $FILES/countryInfo.txt Oceania
-rm worldcities3
-lpr -P $PRINTQUEUE run-file
-lpr -P $PRINTQUEUE report-file
+# rm worldcities3
+#lpr -P $PRINTQUEUE run-file
+#lpr -P $PRINTQUEUE report-file
