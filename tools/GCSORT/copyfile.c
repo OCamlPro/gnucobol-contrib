@@ -228,8 +228,6 @@ int job_copyFile(struct job_t *job)
 				file->nFileMaxSize = utl_GetFileSizeEnvName(file);
 			else
 				file->nFileMaxSize = filestatus.st_size;
-			if (file->nFileMaxSize == 0)
-				fprintf(stdout, "*GCSORT*S617B*ERROR: Cannot open file %s \n", file_getName(file));
 			cob_open(file->stFileDef,  COB_OPEN_INPUT, 0, NULL);
  			if (atol((char*)file->stFileDef->file_status) != 0) {
 				fprintf(stdout,"*GCSORT*S617*ERROR: Cannot open file %s - File Status (%c%c) \n",file_getName(file),
