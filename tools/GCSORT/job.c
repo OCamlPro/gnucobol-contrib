@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2016-2024 Sauro Menna
+	Copyright (C) 2016-2026 Sauro Menna
 	Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -18,6 +18,12 @@
  *  along with GCSORT.  If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+#ifdef _MSC_VER
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+#endif
+
 #define _GNU_SOURCE
 #include <sys/stat.h>
 #include <malloc.h>
@@ -71,10 +77,7 @@
 /* #include "bufferedreader.h"  */
 /* #include "bufferedwriter.h"  */
 
-#ifdef _MSC_VER
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#endif
+
 
 int yyparse(void);
 

@@ -1,3 +1,8 @@
+2026-02-07  Sauro Menna  <saumen2004@libero.it> 
+    * Version 01.04.11
+    * review copyfile.c (thanks David) in function job_copyFile. Empty file check removed.
+    * review job.c  for warning in VStudio moved <crtdbg.h> declaration on top 
+
 2025-12-06  Sauro Menna  <saumen2004@libero.it> 
     * Version 01.04.10
     * review copyfile.c (thanks David) in function outrec_copy (FINDREP), Fixed the order of parameters in the function call
