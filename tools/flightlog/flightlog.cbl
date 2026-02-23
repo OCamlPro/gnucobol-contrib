@@ -8,7 +8,7 @@
  IDENTIFICATION    DIVISION.
  PROGRAM-ID.       FLIGHTLOG.
 *>**
- AUTHOR.           V.B.COEN MBCS.
+ AUTHOR.           V.B.COEN, MBCS.
 *>**
  DATE-WRITTEN.     17th NOVEMBER 1986.
 *> DATE-UPDATED.   September - December 2018. Major update and migration from
@@ -18,7 +18,7 @@
 *>**
  DATE-COMPILED.    TO-DAY.   *> GC does NOT update.
 *>**
-*> Security.       Copyright (C) 1986-2024 and later, Vincent Bryan Coen.
+*> Security.       Copyright (C) 1986-2026 and later, Vincent Bryan Coen.
 *>                 Distributed under the GNU General Public License
 *>                 v2.0. Only. See the file COPYING for details.
 *>**
@@ -178,6 +178,11 @@
 *>                     CAA / FAA requirement ?
 *>                     The problem with it is that it is not used for commercial or
 *>                     military aircrew and likewise for non pilot crew.
+*>
+*> 17/01/26            9. Consider using accept_numeric routine for all times as
+*>                     it is better for users inputting a lot of entries as it
+*>                     supports input the same as a calculator - is it needed as
+*>                     not sure it supports hours:minutes and only nn.nn style ?.
 *>**
 *>****************************************************************************************
 *> Copyright Notice.
@@ -185,7 +190,7 @@
 *>
 *> This program is time recording software for air crews as private,
 *> commercial (i.e., holding a CPL or ATPL) and military, World wide and is
-*> Copyright (c) Vincent B Coen. 1986-2024 and later.
+*> Copyright (c) Vincent B Coen. 1986-2026 and later.
 *>
 *> The supplied copyright notices that are displayed and printed MUST be
 *>  maintained at all times.
@@ -240,8 +245,8 @@
 *>
  CONFIGURATION SECTION.
 *>---------------------
- SOURCE-COMPUTER.        FX8350.
- OBJECT-COMPUTER.        FX8350.
+ SOURCE-COMPUTER.        Ryzen 16 Core.
+ OBJECT-COMPUTER.        Ryzen 16 Core.
  SPECIAL-NAMES.
      CONSOLE IS CRT.
 *>       Alphabet Alpha is ASCII.    *> When this works can get rid of the table-ascii and table-ebcdic

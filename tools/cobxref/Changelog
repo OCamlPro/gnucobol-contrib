@@ -1,3 +1,19 @@
+2025-09-09  Vincent B Coen <vbcoen@btconnect.com>
+        (v2.03.18)  Changed CopySourceRecIn2 from 160 to 256 as a prog has a
+                    line of 210 - Who knew ?
+
+2025-07-25  Vincent B Coen <vbcoen@btconnect.com>
+        (v2.03.17)  Added READY, TRACE to reserved words in get-reserved-lists at end
+                    then added a sort for that table as bug in reserved word list is
+                    missing these.
+
+2024-09-11  Vincent B Coen <vbcoen@btconnect.com>
+        (v2.03.16)  Error - in WS Section-Short-Names-Table change 1 entry from 24 to 16.
+                    Added 1 more to tables Section-Short-Names-Table, Section-Names-Table
+                    SectTable, LSect, USect all to support extra section name CONSTANT.
+                    NOT YET Coded for but expected in GC v4 at some time.
+                    Lots of changes will be needed so not looking forward to it :(
+
 2024-08-26  Vincent B Coen <vbcoen@btconnect.com>
 cobxref (v2.03.15)  In para bb030-Chk1 the code for "CALL" did not allow for
                     words STATIC or STDCALL. This bug produced STATIC or STDCALL
@@ -18,7 +34,6 @@ cobxref
        (v2.03.14)   Remove tests for -H, --H
                     Default for help is without ANY parameters supplied, i.e.,
                     calling cobxref
-
 
 2023-06-16  Vincent B Coen <vbcoen@btconnect.com>
        (v2.03.13)   Changed in 2 tables 'values high-values' to 'value high-value'

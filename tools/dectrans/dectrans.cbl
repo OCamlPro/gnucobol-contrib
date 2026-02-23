@@ -12,13 +12,14 @@
 001200 Author.           V.B.Coen FBCS., via NAVY VER pre NOV 68.
 001300*Date-rewritten.   7th August 1987 from code dated Nov 1968.
 001400*Version.          See PROG-NAME in ws.
-001500*Security.         Copyright (C) 1968-2018, Vincent Bryan Coen.
+001500*Security.         Copyright (C) 1968-2026 and later, Vincent Bryan Coen.
 001600*                  Distributed under the GNU General Public
 001700*                  License v3.0. Only.
 001800*                  See the file COPYING for details.
 001900*
 002000* Usage.           Decision Table Translator for Cobol.
-002010*                  it accepts and produces only in fixed format.
+002010*                  It accepts and produces only in fixed format.
+002020*                  Read the manual dectrans-A4.pdf before use.
 002100*
 002200* Changes.         See Changelog.
 002300******************************************************************

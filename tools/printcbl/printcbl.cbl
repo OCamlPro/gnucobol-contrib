@@ -23,14 +23,13 @@
 *>                Note there is a trailing space that is NEEDED.
 *>
 
->>SET CONSTANT PSN-1          "Smart_Tank_7300 "   *> Change to your printer spool name
-*>                                                          if needed.
+>>SET CONSTANT PSN-1          "HP-Smart-Tank-7300-series "   *> Change to your printer spool name
+*>                                                              as needed.
 *>
-
 *>
 >>SET CONSTANT PAGE-LINES     54    *> Change here if you do not fill a page or go over to
-                                       *>  a new one without a heading line (see Docs)
-                                       *>  When printing.
+                                    *> a new one without a heading line (see Docs)
+                                    *> When printing.
 *>
 *>  Operating system path delimiter - set for *nix, for NATIVE windows change to "\".
 *>      NATIVE means if compiled GnuCOBOL using Visual Studio ONLY.
@@ -43,7 +42,7 @@
 *>  Useful to have anyway!  Set to 1 to be active
 *>
 >>SET CONSTANT C-Testing-1    0    *> Not testing (default), change to AS 1 if wanted.
-*>                                         Normally used by programmer during testing only.
+*>                                    Normally used by programmer during testing only.
 *>
 *>---
 *> END CONFIGURATION SETTINGS
@@ -54,11 +53,11 @@
 *>
 *>  ===============================================================
 *>   WARNING ANY CHANGES TO the printcbl module in cobxref.cbl
-*>       should be also considered Here as well.
+*>       should be also considered here as well.
 *>  ===============================================================
 *> Author.      Vincent B Coen New rewritten verson v2.01.18+)
 *>                See Changelog file for all changes.
-*> Copyright.   Vincent B Coen 2011-2024 Rewritten.
+*> Copyright.   Vincent B Coen 2011-2026 and later Rewritten.
 *>              [Jim C. Currey 2009-2011 Conceptual original programmer,]
 *>
 *> This program is free software; you can redistribute it and/or modify it
@@ -87,7 +86,7 @@
 *> 02/06/12 vbc - 'EJECT' | '/'       working
 *>           with differing case for the above
 *>
-*>  WARNING: Minimum compiler version is v2.0.
+*>  WARNING: Minimum compiler version is v2.0 but all testing on v3.
 *>
 *>  Please read all of the notes before use!!!
 *>   Notes transferred to a manual in LibreOffice & PDF formats.
@@ -128,12 +127,14 @@
 *>                          Chngd vars e for E2 as it is a reserved word (FUNCTION).
 *>
 *> 15/01/2023 vbc - 2.01.39 Updated copyright to 2023.
-*> 09/03/2024 vbc - 2.01.40 Updated copyright to 2024 and changed printer spool name.
+*> 09/03/2024 vbc - 2.01.40 Updated CR (copyright) to 2024 and changed printer spool name.
 *> 17/06/2024 vbc - 2.01.41 From Chuck Haatvedt chg within prtcbl at ba000-Process Section
 *>                          for 2 statements of "move     Input-Record To PL-Text" TO
 *>                          "move     Input-Record (1 : IR-Buffer-Data-Size) To PL-Text"
 *>                          Update embedded in cobxref version as well.
-*> 09/09/2205 vbc - 2.01.42 Increased size of PL-Text from 160 to 256 to match cobxref.
+*> 09/09/2025 vbc - 2.01.42 Increased size of PL-Text from 160 to 256 to match cobxref.
+*> 31/12/2025 vbc -         Updated CR notice to 2026.
+*> 22/02/2026 vbc -         Change printer spool name in CDF area. Updated docs.
 *>
  environment division.
  input-output section.
@@ -145,7 +146,7 @@
  file section.
 *>
  fd  Print-File.
- 01  Formatted-Line          pic x(256).        *> was  x(160).  chgd 28/2/19
+ 01  Formatted-Line          pic x(256).     *> was  x(160).  chgd 28/2/19
  01  Print-Line.
      03  PL-Line-Number      pic z(5).
      03  PL-Filler-1.
@@ -157,7 +158,7 @@
  working-storage section.
 *>======================
 *>
- 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.41".  *> ver.rel.build
+ 01  WS-Name-Program        pic x(15) value "Prtcbl v2.01.42".  *> ver.rel.build
 *>
 *>   *******************************************
 *>   *     User changeable values here:       **

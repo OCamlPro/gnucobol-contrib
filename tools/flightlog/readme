@@ -8,7 +8,6 @@ Now read any file called README.1st.
 
 Now read any file called README.1st.
 
-
 Yes, done twice to make sure you read it.
 Failure to do so will make your data files unusable with Flightlog.
 
@@ -31,9 +30,9 @@ If you have problems running the software or would like some changes or new
 functionality, send an email to vbcoen@gmail.com with subject flightlog.
 
 
-You will need to install on your computer the Cobol compiler and any version
+You will need to install on your computer the Free Cobol compiler & any version
 should do from versions 2.2 and up. Note the current version is v3.2 as of
-November 2023. For Linux users see what version is available using the distro's
+November 2023. For Linux users, see what version is available using the distro's
 package manager otherwise follow the manual for instructions of obtaining the
 latest from the sourceforge or Andrews website at respectively :
 
@@ -52,13 +51,13 @@ Reminders for users to do:
 A. Copy prtpdf-sh-A4 or prtpdf.sh-Letter to prtpdf.sh depending on
 the paper size you use.
 
-It has been tested using a HP8600 ink jet and a HP7305 Ink tank printers
+It has been tested using HP8600 ink jet and HP7305 Ink tank printers
 using Linux distro's Mageia v8 and v9 X64, Raspberry Pi 3B+ (Debian) and Pi4B
 ubuntu as well as a Mac Pro 2008 running Apple's OSX.
 
 Where the Pi3 has an attached USB 1Tb hard drive as the boot drive in a metal
 case and the Pi4B in a Argon 40 M.2 case using a SSD card and the Mac some what
-larger drives.
+more and larger drives.
 
 The font sizing for A4 paper has not been copied over to that for US Letter
 because I do not have that paper size any more.
@@ -66,7 +65,8 @@ because I do not have that paper size any more.
 Users of Letter should try both A4 then Letter versions and see if you get full
 coverage but without going outside the size of the paper and if so use it.
 If not try the Letter and see if that works better and if not, adjust one or
-both saving the original files first.
+both, saving the original files first.
+
 IT IS RECOMMENDED that you only change ONE SETTING AT A TIME. Then test it
 using the pdf reader of your choice.
 Above based on my own tampering. :)
@@ -175,3 +175,5 @@ End of README
 23/03/2021 vbc - Clean up layouts of above and a typo.
 17/08/2022 vbc - Typo's and amendments of new changes for 2.02.12.
 13/11/2023 vbc - More typo's and spelling changes.
+23/09/2025 vbc - Minor revisions to this file and copyright updated to 2026.
+22/02/2026 vbc - Minor manual changes for typos and errors etc.

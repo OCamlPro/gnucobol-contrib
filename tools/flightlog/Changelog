@@ -1,7 +1,7 @@
   This list is more for the use of the programmer than any thing else but might
   prove useful to users.
 
- Changelog created from the Changes lists in Flightlog program sources
+  Changelog created from the Changes lists in Flightlog program sources
   where the latest is last in this list: Note 'e' after version # is guessed.
   This includes ALL changes to the source including bug fixes, etc, found while
   testing as well as feature additions since the start of programming including
@@ -40,7 +40,7 @@
                        log book data entry and see Aircraft & other tidy ups.
 
 08/09/18 vbc - 1.26    Migration to the GnuCOBOL compiler and sources converted
-                       to Free format.
+                       to Free format. This is free to use & download compiler.
                        Start to use Screen Section for data entry / display etc,
                        but may well be scrapped subject to program logic.
 
@@ -169,13 +169,13 @@
                    .09 Chgd D000-Setup-Datafiles to only be processed in
                        A000-Control  as was previously also in C000-EDIT-LOG-BOOK.
                        Cleaned up ZZA-Status tests removing the 'thru xyz' paras.
-                   .10 1st IF has comma not period in CA120-ENTER-LOGBK-START caused
-                       hard loop.
+                   .10 1st IF has comma not period in CA120-ENTER-LOGBK-START
+                       caused hard loop.
                    .11 Also missing DIVIDE statement in above para.
                    .12 In para proc for From only copy to FLT-To if Entry not Amend.
                    .13 Open i/o airfield missing at start-ish of menu.
-                   .14 init flightlog-record for entry amend logbk, remove ws-spaces-nn for
-                       erase eol.
+                   .14 init flightlog-record for entry amend logbk, remove
+                       ws-spaces-nn for erase eol.
                    .15 With funny chars on logbk entry for Ac reg and captain force
                        spaces at start of section after initialise.
                    .16 In logbk Entery make all escape captures goto CA030 and not
@@ -190,7 +190,7 @@
                        also accept F4 as well as zeros for (DD & MM & YY) and do NOT
                        test for the date delimiters
                        NOTE that both Amend or Delete will allow for zero date or F4.
-                   .21 Data entry screen cleanup for prompts (F1, F3 etc) didnot clear scr.
+                   .21 Data entry screen cleanup for prompts (F1, F3 etc) did not clear scr.
                    .22 Now using ws-21-Lines, 22, 23 amd ws-Lines in place of 21,22,23,24
                        other hoping to display last three data entry record betweeb date
                        and End time any way.
@@ -698,3 +698,6 @@
                         and other documentation.
 
  13/11/23 vbc       .14 Updated copyright to 2024, ok a bit early.
+ 23/09/25 vbc           Updated copyright to 2025. Ditto.
+ 17/01/26 vbc       .15 Updated copyright to 2026 and other minor notes.
+
