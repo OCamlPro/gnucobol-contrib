@@ -41,22 +41,7 @@ Process Flow:
       - Updates indexed file
       - Returns updated data and message 
 	 
-FILES: 
-	The data file I have for this project is a 1001 record file that was created as a sequential text file 
-	from the large randomized data file from the GnuCOBOL sourceforge SVN contributions section for 
-	samples: createTestDataFile 
-	But I include the file in this project. 
-
-	You have to create an index file from the included test file testfile1001.txt 
-	just run the included program: flat2index1001.cbl in the directory that the testfile1001.txt is in and it 
-        will create the testfile1001.dat 
-	Add the newly created index file with write permissions to the below mentioned directory. /usr/lib/cgi-bin/zz/ 
-	
-
 APACHE2 system changes: 
- The server address for my project in my network is: 10.0.0.78 . Your server address will probably be different as it will
- depend on your network setup. Remember this is just a prototype. 
-
  I have updated the apache2 changes here. They are much easier than the old changes: 
 
 Here are the steps to configure Apache2 for CGI applications:
@@ -117,9 +102,7 @@ sudo chmod 660 /var/www/cgi-bin/zz/testfile1001.dat
 6. Enable site and restart Apache:
 ```bash
 sudo a2ensite mkat.conf
-sudo systemctl reload apache2 
-sudo systemctl restart apache2 
-
+sudo systemctl restart apache2
 ```
 
 Access your application at: http://10.0.0.78/zz/cust01.index.html
@@ -127,6 +110,15 @@ Access your application at: http://10.0.0.78/zz/cust01.index.html
 			
 End Apache2 info. 
 
+FILES: 
+	The data file I have for this project is a 1001 record file that was created as a sequential text file 
+	from the large randomized data file from the GnuCOBOL sourceforge SVN contributions section for 
+	samples: createTestDataFile 
+	But I include the file in this project.
+	You have to create an index file from the included test file. The program to do that is testfile1001.txt 
+	just run that file through the included program: flat2index1001.cbl 
+	Add the newly created index file with write permissions to the above mentioned directory. /usr/lib/cgi-bin/zz/ 
+	
 This is just a prototype and to be used as a guide if useful at all. 
 Licensed under the GNU Lesser General Public License as published by the
 Free Software Foundation, either version 3 of the License, or (at your 
@@ -137,11 +129,7 @@ Updated cust01.cgi it was calling the wrong program.  Fixed to call cust01
  
 Date: February 26, 2026: Updated Readme.  
 Added link to youtube for demo of example.  
-https://www.youtube.com/watch?v=WDWfI_PFR4s  
-
-Date: March 12, 2026: Updated Readme. 
-Updated data about creating the index file and reloading apache2 
-
+https://www.youtube.com/watch?v=WDWfI_PFR4s 
  
 
 	
