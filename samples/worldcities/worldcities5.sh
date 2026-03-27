@@ -1,5 +1,11 @@
+#!/bin/bash
+
+
 rm run-file
 rm report-file
+
+set -e
+
 export PRINTQUEUE=Brother-HL-2170W-wireless
 export FILES=$HOME/worldcityfiles
 export countryfile=$FILES/countryInfo.txt
@@ -10,5 +16,5 @@ cobc -x -W worldcities5.cob commonroutines.cbl
 ./worldcities5 $FILES/CAUS.txt $FILES/countryInfo.txt
 rm worldcities5.cob
 rm worldcities5
-lpr -P $PRINTQUEUE run-file
-lpr -P $PRINTQUEUE report-file
+#lpr -P $PRINTQUEUE run-file
+#lpr -P $PRINTQUEUE report-file

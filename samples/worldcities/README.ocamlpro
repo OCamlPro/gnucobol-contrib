@@ -1,0 +1,105 @@
+
+
+Download files from:
+
+http://download.geonames.org/export/dump/
+
+mkdir -p $HOME/worldcityfiles
+
+
+
+
+## worldcities0
+
+### Prerequisites
+
+wget http://download.geonames.org/export/dump/CA.zip
+unzip -x CA.zip
+mv CA.txt  $HOME/worldcityfiles/
+wc -L $HOME/worldcityfiles/CA.txt
+
+Verify that the size is the record in city-record.copy is at least 500
+bytes longer than the max line length (output of wc -L).
+
+### Execution
+
+To build and execute:
+./worldcities0.sh
+
+### Dependencies
+
+Depends on:
+* city-record.cpy
+
+
+
+
+
+## worldcities1
+
+### Prerequisites
+
+wget http://download.geonames.org/export/dump/countryInfo.txt
+mv countryInfo.txt  $HOME/worldcityfiles/
+
+### Execution
+
+To build and execute:
+./worldcities1.sh
+
+### Dependencies
+
+Depends on:
+* city-record.cpy
+* country-record.cpy
+* checkfilestatus.cpy
+
+
+
+
+
+## worldcities2
+
+### Prerequisites
+
+wget http://download.geonames.org/export/dump/cities15000.zip
+unzip -x cities15000.zip
+mv cities15000.txt  $HOME/worldcityfiles/
+
+### Execution
+
+To build and execute:
+./worldcities2.sh
+
+### Dependencies
+
+Depends on:
+* city-record.cpy
+* country-record.cpy
+* checkfilestatus.cpy
+
+
+
+
+
+## worldcities3
+
+### Prerequisites
+
+wget http://download.geonames.org/export/dump/allCountries.zip
+unzip -x allCountries.zip
+mv allCountries.txt  $HOME/worldcityfiles/
+
+### Execution
+
+To build and execute:
+./worldcities3.sh
+
+### Dependencies
+
+Depends on:
+* city-record.cpy
+* country-record.cpy
+* commonroutines.cbl
+* printrunreport.cbl
+

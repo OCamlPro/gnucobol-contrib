@@ -16,11 +16,13 @@ start-checkfilestatus.
     if file-status = '00' or '10'
         goback
     end-if
+    move 'UNKNOWN STATUS' to status-message.
     evaluate file-status
     when 00 move 'SUCCESS.' TO status-message   
     when 02 move 'SUCCESS DUPLICATE.' TO status-message 
     when 04 move 'SUCCESS INCOMPLETE.' TO status-message 
     when 05 move 'SUCCESS OPTIONAL.' TO status-message 
+    when 06 move 'TRUNCATED READ.' TO status-message
     when 07 move 'SUCCESS NO UNIT.' TO status-message 
     when 10 move 'END OF FILE.' TO status-message 
     when 14 move 'OUT OF KEY RANGE.' TO status-message 
@@ -48,13 +50,13 @@ start-checkfilestatus.
     when 61 move 'FILE SHARING FAILURE.' TO status-message 
     when 91 move 'FILE NOT AVAILABLE.' TO status-message    
     end-evaluate
-    string 'ERROR ' delimited by size
+    string 
         file-name delimited by space
-        space delimited by size
-        status-message delimited by '.'
+        ' : ' delimited by size
+        status-message delimited by '.' 
         into display-message
     end-string
-    display display-message end-display
+    display 'ERROR (' file-status ') ON ' display-message end-display
     stop run
     .
 end program checkfilestatus.

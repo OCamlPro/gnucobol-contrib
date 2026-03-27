@@ -16,5 +16,5 @@ export CSV=$FILES/worldcities6.csv
 google-earth $KML
 rm worldcities6.cob
 rm worldcities6
-lpr -P PRINTQUEUE run-file
-lpr -P PRINTQUEUE report-file
+#lpr -P PRINTQUEUE run-file
+#lpr -P PRINTQUEUE report-file
