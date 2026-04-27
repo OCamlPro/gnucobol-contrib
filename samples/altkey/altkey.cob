@@ -327,20 +327,17 @@
        sfo-show-file-operation.
            Move space to display-message.
            String
-               "Operation "   
-                   delimited by size
-               ws-operation   
-                   delimited by size
-               " Status "     
-                   delimited by size
-               ws-file-status 
-                   delimited by size
-               " Record "     
-                   delimited by size
-               ws-record      
-                   delimited by size
-               into display-message
-           end-string.
+               'Operacion: ' DELIMITED BY SIZE
+               ws-operation DELIMITED BY SIZE
+               ' - Status: ' DELIMITED BY SIZE
+               ws-file-status DELIMITED BY SIZE
+               ' - '
+               ws-record DELIMITED BY SIZE
+               INTO display-message
+               ON OVERFLOW
+                   DISPLAY 'Error: mensaje demasiado largo'
+                   END-DISPLAY
+           END-STRING
            Perform sm-show-message thru sm-exit.
        sfo-exit.
            Exit.
