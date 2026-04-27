@@ -16,51 +16,21 @@ readonly RESUMEN_LOG="$LOG_DIR/resumen.log"
 # ────────────────────────────────────────────────────────
 
 # ─── FUNCIONES ─────────────────────────────────────────
-# DEFINIR log ANTES de cualquier otra función que lo use
-log() {
-    local mensaje="$1"
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $mensaje"
-}
-
 usage() {
     echo "Uso: $0 <archivo.cob>"
     echo "Ejemplo: $0 samples/altkey/altkey.cob"
     exit 2
 }
 
+log() {
+    local mensaje="$1"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $mensaje"
+}
+
 cleanup() {
     log "Limpiando archivos temporales..."
     rm -f /tmp/run_cobol_*.tmp
     log "Limpieza completada."
-}
-
-# Detectar formato (fixed/free) del archivo COBOL
-# Detectar formato (fixed/free) del archivo COBOL
-detectar_formato() {
-    local archivo="$1"
-    local lineas_a_revisar=20
-    local contador=0
-
-    # Buscar líneas con código en la zona fija (columna 8-72).
-    # Formato fijo: 6 cols número, 1 col indicador, código desde col 8.
-    contador=$(head -n "$lineas_a_revisar" "$archivo" | awk '
-        length($0) >= 8 {
-            indicador = substr($0, 7, 1)    # Columna 7
-            codigo    = substr($0, 8, 1)    # Columna 8
-            # Si no es comentario (indicador no es *) y hay código
-            # en columna 8 (no es espacio), asumimos formato fijo.
-            if (indicador != "*" && codigo != " ") {
-                count++
-            }
-        }
-        END { print count+0 }   # +0 asegura que sea numérico
-    ')
-
-    if [ "$contador" -gt 0 ]; then
-        echo "fixed"
-    else
-        echo "free"
-    fi
 }
 
 trap cleanup EXIT INT TERM
@@ -117,11 +87,7 @@ fi
 # ─── COMPILAR ──────────────────────────────────────────
 log "Compilando '$ARCHIVO_COB'..."
 
-# Detectar formato automáticamente (LLAMAR DESPUÉS DE DEFINIR ARCHIVO_COB)
-FORMATO=$(detectar_formato "$ARCHIVO_COB")
-log "Formato detectado: $FORMATO"
-
-if cobc -x -"$FORMATO" -o "$PROGRAMA" "$ARCHIVO_COB"; then
+if cobc -x -fixed -o "$PROGRAMA" "$ARCHIVO_COB"; then
     log "Compilación exitosa."
 else
     log "ERROR: Falló la compilación de '$ARCHIVO_COB'."
