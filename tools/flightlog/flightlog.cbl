@@ -245,8 +245,8 @@
 *>
  CONFIGURATION SECTION.
 *>---------------------
- SOURCE-COMPUTER.        Ryzen 16 Core.
- OBJECT-COMPUTER.        Ryzen 16 Core.
+ SOURCE-COMPUTER.        Ryzen-16-Core.
+ OBJECT-COMPUTER.        Ryzen-16-Core.
  SPECIAL-NAMES.
      CONSOLE IS CRT.
 *>       Alphabet Alpha is ASCII.    *> When this works can get rid of the table-ascii and table-ebcdic
