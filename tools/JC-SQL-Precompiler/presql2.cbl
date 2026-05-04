@@ -5,8 +5,8 @@
       * UPDATES.       Vincent B Coen, Applewood Computers.
       *                and others - see notes below.
       ***
-      * Security.      Copyright (C) 2009-2018, Jim Currey,
-      *                                         Vincent Coen.
+      * Security.      Copyright (C) 2009-2026 and later, Jim Currey,
+      *                                     and Vincent Coen.
       *                Distributed under the GNU General Public License
       *                v2.0. See the file COPYING for details.
       ***
@@ -251,7 +251,8 @@
       ******************
       *
       * This file/program is part of the Mysql pre-processor presql
-      * and is copyright (c) Jim Currey. 2009-2019 and later.
+      * and is copyright (c) Jim Currey. 2009-2015,
+      * and updates copyright (c) Vincent B. Coen. 2015 - 2026.
       *
       * This program is free software; you can redistribute it and/or
       * modify it under the terms of the GNU General Public License as

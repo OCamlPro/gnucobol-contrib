@@ -4,8 +4,8 @@
 *>Author.       J. C. Currey.
 *>Updates.      V. B. Coen, Applewood Computers.
 *>**
-*> Security.    Copyright (C) 2009-2018, Jim Currey.
-*>              Updates Copyright (C) 2015-2022, Vincent Coen.
+*> Security.    Copyright (C) 2009-2015, Jim Currey.
+*>              Updates Copyright (C) 2015-2026 & later, Vincent Coen.
 *>
 *>              Distributed under the GNU General Public License
 *>              v2.0. See the file COPYING for details.
@@ -15,8 +15,7 @@
 *>              mysql-procedures
 *>
 *>**********************************************************************
-*>      Builds copy books from mysql for GnuCobol or                   *
-*>                                       Open Cobol                    *
+*>      Builds copy books from mysql for GnuCobol                      *
 *>                                                                     *
 *>   Copy books created for fixed with no comments so can              *
 *>    be used in free format programs.                                 *
@@ -113,8 +112,8 @@
 *> *****************
 *>
 *> This file/program is part of the Mysql pre-processor presql
-*>  and is copyright (c) Jim Currey. 2009-2018,
-*>  All updates copyright  (C) 2015-2022, Vincent Coen.
+*>  and is copyright (c) Jim Currey. 2009-2015,
+*>  All updates copyright  (C) 2015-2026 & later, Vincent Coen.
 *>
 *> This program is free software; you can redistribute it and/or
 *> modify it under the terms of the GNU General Public License as
@@ -184,7 +183,7 @@
  01  ws-field-array-buffer.
      05  ws-array-high-point             pic s9(4) comp.
      05  ws-ab-column-name               pic x(64)     occurs 512 times.
-     05 ws-ab-column-type                  pic x(64)    occurs 512.      *> added for current vers of MariaDB
+     05  ws-ab-column-type               pic x(64)     occurs 512.      *> added for current vers of MariaDB
      05  ws-ab-data-type                 pic x(64)     occurs 512 times.
      05  ws-ab-maximum-length            pic s9(19)    occurs 512 times.
      05  ws-ab-numeric-precision         pic s9(19)    occurs 512 times.
