@@ -272,8 +272,8 @@ struct job_t* job_constructor(void) {
 	if (pEnvEmule != NULL)
 	{
 		job->nStatistics = atol(pEnvEmule);
-		if ((job->nStatistics != 0) && (job->nStatistics != 1) && (job->nStatistics != 2)) {
-			fprintf(stderr, "GCSORT - Error on GCSORT_STATISTICS parameter. Value 0 for suppress info , 1 for Summary, 2 for Details. Value Environment: %d\n", job->nStatistics);
+		if ((job->nStatistics != 0) && (job->nStatistics != 1) && (job->nStatistics != 2) && (job->nStatistics != 5)) {
+			fprintf(stderr, "GCSORT - Error on GCSORT_STATISTICS parameter. Value 0 for suppress info , 1 for Summary, 2 for Details, 5 for Total rec. Value Environment: %d\n", job->nStatistics);
 			fprintf(stderr, "GCSORT - Forcing  GCSORT_STATISTICS = 0\n");
 			job->nStatistics = 1;
 		}
@@ -1814,7 +1814,7 @@ int job_MakeCmdLine(char* szF, char* buf)
 	nNewLine = 1;
 
 
-	if ((globalJob->nStatistics > 1) && (gcMultiThreadIsFirst == 0)) {
+	if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0)) {
 		fprintf(stdout, "========================================================\n");
 		fprintf(stdout, "GCSORT\nFile TAKE : %s\n", szF);
 		fprintf(stdout, "========================================================\n");
@@ -1842,7 +1842,7 @@ int job_MakeCmdLine(char* szF, char* buf)
 			nNewLine = 1;
 			nNumSQ = 0;
 			if ((nNlastCR == 0) && (nComm == 0) && (c == 0x0a))
-				if ((globalJob->nStatistics > 1) && (gcMultiThreadIsFirst == 0))
+				if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0))
 					printf("\n");
 			if (c == 0x0a)
 				nNlastCR = 1;
@@ -1853,7 +1853,7 @@ int job_MakeCmdLine(char* szF, char* buf)
 			buf[maxLen + 1] = (char)c;
 			maxLen += 1;
 			nNewLine = 0;
-			if ((globalJob->nStatistics > 1) && (gcMultiThreadIsFirst == 0))
+			if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0))
 				printf("%c", c);
 			nNlastCR = 0;
 		}
@@ -1862,7 +1862,7 @@ int job_MakeCmdLine(char* szF, char* buf)
 	buf[maxLen + 1] = 0x00;
 
 	fclose(pFile);
-	if ((globalJob->nStatistics > 1) && (gcMultiThreadIsFirst == 0))
+	if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0))
 		fprintf(stdout, "\n========================================================\n\n");
 	return 0;
 }
@@ -2239,7 +2239,8 @@ int job_print_final(struct job_t* job, time_t* timeStart)
 			}
 		}
 	}
-	fprintf(stdout, "====================================================================\n");
+	if (globalJob->nStatistics != 5) 
+		fprintf(stdout, "====================================================================\n");
 	if (job_GetTypeOp(job) == 'J') {
 		if (job->join->joinkeysF1->nIsSorted == 0) {
 			fprintf(stdout, " Total Records file F1 Read : " NUM_FMT_LLD "  -- Sort :  " NUM_FMT_LLD "\n", (long long)job->join->joinkeysF1->nNumRowReadSort, (long long)job->join->joinkeysF1->nNumRowWriteSort);
@@ -2260,7 +2261,8 @@ int job_print_final(struct job_t* job, time_t* timeStart)
 		fprintf(stdout, " Total Records Discard XSUM Output.: " NUM_FMT_LLD "\n", (long long)job->recordDiscardXSUMTotal);
 	}
 
-	fprintf(stdout, "====================================================================\n");
+	if (globalJob->nStatistics != 5) 
+		fprintf(stdout, "====================================================================\n");
 	if (job->nStatistics == 2) {
 		if (job->bIsPresentSegmentation == 1) {
 			for (nIdx = 0; nIdx < MAX_HANDLE_TEMPFILE; nIdx++) {
@@ -2295,19 +2297,19 @@ int job_print_final(struct job_t* job, time_t* timeStart)
 		}
 		fprintf(stdout, "\n");
 	}
-
-	time(&timeEnd);
-	timeinfoStart = localtime(timeStart); /* localtime (&timeStart);    */
-	fprintf(stdout, "Start    : %s", asctime(timeinfoStart));
-	timeinfoEnd = localtime(&timeEnd);
-	fprintf(stdout, "End      : %s", asctime(timeinfoEnd));
-	seconds = (int)difftime(timeEnd, *timeStart);
-	hh = seconds / 3600;
-	mm = (seconds - hh * 3600) / 60;
-	ss = seconds - ((hh * 3600) + mm * 60);
-	ms = seconds - ((hh * 3600) + mm * 60 + ss);
-	fprintf(stdout, "Elapsed  Time %02dhh %02dmm %02dss %03dms\n\n", hh, mm, ss, ms);
-
+	if (globalJob->nStatistics != 5) {
+		time(&timeEnd);
+		timeinfoStart = localtime(timeStart); /* localtime (&timeStart);    */
+		fprintf(stdout, "Start    : %s", asctime(timeinfoStart));
+		timeinfoEnd = localtime(&timeEnd);
+		fprintf(stdout, "End      : %s", asctime(timeinfoEnd));
+		seconds = (int)difftime(timeEnd, *timeStart);
+		hh = seconds / 3600;
+		mm = (seconds - hh * 3600) / 60;
+		ss = seconds - ((hh * 3600) + mm * 60);
+		ms = seconds - ((hh * 3600) + mm * 60 + ss);
+		fprintf(stdout, "Elapsed  Time %02dhh %02dmm %02dss %03dms\n\n", hh, mm, ss, ms);
+	}
 	return 0;
 }
 
@@ -2322,17 +2324,18 @@ int job_print(struct job_t* job)
 	struct outrec_t* outrec;
 	struct sortField_t* sortField;
 
-	printf("\n========================================================\n");
-	printf("GCSORT Version %s\n", GCSORT_VERSION);
-	printf("========================================================\n");
+	if (globalJob->nStatistics != 5) {
+		printf("\n========================================================\n");
+		printf("GCSORT Version %s\n", GCSORT_VERSION);
+		printf("========================================================\n");
+	}
 
-
-	if (job->bIsTake == 1) {
+	if ((job->bIsTake == 1) && (globalJob->nStatistics != 5)) {
 		printf("TAKE file name\n");
 		printf("%s\n", job->szTakeFileName);
 		printf("========================================================\n");
 	}
-	if (job->nStatistics > 0) {
+	if ((job->nStatistics > 0) && (globalJob->nStatistics != 5)) {
 		switch (job->job_typeOP) {
 		case ('C'):
 			printf("Operation  : COPY\n\n");

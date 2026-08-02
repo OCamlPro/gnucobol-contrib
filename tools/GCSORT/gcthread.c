@@ -865,18 +865,19 @@ if (job->nStatistics == 2) {
 		fprintf(stdout, "\n");
 	}
 
-	time(&timeEnd);
-	timeinfoStart = localtime(timeStart); /* localtime (&timeStart);    */
-	fprintf(stdout, "Start    : %s", asctime(timeinfoStart));
-	timeinfoEnd = localtime(&timeEnd);
-	fprintf(stdout, "End      : %s", asctime(timeinfoEnd));
-	seconds = (int)difftime(timeEnd, *timeStart);
-	hh = seconds / 3600;
-	mm = (seconds - hh * 3600) / 60;
-	ss = seconds - ((hh * 3600) + mm * 60);
-	ms = seconds - ((hh * 3600) + mm * 60 + ss);
-	fprintf(stdout, "Elapsed  Time %02dhh %02dmm %02dss %03dms\n\n", hh, mm, ss, ms);
-
+	if (globalJob->nStatistics != 5) {
+		time(&timeEnd);
+		timeinfoStart = localtime(timeStart); /* localtime (&timeStart);    */
+		fprintf(stdout, "Start    : %s", asctime(timeinfoStart));
+		timeinfoEnd = localtime(&timeEnd);
+		fprintf(stdout, "End      : %s", asctime(timeinfoEnd));
+		seconds = (int)difftime(timeEnd, *timeStart);
+		hh = seconds / 3600;
+		mm = (seconds - hh * 3600) / 60;
+		ss = seconds - ((hh * 3600) + mm * 60);
+		ms = seconds - ((hh * 3600) + mm * 60 + ss);
+		fprintf(stdout, "Elapsed  Time %02dhh %02dmm %02dss %03dms\n\n", hh, mm, ss, ms);
+	}
 	return 0;
 }
 

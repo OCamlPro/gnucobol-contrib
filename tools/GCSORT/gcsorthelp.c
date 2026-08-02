@@ -90,7 +90,10 @@ void GCSORT_Config ( void )
 		if (job->nStatistics == 1)
 			fprintf(stdout," - Statistics Summary\n");
 		else
-			fprintf(stdout," - Statistics Detail\n");       
+        if (job->nStatistics == 2)
+            fprintf(stdout, " - Statistics Detail\n");
+        else
+			fprintf(stdout," - Only total records \n");       
 	fprintf(stdout,"GCSORT_TESTCMD               : %d", job->nTestCmdLine);
 	if (job->nTestCmdLine == 0)
 		fprintf(stdout," - Normal operations\n");
@@ -589,7 +592,7 @@ void GCSORT_Usage_all(void)
     printf("GCSORT_MEMSIZE     Memory Allocation in byte (Default 512000000 byte)              \n");
     printf("GCSORT_MLT         Numbers of page for cache MemoryMappedFile       \n");
     printf("GCSORT_PATHTMP     Pathname for temporary files     (Default TMP / TEMP / TMPDIR)     \n");
-    printf("GCSORT_STATISTICS  0 minimal informations, 1 for Summary, 2 for Details            \n");
+    printf("GCSORT_STATISTICS  0 minimal informations, 1 for Summary, 2 for Details,  5 Totals rec\n");
     printf("GCSORT_TESTCMD     0 for normal operations , 1 for ONLY test command line (NO SORT)\n");
     printf("________________________________________________________________________________________\n");
     return;
@@ -964,7 +967,7 @@ void gcsort_help_footer(void) {
     printf("GCSORT_MEMSIZE     Memory Allocation in byte (Default 512000000 byte)              \n");
     printf("GCSORT_MLT         Numbers of page for cache MemoryMappedFile                      \n");
     printf("GCSORT_PATHTMP     Pathname for temporary files     (Default TMP / TEMP / TMPDIR)  \n");
-    printf("GCSORT_STATISTICS  0 minimal informations, 1 for Summary, 2 for Details            \n");
+    printf("GCSORT_STATISTICS  0 minimal informations, 1 for Summary, 2 for Details,  5 Totals rec\n");
     printf("GCSORT_TESTCMD     0 for normal operations , 1 for ONLY test command line (NO SORT)\n");
     printf("________________________________________________________________________________________\n");
     return;

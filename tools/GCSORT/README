@@ -163,9 +163,10 @@ ___{Condition}__________________________________________________________________
 ________________________________________________________________________________________
 ___{Org}___File Organization_______________|___{KeyType}____Mandatory for ORG = IX______
   LS  = Line Sequential                    |  P  = Primary Key
-  SQ  = Sequential Fixed or Variable       |  A  = Alternative Key
-  IX  = Indexed Fixed or Variable          |  AD = Alternative Key with Duplicates
-  RL  = Relative Fixed or Variable         |  C  = Continue definition
+  LSF = Line Sequential Fixed              |  A  = Alternative Key
+  SQ  = Sequential Fixed or Variable       |  AD = Alternative Key with Duplicates
+  IX  = Indexed Fixed or Variable          |  C  = Continue definition
+  RL  = Relative Fixed or Variable         |  
 ___________________________________________|____________________________________________
 ___{Collating}___Collating Sequence________|____________________________________________
   ASCII  = Ascii sequence                  |
@@ -321,9 +322,10 @@ ___{Condition}__________________________________________________________________
 ________________________________________________________________________________________
 ___{Org}___File Organization_______________|___{KeyType}____Mandatory for ORG = IX______
   LS  = Line Sequential                    |  P  = Primary Key
-  SQ  = Sequential Fixed or Variable       |  A  = Alternative Key
-  IX  = Indexed Fixed or Variable          |  AD = Alternative Key with Duplicates
-  RL  = Relative Fixed or Variable         |  C  = Continue definition
+  LSF = Line Sequential Fixed              |  A  = Alternative Key
+  SQ  = Sequential Fixed or Variable       |  AD = Alternative Key with Duplicates
+  IX  = Indexed Fixed or Variable          |  C  = Continue definition
+  RL  = Relative Fixed or Variable         |  
 ___________________________________________|____________________________________________
 ___{Collating}___Collating Sequence________|____________________________________________
   ASCII  = Ascii sequence                  |
@@ -373,6 +375,6 @@ GCSORT_DEBUG       0 no print info, 1 info DEBUG, 2 for info Parser
 GCSORT_MEMSIZE     Memory Allocation in byte (Default 512000000 byte)
 GCSORT_MLT         Numbers of page for cache MemoryMappedFile
 GCSORT_PATHTMP     Pathname for temporary files     (Default TMPDIR / TMP / TEMP)
-GCSORT_STATISTICS  0 minimal informations, 1 for Summary, 2 for Details
+GCSORT_STATISTICS  0 minimal informations, 1 for Summary, 2 for Details, 5 Totals rec 
 GCSORT_TESTCMD     0 for normal operations , 1 for ONLY test command line (NO SORT)
 ________________________________________________________________________________________

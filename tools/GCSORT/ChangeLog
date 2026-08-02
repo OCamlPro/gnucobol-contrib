@@ -1,3 +1,9 @@
+2026-08-02  Sauro Menna  <saumen2004@libero.it> 
+    * Version 01.04.12
+    * update help informations (documented LSF file type)
+    * revision of statistical information. Added value 5 to print only the totals of the processed records. 
+	* Update GCSort manual 
+
 2026-02-07  Sauro Menna  <saumen2004@libero.it> 
     * Version 01.04.11
     * review copyfile.c (thanks David) in function job_copyFile. Empty file check removed.

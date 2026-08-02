@@ -23,4 +23,3 @@ GCSORT TODO						-*- outline -*-
  ToDo |	PARSE fields	    |    PARSE=(%00=(ABSPOS=21,STARTAFT=BLANKS,ENDBEFR=C',',FIXLEN=5)
  ToDo |	Substring	        |    FORMAT=SS,COND=(11,6000,EQ,C'OK',OR,5,3,EQ,C'J69,L92,J82')
  ToDo |	Y2TP (PackedDecimal)|	 OUTFIL BUILD=(11,3,Y2XP,X,21,4,Y2WP)
- ToDo | JOIN features       |    Write output file with record discarded

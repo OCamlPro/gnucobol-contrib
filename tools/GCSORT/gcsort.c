@@ -363,11 +363,14 @@ int main_prod(int argc, char **argv) {
 					job_print_final(job, &timeStart);
 			}
 		}
+
 		if (nRC == 0) {
-			fprintf(stdout, "GCSORT - %s OK\n\n", szMex);
+			if (globalJob->nStatistics != 5) 
+				fprintf(stdout, "GCSORT - %s OK\n\n", szMex);
 		}
 		else {
-			fprintf(stdout, "GCSORT - %s KO\n\n", szMex);
+			if (globalJob->nStatistics != 5)
+				fprintf(stdout, "GCSORT - %s KO\n\n", szMex);
 			nRC = GC_RTC_ERROR;
 		}
 
