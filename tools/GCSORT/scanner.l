@@ -2,7 +2,7 @@
     Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
- *	This file is part of GCSORT.
+ *    This file is part of GCSORT.
  *
  *  GCSORT is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@
   #include <stdio.h>
   #include <stdlib.h>
   #ifndef _MSC_VER
-	  #define _strdup strdup
-	  #include "utils.h"
-	  #define xstrtoll   strtoll
+      #define _strdup strdup
+      #include "utils.h"
+      #define xstrtoll   strtoll
   #else
-	  #include <io.h>
-	  #define isatty _isatty
-	  #define fileno _fileno
-	  #define xstrtoll    _strtoi64
+      #include <io.h>
+      #define isatty _isatty
+      #define fileno _fileno
+      #define xstrtoll    _strtoi64
   #endif
   #include "gcsort.h"
   #include "parser.h"
@@ -38,11 +38,11 @@
   extern char szMexToken[260];
 
   void yyerror(const char *error) {
-	printf("Error : %s\n",error);
-	if(yytext != NULL) {
-		printf("Error near element : %s\n", yytext);
-		printf("Token  : %s\n", szMexToken);
-	}
+    printf("Error : %s\n",error);
+    if(yytext != NULL) {
+        printf("Error near element : %s\n", yytext);
+        printf("Token  : %s\n", szMexToken);
+    }
 } 
 #define YY_NO_INPUT
 %}
@@ -52,22 +52,22 @@
 %option case-insensitive
 
                 
-			/* for position and length */
-DIGIT		    [0-9]{1,5}
-			/* for value, example condition */
-DIGITBIG	    [0-9]{6,32}                        
-			/* sign for numeric values */
-SIGN		    [+]|[-]                            
-			/* string */
-STRING		    [a-zA-Z0-9_.]*                     
+            /* for position and length */
+DIGIT            [0-9]{1,5}
+            /* for value, example condition */
+DIGITBIG        [0-9]{6,32}                        
+            /* sign for numeric values */
+SIGN            [+]|[-]                            
+            /* string */
+STRING            [a-zA-Z0-9_.]*                     
 
-BLANK		    [ \t]*  
+BLANK            [ \t]*  
 
             /* Separator Date/Time */
 DATESEP         [-\\/.]{1}
 
             /* File type */
-FILETYPE	    LS|SQ|IX|RL|LSF
+FILETYPE        LS|SQ|IX|RL|LSF
 
             /*  Format Type Field   */
          /* CH|BI|FI|FL|PD|ZD|TI|OT|CTO|LI|OL|CLO|CST|LS|CSL */
@@ -82,47 +82,47 @@ TI / OT / CTO / ZD  Zoned decimal  - sign trailing
            LS / CSL Signed Numeric - leading separate sign
            FS / CSF Signed Numeric - with optional leading floating sign  (PIC +++9, PIC ----,...)
             */
-    /* FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL */
-	/* extended FORMATTYPE	 CH|BI|FI|FL|PD|ZD|TI|OT|CTO|LI|OL|CLO|CST|LS|CSL */
+    /* FORMATTYPE     CH|BI|FI|FL|PD|ZD|CLO|CST|CSL */
+    /* extended FORMATTYPE     CH|BI|FI|FL|PD|ZD|TI|OT|CTO|LI|OL|CLO|CST|LS|CSL */
 
-    /* released FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL */
-    /* 202302 FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL|Y2T|Y2B|Y2C|Y2D|Y2P|Y2S|Y2U|Y2V|Y2X|Y2Y|Y2Z */
-FORMATTYPE	 CH|BI|FI|FL|PD|ZD|CLO|CST|CSL|Y2T|Y2B|Y2C|Y2D|Y2P|Y2S|Y2U|Y2V|Y2X|Y2Y|Y2Z|UFF|SFF
+    /* released FORMATTYPE     CH|BI|FI|FL|PD|ZD|CLO|CST|CSL */
+    /* 202302 FORMATTYPE     CH|BI|FI|FL|PD|ZD|CLO|CST|CSL|Y2T|Y2B|Y2C|Y2D|Y2P|Y2S|Y2U|Y2V|Y2X|Y2Y|Y2Z */
+FORMATTYPE     CH|BI|FI|FL|PD|ZD|CLO|CST|CSL|Y2T|Y2B|Y2C|Y2D|Y2P|Y2S|Y2U|Y2V|Y2X|Y2Y|Y2Z|UFF|SFF
 SUBSTRING    SS
     /*
-  DataType	Len	Type
-    Y2T		8	ZD Y2T8 = Y4T8 (?) C'ccyymmdd' or Z'ccyymmdd'     
-    Y2T		4	ZD Y2T4 : C'yyxx' or Z'yyxx' 
-    Y2T		2	ZD Y2T2 'yy'
-    Y2T		3	ZD Y2T2 'yyx'
-    Y2T		5	ZD 5,Y2T: C'yyddd' or Z'yyddd'
-    Y2T		6	ZD 6,Y2T: C'yymmdd' or Z'yymmdd'     
-    Y4T		7	ZD 7,Y4T: C'ccyyddd' or Z'ccyyddd'    
-    Y2B		1	BI
-    Y2C		2	ZD
-    Y2D		1	PD
-    Y2P		2	PD
-    Y2S		2	ZD
-    Y2U		3	PD  P'yyddd'   
-    Y2V		4	PD  P'yymmdd'    
-    Y2X		3	PD  P'dddyy'    
-    Y2Y		4	PD  P'mmddyy' 
-    Y2Z		2	ZD
+  DataType    Len    Type
+    Y2T        8    ZD Y2T8 = Y4T8 (?) C'ccyymmdd' or Z'ccyymmdd'     
+    Y2T        4    ZD Y2T4 : C'yyxx' or Z'yyxx' 
+    Y2T        2    ZD Y2T2 'yy'
+    Y2T        3    ZD Y2T2 'yyx'
+    Y2T        5    ZD 5,Y2T: C'yyddd' or Z'yyddd'
+    Y2T        6    ZD 6,Y2T: C'yymmdd' or Z'yymmdd'     
+    Y4T        7    ZD 7,Y4T: C'ccyyddd' or Z'ccyyddd'    
+    Y2B        1    BI
+    Y2C        2    ZD
+    Y2D        1    PD
+    Y2P        2    PD
+    Y2S        2    ZD
+    Y2U        3    PD  P'yyddd'   
+    Y2V        4    PD  P'yymmdd'    
+    Y2X        3    PD  P'dddyy'    
+    Y2Y        4    PD  P'mmddyy' 
+    Y2Z        2    ZD
     */
     
             /*  Char Type  for condition CharType = C(char) | X(hexdical) <String>    */
    /* prec CHARTCOND       C|X  */
 CHARTCOND       C|X|Y|Z
             /*  Char Type  CharType = C(char) | X(hexdical) |Z(zero binary) <String>    */
-CHARTYPE        C|X|Z				
+CHARTYPE        C|X|Z                
             /*  Order A = Ascending, D = Descending */
-ORDER           A|D				
+ORDER           A|D                
             /*  Key Tye for indexed file P=Primary, A= ALternative, AD = Alternative with duplicates, C = Continue */
-KEYTYPE         P|A|AD|C	
+KEYTYPE         P|A|AD|C    
             /* Collating Sequence */
-COLLATING	    ASCII|EBCDIC
+COLLATING        ASCII|EBCDIC
             /* Fixed record */
-RECTYPEFIX	    F
+RECTYPEFIX        F
             /* Variable record */
 RECTYPEVAR      V
             /* comment for occursfill */ 
@@ -135,9 +135,9 @@ OPCOND      EQ|GT|GE|LT|LE|NE
 JOINFILE        F1|F2            
 
     /* OCCURFILL   [0-9]{1,5}[C|X|Z]{1} */
-	/* <CHSC>{CHARTYPE} */
-	/* <ORDK>{ORDER} */
-	/* <KEYV>{KEYTYPE} */
+    /* <CHSC>{CHARTYPE} */
+    /* <ORDK>{ORDER} */
+    /* <KEYV>{KEYTYPE} */
     
 EXROUT          E15|E35
 
@@ -156,25 +156,25 @@ ERRTRUNC        ERROR|TRUNC
 
 %%
 
-"BUILD"[=]*{BLANK}                              return BUILD;
-"CHANGE"[=]*{BLANK}                             return CHANGE;
-[,]*{BLANK}"FILL"[=]*{BLANK}                    return FILL;
-"NOMATCH"[=]*{BLANK}                            return NOMATCH;
+"BUILD"[=]?{BLANK}                             return BUILD;
+"CHANGE"[=]?{BLANK}                             return CHANGE;
+(","|{BLANK})*"FILL"[=]{BLANK}                    return FILL;
+"NOMATCH"[=]?{BLANK}?                            return NOMATCH;
 "COND"                          BEGIN(TCOND);   return COND; 
 [(]{BLANK}"COPY"{BLANK}[)]                      return COPY; 
 "COPY"                                          return COPY; 
-"END"		                                    return TOKSKIP;
-[,]*{BLANK}"ENDREC"	                            return ENDREC;
+"END"                                            return TOKSKIP;
+(","|{BLANK})"ENDREC"                                return ENDREC;
 "FIELDS"{BLANK}[=]{BLANK}   if (nPhase == 1) { 
                                 BEGIN(ORDK);  
                                 nPhase = 0; 
-                            }else {	
+                            }else {    
                                 BEGIN(CHSC); 
                             } return FIELDS; 
 "FIELDS"                    if (nPhase == 1) { 
                                 BEGIN(ORDK);  
                                 nPhase = 0; 
-                            }else {	
+                            }else {    
                                 BEGIN(CHSC); 
                            } return FIELDS; 
 
@@ -182,66 +182,66 @@ ERRTRUNC        ERROR|TRUNC
 "OVERLAY"{BLANK}[=]{BLANK}   if (nPhase == 1) {       
                                 BEGIN(ORDK);          
                                 nPhase = 0;           
-                            }else {	                  
+                            }else {                      
                                 BEGIN(CHSC);          
                             } return OVERLAY;         
 "OVERLAY"                    if (nPhase == 1) {       
                                 BEGIN(ORDK);          
                                 nPhase = 0;           
-                            }else {	                  
+                            }else {                      
                                 BEGIN(CHSC);          
                            } return OVERLAY;          
                                                 
 
-            /* {SIGN}{ADDSUBNUM}	            yylval.number = strtol(yytext, &pEnd, 10) ;			return ADDSUBNUM; */
+            /* {SIGN}{ADDSUBNUM}                yylval.number = strtol(yytext, &pEnd, 10) ;            return ADDSUBNUM; */
                                                 
 "DATE1"                                         return DATE1;
 "DATE2"                                         return DATE2;
 "DATE3"                                         return DATE3;
 "DATE4"                                         return DATE4;
-[,]*{BLANK}"FILE"{BLANK}[,]*                    return FNAMES; /*   return FILE;   */
-[,]*{BLANK}"FILES"{BLANK}[,]*                   return FNAMES; /*   return FILES;   */
-[,]*{BLANK}"FNAMES"{BLANK}[,]*	                return FNAMES;
-[,]*{BLANK}"FORMAT"{BLANK}[,]*                  return FORMAT;
-"GIVE"		                    BEGIN(INITIAL); return GIVE;
-[,]*{BLANK}"INCLUDE"            BEGIN(TCOND);   return INCLUDE; 
-"INREC"		                    BEGIN(CHSC);    return INREC;		
-"OUTREC"		                BEGIN(CHSC);    return OUTREC;		
-"KEY"	                        BEGIN(KEYV);    return KEY;
-[,]*{BLANK}"LENGTH"{BLANK}[=]{BLANK}            return LENGTH;
-"MERGE"		       nPhase = 1;  BEGIN(INITIAL); return MERGE;
+(","|{BLANK})*"FILE"{BLANK}[,]*                    return FNAMES; /*   return FILE;   */
+(","|{BLANK})*"FILES"{BLANK}[,]*                   return FNAMES; /*   return FILES;   */
+(","|{BLANK})*"FNAMES"{BLANK}[,]*                    return FNAMES;
+(","|{BLANK})*"FORMAT"{BLANK}[,]*                  return FORMAT;
+"GIVE"                            BEGIN(INITIAL); return GIVE;
+(","|{BLANK})*"INCLUDE"            BEGIN(TCOND);   return INCLUDE; 
+"INREC"                            BEGIN(CHSC);    return INREC;        
+"OUTREC"                        BEGIN(CHSC);    return OUTREC;        
+"KEY"                            BEGIN(KEYV);    return KEY;
+(","|{BLANK})*"LENGTH"{BLANK}[=]{BLANK}         return LENGTH;
+"MERGE"               nPhase = 1;  BEGIN(INITIAL); return MERGE;
 "JOINKEYS"         nPhase = 1;  BEGIN(INITIAL); return JOINKEYS;
-[(]*{BLANK}"NONE"{BLANK}[)]*	                return NONE;
-[,]*{BLANK}"OMIT"		        BEGIN(TCOND);   return OMIT; 
-"OPTION"	                                    return OPTION;
-    /*"ORG"		                                    return ORG;*/
-"ORG"		                    BEGIN(TORG);                return ORG;
-"OUTFIL"	                                    return OUTFIL;
+[(]*{BLANK}"NONE"{BLANK}[)]*                    return NONE;
+[,]*{BLANK}"OMIT"                BEGIN(TCOND);   return OMIT; 
+"OPTION"                                        return OPTION;
+    /*"ORG"                                            return ORG;*/
+"ORG"                            BEGIN(TORG);                return ORG;
+"OUTFIL"                                        return OUTFIL;
 "OUTFILE"                                       return OUTFIL;
-[,]*{BLANK}"OUTREC"	            BEGIN(CHSC);    return OUTREC;		
-[,]*{BLANK}"SAVE"{BLANK}[,]*	                return SAVE;
-[,]*{BLANK}"SKIPREC"	                        return SKIPREC;
-[,]*{BLANK}"MODS"                           	return MODS;
-    /* "RECORD"	                         return RECORD; */
-"RECORD"	                    BEGIN(INITIAL); return RECORD;
-"SORT"		       nPhase = 1;  BEGIN(INITIAL); return SORT;
+(","|{BLANK})*"OUTREC"                BEGIN(CHSC);    return OUTREC;        
+(","|{BLANK})*"SAVE"{BLANK}[,]*                    return SAVE;
+(","|{BLANK})*"SKIPREC"                            return SKIPREC;
+(","|{BLANK})*"MODS"                               return MODS;
+    /* "RECORD"                             return RECORD; */
+"RECORD"                        BEGIN(INITIAL); return RECORD;
+"SORT"               nPhase = 1;  BEGIN(INITIAL); return SORT;
 "SORTED"                                        return SORTED;
 "NOSEQCK"                                       return NOSEQCK;
 "UNPAIRED"                                      return UNPAIRED;
 "ONLY"                                          return ONLY;
 "JOIN"                                          return JOIN;
-"REFORMAT"	                    BEGIN(CHSC);    return JOINREFORMAT;	
-[,]*{BLANK}"STARTREC"	                        return STARTREC;
-[,]*{BLANK}"STOPAFT"	                        return STOPAFT;
-[,]*{BLANK}"SPLIT"                              return SPLIT;
-[,]*{BLANK}"SPLITBY"{BLANK}[=]{BLANK}           return SPLITBY;
-"SUM"		                                    return SUM;
-[,]*{BLANK}"XSUM"		                        return XSUM;
+"REFORMAT"                        BEGIN(CHSC);    return JOINREFORMAT;    
+(","|{BLANK})*"STARTREC"                            return STARTREC;
+(","|{BLANK})*"STOPAFT"                            return STOPAFT;
+(","|{BLANK})*"SPLIT"                              return SPLIT;
+(","|{BLANK})*"SPLITBY"{BLANK}[=]{BLANK}           return SPLITBY;
+"SUM"                                            return SUM;
+(","|{BLANK})*"XSUM"                                return XSUM;
 "TYPE"{BLANK}[=]{BLANK}                         return TYPE;
-"USE"		                    BEGIN(INITIAL); return USE;
-[,]*{BLANK}"VLSCMP"                             return VLSCMP;
-[,]*{BLANK}"VLSHRT"	                            return VLSHRT;
-[,]*{BLANK}"Y2PAST"	                            return Y2PAST;
+"USE"                            BEGIN(INITIAL); return USE;
+(","|{BLANK})*"VLSCMP"                             return VLSCMP;
+(","|{BLANK})*"VLSHRT"                                return VLSHRT;
+(","|{BLANK})*"Y2PAST"                                return Y2PAST;
 
             /* FINDREP */
 "FINDREP"                                       return FINDREP;
@@ -255,61 +255,64 @@ ERRTRUNC        ERROR|TRUNC
 "OVERRUN"                                       return OVERRUN;
 "SHIFT"                                         return SHIFT;
             /* FINDREP */
+    /* ","?[ \t]*"REMOVECC"                                return REMOVECC;   */
+    /* ","?[ \t]*"CONVERT"                                return CONVERT;     */
+","?[ \t]*"EQUALS"                                return EQUALS;  
+","?[ \t]*"NOEQUALS"                            return NOEQUALS;  
+","?[ \t]*"NODETAIL"                            return NODETAIL;  
 
-            
-"REMOVECC"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
-",REMOVECC"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
-"CONVERT"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
-",CONVERT"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
-"EQUALS"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
-",EQUALS"	 printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
-"NODETAIL"   printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
-",NODETAIL"  printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n"); /* return TOKSKIP;  */
+","?[ \t]*"CONVERT"     printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n");     /* return TOKSKIP; */ 
+","?[ \t]*"REMOVECC"  printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n");    /* return TOKSKIP; */ 
+
+    /* "EQUALS"     printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n");      return TOKSKIP; */ 
+    /* "NOEQUALS"     printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n");  return TOKSKIP; */ 
+    /* "NODETAIL"   printf("GCSORT - Warning - Token skipped : "); ECHO; printf("\n");   return TOKSKIP; */ 
+
+ 
+
+","{BLANK}*"AND"{BLANK}*","    return AND;
+","{BLANK}*"&"{BLANK}*","        return AND;
+","{BLANK}"OR"{BLANK}","    return OR;
+","{BLANK}"|"{BLANK}","        return OR;
 
 
-","{BLANK}"AND"{BLANK}","	return AND;
-","{BLANK}"&"{BLANK}","		return AND;
-","{BLANK}"OR"{BLANK}","	return OR;
-","{BLANK}"|"{BLANK}","		return OR;
-
-
-{OPCOND}                    yylval.string = _strdup(yytext) ;					return OPCOND; 	
-<ORDK>{ORDER}		        yylval.string = _strdup(yytext) ;					return ORDER; 
-{DIGIT}				        yylval.number = strtol(yytext, &pEnd, 10) ;			return DIGIT;  
-{SIGN}{DIGIT}		        yylval.number = strtol(yytext, &pEnd, 10) ;			return DIGIT; 
-{DIGITBIG}			        yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;		return SIGNDIGITBIG;  
-{SIGN}{DIGITBIG}	        yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;		return SIGNDIGITBIG;  
-    /* {FORMATTYPE}		        yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  */
-{RECTYPEFIX}   	            yylval.string = _strdup(yytext) ;                   return RECTYPEFIX;
+{OPCOND}                    yylval.string = _strdup(yytext) ;                    return OPCOND;     
+<ORDK>{ORDER}                yylval.string = _strdup(yytext) ;                    return ORDER; 
+{DIGIT}                        yylval.number = strtol(yytext, &pEnd, 10) ;            return DIGIT;  
+{SIGN}{DIGIT}                yylval.number = strtol(yytext, &pEnd, 10) ;            return DIGIT; 
+{DIGITBIG}                    yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;        return SIGNDIGITBIG;  
+{SIGN}{DIGITBIG}            yylval.llnumber = xstrtoll(yytext, &pEnd, 10) ;        return SIGNDIGITBIG;  
+    /* {FORMATTYPE}                yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  */
+{RECTYPEFIX}                   yylval.string = _strdup(yytext) ;                   return RECTYPEFIX;
 {RECTYPEVAR}                yylval.string = _strdup(yytext) ;                   return RECTYPEVAR;
-        /* {FILETYPE}   	            yylval.string = _strdup(yytext) ;                   return FILETYPE;  */ 
+        /* {FILETYPE}                   yylval.string = _strdup(yytext) ;                   return FILETYPE;  */ 
 <TORG>{FILETYPE}            yylval.string = _strdup(yytext) ;                   return FILETYPE; 
-{OCCURFILL} 		        yylval.string = _strdup(yytext) ;                   return OCCURFILL;
-<TCOND>{CHARTCOND}	        yylval.string = _strdup(yytext) ;                   return CHARTCOND;    
-<CHSC>{CHARTYPE}	        yylval.string = _strdup(yytext) ;                   return CHARTYPE; 
-{JOINFILE}                  yylval.string = _strdup(yytext) ;					return JOINFILE;
+{OCCURFILL}                 yylval.string = _strdup(yytext) ;                   return OCCURFILL;
+<TCOND>{CHARTCOND}            yylval.string = _strdup(yytext) ;                   return CHARTCOND;    
+<CHSC>{CHARTYPE}            yylval.string = _strdup(yytext) ;                   return CHARTYPE; 
+{JOINFILE}                  yylval.string = _strdup(yytext) ;                    return JOINFILE;
 
-{FORMATTYPE}		        yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  
-{SUBSTRING}		            yylval.string = _strdup(yytext) ;                   return SUBSTRING;  
+{FORMATTYPE}                yylval.string = _strdup(yytext) ;                   return FORMATTYPE;  
+{SUBSTRING}                    yylval.string = _strdup(yytext) ;                   return SUBSTRING;  
 
 "EXROUT"                                                                        return EXROUT;
-{EXROUT}                    yylval.string = _strdup(yytext) ;					return EXROUT; 
+{EXROUT}                    yylval.string = _strdup(yytext) ;                    return EXROUT; 
 "YESNO"                                                                         return YESNO;
-{YESNO}                     yylval.string = _strdup(yytext) ;					return YESNO; 
+{YESNO}                     yylval.string = _strdup(yytext) ;                    return YESNO; 
 "ERRTRUNC"                                                                      return ERRTRUNC;
-{ERRTRUNC}                  yylval.string = _strdup(yytext) ;					return ERRTRUNC; 
+{ERRTRUNC}                  yylval.string = _strdup(yytext) ;                    return ERRTRUNC; 
   
    /* String C''';'   */
-"'"[^']*"'"	{yylval.string=malloc(strlen(yytext)-1);
-					 memcpy(yylval.string,yytext+1,strlen(yytext)-2);
-					 yylval.string[strlen(yytext)-2]=0;
-					 return STRING;}
+"'"[^']*"'"    {yylval.string=malloc(strlen(yytext)-1);
+                     memcpy(yylval.string,yytext+1,strlen(yytext)-2);
+                     yylval.string[strlen(yytext)-2]=0;
+                     return STRING;}
 
-<KEYV>{KEYTYPE}		yylval.string = _strdup(yytext) ; return KEYTYPE; 
-{COLLATING}		    yylval.string = _strdup(yytext) ; return COLLATING; 
-{STRING}			yylval.string = _strdup(yytext) ; return STRING;
+<KEYV>{KEYTYPE}        yylval.string = _strdup(yytext) ; return KEYTYPE; 
+{COLLATING}            yylval.string = _strdup(yytext) ; return COLLATING; 
+{STRING}            yylval.string = _strdup(yytext) ; return STRING;
 {BLANK}
-.			        return yytext[0];
+.                    return yytext[0];
 
 
 %%

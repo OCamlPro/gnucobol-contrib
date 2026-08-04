@@ -2,7 +2,7 @@
     Copyright (C) 2016-2024 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
- *	This file is part of GCSORT.
+ *    This file is part of GCSORT.
  *
  *  GCSORT is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,59 +22,59 @@
 %error-verbose
 
 %union { 
-	int         number;
-	long        lnumber;
-	long long   llnumber;
-	char        *string;
-	char        character;
-	struct condField_t      *condField;
-	struct fieldValue_t     *fieldValue;
-	struct SumField_t       *SumField;
+    int         number;
+    long        lnumber;
+    long long   llnumber;
+    char        *string;
+    char        character;
+    struct condField_t      *condField;
+    struct fieldValue_t     *fieldValue;
+    struct SumField_t       *SumField;
     struct changefield_t    *changefield;
     struct findrep_t        *findrep;
     struct findrepfield_t   *findrep_field;
 };
 %code { 
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include <string.h>
-	#ifdef _MSC_VER
-		#include <io.h>
-	#else
-		#include <stdlib.h> 
-		#include <unistd.h>
-	#endif
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <string.h>
+    #ifdef _MSC_VER
+        #include <io.h>
+    #else
+        #include <stdlib.h> 
+        #include <unistd.h>
+    #endif
     #include <time.h>
-	#include "gcsort.h"
-	#include "file.h"
-	#include "keyidxrel.h"
-	#include "job.h"
-	#include "sortfield.h"
-	#include "condfield.h"
-	#include "fieldvalue.h"
-	#include "outrec.h"
-	#include "inrec.h"
-	#include "outfil.h"
-	#include "sumfield.h"
-	#include "utils.h"
+    #include "gcsort.h"
+    #include "file.h"
+    #include "keyidxrel.h"
+    #include "job.h"
+    #include "sortfield.h"
+    #include "condfield.h"
+    #include "fieldvalue.h"
+    #include "outrec.h"
+    #include "inrec.h"
+    #include "outfil.h"
+    #include "sumfield.h"
+    #include "utils.h"
     #include "gcshare.h"
     #include "datediff.h"
     #include "changefield.h"
     #include "join.h"
     #include "findreplace.h"
 
-	#define  INREC_CASE		1
-	#define  OUTREC_CASE	2
+    #define  INREC_CASE        1
+    #define  OUTREC_CASE    2
     #define  JOIN_CASE      3
     
     /* -->> extern char szMexToken[260];    */
 
-	int yylex    (void);
-	void yyerror (char const *);
+    int yylex    (void);
+    void yyerror (char const *);
 
-	struct file_t*		   current_file=NULL;
-	struct outfil_t*	   current_outfil=NULL;
-	struct condField_t*	   condField=NULL;
+    struct file_t*           current_file=NULL;
+    struct outfil_t*       current_outfil=NULL;
+    struct condField_t*       condField=NULL;
     struct inrec_t *       inrec=NULL;
     struct outrec_t *      outrec=NULL;
     struct changefield_t*  current_changefield=NULL;
@@ -87,18 +87,18 @@
     struct fieldValue_t*   field_tmp=NULL;
     int    pntChange = 0;  /* 1 = Inrec , 2 = Outrec */
 
-	int nRecCase=0;
-	int nTypeFile=0;
-	int current_outrec=0;
-	int current_inrec=0;
-	int current_sortField=0;
+    int nRecCase=0;
+    int nTypeFile=0;
+    int current_outrec=0;
+    int current_inrec=0;
+    int current_sortField=0;
     int current_filejoin=0;         /* Join File 1 = F1, 2 = F2  */
     int inrec_overlay=0;
     int outrec_overlay=0;
-	int nPosAbsRec=0;
-	int nRtc=0;
-	int nCountGroupFiles=0;
-	char* pszInt;
+    int nPosAbsRec=0;
+    int nRtc=0;
+    int nCountGroupFiles=0;
+    char* pszInt;
     int nTmp=0;
     int nSwitchFR=0;
     
@@ -107,13 +107,13 @@
     int nDateNew=0;
     char szBuf[30];
 
-	extern int nTypeFieldsCmd;
-	char szTmp[256];
-	int	 nIntTmp;
-	int  nTypeFormat;			/* 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields  */
-	int  nTypeIncludeOmit;		/* 0= Nothing, 1 = Include, Omit=2                              */
+    extern int nTypeFieldsCmd;
+    char szTmp[256];
+    int     nIntTmp;
+    int  nTypeFormat;            /* 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields  */
+    int  nTypeIncludeOmit;        /* 0= Nothing, 1 = Include, Omit=2                              */
     int  nFieldType = 0;        /* field type used when format is spicified */
-	int  nstate_outfil = 0;
+    int  nstate_outfil = 0;
     int  nOnly=0;
 static int process_keyfield(int position, int length, char *keyType, char *keyCollating)
 {
@@ -140,49 +140,49 @@ static int process_keyfield(int position, int length, char *keyType, char *keyCo
 }
 
 }
-%token				AND						"AND clause"
-%token				COND					"COND clause"
-%token				ENDREC					"ENDREC clause"
-    /*  %token				FILES					"FILES  clause" */
-%token				FNAMES					"FNAMES clause"
-%token				FORMAT					"FORMAT clause"
-%token				INCLUDE					"INCLUDE clause"
-%token				INREC					"INREC clause"
-%token				NONE					"NONE clause"
-%token				OMIT					"OMIT clause"
-%token				OPTION					"OPTION clause"
-%token				OR						"OR clause"
-%token				OUTFIL					"OUTFIL clause"
-%token				OUTREC					"OUTREC clause"
-%token				SAVE					"SAVE clause"
-%token				SKIPREC					"SKIP clause"
-%token				STARTREC				"STARTREC clause"
-%token				STOPAFT					"STOPAFT clause"
-%token				SUM						"SUM clause"
-%token				XSUM					"XSUM clause"
-%token				SPLIT					"SPLIT clause"
-%token				SPLITBY					"SPLITBY clause"
-%token       		VLSCMP					"VLSCMP clause"
-%token          	VLSHRT					"VLSHRT clause"
+%token                AND                        "AND clause"
+%token                COND                    "COND clause"
+%token                ENDREC                    "ENDREC clause"
+    /*  %token                FILES                    "FILES  clause" */
+%token                FNAMES                    "FNAMES clause"
+%token                FORMAT                    "FORMAT clause"
+%token                INCLUDE                    "INCLUDE clause"
+%token                INREC                    "INREC clause"
+%token                NONE                    "NONE clause"
+%token                OMIT                    "OMIT clause"
+%token                OPTION                    "OPTION clause"
+%token                OR                        "OR clause"
+%token                OUTFIL                    "OUTFIL clause"
+%token                OUTREC                    "OUTREC clause"
+%token                SAVE                    "SAVE clause"
+%token                SKIPREC                    "SKIP clause"
+%token                STARTREC                "STARTREC clause"
+%token                STOPAFT                    "STOPAFT clause"
+%token                SUM                        "SUM clause"
+%token                XSUM                    "XSUM clause"
+%token                SPLIT                    "SPLIT clause"
+%token                SPLITBY                    "SPLITBY clause"
+%token               VLSCMP                    "VLSCMP clause"
+%token              VLSHRT                    "VLSHRT clause"
 %token              Y2PAST                  "Y2PAST clause"
 %token              MODS                    "MODS clause"
-%token 				BUILD					"BUILD instruction"
-%token 				FIELDS					"FIELDS instruction"
-%token 				OVERLAY					"OVERLAY instruction"
-%token 				GIVE					"GIVE clause"
-%token 				MERGE					"MERGE clause"
-%token 				ORG						"ORG instruction"
-%token 				RECORD					"RECORD instruction"
-%token 				SORT					"SORT clause"
+%token                 BUILD                    "BUILD instruction"
+%token                 FIELDS                    "FIELDS instruction"
+%token                 OVERLAY                    "OVERLAY instruction"
+%token                 GIVE                    "GIVE clause"
+%token                 MERGE                    "MERGE clause"
+%token                 ORG                        "ORG instruction"
+%token                 RECORD                    "RECORD instruction"
+%token                 SORT                    "SORT clause"
 %token              JOINKEYS                "JOINKEYS clause"
-%token 				USE						"USE clause"
-%token 				COPY					"COPY"
-%token 				TYPE                    "TYPE"
-%token 				LENGTH                  "LENGTH"
-%token 				DATE1                   "DATE1"
-%token 				DATE2                   "DATE2"
-%token 				DATE3                   "DATE3"
-%token 				DATE4                   "DATE4"
+%token                 USE                        "USE clause"
+%token                 COPY                    "COPY"
+%token                 TYPE                    "TYPE"
+%token                 LENGTH                  "LENGTH"
+%token                 DATE1                   "DATE1"
+%token                 DATE2                   "DATE2"
+%token                 DATE3                   "DATE3"
+%token                 DATE4                   "DATE4"
 %token              CHANGE                  "CHANGE"
 %token              NOMATCH                 "NOMATCH"
 %token              SORTED                  "SORTED"                   
@@ -202,58 +202,66 @@ static int process_keyfield(int position, int length, char *keyType, char *keyCo
 %token              MAXLEN                  "MAXLEN"   
 %token              OVERRUN                 "OVERRUN"  
 %token              SHIFT                   "SHIFT"    
-%token <number>		DIGIT					"DIGIT"
-%token <number>		DIGITBIG		        "DIGITBIG"
+%token              REMOVECC                "REMOVECC" 
+%token              CONVERT                 "CONVERT"
+%token              EQUALS                  "EQUALS" 
+%token              NOEQUALS                "NOEQUALS"
+%token              NODETAIL                "NODETAIL"
+
+
+
+%token <number>        DIGIT                    "DIGIT"
+%token <number>        DIGITBIG                "DIGITBIG"
         /* %token <number>     ADDSUBNUM               "ADDSUBNUM" */
-%token <string>		CHARTCOND  			    "CHARTCOND" 
-%token <string>		CHARTYPE				"CHARTYPE" 
-%token <string>		FILETYPE				"FILETYPE"
-%token <string>		FORMATTYPE				"FORMATTYPE"
+%token <string>        CHARTCOND                  "CHARTCOND" 
+%token <string>        CHARTYPE                "CHARTYPE" 
+%token <string>        FILETYPE                "FILETYPE"
+%token <string>        FORMATTYPE                "FORMATTYPE"
 %token <string>     JOINFILE                "JOINFILE"
-%token <string>		KEY						"KEY" 
-%token <string>		KEYTYPE					"KEYTYPE" 
-%token <string>		OCCURFILL				"OCCURFILL"
-%token <string>		OPCOND					"OPCOND"
-%token <string>		SUBSTRING				"SUBSTRING"
-%token <string>		ORDER					"ORDER"
-%token <string>		RECTYPEFIX				"RECTYPEFIX"
-%token <string>		RECTYPEVAR				"RECTYPEVAR"
-%token <string>		STRING					"STRING"
-%token <string>		TOKSKIP					"TOKSKIP"
+%token <string>        KEY                        "KEY" 
+%token <string>        KEYTYPE                    "KEYTYPE" 
+%token <string>        OCCURFILL                "OCCURFILL"
+%token <string>        OPCOND                    "OPCOND"
+%token <string>        SUBSTRING                "SUBSTRING"
+%token <string>        ORDER                    "ORDER"
+%token <string>        RECTYPEFIX                "RECTYPEFIX"
+%token <string>        RECTYPEVAR                "RECTYPEVAR"
+%token <string>        STRING                    "STRING"
+%token <string>        TOKSKIP                    "TOKSKIP"
 %token <string>     EXROUT                  "EXROUT"
 %token <string>     YESNO                   "YESNO"
 %token <string>     ERRTRUNC                "ERRTRUNC"
 %token <string>     COLLATING               "COLLATING"
 
-%token <llnumber>	SIGNDIGITBIG			"SIGNDIGITBIG"
-%type <number>		fieldtype
-%type <number>		fielddirection
-%type <number>		condition
-%type <fieldValue>	fieldvaluerec
-%type <fieldValue>	fieldvaluecond
-%type <fieldValue>	datetype
-%type <condField>	condfieldcond
-%type <condField>	allcondfield
-%type <SumField>	sumfield
-%type <SumField>	allsumfield
-%type <fieldValue>	fieldvalueconst
+%token <llnumber>    SIGNDIGITBIG            "SIGNDIGITBIG"
+%type <number>        fieldtype
+%type <number>        fielddirection
+%type <number>        condition
+%type <fieldValue>    fieldvaluerec
+%type <fieldValue>    fieldvaluecond
+%type <fieldValue>    datetype
+%type <condField>    condfieldcond
+%type <condField>    allcondfield
+%type <SumField>    sumfield
+%type <SumField>    allsumfield
+%type <fieldValue>    fieldvalueconst
 %type <string>      filesgroup
 %type <changefield> changepair
 %type <changefield> changepairdet
 %type <fieldValue>  changeCmdOpt   
-%type <findrep_field>	allfieldvaluerec   
-%type <findrep_field>	inoutfieldvaluerec   
+%type <findrep_field>    allfieldvaluerec   
+%type <findrep_field>    inoutfieldvaluerec   
 %left OR
 %left AND
 %%
 %start beginning
 ;
 beginning:
-		| clause beginning
+        | clause beginning
 ;
 clause:   recordclause {}
-		| sortclause {}
-		| mergeclause {}
+        | sortclause {}
+        | mergeclause {}
         | joinkeysclause {}
         | joinclause {}
         | joinreformatclause{}
@@ -261,35 +269,35 @@ clause:   recordclause {}
         | joinoptions{}
         | fill_char{}
         | useclause {}
-		| giveclause {}
-		| formatclause {}
-		| startrecclause {}
-		| endrecclause {}
-		| includeclause {}
-		| omitclause {}
-		| inrecclause {}
-		| sumclause {}
-		| outrecclause {}
-		| tokskipclause {}
-		| outfilclause {}
-		| outfilincludeclause {}
-		| outfilomitclause {}
-		| fnamesclause {}
+        | giveclause {}
+        | formatclause {}
+        | startrecclause {}
+        | endrecclause {}
+        | includeclause {}
+        | omitclause {}
+        | inrecclause {}
+        | sumclause {}
+        | outrecclause {}
+        | tokskipclause {}
+        | outfilclause {}
+        | outfilincludeclause {}
+        | outfilomitclause {}
+        | fnamesclause {}
             /* | filesclause {} */
-		| saveclause {}
-		| optionclause {}
+        | saveclause {}
+        | optionclause {}
         | buildclause {}
 ;
 
 
 useclause: 
-	  USE STRING {   
+      USE STRING {   
         struct file_t *file=file_constructor($2);
         strcpy(szMexToken, "use clause");
         if (file == NULL) {
             utl_abend_terminate(MEMORYALLOC, 100, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
         file_setInputFile(file);
         current_file=file;
         nTypeFile=0;
@@ -305,8 +313,8 @@ giveclause:
         strcpy(szMexToken, " give clause ");
         if (file == NULL) {
             utl_abend_terminate(MEMORYALLOC, 101, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
         file_setOutputFile(file);
         current_file=file;
         nTypeFile=0;
@@ -317,11 +325,11 @@ giveclause:
 };
 
 recordorginstruction: 
-    { 	
+    {     
         strcpy(szMexToken, " record org instruction "); 
     }
     /*
-	| ORG FILETYPE  {  
+    | ORG FILETYPE  {  
         strcpy(szMexToken, " org file type ");
    
         if (current_file!=NULL) {
@@ -333,7 +341,7 @@ recordorginstruction:
         free($2);    
 }
     */
-	| ORG FILETYPE recordorginstruction {  
+    | ORG FILETYPE recordorginstruction {  
         strcpy(szMexToken, " org file type ");
    
         if (current_file!=NULL) {
@@ -344,7 +352,7 @@ recordorginstruction:
         }
         free($2);
 }
-	| RECORD RECTYPEVAR ',' DIGIT ',' DIGIT recordorginstruction {    
+    | RECORD RECTYPEVAR ',' DIGIT ',' DIGIT recordorginstruction {    
         strcpy(szMexToken, " record type ");
         if (current_file!=NULL) {
             file_setFormat(current_file,utils_parseFileFormat($2));
@@ -353,7 +361,7 @@ recordorginstruction:
         }
         free($2);
 }
-	| RECORD '(' RECTYPEVAR ',' DIGIT ',' DIGIT ')' recordorginstruction {
+    | RECORD '(' RECTYPEVAR ',' DIGIT ',' DIGIT ')' recordorginstruction {
         if (current_file!=NULL) {
             file_setFormat(current_file,utils_parseFileFormat($3));
             file_setRecordLength(current_file,$5);
@@ -362,7 +370,7 @@ recordorginstruction:
         free($3);
 }
 
-	| RECORD RECTYPEFIX ',' DIGIT recordorginstruction {		
+    | RECORD RECTYPEFIX ',' DIGIT recordorginstruction {        
         strcpy(szMexToken, " record type ");
         if (current_file!=NULL) {
             file_setFormat(current_file,utils_parseFileFormat($2));
@@ -371,7 +379,7 @@ recordorginstruction:
         }
         free($2);
 }
-	| RECORD '(' RECTYPEFIX ',' DIGIT ')' recordorginstruction {
+    | RECORD '(' RECTYPEFIX ',' DIGIT ')' recordorginstruction {
         if (current_file!=NULL) {
             file_setFormat(current_file,utils_parseFileFormat($3));
             file_setRecordLength(current_file,$5);
@@ -383,7 +391,7 @@ recordorginstruction:
   /*   | KEY '(' allkeyfieldcollating ')' recordorginstruction {
     }*/
 
-	| KEY '(' allkeyfield ')' recordorginstruction {
+    | KEY '(' allkeyfield ')' recordorginstruction {
 }
 
 ;
@@ -406,7 +414,7 @@ keyfield_comma:
     }
  ;
  
- keyfield:	
+ keyfield:    
       DIGIT ',' DIGIT ',' KEYTYPE {
          if (!process_keyfield($1, $3, $5, NULL)) YYABORT;
     }
@@ -417,31 +425,31 @@ keyfield_comma:
     /* key clause - END */
 fieldtype: 
       FORMATTYPE {
-		$$=utils_parseFieldType($1);
-		free($1);
+        $$=utils_parseFieldType($1);
+        free($1);
 }
 |   /* To verify format SS = SubString */
       SUBSTRING {
-		$$=utils_parseFieldType($1);
-		free($1);
+        $$=utils_parseFieldType($1);
+        free($1);
 }
 ;
 fielddirection: 
       ORDER {
-		$$=utils_parseSortDirection($1);
-		free($1); 
+        $$=utils_parseSortDirection($1);
+        free($1); 
 }
 ;
 
 condition: 
       OPCOND {
-		$$=utils_parseCondCondition($1);
-		free($1);
+        $$=utils_parseCondCondition($1);
+        free($1);
 }
 |   /* To verify format SS = SubString */
       SUBSTRING {
-		$$=utils_parseCondCondition($1);
-		free($1);
+        $$=utils_parseCondCondition($1);
+        free($1);
 }
 ;
 
@@ -452,14 +460,14 @@ fieldvaluecond:
     /*  C'-' or X'hh...hh'        */
     /* ########################## */
       CHARTCOND  STRING  { 
-		$$=fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD, 0);
-		if ($$ == NULL) {
+        $$=fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD, 0);
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 104, ABEND_SKIP);
-			YYABORT;
-		}
-		free($1); 
-		free($2); 
-}		
+            YYABORT;
+        }
+        free($1); 
+        free($2); 
+}        
  /* fieldvalue: CHARTYPE  STRING  { */
 fieldvaluerec: 
     /* ########################## */
@@ -467,13 +475,13 @@ fieldvaluerec:
     /*  C'-' or X'hh...hh' or Z'nn' */
     /* ########################## */
       CHARTYPE  STRING  { 
-		$$=fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD, 0);
-		if ($$ == NULL) {
+        $$=fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD, 0);
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 105, ABEND_SKIP);
-			YYABORT;
-		}
-		free($1); 
-		free($2); 
+            YYABORT;
+        }
+        free($1); 
+        free($2); 
 }
         /* 20250926 */
       /* ########################## */
@@ -481,13 +489,13 @@ fieldvaluerec:
       /*  nC'-' or nX'hh...hh' or nZ'nn' */
       /* ########################## */
     |   OCCURFILL  STRING  { 
-  		$$=fieldValue_constructor($1, $2, TYPE_STRUCT_STD, 0);
-  		if ($$ == NULL) {
+          $$=fieldValue_constructor($1, $2, TYPE_STRUCT_STD, 0);
+          if ($$ == NULL) {
               utl_abend_terminate(MEMORYALLOC, 105, ABEND_SKIP);
-  			YYABORT;
-  		}
-  		free($1); 
-  		free($2); 
+              YYABORT;
+          }
+          free($1); 
+          free($2); 
   }       /* 20250926 */
 ;
 
@@ -496,33 +504,33 @@ fieldvalueconst:
     /* DIGIT = Numeric value max [+/-] 5 digit  */
     /* #################################################################################################### */
       DIGIT {
-		pszInt = (char*) malloc(32);		 
-		sprintf(pszInt, "%d", $1);
-		$$=(struct fieldValue_t *) fieldValue_constructor((char*)"Z", pszInt, TYPE_STRUCT_NEW, 0);
-		if ($$ == NULL) {
+        pszInt = (char*) malloc(32);         
+        sprintf(pszInt, "%d", $1);
+        $$=(struct fieldValue_t *) fieldValue_constructor((char*)"Z", pszInt, TYPE_STRUCT_NEW, 0);
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 106, ABEND_SKIP);
-			YYABORT;
-		}
-		free(pszInt); 
+            YYABORT;
+        }
+        free(pszInt); 
 }
     /* #################################################################################################### */
     /* DIGIT = Numeric value DIGIT from [+/-] 6 to n digit  */
     /* #################################################################################################### */
     | SIGNDIGITBIG  {
-		char szType[] = "Z";
-		pszInt = (char*) malloc(32);		 
-		#ifdef	_MSC_VER
-			sprintf(pszInt, NUM_FMT_LLD , $1);
-		#else
-			sprintf(pszInt, NUM_FMT_LLD , $1);
-		#endif
-		/*  -->> 20160914 $$=(struct fieldValue_t *) fieldValue_constructor((char*)szType, pszInt, TYPE_STRUCT_STD);    */
-		$$=(struct fieldValue_t *) fieldValue_constructor((char*)szType, pszInt, TYPE_STRUCT_NEW, 0);
-		if ($$ == NULL) {
+        char szType[] = "Z";
+        pszInt = (char*) malloc(32);         
+        #ifdef    _MSC_VER
+            sprintf(pszInt, NUM_FMT_LLD , $1);
+        #else
+            sprintf(pszInt, NUM_FMT_LLD , $1);
+        #endif
+        /*  -->> 20160914 $$=(struct fieldValue_t *) fieldValue_constructor((char*)szType, pszInt, TYPE_STRUCT_STD);    */
+        $$=(struct fieldValue_t *) fieldValue_constructor((char*)szType, pszInt, TYPE_STRUCT_NEW, 0);
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 107, ABEND_SKIP);
-			YYABORT;
-		}
-		free(pszInt); 
+            YYABORT;
+        }
+        free(pszInt); 
 }
 ;
 
@@ -534,16 +542,16 @@ allsortfield:
 }
 ;
 
-sortfield:	
+sortfield:    
       DIGIT ',' DIGIT ',' fielddirection {
             /* Sort Fields */
         if (current_sortField==1) {
             struct sortField_t *sortField;
             sortField=sortField_constructor($1,$3,0, $5);
-			if (sortField == NULL) {
+            if (sortField == NULL) {
                 utl_abend_terminate(MEMORYALLOC, 108, ABEND_SKIP);
-				YYABORT;
-			}
+                YYABORT;
+            }
             sortField_addDefinition(sortField);
             nTypeFormat = 1;
         }
@@ -551,10 +559,10 @@ sortfield:
         if (current_sortField==3) {             
             struct sortField_t *joinField;
             joinField=sortField_constructor($1,$3,0, $5);
-			if (joinField == NULL) {
+            if (joinField == NULL) {
                 utl_abend_terminate(MEMORYALLOC, 108, ABEND_SKIP);
-				YYABORT;
-			}
+                YYABORT;
+            }
             join_addDefinitionJoin(current_filejoin, joinField);
             nTypeFormat = 1;
         }
@@ -563,13 +571,13 @@ sortfield:
         if (current_sortField==1) {
             struct sortField_t *sortField;
             sortField=sortField_constructor($1,$3,$5,$7);
-			if (sortField == NULL) {
+            if (sortField == NULL) {
                 utl_abend_terminate(MEMORYALLOC, 109, ABEND_SKIP);
-				YYABORT;
-			}
+                YYABORT;
+            }
             sortField_addDefinition(sortField);
             /*  -->> nTypeFormat = 1; // Format external token  */
-			}
+            }
 }
 ;
 
@@ -578,11 +586,11 @@ sortclause:
         current_sortField=1;
         } allsortfield ')' {
         current_sortField=0;
-        job_SetTypeOP('S');		/* for Sort */
+        job_SetTypeOP('S');        /* for Sort */
         strcpy(szMexToken, " sort clause ");
 }
     | SORT FIELDS COPY {
-        job_SetTypeOP('C');		/* for Merge    */
+        job_SetTypeOP('C');        /* for Merge    */
         job_SetFieldCopy(1);
         strcpy(szMexToken, " sort clause ");
 
@@ -610,7 +618,7 @@ mergeclause:
 joinkeysclause: 
       JOINKEYS FNAMES '=' JOINFILE ',' FIELDS '(' {
         nRecCase=JOIN_CASE;
-        job_SetTypeOP('J');		/* for Join */
+        job_SetTypeOP('J');        /* for Join */
         current_sortField=3;            /* Sort field / Join field for JOIN STATEMENT */
         if (globalJob->join == NULL) {
             struct join_t* pJoin = join_constructor();
@@ -644,19 +652,19 @@ joinkeysalloptions:
 
 joinkeysoptions:
       ',' SORTED  {
-		strcpy(szMexToken, " join option sorted  ");
+        strcpy(szMexToken, " join option sorted  ");
         join_IsSorted(current_filejoin, current_join);
 }
     | ',' SORTED ',' NOSEQCK {
-		strcpy(szMexToken, " join option noseqck  ");
+        strcpy(szMexToken, " join option noseqck  ");
         join_noSeqCk(current_filejoin, current_join);
 }
     | STOPAFT '=' SIGNDIGITBIG {
-		strcpy(szMexToken, " join option stop after 1");
+        strcpy(szMexToken, " join option stop after 1");
         join_stopAfter(current_filejoin, current_join, $3);
 }
     | STOPAFT '=' DIGIT {
-		strcpy(szMexToken, " join option stop after 2");
+        strcpy(szMexToken, " join option stop after 2");
         join_stopAfter(current_filejoin, current_join, $3);
 }
 ;
@@ -748,7 +756,7 @@ joinclause:
 joinoptions:
     |   ',' ONLY  {
         /* utils_SetOptionSort("ONLY", NULL, 0); */
-		strcpy(szMexToken, " joinoptions ONLY clause ");
+        strcpy(szMexToken, " joinoptions ONLY clause ");
         nOnly=1;
 }
 ;
@@ -767,10 +775,10 @@ joinreformatclause:
                     nRecCase=0;
             } */
      JOINREFORMAT FIELDS '(' {
-		strcpy(szMexToken, " joinreformat clause ");
+        strcpy(szMexToken, " joinreformat clause ");
         /*  verify if mandatory current_outrec=1;  */
         nRecCase=JOIN_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec ')' fill_char {
         current_outrec=0;
         nRecCase=0;
@@ -790,29 +798,29 @@ fill_char:
 ;
 
 /* #################################################################################################### */
-/* -->>nTypeFormat;			// 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields  */
-/* -->>nTypeIncludeOmit;	// 0= Nothing, 1 = Include, 2 = Omit                            */
+/* -->>nTypeFormat;            // 0= Nothing, 1 = SortFields, 2 = Include/Omit, 3 = SumFields  */
+/* -->>nTypeIncludeOmit;    // 0= Nothing, 1 = Include, 2 = Omit                            */
 /* #################################################################################################### */
 formatclause: 
       FORMAT '=' fieldtype {
-		strcpy(szMexToken, " format clause ");
+        strcpy(szMexToken, " format clause ");
         nFieldType = $3;    /* save field type */
-		if (nTypeFormat == 1)
-			condField_setFormatFieldsTypeAll(nTypeFormat, $3);
-		if (nTypeFormat == 2)
-			condField_setCondFieldsTypeAll(nTypeIncludeOmit, $3);
-		if (nTypeFormat == 3)	/* for SumFields    */
-			condField_setFormatFieldsTypeAll(nTypeFormat, $3);
+        if (nTypeFormat == 1)
+            condField_setFormatFieldsTypeAll(nTypeFormat, $3);
+        if (nTypeFormat == 2)
+            condField_setCondFieldsTypeAll(nTypeIncludeOmit, $3);
+        if (nTypeFormat == 3)    /* for SumFields    */
+            condField_setFormatFieldsTypeAll(nTypeFormat, $3);
     }
     /* 20230221 Start */ 
     |  FORMAT '=' OPCOND {
-		strcpy(szMexToken, " format clause substring ");
-		if (nTypeFormat == 1)
-			condField_setFormatFieldsTypeAll(nTypeFormat, FIELD_TYPE_SUBSTRING);
-		if (nTypeFormat == 2)
-			condField_setCondFieldsTypeAll(nTypeIncludeOmit, FIELD_TYPE_SUBSTRING);
-		if (nTypeFormat == 3)	
-			condField_setFormatFieldsTypeAll(nTypeFormat, FIELD_TYPE_SUBSTRING);
+        strcpy(szMexToken, " format clause substring ");
+        if (nTypeFormat == 1)
+            condField_setFormatFieldsTypeAll(nTypeFormat, FIELD_TYPE_SUBSTRING);
+        if (nTypeFormat == 2)
+            condField_setCondFieldsTypeAll(nTypeIncludeOmit, FIELD_TYPE_SUBSTRING);
+        if (nTypeFormat == 3)    
+            condField_setFormatFieldsTypeAll(nTypeFormat, FIELD_TYPE_SUBSTRING);
     }
     /* */
     
@@ -823,42 +831,42 @@ formatclause:
             condField_setFormatFieldsTypeAll(nTypeFormat, $4);
         if (nTypeFormat == 2)
             condField_setCondFieldsTypeAll(nTypeIncludeOmit, $4);
-        if (nTypeFormat == 3)	
+        if (nTypeFormat == 3)    
             condField_setFormatFieldsTypeAll(nTypeFormat, $4);
-		strcpy(szMexToken, " format clause ");
+        strcpy(szMexToken, " format clause ");
 }
 */
 ;
 allcondfield: 
     condfieldcond {
-		$$=$1;
+        $$=$1;
 }
-	| '(' allcondfield ')' {
-		$$=$2;
-		strcpy(szMexToken, " condition field 01 ");
+    | '(' allcondfield ')' {
+        $$=$2;
+        strcpy(szMexToken, " condition field 01 ");
 }
     | allcondfield AND allcondfield {
-		condField=condField_constructor_operation(COND_OPERATION_AND, $1, $3);
-		$$=condField;
-		strcpy(szMexToken, " condition field 02 ");
-		if ($$ == NULL) {
+        condField=condField_constructor_operation(COND_OPERATION_AND, $1, $3);
+        $$=condField;
+        strcpy(szMexToken, " condition field 02 ");
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 110, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
     | allcondfield OR allcondfield {
-		condField=condField_constructor_operation(COND_OPERATION_OR, $1, $3);
-		$$=condField;
-		strcpy(szMexToken, " condition field 03 ");
-		if ($$ == NULL) {
+        condField=condField_constructor_operation(COND_OPERATION_OR, $1, $3);
+        $$=condField;
+        strcpy(szMexToken, " condition field 03 ");
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 111, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
 ;
 
 
-condfieldcond: 	
+condfieldcond:     
     /* #################################################################################################### */
     /* pos1, len1, format1, operator, pos2, len2, format2 -                                                 */
     /* check field in pos1 for len1 and format1 with field in pos2 for len2 and format2, apply operator     */
@@ -869,10 +877,10 @@ condfieldcond:
         condField=condField_constructor_conditionfield($1,$3,$5,$7,$9,$11,$13);
         $$=condField;
         strcpy(szMexToken, " condition field 04 ");
-		if ($$ == NULL) {
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 112, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
 
     /* #################################################################################################### */
@@ -885,22 +893,22 @@ condfieldcond:
         condField=condField_constructor_conditionfield($1,$3,0,$5,$7,$9,0);
         $$=condField;
         strcpy(szMexToken, " condition field 05 ");
-		if ($$ == NULL) {
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 112, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
     /* #################################################################################################### */
     /* pos, len, operator, format, condition, value                                 */    
     /* case 1,6,CH,EQ,C'String'  field in position 1 with length 6 equal 'String'   */
     /* #################################################################################################### */
     | DIGIT ',' DIGIT ',' fieldtype ',' condition ',' fieldvaluecond  {    
-		$$=condField_constructor_condition($1,$3,$5,$7,$9);
-		strcpy(szMexToken, " condition field 06 ");
-		if ($$ == NULL) {
+        $$=condField_constructor_condition($1,$3,$5,$7,$9);
+        strcpy(szMexToken, " condition field 06 ");
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 113, ABEND_SKIP);
-			YYABORT;
-		} 
+            YYABORT;
+        } 
 }
     /* #################################################################################################### */
     /* pos, len, type field, operator, value numeric    */
@@ -909,10 +917,10 @@ condfieldcond:
     | DIGIT ',' DIGIT ',' fieldtype ',' condition ',' fieldvalueconst {
         $$=condField_constructor_condition($1,$3,$5,$7,$9);
         strcpy(szMexToken, " condition field 07 ");
-		if ($$ == NULL) {
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 114, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
     /* #################################################################################################### */
     /* pos, len, operator, value numeric .   Mandatory FORMAT= for type     */
@@ -924,10 +932,10 @@ condfieldcond:
         nTypeFormat = 2; /* Format external token   */
         $$=condField;
         strcpy(szMexToken, " condition field 08 ");
-		if ($$ == NULL) {
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 115, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
     /* #################################################################################################### */
     /* pos, len, operator, value numeric .   Mandatory FORMAT= for type     */
@@ -939,10 +947,10 @@ condfieldcond:
         nTypeFormat = 2; /* Format external token   */
         $$=condField;
         strcpy(szMexToken, " condition field 09 ");
-		if ($$ == NULL) {
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 116, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
     /* #################################################################################################### */
     /* pos, len, operator, date .   DATE1/DATE2/DATE3/DATE4                 */
@@ -953,10 +961,10 @@ condfieldcond:
         nTypeFormat = 2; /* Format external token   */
         $$=condField;
         strcpy(szMexToken, " condition field 10 ");
-		if ($$ == NULL) {
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 141, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
 
  /* datetype: Constant Date currente date  */
@@ -967,7 +975,7 @@ datetype:
     /* All date type Y2T field len define rappresentation */
     /* DATE1    C'yyyymmdd'    C'20010419' */
        DATE1  { 
-		nDateType = 1;
+        nDateType = 1;
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
         /* Current Date */
@@ -976,15 +984,15 @@ datetype:
         /* current date into string */
         sprintf(szBuf, "%d", nDateCheck);   
         $$=fieldValue_constructor( "Y", szBuf, TYPE_STRUCT_STD, FIELD_TYPE_NUMERIC_Y2T);
-		if ($$ == NULL) {
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 142, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
     /* DATE1    C'yyyymmdd'    C'20010419' */
     /* |   DATE1 ADDSUBNUM { */
     |   DATE1 DIGIT { 
-		nDateType = 1;
+        nDateType = 1;
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
         /* Current Date */
@@ -992,7 +1000,7 @@ datetype:
         /* check range */
         if ($2 > 366) {
             utl_abend_terminate(0, 142, ABEND_SKIP);
-			YYABORT;
+            YYABORT;
         }
         /* Add/Sub days to date */
         gcDateAddDays(nDateCheck, &nDateNew, $2);
@@ -1001,14 +1009,14 @@ datetype:
         memset(szBuf, 0x00, 30);
         sprintf(szBuf, "%d", nDateCheck);   /* current date into string */
         $$=fieldValue_constructor( "Y", szBuf, TYPE_STRUCT_STD, FIELD_TYPE_NUMERIC_Y2T);
-		if ($$ == NULL) {
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 142, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
     /* DATE2    C'yyyymm'      C'200104'  */
     |  DATE2  {             /* Problem ++ to define datetype */
-		nDateType = 2;
+        nDateType = 2;
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
         /* Current Date */
@@ -1016,15 +1024,15 @@ datetype:
         memset(szBuf, 0x00, 30);
         sprintf(szBuf, "%d", nDateCheck);   /* current date into string */
         $$=fieldValue_constructor( "Y", szBuf, TYPE_STRUCT_STD, FIELD_TYPE_NUMERIC_Y2T);
-		if ($$ == NULL) {
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 143, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
     /* DATE2    C'yyyymm'      C'200104'  */
     /* |  DATE2 ADDSUBNUM { */            /* Problem ++ to define datetype */
     |  DATE2 DIGIT {             /* Problem ++ to define datetype */
-		nDateType = 2;
+        nDateType = 2;
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
         /* Current Date */
@@ -1032,7 +1040,7 @@ datetype:
         /* check range */
         if ($2 > 12) {
             utl_abend_terminate(0, 142, ABEND_SKIP);
-			YYABORT;
+            YYABORT;
         }
         /* Add/Sub months to date */
         /* from YYYYMM  to YYYYMMDD */
@@ -1044,14 +1052,14 @@ datetype:
         memset(szBuf, 0x00, 30);
         sprintf(szBuf, "%d", nDateCheck);   /* current date into string */
         $$=fieldValue_constructor( "Y", szBuf, TYPE_STRUCT_STD, FIELD_TYPE_NUMERIC_Y2T);
-		if ($$ == NULL) {
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 143, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
     /* DATE3    C'yyyyddd'     C'2001109' */
     |  DATE3  { 
-		nDateType = 3;
+        nDateType = 3;
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
         /* Current Date */
@@ -1061,15 +1069,15 @@ datetype:
         memset(szBuf, 0x00, 30);
         sprintf(szBuf, "%d", nDateNew);   /* current date into string with format yyyyddd */
         $$=fieldValue_constructor( "Y", szBuf, TYPE_STRUCT_STD, FIELD_TYPE_NUMERIC_Y2T);
-		if ($$ == NULL) {
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 144, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
     /* DATE3    C'yyyyddd'     C'2001109' */
     /* |  DATE3 ADDSUBNUM { */
     |  DATE3 DIGIT { 
-		nDateType = 3;
+        nDateType = 3;
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
         /* Current Date */
@@ -1078,7 +1086,7 @@ datetype:
         /* check range */
         if ($2 > 366) {
             utl_abend_terminate(0, 142, ABEND_SKIP);
-			YYABORT;
+            YYABORT;
         }
         /* Add/Sub days to date */
         gcDateAddDays(nDateCheck, &nDateNew, $2);
@@ -1086,14 +1094,14 @@ datetype:
         memset(szBuf, 0x00, 30);
         sprintf(szBuf, "%d", nDateCheck);   /* current date into string with format yyyyddd */
         $$=fieldValue_constructor( "Y", szBuf, TYPE_STRUCT_STD, FIELD_TYPE_NUMERIC_Y2T);
-		if ($$ == NULL) {
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 144, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
      /* DATE4    C'yyyy-mm-dd-hh.mm.ss' */
     |  DATE4  { 
-		nDateType = 4;
+        nDateType = 4;
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
         /* Current Datetime */
@@ -1104,10 +1112,10 @@ datetype:
         /* prepare date like CCYYMMDD */
         sprintf(szBuf, "%04d%02d%02d", tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday);  
         $$=fieldValue_constructor( "Y", szBuf, TYPE_STRUCT_STD, FIELD_TYPE_NUMERIC_Y2T);
-		if ($$ == NULL) {
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 145, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
 }
 
 
@@ -1184,9 +1192,9 @@ includeclause:
 /* =================================================================================== */
 
 allinoutrec: 
-    inoutrec {	
+    inoutrec {    
 }
-		| allinoutrec ',' allinoutrec {	}
+        | allinoutrec ',' allinoutrec {    }
         | change_options_all {}
 ;
 inoutrec: 
@@ -1348,7 +1356,7 @@ inoutrec:
             break;
         }
         free($3); /* s.m. 202015    */
-		free($4); 
+        free($4); 
 }
     /* new  20201211 end    */
     /* ######################################################################################## */
@@ -1434,12 +1442,12 @@ inoutrec:
         default:
             break;
         }
-		free($1);
+        free($1);
 }
     /* #######################################################  */
     /* [0-9]{1,5}[C|X|Z]{1} <string>                            */
-    /* nC'string'  n times of string						    */
-    /* 5C'XYZ'	-> XYZXYZXYZXYZXYZ   						    */
+    /* nC'string'  n times of string                            */
+    /* 5C'XYZ'    -> XYZXYZXYZXYZXYZ                               */
     /* #######################################################  */
     // | OCCURFILL STRING {
     //    switch(nRecCase) {
@@ -1478,11 +1486,11 @@ inoutrec:
     //    default:
     //        break;
     //    }
-	//	free($1); 
-	//	free($2); 
+    //    free($1); 
+    //    free($2); 
     //}
     /* ######################################################## */    
-    /* position absolute (output) : (C|X|Z) CharType	        */
+    /* position absolute (output) : (C|X|Z) CharType            */
     /* case 80:X                                                */
     /* ######################################################## */
     | DIGIT ':' CHARTYPE {
@@ -1516,7 +1524,7 @@ inoutrec:
                     YYABORT;
                 }
                 if ($1 > nPosAbsRec) 
-                    nPosAbsRec = $1;		/* - inrec->change_position.fieldValue->generated_length;   */
+                    nPosAbsRec = $1;        /* - inrec->change_position.fieldValue->generated_length;   */
                 inrec->nIsOverlay=inrec_overlay;
                 inrec_addDefinition(inrec);
             }
@@ -1527,7 +1535,7 @@ inoutrec:
         free($3); 
 }
     /* ######################################################## */
-    /* (C|X|Z) CharType	                                        */
+    /* (C|X|Z) CharType                                            */
     /* case X or Z                                              */
     /* ######################################################## */
     | CHARTYPE {
@@ -1578,11 +1586,11 @@ inoutrec:
             break;
         }
         free($1); /* s.m. 202105    */
-}			
+}            
 
     /* ################################################## */
-    /*  C|X|Z String									  */
-    /*  C'-'											  */
+    /*  C|X|Z String                                      */
+    /*  C'-'                                              */
     /* ################################################## */
     | fieldvaluerec {
         switch(nRecCase) {
@@ -1621,8 +1629,8 @@ inoutrec:
         default:
             break;
         }
-	}
-	
+    }
+    
 /* condizione di posizione di partenza senza lunghezza per i file variabili */
     | DIGIT ',' {
         switch(nRecCase) {
@@ -2273,55 +2281,55 @@ changepairdet:
     /*   C'STR',C'String' */
     /* #################################################################################################### */
       CHARTYPE  STRING ',' CHARTYPE  STRING { 
-		/* $$=changefield_constructor((char*) $2, $5); */
+        /* $$=changefield_constructor((char*) $2, $5); */
         /* verify      CHARTCOND  vs CHARTYPE */     
         struct fieldValue_t* fv1 = fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD, 0);
-		if (fv1 == NULL) {
+        if (fv1 == NULL) {
             utl_abend_terminate(MEMORYALLOC, 218, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
         struct fieldValue_t* fv2 = fieldValue_constructor((char*) $4, $5, TYPE_STRUCT_STD, 0);
-		if (fv2 == NULL) {
+        if (fv2 == NULL) {
             utl_abend_terminate(MEMORYALLOC, 218, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
         
         struct changefield_t* pcf = changefield_constructor(fv1, fv2);
-		if (pcf == NULL) {
+        if (pcf == NULL) {
             utl_abend_terminate(MEMORYALLOC, 215, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
         if (current_changefield == NULL)
-			changefield_t_addQueue(&current_changefield, pcf); 
-		else 
-			changefield_t_addQueue(&current_changefield, pcf); 
-		current_changefield = pcf; 
-		free($1); 
-		free($2); 
+            changefield_t_addQueue(&current_changefield, pcf); 
+        else 
+            changefield_t_addQueue(&current_changefield, pcf); 
+        current_changefield = pcf; 
+        free($1); 
+        free($2); 
         free($4);
-		free($5); 
+        free($5); 
         $$=pcf;
 }
         /* CHANGE=(6,C'2',28,6) */
    |   CHARTYPE  STRING ',' DIGIT ',' DIGIT  { 
         /* verify      CHARTCOND  vs CHARTYPE */     
         struct fieldValue_t* fv1 = fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD, 0);
-		if (fv1 == NULL) {
+        if (fv1 == NULL) {
             utl_abend_terminate(MEMORYALLOC, 218, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
         struct changefield_t* pcf = changefield_constructorPosLen(fv1, $4, $6);
-		if (pcf == NULL) {
+        if (pcf == NULL) {
             utl_abend_terminate(MEMORYALLOC, 215, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
         if (current_changefield == NULL)
-			changefield_t_addQueue(&current_changefield, pcf); 
-		else 
-			changefield_t_addQueue(&current_changefield, pcf); 
-		current_changefield = pcf; 
-		free($1); 
-		free($2); 
+            changefield_t_addQueue(&current_changefield, pcf); 
+        else 
+            changefield_t_addQueue(&current_changefield, pcf); 
+        current_changefield = pcf; 
+        free($1); 
+        free($2); 
         $$=pcf;
 };
 
@@ -2333,13 +2341,13 @@ changeCmdOpt:
     /* NOMATCH=(X'77') */
     CHARTYPE  STRING { 
         /* $$=changefield_constructor((char*) $2, $5); */
-		$$=fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD, 0);
-		if ($$ == NULL) {
+        $$=fieldValue_constructor((char*) $1, $2, TYPE_STRUCT_STD, 0);
+        if ($$ == NULL) {
             utl_abend_terminate(MEMORYALLOC, 104, ABEND_SKIP);
-			YYABORT;
-		}
-		free($1); 
-		free($2);         
+            YYABORT;
+        }
+        free($1); 
+        free($2);         
 }
 ;
             
@@ -2347,10 +2355,10 @@ changeCmdOpt:
 outrecclause: 
 /* s.m. 20160915 */
       OUTREC FIELDS '=' '(' {
-		strcpy(szMexToken, " outrec clause ");
+        strcpy(szMexToken, " outrec clause ");
         current_outrec=1;
         nRecCase=OUTREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec ')' {
         current_outrec=0;
         nRecCase=0;
@@ -2361,7 +2369,7 @@ outrecclause:
         strcpy(szMexToken, " outrec clause ");
         current_outrec=1;
         nRecCase=OUTREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec ')' {
         current_outrec=0;
         nRecCase=0;
@@ -2371,18 +2379,18 @@ outrecclause:
         strcpy(szMexToken, " outrec clause BUILD ");
         current_outrec=1;
         nRecCase=OUTREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec ')' {
         current_outrec=0;
         nRecCase=0;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 }
    /* */
     | OUTREC BUILD '(' {
         strcpy(szMexToken, " outrec clause BUILD ");
         current_outrec=1;
         nRecCase=OUTREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec ')' {
         current_outrec=0;
         nRecCase=0;
@@ -2392,7 +2400,7 @@ outrecclause:
         strcpy(szMexToken, " outrec clause Overlay ");
         current_outrec=1;
         nRecCase=OUTREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec ')' {
         current_outrec=0;
         nRecCase=0;
@@ -2404,7 +2412,7 @@ outrecclause:
         strcpy(szMexToken, " outrec clause Overlay ");
         current_outrec=1;
         nRecCase=OUTREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
         } allinoutrec ')' {
         current_outrec=0;
         nRecCase=0;
@@ -2415,28 +2423,28 @@ outrecclause:
         strcpy(szMexToken, " outrec clause FINDREP ");
         current_outrec=1;
         nRecCase=OUTREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec  {
         current_outrec=0;
         nRecCase=0;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 }
     | OUTREC FINDREP '=' '(' {
         strcpy(szMexToken, " outrec clause FINDREP ");
         current_outrec=1;
         nRecCase=OUTREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec ')' findrep_options_all {     /* 202509 */
         current_outrec=0;
         nRecCase=0;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 }
    /* */
     | OUTREC FINDREP  {
         strcpy(szMexToken, " outrec clause FINDREP ");
         current_outrec=1;
         nRecCase=OUTREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec  {
         current_outrec=0;
         nRecCase=0;
@@ -2451,7 +2459,7 @@ outrecclause:
         current_outrec=1;
         nRecCase=OUTREC_CASE;
         strcpy(szMexToken, " outrec clause ");
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec ')' {
         current_outrec=0;
         nRecCase=0;
@@ -2460,7 +2468,7 @@ outrecclause:
   | OUTREC '(' {
         current_outrec=1;
         nRecCase=OUTREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
         strcpy(szMexToken, " outrec clause ");
 } allinoutrec ')' {
         current_outrec=0;
@@ -2475,7 +2483,7 @@ inrecclause:
         strcpy(szMexToken, " inrec clause ");
         current_inrec=1;
         nRecCase=INREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec ')' {
         current_inrec=0;
         nRecCase=0;
@@ -2485,7 +2493,7 @@ inrecclause:
         strcpy(szMexToken, " inrec clause ");
         current_inrec=1;
         nRecCase=INREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
         } allinoutrec ')' {
         current_inrec=0;
         nRecCase=0;
@@ -2495,7 +2503,7 @@ inrecclause:
         strcpy(szMexToken, " inrec clause ");
         current_inrec=1;
         nRecCase=INREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec ')' {
         current_inrec=0;
         nRecCase=0;
@@ -2505,17 +2513,17 @@ inrecclause:
         strcpy(szMexToken, " inrec clause ");
         current_inrec=1;
         nRecCase=INREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec ')' {
-			current_inrec=0;
-			nRecCase=0;
+            current_inrec=0;
+            nRecCase=0;
 }
     /* s.m. 20201206 */
     | INREC OVERLAY '=' '(' {
         strcpy(szMexToken, " inrec clause Overlay");
         current_inrec=1;
         nRecCase=INREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec ')' {
         current_inrec=0;
         nRecCase=0;
@@ -2527,7 +2535,7 @@ inrecclause:
         strcpy(szMexToken, " inrec clause Overlay");
         current_inrec=1;
         nRecCase=INREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
         } allinoutrec ')' {
         current_inrec=0;
         nRecCase=0;
@@ -2538,28 +2546,28 @@ inrecclause:
         strcpy(szMexToken, " inrec clause FINDREP ");
         current_inrec=1;
         nRecCase=INREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec  {
         current_inrec=0;
         nRecCase=0;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 }
     | INREC FINDREP '=' '(' {
         strcpy(szMexToken, " inrec clause FINDREP ");
         current_inrec=1;
         nRecCase=INREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec ')'  findrep_options_all {     /* 202509 */
         current_inrec=0;
         nRecCase=0;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 }
    /* */
     | INREC FINDREP  {
         strcpy(szMexToken, " inrec clause FINDREP ");
         current_inrec=1;
         nRecCase=INREC_CASE;
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec  {
         current_inrec=0;
         nRecCase=0;
@@ -2573,50 +2581,50 @@ buildclause:
         strcpy(szMexToken, " build clause ");
         /* current_inrec=1;         */
         /* nRecCase=INREC_CASE;     */
-		nPosAbsRec = 0;
+        nPosAbsRec = 0;
 } allinoutrec ')' {
-		/*  current_inrec=0;    */
-		nRecCase=0;
+        /*  current_inrec=0;    */
+        nRecCase=0;
 }
 
 /* OUTFIL   */
 allsumfield: sumfield {}
-		| sumfield ',' allsumfield {}
+        | sumfield ',' allsumfield {}
 ;
 sumfield: 
       DIGIT ',' DIGIT   {
         struct SumField_t *SumField=SumField_constructor($1, $3, 0);
         if (SumField == NULL) {
             utl_abend_terminate(MEMORYALLOC, 135, ABEND_SKIP);
-			YYABORT;
-		}
-        nTypeFormat=3;			/* for SumFields Format=    */
+            YYABORT;
+        }
+        nTypeFormat=3;            /* for SumFields Format=    */
         SumField_addDefinition(SumField); 
         strcpy(szMexToken, " sum fields clause ");
 }
     | DIGIT ',' DIGIT ',' DIGIT ',' DIGIT    {
-			struct SumField_t *SumField1=SumField_constructor($1, $3, 0);
-			struct SumField_t *SumField2=SumField_constructor($5, $7, 0);
-			if (SumField1 == NULL) {
+            struct SumField_t *SumField1=SumField_constructor($1, $3, 0);
+            struct SumField_t *SumField2=SumField_constructor($5, $7, 0);
+            if (SumField1 == NULL) {
                 utl_abend_terminate(MEMORYALLOC, 136, ABEND_SKIP);
-				YYABORT;
-			}
-			if (SumField2 == NULL) {
+                YYABORT;
+            }
+            if (SumField2 == NULL) {
                 utl_abend_terminate(MEMORYALLOC, 140, ABEND_SKIP);
-				YYABORT;
-			}
-			nTypeFormat=3;			/* for SumFields Format=    */
- 			SumField_addDefinition(SumField1); 
-			nTypeFormat=3;			/* for SumFields Format=    */
- 			SumField_addDefinition(SumField2); 
-		strcpy(szMexToken, " sum fields clause ");
+                YYABORT;
+            }
+            nTypeFormat=3;            /* for SumFields Format=    */
+             SumField_addDefinition(SumField1); 
+            nTypeFormat=3;            /* for SumFields Format=    */
+             SumField_addDefinition(SumField2); 
+        strcpy(szMexToken, " sum fields clause ");
 }
     | DIGIT ',' DIGIT ',' fieldtype  {
         struct SumField_t *SumField=SumField_constructor($1, $3, $5);
         if (SumField == NULL) {
             utl_abend_terminate(MEMORYALLOC, 137, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
         SumField_addDefinition(SumField); 
         strcpy(szMexToken, " sum fields clause ");
 }    
@@ -2624,17 +2632,17 @@ sumfield:
 
 sumclause: 
       SUM FIELDS NONE {
-		SumField_setFunction(1);
+        SumField_setFunction(1);
         strcpy(szMexToken, " sum fields clause ");
 }
     | SUM FIELDS NONE XSUM {
-		SumField_setFunction(1);
+        SumField_setFunction(1);
         strcpy(szMexToken, " sum fields clause ");
         SumField_enableXSUM(); 
         current_file=NULL;
 }
     | SUM FIELDS NONE XSUM  FNAMES '=' STRING {
-		SumField_setFunction(1);
+        SumField_setFunction(1);
         strcpy(szMexToken, " sum fields clause ");
         SumField_enableXSUM(); 
         SumField_enableXSUM(); 
@@ -2642,8 +2650,8 @@ sumclause:
         strcpy(szMexToken, " xsum clause ");
         if (file == NULL) {
             utl_abend_terminate(MEMORYALLOC, 101, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
         file_setXSUMFile(file);
         current_file=file;
         nTypeFile=0;
@@ -2668,8 +2676,8 @@ sumclause:
         strcpy(szMexToken, " xsum clause ");
         if (file == NULL) {
             utl_abend_terminate(MEMORYALLOC, 101, ABEND_SKIP);
-			YYABORT;
-		}
+            YYABORT;
+        }
         file_setXSUMFile(file);
         current_file=file;
         nTypeFile=0;
@@ -2681,48 +2689,48 @@ sumclause:
 /* ============================================== */
 tokskipclause: 
        TOKSKIP {
-		/*  printf("GCSORT: Warning Token skipped : %s\n",yylval.string);   */
+        /*  printf("GCSORT: Warning Token skipped : %s\n",yylval.string);   */
 }
 ;
 
 filesgroup:
          STRING {
         struct file_t *file;
-		file=file_constructor($1);
+        file=file_constructor($1);
         if (file == NULL) {
             utl_abend_terminate(MEMORYALLOC, 138, ABEND_SKIP);
-			YYABORT;
-		}
-		nCountGroupFiles++;
-		if (nCountGroupFiles == 1)
-			outfil_setOutfilFiles(current_outfil, file);
-		else
+            YYABORT;
+        }
+        nCountGroupFiles++;
+        if (nCountGroupFiles == 1)
+            outfil_setOutfilFiles(current_outfil, file);
+        else
             file_addQueue(&current_outfil->outfil_File, file);
         file_SetInfoForFile(file, COB_OPEN_OUTPUT); 
         /* verify current_outfil or file */
         outfil_SetVirtualFile(current_outfil, 0);       /* OUTFIL has file name */
         free($1);
         strcpy(szMexToken, " files clause ");
-}	
+}    
     /* ################################################## */
     /*  OUTFIL FNAMES=(FILE1,FILE2,FILE3,FILE4)           */
     /* ################################################## */
       | filesgroup ',' filesgroup {
-		strcpy(szMexToken, " group files outfil ");
+        strcpy(szMexToken, " group files outfil ");
 }
 ;
 
 fnamesclause: 
-	   FNAMES '=' '(' filesgroup ')' {
+       FNAMES '=' '(' filesgroup ')' {
 }
-	 | FNAMES '=' filesgroup  {
+     | FNAMES '=' filesgroup  {
 }
-	|  SPLIT {
-	   utils_SetOptionSort("SPLIT", current_outfil, 0);
+    |  SPLIT {
+       utils_SetOptionSort("SPLIT", current_outfil, 0);
        strcpy(szMexToken, " option SPLIT clause ");
 }
-	|  SPLITBY DIGIT {
-	   utils_SetOptionSort("SPLITBY", current_outfil, $2);
+    |  SPLITBY DIGIT {
+       utils_SetOptionSort("SPLITBY", current_outfil, $2);
        strcpy(szMexToken, " option SPLITBY clause ");
 }
 ;
@@ -2730,11 +2738,11 @@ outfilincludeclause:
       INCLUDE '=' allcondfield  {
         if (nRecCase == JOIN_CASE) {
             if (current_join != NULL)       /* Join */
-			    join_IncludeCondField(current_filejoin, current_join, $3);
+                join_IncludeCondField(current_filejoin, current_join, $3);
         }
-		if (current_outfil != NULL)
-			setOutfilIncludeCondField(current_outfil, $3);
-		nTypeIncludeOmit = 1;
+        if (current_outfil != NULL)
+            setOutfilIncludeCondField(current_outfil, $3);
+        nTypeIncludeOmit = 1;
         strcpy(szMexToken, " outfil include clause ");
 }
 ;
@@ -2744,58 +2752,58 @@ outfilomitclause:
             if (current_join != NULL)       /* Join */
                 join_OmitCondField(current_filejoin, current_join, $3);
         }
-		if (current_outfil != NULL)
-			setOutfilOmitCondField(current_outfil, $3);
-		nTypeIncludeOmit = 1;
+        if (current_outfil != NULL)
+            setOutfilOmitCondField(current_outfil, $3);
+        nTypeIncludeOmit = 1;
         strcpy(szMexToken, " outfil omit clause ");
 }
 ;
 outfilclause: 
       OUTFIL  {
-		struct outfil_t *outfil=outfil_constructor();
+        struct outfil_t *outfil=outfil_constructor();
         if (outfil == NULL) {
             utl_abend_terminate(MEMORYALLOC, 139, ABEND_SKIP);
-			YYABORT;
-		}
-		if (current_outfil == NULL)
-			outfil_addDefinition(outfil); 
-		else 
-			outfil_addDefinition(outfil); 
-		current_outfil=outfil; 
-		nstate_outfil=1;
+            YYABORT;
+        }
+        if (current_outfil == NULL)
+            outfil_addDefinition(outfil); 
+        else 
+            outfil_addDefinition(outfil); 
+        current_outfil=outfil; 
+        nstate_outfil=1;
         strcpy(szMexToken, " outfil clause ");
 }
 ;
 startrecclause: 
       STARTREC '=' SIGNDIGITBIG {
-		if (current_outfil != NULL)
-			outfil_SetStartRec(current_outfil, $3);
-		strcpy(szMexToken, " start rec clause ");
+        if (current_outfil != NULL)
+            outfil_SetStartRec(current_outfil, $3);
+        strcpy(szMexToken, " start rec clause ");
 }
     | STARTREC '=' DIGIT {
-		if (current_outfil != NULL)
-			outfil_SetStartRec(current_outfil, $3);
-		strcpy(szMexToken, " start rec clause ");
+        if (current_outfil != NULL)
+            outfil_SetStartRec(current_outfil, $3);
+        strcpy(szMexToken, " start rec clause ");
 }
 ;
 
 endrecclause: 
       ENDREC '=' SIGNDIGITBIG {
-		if (current_outfil != NULL)
-			outfil_SetEndRec(current_outfil, $3);
-		strcpy(szMexToken, " end rec clause ");
+        if (current_outfil != NULL)
+            outfil_SetEndRec(current_outfil, $3);
+        strcpy(szMexToken, " end rec clause ");
 }
     | ENDREC '=' DIGIT {
-		if (current_outfil != NULL)
-			outfil_SetEndRec(current_outfil, $3);
-		strcpy(szMexToken, " end rec clause ");
+        if (current_outfil != NULL)
+            outfil_SetEndRec(current_outfil, $3);
+        strcpy(szMexToken, " end rec clause ");
 }
 ;
 
 saveclause: SAVE {
-		if (current_outfil != NULL)
-			outfil_SetSave(current_outfil);
-		strcpy(szMexToken, " save clause ");
+        if (current_outfil != NULL)
+            outfil_SetSave(current_outfil);
+        strcpy(szMexToken, " save clause ");
 }
 ;
 
@@ -2808,76 +2816,92 @@ alloption:
 option: 
       COPY {
         utils_SetOptionSort("COPY", NULL, 0);
-		strcpy(szMexToken, " option copy clause ");
+        strcpy(szMexToken, " option copy clause ");
 }
     | SKIPREC '=' SIGNDIGITBIG {
         utils_SetOptionSortNum("SKIPREC", $3);
-		strcpy(szMexToken, " option skip rec clause ");
+        strcpy(szMexToken, " option skip rec clause ");
 }
     | SKIPREC '=' DIGIT {
         utils_SetOptionSortNum("SKIPREC", $3);
-		strcpy(szMexToken, " option skip rec clause ");
+        strcpy(szMexToken, " option skip rec clause ");
 }
     | STOPAFT '=' SIGNDIGITBIG {
         utils_SetOptionSortNum("STOPAFT", $3);
-		strcpy(szMexToken, " option stop after clause ");
+        strcpy(szMexToken, " option stop after clause ");
 }
     | STOPAFT '=' DIGIT {
         utils_SetOptionSortNum("STOPAFT", $3);
-		strcpy(szMexToken, " option stop after clause ");
+        strcpy(szMexToken, " option stop after clause ");
 }
     | VLSCMP {
         utils_SetOptionSort("VLSCMP", NULL, 0);
-		strcpy(szMexToken, " option VLSCMP clause ");
+        strcpy(szMexToken, " option VLSCMP clause ");
 }
     | VLSHRT {
         utils_SetOptionSort("VLSHRT", NULL, 0);
-		strcpy(szMexToken, " option VLSCMP clause ");
+        strcpy(szMexToken, " option VLSCMP clause ");
 }
     | Y2PAST '=' DIGIT {
         utils_SetOptionY2Past("Y2PAST", $3);
-		strcpy(szMexToken, " option y2past clause ");
+        strcpy(szMexToken, " option y2past clause ");
 }
     | ',' EXROUT '=' '(' STRING ')' 
     {
         utils_SetOptionExRoutine("MODS", $2, $5);
-		strcpy(szMexToken, " option MODS E15 clause 1");
+        strcpy(szMexToken, " option MODS E15 clause 1");
         free($2);
         free($5);
 }
     | MODS EXROUT '=' '(' STRING ')'
     {
         utils_SetOptionExRoutine("MODS", $2, $5);
-		strcpy(szMexToken, " option MODS E15 clause 1");
+        strcpy(szMexToken, " option MODS E15 clause 1");
         free($2);
         free($5);
 }
     | MODS EXROUT '=' '(' STRING ',' DIGITBIG ')' {
         utils_SetOptionExRoutine("MODS", $2, $5);
-		strcpy(szMexToken, " option MODS E15 clause 2");
+        strcpy(szMexToken, " option MODS E15 clause 2");
         free($2);
         free($5);
 }
     | MODS EXROUT '=' '(' STRING ',' DIGITBIG ',' STRING ')' {
         utils_SetOptionExRoutine("MODS", $2, $5);
-		strcpy(szMexToken, " option MODS E15 clause 3");
+        strcpy(szMexToken, " option MODS E15 clause 3");
         free($2);
         free($5);
         free($9);
 }
     | MODS EXROUT '=' '(' STRING ',' DIGIT ')' {
         utils_SetOptionExRoutine("MODS", $2, $5);
-		strcpy(szMexToken, " option MODS E15 clause 2");
+        strcpy(szMexToken, " option MODS E15 clause 2");
         free($2);
         free($5);
 }
     | MODS EXROUT '=' '(' STRING ',' DIGIT ',' STRING ')' {
         utils_SetOptionExRoutine("MODS", $2, $5);
-		strcpy(szMexToken, " option MODS E15 clause 3");
+        strcpy(szMexToken, " option MODS E15 clause 3");
         free($2);
         free($5);
         free($9);
 }
+    /* REMOVECC, CONVERT, EQUALS, NOEQUALS, NODETAIL skipped */
+    | REMOVECC {
+        printf("GCSORT - Warning - Token skipped : REMOVECC in OPTION\n");
+    } 
+    /* | CONVERT {                                                              */
+    /*     printf("GCSORT - Warning - Token skipped : CONVERT in OPTION\n");    */
+    /* }                                                                        */
+    | EQUALS {
+        printf("GCSORT - Warning - Token skipped : EQUALS in OPTION\n");
+    } 
+    | NOEQUALS {
+        printf("GCSORT - Warning - Token skipped : NOEQUALS in OPTION\n");
+    } 
+    | NODETAIL {
+        printf("GCSORT - Warning - Token skipped : NODETAIL in OPTION\n");
+    } 
 ;
 optionclause: 
        OPTION {
@@ -2894,87 +2918,87 @@ allrecordoption:
 recordoption: 
       RECTYPEFIX {
 /*        utils_SetOptionSort("COPY", NULL, 0); */
-		strcpy(szMexToken, " record option clause ");
+        strcpy(szMexToken, " record option clause ");
         free($1);
 }
     /* TYPE = F, LENGTH=(<num> */
     | RECTYPEFIX  LENGTH  '(' DIGIT ')' {
         utils_SetRecordOptionSortType($1);
         utils_SetRecordOptionSortLen($4, -1, -1, -1, -1, -1, -1);
-		strcpy(szMexToken, "  record option clause ");
+        strcpy(szMexToken, "  record option clause ");
         free($1);
 }
     | RECTYPEFIX  LENGTH  '(' DIGIT ',' DIGIT ')' {
         utils_SetRecordOptionSortType($1);
         utils_SetRecordOptionSortLen($4, $6, -1, -1, -1, -1, -1);
-		strcpy(szMexToken, "  record option clause ");
+        strcpy(szMexToken, "  record option clause ");
         free($1);
 }
     | RECTYPEFIX  LENGTH  '(' ',' DIGIT ')' {
         utils_SetRecordOptionSortType($1);
         utils_SetRecordOptionSortLen(-1, $5, -1, -1, -1, -1, -1);
-		strcpy(szMexToken, "  record option clause ");
+        strcpy(szMexToken, "  record option clause ");
         free($1);
 }
     | RECTYPEFIX  LENGTH  '(' DIGIT ',' DIGIT ',' DIGIT ')' {
         utils_SetRecordOptionSortType($1);
         utils_SetRecordOptionSortLen($4, $6, $8, -1, -1, -1, -1);
-		strcpy(szMexToken, "  record option clause ");
+        strcpy(szMexToken, "  record option clause ");
         free($1);
 }
     | RECTYPEFIX  LENGTH  '('  ','  ',' DIGIT ')' {
         utils_SetRecordOptionSortType($1);
         utils_SetRecordOptionSortLen(-1, -1, $6, -1, -1, -1, -1);
-		strcpy(szMexToken, "  record option clause ");
+        strcpy(szMexToken, "  record option clause ");
         free($1);
 }
     | RECTYPEFIX  LENGTH  '(' DIGIT ','  ',' DIGIT ')' {
         utils_SetRecordOptionSortType($1);
         utils_SetRecordOptionSortLen($4, -1, $7, -1, -1, -1, -1);
-		strcpy(szMexToken, "  record option clause ");
+        strcpy(szMexToken, "  record option clause ");
         free($1);
 }
     /* TYPE = V, LENGTH=(<num> */
      | RECTYPEVAR {
 /*        utils_SetOptionSort("COPY", NULL, 0); */
-		strcpy(szMexToken, " record option clause ");
+        strcpy(szMexToken, " record option clause ");
         free($1);
 }
     /* TYPE = F, LENGTH=(<num> */
     | RECTYPEVAR  LENGTH '(' DIGIT ')' {
         utils_SetRecordOptionSortType($1);
         utils_SetRecordOptionSortLen($4, -1, -1, -1, -1, -1, -1);
-		strcpy(szMexToken, "  record option clause ");
+        strcpy(szMexToken, "  record option clause ");
         free($1);
 }
     | RECTYPEVAR  LENGTH  '(' DIGIT ',' DIGIT ')' {
         utils_SetRecordOptionSortType($1);
         utils_SetRecordOptionSortLen($4, $6, -1, -1, -1, -1, -1);
-		strcpy(szMexToken, "  record option clause ");
+        strcpy(szMexToken, "  record option clause ");
         free($1);
 }
     | RECTYPEVAR  LENGTH '(' ',' DIGIT ')' {
         utils_SetRecordOptionSortType($1);
         utils_SetRecordOptionSortLen(-1, $5, -1, -1, -1, -1, -1);
-		strcpy(szMexToken, "  record option clause ");
+        strcpy(szMexToken, "  record option clause ");
         free($1);
 }
     | RECTYPEVAR  LENGTH  '(' DIGIT ',' DIGIT ',' DIGIT ')' {
         utils_SetRecordOptionSortType($1);
         utils_SetRecordOptionSortLen($4, $6, $8, -1, -1, -1, -1);
-		strcpy(szMexToken, "  record option clause ");
+        strcpy(szMexToken, "  record option clause ");
         free($1);
 }
     | RECTYPEVAR  LENGTH  '('  ','  ',' DIGIT ')' {
         utils_SetRecordOptionSortType($1);
         utils_SetRecordOptionSortLen(-1, -1, $6, -1, -1, -1, -1);
-		strcpy(szMexToken, "  record option clause ");
+        strcpy(szMexToken, "  record option clause ");
         free($1);
 }
     | RECTYPEVAR LENGTH '(' DIGIT ','  ',' DIGIT ')' {
         utils_SetRecordOptionSortType($1);
         utils_SetRecordOptionSortLen($4, -1, $7, -1, -1, -1, -1);
-		strcpy(szMexToken, "  record option clause ");
+        strcpy(szMexToken, "  record option clause ");
         free($1);
 }
 

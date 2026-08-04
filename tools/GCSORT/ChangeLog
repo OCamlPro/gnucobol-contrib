@@ -1,8 +1,13 @@
+2026-08-04  Sauro Menna  <saumen2004@libero.it> 
+    * Version 01.04.12b
+	* Replace the tab character (\t, 0x09) in all printouts related to GCSort reports. 
+	* Fixed an issue with OPTION that caused problems with NOEQUAL and EQUAL.
+
 2026-08-02  Sauro Menna  <saumen2004@libero.it> 
     * Version 01.04.12
     * update help informations (documented LSF file type)
     * revision of statistical information. Added value 5 to print only the totals of the processed records. 
-	* Update GCSort manual 
+    * Update GCSort manual 
 
 2026-02-07  Sauro Menna  <saumen2004@libero.it> 
     * Version 01.04.11
@@ -89,12 +94,12 @@
 
 2024-12-10  Sauro Menna  <saumen2004@libero.it>
     * Version 1.04.03
-	* Reactivated use of multithread in mingw
+    * Reactivated use of multithread in mingw
     * Fixed problem in SUM FIELDS=NONE
 
 2024-12-01  Sauro Menna  <saumen2004@libero.it>
     * Version 1.04.02
-	* Fixed Thread behaviour - Insert delay in Thread creation
+    * Fixed Thread behaviour - Insert delay in Thread creation
     * New COBOL multithreaded test program gctestrun9 (runs the same test sequence as the single process, but each sequence runs n times with a different number of threads [2-4-8-16])
     * Modified file gctestsetup.cfg to compile gctestrun9
     * Modified config file gctestcmd to generate test for File Variable
@@ -109,16 +114,16 @@
     * Version 1.04.01
     * Check command line to enable multithread only on SORT Control Statement
     * Fixed LSF file type (Line Sequential Fixed), enabled COB_LS_FIXED environment variable GNUCobol - NO Truncate trailing spaces
-	* Fixed the problem in TMP files when the number of files is greater than 16
-	* (many thanks to Sergey Kashyrin)
-	* 	- nFileMaxSize from int to int64_t
-	*   - return value utl_GetFileSizeEnvName   from int to int64_t
-	*   - from int to long : long nNumRecords ,       long nNumRecordForBlock
-	*   - from struct start to struct _stat64 (_struct_stat64)
-	*   - from function stat to stat_file (windows _stat64, linux stat)
-	*   - Update for variable file - job->LenCurrRek = nLenRek;
-	*   - Modify struct hSrtMem_t - move unsigned char* pAddress;  before unsigned int   nLenRek;	
-	*  Update source gctestrun4.cbl
+    * Fixed the problem in TMP files when the number of files is greater than 16
+    * (many thanks to Sergey Kashyrin)
+    *     - nFileMaxSize from int to int64_t
+    *   - return value utl_GetFileSizeEnvName   from int to int64_t
+    *   - from int to long : long nNumRecords ,       long nNumRecordForBlock
+    *   - from struct start to struct _stat64 (_struct_stat64)
+    *   - from function stat to stat_file (windows _stat64, linux stat)
+    *   - Update for variable file - job->LenCurrRek = nLenRek;
+    *   - Modify struct hSrtMem_t - move unsigned char* pAddress;  before unsigned int   nLenRek;    
+    *  Update source gctestrun4.cbl
 
 2024-06-22  Sauro Menna  <saumen2004@libero.it>
     * Version 1.04.00 - Multithread version
@@ -303,13 +308,13 @@
     * Changed Makefile to compile source and not generate parser/scanner
 
 2020-12-28  Sauro Menna  <saumen2004@libero.it>
-	* New option INREC OVERLAY 
+    * New option INREC OVERLAY 
     * Fix problem in gcc compiler environment
     * Review of the configuration of the parser source
       New folder parser. Modified Makefile.
 
 2020-10-15  Sauro Menna  <saumen2004@libero.it>
-	* gcsort.c - new option for sign EBCDIC (-fsign=EBCDIC)
+    * gcsort.c - new option for sign EBCDIC (-fsign=EBCDIC)
     * gcsort.h - 
     * gcsorthelp.c - Review Help for new option
     * job.c - new option for sign EBCDIC (-fsign=EBCDIC)
@@ -318,7 +323,7 @@
     * doc\GCSORT1_0_V01.odt - review for new option
 
 2020-02-05  Sergey Kashyrin <ska@kiska.net>
-	* job.c - fixing small SIGSEGV bug in sort_temp_name for Linux
+    * job.c - fixing small SIGSEGV bug in sort_temp_name for Linux
 
 2019-03-05  Sauro Menna  <saumen2004@libero.it>
     * job.c - job_set_area (Error in function name)
@@ -345,12 +350,12 @@
 
 2016-12-13  Simon 'sf-mensch/human' Sobisch <simonsobisch@gnu.org>
 
-	* general: changed package name to GCSORT and renamed
-	  all files from ocsort -> gcsort in behalf of Sauro Menna
+    * general: changed package name to GCSORT and renamed
+      all files from ocsort -> gcsort in behalf of Sauro Menna
 
 2016-11-12  Sauro Menna  <saumen2004@libero.it>
 
-	* Update Version 1.0.0 - by Sauro Menna 
+    * Update Version 1.0.0 - by Sauro Menna 
     * New Conditional field  SS = SubString for INCLUDE/OMIT statement
        INCLUDE COND=(1,55,SS,EQ,C'SearchString') 
             - Search 'SearchString' in record area from pos 1 for len 55.
@@ -361,7 +366,7 @@
     
 2016-10-23  Sauro Menna  <saumen2004@libero.it>
 
-	* Update Version 1.0.0 - by Sauro Menna 
+    * Update Version 1.0.0 - by Sauro Menna 
     * Used fields COB_FIELD for data type and integration with LIBCOB:
         fields         = cob_field/cob_attribute
         i/o operations = cob_open, cob_read, cob_write, cob_close, 
@@ -393,20 +398,20 @@
 
 2016-03-26  Sauro Menna  <saumen2004@libero.it>
 
-	* Update Version 1.0.0 - by Sauro Menna 
+    * Update Version 1.0.0 - by Sauro Menna 
     * FIX : printf rows file TAKE (last characters)
 
 2016-02-28  Sauro Menna  <saumen2004@libero.it>
 
-	* Update Version 1.0.0 - by Sauro Menna 
+    * Update Version 1.0.0 - by Sauro Menna 
     * Enabled case insensitive for all commands and statements
     * Insert build_windows for vc10 and vc 14
     * FIX : warnings for vc14
 
 2016-02-11  Sauro Menna  <saumen2004@libero.it>
 
-	* Released OCSORT User's Guide  (in doc folder)
-	* Update Version 1.0.0 - by Sauro Menna 
+    * Released OCSORT User's Guide  (in doc folder)
+    * Update Version 1.0.0 - by Sauro Menna 
     * Enabled project in Linux Environment 
     * Disable MF file handler
     * FIX : INLINE macro [Problem in Ubuntu environment]
@@ -415,7 +420,7 @@
 
 2015-12-01  Sauro Menna  <saumen2004@libero.it>
 
-	* Version 1.0.0 released.
+    * Version 1.0.0 released.
     New features:
     1) Dynamic Memory Allocation for operations
     2) Temporary files for sorting Big File > 2GByte

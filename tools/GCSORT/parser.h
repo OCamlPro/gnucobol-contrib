@@ -107,28 +107,33 @@ extern int yydebug;
      MAXLEN = 316,
      OVERRUN = 317,
      SHIFT = 318,
-     DIGIT = 319,
-     DIGITBIG = 320,
-     CHARTCOND = 321,
-     CHARTYPE = 322,
-     FILETYPE = 323,
-     FORMATTYPE = 324,
-     JOINFILE = 325,
-     KEY = 326,
-     KEYTYPE = 327,
-     OCCURFILL = 328,
-     OPCOND = 329,
-     SUBSTRING = 330,
-     ORDER = 331,
-     RECTYPEFIX = 332,
-     RECTYPEVAR = 333,
-     STRING = 334,
-     TOKSKIP = 335,
-     EXROUT = 336,
-     YESNO = 337,
-     ERRTRUNC = 338,
-     COLLATING = 339,
-     SIGNDIGITBIG = 340
+     REMOVECC = 319,
+     CONVERT = 320,
+     EQUALS = 321,
+     NOEQUALS = 322,
+     NODETAIL = 323,
+     DIGIT = 324,
+     DIGITBIG = 325,
+     CHARTCOND = 326,
+     CHARTYPE = 327,
+     FILETYPE = 328,
+     FORMATTYPE = 329,
+     JOINFILE = 330,
+     KEY = 331,
+     KEYTYPE = 332,
+     OCCURFILL = 333,
+     OPCOND = 334,
+     SUBSTRING = 335,
+     ORDER = 336,
+     RECTYPEFIX = 337,
+     RECTYPEVAR = 338,
+     STRING = 339,
+     TOKSKIP = 340,
+     EXROUT = 341,
+     YESNO = 342,
+     ERRTRUNC = 343,
+     COLLATING = 344,
+     SIGNDIGITBIG = 345
    };
 #endif
 
@@ -139,21 +144,21 @@ typedef union YYSTYPE
 /* Line 2058 of yacc.c  */
 #line 24 "..\\..\\parser.y"
  
-	int         number;
-	long        lnumber;
-	long long   llnumber;
-	char        *string;
-	char        character;
-	struct condField_t      *condField;
-	struct fieldValue_t     *fieldValue;
-	struct SumField_t       *SumField;
+    int         number;
+    long        lnumber;
+    long long   llnumber;
+    char        *string;
+    char        character;
+    struct condField_t      *condField;
+    struct fieldValue_t     *fieldValue;
+    struct SumField_t       *SumField;
     struct changefield_t    *changefield;
     struct findrep_t        *findrep;
     struct findrepfield_t   *findrep_field;
 
 
 /* Line 2058 of yacc.c  */
-#line 157 "..\\..\\parser.h"
+#line 162 "..\\..\\parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
