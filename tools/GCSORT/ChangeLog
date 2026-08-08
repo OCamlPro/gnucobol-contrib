@@ -1,4 +1,8 @@
 2026-08-04  Sauro Menna  <saumen2004@libero.it> 
+    * Version 01.04.12c
+	* Modified how the TAKE file is read to allow the use of files that contain NULL characters (0x00).
+
+2026-08-04  Sauro Menna  <saumen2004@libero.it> 
     * Version 01.04.12b
 	* Replace the tab character (\t, 0x09) in all printouts related to GCSort reports. 
 	* Fixed an issue with OPTION that caused problems with NOEQUAL and EQUAL.

@@ -1819,14 +1819,14 @@ int job_MakeCmdLine(char* szF, char* buf)
         fprintf(stdout, "GCSORT\nFile TAKE : %s\n", szF);
         fprintf(stdout, "========================================================\n");
     }
-    if ((pFile = fopen(szF, "rt")) == NULL) {
+    if ((pFile = fopen(szF, "rb")) == NULL) {
         fprintf(stderr, "\n*GCSORT* ERROR Unable to open file %s", (char*)szF);
         exit(GC_RTC_ERROR);
     }
     numread = 1;
     maxLen = -1;
     nComm = 0;
-    memset(buf, 0x00, sizeof(4096));
+    memset(buf, 0x00, sizeof(buf));
     do {
         c = fgetc(pFile);
         if (feof(pFile))
@@ -1850,7 +1850,12 @@ int job_MakeCmdLine(char* szF, char* buf)
             continue;
         }
         if (nComm == 0) {
-            buf[maxLen + 1] = (char)c;
+            if (c == 0x00) {
+                buf[maxLen + 1] = ' '; 
+            }
+            else {
+                buf[maxLen + 1] = (char)c;
+            }
             maxLen += 1;
             nNewLine = 0;
             if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0))
