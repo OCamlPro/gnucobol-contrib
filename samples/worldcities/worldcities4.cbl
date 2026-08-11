@@ -59,7 +59,7 @@ file-control.
         assign to report-file-name
         file status is report-file-status.
 
-     select sort-file.
+     select sort-file assign to sortwork.
 
 data division.
 file section.
@@ -70,7 +70,7 @@ fd  country-file.
 01  country-record pic x(1000).
 
 fd  city-file.
-01  city-record pic x(1000).
+copy city-record.
 
 sd  sort-file.
 01  sort-record.

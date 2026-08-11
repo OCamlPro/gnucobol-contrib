@@ -103,7 +103,7 @@
        01  country-record pic x(1000).
 
        fd  city-file.
-       01  city-record pic x(1000).
+       01 city-record pic(1000).
 
        sd  sort-file.
        01  sort-record.
