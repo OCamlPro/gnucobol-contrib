@@ -67,6 +67,7 @@
 #include "exitroutines.h"
 #include "join.h"
 #include "gcthread.h"
+#include "symnames.h"
 
 
 #define MAIN_FILE
@@ -178,6 +179,7 @@ struct job_t* job_constructor(void) {
     job->recordNumberTotal = 0;
     job->recordWriteSortTotal = 0;
     job->recordWriteOutTotal = 0;
+    job->recordOmitIncludeTotal = 0;
     job->recordDiscardXSUMTotal = 0;
     job->recordNumber = 0;
     job->recordNumberAllocated = 0;
@@ -593,6 +595,9 @@ int job_load(struct job_t* job, int argc, char** argv) {
     char  bufnew[COB_MEDIUM_BUFF];
     char  szTakeFile[FILENAME_MAX];
     char* buffer = NULL;
+    char* buffersymb = NULL;
+    char* buffTake = NULL;
+    char* buffprt = NULL;
     int   argvLength;
     int   bufferLength = 0;
     int   i;
@@ -608,6 +613,12 @@ int job_load(struct job_t* job, int argc, char** argv) {
     if (buffer == 0)
         fprintf(stdout, "*GCSORT*S001*ERROR: Cannot Allocate buffer : %s\n", strerror(errno));
     memset(buffer, 0x00, COB_MEDIUM_BUFF);
+
+    buffprt = (char*)malloc(COB_MEDIUM_BUFF);    /* CommandLine  */
+    if (buffprt == 0)
+        fprintf(stdout, "*GCSORT*S001H*ERROR: Cannot Allocate buffprt : %s\n", strerror(errno));
+    memset(buffprt, 0x00, COB_MEDIUM_BUFF);
+
     /*  controllo del token TAKE Filename   */
     for (i = 1; i < argc; i++) {
         if (argv[i] != NULL) {
@@ -643,36 +654,119 @@ int job_load(struct job_t* job, int argc, char** argv) {
     if (nTakeCmd == 1) {    /* Take command present */
         buffer = (char*)realloc(buffer, 10240); /* allocate */
         memset(buffer, 0x00, 10240);
-        job_MakeCmdLine(szTakeFile, buffer);
+        returnCode = job_MakeCmdLine(szTakeFile, buffer);
+        strcpy(buffprt, buffer);
+        if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0))
+            fprintf(stdout, "%s\n", buffprt);
     }
 
-    job_SetCmdLine(job, buffer);
+    if (returnCode == 0) {
+        job_SetCmdLine(job, buffer);
 
-    if (0 == 1) /* version normal */
-    {
-        yy_scan_string(buffer);
-        returnCode = yyparse();
-    }
-    else
-    {  /* version with modify name  */
-        if (job_scanCmdLineFile(job, buffer, bufnew) != -1) {
-            job_scanCmdSpecialChar(bufnew);
+        /* returnCode = 0; */
 
-            if (globalJob->nMultiThread == 1) 
-                job_LockResource();
+        buffersymb = (char*)malloc(COB_MEDIUM_BUFF);    /* CommandLine  */
+        if (buffersymb == 0)
+            fprintf(stdout, "*GCSORT*S001C*ERROR: Cannot Allocate buffersymb : %s\n", strerror(errno));
+        memset(buffersymb, 0x00, COB_MEDIUM_BUFF);
 
-            yy_scan_string(bufnew);
-            returnCode = yyparse();
 
-            if (globalJob->nMultiThread == 1)
-                job_UnlockResource();
-
-            if (returnCode == 0)
-                returnCode = job_RedefinesFileName(job);
+        /* 202608    symbol in DD SYMNAMES */
+        if (nTakeCmd == 0) {    /* No TakeFile, check External file */
+            char* sname = getenv("SYMNAMES");
+            /* checks if value of env name is empty */
+            if (sname != NULL && sname[0] != '\0' && sname[0] != ' ') {
+                if (convert_symbols_cmdline(buffer, buffersymb, GC_EXTFILE, NULL) != 0) {
+                    fprintf(stdout, "*GCSORT*S001D*ERROR: Cannot convert SYMNAMES / buffersymb\n");
+                    returnCode = 16;
+                }
+                memset(buffer, 0x00, COB_MEDIUM_BUFF);
+                strcpy(buffer, buffersymb);
+            }
         }
         else
         {
-            fprintf(stderr, "\nMissing Command USE or GIVE\n");
+            /* TakeFile */
+            buffTake = (char*)malloc(COB_MEDIUM_BUFF);    /* CommandLine  */
+            if (buffTake == 0)
+                fprintf(stdout, "*GCSORT*S001*ERROR: Cannot Allocate buffTake : %s\n", strerror(errno));
+            if (convert_symbols_cmdline(buffer, buffTake, GC_TAKEFILE, buffersymb) != 0) {
+                fprintf(stdout, "*GCSORT*S001F*ERROR: Cannot convert SYMNAMES / buffersymb\n");
+                returnCode = 16;
+            }
+
+            /* check case Take file presents, but SYMBOL in external file */
+            if (strlen(buffersymb) == 0) {
+                char* sname = getenv("SYMNAMES");
+                /* checks if value of env name is empty */
+                if (sname != NULL && sname[0] != '\0' && sname[0] != ' ') {
+                    if (convert_symbols_cmdline(buffer, buffersymb, GC_EXTFILE, NULL) != 0) {
+                        fprintf(stdout, "*GCSORT*S001G*ERROR: Cannot convert SYMNAMES / buffersymb\n");
+                        returnCode = 16;
+                    }
+                    else
+                    {
+                        memset(buffer, 0x00, COB_MEDIUM_BUFF);
+                        strcpy(buffer, buffersymb);
+                    }
+                }
+            }
+            else
+            {
+                /* check if definition presents with SYMNAMES in external file and into take file */
+                char* sname = getenv("SYMNAMES");
+                if (sname != NULL && sname[0] != '\0' && sname[0] != ' ') {
+                    fprintf(stdout, "*GCSORT*S001I*ERROR: SYMNAMES definition presents in SYMNAMES environment variable and into take file\n");
+                    returnCode = 16;
+                }
+                else
+                {
+                    memset(buffer, 0x00, COB_MEDIUM_BUFF);
+                    strcpy(buffer, buffTake);
+                }
+            }
+            /* transform il flat row */
+            if (returnCode == 0)
+                trim_and_replace_newlines(buffer, strlen(buffer));
+        }
+    }
+    //if (nTakeCmd == 1) {    /* Take command present */
+    //    buffer = (char*)realloc(buffer, 10240); /* allocate */
+    //    memset(buffer, 0x00, 10240);
+    //job_MakeCmdLine(szTakeFile, buffer);
+    //}
+
+    //job_SetCmdLine(job, buffer);
+
+
+
+    if (returnCode == 0) {
+        if (0 == 1) /* version normal */
+        {
+            yy_scan_string(buffer);
+            returnCode = yyparse();
+        }
+        else
+        {  /* version with modify name  */
+            if (job_scanCmdLineFile(job, buffer, bufnew) != -1) {
+                job_scanCmdSpecialChar(bufnew);
+
+                if (globalJob->nMultiThread == 1)
+                    job_LockResource();
+
+                yy_scan_string(bufnew);
+                returnCode = yyparse();
+
+                if (globalJob->nMultiThread == 1)
+                    job_UnlockResource();
+
+                if (returnCode == 0)
+                    returnCode = job_RedefinesFileName(job);
+            }
+            else
+            {
+                fprintf(stderr, "\nMissing Command USE or GIVE\n");
+            }
         }
     }
     /* new    */
@@ -715,6 +809,9 @@ int job_load(struct job_t* job, int argc, char** argv) {
     }
 
     free(buffer);
+    free(buffersymb);
+    free(buffTake);
+    free(buffprt);
 
     return returnCode;
 }
@@ -1800,77 +1897,170 @@ char* job_GetLastCharPath(char* sz, int* pNum, int* nSkipped)
     return sz + k;
 }
 
-/* Verify file take */
 int job_MakeCmdLine(char* szF, char* buf)
 {
-    int numread, maxLen;
+    int maxLen;
     int c;
+    int prevc = -1;
     int nComm;
     int nNewLine;
     int nNumSQ = 0;
     int nNlastCR = 0;
-    FILE* pFile;
+    int nFirst = 0;
     maxLen = 0;
     nNewLine = 1;
 
+    cob_file* file_take = NULL;
+    cob_file_key* keys = NULL;
 
     if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0)) {
         fprintf(stdout, "========================================================\n");
         fprintf(stdout, "GCSORT\nFile TAKE : %s\n", szF);
         fprintf(stdout, "========================================================\n");
     }
-    if ((pFile = fopen(szF, "rb")) == NULL) {
-        fprintf(stderr, "\n*GCSORT* ERROR Unable to open file %s", (char*)szF);
-        exit(GC_RTC_ERROR);
+
+    cob_file_malloc(&file_take, &keys, 0, 0);
+    if (file_take == NULL) {
+        fprintf(stdout, "*GCSORT*S771A*ERROR: cob_file allocation failed.\n");
+        return -1;
     }
-    numread = 1;
+
+    /* Line Sequential */
+    file_take->organization = COB_ORG_LINE_SEQUENTIAL;
+    file_take->access_mode = 1;   /* Accesso sequenziale standard */
+    file_take->flag_optional = 0; /* Genera errore (Status 35) se il file non esiste fisicamente */
+    file_take->record_min = 1;
+    file_take->record_max = 1024; /* for Line sequential - MAX_LINE_LEN for Sequential */
+
+    // Nome logico del file (usato per i report interni di errore del runtime)
+    file_take->select_name = (const char*)"TAKEFILE";
+
+    // 4. Configurazione dei campi cob_field (File Name e File Status) secondo le specifiche libcob
+    static cob_field_attr name_attr = { COB_TYPE_ALPHANUMERIC, 0, 0, 0, NULL };
+    static cob_field name_field;
+    name_field.size = strlen(szF); 
+    name_field.data= strdup(szF);
+    name_field.attr = &name_attr;
+
+    file_take->assign = &name_field; // Assegnazione per la risoluzione automatica delle variabili d'ambiente
+
+    // Configurazione del File Status (2 byte) come array statico per stabilità di memoria
+    static unsigned char status_buffer[2] = { '0', '0' };
+    static cob_field_attr status_attr = { COB_TYPE_ALPHANUMERIC, 0, 0, 0, NULL };
+    static cob_field file_status_field;
+    file_status_field.size = 2;
+    file_status_field.data = status_buffer;
+    file_status_field.attr = &status_attr;
+
+    file_take->file_status = status_buffer;
+
+    // Memory allocation input record 
+    file_take->record = (cob_field*)malloc(sizeof(cob_field));
+    if (file_take->record == NULL) {
+        cob_file_free(&file_take, &keys);
+        return -1;
+    }
+    file_take->record->size = file_take->record_max;
+    file_take->record->attr = &status_attr; // Riutilizza l'attributo alfanumerico standard
+    file_take->record->data = (unsigned char*)malloc(file_take->record->size);
+    if (file_take->record->data == NULL) {
+        free(file_take->record);
+        cob_file_free(&file_take, &keys);
+        return -1;
+    }
+    memset(file_take->record->data, ' ', file_take->record->size);
+
+    /* Open file with cob_open */ 
+    cob_open(file_take, COB_OPEN_INPUT, 0, NULL);
+
+    if (status_buffer[0] != '0' || status_buffer[1] != '0') {
+        /* Try opening it in SQ format */
+        file_take->organization = COB_ORG_SEQUENTIAL;
+        file_take->record_max = MAX_LINE_LEN;
+        cob_open(file_take, COB_OPEN_INPUT, 0, NULL);
+        if (status_buffer[0] != '0' || status_buffer[1] != '0') {
+            fprintf(stderr, "*GCSORT*S771C*ERROR: Unable to open %s TAKE file (File Status: %c%c)\n",
+                szF, status_buffer[0], status_buffer[1]);
+            free(file_take->record->data);
+            free(file_take->record);
+            cob_file_free(&file_take, &keys);
+            free(name_field.data);
+            return -1;
+        }
+    }
+
     maxLen = -1;
     nComm = 0;
+
     memset(buf, 0x00, sizeof(buf));
-    do {
-        c = fgetc(pFile);
-        if (feof(pFile))
+
+    while (1) {
+        cob_read(file_take, NULL, NULL, 0);
+
+        /* check  EOF */
+        if (status_buffer[0] == '1' && status_buffer[1] == '0') {
             break;
-        if (c == '\'')
-            nNumSQ++;
-        if ((c == '*') && (nNumSQ % 2 == 0)) { /* check char * and num of char ' */
-            nComm = 1;
         }
-        if ((c == 0x0a) || (c == 0x0d)) {    /* skip for carriage return or line feed    */
-            buf[maxLen + 1] = ' ';
-            maxLen += 1;
-            nNewLine = 1;
-            nNumSQ = 0;
-            if ((nNlastCR == 0) && (nComm == 0) && (c == 0x0a))
-                if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0))
-                    printf("\n");
-            if (c == 0x0a)
-                nNlastCR = 1;
-            nComm = 0;
-            continue;
+
+        /* Check file status */
+        if (status_buffer[0] != '0' || status_buffer[1] != '0') {
+            fprintf(stderr, "*GCSORT*S771D*ERROR: Error reading SYMNAMES file (File Status: %c%c)\n",
+                status_buffer[0], status_buffer[1]);
+            break;
         }
-        if (nComm == 0) {
-            if (c == 0x00) {
-                buf[maxLen + 1] = ' '; 
+
+        size_t bytes_read = file_take->record->size;
+        while (bytes_read > 0 && file_take->record->data[bytes_read - 1] == ' ') {
+            bytes_read--;
+        }
+
+        if (bytes_read == 0) {
+            continue; /* Skip empty rows */
+        }
+
+        for (size_t src = 0; src < bytes_read; src++) {
+            c = file_take->record->data[src];
+            if (prevc == -1)
+                prevc = c;
+            if (c == '\'')
+                nNumSQ++;
+            if ((c == '*') && (nNumSQ % 2 == 0) && (prevc != ',')) { /* check char * and num of char ' */
+                break;
             }
-            else {
-                buf[maxLen + 1] = (char)c;
+            if (nComm == 0) {
+                if (c == 0x00)
+                    buf[maxLen + 1] = ' ';
+                else
+                    buf[maxLen + 1] = (char)c;
+
+                maxLen += 1;
+                nNewLine = 0;
+                nNlastCR = 0;
+                prevc = c;
             }
-            maxLen += 1;
-            nNewLine = 0;
-            if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0))
-                printf("%c", c);
-            nNlastCR = 0;
         }
-    } while (c != EOF);
+        /* Insert new line */
+        buf[maxLen + 1] = '\n';
+        maxLen += 1;
+        nComm = 0;
+        prevc = -1;
+    }
 
     buf[maxLen + 1] = 0x00;
+    /* Close file and release memory allocation  */
+    cob_close(file_take, NULL, 0, 0);
+    free(file_take->record->data);
+    free(file_take->record);
+    free(name_field.data);
 
-    fclose(pFile);
+    cob_file_free(&file_take, &keys);
+
+
     if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0))
         fprintf(stdout, "\n========================================================\n\n");
     return 0;
 }
+
 int job_GetTypeOp(struct job_t* job) {
     return job->job_typeOP;
 }
@@ -2139,6 +2329,7 @@ int job_check(struct job_t* job)
     }
     */
     nLen = 0;
+
     /* omit cond */
     /* to refine */
     /*
@@ -2262,6 +2453,9 @@ int job_print_final(struct job_t* job, time_t* timeStart)
     }
     fprintf(stdout, " Total Records Write Output........: " NUM_FMT_LLD "\n", (long long)job->recordWriteOutTotal);
 
+    if (job->recordOmitIncludeTotal > 0){
+        fprintf(stdout, " Total Records Omit/Include........: " NUM_FMT_LLD "\n", (long long)job->recordOmitIncludeTotal);
+    }
     if (job->nXSumFilePresent > 0) {
         fprintf(stdout, " Total Records Discard XSUM Output.: " NUM_FMT_LLD "\n", (long long)job->recordDiscardXSUMTotal);
     }
@@ -2677,14 +2871,6 @@ int job_destroy(struct job_t* job) {
             /*    //-->>} */
         }
         for (nIdyMaster = 0; nIdyMaster < nIdxMaster; nIdyMaster++) {
-            //nIdx = 0;
-            //for (file = fPOutfilrec[nIdyMaster]->outfil_File; file != NULL; file = file->next) {
-            //    fPFile[nIdx] = file;
-            //    nIdx++;
-            //}
-            //for (nIdy = 0; nIdy < nIdx; nIdy++) {
-            //    file_destructor(fPFile[nIdy]);
-            //}
             nIdx = 0;
             for (outfil_includeCond = fPOutfilrec[nIdyMaster]->outfil_includeCond; outfil_includeCond != NULL; outfil_includeCond = outfil_includeCond->next) {
                 fPCond[nIdx] = outfil_includeCond;
@@ -2994,24 +3180,24 @@ int job_loadFiles(struct job_t* job) {
         {
             /* debug - first records with segmentation */
             /*
-            //nDebug++;
-            //if (nDebug > 20)
-            //{
-            //    if (job->bIsPresentSegmentation == 0) {
-            //        job->bIsPresentSegmentation = 1;
-            //        job->nCurrFileInput = nIdxFileIn;
-            //        retcode = -2;
-            //        goto lbex;
-            //    }
-            //    else
-            //    {
-            //        //if (job->nCurrThread == job->nMaxThread) {
-            //            bEOF = 1;
-            //            nbyteRead = 0;
-            //            continue;
-            //        //}
-            //    }
-            //}
+            nDebug++;
+            if (nDebug > 20)
+            {
+                if (job->bIsPresentSegmentation == 0) {
+                    job->bIsPresentSegmentation = 1;
+                    job->nCurrFileInput = nIdxFileIn;
+                    retcode = -2;
+                    goto lbex;
+                }
+                else
+                {
+                    //if (job->nCurrThread == job->nMaxThread) {
+                        bEOF = 1;
+                        nbyteRead = 0;
+                        continue;
+                    //}
+                }
+            }
             */
             /* debug - first records with segmentation */
 
@@ -3183,8 +3369,10 @@ int job_loadFiles(struct job_t* job) {
                 }
             }
             /* End   Exit Routine E15 check skip record */
-            if (useRecord == 0)
+            if (useRecord == 0) {
+                job->recordOmitIncludeTotal++;
                 continue;
+            }
 
             /* old --  if (job->includeCondField!=NULL) */
             if (includecondfield == 1)
@@ -3196,8 +3384,10 @@ int job_loadFiles(struct job_t* job) {
                     useRecord = 0;    /* if condition for omit is true skip record    */
                 }
             }
-            if (useRecord == 0)
+            if (useRecord == 0){
+                job->recordOmitIncludeTotal++;
                 continue;
+            }
 
 
             /* INREC

@@ -159,6 +159,7 @@ struct job_t {
 	int64_t recordReadInCurrent;
 	int64_t	recordWriteOutTotal;
 	int64_t	recordWriteSortTotal;
+	int64_t recordOmitIncludeTotal;
 	int64_t	recordDiscardXSUMTotal;
 	int64_t	ulMemSizeAllocData;		        /* Max size mem                 */
 	int64_t	ulMemSizeAllocSort;		    /* Max size mem                 */

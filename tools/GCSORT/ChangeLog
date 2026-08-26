@@ -1,6 +1,18 @@
-2026-08-04  Sauro Menna  <saumen2004@libero.it> 
-    * Version 01.04.12c
-	* Modified how the TAKE file is read to allow the use of files that contain NULL characters (0x00).
+2026-08-25  Sauro Menna  <saumen2004@libero.it> 
+    * Version 01.05.00
+	* Added support for reading the TAKE file using libcob.
+    * SYMNAMES symbol integration
+        [1] SYMNAMES with definitions in an external file using libcob
+        [2] SYMNAMES definitions in the TAKE file
+		Set the SYMNAMES environment variable to define file definition pathname and the organization file with environment variable SYMORG = [LS|SQ]
+		If SYMORG=SQ, max len is mandatory 80 characters. Default is SYMORG=LS.
+	* Format SYMNAMES:
+	    [1] <var name>,value
+		[2] <var name>,pos,len,type
+		[3] <var name>,*,len,type
+		[4] SKIP,value		
+	* A new counter has been added to the print statistics for OMIT/INCLUDE records
+	* Updated the configuration files: gctestsetup.cfg and gctestcmd.cfg for test cases related to SYMNAMES
 
 2026-08-04  Sauro Menna  <saumen2004@libero.it> 
     * Version 01.04.12b

@@ -225,8 +225,6 @@ int file_setXSUMFile(struct file_t* file) {
 
 int file_SetInfoForFile(struct file_t* file, int nMode) {
 
-	//struct file_t* file = (struct file_t*)malloc(sizeof(struct file_t));
-
 	struct KeyIdx_t* tKeys = NULL;
 	cob_file_key* keyfield = NULL;
 

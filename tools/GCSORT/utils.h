@@ -289,5 +289,6 @@ int utl_GetCpuCount(void);
 
 void utl_resetbuffer(unsigned char* recordBuffer, size_t len);
 
+void rtrim(char* buffer);
 
 #endif /* UTILS_H_INCLUDED  */

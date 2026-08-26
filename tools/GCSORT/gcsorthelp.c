@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2024 Sauro Menna
+    Copyright (C) 2016-2026 Sauro Menna
  *
  *	This file is part of GCSORT.
  *
@@ -61,7 +61,7 @@ void GCSORT_Config ( void )
 	*/
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"gcsort Version %s\n", GCSORT_VERSION); 
-    fprintf(stdout, "Copyright (C) 2016-2025 Sauro Menna\n");
+    fprintf(stdout, "Copyright (C) 2016-2026 Sauro Menna\n");
     fprintf(stdout, "                   2009 Cedric ISSALY\n");
 	fprintf(stdout,"________________________________________________________________________\n");
 	fprintf(stdout,"\n");
@@ -128,7 +128,7 @@ void GCSORT_Version ( void )
     
     
     printf("gcsort Version %s\n", GCSORT_VERSION); 
-    printf("Copyright (C) 2016-2025 Sauro Menna\n");
+    printf("Copyright (C) 2016-2026 Sauro Menna\n");
     printf("                   2009 Cedric ISSALY\n");
     printf("Built     %s\n", gc_build_stamp);
 	printf("Packaged  %s\n", GCSORT_TAR_DATE);
@@ -594,6 +594,8 @@ void GCSORT_Usage_all(void)
     printf("GCSORT_PATHTMP     Pathname for temporary files     (Default TMP / TEMP / TMPDIR)     \n");
     printf("GCSORT_STATISTICS  0 minimal informations, 1 for Summary, 2 for Details,  5 Totals rec\n");
     printf("GCSORT_TESTCMD     0 for normal operations , 1 for ONLY test command line (NO SORT)\n");
+    printf("SYMNAMES           Pathname for SYMNAMES file definition\n");
+    printf("SYMORG             Organization type for SYMNAMES file definition. [LS,LSF,SQ] (max len 80 crt)\n");
     printf("________________________________________________________________________________________\n");
     return;
 }
@@ -969,6 +971,8 @@ void gcsort_help_footer(void) {
     printf("GCSORT_PATHTMP     Pathname for temporary files     (Default TMP / TEMP / TMPDIR)  \n");
     printf("GCSORT_STATISTICS  0 minimal informations, 1 for Summary, 2 for Details,  5 Totals rec\n");
     printf("GCSORT_TESTCMD     0 for normal operations , 1 for ONLY test command line (NO SORT)\n");
+    printf("SYMNAMES           Pathname for SYMNAMES file definition\n");
+    printf("SYMORG             Organization type for SYMNAMES file definition. [LS,LSF,SQ] (max len 80 crt)\n");
     printf("________________________________________________________________________________________\n");
     return;
 }

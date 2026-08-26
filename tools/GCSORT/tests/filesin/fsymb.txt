@@ -1,0 +1,16 @@
+* Testcase SYMBOLS
+
+SYMNAMES
+
+ORDERNUM,1,6,CH   
+SKIP,2
+OSK01,*,3,CH
+CONDOMIT,3,1,CH
+Symbola,6,20,CH
+SKIP,2
+Symbolb,*,5,BI
+Symbolc,*,12,ZD
+
+END
+
+ 

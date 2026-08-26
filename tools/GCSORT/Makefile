@@ -54,7 +54,8 @@ OBJS=\
 	scanner.o \
 	sortfield.o \
 	sumfield.o \
-	utils.o
+	utils.o \
+	symname.o
 
 ##
 GENERATED=parser.h parser.c scanner.h scanner.c
@@ -101,7 +102,7 @@ gcsort.o:libgcsort.h gcsort.h job.h utils.h file.h gcshare.h exitroutines.h copy
 gcsorthelp.o:gcsort.h job.h
 gcthread.o:gcthread.h job.h file.h gcsort.h sumfield.h outrec.h
 inrec.o:fieldvalue.h gcshare.h gcsort.h inrec.h job.h utils.h changefield.h join.h
-job.o:libgcsort.h gcsort.h gcthread.h utils.h job.h file.h sortfield.h condfield.h outrec.h inrec.h parser.h scanner.h sortfield.h sumfield.h outfil.h mmfioc.h exitroutines.h join.h gcshare.h 
+job.o:libgcsort.h gcsort.h gcthread.h utils.h job.h file.h sortfield.h condfield.h outrec.h inrec.h parser.h scanner.h sortfield.h sumfield.h outfil.h mmfioc.h exitroutines.h join.h gcshare.h symnames.h
 join.o:job.h join.h sortfield.h utils.h gcshare.h job.h file.h sumfield.h outrec.h
 keyidxrel.o: keyidxrel.h file.h
 mmfioc.o:gcshare.h gcsort.h mmfioc.h job.h utils.h
@@ -112,6 +113,7 @@ scanner.o:gcsort.h parser.h utils.h parser.y scanner.l
 sortfield.o:gcshare.h gcsort.h job.h sortfield.h sumfield.h utils.h
 sumfield.o:gcshare.h gcsort.h job.h libgcsort.h sumfield.h utils.h
 utils.o:gcshare.h gcsort.h gcthread.h libgcsort.h job.h utils.h outfil.h exitroutines.h
+symname.o:gcshare.h gcsort.h symname.h libgcsort.h job.h utils.h 
 
 clean:
 	$(RM) $(TARGET) $(OBJS)

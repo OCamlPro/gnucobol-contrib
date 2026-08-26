@@ -1644,3 +1644,20 @@ void utl_resetbuffer(unsigned char* recordBuffer, size_t len)
 		memset(recordBuffer, 0x40, len);
 	return;
 }
+void rtrim(char* buffer) {
+	if (buffer == NULL || *buffer == '\0') {
+		return; // Gestione stringa vuota o puntatore nullo
+	}
+
+	// Calcola la lunghezza iniziale della stringa
+	size_t length = strlen(buffer);
+	char* end = buffer + length - 1;
+
+	// Scorri all'indietro finché trovi caratteri di spaziatura (spazi, \t, \r, \n)
+	while (end >= buffer && isspace((unsigned char)*end)) {
+		end--;
+	}
+
+	// Inserisci il nuovo terminatore di stringa subito dopo l'ultimo carattere valido
+	*(end + 1) = '\0';
+}
