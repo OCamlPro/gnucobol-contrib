@@ -55,7 +55,7 @@ OBJS=\
 	sortfield.o \
 	sumfield.o \
 	utils.o \
-	symname.o
+	symnames.o
 
 ##
 GENERATED=parser.h parser.c scanner.h scanner.c
@@ -113,7 +113,7 @@ scanner.o:gcsort.h parser.h utils.h parser.y scanner.l
 sortfield.o:gcshare.h gcsort.h job.h sortfield.h sumfield.h utils.h
 sumfield.o:gcshare.h gcsort.h job.h libgcsort.h sumfield.h utils.h
 utils.o:gcshare.h gcsort.h gcthread.h libgcsort.h job.h utils.h outfil.h exitroutines.h
-symname.o:gcshare.h gcsort.h symname.h libgcsort.h job.h utils.h 
+symnames.o:gcshare.h gcsort.h symnames.h libgcsort.h job.h utils.h 
 
 clean:
 	$(RM) $(TARGET) $(OBJS)
