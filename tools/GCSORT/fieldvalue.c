@@ -248,12 +248,30 @@ int fieldValue_checkvalue(struct job_t* job, struct fieldValue_t *fieldValue, co
 	switch (fieldValue->type) {
 		case FIELD_VALUE_TYPE_Z:
 			mValue64 = fieldValue->value64;			/* condition    */
-			int64_t t2 = cob_get_llint(pField);		/* record       */
+			int64_t t2;
+			/* Note: cob_get_llint is not thread-safe for COMP-1
+			   and COMP-2 fields, so we read them directly */
+			if ((pField->attr != NULL) && (pField->attr->type == COB_TYPE_NUMERIC_DOUBLE)
+			 && (pField->size >= sizeof(double))) {
+				double dTmp;
+				memcpy(&dTmp, pField->data, sizeof(double));
+				t2 = (int64_t)dTmp;
+			}
+			else if ((pField->attr != NULL) && (pField->attr->type == COB_TYPE_NUMERIC_FLOAT)
+			      && (pField->size >= sizeof(float))) {
+				float fTmp;
+				memcpy(&fTmp, pField->data, sizeof(float));
+				t2 = (int64_t)fTmp;
+			}
+			else
+				t2 = cob_get_llint(pField);		/* record       */
 			result = 0;
 			if (t2 > mValue64)
-				result = 1;
+				/* 20260921 result = 1; */
+				return 1;
 			if (t2 < mValue64)
-				result = -1;
+				/* 20260921 result = -1; */
+				return -1;
 		break;
 		/* Date
 		   Y2T Fix len to working field - Zoned - size = digit = length

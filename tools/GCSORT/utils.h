@@ -46,8 +46,9 @@
 	#if !defined(__MINGW32__) && !defined(__MINGW64__)
 		typedef int HANDLE;
 		#define INVALID_HANDLE_VALUE 0
-		#define _S_IREAD	__S_IREAD
-		#define _S_IWRITE	__S_IWRITE
+		/* POSIX names: __S_IREAD/__S_IWRITE are glibc-internal and absent on AIX */
+		#define _S_IREAD	S_IRUSR
+		#define _S_IWRITE	S_IWUSR
 
 		#define _O_TRUNC 	O_TRUNC
 		#define _O_RDONLY	O_RDONLY

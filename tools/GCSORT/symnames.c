@@ -180,7 +180,7 @@ void parse_symnames_line(const char *line) {
             s.type = SYM_TYPE_CONSTANT;
 
             // Retain the standard z/OS X'value' notation for GCSORT compatibility
-            size_t req_len = strlen(const_val) + 5; 
+            size_t req_len = strlen(const_val) + 6; 
             s.constant_value = (char *)malloc(req_len);
             if (s.constant_value != NULL) {
                 snprintf(s.constant_value, req_len, "X('%s')", const_val);
@@ -195,7 +195,7 @@ void parse_symnames_line(const char *line) {
             strncpy(s.name, name, MAX_SYM_NAME);
             s.type = SYM_TYPE_CONSTANT;
 
-            size_t req_len = strlen(const_val) + 5;
+            size_t req_len = strlen(const_val) + 6;
             s.constant_value = (char *)malloc(req_len);
             if (s.constant_value != NULL) {
                 snprintf(s.constant_value, req_len, "C'%s'", const_val);
@@ -212,7 +212,7 @@ void parse_symnames_line(const char *line) {
             strncpy(s.name, name, MAX_SYM_NAME);
             s.type = SYM_TYPE_CONSTANT;
             
-            size_t req_len = strlen(const_val) + 3; 
+            size_t req_len = strlen(const_val) + 4; 
             s.constant_value = (char *)malloc(req_len);
             if (s.constant_value != NULL) {
                 snprintf(s.constant_value, req_len, "'%s'", const_val);

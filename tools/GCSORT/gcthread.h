@@ -23,6 +23,8 @@
 
 #include <stdint.h>
 #define MAX_THREAD 16
+/* Minimum stack per sort thread -- see gcthread_start() */
+#define GCSORT_THREAD_STACK_MIN (4 * 1024 * 1024)
 
 
 #if _MSC_VER>=1200

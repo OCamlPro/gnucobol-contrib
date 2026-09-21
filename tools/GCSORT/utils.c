@@ -1104,7 +1104,7 @@ int64_t utl_GetFileSizeEnvName(struct file_t* file) {
 	char* pEnv;
 	struct _struct_stat64 filestatus;
 	char szname[GCSORT_SIZE_FILENAME];
-	snprintf(szname, (size_t)COB_FILE_MAX, "%s", (const char*)file->stFileDef->assign->data);
+	snprintf(szname, sizeof(szname), "%s", (const char*)file->stFileDef->assign->data);
 	pEnv = getenv(szname);
 	if (pEnv != NULL) {
 		int nr = 0;
@@ -1115,7 +1115,7 @@ int64_t utl_GetFileSizeEnvName(struct file_t* file) {
 		}
 		return filestatus.st_size;
 	}
-	snprintf(szname, (size_t)COB_FILE_MAX, "DD_%s", (const char*)file->stFileDef->assign->data);
+	snprintf(szname, sizeof(szname), "DD_%s", (const char*)file->stFileDef->assign->data);
 	pEnv = getenv(szname);
 	if (pEnv != NULL) {
 		int nr = 0;
@@ -1126,7 +1126,7 @@ int64_t utl_GetFileSizeEnvName(struct file_t* file) {
 		}
 		return filestatus.st_size;
 	}
-	snprintf(szname, (size_t)COB_FILE_MAX, "dd_%s", (const char*)file->stFileDef->assign->data);
+	snprintf(szname, sizeof(szname), "dd_%s", (const char*)file->stFileDef->assign->data);
 	pEnv = getenv(szname);
 	if (pEnv != NULL) {
 		int nr = 0;
@@ -1143,17 +1143,17 @@ int64_t utl_GetFileSizeEnvName(struct file_t* file) {
 int utl_GetFileEnvName( char* szfile) {
 	char* pEnv;
 	char szname[GCSORT_SIZE_FILENAME];
-	snprintf(szname, (size_t)COB_FILE_MAX, "%s", (const char*)szfile);
+	snprintf(szname, sizeof(szname), "%s", (const char*)szfile);
 	pEnv = getenv(szname);
 	if (pEnv != NULL)
 		return 1; 
 
-	snprintf(szname, (size_t)COB_FILE_MAX, "DD_%s", (const char*)szfile);
+	snprintf(szname, sizeof(szname), "DD_%s", (const char*)szfile);
 	pEnv = getenv(szname);
 	if (pEnv != NULL) 
 		return 1;
 
-	snprintf(szname, (size_t)COB_FILE_MAX, "dd_%s", (const char*)szfile);
+	snprintf(szname, sizeof(szname), "dd_%s", (const char*)szfile);
 	pEnv = getenv(szname);
 	if (pEnv != NULL) 
 		return 1;
@@ -1389,6 +1389,7 @@ void sort_temp_name(struct job_t* job, const char* ext)
 	/* GetTempFileName(cob_tmp_temp, (LPCSTR)szt1, 0, cob_tmp_buff); */
 
 	strcat(cob_tmp_buff, cob_tmp_temp);
+	strcat(cob_tmp_buff, "\\");
 	strcat(cob_tmp_buff, szt1);
 
 	/* 

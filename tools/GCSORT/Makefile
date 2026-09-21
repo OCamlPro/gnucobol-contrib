@@ -3,11 +3,36 @@ MKDIR=mkdir -p
 INSTALL=cp
 BISON=bison
 FLEX=flex
-CC=gcc -std=gnu99 -pthread -D_FILE_OFFSET_BITS="64" -D_LARGEFILE64_SOURCE  -c -o
-CCFLAGS= -fkeep-inline-functions
-LD=gcc -o
-LDFLAGS= -O3
-LIBS=-L${exec_prefix}/lib -L/usr/local/lib/ -lcob -lm -lpthread
+
+UNAME_S := $(shell uname -s)
+
+# Read GnuCOBOL configuration
+COB_PREFIX ?= /usr/local /usr /opt/freeware
+COBCONFIG  ?= $(firstword $(shell command -v cob-config 2>/dev/null) \
+                          $(wildcard $(addsuffix /bin/cob-config,$(COB_PREFIX))))
+ifneq ($(COBCONFIG),)
+    COB_CFLAGS := $(filter -I%,$(shell $(COBCONFIG) --cflags))
+    COB_LIBS   := $(shell $(COBCONFIG) --libs)
+else
+    COB_CFLAGS :=
+    COB_LIBS   := -lcob
+endif
+
+# Determine platform-specific options
+ifeq ($(UNAME_S),AIX)
+    OBJECT_MODE ?= 64
+    BITS = -maix$(OBJECT_MODE)
+    LFS = -D_LARGE_FILES -D_LARGE_FILE_API
+else
+    BITS =
+    LFS = -D_FILE_OFFSET_BITS="64" -D_LARGEFILE64_SOURCE
+endif
+
+CC=gcc -std=gnu99 -pthread $(BITS) $(LFS) -c -o
+CCFLAGS=$(COB_CFLAGS) -O3 -fsigned-char -fkeep-inline-functions
+LD=gcc $(BITS) -o
+LDFLAGS=
+LIBS=$(COB_LIBS) -lm -pthread
 OUTDIR=tests/bin
 
 #FLEX_FLAGS=--debug 
@@ -25,7 +50,7 @@ ifeq ($(MAKECMDGOALS),cleanDebug)
 endif
 
 ifeq ($(DEBUG),YES)
-    DEBUGFLAGS=-g
+    DEBUGFLAGS=-g -O0
 else
     DEBUGFLAGS=
 endif

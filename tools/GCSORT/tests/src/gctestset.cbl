@@ -318,7 +318,7 @@ Win                if (ntype = 1)
                                 move 1 to ntype
                   call 'SYSTEM' using r-param1
                    else
-Linux                if (ntype = 2)
+Linux                if (ntype = 2) or (ntype = 3)
                         move space to cmd-go
                         string './' delimited by size 
                                r-param1 delimited by size

@@ -48,6 +48,7 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
+#include <locale.h>
 #include "gcsort.h"
 #include "utils.h"
 #include "job.h"
@@ -208,7 +209,7 @@ struct job_t* job_constructor(void) {
     job->nStopAft = 0;
     job->strPathTempFile[0] = 0x00; /*    NULL;   */
     memset(job->arrayFileInCmdLine, 0x00, (MAXFILEIN * FILENAME_MAX));
-    utl_resetbuffer((unsigned char*)job->szTakeFileName, 8192);
+    utl_resetbuffer((unsigned char*)job->szTakeFileName, COB_MEDIUM_BUFF);
 
     job->bIsTake = 0;
     job->nMaxFileIn = 0;
@@ -652,12 +653,20 @@ int job_load(struct job_t* job, int argc, char** argv) {
     }
 
     if (nTakeCmd == 1) {    /* Take command present */
-        buffer = (char*)realloc(buffer, 10240); /* allocate */
-        memset(buffer, 0x00, 10240);
-        returnCode = job_MakeCmdLine(szTakeFile, buffer);
+        buffer = (char*)realloc(buffer, COB_MEDIUM_BUFF); /* allocate */
+        memset(buffer, 0x00, COB_MEDIUM_BUFF);
+        returnCode = job_MakeCmdLine(szTakeFile, buffer, COB_MEDIUM_BUFF);
         strcpy(buffprt, buffer);
         if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0))
-            fprintf(stdout, "%s\n", buffprt);
+            fprintf(stdout, "Start - Contents of the TAKE file"
+                "\n_________________________________\n"
+                "%s"
+                "\n_________________________________\n"
+                "End - Contents of the TAKE file\n", buffprt);
+    }
+    else
+    {
+        returnCode = 0;
     }
 
     if (returnCode == 0) {
@@ -731,9 +740,9 @@ int job_load(struct job_t* job, int argc, char** argv) {
         }
     }
     //if (nTakeCmd == 1) {    /* Take command present */
-    //    buffer = (char*)realloc(buffer, 10240); /* allocate */
-    //    memset(buffer, 0x00, 10240);
-    //job_MakeCmdLine(szTakeFile, buffer);
+    //    buffer = (char*)realloc(buffer, COB_MEDIUM_BUFF); /* allocate */
+    //    memset(buffer, 0x00, COB_MEDIUM_BUFF);
+    //job_MakeCmdLine(szTakeFile, buffer, COB_MEDIUM_BUFF);
     //}
 
     //job_SetCmdLine(job, buffer);
@@ -831,10 +840,10 @@ int job_getIndexedFileHandler(struct job_t* job)
     char* psz = NULL;
     char szNameTmp[FILENAME_MAX];
     FILE* stream;
-    char* pszRek = (char*)malloc(sizeof(char) * (4096));
+    char* pszRek = (char*)malloc(sizeof(char) * (COB_FILE_BUFF + 1));
     if (pszRek == NULL)
         utl_abend_terminate(MEMORYALLOC, 1050, ABEND_EXEC);
-    memset(pszRek, 4096, 0x00);
+    memset(pszRek, 0x00, COB_FILE_BUFF + 1);
 
     sort_temp_name(job, ".cobccfg");
     strcpy(szNameTmp, cob_tmp_temp);
@@ -846,7 +855,18 @@ int job_getIndexedFileHandler(struct job_t* job)
         exit(-1);
 
     /* get result cobc --info */
-    print_info_detailed(0);
+    /* print_info_detailed prints localized text, which can make the tests
+       below to fail. We temporarily force the standard C locale. */
+    {
+        char szSaveLocale[256];
+        const char* pszLocale = setlocale(LC_ALL, NULL);
+        memset(szSaveLocale, 0x00, sizeof(szSaveLocale));
+        if (pszLocale != NULL)
+            strncpy(szSaveLocale, pszLocale, sizeof(szSaveLocale) - 1);
+        setlocale(LC_ALL, "C");
+        print_info_detailed(0);
+        setlocale(LC_ALL, szSaveLocale[0] != 0x00 ? szSaveLocale : "");
+    }
 
     fflush(stdout);
     dup2(fd, fileno(stdout));
@@ -855,7 +875,7 @@ int job_getIndexedFileHandler(struct job_t* job)
     if ((stream = fopen(szNameTmp, "rt")) != NULL)
     {
         /* s.m. 20250110 */
-        nChar = (int) fread(pszRek, sizeof(char), (size_t)4096, stream);
+        nChar = (int) fread(pszRek, sizeof(char), (size_t)COB_FILE_BUFF, stream);
     }
 
     if (nChar > 0) {
@@ -1764,8 +1784,10 @@ int    job_FileOutFilBuffer(struct job_t* job, char* szBuffIn, char* bufnew, int
                         }
                         if (nSkipFirst == 0)
                         {
-                            strncat(bufnew, strtoken, strlen(strtoken));
-                            /* s.m. 20250110 */
+                            size_t remaining_space = COB_MEDIUM_BUFF - strlen(bufnew) - 1;
+                           /* 20260921 strncat(bufnew, strtoken, strlen(strtoken)); */ 
+                           strncat(bufnew, strtoken, remaining_space);
+                           /* s.m. 20250110 */
                             ncrtFil = (int) strlen(strtoken);
                         }
 
@@ -1897,8 +1919,9 @@ char* job_GetLastCharPath(char* sz, int* pNum, int* nSkipped)
     return sz + k;
 }
 
-int job_MakeCmdLine(char* szF, char* buf)
+int job_MakeCmdLine(char* szF, char* buf, size_t nBufSize)
 {
+    int bOverflow = 0;
     int maxLen;
     int c;
     int prevc = -1;
@@ -1992,7 +2015,7 @@ int job_MakeCmdLine(char* szF, char* buf)
     maxLen = -1;
     nComm = 0;
 
-    memset(buf, 0x00, sizeof(buf));
+    memset(buf, 0x00, nBufSize);		/* was sizeof(buf): the size of a pointer */
 
     while (1) {
         cob_read(file_take, NULL, NULL, 0);
@@ -2028,6 +2051,11 @@ int job_MakeCmdLine(char* szF, char* buf)
                 break;
             }
             if (nComm == 0) {
+                /* room for this character and for the closing NUL */
+                if ((size_t)(maxLen + 3) > nBufSize) {
+                    bOverflow = 1;
+                    break;
+                }
                 if (c == 0x00)
                     buf[maxLen + 1] = ' ';
                 else
@@ -2039,7 +2067,13 @@ int job_MakeCmdLine(char* szF, char* buf)
                 prevc = c;
             }
         }
+        if (bOverflow)
+            break;
         /* Insert new line */
+        if ((size_t)(maxLen + 3) > nBufSize) {
+            bOverflow = 1;
+            break;
+        }
         buf[maxLen + 1] = '\n';
         maxLen += 1;
         nComm = 0;
@@ -2047,6 +2081,9 @@ int job_MakeCmdLine(char* szF, char* buf)
     }
 
     buf[maxLen + 1] = 0x00;
+    if (bOverflow)
+        fprintf(stdout, "*GCSORT*S771E*ERROR: TAKE file %s does not fit the command line buffer (%lu bytes)\n",
+            szF, (unsigned long)nBufSize);
     /* Close file and release memory allocation  */
     cob_close(file_take, NULL, 0, 0);
     free(file_take->record->data);
@@ -2056,9 +2093,9 @@ int job_MakeCmdLine(char* szF, char* buf)
     cob_file_free(&file_take, &keys);
 
 
-    if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0))
-        fprintf(stdout, "\n========================================================\n\n");
-    return 0;
+   /* if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0)) */
+   /*     fprintf(stdout, "\n========================================================\n\n");            */
+    return bOverflow ? -1 : 0;
 }
 
 int job_GetTypeOp(struct job_t* job) {
@@ -3843,6 +3880,17 @@ int job_skip_record(struct job_t* job, struct file_t* file, int64_t* nRec)
     return nFSRead;
 }
 
+#if !defined(__GLIBC__) && !defined(__MINGW32__) && !defined(__MINGW64__) && !defined(_MSC_VER)
+/* For targets without GNU qsort_r or Win32 qsort_s, such as AIX,
+   use an intermediate compare function that uses TLS data */
+static GCThread struct job_t* gc_qsort_job = NULL;
+
+static int job_compare_qsort_tls(const void* first, const void* second)
+{
+    return job_compare_qsort(first, second, (void*)gc_qsort_job);
+}
+#endif
+
 /* s.m. 20240302 */
 /*
 #if    defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
@@ -3894,9 +3942,12 @@ INLINE2  int job_sort_data(struct job_t* job)
         /* s.m. 20240302 */
 #if    defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
         qsort_s(job->buffertSort, (size_t)job->recordNumber, job->nLenKeys + SIZESRTBUFF, &job_compare_qsort, job);
-#else
+#elif  defined(__GLIBC__)
         qsort_r(job->buffertSort, (size_t)job->recordNumber, job->nLenKeys + SIZESRTBUFF, job_compare_qsort, (void*)job);
-#endif  
+#else
+        gc_qsort_job = job;
+        qsort(job->buffertSort, (size_t)job->recordNumber, job->nLenKeys + SIZESRTBUFF, job_compare_qsort_tls);
+#endif
     }
     /* #if    !defined(_MSC_VER) && !defined(__MINGW32__) && !defined(__MINGW64__)    */
     for (int k = 0; k < job->g_idx_max; k++) {

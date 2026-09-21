@@ -242,7 +242,7 @@ Win                if (ntype = 1)
                         inspect cmd-go replacing all chrsl by chrbs
                         move cmd-go to cmd-cmd
                    else
-Linux                if (ntype = 2)
+Linux                if (ntype = 2) or (ntype = 3)
                         move space to cmd-go
                         string './gcsort ' delimited by size 
                                cmd-cmd  delimited by size
@@ -276,7 +276,7 @@ Win                if (ntype = 1)
                         inspect cmd-cmd replacing all chrsl by chrbs
                         move cmd-cmd to cmd-go
                    else
-Linux                if (ntype = 2)
+Linux                if (ntype = 2) or (ntype = 3)
                         move space to cmd-go
                         string './' delimited by size 
                                cmd-cmd  delimited by size
@@ -312,7 +312,7 @@ Win                if (ntype = 1)
                                   into cmd-go
                         inspect cmd-go replacing all chrsl by chrbs
                    else
-Linux                 if (ntype = 2)
+Linux                 if (ntype = 2) or (ntype = 3)
                         move space to cmd-go
                          string 'diff -a -Z ' delimited by size 
                               TRIM(cmd-cmd, TRAILING) delimited by size

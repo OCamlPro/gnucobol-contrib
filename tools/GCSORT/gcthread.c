@@ -55,10 +55,19 @@ int gcthread_start(int argc, char** argv, int nMaxThread, time_t* timeStart)
 #else
 	pthread_t thread[MAX_THREAD];
 	pthread_attr_t attr;
+	size_t nStackSize = 0;
 	int rc, status;
 	/* Initialize and set thread detached attribute */
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+	/* Ensure the thread stack is large enough. While the default thread
+	   stack is 8 MByte on Linux, it is only 96/192 KByte on AIX, which
+	   turns out to be too small considering condField_test() is recursive
+	   and uses large amounts of stack (szBufVLSCMP[MAX_RECSIZE+1] is
+	   around 32 KByte). */
+	if ((pthread_attr_getstacksize(&attr, &nStackSize) == 0)
+	 && (nStackSize < GCSORT_THREAD_STACK_MIN))
+		pthread_attr_setstacksize(&attr, GCSORT_THREAD_STACK_MIN);
 #endif
 
 	int rtc = 0;
@@ -114,27 +123,30 @@ int gcthread_start(int argc, char** argv, int nMaxThread, time_t* timeStart)
 			exit(-1);
 		}
 
-#else
-		rc = pthread_create(&thread[t], &attr, gcthread_run, (void*)pPar);
+#endif
+
+	}
+
+#ifndef _THREAD_WIN_ENV_
+	/* On POSIX, we need to create the threads only after all jobs have
+	   been created, since job creation involves calls to non-thread-safe
+	   parts of libcob. */
+	for (int t = 0; t < nThread; t++) {
+		rc = pthread_create(&thread[t], &attr, gcthread_run, (void*)pParThread[t]);
 		if (rc)
 		{
 			printf("ERROR; return code from pthread_create() is %d\n", rc);
 			exit(-1);
 		}
-		/* s.m. 20241017 */
-		 /* sleep(1); */
-		struct timespec tim;
-		 tim.tv_sec = 0;
-		 tim.tv_nsec = 125000000L;
-		 nanosleep(&tim, NULL);
-#endif
-
 	}
+#endif
 
 #ifdef  _THREAD_WIN_ENV_
 
 	for (int s = 0; s < nThread; s++) {
 		ResumeThread(hThread[s]);
+		/* Note: probably useless, since the threads are created suspended,
+		   so all jobs are already built by the time they are resumed. */
 		Sleep(125L); 
 	}
 
@@ -283,6 +295,13 @@ int gcthreadSkipStop(struct job_t* job)
 	int64_t nNumRecords = job->inputFile->nFileMaxSize / job->inputLength;
 	int64_t nNumRecordForBlock = nNumRecords / job->nMaxThread;
 
+	/* When there are more threads than records, we end up with a number of
+	   records of 0 for the block, which make the computed bounds for the
+	   block erroneous. By giving a size of at least one, extra threads
+	   just don't get any work to do. */
+	if (nNumRecordForBlock == 0)
+		nNumRecordForBlock = 1;
+
 	job->nMTSkipRec = (long) ((job->nCurrThread-1) * nNumRecordForBlock);
 	job->nMTStopAft = (long) ((job->nCurrThread-1) * nNumRecordForBlock) + nNumRecordForBlock;
 
@@ -313,6 +332,7 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 	int	bIsEof[MAX_HANDLE_THREAD];
 	int	bIsFirstSumFields = 0;
 	int	handleTmpFile[MAX_HANDLE_THREAD];
+	int	nJobOfStream[MAX_HANDLE_THREAD];	/* stream -> jobArray index */
 	int	iSeek = 0;
 	int	nMaxEle = 0;
 
@@ -421,10 +441,11 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 	nLastRead = 0;
 
 	/* Open files Tmp   */
+	int nSaveMaxThread = job->nMaxThread;	/* the loop body reassigns `job` */
 	int j = -1;
 	if (nTypeSource == 1) {		/* 0 = Memory, 1 = File Temp (MMF) */
 		/* Max Thread*/
-		for (int s = 0; s < job->nMaxThread; s++) {
+		for (int s = 0; s < nSaveMaxThread; s++) {
 			job = jobArray[s];
 			/* for (k = 0; k < MAX_HANDLE_TEMPFILE; k++) */
 			for (k = 0; k < MAX_HANDLE_TEMPFILE; k++)
@@ -450,7 +471,9 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 	{
 		/* Max Thread*/
 		j = -1;
-		for (int s = 0; s < job->nMaxThread; s++) {
+		for (kj = 0; kj < MAX_HANDLE_THREAD; kj++)
+			nJobOfStream[kj] = -1;
+		for (int s = 0; s < nSaveMaxThread; s++) {
 			job = jobArray[s];
 			job->recordReadInCurrent = 0; /* reset counter for read */
 			if (job->recordNumber == 0)
@@ -458,6 +481,7 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 			j++;
 			bIsEof[j] = 0;
 			handleTmpFile[j] = 1;
+			nJobOfStream[j] = s;	/* stream j reads jobArray[s], not jobArray[j] */
 		}
 	}
 
@@ -511,7 +535,7 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 	{
 		for (kj = 0; kj < MAX_HANDLE_THREAD; kj++) {
 			if (bIsEof[kj] == 0) {
-				bIsEof[kj] = gcthread_ReadFileMem(jobArray[kj], &byteReadTmpFile[kj], szBufRekTmpFile[kj]);  /* bIsEof = 0 ok, 1 = eof   */
+				bIsEof[kj] = gcthread_ReadFileMem(jobArray[nJobOfStream[kj]], &byteReadTmpFile[kj], szBufRekTmpFile[kj]);  /* bIsEof = 0 ok, 1 = eof   */
 				if (bIsEof[kj] == 1) {
 					ptrBuf[kj] = 0x00;
 				}
@@ -528,7 +552,7 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 	}
 	else
 	{
-		nMaxEle = job->nMaxThread;
+		nMaxEle = j+1;
 		job->nNumTmpFile = nMaxEle;
 	}
 
@@ -594,7 +618,7 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 					if (nTypeSource == 1)
 						bIsEof[nLastRead] = job_ReadFileTemp(ArrayFile[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead]);  /* bIsEof = 0 ok, 1 = eof   */
 					else
-						bIsEof[nLastRead] = gcthread_ReadFileMem(jobArray[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead]);  /* bIsEof = 0 ok, 1 = eof   */
+						bIsEof[nLastRead] = gcthread_ReadFileMem(jobArray[nJobOfStream[nLastRead]], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead]);  /* bIsEof = 0 ok, 1 = eof   */
 					if (bIsEof[nLastRead] == 1) {
 						nSumEof = nSumEof + bIsEof[nLastRead];
 						ptrBuf[nLastRead] = 0x00;
@@ -689,7 +713,7 @@ int gcthread_save_final(struct job_t* jobArray[]) {
 			if (nTypeSource == 1)
 				bIsEof[nLastRead] = job_ReadFileTemp(ArrayFile[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead]);  /* bIsEof = 0 ok, 1 = eof   */
 			else
-				bIsEof[nLastRead] = gcthread_ReadFileMem(jobArray[nLastRead], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead]);  /* bIsEof = 0 ok, 1 = eof   */
+				bIsEof[nLastRead] = gcthread_ReadFileMem(jobArray[nJobOfStream[nLastRead]], &byteReadTmpFile[nLastRead], szBufRekTmpFile[nLastRead]);  /* bIsEof = 0 ok, 1 = eof   */
 			if (bIsEof[nLastRead] == 1) {
 				ptrBuf[nLastRead] = 0x00;
 				nSumEof = nSumEof + bIsEof[nLastRead];

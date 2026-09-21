@@ -114,8 +114,8 @@ struct job_t {
 	char FileNameXSUM[FILENAME_MAX];
 	char job_typeOP;				        /* 'S' for sort, 'M' for Merge, 'C' for Copy, 'J' for Join    */
 	char strPathTempFile[FILENAME_MAX];     /* path temporary file                          */
-	char szCmdLineCommand[8192];	        /* Copy from command line                       */
-	char szTakeFileName[8192];	            /* Take FileName                                */
+	char szCmdLineCommand[COB_MEDIUM_BUFF];	        /* Copy from command line                       */
+	char szTakeFileName[COB_MEDIUM_BUFF];	            /* Take FileName                                */
 	int	 array_FileTmpHandle[MAX_HANDLE_THREAD];
 	int	 bIsFieldCopy;		                /* SORT-MERGE FIELDS=COPY                       */
 	int	 bIsPresentSegmentation;		    /* File segmentation                            */
@@ -325,7 +325,7 @@ int job_SetTypeOP (char typeOP);
 int job_merge_files(struct job_t *job);
 int job_SetFieldCopy (int nFC);
 int job_GetFieldCopy ( void );
-int job_MakeCmdLine(char* szF, char* buf);
+int job_MakeCmdLine(char* szF, char* buf, size_t nBufSize);
 int job_EmuleMFSort( void );
 
 void job_SetCmdLine(struct job_t* job, char* strLine);

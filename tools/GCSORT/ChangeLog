@@ -1,3 +1,10 @@
+2026-09-21  Sauro Menna  <saumen2004@libero.it> 
+    * Version 01.05.01
+	* Review and print the contents of the TAKE file
+    * Fixed - Bug #117 GCSORT 1.05.00 fails to parse command line (Thanks David)
+    * Review GCSORT for AIX. - Makefile, fieldvalue.c, gcthread.c, gcthread.h, job.c, job.h, tests/src/gctestcmd.cbl, tests/src/gctestset.cbl, utils.c, utils.h (Thanks David)
+    * In job.c, the return value of the fieldValue_checkvalue function has been revised (Thanks Simon)
+	
 2026-08-25  Sauro Menna  <saumen2004@libero.it> 
     * Version 01.05.00
 	* Added support for reading the TAKE file using libcob.
