@@ -12,8 +12,8 @@ is ignored.
 Note that listings containing nested program will work as the number increases
 by one for the next nested program / module.
 
-I have tested it against my ACAS accounting sources and manually checking one sub
-systems folder with only 10 -12 sources and the .prn files and then running
+I have tested it against my ACAS accounting sources and manually checking one
+sub systems folder with only 10 -12 sources and the .prn files and then running
 cntlines in the same folder - was the same.
 
 Note that cntlines must be run from the top folder holding your sources where
@@ -47,10 +47,11 @@ in lines of Cobol code to include in my documentation for ACAS (which is on the
 sourceforge website under ACAS - sourceforge.net/p/acas.
 
 Note as is, it will not work under Windows, only *nix platforms as it uses
-a *nix s/ript and that would need to be changed for a windows version of the
+a *nix script and that would need to be changed for a windows version of the
 find bash command.
 
 Vincent Coen
 Created 23 September 2025.
 Updated 25 September 2025.
 Updated 30 May       2026 - Typos.
+Updated 19 October   2026 - More typos.

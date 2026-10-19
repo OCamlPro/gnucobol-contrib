@@ -12,9 +12,14 @@
 *>
 *>  At end of all sources deletes temp file, reports total count and stops.
 *>
-      program-id.         cntlines.
+*> Why write it ?
+*>  Needed to know total number of lines of Cobol code in ACAS.
+*>  May need to rerun this some time later in 2026 so that Payroll can be
+*>  added
+*>
+       program-id.         cntlines.
 *>    Author.             V.B.Coen FBCS, FIDM, FIDPM.
-*>    Remarks.            Copyright (c) 2025, Vincent B Coen.
+*>    Remarks.            Copyright (c) 2025-2026 & Later, Vincent B Coen.
 *>    Changes.
 *> 20/09/25 vbc - 1.0.00  First written.
 *> 25/09/25 vbc - 1.0.01  Add activity marker but commented out as not needed
