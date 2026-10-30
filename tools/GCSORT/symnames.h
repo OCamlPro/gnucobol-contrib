@@ -21,6 +21,9 @@
 #ifndef SYMNAMES_H_INCLUDED
 #define SYMNAMES_H_INCLUDED 
 
+#include "libgcs/libgcs.h"
+
+
 #define MAX_SYM_NAME 50
 #define MAX_FORMAT_LEN 4
 #define MAX_LINE_LEN 80

@@ -64,7 +64,7 @@
 /* Copy the first part of user declarations.  */
 
 /* Line 371 of yacc.c  */
-#line 68 "..\\..\\parser.c"
+#line 68 "..\\parser.c"
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -196,7 +196,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 387 of yacc.c  */
-#line 24 "..\\..\\parser.y"
+#line 24 "..\\parser.y"
  
     int         number;
     long        lnumber;
@@ -212,7 +212,7 @@ typedef union YYSTYPE
 
 
 /* Line 387 of yacc.c  */
-#line 216 "..\\..\\parser.c"
+#line 216 "..\\parser.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -240,10 +240,10 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 244 "..\\..\\parser.c"
+#line 244 "..\\parser.c"
 /* Unqualified %code blocks.  */
 /* Line 391 of yacc.c  */
-#line 37 "..\\..\\parser.y"
+#line 37 "..\\parser.y"
  
     #include <stdio.h>
     #include <stdlib.h>
@@ -352,7 +352,7 @@ static int process_keyfield(int position, int length, char *keyType, char *keyCo
 
 
 /* Line 391 of yacc.c  */
-#line 356 "..\\..\\parser.c"
+#line 356 "..\\parser.c"
 
 #ifdef short
 # undef short
@@ -2087,169 +2087,169 @@ yyreduce:
     {
         case 4:
 /* Line 1792 of yacc.c  */
-#line 262 "..\\..\\parser.y"
+#line 262 "..\\parser.y"
     {}
     break;
 
   case 5:
 /* Line 1792 of yacc.c  */
-#line 263 "..\\..\\parser.y"
+#line 263 "..\\parser.y"
     {}
     break;
 
   case 6:
 /* Line 1792 of yacc.c  */
-#line 264 "..\\..\\parser.y"
+#line 264 "..\\parser.y"
     {}
     break;
 
   case 7:
 /* Line 1792 of yacc.c  */
-#line 265 "..\\..\\parser.y"
+#line 265 "..\\parser.y"
     {}
     break;
 
   case 8:
 /* Line 1792 of yacc.c  */
-#line 266 "..\\..\\parser.y"
+#line 266 "..\\parser.y"
     {}
     break;
 
   case 9:
 /* Line 1792 of yacc.c  */
-#line 267 "..\\..\\parser.y"
+#line 267 "..\\parser.y"
     {}
     break;
 
   case 10:
 /* Line 1792 of yacc.c  */
-#line 268 "..\\..\\parser.y"
+#line 268 "..\\parser.y"
     {}
     break;
 
   case 11:
 /* Line 1792 of yacc.c  */
-#line 269 "..\\..\\parser.y"
+#line 269 "..\\parser.y"
     {}
     break;
 
   case 12:
 /* Line 1792 of yacc.c  */
-#line 270 "..\\..\\parser.y"
+#line 270 "..\\parser.y"
     {}
     break;
 
   case 13:
 /* Line 1792 of yacc.c  */
-#line 271 "..\\..\\parser.y"
+#line 271 "..\\parser.y"
     {}
     break;
 
   case 14:
 /* Line 1792 of yacc.c  */
-#line 272 "..\\..\\parser.y"
+#line 272 "..\\parser.y"
     {}
     break;
 
   case 15:
 /* Line 1792 of yacc.c  */
-#line 273 "..\\..\\parser.y"
+#line 273 "..\\parser.y"
     {}
     break;
 
   case 16:
 /* Line 1792 of yacc.c  */
-#line 274 "..\\..\\parser.y"
+#line 274 "..\\parser.y"
     {}
     break;
 
   case 17:
 /* Line 1792 of yacc.c  */
-#line 275 "..\\..\\parser.y"
+#line 275 "..\\parser.y"
     {}
     break;
 
   case 18:
 /* Line 1792 of yacc.c  */
-#line 276 "..\\..\\parser.y"
+#line 276 "..\\parser.y"
     {}
     break;
 
   case 19:
 /* Line 1792 of yacc.c  */
-#line 277 "..\\..\\parser.y"
+#line 277 "..\\parser.y"
     {}
     break;
 
   case 20:
 /* Line 1792 of yacc.c  */
-#line 278 "..\\..\\parser.y"
+#line 278 "..\\parser.y"
     {}
     break;
 
   case 21:
 /* Line 1792 of yacc.c  */
-#line 279 "..\\..\\parser.y"
+#line 279 "..\\parser.y"
     {}
     break;
 
   case 22:
 /* Line 1792 of yacc.c  */
-#line 280 "..\\..\\parser.y"
+#line 280 "..\\parser.y"
     {}
     break;
 
   case 23:
 /* Line 1792 of yacc.c  */
-#line 281 "..\\..\\parser.y"
+#line 281 "..\\parser.y"
     {}
     break;
 
   case 24:
 /* Line 1792 of yacc.c  */
-#line 282 "..\\..\\parser.y"
+#line 282 "..\\parser.y"
     {}
     break;
 
   case 25:
 /* Line 1792 of yacc.c  */
-#line 283 "..\\..\\parser.y"
+#line 283 "..\\parser.y"
     {}
     break;
 
   case 26:
 /* Line 1792 of yacc.c  */
-#line 284 "..\\..\\parser.y"
+#line 284 "..\\parser.y"
     {}
     break;
 
   case 27:
 /* Line 1792 of yacc.c  */
-#line 285 "..\\..\\parser.y"
+#line 285 "..\\parser.y"
     {}
     break;
 
   case 28:
 /* Line 1792 of yacc.c  */
-#line 287 "..\\..\\parser.y"
+#line 287 "..\\parser.y"
     {}
     break;
 
   case 29:
 /* Line 1792 of yacc.c  */
-#line 288 "..\\..\\parser.y"
+#line 288 "..\\parser.y"
     {}
     break;
 
   case 30:
 /* Line 1792 of yacc.c  */
-#line 289 "..\\..\\parser.y"
+#line 289 "..\\parser.y"
     {}
     break;
 
   case 31:
 /* Line 1792 of yacc.c  */
-#line 294 "..\\..\\parser.y"
+#line 294 "..\\parser.y"
     {   
         struct file_t *file=file_constructor((yyvsp[(2) - (2)].string));
         strcpy(szMexToken, "use clause");
@@ -2266,7 +2266,7 @@ yyreduce:
 
   case 32:
 /* Line 1792 of yacc.c  */
-#line 305 "..\\..\\parser.y"
+#line 305 "..\\parser.y"
     {
         file_SetInfoForFile(current_file, COB_OPEN_INPUT); /* Input */
         current_file=NULL;
@@ -2275,7 +2275,7 @@ yyreduce:
 
   case 33:
 /* Line 1792 of yacc.c  */
-#line 311 "..\\..\\parser.y"
+#line 311 "..\\parser.y"
     { 
         struct file_t *file=file_constructor((yyvsp[(2) - (2)].string));
         strcpy(szMexToken, " give clause ");
@@ -2292,7 +2292,7 @@ yyreduce:
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 322 "..\\..\\parser.y"
+#line 322 "..\\parser.y"
     {
         file_SetInfoForFile(current_file, COB_OPEN_OUTPUT); /*  Output  */
         current_file=NULL;
@@ -2301,7 +2301,7 @@ yyreduce:
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 328 "..\\..\\parser.y"
+#line 328 "..\\parser.y"
     {     
         strcpy(szMexToken, " record org instruction "); 
     }
@@ -2309,7 +2309,7 @@ yyreduce:
 
   case 36:
 /* Line 1792 of yacc.c  */
-#line 344 "..\\..\\parser.y"
+#line 344 "..\\parser.y"
     {  
         strcpy(szMexToken, " org file type ");
    
@@ -2325,7 +2325,7 @@ yyreduce:
 
   case 37:
 /* Line 1792 of yacc.c  */
-#line 355 "..\\..\\parser.y"
+#line 355 "..\\parser.y"
     {    
         strcpy(szMexToken, " record type ");
         if (current_file!=NULL) {
@@ -2339,7 +2339,7 @@ yyreduce:
 
   case 38:
 /* Line 1792 of yacc.c  */
-#line 364 "..\\..\\parser.y"
+#line 364 "..\\parser.y"
     {
         if (current_file!=NULL) {
             file_setFormat(current_file,utils_parseFileFormat((yyvsp[(3) - (9)].string)));
@@ -2352,7 +2352,7 @@ yyreduce:
 
   case 39:
 /* Line 1792 of yacc.c  */
-#line 373 "..\\..\\parser.y"
+#line 373 "..\\parser.y"
     {        
         strcpy(szMexToken, " record type ");
         if (current_file!=NULL) {
@@ -2366,7 +2366,7 @@ yyreduce:
 
   case 40:
 /* Line 1792 of yacc.c  */
-#line 382 "..\\..\\parser.y"
+#line 382 "..\\parser.y"
     {
         if (current_file!=NULL) {
             file_setFormat(current_file,utils_parseFileFormat((yyvsp[(3) - (7)].string)));
@@ -2379,26 +2379,26 @@ yyreduce:
 
   case 41:
 /* Line 1792 of yacc.c  */
-#line 394 "..\\..\\parser.y"
+#line 394 "..\\parser.y"
     {
 }
     break;
 
   case 42:
 /* Line 1792 of yacc.c  */
-#line 400 "..\\..\\parser.y"
+#line 400 "..\\parser.y"
     { strcpy(szMexToken, " key instruction "); }
     break;
 
   case 43:
 /* Line 1792 of yacc.c  */
-#line 401 "..\\..\\parser.y"
+#line 401 "..\\parser.y"
     {}
     break;
 
   case 44:
 /* Line 1792 of yacc.c  */
-#line 409 "..\\..\\parser.y"
+#line 409 "..\\parser.y"
     {
         if (!process_keyfield((yyvsp[(1) - (6)].number), (yyvsp[(3) - (6)].number), (yyvsp[(5) - (6)].string), NULL)) YYABORT;
     }
@@ -2406,7 +2406,7 @@ yyreduce:
 
   case 45:
 /* Line 1792 of yacc.c  */
-#line 412 "..\\..\\parser.y"
+#line 412 "..\\parser.y"
     {
         if (!process_keyfield((yyvsp[(1) - (8)].number), (yyvsp[(3) - (8)].number), (yyvsp[(5) - (8)].string), (yyvsp[(7) - (8)].string))) YYABORT;
     }
@@ -2414,7 +2414,7 @@ yyreduce:
 
   case 46:
 /* Line 1792 of yacc.c  */
-#line 418 "..\\..\\parser.y"
+#line 418 "..\\parser.y"
     {
          if (!process_keyfield((yyvsp[(1) - (5)].number), (yyvsp[(3) - (5)].number), (yyvsp[(5) - (5)].string), NULL)) YYABORT;
     }
@@ -2422,7 +2422,7 @@ yyreduce:
 
   case 47:
 /* Line 1792 of yacc.c  */
-#line 421 "..\\..\\parser.y"
+#line 421 "..\\parser.y"
     {
         if (!process_keyfield((yyvsp[(1) - (7)].number), (yyvsp[(3) - (7)].number), (yyvsp[(5) - (7)].string), (yyvsp[(7) - (7)].string))) YYABORT;
  }
@@ -2430,7 +2430,7 @@ yyreduce:
 
   case 48:
 /* Line 1792 of yacc.c  */
-#line 427 "..\\..\\parser.y"
+#line 427 "..\\parser.y"
     {
         (yyval.number)=utils_parseFieldType((yyvsp[(1) - (1)].string));
         free((yyvsp[(1) - (1)].string));
@@ -2439,7 +2439,7 @@ yyreduce:
 
   case 49:
 /* Line 1792 of yacc.c  */
-#line 432 "..\\..\\parser.y"
+#line 432 "..\\parser.y"
     {
         (yyval.number)=utils_parseFieldType((yyvsp[(1) - (1)].string));
         free((yyvsp[(1) - (1)].string));
@@ -2448,7 +2448,7 @@ yyreduce:
 
   case 50:
 /* Line 1792 of yacc.c  */
-#line 438 "..\\..\\parser.y"
+#line 438 "..\\parser.y"
     {
         (yyval.number)=utils_parseSortDirection((yyvsp[(1) - (1)].string));
         free((yyvsp[(1) - (1)].string)); 
@@ -2457,7 +2457,7 @@ yyreduce:
 
   case 51:
 /* Line 1792 of yacc.c  */
-#line 445 "..\\..\\parser.y"
+#line 445 "..\\parser.y"
     {
         (yyval.number)=utils_parseCondCondition((yyvsp[(1) - (1)].string));
         free((yyvsp[(1) - (1)].string));
@@ -2466,7 +2466,7 @@ yyreduce:
 
   case 52:
 /* Line 1792 of yacc.c  */
-#line 450 "..\\..\\parser.y"
+#line 450 "..\\parser.y"
     {
         (yyval.number)=utils_parseCondCondition((yyvsp[(1) - (1)].string));
         free((yyvsp[(1) - (1)].string));
@@ -2475,7 +2475,7 @@ yyreduce:
 
   case 53:
 /* Line 1792 of yacc.c  */
-#line 462 "..\\..\\parser.y"
+#line 462 "..\\parser.y"
     { 
         (yyval.fieldValue)=fieldValue_constructor((char*) (yyvsp[(1) - (2)].string), (yyvsp[(2) - (2)].string), TYPE_STRUCT_STD, 0);
         if ((yyval.fieldValue) == NULL) {
@@ -2489,7 +2489,7 @@ yyreduce:
 
   case 54:
 /* Line 1792 of yacc.c  */
-#line 477 "..\\..\\parser.y"
+#line 477 "..\\parser.y"
     { 
         (yyval.fieldValue)=fieldValue_constructor((char*) (yyvsp[(1) - (2)].string), (yyvsp[(2) - (2)].string), TYPE_STRUCT_STD, 0);
         if ((yyval.fieldValue) == NULL) {
@@ -2503,7 +2503,7 @@ yyreduce:
 
   case 55:
 /* Line 1792 of yacc.c  */
-#line 491 "..\\..\\parser.y"
+#line 491 "..\\parser.y"
     { 
           (yyval.fieldValue)=fieldValue_constructor((yyvsp[(1) - (2)].string), (yyvsp[(2) - (2)].string), TYPE_STRUCT_STD, 0);
           if ((yyval.fieldValue) == NULL) {
@@ -2517,7 +2517,7 @@ yyreduce:
 
   case 56:
 /* Line 1792 of yacc.c  */
-#line 506 "..\\..\\parser.y"
+#line 506 "..\\parser.y"
     {
         pszInt = (char*) malloc(32);         
         sprintf(pszInt, "%d", (yyvsp[(1) - (1)].number));
@@ -2532,7 +2532,7 @@ yyreduce:
 
   case 57:
 /* Line 1792 of yacc.c  */
-#line 519 "..\\..\\parser.y"
+#line 519 "..\\parser.y"
     {
         char szType[] = "Z";
         pszInt = (char*) malloc(32);         
@@ -2553,14 +2553,14 @@ yyreduce:
 
   case 58:
 /* Line 1792 of yacc.c  */
-#line 538 "..\\..\\parser.y"
+#line 538 "..\\parser.y"
     {
 }
     break;
 
   case 59:
 /* Line 1792 of yacc.c  */
-#line 540 "..\\..\\parser.y"
+#line 540 "..\\parser.y"
     {
         
 }
@@ -2568,7 +2568,7 @@ yyreduce:
 
   case 60:
 /* Line 1792 of yacc.c  */
-#line 546 "..\\..\\parser.y"
+#line 546 "..\\parser.y"
     {
             /* Sort Fields */
         if (current_sortField==1) {
@@ -2597,7 +2597,7 @@ yyreduce:
 
   case 61:
 /* Line 1792 of yacc.c  */
-#line 570 "..\\..\\parser.y"
+#line 570 "..\\parser.y"
     {
         if (current_sortField==1) {
             struct sortField_t *sortField;
@@ -2614,7 +2614,7 @@ yyreduce:
 
   case 62:
 /* Line 1792 of yacc.c  */
-#line 585 "..\\..\\parser.y"
+#line 585 "..\\parser.y"
     {
         current_sortField=1;
         }
@@ -2622,7 +2622,7 @@ yyreduce:
 
   case 63:
 /* Line 1792 of yacc.c  */
-#line 587 "..\\..\\parser.y"
+#line 587 "..\\parser.y"
     {
         current_sortField=0;
         job_SetTypeOP('S');        /* for Sort */
@@ -2632,7 +2632,7 @@ yyreduce:
 
   case 64:
 /* Line 1792 of yacc.c  */
-#line 592 "..\\..\\parser.y"
+#line 592 "..\\parser.y"
     {
         job_SetTypeOP('C');        /* for Merge    */
         job_SetFieldCopy(1);
@@ -2643,7 +2643,7 @@ yyreduce:
 
   case 65:
 /* Line 1792 of yacc.c  */
-#line 600 "..\\..\\parser.y"
+#line 600 "..\\parser.y"
     {
         current_sortField=1;
         strcpy(szMexToken, " merge clause ");
@@ -2652,7 +2652,7 @@ yyreduce:
 
   case 66:
 /* Line 1792 of yacc.c  */
-#line 603 "..\\..\\parser.y"
+#line 603 "..\\parser.y"
     {
         current_sortField=0;
         /* typeOP = 'M'; // for Merge   */
@@ -2663,7 +2663,7 @@ yyreduce:
 
   case 67:
 /* Line 1792 of yacc.c  */
-#line 609 "..\\..\\parser.y"
+#line 609 "..\\parser.y"
     {
         job_SetTypeOP('C');
         job_SetFieldCopy(1);
@@ -2673,7 +2673,7 @@ yyreduce:
 
   case 68:
 /* Line 1792 of yacc.c  */
-#line 619 "..\\..\\parser.y"
+#line 619 "..\\parser.y"
     {
         nRecCase=JOIN_CASE;
         job_SetTypeOP('J');        /* for Join */
@@ -2700,7 +2700,7 @@ yyreduce:
 
   case 69:
 /* Line 1792 of yacc.c  */
-#line 640 "..\\..\\parser.y"
+#line 640 "..\\parser.y"
     {
         current_sortField=0;
         strcpy(szMexToken, " joinkeys clause ");        
@@ -2710,19 +2710,19 @@ yyreduce:
 
   case 70:
 /* Line 1792 of yacc.c  */
-#line 649 "..\\..\\parser.y"
+#line 649 "..\\parser.y"
     {}
     break;
 
   case 71:
 /* Line 1792 of yacc.c  */
-#line 650 "..\\..\\parser.y"
+#line 650 "..\\parser.y"
     {}
     break;
 
   case 72:
 /* Line 1792 of yacc.c  */
-#line 654 "..\\..\\parser.y"
+#line 654 "..\\parser.y"
     {
         strcpy(szMexToken, " join option sorted  ");
         join_IsSorted(current_filejoin, current_join);
@@ -2731,7 +2731,7 @@ yyreduce:
 
   case 73:
 /* Line 1792 of yacc.c  */
-#line 658 "..\\..\\parser.y"
+#line 658 "..\\parser.y"
     {
         strcpy(szMexToken, " join option noseqck  ");
         join_noSeqCk(current_filejoin, current_join);
@@ -2740,7 +2740,7 @@ yyreduce:
 
   case 74:
 /* Line 1792 of yacc.c  */
-#line 662 "..\\..\\parser.y"
+#line 662 "..\\parser.y"
     {
         strcpy(szMexToken, " join option stop after 1");
         join_stopAfter(current_filejoin, current_join, (yyvsp[(3) - (3)].llnumber));
@@ -2749,7 +2749,7 @@ yyreduce:
 
   case 75:
 /* Line 1792 of yacc.c  */
-#line 666 "..\\..\\parser.y"
+#line 666 "..\\parser.y"
     {
         strcpy(szMexToken, " join option stop after 2");
         join_stopAfter(current_filejoin, current_join, (yyvsp[(3) - (3)].number));
@@ -2758,7 +2758,7 @@ yyreduce:
 
   case 76:
 /* Line 1792 of yacc.c  */
-#line 690 "..\\..\\parser.y"
+#line 690 "..\\parser.y"
     {
         strcpy(szMexToken, " join unpaired clause ");
         join_setUnpaired(1, 'U');
@@ -2769,7 +2769,7 @@ yyreduce:
 
   case 77:
 /* Line 1792 of yacc.c  */
-#line 696 "..\\..\\parser.y"
+#line 696 "..\\parser.y"
     {
         strcpy(szMexToken, " join unpaired clause ");
         if (nOnly  == 0) {
@@ -2786,7 +2786,7 @@ yyreduce:
 
   case 78:
 /* Line 1792 of yacc.c  */
-#line 709 "..\\..\\parser.y"
+#line 709 "..\\parser.y"
     {
         strcpy(szMexToken, " join unpaired clause ");
         if (nOnly  == 0) {
@@ -2820,7 +2820,7 @@ yyreduce:
 
   case 79:
 /* Line 1792 of yacc.c  */
-#line 739 "..\\..\\parser.y"
+#line 739 "..\\parser.y"
     {          
         current_sortField=0;                                          
         strcpy(szMexToken, " sort clause ");                          
@@ -2840,7 +2840,7 @@ yyreduce:
 
   case 81:
 /* Line 1792 of yacc.c  */
-#line 757 "..\\..\\parser.y"
+#line 757 "..\\parser.y"
     {
         /* utils_SetOptionSort("ONLY", NULL, 0); */
         strcpy(szMexToken, " joinoptions ONLY clause ");
@@ -2850,7 +2850,7 @@ yyreduce:
 
   case 82:
 /* Line 1792 of yacc.c  */
-#line 777 "..\\..\\parser.y"
+#line 777 "..\\parser.y"
     {
         strcpy(szMexToken, " joinreformat clause ");
         /*  verify if mandatory current_outrec=1;  */
@@ -2861,7 +2861,7 @@ yyreduce:
 
   case 83:
 /* Line 1792 of yacc.c  */
-#line 782 "..\\..\\parser.y"
+#line 782 "..\\parser.y"
     {
         current_outrec=0;
         nRecCase=0;
@@ -2870,7 +2870,7 @@ yyreduce:
 
   case 85:
 /* Line 1792 of yacc.c  */
-#line 789 "..\\..\\parser.y"
+#line 789 "..\\parser.y"
     {
         current_outrec=0;
         nRecCase=0;
@@ -2884,7 +2884,7 @@ yyreduce:
 
   case 86:
 /* Line 1792 of yacc.c  */
-#line 805 "..\\..\\parser.y"
+#line 805 "..\\parser.y"
     {
         strcpy(szMexToken, " format clause ");
         nFieldType = (yyvsp[(3) - (3)].number);    /* save field type */
@@ -2899,7 +2899,7 @@ yyreduce:
 
   case 87:
 /* Line 1792 of yacc.c  */
-#line 816 "..\\..\\parser.y"
+#line 816 "..\\parser.y"
     {
         strcpy(szMexToken, " format clause substring ");
         if (nTypeFormat == 1)
@@ -2913,7 +2913,7 @@ yyreduce:
 
   case 88:
 /* Line 1792 of yacc.c  */
-#line 841 "..\\..\\parser.y"
+#line 841 "..\\parser.y"
     {
         (yyval.condField)=(yyvsp[(1) - (1)].condField);
 }
@@ -2921,7 +2921,7 @@ yyreduce:
 
   case 89:
 /* Line 1792 of yacc.c  */
-#line 844 "..\\..\\parser.y"
+#line 844 "..\\parser.y"
     {
         (yyval.condField)=(yyvsp[(2) - (3)].condField);
         strcpy(szMexToken, " condition field 01 ");
@@ -2930,7 +2930,7 @@ yyreduce:
 
   case 90:
 /* Line 1792 of yacc.c  */
-#line 848 "..\\..\\parser.y"
+#line 848 "..\\parser.y"
     {
         condField=condField_constructor_operation(COND_OPERATION_AND, (yyvsp[(1) - (3)].condField), (yyvsp[(3) - (3)].condField));
         (yyval.condField)=condField;
@@ -2944,7 +2944,7 @@ yyreduce:
 
   case 91:
 /* Line 1792 of yacc.c  */
-#line 857 "..\\..\\parser.y"
+#line 857 "..\\parser.y"
     {
         condField=condField_constructor_operation(COND_OPERATION_OR, (yyvsp[(1) - (3)].condField), (yyvsp[(3) - (3)].condField));
         (yyval.condField)=condField;
@@ -2958,7 +2958,7 @@ yyreduce:
 
   case 92:
 /* Line 1792 of yacc.c  */
-#line 875 "..\\..\\parser.y"
+#line 875 "..\\parser.y"
     {
         nTypeFormat = 2; /* Format external token   */
         condField=condField_constructor_conditionfield((yyvsp[(1) - (13)].number),(yyvsp[(3) - (13)].number),(yyvsp[(5) - (13)].number),(yyvsp[(7) - (13)].number),(yyvsp[(9) - (13)].number),(yyvsp[(11) - (13)].number),(yyvsp[(13) - (13)].number));
@@ -2973,7 +2973,7 @@ yyreduce:
 
   case 93:
 /* Line 1792 of yacc.c  */
-#line 891 "..\\..\\parser.y"
+#line 891 "..\\parser.y"
     {
         nTypeFormat = 2; /* Format external token   */
         condField=condField_constructor_conditionfield((yyvsp[(1) - (9)].number),(yyvsp[(3) - (9)].number),0,(yyvsp[(5) - (9)].number),(yyvsp[(7) - (9)].number),(yyvsp[(9) - (9)].number),0);
@@ -2988,7 +2988,7 @@ yyreduce:
 
   case 94:
 /* Line 1792 of yacc.c  */
-#line 905 "..\\..\\parser.y"
+#line 905 "..\\parser.y"
     {    
         (yyval.condField)=condField_constructor_condition((yyvsp[(1) - (9)].number),(yyvsp[(3) - (9)].number),(yyvsp[(5) - (9)].number),(yyvsp[(7) - (9)].number),(yyvsp[(9) - (9)].fieldValue));
         strcpy(szMexToken, " condition field 06 ");
@@ -3001,7 +3001,7 @@ yyreduce:
 
   case 95:
 /* Line 1792 of yacc.c  */
-#line 917 "..\\..\\parser.y"
+#line 917 "..\\parser.y"
     {
         (yyval.condField)=condField_constructor_condition((yyvsp[(1) - (9)].number),(yyvsp[(3) - (9)].number),(yyvsp[(5) - (9)].number),(yyvsp[(7) - (9)].number),(yyvsp[(9) - (9)].fieldValue));
         strcpy(szMexToken, " condition field 07 ");
@@ -3014,7 +3014,7 @@ yyreduce:
 
   case 96:
 /* Line 1792 of yacc.c  */
-#line 929 "..\\..\\parser.y"
+#line 929 "..\\parser.y"
     {    
         /* condField=condField_constructor_condition($1,$3,0,$5,(struct fieldValue_t *)$7); */
         condField=condField_constructor_condition((yyvsp[(1) - (7)].number),(yyvsp[(3) - (7)].number),nFieldType,(yyvsp[(5) - (7)].number),(struct fieldValue_t *)(yyvsp[(7) - (7)].fieldValue));
@@ -3030,7 +3030,7 @@ yyreduce:
 
   case 97:
 /* Line 1792 of yacc.c  */
-#line 944 "..\\..\\parser.y"
+#line 944 "..\\parser.y"
     {    
         /* condField=condField_constructor_condition($1,$3,0,$5,(struct fieldValue_t *)$7); */
         condField=condField_constructor_condition((yyvsp[(1) - (7)].number),(yyvsp[(3) - (7)].number),nFieldType,(yyvsp[(5) - (7)].number),(struct fieldValue_t *)(yyvsp[(7) - (7)].fieldValue)); 
@@ -3046,7 +3046,7 @@ yyreduce:
 
   case 98:
 /* Line 1792 of yacc.c  */
-#line 959 "..\\..\\parser.y"
+#line 959 "..\\parser.y"
     {    
         condField=condField_constructor_condition4Date((yyvsp[(1) - (9)].number),(yyvsp[(3) - (9)].number),(yyvsp[(5) - (9)].number),(yyvsp[(7) - (9)].number),(struct fieldValue_t *)(yyvsp[(9) - (9)].fieldValue));
         nTypeFormat = 2; /* Format external token   */
@@ -3061,7 +3061,7 @@ yyreduce:
 
   case 99:
 /* Line 1792 of yacc.c  */
-#line 977 "..\\..\\parser.y"
+#line 977 "..\\parser.y"
     { 
         nDateType = 1;
         time_t t = time(NULL);
@@ -3081,7 +3081,7 @@ yyreduce:
 
   case 100:
 /* Line 1792 of yacc.c  */
-#line 994 "..\\..\\parser.y"
+#line 994 "..\\parser.y"
     { 
         nDateType = 1;
         time_t t = time(NULL);
@@ -3109,7 +3109,7 @@ yyreduce:
 
   case 101:
 /* Line 1792 of yacc.c  */
-#line 1018 "..\\..\\parser.y"
+#line 1018 "..\\parser.y"
     {             /* Problem ++ to define datetype */
         nDateType = 2;
         time_t t = time(NULL);
@@ -3128,7 +3128,7 @@ yyreduce:
 
   case 102:
 /* Line 1792 of yacc.c  */
-#line 1034 "..\\..\\parser.y"
+#line 1034 "..\\parser.y"
     {             /* Problem ++ to define datetype */
         nDateType = 2;
         time_t t = time(NULL);
@@ -3159,7 +3159,7 @@ yyreduce:
 
   case 103:
 /* Line 1792 of yacc.c  */
-#line 1061 "..\\..\\parser.y"
+#line 1061 "..\\parser.y"
     { 
         nDateType = 3;
         time_t t = time(NULL);
@@ -3180,7 +3180,7 @@ yyreduce:
 
   case 104:
 /* Line 1792 of yacc.c  */
-#line 1079 "..\\..\\parser.y"
+#line 1079 "..\\parser.y"
     { 
         nDateType = 3;
         time_t t = time(NULL);
@@ -3208,7 +3208,7 @@ yyreduce:
 
   case 105:
 /* Line 1792 of yacc.c  */
-#line 1103 "..\\..\\parser.y"
+#line 1103 "..\\parser.y"
     { 
         nDateType = 4;
         time_t t = time(NULL);
@@ -3230,7 +3230,7 @@ yyreduce:
 
   case 106:
 /* Line 1792 of yacc.c  */
-#line 1123 "..\\..\\parser.y"
+#line 1123 "..\\parser.y"
     {
         if (nstate_outfil==1)
             condField_addOmitOutfil(current_outfil, (yyvsp[(3) - (3)].condField));
@@ -3243,7 +3243,7 @@ yyreduce:
 
   case 107:
 /* Line 1792 of yacc.c  */
-#line 1132 "..\\..\\parser.y"
+#line 1132 "..\\parser.y"
     {
         if (nstate_outfil==1)
             condField_addOmitOutfil(current_outfil, (yyvsp[(4) - (4)].condField));
@@ -3256,7 +3256,7 @@ yyreduce:
 
   case 108:
 /* Line 1792 of yacc.c  */
-#line 1144 "..\\..\\parser.y"
+#line 1144 "..\\parser.y"
     {
         if (nstate_outfil==1)
             condField_addIncludeOutfil(current_outfil, (yyvsp[(3) - (3)].condField));
@@ -3269,7 +3269,7 @@ yyreduce:
 
   case 109:
 /* Line 1792 of yacc.c  */
-#line 1153 "..\\..\\parser.y"
+#line 1153 "..\\parser.y"
     {
         if (nstate_outfil==1)
             condField_addIncludeOutfil(current_outfil, (yyvsp[(4) - (4)].condField));
@@ -3282,7 +3282,7 @@ yyreduce:
 
   case 110:
 /* Line 1792 of yacc.c  */
-#line 1177 "..\\..\\parser.y"
+#line 1177 "..\\parser.y"
     {
         condField_addInclude((yyvsp[(5) - (5)].condField));
         nTypeIncludeOmit = 1;
@@ -3292,7 +3292,7 @@ yyreduce:
 
   case 111:
 /* Line 1792 of yacc.c  */
-#line 1183 "..\\..\\parser.y"
+#line 1183 "..\\parser.y"
     {
         condField_addInclude((yyvsp[(6) - (6)].condField));
         nTypeIncludeOmit = 1;
@@ -3302,26 +3302,26 @@ yyreduce:
 
   case 112:
 /* Line 1792 of yacc.c  */
-#line 1195 "..\\..\\parser.y"
+#line 1195 "..\\parser.y"
     {    
 }
     break;
 
   case 113:
 /* Line 1792 of yacc.c  */
-#line 1197 "..\\..\\parser.y"
+#line 1197 "..\\parser.y"
     {    }
     break;
 
   case 114:
 /* Line 1792 of yacc.c  */
-#line 1198 "..\\..\\parser.y"
+#line 1198 "..\\parser.y"
     {}
     break;
 
   case 115:
 /* Line 1792 of yacc.c  */
-#line 1206 "..\\..\\parser.y"
+#line 1206 "..\\parser.y"
     {
         switch(nRecCase) {
         case OUTREC_CASE :
@@ -3397,7 +3397,7 @@ yyreduce:
 
   case 116:
 /* Line 1792 of yacc.c  */
-#line 1278 "..\\..\\parser.y"
+#line 1278 "..\\parser.y"
     {
         if (nRecCase == 3)
             strcpy(szMexToken, " join reformat clause ");
@@ -3417,7 +3417,7 @@ yyreduce:
 
   case 117:
 /* Line 1792 of yacc.c  */
-#line 1293 "..\\..\\parser.y"
+#line 1293 "..\\parser.y"
     {
             strcpy(szMexToken, " join reformat clause ");
             /* struct reformat_t * */
@@ -3446,7 +3446,7 @@ yyreduce:
 
   case 118:
 /* Line 1792 of yacc.c  */
-#line 1321 "..\\..\\parser.y"
+#line 1321 "..\\parser.y"
     {
         switch(nRecCase) {
         case OUTREC_CASE :
@@ -3491,7 +3491,7 @@ yyreduce:
 
   case 119:
 /* Line 1792 of yacc.c  */
-#line 1366 "..\\..\\parser.y"
+#line 1366 "..\\parser.y"
     {
         switch(nRecCase) {
         case OUTREC_CASE :
@@ -3532,7 +3532,7 @@ yyreduce:
 
   case 120:
 /* Line 1792 of yacc.c  */
-#line 1408 "..\\..\\parser.y"
+#line 1408 "..\\parser.y"
     {
         switch(nRecCase) {
         case OUTREC_CASE :
@@ -3576,7 +3576,7 @@ yyreduce:
 
   case 121:
 /* Line 1792 of yacc.c  */
-#line 1496 "..\\..\\parser.y"
+#line 1496 "..\\parser.y"
     {
         switch(nRecCase) {
         case OUTREC_CASE :
@@ -3622,7 +3622,7 @@ yyreduce:
 
   case 122:
 /* Line 1792 of yacc.c  */
-#line 1541 "..\\..\\parser.y"
+#line 1541 "..\\parser.y"
     {
         switch(nRecCase) {
         case OUTREC_CASE :
@@ -3676,7 +3676,7 @@ yyreduce:
 
   case 123:
 /* Line 1792 of yacc.c  */
-#line 1595 "..\\..\\parser.y"
+#line 1595 "..\\parser.y"
     {
         switch(nRecCase) {
         case OUTREC_CASE :
@@ -3719,7 +3719,7 @@ yyreduce:
 
   case 124:
 /* Line 1792 of yacc.c  */
-#line 1635 "..\\..\\parser.y"
+#line 1635 "..\\parser.y"
     {
         switch(nRecCase) {
         case OUTREC_CASE :
@@ -3776,7 +3776,7 @@ yyreduce:
 
   case 125:
 /* Line 1792 of yacc.c  */
-#line 1689 "..\\..\\parser.y"
+#line 1689 "..\\parser.y"
     {
           switch(nRecCase) {
         case OUTREC_CASE :
@@ -3872,7 +3872,7 @@ yyreduce:
 
   case 126:
 /* Line 1792 of yacc.c  */
-#line 1780 "..\\..\\parser.y"
+#line 1780 "..\\parser.y"
     {
         switch(nRecCase) {
         case OUTREC_CASE :
@@ -3968,7 +3968,7 @@ yyreduce:
 
   case 127:
 /* Line 1792 of yacc.c  */
-#line 1871 "..\\..\\parser.y"
+#line 1871 "..\\parser.y"
     {
         switch(nRecCase) {
         case OUTREC_CASE :
@@ -4068,7 +4068,7 @@ yyreduce:
 
   case 128:
 /* Line 1792 of yacc.c  */
-#line 1970 "..\\..\\parser.y"
+#line 1970 "..\\parser.y"
     { 
         strcpy(szMexToken, " findrep_options instruction ");
 }
@@ -4076,13 +4076,13 @@ yyreduce:
 
   case 129:
 /* Line 1792 of yacc.c  */
-#line 1973 "..\\..\\parser.y"
+#line 1973 "..\\parser.y"
     {}
     break;
 
   case 131:
 /* Line 1792 of yacc.c  */
-#line 1977 "..\\..\\parser.y"
+#line 1977 "..\\parser.y"
     {
         if (findrep == NULL) {
              findrep = findrep_constructor (FINDREP_TYPE_INOUT);
@@ -4108,7 +4108,7 @@ yyreduce:
 
   case 132:
 /* Line 1792 of yacc.c  */
-#line 1998 "..\\..\\parser.y"
+#line 1998 "..\\parser.y"
     {
         if (findrep == NULL) {
              findrep = findrep_constructor (FINDREP_TYPE_INOUT);
@@ -4134,7 +4134,7 @@ yyreduce:
 
   case 133:
 /* Line 1792 of yacc.c  */
-#line 2019 "..\\..\\parser.y"
+#line 2019 "..\\parser.y"
     {
         if (findrep == NULL) {
              findrep = findrep_constructor (FINDREP_TYPE_INOUT);
@@ -4160,7 +4160,7 @@ yyreduce:
 
   case 134:
 /* Line 1792 of yacc.c  */
-#line 2040 "..\\..\\parser.y"
+#line 2040 "..\\parser.y"
     {
         if (findrep == NULL) {
              findrep = findrep_constructor (FINDREP_TYPE_INOUT);
@@ -4186,7 +4186,7 @@ yyreduce:
 
   case 135:
 /* Line 1792 of yacc.c  */
-#line 2062 "..\\..\\parser.y"
+#line 2062 "..\\parser.y"
     {
         nTmp = 1;
         if (findrep == NULL) {
@@ -4216,7 +4216,7 @@ yyreduce:
 
   case 136:
 /* Line 1792 of yacc.c  */
-#line 2087 "..\\..\\parser.y"
+#line 2087 "..\\parser.y"
     {
         nTmp = 1;
         if (findrep == NULL) {
@@ -4246,7 +4246,7 @@ yyreduce:
 
   case 137:
 /* Line 1792 of yacc.c  */
-#line 2114 "..\\..\\parser.y"
+#line 2114 "..\\parser.y"
     { 
         strcpy(szMexToken, " allfieldvaluerec instruction ");
         if (findrep_field == NULL) {
@@ -4262,7 +4262,7 @@ yyreduce:
 
   case 138:
 /* Line 1792 of yacc.c  */
-#line 2126 "..\\..\\parser.y"
+#line 2126 "..\\parser.y"
     {
         strcpy(szMexToken, " allfieldvaluerec instruction 2");
         if (findrep_field == NULL) {
@@ -4278,7 +4278,7 @@ yyreduce:
 
   case 139:
 /* Line 1792 of yacc.c  */
-#line 2141 "..\\..\\parser.y"
+#line 2141 "..\\parser.y"
     { 
         strcpy(szMexToken, " inoutfieldvaluerec instruction ");
         if (nSwitchFR == 0) {
@@ -4303,7 +4303,7 @@ yyreduce:
 
   case 140:
 /* Line 1792 of yacc.c  */
-#line 2162 "..\\..\\parser.y"
+#line 2162 "..\\parser.y"
     {
         strcpy(szMexToken, " inoutfieldvaluerec instruction 2");
         if (nSwitchFR == 0) {
@@ -4348,7 +4348,7 @@ yyreduce:
 
   case 141:
 /* Line 1792 of yacc.c  */
-#line 2209 "..\\..\\parser.y"
+#line 2209 "..\\parser.y"
     { 
         /* define struct for change field */
         
@@ -4372,7 +4372,7 @@ yyreduce:
 
   case 142:
 /* Line 1792 of yacc.c  */
-#line 2229 "..\\..\\parser.y"
+#line 2229 "..\\parser.y"
     { 
         /* define struct for change field */       
         struct change_t* chg = change_constructor((yyvsp[(3) - (13)].number));
@@ -4395,7 +4395,7 @@ yyreduce:
 
   case 143:
 /* Line 1792 of yacc.c  */
-#line 2250 "..\\..\\parser.y"
+#line 2250 "..\\parser.y"
     { 
         /* define struct for change field */
         
@@ -4419,7 +4419,7 @@ yyreduce:
 
   case 144:
 /* Line 1792 of yacc.c  */
-#line 2271 "..\\..\\parser.y"
+#line 2271 "..\\parser.y"
     { 
         strcpy(szMexToken, " changepairdet instruction ");
         (yyval.changefield)=(yyvsp[(1) - (1)].changefield);
@@ -4428,13 +4428,13 @@ yyreduce:
 
   case 145:
 /* Line 1792 of yacc.c  */
-#line 2275 "..\\..\\parser.y"
+#line 2275 "..\\parser.y"
     {}
     break;
 
   case 146:
 /* Line 1792 of yacc.c  */
-#line 2283 "..\\..\\parser.y"
+#line 2283 "..\\parser.y"
     { 
         /* $$=changefield_constructor((char*) $2, $5); */
         /* verify      CHARTCOND  vs CHARTYPE */     
@@ -4469,7 +4469,7 @@ yyreduce:
 
   case 147:
 /* Line 1792 of yacc.c  */
-#line 2314 "..\\..\\parser.y"
+#line 2314 "..\\parser.y"
     { 
         /* verify      CHARTCOND  vs CHARTYPE */     
         struct fieldValue_t* fv1 = fieldValue_constructor((char*) (yyvsp[(1) - (6)].string), (yyvsp[(2) - (6)].string), TYPE_STRUCT_STD, 0);
@@ -4495,7 +4495,7 @@ yyreduce:
 
   case 148:
 /* Line 1792 of yacc.c  */
-#line 2342 "..\\..\\parser.y"
+#line 2342 "..\\parser.y"
     { 
         /* $$=changefield_constructor((char*) $2, $5); */
         (yyval.fieldValue)=fieldValue_constructor((char*) (yyvsp[(1) - (2)].string), (yyvsp[(2) - (2)].string), TYPE_STRUCT_STD, 0);
@@ -4510,7 +4510,7 @@ yyreduce:
 
   case 149:
 /* Line 1792 of yacc.c  */
-#line 2357 "..\\..\\parser.y"
+#line 2357 "..\\parser.y"
     {
         strcpy(szMexToken, " outrec clause ");
         current_outrec=1;
@@ -4521,7 +4521,7 @@ yyreduce:
 
   case 150:
 /* Line 1792 of yacc.c  */
-#line 2362 "..\\..\\parser.y"
+#line 2362 "..\\parser.y"
     {
         current_outrec=0;
         nRecCase=0;
@@ -4530,7 +4530,7 @@ yyreduce:
 
   case 151:
 /* Line 1792 of yacc.c  */
-#line 2368 "..\\..\\parser.y"
+#line 2368 "..\\parser.y"
     {
         strcpy(szMexToken, " outrec clause ");
         current_outrec=1;
@@ -4541,7 +4541,7 @@ yyreduce:
 
   case 152:
 /* Line 1792 of yacc.c  */
-#line 2373 "..\\..\\parser.y"
+#line 2373 "..\\parser.y"
     {
         current_outrec=0;
         nRecCase=0;
@@ -4550,7 +4550,7 @@ yyreduce:
 
   case 153:
 /* Line 1792 of yacc.c  */
-#line 2378 "..\\..\\parser.y"
+#line 2378 "..\\parser.y"
     {
         strcpy(szMexToken, " outrec clause BUILD ");
         current_outrec=1;
@@ -4561,7 +4561,7 @@ yyreduce:
 
   case 154:
 /* Line 1792 of yacc.c  */
-#line 2383 "..\\..\\parser.y"
+#line 2383 "..\\parser.y"
     {
         current_outrec=0;
         nRecCase=0;
@@ -4571,7 +4571,7 @@ yyreduce:
 
   case 155:
 /* Line 1792 of yacc.c  */
-#line 2389 "..\\..\\parser.y"
+#line 2389 "..\\parser.y"
     {
         strcpy(szMexToken, " outrec clause BUILD ");
         current_outrec=1;
@@ -4582,7 +4582,7 @@ yyreduce:
 
   case 156:
 /* Line 1792 of yacc.c  */
-#line 2394 "..\\..\\parser.y"
+#line 2394 "..\\parser.y"
     {
         current_outrec=0;
         nRecCase=0;
@@ -4591,7 +4591,7 @@ yyreduce:
 
   case 157:
 /* Line 1792 of yacc.c  */
-#line 2399 "..\\..\\parser.y"
+#line 2399 "..\\parser.y"
     {
         strcpy(szMexToken, " outrec clause Overlay ");
         current_outrec=1;
@@ -4602,7 +4602,7 @@ yyreduce:
 
   case 158:
 /* Line 1792 of yacc.c  */
-#line 2404 "..\\..\\parser.y"
+#line 2404 "..\\parser.y"
     {
         current_outrec=0;
         nRecCase=0;
@@ -4613,7 +4613,7 @@ yyreduce:
 
   case 159:
 /* Line 1792 of yacc.c  */
-#line 2411 "..\\..\\parser.y"
+#line 2411 "..\\parser.y"
     {
         strcpy(szMexToken, " outrec clause Overlay ");
         current_outrec=1;
@@ -4624,7 +4624,7 @@ yyreduce:
 
   case 160:
 /* Line 1792 of yacc.c  */
-#line 2416 "..\\..\\parser.y"
+#line 2416 "..\\parser.y"
     {
         current_outrec=0;
         nRecCase=0;
@@ -4635,7 +4635,7 @@ yyreduce:
 
   case 161:
 /* Line 1792 of yacc.c  */
-#line 2422 "..\\..\\parser.y"
+#line 2422 "..\\parser.y"
     {
         strcpy(szMexToken, " outrec clause FINDREP ");
         current_outrec=1;
@@ -4646,7 +4646,7 @@ yyreduce:
 
   case 162:
 /* Line 1792 of yacc.c  */
-#line 2427 "..\\..\\parser.y"
+#line 2427 "..\\parser.y"
     {
         current_outrec=0;
         nRecCase=0;
@@ -4656,7 +4656,7 @@ yyreduce:
 
   case 163:
 /* Line 1792 of yacc.c  */
-#line 2432 "..\\..\\parser.y"
+#line 2432 "..\\parser.y"
     {
         strcpy(szMexToken, " outrec clause FINDREP ");
         current_outrec=1;
@@ -4667,7 +4667,7 @@ yyreduce:
 
   case 164:
 /* Line 1792 of yacc.c  */
-#line 2437 "..\\..\\parser.y"
+#line 2437 "..\\parser.y"
     {     /* 202509 */
         current_outrec=0;
         nRecCase=0;
@@ -4677,7 +4677,7 @@ yyreduce:
 
   case 165:
 /* Line 1792 of yacc.c  */
-#line 2443 "..\\..\\parser.y"
+#line 2443 "..\\parser.y"
     {
         strcpy(szMexToken, " outrec clause FINDREP ");
         current_outrec=1;
@@ -4688,7 +4688,7 @@ yyreduce:
 
   case 166:
 /* Line 1792 of yacc.c  */
-#line 2448 "..\\..\\parser.y"
+#line 2448 "..\\parser.y"
     {
         current_outrec=0;
         nRecCase=0;
@@ -4697,7 +4697,7 @@ yyreduce:
 
   case 167:
 /* Line 1792 of yacc.c  */
-#line 2458 "..\\..\\parser.y"
+#line 2458 "..\\parser.y"
     {
         current_outrec=1;
         nRecCase=OUTREC_CASE;
@@ -4708,7 +4708,7 @@ yyreduce:
 
   case 168:
 /* Line 1792 of yacc.c  */
-#line 2463 "..\\..\\parser.y"
+#line 2463 "..\\parser.y"
     {
         current_outrec=0;
         nRecCase=0;
@@ -4717,7 +4717,7 @@ yyreduce:
 
   case 169:
 /* Line 1792 of yacc.c  */
-#line 2468 "..\\..\\parser.y"
+#line 2468 "..\\parser.y"
     {
         current_outrec=1;
         nRecCase=OUTREC_CASE;
@@ -4728,7 +4728,7 @@ yyreduce:
 
   case 170:
 /* Line 1792 of yacc.c  */
-#line 2473 "..\\..\\parser.y"
+#line 2473 "..\\parser.y"
     {
         current_outrec=0;
         nRecCase=0;
@@ -4737,7 +4737,7 @@ yyreduce:
 
   case 171:
 /* Line 1792 of yacc.c  */
-#line 2482 "..\\..\\parser.y"
+#line 2482 "..\\parser.y"
     {
         strcpy(szMexToken, " inrec clause ");
         current_inrec=1;
@@ -4748,7 +4748,7 @@ yyreduce:
 
   case 172:
 /* Line 1792 of yacc.c  */
-#line 2487 "..\\..\\parser.y"
+#line 2487 "..\\parser.y"
     {
         current_inrec=0;
         nRecCase=0;
@@ -4757,7 +4757,7 @@ yyreduce:
 
   case 173:
 /* Line 1792 of yacc.c  */
-#line 2492 "..\\..\\parser.y"
+#line 2492 "..\\parser.y"
     {
         strcpy(szMexToken, " inrec clause ");
         current_inrec=1;
@@ -4768,7 +4768,7 @@ yyreduce:
 
   case 174:
 /* Line 1792 of yacc.c  */
-#line 2497 "..\\..\\parser.y"
+#line 2497 "..\\parser.y"
     {
         current_inrec=0;
         nRecCase=0;
@@ -4777,7 +4777,7 @@ yyreduce:
 
   case 175:
 /* Line 1792 of yacc.c  */
-#line 2502 "..\\..\\parser.y"
+#line 2502 "..\\parser.y"
     {
         strcpy(szMexToken, " inrec clause ");
         current_inrec=1;
@@ -4788,7 +4788,7 @@ yyreduce:
 
   case 176:
 /* Line 1792 of yacc.c  */
-#line 2507 "..\\..\\parser.y"
+#line 2507 "..\\parser.y"
     {
         current_inrec=0;
         nRecCase=0;
@@ -4797,7 +4797,7 @@ yyreduce:
 
   case 177:
 /* Line 1792 of yacc.c  */
-#line 2512 "..\\..\\parser.y"
+#line 2512 "..\\parser.y"
     {
         strcpy(szMexToken, " inrec clause ");
         current_inrec=1;
@@ -4808,7 +4808,7 @@ yyreduce:
 
   case 178:
 /* Line 1792 of yacc.c  */
-#line 2517 "..\\..\\parser.y"
+#line 2517 "..\\parser.y"
     {
             current_inrec=0;
             nRecCase=0;
@@ -4817,7 +4817,7 @@ yyreduce:
 
   case 179:
 /* Line 1792 of yacc.c  */
-#line 2522 "..\\..\\parser.y"
+#line 2522 "..\\parser.y"
     {
         strcpy(szMexToken, " inrec clause Overlay");
         current_inrec=1;
@@ -4828,7 +4828,7 @@ yyreduce:
 
   case 180:
 /* Line 1792 of yacc.c  */
-#line 2527 "..\\..\\parser.y"
+#line 2527 "..\\parser.y"
     {
         current_inrec=0;
         nRecCase=0;
@@ -4839,7 +4839,7 @@ yyreduce:
 
   case 181:
 /* Line 1792 of yacc.c  */
-#line 2534 "..\\..\\parser.y"
+#line 2534 "..\\parser.y"
     {
         strcpy(szMexToken, " inrec clause Overlay");
         current_inrec=1;
@@ -4850,7 +4850,7 @@ yyreduce:
 
   case 182:
 /* Line 1792 of yacc.c  */
-#line 2539 "..\\..\\parser.y"
+#line 2539 "..\\parser.y"
     {
         current_inrec=0;
         nRecCase=0;
@@ -4861,7 +4861,7 @@ yyreduce:
 
   case 183:
 /* Line 1792 of yacc.c  */
-#line 2545 "..\\..\\parser.y"
+#line 2545 "..\\parser.y"
     {
         strcpy(szMexToken, " inrec clause FINDREP ");
         current_inrec=1;
@@ -4872,7 +4872,7 @@ yyreduce:
 
   case 184:
 /* Line 1792 of yacc.c  */
-#line 2550 "..\\..\\parser.y"
+#line 2550 "..\\parser.y"
     {
         current_inrec=0;
         nRecCase=0;
@@ -4882,7 +4882,7 @@ yyreduce:
 
   case 185:
 /* Line 1792 of yacc.c  */
-#line 2555 "..\\..\\parser.y"
+#line 2555 "..\\parser.y"
     {
         strcpy(szMexToken, " inrec clause FINDREP ");
         current_inrec=1;
@@ -4893,7 +4893,7 @@ yyreduce:
 
   case 186:
 /* Line 1792 of yacc.c  */
-#line 2560 "..\\..\\parser.y"
+#line 2560 "..\\parser.y"
     {     /* 202509 */
         current_inrec=0;
         nRecCase=0;
@@ -4903,7 +4903,7 @@ yyreduce:
 
   case 187:
 /* Line 1792 of yacc.c  */
-#line 2566 "..\\..\\parser.y"
+#line 2566 "..\\parser.y"
     {
         strcpy(szMexToken, " inrec clause FINDREP ");
         current_inrec=1;
@@ -4914,7 +4914,7 @@ yyreduce:
 
   case 188:
 /* Line 1792 of yacc.c  */
-#line 2571 "..\\..\\parser.y"
+#line 2571 "..\\parser.y"
     {
         current_inrec=0;
         nRecCase=0;
@@ -4923,7 +4923,7 @@ yyreduce:
 
   case 189:
 /* Line 1792 of yacc.c  */
-#line 2580 "..\\..\\parser.y"
+#line 2580 "..\\parser.y"
     {
         strcpy(szMexToken, " build clause ");
         /* current_inrec=1;         */
@@ -4934,7 +4934,7 @@ yyreduce:
 
   case 190:
 /* Line 1792 of yacc.c  */
-#line 2585 "..\\..\\parser.y"
+#line 2585 "..\\parser.y"
     {
         /*  current_inrec=0;    */
         nRecCase=0;
@@ -4943,19 +4943,19 @@ yyreduce:
 
   case 191:
 /* Line 1792 of yacc.c  */
-#line 2591 "..\\..\\parser.y"
+#line 2591 "..\\parser.y"
     {}
     break;
 
   case 192:
 /* Line 1792 of yacc.c  */
-#line 2592 "..\\..\\parser.y"
+#line 2592 "..\\parser.y"
     {}
     break;
 
   case 193:
 /* Line 1792 of yacc.c  */
-#line 2595 "..\\..\\parser.y"
+#line 2595 "..\\parser.y"
     {
         struct SumField_t *SumField=SumField_constructor((yyvsp[(1) - (3)].number), (yyvsp[(3) - (3)].number), 0);
         if (SumField == NULL) {
@@ -4970,7 +4970,7 @@ yyreduce:
 
   case 194:
 /* Line 1792 of yacc.c  */
-#line 2605 "..\\..\\parser.y"
+#line 2605 "..\\parser.y"
     {
             struct SumField_t *SumField1=SumField_constructor((yyvsp[(1) - (7)].number), (yyvsp[(3) - (7)].number), 0);
             struct SumField_t *SumField2=SumField_constructor((yyvsp[(5) - (7)].number), (yyvsp[(7) - (7)].number), 0);
@@ -4992,7 +4992,7 @@ yyreduce:
 
   case 195:
 /* Line 1792 of yacc.c  */
-#line 2622 "..\\..\\parser.y"
+#line 2622 "..\\parser.y"
     {
         struct SumField_t *SumField=SumField_constructor((yyvsp[(1) - (5)].number), (yyvsp[(3) - (5)].number), (yyvsp[(5) - (5)].number));
         if (SumField == NULL) {
@@ -5006,7 +5006,7 @@ yyreduce:
 
   case 196:
 /* Line 1792 of yacc.c  */
-#line 2634 "..\\..\\parser.y"
+#line 2634 "..\\parser.y"
     {
         SumField_setFunction(1);
         strcpy(szMexToken, " sum fields clause ");
@@ -5015,7 +5015,7 @@ yyreduce:
 
   case 197:
 /* Line 1792 of yacc.c  */
-#line 2638 "..\\..\\parser.y"
+#line 2638 "..\\parser.y"
     {
         SumField_setFunction(1);
         strcpy(szMexToken, " sum fields clause ");
@@ -5026,7 +5026,7 @@ yyreduce:
 
   case 198:
 /* Line 1792 of yacc.c  */
-#line 2644 "..\\..\\parser.y"
+#line 2644 "..\\parser.y"
     {
         SumField_setFunction(1);
         strcpy(szMexToken, " sum fields clause ");
@@ -5048,7 +5048,7 @@ yyreduce:
 
   case 199:
 /* Line 1792 of yacc.c  */
-#line 2661 "..\\..\\parser.y"
+#line 2661 "..\\parser.y"
     {
         strcpy(szMexToken, " sum fields clause ");
         SumField_setFunction(2);
@@ -5057,7 +5057,7 @@ yyreduce:
 
   case 200:
 /* Line 1792 of yacc.c  */
-#line 2665 "..\\..\\parser.y"
+#line 2665 "..\\parser.y"
     {
         strcpy(szMexToken, " sum fields clause ");
         SumField_setFunction(2);
@@ -5068,7 +5068,7 @@ yyreduce:
 
   case 201:
 /* Line 1792 of yacc.c  */
-#line 2671 "..\\..\\parser.y"
+#line 2671 "..\\parser.y"
     {
         strcpy(szMexToken, " sum fields clause ");
         SumField_setFunction(2);
@@ -5090,7 +5090,7 @@ yyreduce:
 
   case 202:
 /* Line 1792 of yacc.c  */
-#line 2691 "..\\..\\parser.y"
+#line 2691 "..\\parser.y"
     {
         /*  printf("GCSORT: Warning Token skipped : %s\n",yylval.string);   */
 }
@@ -5098,7 +5098,7 @@ yyreduce:
 
   case 203:
 /* Line 1792 of yacc.c  */
-#line 2697 "..\\..\\parser.y"
+#line 2697 "..\\parser.y"
     {
         struct file_t *file;
         file=file_constructor((yyvsp[(1) - (1)].string));
@@ -5121,7 +5121,7 @@ yyreduce:
 
   case 204:
 /* Line 1792 of yacc.c  */
-#line 2718 "..\\..\\parser.y"
+#line 2718 "..\\parser.y"
     {
         strcpy(szMexToken, " group files outfil ");
 }
@@ -5129,21 +5129,21 @@ yyreduce:
 
   case 205:
 /* Line 1792 of yacc.c  */
-#line 2724 "..\\..\\parser.y"
+#line 2724 "..\\parser.y"
     {
 }
     break;
 
   case 206:
 /* Line 1792 of yacc.c  */
-#line 2726 "..\\..\\parser.y"
+#line 2726 "..\\parser.y"
     {
 }
     break;
 
   case 207:
 /* Line 1792 of yacc.c  */
-#line 2728 "..\\..\\parser.y"
+#line 2728 "..\\parser.y"
     {
        utils_SetOptionSort("SPLIT", current_outfil, 0);
        strcpy(szMexToken, " option SPLIT clause ");
@@ -5152,7 +5152,7 @@ yyreduce:
 
   case 208:
 /* Line 1792 of yacc.c  */
-#line 2732 "..\\..\\parser.y"
+#line 2732 "..\\parser.y"
     {
        utils_SetOptionSort("SPLITBY", current_outfil, (yyvsp[(2) - (2)].number));
        strcpy(szMexToken, " option SPLITBY clause ");
@@ -5161,7 +5161,7 @@ yyreduce:
 
   case 209:
 /* Line 1792 of yacc.c  */
-#line 2738 "..\\..\\parser.y"
+#line 2738 "..\\parser.y"
     {
         if (nRecCase == JOIN_CASE) {
             if (current_join != NULL)       /* Join */
@@ -5176,7 +5176,7 @@ yyreduce:
 
   case 210:
 /* Line 1792 of yacc.c  */
-#line 2750 "..\\..\\parser.y"
+#line 2750 "..\\parser.y"
     {
         if (nRecCase == JOIN_CASE) {
             if (current_join != NULL)       /* Join */
@@ -5191,7 +5191,7 @@ yyreduce:
 
   case 211:
 /* Line 1792 of yacc.c  */
-#line 2762 "..\\..\\parser.y"
+#line 2762 "..\\parser.y"
     {
         struct outfil_t *outfil=outfil_constructor();
         if (outfil == NULL) {
@@ -5210,7 +5210,7 @@ yyreduce:
 
   case 212:
 /* Line 1792 of yacc.c  */
-#line 2778 "..\\..\\parser.y"
+#line 2778 "..\\parser.y"
     {
         if (current_outfil != NULL)
             outfil_SetStartRec(current_outfil, (yyvsp[(3) - (3)].llnumber));
@@ -5220,7 +5220,7 @@ yyreduce:
 
   case 213:
 /* Line 1792 of yacc.c  */
-#line 2783 "..\\..\\parser.y"
+#line 2783 "..\\parser.y"
     {
         if (current_outfil != NULL)
             outfil_SetStartRec(current_outfil, (yyvsp[(3) - (3)].number));
@@ -5230,7 +5230,7 @@ yyreduce:
 
   case 214:
 /* Line 1792 of yacc.c  */
-#line 2791 "..\\..\\parser.y"
+#line 2791 "..\\parser.y"
     {
         if (current_outfil != NULL)
             outfil_SetEndRec(current_outfil, (yyvsp[(3) - (3)].llnumber));
@@ -5240,7 +5240,7 @@ yyreduce:
 
   case 215:
 /* Line 1792 of yacc.c  */
-#line 2796 "..\\..\\parser.y"
+#line 2796 "..\\parser.y"
     {
         if (current_outfil != NULL)
             outfil_SetEndRec(current_outfil, (yyvsp[(3) - (3)].number));
@@ -5250,7 +5250,7 @@ yyreduce:
 
   case 216:
 /* Line 1792 of yacc.c  */
-#line 2803 "..\\..\\parser.y"
+#line 2803 "..\\parser.y"
     {
         if (current_outfil != NULL)
             outfil_SetSave(current_outfil);
@@ -5260,19 +5260,19 @@ yyreduce:
 
   case 217:
 /* Line 1792 of yacc.c  */
-#line 2812 "..\\..\\parser.y"
+#line 2812 "..\\parser.y"
     {}
     break;
 
   case 218:
 /* Line 1792 of yacc.c  */
-#line 2814 "..\\..\\parser.y"
+#line 2814 "..\\parser.y"
     {}
     break;
 
   case 219:
 /* Line 1792 of yacc.c  */
-#line 2817 "..\\..\\parser.y"
+#line 2817 "..\\parser.y"
     {
         utils_SetOptionSort("COPY", NULL, 0);
         strcpy(szMexToken, " option copy clause ");
@@ -5281,7 +5281,7 @@ yyreduce:
 
   case 220:
 /* Line 1792 of yacc.c  */
-#line 2821 "..\\..\\parser.y"
+#line 2821 "..\\parser.y"
     {
         utils_SetOptionSortNum("SKIPREC", (yyvsp[(3) - (3)].llnumber));
         strcpy(szMexToken, " option skip rec clause ");
@@ -5290,7 +5290,7 @@ yyreduce:
 
   case 221:
 /* Line 1792 of yacc.c  */
-#line 2825 "..\\..\\parser.y"
+#line 2825 "..\\parser.y"
     {
         utils_SetOptionSortNum("SKIPREC", (yyvsp[(3) - (3)].number));
         strcpy(szMexToken, " option skip rec clause ");
@@ -5299,7 +5299,7 @@ yyreduce:
 
   case 222:
 /* Line 1792 of yacc.c  */
-#line 2829 "..\\..\\parser.y"
+#line 2829 "..\\parser.y"
     {
         utils_SetOptionSortNum("STOPAFT", (yyvsp[(3) - (3)].llnumber));
         strcpy(szMexToken, " option stop after clause ");
@@ -5308,7 +5308,7 @@ yyreduce:
 
   case 223:
 /* Line 1792 of yacc.c  */
-#line 2833 "..\\..\\parser.y"
+#line 2833 "..\\parser.y"
     {
         utils_SetOptionSortNum("STOPAFT", (yyvsp[(3) - (3)].number));
         strcpy(szMexToken, " option stop after clause ");
@@ -5317,7 +5317,7 @@ yyreduce:
 
   case 224:
 /* Line 1792 of yacc.c  */
-#line 2837 "..\\..\\parser.y"
+#line 2837 "..\\parser.y"
     {
         utils_SetOptionSort("VLSCMP", NULL, 0);
         strcpy(szMexToken, " option VLSCMP clause ");
@@ -5326,7 +5326,7 @@ yyreduce:
 
   case 225:
 /* Line 1792 of yacc.c  */
-#line 2841 "..\\..\\parser.y"
+#line 2841 "..\\parser.y"
     {
         utils_SetOptionSort("VLSHRT", NULL, 0);
         strcpy(szMexToken, " option VLSCMP clause ");
@@ -5335,7 +5335,7 @@ yyreduce:
 
   case 226:
 /* Line 1792 of yacc.c  */
-#line 2845 "..\\..\\parser.y"
+#line 2845 "..\\parser.y"
     {
         utils_SetOptionY2Past("Y2PAST", (yyvsp[(3) - (3)].number));
         strcpy(szMexToken, " option y2past clause ");
@@ -5344,7 +5344,7 @@ yyreduce:
 
   case 227:
 /* Line 1792 of yacc.c  */
-#line 2850 "..\\..\\parser.y"
+#line 2850 "..\\parser.y"
     {
         utils_SetOptionExRoutine("MODS", (yyvsp[(2) - (6)].string), (yyvsp[(5) - (6)].string));
         strcpy(szMexToken, " option MODS E15 clause 1");
@@ -5355,7 +5355,7 @@ yyreduce:
 
   case 228:
 /* Line 1792 of yacc.c  */
-#line 2857 "..\\..\\parser.y"
+#line 2857 "..\\parser.y"
     {
         utils_SetOptionExRoutine("MODS", (yyvsp[(2) - (6)].string), (yyvsp[(5) - (6)].string));
         strcpy(szMexToken, " option MODS E15 clause 1");
@@ -5366,7 +5366,7 @@ yyreduce:
 
   case 229:
 /* Line 1792 of yacc.c  */
-#line 2863 "..\\..\\parser.y"
+#line 2863 "..\\parser.y"
     {
         utils_SetOptionExRoutine("MODS", (yyvsp[(2) - (8)].string), (yyvsp[(5) - (8)].string));
         strcpy(szMexToken, " option MODS E15 clause 2");
@@ -5377,7 +5377,7 @@ yyreduce:
 
   case 230:
 /* Line 1792 of yacc.c  */
-#line 2869 "..\\..\\parser.y"
+#line 2869 "..\\parser.y"
     {
         utils_SetOptionExRoutine("MODS", (yyvsp[(2) - (10)].string), (yyvsp[(5) - (10)].string));
         strcpy(szMexToken, " option MODS E15 clause 3");
@@ -5389,7 +5389,7 @@ yyreduce:
 
   case 231:
 /* Line 1792 of yacc.c  */
-#line 2876 "..\\..\\parser.y"
+#line 2876 "..\\parser.y"
     {
         utils_SetOptionExRoutine("MODS", (yyvsp[(2) - (8)].string), (yyvsp[(5) - (8)].string));
         strcpy(szMexToken, " option MODS E15 clause 2");
@@ -5400,7 +5400,7 @@ yyreduce:
 
   case 232:
 /* Line 1792 of yacc.c  */
-#line 2882 "..\\..\\parser.y"
+#line 2882 "..\\parser.y"
     {
         utils_SetOptionExRoutine("MODS", (yyvsp[(2) - (10)].string), (yyvsp[(5) - (10)].string));
         strcpy(szMexToken, " option MODS E15 clause 3");
@@ -5412,7 +5412,7 @@ yyreduce:
 
   case 233:
 /* Line 1792 of yacc.c  */
-#line 2890 "..\\..\\parser.y"
+#line 2890 "..\\parser.y"
     {
         printf("GCSORT - Warning - Token skipped : REMOVECC in OPTION\n");
     }
@@ -5420,7 +5420,7 @@ yyreduce:
 
   case 234:
 /* Line 1792 of yacc.c  */
-#line 2896 "..\\..\\parser.y"
+#line 2896 "..\\parser.y"
     {
         printf("GCSORT - Warning - Token skipped : EQUALS in OPTION\n");
     }
@@ -5428,7 +5428,7 @@ yyreduce:
 
   case 235:
 /* Line 1792 of yacc.c  */
-#line 2899 "..\\..\\parser.y"
+#line 2899 "..\\parser.y"
     {
         printf("GCSORT - Warning - Token skipped : NOEQUALS in OPTION\n");
     }
@@ -5436,7 +5436,7 @@ yyreduce:
 
   case 236:
 /* Line 1792 of yacc.c  */
-#line 2902 "..\\..\\parser.y"
+#line 2902 "..\\parser.y"
     {
         printf("GCSORT - Warning - Token skipped : NODETAIL in OPTION\n");
     }
@@ -5444,21 +5444,21 @@ yyreduce:
 
   case 237:
 /* Line 1792 of yacc.c  */
-#line 2907 "..\\..\\parser.y"
+#line 2907 "..\\parser.y"
     {
 }
     break;
 
   case 238:
 /* Line 1792 of yacc.c  */
-#line 2908 "..\\..\\parser.y"
+#line 2908 "..\\parser.y"
     {
 }
     break;
 
   case 239:
 /* Line 1792 of yacc.c  */
-#line 2919 "..\\..\\parser.y"
+#line 2919 "..\\parser.y"
     {
 /*        utils_SetOptionSort("COPY", NULL, 0); */
         strcpy(szMexToken, " record option clause ");
@@ -5468,7 +5468,7 @@ yyreduce:
 
   case 240:
 /* Line 1792 of yacc.c  */
-#line 2925 "..\\..\\parser.y"
+#line 2925 "..\\parser.y"
     {
         utils_SetRecordOptionSortType((yyvsp[(1) - (5)].string));
         utils_SetRecordOptionSortLen((yyvsp[(4) - (5)].number), -1, -1, -1, -1, -1, -1);
@@ -5479,7 +5479,7 @@ yyreduce:
 
   case 241:
 /* Line 1792 of yacc.c  */
-#line 2931 "..\\..\\parser.y"
+#line 2931 "..\\parser.y"
     {
         utils_SetRecordOptionSortType((yyvsp[(1) - (7)].string));
         utils_SetRecordOptionSortLen((yyvsp[(4) - (7)].number), (yyvsp[(6) - (7)].number), -1, -1, -1, -1, -1);
@@ -5490,7 +5490,7 @@ yyreduce:
 
   case 242:
 /* Line 1792 of yacc.c  */
-#line 2937 "..\\..\\parser.y"
+#line 2937 "..\\parser.y"
     {
         utils_SetRecordOptionSortType((yyvsp[(1) - (6)].string));
         utils_SetRecordOptionSortLen(-1, (yyvsp[(5) - (6)].number), -1, -1, -1, -1, -1);
@@ -5501,7 +5501,7 @@ yyreduce:
 
   case 243:
 /* Line 1792 of yacc.c  */
-#line 2943 "..\\..\\parser.y"
+#line 2943 "..\\parser.y"
     {
         utils_SetRecordOptionSortType((yyvsp[(1) - (9)].string));
         utils_SetRecordOptionSortLen((yyvsp[(4) - (9)].number), (yyvsp[(6) - (9)].number), (yyvsp[(8) - (9)].number), -1, -1, -1, -1);
@@ -5512,7 +5512,7 @@ yyreduce:
 
   case 244:
 /* Line 1792 of yacc.c  */
-#line 2949 "..\\..\\parser.y"
+#line 2949 "..\\parser.y"
     {
         utils_SetRecordOptionSortType((yyvsp[(1) - (7)].string));
         utils_SetRecordOptionSortLen(-1, -1, (yyvsp[(6) - (7)].number), -1, -1, -1, -1);
@@ -5523,7 +5523,7 @@ yyreduce:
 
   case 245:
 /* Line 1792 of yacc.c  */
-#line 2955 "..\\..\\parser.y"
+#line 2955 "..\\parser.y"
     {
         utils_SetRecordOptionSortType((yyvsp[(1) - (8)].string));
         utils_SetRecordOptionSortLen((yyvsp[(4) - (8)].number), -1, (yyvsp[(7) - (8)].number), -1, -1, -1, -1);
@@ -5534,7 +5534,7 @@ yyreduce:
 
   case 246:
 /* Line 1792 of yacc.c  */
-#line 2962 "..\\..\\parser.y"
+#line 2962 "..\\parser.y"
     {
 /*        utils_SetOptionSort("COPY", NULL, 0); */
         strcpy(szMexToken, " record option clause ");
@@ -5544,7 +5544,7 @@ yyreduce:
 
   case 247:
 /* Line 1792 of yacc.c  */
-#line 2968 "..\\..\\parser.y"
+#line 2968 "..\\parser.y"
     {
         utils_SetRecordOptionSortType((yyvsp[(1) - (5)].string));
         utils_SetRecordOptionSortLen((yyvsp[(4) - (5)].number), -1, -1, -1, -1, -1, -1);
@@ -5555,7 +5555,7 @@ yyreduce:
 
   case 248:
 /* Line 1792 of yacc.c  */
-#line 2974 "..\\..\\parser.y"
+#line 2974 "..\\parser.y"
     {
         utils_SetRecordOptionSortType((yyvsp[(1) - (7)].string));
         utils_SetRecordOptionSortLen((yyvsp[(4) - (7)].number), (yyvsp[(6) - (7)].number), -1, -1, -1, -1, -1);
@@ -5566,7 +5566,7 @@ yyreduce:
 
   case 249:
 /* Line 1792 of yacc.c  */
-#line 2980 "..\\..\\parser.y"
+#line 2980 "..\\parser.y"
     {
         utils_SetRecordOptionSortType((yyvsp[(1) - (6)].string));
         utils_SetRecordOptionSortLen(-1, (yyvsp[(5) - (6)].number), -1, -1, -1, -1, -1);
@@ -5577,7 +5577,7 @@ yyreduce:
 
   case 250:
 /* Line 1792 of yacc.c  */
-#line 2986 "..\\..\\parser.y"
+#line 2986 "..\\parser.y"
     {
         utils_SetRecordOptionSortType((yyvsp[(1) - (9)].string));
         utils_SetRecordOptionSortLen((yyvsp[(4) - (9)].number), (yyvsp[(6) - (9)].number), (yyvsp[(8) - (9)].number), -1, -1, -1, -1);
@@ -5588,7 +5588,7 @@ yyreduce:
 
   case 251:
 /* Line 1792 of yacc.c  */
-#line 2992 "..\\..\\parser.y"
+#line 2992 "..\\parser.y"
     {
         utils_SetRecordOptionSortType((yyvsp[(1) - (7)].string));
         utils_SetRecordOptionSortLen(-1, -1, (yyvsp[(6) - (7)].number), -1, -1, -1, -1);
@@ -5599,7 +5599,7 @@ yyreduce:
 
   case 252:
 /* Line 1792 of yacc.c  */
-#line 2998 "..\\..\\parser.y"
+#line 2998 "..\\parser.y"
     {
         utils_SetRecordOptionSortType((yyvsp[(1) - (8)].string));
         utils_SetRecordOptionSortLen((yyvsp[(4) - (8)].number), -1, (yyvsp[(7) - (8)].number), -1, -1, -1, -1);
@@ -5610,7 +5610,7 @@ yyreduce:
 
   case 253:
 /* Line 1792 of yacc.c  */
-#line 3009 "..\\..\\parser.y"
+#line 3009 "..\\parser.y"
     {
     /*} allrecordoption { */
 }
@@ -5618,7 +5618,7 @@ yyreduce:
 
 
 /* Line 1792 of yacc.c  */
-#line 5622 "..\\..\\parser.c"
+#line 5622 "..\\parser.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -5850,5 +5850,5 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 3014 "..\\..\\parser.y"
+#line 3014 "..\\parser.y"
 

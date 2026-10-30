@@ -22,6 +22,7 @@
 #define SUMFIELD_H_INCLUDED
 
 #include <stdint.h>
+#include "libgcs/libgcs.h"
 #include "job.h"
 
 struct SumField_t {

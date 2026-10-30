@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2024 Sauro Menna
+    Copyright (C) 2016-2026 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *	This file is part of GCSORT.
@@ -27,7 +27,6 @@
 #include <libcob.h>
 
 #include "gcsort.h"
-#include "libgcsort.h"
 #include "fieldvalue.h"
 #include "utils.h"
 #include "job.h"
@@ -69,6 +68,8 @@ struct fieldValue_t *fieldValue_constructor(char *type, char *value, int nTypeF,
 						fieldValue->generated_value[i]=0;	/* original is OK from DFSORT Manual */
 					}
 					fieldValue->generated_value[fieldValue->generated_length]=0;
+					/* s.m. 20261028 */
+					fieldValue->value64 = _atoi64(value);
 				}
 				else
 				{   /* TYPE_STRUCT_NEW  get value from param */

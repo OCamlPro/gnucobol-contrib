@@ -25,6 +25,8 @@
 #define TYPE_STRUCT_STD		0
 #define TYPE_STRUCT_NEW		1
 
+#include "libgcs/libgcs.h"
+
 struct outrec_t;
 struct fieldValue_t;
 struct change_t;

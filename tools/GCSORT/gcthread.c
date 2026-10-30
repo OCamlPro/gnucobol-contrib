@@ -825,7 +825,7 @@ int gcthread_print_final(struct job_t* jobArray[], time_t* timeStart)
 
 	fprintf(stdout, "====================================================================\n");
 	fprintf(stdout, " Total Records Number..............: " NUM_FMT_LLD "\n", (long long)recordNumberTotal);
-	fprintf(stdout, " Total Records Write Sort..........: " NUM_FMT_LLD "\n", (long long)recordWriteSortTotal);
+	fprintf(stdout, " Total Records Write Sort TMP......: " NUM_FMT_LLD "\n", (long long)recordWriteSortTotal);
 	fprintf(stdout, " Total Records Write Output........: " NUM_FMT_LLD "\n", (long long)recordWriteOutTotal);
 
 	if (job->nXSumFilePresent > 0) {

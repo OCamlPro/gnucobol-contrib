@@ -21,6 +21,8 @@
 #ifndef OUTFIL_H_INCLUDED
 #define OUTFIL_H_INCLUDED
 
+#include "libgcs/libgcs.h"
+
 
 struct job_t;
 

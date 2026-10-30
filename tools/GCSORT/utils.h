@@ -87,6 +87,8 @@
 	#include <sys/stat.h>
 #endif
 
+#include "libgcs/libgcs.h"
+
 #if defined(_MSC_VER) 
   #define INLINE   __forceinline /* use __forceinline (VC++ specific) */
   #define INLINE2  __forceinline /* use __forceinline (VC++ specific) */
@@ -258,6 +260,7 @@ void util_setAttrib ( cob_field_attr *attrArea, int type, int nLen);
 void util_resetAttrib(cob_field_attr* attrArea, int type, int digits);
 void utl_abend_terminate(int nAbendType, int nCodeErr, int nTerminate);
 /* 20240926 int utl_GetFileSizeEnvName(struct file_t* file); */
+//const char* utl_fileConvertFileTypeFCD2GCS(int organization);
 int64_t utl_GetFileSizeEnvName(struct file_t* file);
 int utl_GetFileEnvName(char * file);
 void utils_SetRecordOptionSortType(char* szType);
@@ -291,5 +294,8 @@ int utl_GetCpuCount(void);
 void utl_resetbuffer(unsigned char* recordBuffer, size_t len);
 
 void rtrim(char* buffer);
+
+int ut_process_keyfield(struct file_t* current_file, int position, int length, char* keyType, char* keyCollating);
+
 
 #endif /* UTILS_H_INCLUDED  */

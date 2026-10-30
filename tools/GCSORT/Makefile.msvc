@@ -1,0 +1,155 @@
+# ==============================================================================
+# Project: gcsort
+# Description: WINDOWS-EXCLUSIVE Makefile for Microsoft Visual C++ (MSVC / NMAKE)
+# Author: Sauro Menna & Gnucobol project team  
+# Date: October 30, 2026
+# ==============================================================================
+
+# 1. COMPILER AND PLATFORM PROGRAM DEFINITIONS
+CC       = cl.exe
+LINK     = link.exe
+RM       = del /Q /F
+RD       = rmdir /S /Q
+MKDIR    = mkdir
+
+# Executable and library extensions for Windows
+EXE_EXT  = .exe
+DLL_EXT  = .dll
+LIB_EXT  = .lib
+
+# Output folders for binaries, libraries and intermediate build folders
+DIST_BIN = bin
+DIST_LIB = lib
+OUTDIR   = tests\bin
+DIR_EXE  = build_exe
+DIR_LIB  = build_lib
+
+# 2. COMPILER AND LINKER FLAGS (MSVC SPECIFIC)
+CCFLAGS  = /nologo /O2 /TC /MD /D_CRT_SECURE_NO_WARNINGS /D_MBCS /I.
+LIBS     = libcob.lib 
+
+# Names of the final output targets
+TARGET      = gcsort$(EXE_EXT)
+LIBGCS_DLL  = libgcs$(DLL_EXT)
+EXTSM_DLL   = EXTSM$(DLL_EXT)
+
+# Mapping of object files
+OBJS_EXE = \
+	$(DIR_EXE)\changefield.obj \
+	$(DIR_EXE)\condfield.obj \
+	$(DIR_EXE)\copyfile.obj \
+	$(DIR_EXE)\datediff.obj \
+	$(DIR_EXE)\gcsorthelp.obj \
+	$(DIR_EXE)\gcsort.obj \
+	$(DIR_EXE)\gcthread.obj \
+	$(DIR_EXE)\exitroutines.obj \
+	$(DIR_EXE)\fieldvalue.obj \
+	$(DIR_EXE)\findreplace.obj \
+	$(DIR_EXE)\file.obj \
+	$(DIR_EXE)\keyidxrel.obj \
+	$(DIR_EXE)\inrec.obj \
+	$(DIR_EXE)\job.obj \
+	$(DIR_EXE)\join.obj \
+	$(DIR_EXE)\mmfioc.obj \
+	$(DIR_EXE)\outfil.obj \
+	$(DIR_EXE)\outrec.obj \
+	$(DIR_EXE)\parser.obj \
+	$(DIR_EXE)\scanner.obj \
+	$(DIR_EXE)\sortfield.obj \
+	$(DIR_EXE)\sumfield.obj \
+	$(DIR_EXE)\utils.obj \
+	$(DIR_EXE)\symnames.obj
+
+OBJS_LIB = \
+	$(DIR_LIB)\changefield.obj \
+	$(DIR_LIB)\condfield.obj \
+	$(DIR_LIB)\copyfile.obj \
+	$(DIR_LIB)\datediff.obj \
+	$(DIR_LIB)\gcsorthelp.obj \
+	$(DIR_LIB)\gcsort.obj \
+	$(DIR_LIB)\gcthread.obj \
+	$(DIR_LIB)\exitroutines.obj \
+	$(DIR_LIB)\fieldvalue.obj \
+	$(DIR_LIB)\findreplace.obj \
+	$(DIR_LIB)\file.obj \
+	$(DIR_LIB)\keyidxrel.obj \
+	$(DIR_LIB)\inrec.obj \
+	$(DIR_LIB)\job.obj \
+	$(DIR_LIB)\join.obj \
+	$(DIR_LIB)\mmfioc.obj \
+	$(DIR_LIB)\outfil.obj \
+	$(DIR_LIB)\outrec.obj \
+	$(DIR_LIB)\parser.obj \
+	$(DIR_LIB)\scanner.obj \
+	$(DIR_LIB)\sortfield.obj \
+	$(DIR_LIB)\sumfield.obj \
+	$(DIR_LIB)\utils.obj \
+	$(DIR_LIB)\symnames.obj \
+	$(DIR_LIB)\libgcs.obj
+
+# =========================================================================
+# MAIN TARGETS
+# =========================================================================
+all: setup $(TARGET) $(LIBGCS_DLL) $(EXTSM_DLL)
+	@echo =======================================================
+	@echo  Build successful! All MSVC targets generated.
+	@echo =======================================================
+	@echo  --- Starting the compilation of testlibgcs.mak ---
+	$(MAKE) -f testlibgcs\testlibgcs.msvc
+
+setup:
+	@if not exist $(DIR_EXE) $(MKDIR) $(DIR_EXE)
+	@if not exist $(DIR_LIB) $(MKDIR) $(DIR_LIB)
+	@if not exist $(OUTDIR) $(MKDIR) $(OUTDIR)
+	@if not exist $(DIST_BIN) $(MKDIR) $(DIST_BIN)
+	@if not exist $(DIST_LIB) $(MKDIR) $(DIST_LIB)
+
+# --- 1) Compiling the gcsort Standalone Executable ---
+$(TARGET): $(OBJS_EXE)
+	@echo [MSVC] Linking Standalone Executable: $(TARGET)
+	$(LINK) /nologo /OUT:$(DIST_BIN)\$(TARGET) $(OBJS_EXE) $(LIBS)
+	copy /Y $(DIST_BIN)\$(TARGET) $(OUTDIR)\$(TARGET)
+
+# --- 2) Compiling the libgcs Shared Library ---
+$(LIBGCS_DLL): $(OBJS_LIB) libgcs\libgcs.def
+	@echo [MSVC] Linking Shared Library: $(LIBGCS_DLL)
+	$(LINK) /nologo /DLL /DEF:libgcs\libgcs.def /OUT:$(DIST_BIN)\$(LIBGCS_DLL) /IMPLIB:$(DIST_LIB)\libgcs$(LIB_EXT) $(OBJS_LIB) $(LIBS)
+	@if exist libgcs.exp move /Y libgcs.exp $(DIST_LIB)\libgcs.exp
+	copy /Y $(DIST_BIN)\$(LIBGCS_DLL) $(OUTDIR)\$(LIBGCS_DLL)
+	copy /Y $(DIST_LIB)\libgcs$(LIB_EXT) $(OUTDIR)\libgcs$(LIB_EXT)
+
+# --- 3) Compiling the EXTSM Library ---
+$(EXTSM_DLL): EXTSM\extsm.obj $(LIBGCS_DLL)
+	@echo [MSVC] Linking EXTSM Shared Library: $(EXTSM_DLL)
+	$(LINK) /nologo /DLL /OUT:$(DIST_BIN)\$(EXTSM_DLL) /IMPLIB:$(DIST_LIB)\EXTSM$(LIB_EXT) EXTSM\extsm.obj $(DIST_LIB)\libgcs$(LIB_EXT) $(LIBS)
+	@if exist EXTSM.exp move /Y EXTSM.exp $(DIST_LIB)\EXTSM.exp
+	copy /Y $(DIST_BIN)\$(EXTSM_DLL) $(OUTDIR)\$(EXTSM_DLL)
+
+# --- Compilation Rules for Specific Subdirectory Files ---
+$(DIR_LIB)\libgcs.obj: libgcs\libgcs.c
+	$(CC) $(CCFLAGS) /c /Fo$(DIR_LIB)\libgcs.obj libgcs\libgcs.c
+
+EXTSM\extsm.obj: EXTSM\extsm.c
+	$(CC) $(CCFLAGS) /c /FoEXTSM\extsm.obj EXTSM\extsm.c
+
+# =========================================================================
+# EXPLICIT INFERENCE RULES FOR SUBDIRECTORIES
+# =========================================================================
+{}.c{$(DIR_EXE)}.obj:
+	$(CC) $(CCFLAGS) /DGCSORT_EXE /c /Fo$@ $<
+
+{}.c{$(DIR_LIB)}.obj:
+	$(CC) $(CCFLAGS) /c /Fo$@ $<
+
+# =========================================================================
+# CLEANING TARGETS
+# =========================================================================
+clean:
+	@if exist $(DIR_EXE) $(RD) $(DIR_EXE)
+	@if exist $(DIR_LIB) $(RD) $(DIR_LIB)
+	@if exist $(DIST_BIN) $(RD) $(DIST_BIN)
+	@if exist $(DIST_LIB) $(RD) $(DIST_LIB)
+	@if exist EXTSM\extsm.obj $(RM) EXTSM\extsm.obj
+    @echo --- Cleaning testlibgcs ---
+	$(MAKE) /NOLOGO /F testlibgcs\testlibgcs.msvc clean
+	@echo Cleanup completed.

@@ -24,7 +24,8 @@
 #include "job.h"
 #ifndef SHAREFILE_INCLUDED
 	#define SHAREFILE_INCLUDED
-	#ifdef  MAIN_FILE
+#ifdef  MAIN_FILE
+
 		cob_module *module = NULL;
 		char	szMexToken[260]; 
 		char	cob_tmp_buff[COB_MEDIUM_BUFF];
@@ -33,6 +34,7 @@
 		int     g_retWarn = 0;
 		#if __LIBCOB_RELEASE >= 30200
 			enum cb_colseq g_cb_colseq = CB_COLSEQ_NATIVE;
+			char		g_ebcdic_table[1024] = "default";
 		#endif
 		static int gCreateMutex = 0;
 		#if defined(_THREAD_LINUX_ENV)
@@ -49,6 +51,7 @@
 		extern int  g_retWarn;
 		#if __LIBCOB_RELEASE >= 30200
 			extern enum cb_colseq g_cb_colseq;
+			extern char g_ebcdic_table[1024];// = "default";
 		#endif
 		extern int gCreateMutex;
 #if defined(_THREAD_LINUX_ENV)
@@ -56,7 +59,6 @@
 #else
 		extern HANDLE ghMutexJob;
 #endif 
-
 
 	#endif
 #endif  /* SHAREFILE_INCLUDED   */

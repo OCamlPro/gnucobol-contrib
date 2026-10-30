@@ -24,9 +24,9 @@
 #include <libcob.h>
 #include "file.h"
 #include "exitroutines.h"
-#include "libgcsort.h"
 #include "gcshare.h"
 #include "utils.h"
+#include "libgcs/libgcs.h"
 
 static unsigned int	    E15initialized = 0;
 static cob_module*      E15module = NULL;

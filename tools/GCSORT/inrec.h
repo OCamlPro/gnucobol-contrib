@@ -21,6 +21,9 @@
 #ifndef INREC_H_INCLUDED
 #define INREC_H_INCLUDED
 
+#include "libgcs/libgcs.h"
+
+
 #define TYPE_STRUCT_STD		0
 #define TYPE_STRUCT_NEW		1
 

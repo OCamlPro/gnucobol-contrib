@@ -17,13 +17,15 @@
  *  along with GCSORT.  If not, see <http://www.gnu.org/licenses/>.
 
 */
- 
+#include <stdlib.h>
+#include <string.h>
+#include <stddef.h>
+#include <math.h>
+#include <errno.h>
 #include <sys/stat.h>
-#include <malloc.h>
 #include <time.h>
 #include <ctype.h>
 
-#include "libgcsort.h"
 #if defined(_MSC_VER) ||  defined(__MINGW32__) || defined(__MINGW64__)
 	#include <share.h>
 	#include <fcntl.h> 
@@ -36,13 +38,8 @@
 	#include <sys/stat.h>
 #endif
 
-#include <stdlib.h>
-#include <string.h>
-#include <stddef.h>
-#include <string.h>
-#include <math.h>
-#include <time.h>
-#include <errno.h>
+
+
 #include "gcsort.h"
 #include "utils.h"
 #include "job.h"
@@ -51,7 +48,6 @@
 #include "condfield.h"
 #include "outrec.h"
 #include "inrec.h"
-#include "sortfield.h"
 #include "sumfield.h"
 #include "outfil.h"
 #include "exitroutines.h"

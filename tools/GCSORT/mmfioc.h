@@ -30,6 +30,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "libgcs/libgcs.h"
+
 #include "job.h"
 #include "utils.h"
 

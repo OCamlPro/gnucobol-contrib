@@ -1,0 +1,29 @@
+LIBRARY libgcs
+EXPORTS
+        gcs_sort_init            @1
+        gcs_sort_cleanup         @2
+        gcs_sort_set_oper        @3
+        gcs_sort_init_key        @4
+        gcs_sort_use             @5
+        gcs_sort_add_key         @6
+        gcs_sort_give            @7
+        gcs_sort_run             @8
+        gcs_sort_enable_multithread @9
+        gcs_tmpfile_init         @10
+        gcs_tmpfile_get          @11
+        gcs_tmpfile_cleanup      @12
+        gcs_sort_data            @13
+        gcs_job_constructor      @14
+        gcs_job_destructor       @15
+        gcs_job_destroy          @16
+        gcs_save_tempfile        @17
+        gcs_LoadInMemory         @18
+        ; commento    gcs_get_collation        @19
+        gcs_sort_getFileOrgName  @20
+        gcs_sort_FileTypeFCD2GCS @21
+        gcs_sort_DataTypeFCD2GCS @22
+        gcs_save_out             @23
+        gcs_save_tempfinal       @24
+        gcs_get_job              @26
+        gcs_sort_LoadFile        @27
+        gcs_sort_check           @28

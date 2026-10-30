@@ -1,9 +1,24 @@
-2026-09-21  Sauro Menna  <saumen2004@libero.it> 
+2026-10-30  Sauro Menna  <saumen2004@libero.it> 
+    * Version 01.06.00
+    * New EXTSM module for interfacing via FCD3 for sort/merge operations called from COBOL. Sort in memory; if memory limits are exceeded, the sort will use MMF (Memory-Mapped File) files.
+    * New extsmtst5 test module (COBOL language) for testing EXTSM routine.
+    * New libgcs module to enable the use of gcsort functions from C modules. 
+    * New testlibgcs module (C language) for testing the libgcs library
+    * Modified the gcsort makefile to generate gcsort, EXTSM, and libgcs. It also includes a call to the testlibgcs.mak makefile to create the testlibgcs module.
+    * Modified the handling in gcsort for exposing functions externally.
+    * Multithreading is enabled only in the gcsort executable; it is not present in the libgcs library.
+    * Generated four Markdown files: one for EXTSM (extsm.md), a checklist for EXTSM (extsm_checklist.md), one for libgcs (libgcs.md), and one for gcsort (README.md)
+    * Added test cases for EXTSM and libgcs. The testlibgcs file uses most of the functions exposed by libgcs.
+    * Makefile - A single Makefile for gcsort, EXTSM, and libgcs; adjustments have also been made to handle certain parameters in the MinGW environment.
+    * 'Makefile' for linux and MinGW environment and 'Makefile.msvc' for Windows environment.
+    * The 'Makefile' calls 'testlibgcs.mak' to build the testlibgcs executable in linux and MinGW environment.
+    * The 'Makefile.msvc' calls 'testlibgcs.msvc' to build the testlibgcs executable in Windows environment.
+    * Fixed bug in fieldvalue.c (case TYPE_STRUCT_STD)
+    * Update file gctestcmd.cfg with new testcase (testlibgcs vs gcsort)
+
+2026-08-25  Sauro Menna  <saumen2004@libero.it> 
     * Version 01.05.01
 	* Review and print the contents of the TAKE file
-    * Fixed - Bug #117 GCSORT 1.05.00 fails to parse command line (Thanks David)
-    * Review GCSORT for AIX. - Makefile, fieldvalue.c, gcthread.c, gcthread.h, job.c, job.h, tests/src/gctestcmd.cbl, tests/src/gctestset.cbl, utils.c, utils.h (Thanks David)
-    * In job.c, the return value of the fieldValue_checkvalue function has been revised (Thanks Simon)
 	
 2026-08-25  Sauro Menna  <saumen2004@libero.it> 
     * Version 01.05.00

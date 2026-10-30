@@ -38,7 +38,7 @@
 	#define _strtoll   strtoll
 #endif
 
-
+#include "libgcs/libgcs.h"
 #include "utils.h"
 #include "mmfioc.h"
 

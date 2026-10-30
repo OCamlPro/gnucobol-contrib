@@ -25,7 +25,7 @@
 #include <stdio.h>
 
 #include <libcob.h>
-#include "libgcsort.h"
+#include "libgcs/libgcs.h"
 #include "job.h"
 
 struct fieldValue_t {

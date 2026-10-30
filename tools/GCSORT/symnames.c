@@ -19,9 +19,9 @@
  *  Generated with the support of the AI Assistant
 */
 
-#ifdef _MSC_VER
-#define _CRT_SECURE_NO_WARNINGS
-#endif
+//#ifdef _MSC_VER
+//#define _CRT_SECURE_NO_WARNINGS
+//#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,7 +30,6 @@
 #include "symnames.h"
 #include "gcshare.h"
 #include "gcsort.h"
-#include "libgcsort.h"
 #include "job.h"
 #include "utils.h"
 
@@ -151,7 +150,7 @@ void parse_symnames_line(const char *line) {
         strncpy(s.format, fmt, MAX_FORMAT_LEN);
         s.length = len;
 
-        // Handle special asterisk '*' character for relative positioning
+        /* Handle special asterisk '*' character for relative positioning */
         if (strcmp(pos_str, "*") == 0) {
             s.position = current_position;
         } else {
@@ -159,17 +158,17 @@ void parse_symnames_line(const char *line) {
             current_position = s.position; // Sync pointer to the explicit position
         }
 
-        // Advance current position based on field length
+        /* Advance current position based on field length */
         current_position += s.length;
         
         add_symb_table(s);
     } 
     else {
-        // --- CONSTANT HANDLING SECTION INCLUDING HEXADECIMAL SUPPORT ---
-        char const_val[MAX_LINE_LEN] = {0};
+        /* --- CONSTANT HANDLING SECTION INCLUDING HEXADECIMAL SUPPORT --- */
+        char const_val[MAX_LINE_LEN+1] = {0};
         char type_prefix = 0;
 
-        // Case A: Explicit hex or character prefix syntax (e.g. Name,X'001F' or Name,C'TEST')
+        /* Case A: Explicit hex or character prefix syntax (e.g. Name,X'001F' or Name,C'TEST') */
         parsed = sscanf(line, " %50[^,],%c'%255[^']'", name, &type_prefix, const_val);
 
         if (parsed == 3 && (type_prefix == 'X' || type_prefix == 'x')) {
@@ -189,13 +188,13 @@ void parse_symnames_line(const char *line) {
             return;
         }
         else if (parsed == 3 && (type_prefix == 'C' || type_prefix == 'c')) {
-            // Explicit character constant detected (C'abc')
+            /* Explicit character constant detected (C'abc') */
             struct Symbol s;
             memset(&s, 0, sizeof(struct Symbol));
             strncpy(s.name, name, MAX_SYM_NAME);
             s.type = SYM_TYPE_CONSTANT;
 
-            size_t req_len = strlen(const_val) + 6;
+            size_t req_len = strlen(const_val) + 5;
             s.constant_value = (char *)malloc(req_len);
             if (s.constant_value != NULL) {
                 snprintf(s.constant_value, req_len, "C'%s'", const_val);
@@ -204,7 +203,7 @@ void parse_symnames_line(const char *line) {
             return;
         }
 
-        // Case B: Implicit constant syntax without prefix (e.g. Name,'value')
+        /* Case B: Implicit constant syntax without prefix (e.g. Name,'value') */
         parsed = sscanf(line, " %50[^,],'%255[^']'", name, const_val);
         if (parsed == 2) {
             struct Symbol s;
@@ -212,7 +211,7 @@ void parse_symnames_line(const char *line) {
             strncpy(s.name, name, MAX_SYM_NAME);
             s.type = SYM_TYPE_CONSTANT;
             
-            size_t req_len = strlen(const_val) + 4; 
+            size_t req_len = strlen(const_val) + 3; 
             s.constant_value = (char *)malloc(req_len);
             if (s.constant_value != NULL) {
                 snprintf(s.constant_value, req_len, "'%s'", const_val);
@@ -226,7 +225,7 @@ void parse_symnames_line(const char *line) {
 extern int symb_count;
 
 int load_file_symnames(void) {
-    // 1. Verifica preliminare della presenza della variabile d'ambiente
+    /* 1. Preliminary check to see if the environment variable exists */
     int nOrg = 1; /* COB_ORG_LINE_SEQUENTIAL */
     char* pOrgFile = getenv("SYMORG");
     if (pOrgFile != NULL) {
@@ -270,7 +269,7 @@ int load_file_symnames(void) {
 
     file_symb->assign = &name_field; // Assegnazione per la risoluzione automatica delle variabili d'ambiente
 
-    // File Status (2 bytes)
+    /* File Status (2 bytes) */
     static unsigned char status_buffer[2] = { '0', '0' };
     static cob_field_attr status_attr = { COB_TYPE_ALPHANUMERIC, 0, 0, 0, NULL };
     static cob_field file_status_field;
@@ -300,7 +299,7 @@ int load_file_symnames(void) {
     /* Open File */
     cob_open(file_symb, COB_OPEN_INPUT, 0, NULL);
 
-    // Analisi del File Status di apertura
+    /* Analysis of the File Open Status */
     if (status_buffer[0] != '0' || status_buffer[1] != '0') {
         fprintf(stderr, "*GCSORT*S770C*ERROR: Unable to open SYMNAMES file (File Status: %c%c), ORG file is %s\n",
             status_buffer[0], status_buffer[1], pOrgFile);
@@ -353,7 +352,7 @@ int load_file_symnames(void) {
             break;
         }
 
-        // Copia e mappatura binaria del contenuto del record
+        /* Copy and binary mapping of the record's contents */
         size_t dst = 0;
         for (size_t src = 0; src < bytes_read; src++) {
             if (file_symb->record->data[src] == '\0') {

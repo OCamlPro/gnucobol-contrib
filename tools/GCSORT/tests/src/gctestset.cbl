@@ -97,12 +97,13 @@
        77 posstring             pic 9(4).
       *
        01      array-def-cmd.
-          03   ar-max-ele       pic 99.
-          03   ar-def-cmd occurs 120 times.
+          03   ar-max-ele       pic 999.
+          03   ar-def-cmd occurs 500 times.
             05 ar-cmd           pic x(10).
             05 ar-def           pic x(512).
       *
        01 cmd-tmp               pic x(512).
+       77 count-rek             pic 9(3) value zero.
       *
       *-------------------------------------------------------*
        procedure division.
@@ -190,6 +191,8 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
            read fsetup. 
            if (f-s = '00')
               perform exec-command
+              else
+              display "f-s=" f-s
            end-if
            .
        refs-99.
@@ -200,6 +203,9 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
       *---------------------------------------------------------*
        exco-00.
       * skip comment
+      D      display "r-row(1:50)" r-row(1:50)
+      D      add 1 to count-rek 
+      D      display "count-rek : " count-rek 
            move zero   to retcode
            if  (r-command(1:1) NOT = '*') AND
                (r-command(1:1) NOT = SPACE) 

@@ -18,6 +18,11 @@
  *  along with GCSORT.  If not, see <http://www.gnu.org/licenses/>.
   
 */
+%top{
+  /* Questo blocco finisce in cima assoluta al file generato, prima delle macro di Flex! */
+  #include <stdint.h>
+}
+
 %{
   #include <stdio.h>
   #include <stdlib.h>
@@ -31,6 +36,7 @@
       #define fileno _fileno
       #define xstrtoll    _strtoi64
   #endif
+ // #include "libgcs.h"
   #include "gcsort.h"
   #include "parser.h"
   char * pEnd;

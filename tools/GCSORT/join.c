@@ -1516,15 +1516,15 @@ int join_IdentifyBuf(unsigned char** ptrBuf, int nMaxEle)
 |=========================|===================|============|=================================|=======================================|
 |       Command           |   Join Type       |    Flag    |           Output                |             Record                    |
 |=========================|===================|============|=================================|=======================================|
-| not specified (default) | Inner join        | F1=I, F2=I | F1 matched, F2 matched          |  F1 + F2                                 |
-| Unpaired, F1, F2        | Full outer join   | F1=U, F2=U | All records                     |  F1 + F2                                 |
-| Unpaired                | Full outer join   | F1=U, F2=U | All records                     |  F1 + F2                                 |
+| not specified (default) | Inner join        | F1=I, F2=I | F1 matched, F2 matched          |  F1 + F2                              |
+| Unpaired, F1, F2        | Full outer join   | F1=U, F2=U | All records                     |  F1 + F2                              |
+| Unpaired                | Full outer join   | F1=U, F2=U | All records                     |  F1 + F2                              |
 | Unpaired, F1            | Left outer join   | F1=U, F2=I | F1 all records and F2 matched   |  F1 + blank/fill or F1 + F2           |
 | Unpaired, F2            | Right outer join  | F1=I, F2=U | F1 matched and F2 all records   |  F1 + F2  or  F2 + blank/fill         |
 | Unpaired, F1, F2, Only  | Only unpaired     | F1=O, F2=O | F1 no matched, F2 no matched    |  F1 + blank/fill  or  F2 + blank/fill |
 | Unpaired, Only          | Only unpaired     | F1=O, F2=O | F1 no matched, F2 no matched    |  F1 + blank/fill  or  F2 + blank/fill |
-| Unpaired, F1, Only      | Unpaired from F1  | F1=O, F2=S | F1 only no matched, F2 Skipped  |  F1 + blank/fill                       |
-| Unpaired, F2, Only      | Unpaired from F2  | F1=S, F2=O | F1 Skipped, F2 only no matched  |  F2 + blank/fill                         |
+| Unpaired, F1, Only      | Unpaired from F1  | F1=O, F2=S | F1 only no matched, F2 Skipped  |  F1 + blank/fill                      |
+| Unpaired, F2, Only      | Unpaired from F2  | F1=S, F2=O | F1 Skipped, F2 only no matched  |  F2 + blank/fill                      |
 |=========================|===================|============|=================================|=======================================|
     (case A)
     JoinType    I  skip            - read F1                                 f1_cmd[0] = 'R';
@@ -1612,7 +1612,7 @@ int join_unpaired(struct join_t* join, int nPosPtr, int nCmp, unsigned char* rF1
     }
     /*
     |=========================|===================|============|=================================|
-    | Command                  | Join Type          | Flag       | Output                             |
+    | Command                 | Join Type         | Flag       | Output                          |
     |=========================|===================|============|=================================|
     | Unpaired                | Full outer join   | F1=U, F2=U | All records                     |
     | Unpaired                | Full outer join   | F1=U, F2=U | All records                     |
@@ -1679,9 +1679,9 @@ int join_unpaired(struct join_t* join, int nPosPtr, int nCmp, unsigned char* rF1
 
     /*
     |=========================|===================|============|=================================|
-    | Command                  | Join Type          | Flag       | Output                             |
+    | Command                 | Join Type         | Flag       | Output                          |
     |=========================|===================|============|=================================|
-    | Unpaired, F1              | Left outer join   | F1=U, F2=I | F1 all records and F2 matched     |
+    | Unpaired, F1            | Left outer join   | F1=U, F2=I | F1 all records and F2 matched   |
     */
     if ((unp->cF1 == 'U') && (unp->cF2 == 'I')) {
         if (nCmp == 0) {
@@ -1740,7 +1740,7 @@ int join_unpaired(struct join_t* join, int nPosPtr, int nCmp, unsigned char* rF1
     }
     /*
     |=========================|===================|============|=================================|
-    | Command                  | Join Type          | Flag       | Output                             |
+    | Command                 | Join Type         | Flag       | Output                          |
     |=========================|===================|============|=================================|
     | Unpaired, F2            | Right outer join  | F1=I, F2=U | F1 matched and F2 all records   |
     */
@@ -1803,7 +1803,7 @@ int join_unpaired(struct join_t* join, int nPosPtr, int nCmp, unsigned char* rF1
     }
     /*
     |=========================|===================|============|=================================|
-    | Command                  | Join Type          | Flag       | Output                             |
+    | Command                 | Join Type         | Flag       | Output                          |
     |=========================|===================|============|=================================|
     | Unpaired, F1, F2, Only  | Only unpaired     | F1=O, F2=O | F1 no matched, F2 no matched    |
     | Unpaired, Only          | Only unpaired     | F1=O, F2=O | F1 no matched, F2 no matched    |
@@ -1869,7 +1869,7 @@ int join_unpaired(struct join_t* join, int nPosPtr, int nCmp, unsigned char* rF1
     }
     /*
     |=========================|===================|============|=================================|
-    | Command                  | Join Type          | Flag       | Output                             |
+    | Command                 | Join Type         | Flag       | Output                          |
     |=========================|===================|============|=================================|
     | Unpaired, F1, Only      | Unpaired from F1  | F1=O, F2=S | F1 only no matched, F2 Skipped  |
     */
@@ -1932,7 +1932,7 @@ int join_unpaired(struct join_t* join, int nPosPtr, int nCmp, unsigned char* rF1
     }
     /*
     |=========================|===================|============|=================================|
-    | Command                  | Join Type          | Flag       | Output                             |
+    | Command                 | Join Type         | Flag       | Output                          |
     |=========================|===================|============|=================================|
     | Unpaired, F2, Only      | Unpaired from F2  | F1=S, F2=O | F1 Skipped, F2 only no matched  |
     */
@@ -2412,7 +2412,7 @@ int join_empty_fileF1(struct job_t* job) {
 
     /*
     |=========================|===================|============|=================================|
-    | Command                  | Join Type          | Flag       | Output                             |
+    | Command                 | Join Type         | Flag       | Output                          |
     |=========================|===================|============|=================================|
     | not specified              | Inner join          | F1=I, F2=I | F1 matched, F2 matched          |
     */
@@ -2422,9 +2422,9 @@ int join_empty_fileF1(struct job_t* job) {
     }
     /*
     |=========================|===================|============|=================================|
-    | Command                  | Join Type          | Flag       | Output                             |
+    | Command                 | Join Type         | Flag       | Output                          |
     |=========================|===================|============|=================================|
-    | Unpaired, F1              | Left outer join   | F1=U, F2=I | F1 all records and F2 matched     |
+    | Unpaired, F1              | Left outer join   | F1=U, F2=I | F1 all records and F2 matched |
     */
     if ((unp->cF1 == 'U') && (unp->cF2 == 'I')) {  /* Nothing todo */
         retcode_func = 0;
@@ -2432,7 +2432,7 @@ int join_empty_fileF1(struct job_t* job) {
     }
     /*
     |=========================|===================|============|=================================|
-    | Command                  | Join Type          | Flag       | Output                             |
+    | Command                 | Join Type         | Flag       | Output                          |
     |=========================|===================|============|=================================|
     | Unpaired, F1, Only      | Unpaired from F1  | F1=O, F2=S | F1 only no matched, F2 Skipped  |
     */
@@ -2747,9 +2747,9 @@ int join_empty_fileF2(struct job_t* job) {
 
     /*
     |=========================|===================|============|=================================|
-    | Command                  | Join Type          | Flag       | Output                             |
+    | Command                 | Join Type         | Flag       | Output                          |
     |=========================|===================|============|=================================|
-    | not specified              | Inner join          | F1=I, F2=I | F1 matched, F2 matched          |
+    | not specified              | Inner join          | F1=I, F2=I | F1 matched, F2 matched     |
     */
     if ((unp->cF1 == 'I') && (unp->cF2 == 'I')) {   /* Nothing todo */
         retcode_func = 0;
@@ -2757,7 +2757,7 @@ int join_empty_fileF2(struct job_t* job) {
     }
     /*
     |=========================|===================|============|=================================|
-    | Command                  | Join Type          | Flag       | Output                             |
+    | Command                 | Join Type         | Flag       | Output                          |
     |=========================|===================|============|=================================|
     | Unpaired, F2            | Right outer join  | F1=I, F2=U | F1 matched and F2 all records   |
     */
@@ -2767,7 +2767,7 @@ int join_empty_fileF2(struct job_t* job) {
     }
     /*
     |=========================|===================|============|=================================|
-    | Command                  | Join Type          | Flag       | Output                             |
+    | Command                 | Join Type         | Flag       | Output                          |
     |=========================|===================|============|=================================|
     | Unpaired, F2, Only      | Unpaired from F2  | F1=S, F2=O | F1 Skipped, F2 only no matched  |
     */

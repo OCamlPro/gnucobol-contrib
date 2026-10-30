@@ -35,7 +35,6 @@
 #endif
 
 #include <libcob.h>
-#include "libgcsort.h"
 #include "gcsort.h"
 #include "utils.h"
 #include "file.h"
@@ -104,6 +103,22 @@ int utl_fileConvertFileType(int organization) {
 		return COB_ORG_LINE_SEQUENTIAL;
 	}
 	return -1;
+}
+/* convert organization from GNUCobol-LibCob  to GCSort */
+//const char* utl_fileConvertFileTypeFCD2GCS(int organization) 
+GCS_API const char* gcs_sort_FileTypeFCD2GCS(int organization)
+{
+	switch (organization) {
+	case 0:	/* fcd--line-sequential-org */
+		return utils_getFileOrganizationName(FILE_ORGANIZATION_LINESEQUENTIAL);
+	case 1:	/* fcd--sequential - org */
+		return utils_getFileOrganizationName(FILE_ORGANIZATION_SEQUENTIAL);
+	case 2: /* fcd--indexed - org */
+		return utils_getFileOrganizationName(FILE_ORGANIZATION_RELATIVE);
+	case 3: /* fcd--relative - org */
+		return utils_getFileOrganizationName(FILE_ORGANIZATION_INDEXED);
+	}
+	return NULL;
 }
 
 /* ==================================================== */
@@ -442,6 +457,11 @@ const char *utils_getFileFormatName(int format)
 			return "UNKNOWN";
 	}
 }
+GCS_API const char* gcs_sort_getFileOrgName(int organization)
+{
+	return utils_getFileOrganizationName(organization);
+}
+
 const char *utils_getFileOrganizationName(int organization) 
 {
 	switch (organization) {
@@ -462,6 +482,10 @@ const char *utils_getFileOrganizationName(int organization)
 	}
 }
 
+GCS_API int gcs_sort_DataTypeFCD2GCS(int nInteralType, int nLen) 
+{
+	return (utils_getFieldTypeLIBCOBInt(nInteralType, nLen));
+}
 
 int utils_getFieldTypeLIBCOBInt(int nInteralType, int nLen) 
 {
@@ -1104,6 +1128,8 @@ int64_t utl_GetFileSizeEnvName(struct file_t* file) {
 	char* pEnv;
 	struct _struct_stat64 filestatus;
 	char szname[GCSORT_SIZE_FILENAME];
+
+	// CORREZIONE: Usiamo sizeof(szname) per garantire la dimensione reale del buffer locale (1024)
 	snprintf(szname, sizeof(szname), "%s", (const char*)file->stFileDef->assign->data);
 	pEnv = getenv(szname);
 	if (pEnv != NULL) {
@@ -1115,6 +1141,8 @@ int64_t utl_GetFileSizeEnvName(struct file_t* file) {
 		}
 		return filestatus.st_size;
 	}
+
+	// CORREZIONE: Anche qui usiamo sizeof(szname)
 	snprintf(szname, sizeof(szname), "DD_%s", (const char*)file->stFileDef->assign->data);
 	pEnv = getenv(szname);
 	if (pEnv != NULL) {
@@ -1126,9 +1154,12 @@ int64_t utl_GetFileSizeEnvName(struct file_t* file) {
 		}
 		return filestatus.st_size;
 	}
+
+	// CORREZIONE: Anche qui usiamo sizeof(szname)
 	snprintf(szname, sizeof(szname), "dd_%s", (const char*)file->stFileDef->assign->data);
 	pEnv = getenv(szname);
 	if (pEnv != NULL) {
+
 		int nr = 0;
 		nr = stat_file(pEnv, &filestatus);
 		if (nr != 0) {
@@ -1139,21 +1170,27 @@ int64_t utl_GetFileSizeEnvName(struct file_t* file) {
 	}
 	return 0;
 }
+
 /* verify if filename is a environment variable */
 int utl_GetFileEnvName( char* szfile) {
 	char* pEnv;
 	char szname[GCSORT_SIZE_FILENAME];
+	/* 202610 snprintf(szname, (size_t)COB_FILE_MAX, "%s", (const char*)szfile); */
 	snprintf(szname, sizeof(szname), "%s", (const char*)szfile);
 	pEnv = getenv(szname);
 	if (pEnv != NULL)
 		return 1; 
 
+	/* 202610 snprintf(szname, (size_t)COB_FILE_MAX, "DD_%s", (const char*)szfile); */
 	snprintf(szname, sizeof(szname), "DD_%s", (const char*)szfile);
+
 	pEnv = getenv(szname);
 	if (pEnv != NULL) 
 		return 1;
 
+	/* 202610 snprintf(szname, (size_t)COB_FILE_MAX, "dd_%s", (const char*)szfile);  */
 	snprintf(szname, sizeof(szname), "dd_%s", (const char*)szfile);
+
 	pEnv = getenv(szname);
 	if (pEnv != NULL) 
 		return 1;
@@ -1662,3 +1699,27 @@ void rtrim(char* buffer) {
 	// Inserisci il nuovo terminatore di stringa subito dopo l'ultimo carattere valido
 	*(end + 1) = '\0';
 }
+
+int ut_process_keyfield(struct file_t* current_file, int position, int length, char *keyType, char *keyCollating)
+{                                                                                                    
+    if (current_file != NULL) {                                                                      
+        struct KeyIdx_t *KeyIdx;                                                                     
+        int sColSeq = CB_COLSEQ_NATIVE;                                                              
+#if __LIBCOB_RELEASE >= 30300                                                                        
+        if (keyCollating != NULL) {                                                                  
+            sColSeq = utils_parseKeyCollating(keyCollating);                                         
+        }                                                                                            
+#endif                                                                                               
+        KeyIdx = KeyIdx_constructor(position, length, utils_parseKeyType(keyType), sColSeq);         
+        if (KeyIdx == NULL) {                                                                        
+            utl_abend_terminate(MEMORYALLOC, 102, ABEND_SKIP);                                       
+            return 0;                                                                                
+        }                                                                                            
+        KeyIdx_addDefinition(KeyIdx, current_file);                                                  
+    }                                                                                                
+    free(keyType);                                                                                   
+    if (keyCollating != NULL) {                                                                      
+        free(keyCollating);                                                                          
+    }                                                                                                
+    return 1;                                                                                        
+}                                                                                                    

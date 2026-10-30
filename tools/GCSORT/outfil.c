@@ -25,13 +25,8 @@
 #include <sys/stat.h>
 #include <math.h>
 #include <limits.h>
-#include <malloc.h>
 #include <time.h>
-#include "libgcsort.h"
-#include <string.h>
 #include <stddef.h>
-#include <string.h>
-#include <math.h>
 
 /*  #ifdef _WIN32   */
 #ifdef _MSC_VER
@@ -41,6 +36,7 @@
 	#include <share.h>
 #endif
 
+#include "libgcs/libgcs.h"
 #include "gcsort.h"
 #include "job.h"
 #include "file.h"
@@ -49,7 +45,6 @@
 #include "outrec.h"
 #include "parser.h"
 #include "scanner.h"
-#include "sortfield.h"
 #include "sumfield.h"
 #include "utils.h"
 #include "outfil.h"

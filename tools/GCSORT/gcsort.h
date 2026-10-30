@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2016-2024 Sauro Menna
+    Copyright (C) 2016-2026 Sauro Menna
     Copyright (C) 2009 Cedric ISSALY
  *
  *    This file is part of GCSORT.
@@ -22,7 +22,7 @@
 #ifndef GCSORT_H_INCLUDED
 #define GCSORT_H_INCLUDED
 
-#include "libgcsort.h"
+#include "libgcs/libgcs.h"
 
 #define _CRT_NONSTDC_NO_DEPRECATE 
 
@@ -71,6 +71,8 @@ _LIB
         #undef snprintf
 #endif
 
+#include <stdio.h>
+
 #define GCSORT_ALLOCATE                50
 #define GCSORT_ALLOCATE_MEMSIZE        512000000 
 /* to debug #define GCSORT_ALLOCATE_MEMSIZE        512000  */
@@ -85,8 +87,8 @@ _LIB
 /* value 1 : generate temp file fixed name : cob17, cob18, cob19, cob1a, cob1b  */
 #define GCSORT_DEBUG   0        /* 0 no debug - 1 debug */
 #define GCSORT_TESTCMD 0
-#define GCSORT_VERSION "01.05.01"
-#define GCSORT_TAR_DATE "Aug 28 2026 07:00:00 UTC"
+#define GCSORT_VERSION "01.06.00"
+#define GCSORT_TAR_DATE "Oct 01 2026 07:00:00 UTC"
 
 /* Return Code */
 #define GC_RTC_OK     0
@@ -118,6 +120,9 @@ _LIB
 #endif
 /*  end - compatibility version 3.1 and 4.0 */
 
+int GCSORT_Init(void);
+int GCSORT_Cleanup(int nSource);
+
 
 void GCSORT_Config( void );
 void GCSORT_Usage ( unsigned char* cmd) ;
@@ -129,5 +134,7 @@ void gcsort_help_header2(void);
 void gcsort_help_body_SMC(void);
 void gcsort_help_body_JOIN(void);
 void gcsort_help_footer(void);
+
+void my_dll_init(cob_global* cob_glob_ptr);
 
 #endif /* GCSORT_H_INCLUDED */

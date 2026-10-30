@@ -28,6 +28,8 @@
 #include <stdint.h>
 #include <errno.h>
 
+#include "libgcs/libgcs.h"
+
 #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	#include <io.h>
 	#define _strtoll    _strtoi64
@@ -425,6 +427,12 @@ int SumFields_KeyCheckMT(struct job_t* job, int* bIsWrited, unsigned char* szKey
 
 int job_LockResource(void);
 void job_UnlockResource(void);
+
+/* EXTSM */
+//void GCSORT_Init(void);
+int job_LoadInMemory(struct job_t* job, char* szBuffRek, char* szBuffKey, int nLenRek, int nSplitBuf, int nIdxFileIn, int64_t nLim01, int64_t nLim02);
+
+
 
 
 /*  #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)   */

@@ -44,15 +44,22 @@
        01  t-defline                pic x(512).
       *    
        working-storage section.
+       77 windows-check         pic x(32).
+       77 curr-len              pic 9(4) comp-5 value 0.
+       77 app-len               pic 9(4) comp-5 value 0.
        77 chrsl                 pic x value '/'.
        77 chrbs                 pic x value '\'.
+       77 env-sep               pic x.
        77 wk-group              pic x(10) value space.
        77 wk-group-disp         pic x(10) value space.
        77 wk-commandtype        pic x(10) value space.
        77 f-s                   pic xx.
 	   77 retcode               BINARY-LONG SIGNED.
        01 env-set-name          pic x(25).
-       01 env-set-value         pic x(250).
+       01 env-set-value         pic x(2048) value space.
+       01 current-value         pic x(2048) value space.
+       01 new-value             pic x(2048) value space.
+       01 value-to-append       pic x(2048) value space.
        01 gcsort-tests-ver      pic x(20) value ' version 1.0'.
        01 cmd-line              pic x(512).
        01 cmd-cmd               pic x(512).
@@ -113,6 +120,13 @@ TEST00***          display ' after call gcsysop ntype = ' ntype
            perform read-file-def    until f-s not = '00'
            close fdef
       *      
+           display "OS" upon environment-name
+           accept windows-check from environment-value      
+           if windows-check(1:7) = "Windows"
+               move ";" to env-sep
+           else
+               move ":" to env-sep
+           end-if      
            move idx  to idx-sep
            move zero to idx
            move 1 to rc-max-ele.
@@ -362,8 +376,60 @@ Win                if (ntype = 1)
                         add 1 to rc-retcode(idx-rc)
                    end-if
       **-->>             move cmd-go to cmd-cmd                    
+      **................................................................................. updvar
+               when 'updvar'
+                   move space to cmd-cmd 
+                   move TRIM(ar-commandline(idx), TRAILING) to cmd-cmd
+                   unstring  cmd-cmd delimited by '=' or space into 
+                           env-set-name, env-set-value
+                   move  env-set-value to value-to-append
+                   
+      D             display "value-to-append >"  
+      D                  trim(value-to-append, TRAILING) "<"
+      D             display "env-set-value >" 
+      D                  trim(env-set-value, TRAILING) "<"
+                        
+                   perform get-value-env
+      D             display "current-value >" 
+      D                  trim(env-set-value, TRAILING) "<"                   
+                  
+      *> 3. calcola le lunghezze reali eliminando gli spazi vuoti finali
+                   initialize env-set-value
+                   if current-value = spaces
+      * Se la variabile è vuota, copia direttamente il nuovo valore
+                        string value-to-append delimited by size
+                          into env-set-value
+                   else
+      * Se esiste già, concatena: vecchio_valore + separatore + nuovo_valore
+                   string value-to-append   delimited by " "
+                          env-sep           delimited by size
+                          current-value     delimited by " "
+                          into env-set-value
+                   end-if                   
+                                       
+Win   *           if (ntype = 1)
+      *              inspect env-set-value replacing all chrsl by chrbs
+      *           end-if
+      D            display 'env-set-name  >' 
+      D                         TRIM(env-set-name, TRAILING) '<'
+      D            display 'env-set-value >' 
+      D                         TRIM(env-set-value, TRAILING) '<'
+      D            display ' '
+                   perform set-value-env
+      ** Check return code [Problem in Linux environment]     
+                   if (retcode > 256)
+                        divide retcode by 256
+                        giving retcode
+                   end-if
+                   if retcode not = zero
+                        add 1 to count-errors
+                        add 1 to rc-retcode(idx-rc)
+                   end-if
+      **-->>             move cmd-go to cmd-cmd                    
                when other
                    display 'gctestcmd* command not found = ' 
+                        TRIM(ar-commandtype(idx), TRAILING)
+                        "-"
                         TRIM(ar-commandline(idx), TRAILING)
                    add 1 to count-errors
               end-evaluate
@@ -400,6 +466,16 @@ Win                if (ntype = 1)
        sv-99.
            exit.
       *
+      *---------------------------------------------------------*
+       get-value-env             section.
+      *---------------------------------------------------------*
+       sv-00.
+	       display env-set-name  upon ENVIRONMENT-NAME
+           accept current-value  from ENVIRONMENT-VALUE          
+           .
+       sv-99.
+           exit.
+      *      
       *---------------------------------------------------------*
        print-final               section.
       *---------------------------------------------------------*

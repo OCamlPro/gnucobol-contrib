@@ -130,6 +130,9 @@ void GCSORT_Version ( void )
     printf("gcsort Version %s\n", GCSORT_VERSION); 
     printf("Copyright (C) 2016-2026 Sauro Menna\n");
     printf("                   2009 Cedric ISSALY\n");
+    printf("libgcs Version %s\n", LIBGCS_VERSION);
+    printf("EXTSM  Version %s\n", EXTSM_VERSION);
+    printf("Copyright (C) 2026 Sauro Menna\n");
     printf("Built     %s\n", gc_build_stamp);
 	printf("Packaged  %s\n", GCSORT_TAR_DATE);
 

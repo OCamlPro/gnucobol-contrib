@@ -29,6 +29,8 @@
 #include <malloc.h>
 #include <time.h>
 
+#include "libgcs/libgcs.h"
+
 /*  #ifdef    _WIN32  */
 
 #if defined(_MSC_VER) ||  defined(__MINGW32__) || defined(__MINGW64__)
@@ -45,8 +47,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
-#include <string.h>
-#include <time.h>
 #include <errno.h>
 #include <locale.h>
 #include "gcsort.h"
@@ -74,12 +74,27 @@
 #define MAIN_FILE
 #include "gcshare.h"
 /*  #undef  MAIN_FILE */
+#undef  MAIN_FILE
 
 
-/* #include "bufferedreader.h"  */
-/* #include "bufferedwriter.h"  */
+#ifndef GCSORT_EXE
+
+//extern 
+struct Job_tmpfile_t* g_tmpf;
+
+/* Module initialization indicator */
+static unsigned int	initialized = 0;
 
 
+
+/* Module path */
+static const char* cob_module_path = NULL;
+/* Perform frame stack */
+struct cob_frame* frame_overflow;
+struct cob_frame* frame_ptr;
+struct cob_frame  frame_stack[255];
+
+#endif // !GCSORT_EXE
 
 int yyparse(void);
 
@@ -89,7 +104,7 @@ extern int gcMaxThread;
 
 INLINE int string_compare(unsigned char* s1, unsigned char* s2, int len)
 {
-    if (module->collating_sequence == NULL) {
+    if (module == NULL || module->collating_sequence == NULL) {
         return memcmp(s1, s2, len);
     }
     else {
@@ -444,6 +459,8 @@ unsigned int job_defineHeaderRecSize(struct job_t *job) {
 
 void job_destructor(struct job_t* job) {
 
+    if (job == NULL)
+        return;
 
     if (job->recordData != NULL) {
         free(job->recordData);
@@ -461,6 +478,7 @@ void job_destructor(struct job_t* job) {
     }
 
     free(job);
+    job = NULL;
 }
 void job_ReviewMemAlloc(struct job_t* job)
 {
@@ -739,15 +757,6 @@ int job_load(struct job_t* job, int argc, char** argv) {
                 trim_and_replace_newlines(buffer, strlen(buffer));
         }
     }
-    //if (nTakeCmd == 1) {    /* Take command present */
-    //    buffer = (char*)realloc(buffer, COB_MEDIUM_BUFF); /* allocate */
-    //    memset(buffer, 0x00, COB_MEDIUM_BUFF);
-    //job_MakeCmdLine(szTakeFile, buffer, COB_MEDIUM_BUFF);
-    //}
-
-    //job_SetCmdLine(job, buffer);
-
-
 
     if (returnCode == 0) {
         if (0 == 1) /* version normal */
@@ -1329,7 +1338,7 @@ int    job_scanCmdSpecialChar(char* bufnew)
     return 0;
 }
 
-int    job_RescanCmdSpecialChar(char* bufnew)
+int job_RescanCmdSpecialChar(char* bufnew)
 {
     int nP = 0;
     int nN = 0;
@@ -1356,7 +1365,8 @@ int    job_RescanCmdSpecialChar(char* bufnew)
         }
         nP++;
     } while (bufnew[nP] != 0x00);
-    strcpy(bufnew, pNewBuf);
+    /* s.m. 20261028 strcpy(bufnew, pNewBuf); */
+    strncpy(bufnew, pNewBuf, strlen(bufnew));
     free(pNewBuf);
     return 0;
 }
@@ -1967,7 +1977,7 @@ int job_MakeCmdLine(char* szF, char* buf, size_t nBufSize)
 
     file_take->assign = &name_field; // Assegnazione per la risoluzione automatica delle variabili d'ambiente
 
-    // Configurazione del File Status (2 byte) come array statico per stabilità di memoria
+    /* Configurazione del File Status (2 byte) come array statico per stabilità di memoria */
     static unsigned char status_buffer[2] = { '0', '0' };
     static cob_field_attr status_attr = { COB_TYPE_ALPHANUMERIC, 0, 0, 0, NULL };
     static cob_field file_status_field;
@@ -1977,7 +1987,7 @@ int job_MakeCmdLine(char* szF, char* buf, size_t nBufSize)
 
     file_take->file_status = status_buffer;
 
-    // Memory allocation input record 
+    /* Memory allocation input record */
     file_take->record = (cob_field*)malloc(sizeof(cob_field));
     if (file_take->record == NULL) {
         cob_file_free(&file_take, &keys);
@@ -2270,6 +2280,11 @@ int job_check(struct job_t* job)
                 return -1;
             }
 
+            if ((file->stFileDef->nkeys == 0) && ((file->organization == FILE_ORGANIZATION_INDEXED) || (file->organization == FILE_ORGANIZATION_RELATIVE))) {
+                fprintf(stdout, "*GCSORT*S071*ERROR: KEY clause definition not allowed for file  %s - Type: %s\n", file->name, utils_getFileOrganizationName(file->organization));
+                return -1;
+            }
+
             cob_open(file->stFileDef, COB_OPEN_OUTPUT, 0, NULL);
             if (atol((char*)file->stFileDef->file_status) != 0) {
                 fprintf(stdout, "*GCSORT*S016*ERROR: Cannot open file %s - File Status (%c%c)\n", file_getName(file),
@@ -2486,7 +2501,7 @@ int job_print_final(struct job_t* job, time_t* timeStart)
     }
     else {  
         fprintf(stdout, " Total Records Number..............: " NUM_FMT_LLD "\n", (long long)job->recordNumberTotal);
-        fprintf(stdout, " Total Records Write Sort..........: " NUM_FMT_LLD "\n", (long long)job->recordWriteSortTotal);
+        fprintf(stdout, " Total Records Write Sort TMP......: " NUM_FMT_LLD "\n", (long long)job->recordWriteSortTotal);
     }
     fprintf(stdout, " Total Records Write Output........: " NUM_FMT_LLD "\n", (long long)job->recordWriteOutTotal);
 
@@ -2824,6 +2839,8 @@ int job_destroy(struct job_t* job) {
     struct sortField_t* fPSF[128];
     struct sortField_t* sortField;
 
+    if (job == NULL)
+        return 0;
 
     if (job->inputFile != NULL) {
         for (file = job->inputFile; file != NULL; file = file_getNext(file)) {
@@ -3458,63 +3475,11 @@ int job_loadFiles(struct job_t* job) {
                 In this point extract key from record
                 Most important IF INREC present all commands get record from INREC definition
             */
-            job_GetKeys(job, szBuffRek, szBuffKey);
 
-            /* Area = Buffer Key + Absolute Position from beginning file + Recorld Length   */
-            /* Buffer Key + 2 len record + 2 position key                                   */
-
-            job->LenCurrRek = nLenRek;
-            /* perf.    */
-            lPosBuf = (job->recordNumber) * ((int64_t)job->nLenKeys + (int64_t)SIZESRTBUFF);
-            /* perf.    */
-            job->phSrt->pAddress = (unsigned char*)job->recordData + job->ulMemSizeRead;
-            /* perf.    */
-            gc_memcpy(job->recordData + job->ulMemSizeRead, szBuffRek, job->LenCurrRek);
-            /* -- old -- pBufData = memcpy((unsigned char*) pBufData    , (unsigned char*) szBuffRek, job->LenCurrRek); */
-
-             /* Fields
-                Key, PosPnt, Len , Pointer
-                nn , 8     , 4   , 8
-                Key
-             */
-
-            job->phSrt->lPosPnt = job->lPosAbsRead;
-            job->phSrt->nLenRek = job->LenCurrRek;
-
-            gc_memmove((unsigned char*)job->buffertSort + lPosBuf, (unsigned char*)szBuffKey, job->nLenKeys);
-            gc_memmove((unsigned char*)(job->buffertSort + lPosBuf + job->nLenKeys), job->phSrt, nSplitBuf);
-
-            job->ulMemSizeRead += (int64_t)nLenRek;        /* key + pointer record + record length */
-            job->ulMemSizeSort += (int64_t)job->nLenKeys + (int64_t)SIZESRTBUFF;
-
-            job->lPosAbsRead = job->lPosAbsRead + (int64_t)nLenRek;  /* Setting value of Position Record    */
-
-            job->recordNumber++;
-
-            /* check for next read record   */
-            if (((int64_t)(job->ulMemSizeRead + nLim01) >= job->ulMemSizeAllocData) ||
-                ((int64_t)(job->ulMemSizeSort + nLim02) >= job->ulMemSizeAllocSort)) {
-                job->bIsPresentSegmentation = 1;
-                job->nCurrFileInput = nIdxFileIn; /* last file input read   */
-
-#ifdef GCSTHREAD
-                if (job->nStatistics == 2) {
-                    printf("--------------------------->>>> job->bIsPresentSegmentation = 1;\n");
-                    int64_t t1 = (int64_t)(job->ulMemSizeRead + (((int64_t)job->nLenMemory) * 2));
-                    int64_t t2 = ((int64_t)(job->ulMemSizeSort + (((int64_t)job->nLenKeys + (int64_t)SIZESRTBUFF) * 2)));
-                    fprintf(stdout, " ((int64_t)(job->ulMemSizeRead + (((int64_t)job->nLenMemory ) * 2)) >= job->ulMemSizeAllocData)                          t1=" NUM_FMT_LLD " - job->ulMemSizeAllocData =  "NUM_FMT_LLD " \n", (long long)t1, (long long)job->ulMemSizeAllocData);
-                    fprintf(stdout, " ((int64_t)(job->ulMemSizeSort + (((int64_t)job->nLenKeys + (int64_t)SIZESRTBUFF) * 2))  >= job->ulMemSizeAllocSort) t2=" NUM_FMT_LLD " - job->ulMemSizeAllocSort = " NUM_FMT_LLD " \n", (long long)t2, (long long)job->ulMemSizeAllocSort);
-                    fprintf(stdout, " job_loadFiles - job->ulMemSizeAllocData - " NUM_FMT_LLD "\n", (long long)(job->ulMemSizeAllocData));
-                    fprintf(stdout, " job_loadFiles - job->ulMemSizeAllocSort - " NUM_FMT_LLD "\n", (long long)(job->ulMemSizeAllocSort));
-                    fprintf(stdout, " job_loadFiles - job->ulMemSizeRead      - " NUM_FMT_LLD "\n", (long long)(job->ulMemSizeRead));
-                    fprintf(stdout, " job_loadFiles - job->ulMemSizeSort      - " NUM_FMT_LLD "\n", (long long)(job->ulMemSizeSort));
-                    fprintf(stdout, " job_loadFiles - job->recordNumber       - " NUM_FMT_LLD "\n", (long long)(job->recordNumber));
-                }
-#endif
-                /* s.m. 20220701 return -2; */
-                retcode = -2;
+            /* New function - review for EXTSM */
+            retcode= job_LoadInMemory(job, szBuffRek, szBuffKey, nLenRek, nSplitBuf, nIdxFileIn, nLim01, nLim02);
+            if (retcode == -2)
                 goto lbex;
-            }
         }
 
         if (nbyteRead == 0) {
@@ -3570,6 +3535,72 @@ lbex:
     /* s.m. 20220701 return 0; */
     return retcode;
 }
+
+/* EXTSM */
+int job_LoadInMemory(struct job_t* job, char* szBuffRek, char* szBuffKey, int nLenRek, int nSplitBuf, int nIdxFileIn, int64_t nLim01, int64_t nLim02)
+{
+    int retcode = 0;
+    int64_t lPosSeqLS = 0;
+    int64_t lPosBuf = 0;
+    job_GetKeys(job, szBuffRek, szBuffKey);
+
+    /* Area = Buffer Key + Absolute Position from beginning file + Recorld Length   */
+    /* Buffer Key + 2 len record + 2 position key                                   */
+
+    job->LenCurrRek = nLenRek;
+    /* perf.    */
+    lPosBuf = (job->recordNumber) * ((int64_t)job->nLenKeys + (int64_t)SIZESRTBUFF);
+    /* perf.    */
+    job->phSrt->pAddress = (unsigned char*)job->recordData + job->ulMemSizeRead;
+    /* perf.    */
+    gc_memcpy(job->recordData + job->ulMemSizeRead, szBuffRek, job->LenCurrRek);
+    /* -- old -- pBufData = memcpy((unsigned char*) pBufData    , (unsigned char*) szBuffRek, job->LenCurrRek); */
+
+     /* Fields
+        Key, PosPnt, Len , Pointer
+        nn , 8     , 4   , 8
+        Key
+     */
+
+    job->phSrt->lPosPnt = job->lPosAbsRead;
+    job->phSrt->nLenRek = job->LenCurrRek;
+
+    gc_memmove((unsigned char*)job->buffertSort + lPosBuf, (unsigned char*)szBuffKey, job->nLenKeys);
+    gc_memmove((unsigned char*)(job->buffertSort + lPosBuf + job->nLenKeys), job->phSrt, nSplitBuf);
+
+    job->ulMemSizeRead += (int64_t)nLenRek;        /* key + pointer record + record length */
+    job->ulMemSizeSort += (int64_t)job->nLenKeys + (int64_t)SIZESRTBUFF;
+
+    job->lPosAbsRead = job->lPosAbsRead + (int64_t)nLenRek;  /* Setting value of Position Record    */
+
+    job->recordNumber++;
+
+    /* check for next read record   */
+    if (((int64_t)(job->ulMemSizeRead + nLim01) >= job->ulMemSizeAllocData) ||
+        ((int64_t)(job->ulMemSizeSort + nLim02) >= job->ulMemSizeAllocSort)) {
+        job->bIsPresentSegmentation = 1;
+        job->nCurrFileInput = nIdxFileIn; /* last file input read   */
+
+#ifdef GCSTHREAD
+        if (job->nStatistics == 2) {
+            printf("--------------------------->>>> job->bIsPresentSegmentation = 1;\n");
+            int64_t t1 = (int64_t)(job->ulMemSizeRead + (((int64_t)job->nLenMemory) * 2));
+            int64_t t2 = ((int64_t)(job->ulMemSizeSort + (((int64_t)job->nLenKeys + (int64_t)SIZESRTBUFF) * 2)));
+            fprintf(stdout, " ((int64_t)(job->ulMemSizeRead + (((int64_t)job->nLenMemory ) * 2)) >= job->ulMemSizeAllocData)                          t1=" NUM_FMT_LLD " - job->ulMemSizeAllocData =  "NUM_FMT_LLD " \n", (long long)t1, (long long)job->ulMemSizeAllocData);
+            fprintf(stdout, " ((int64_t)(job->ulMemSizeSort + (((int64_t)job->nLenKeys + (int64_t)SIZESRTBUFF) * 2))  >= job->ulMemSizeAllocSort) t2=" NUM_FMT_LLD " - job->ulMemSizeAllocSort = " NUM_FMT_LLD " \n", (long long)t2, (long long)job->ulMemSizeAllocSort);
+            fprintf(stdout, " job_loadFiles - job->ulMemSizeAllocData - " NUM_FMT_LLD "\n", (long long)(job->ulMemSizeAllocData));
+            fprintf(stdout, " job_loadFiles - job->ulMemSizeAllocSort - " NUM_FMT_LLD "\n", (long long)(job->ulMemSizeAllocSort));
+            fprintf(stdout, " job_loadFiles - job->ulMemSizeRead      - " NUM_FMT_LLD "\n", (long long)(job->ulMemSizeRead));
+            fprintf(stdout, " job_loadFiles - job->ulMemSizeSort      - " NUM_FMT_LLD "\n", (long long)(job->ulMemSizeSort));
+            fprintf(stdout, " job_loadFiles - job->recordNumber       - " NUM_FMT_LLD "\n", (long long)(job->recordNumber));
+        }
+#endif
+        /* s.m. 20220701 return -2; */
+        retcode = -2;
+    }
+    return retcode;
+}
+
 
 /*
  Routine for E15 call
@@ -4447,7 +4478,7 @@ int job_save_tempfile(struct job_t* job)
     int  useRecord;
     int64_t    nReadTmpFile;
     int64_t i;
-    struct mmfio_t* mmfTmp;
+    struct mmfio_t* mmfTmp = NULL;
     unsigned char  szKeyPrec[GCSORT_KEY_MAX + SZPOSPNT];
     unsigned char  szKeySave[GCSORT_KEY_MAX + SZPOSPNT];
     unsigned char* bufferwriteglobal; /* pointer for write buffered */
@@ -6827,5 +6858,166 @@ void job_UnlockResource( void ) {
     return;
 }
 #endif
+
+#ifndef GCSORT_EXE
+GCS_API struct Job_tmpfile_t* gcs_tmpfile_init(struct job_t* job)
+{
+    int  iSeek = 0;
+    //int  nMaxEle = 0;
+    int  nSplitPosPnt = SIZEINT;
+    int  byteRead = 0;
+    int  kj = 0;
+    int  k;
+    int  recordBufferLength;
+    int  retcode_func = 0;
+
+    if (job->bIsPresentSegmentation == 0)
+        return NULL;
+
+    struct Job_tmpfile_t* tmpf = malloc(sizeof(struct Job_tmpfile_t));
+
+    tmpf->nLastRead = 0;
+
+    recordBufferLength = MAX_RECSIZE;
+    recordBufferLength = recordBufferLength + nSplitPosPnt + NUMCHAREOL;
+    tmpf->recordBuffer = (unsigned char*)malloc(recordBufferLength);
+    if (tmpf->recordBuffer == 0)
+        fprintf(stdout, "*EXTSM*S048*ERROR: Cannot Allocate tmpf->recordBuffer : %s\n", strerror(errno));
+
+    for (kj = 0; kj < MAX_HANDLE_TEMPFILE; kj++) {
+        tmpf->szBufRekTmpFile[kj] = (unsigned char*)malloc(recordBufferLength);
+        if (tmpf->szBufRekTmpFile[kj] == 0)
+            fprintf(stdout, "*EXTSM*S050*ERROR: Cannot Allocate szBufRek1 : %s - id : %d\n", strerror(errno), kj);
+    }
+
+    for (kj = 0; kj < MAX_HANDLE_TEMPFILE; kj++) {
+        tmpf->byteReadTmpFile[kj] = 0;
+        tmpf->handleTmpFile[kj] = 0;
+        tmpf->bIsEof[kj] = 1;
+    }
+    tmpf->nLastRead = 0;
+
+    /* Open files Tmp   */
+    int j = 0;
+    for (k = 0; k < MAX_HANDLE_TEMPFILE; k++)
+    {
+        if (job->nCountSrt[k] == 0)
+            continue;
+        j++;
+        tmpf->bIsEof[k] = 0;
+        tmpf->ArrayFile[k] = mmfio_constructor();
+        if (mmfio_Open((const unsigned char*)job->array_FileTmpName[k], OPN_READ, 0, tmpf->ArrayFile[k]) == 0) {
+            fprintf(stdout, "*EXTSM*S056*ERROR: Cannot open file %s : %s\n", job->array_FileTmpName[k], strerror(errno));
+            retcode_func = -1;
+            goto job_tmpfile_init_exit;
+        }
+        /* s.m. 20250110 */
+        tmpf->handleTmpFile[k] = (int)((size_t)tmpf->ArrayFile[k]->m_hFile);
+    }
+
+
+    for (kj = 0; kj < MAX_HANDLE_TEMPFILE; kj++) {
+        if (tmpf->handleTmpFile[kj] != 0)
+            tmpf->ptrBuf[kj] = (unsigned char*)tmpf->szBufRekTmpFile[kj];
+        else
+            tmpf->ptrBuf[kj] = 0x00;
+    }
+    tmpf->nSumEof = 0;
+
+    for (kj = 0; kj < MAX_HANDLE_TEMPFILE; kj++) {
+        if (tmpf->bIsEof[kj] == 0) {
+            tmpf->bIsEof[kj] = job_ReadFileTemp(tmpf->ArrayFile[kj], &tmpf->byteReadTmpFile[kj], tmpf->szBufRekTmpFile[kj]);  /* tmpf->bIsEof = 0 ok, 1 = eof   */
+            if (tmpf->bIsEof[kj] == 1) {
+                tmpf->ptrBuf[kj] = 0x00;
+            }
+        }
+        tmpf->nSumEof = tmpf->nSumEof + tmpf->bIsEof[kj];
+    }
+
+    //nMaxEle = j + 1;
+    job->nNumTmpFile = j + 1;
+
+    //-->> ??? nPosPtr = job_IdentifyBuf(job, tmpf->ptrBuf, job->nNumTmpFile);
+job_tmpfile_init_exit:
+    return tmpf;
+}
+#endif
+//-->> Start release function
+#ifndef GCSORT_EXE
+GCS_API int gcs_tmpfile_get(struct job_t* job, struct Job_tmpfile_t* tmpf, FCD3* fcd)
+{
+    int  nPosPtr = 0;
+    int  nSplitPosPnt = SIZEINT;
+    int byteRead = 0;
+
+    nPosPtr = job_IdentifyBuf(job, tmpf->ptrBuf, job->nNumTmpFile);
+    tmpf->nLastRead = nPosPtr;
+
+    byteRead = tmpf->byteReadTmpFile[nPosPtr];
+    job->LenCurrRek = byteRead;
+
+    if (byteRead > 0)
+    {
+        //job_set_area(job, job->outputFile, tmpf->szBufRekTmpFile[nPosPtr] + nSplitPosPnt, job->outputLength, byteRead);    /* Len output   */
+        //-->>cob_write(job->outputFile->stFileDef, job->outputFile->stFileDef->record, job->outputFile->opt, NULL, 0);
+        //-->>retcode_func = file_checkFSWrite("Write", "job_save_tempfinal(2)", job->outputFile, nLenRecOut, byteRead);
+        //-->>if (retcode_func == -1)
+        //-->>    goto job_save_tempfinal_exit;
+        gc_memcpy(fcd->recPtr, tmpf->szBufRekTmpFile[nPosPtr] + nSplitPosPnt, byteRead); /* buffer   */
+        job->recordWriteOutTotal++;
+    }
+
+    if (tmpf->bIsEof[tmpf->nLastRead] == 0) {
+        tmpf->bIsEof[tmpf->nLastRead] = job_ReadFileTemp(tmpf->ArrayFile[tmpf->nLastRead], &tmpf->byteReadTmpFile[tmpf->nLastRead], tmpf->szBufRekTmpFile[tmpf->nLastRead]);  /* tmpf->bIsEof = 0 ok, 1 = eof   */
+        if (tmpf->bIsEof[tmpf->nLastRead] == 1) {
+            tmpf->ptrBuf[tmpf->nLastRead] = 0x00;
+            tmpf->nSumEof = tmpf->nSumEof + tmpf->bIsEof[tmpf->nLastRead];
+        }
+    }
+
+    return 0;
+}
+#endif
+/* -->> End release function */
+
+/* -->> Start cleanup function */
+#ifndef GCSORT_EXE
+GCS_API void gcs_tmpfile_cleanup(struct job_t* job, struct Job_tmpfile_t* tmpf)
+{
+    int desc = 0;
+    char szNameTmp[FILENAME_MAX];
+    for (int iSeek = 0; iSeek < MAX_HANDLE_TEMPFILE; iSeek++) {
+        if (job->nCountSrt[iSeek] == 0)
+            continue;
+        if (tmpf->ArrayFile[iSeek]->m_pbFile != NULL) {
+            mmfio_Close(tmpf->ArrayFile[iSeek]);
+            mmfio_destructor(tmpf->ArrayFile[iSeek]);
+            free(tmpf->ArrayFile[iSeek]);
+        }
+        if (job->array_FileTmpHandle[iSeek] != -1) {
+            strcpy(szNameTmp, job->array_FileTmpName[iSeek]);
+            desc = remove(szNameTmp);
+            if (desc != 0) {
+                fprintf(stdout, "*EXTSM*W001* WARNING : Cannot remove file %s : %s\n", szNameTmp, strerror(errno));
+                g_retWarn = 4;
+            }
+        }
+    }
+
+    for (int kj = 0; kj < MAX_HANDLE_TEMPFILE; kj++) {
+        if (tmpf->szBufRekTmpFile[kj] != NULL)
+            free(tmpf->szBufRekTmpFile[kj]);
+    }
+
+    if (g_tmpf->recordBuffer != NULL)
+        free(g_tmpf->recordBuffer);
+    if (g_tmpf != NULL)
+        free(g_tmpf);
+
+    return;
+
+}
+#endif
+/* -->> End cleanup function */
 
 

@@ -165,9 +165,9 @@ int mmfio_Open(const unsigned char* strfile, enum OPENFLAGS oflags, int64_t maxs
 		return 0;
 	}
 
-
-	mmf->m_qwFileSize = GetFileSize(hFile, &dwFileSizeHigh);
-	mmf->m_qwFileSize += (((int64_t) dwFileSizeHigh) << 32);
+	dwFileSizeHigh = 0;
+    mmf->m_qwFileSize = GetFileSize(hFile, &dwFileSizeHigh);
+    mmf->m_qwFileSize += (((int64_t)dwFileSizeHigh) << 32);
 
 	if(mmf->m_qwFileSize == 0)
 	{
@@ -221,11 +221,6 @@ int mmfio_Open(const unsigned char* strfile, enum OPENFLAGS oflags, int64_t maxs
 		/*  char *p;    */
         /* p = mmap (0, sb.st_size, PROT_READ, MAP_SHARED, fd, 0);  */
 	fstat (mmf->m_hFile, &sb) ;
-	/*
-    if (fstat (mmf->m_hFile, &sb) == O_RDONLY) {
-          perror ("fstat");
-    }
-	*/
 
     if(mmf->m_pbFile == MAP_FAILED ) { 
 		memcpy(mmf->m_strErrMsg, MMF_ERR_MAPVIEWOFFILE, sizeof(MMF_ERR_MAPVIEWOFFILE));

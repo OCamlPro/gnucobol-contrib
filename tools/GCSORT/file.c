@@ -24,7 +24,6 @@
 #include <string.h>
 #include <libcob.h>
 #include "gcsort.h"
-#include "libgcsort.h"
 #include "job.h"
 #include "file.h"
 #include "utils.h"
@@ -332,6 +331,9 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 		}
 
 		/* (cob_file_malloc)  file->stFileDef->keys = (cob_file_key*)(malloc(sizeof(cob_file_key) * file->nNumKeys)); */
+		if (file->nNumKeys > 0)
+			memset(file->stFileDef->keys, 0, sizeof(cob_file_key)* file->nNumKeys);
+
 		for (k = 0; k < file->nNumKeys; k++) {
 			/* s.m. 20250110 */
 			file->stFileDef->keys[k].field = util_cob_field_make(tKeys->pCobFieldKey->attr->type, tKeys->pCobFieldKey->attr->digits,
@@ -347,10 +349,28 @@ int file_SetInfoForFile(struct file_t* file, int nMode) {
 #if __LIBCOB_VERSION_MINOR >= 3 || __LIBCOB_VERSION >= 4
 			file->stFileDef->keys[k].collating_sequence = get_collation(tKeys->nCollatingSeq);
 #endif  
+			/* s.m. 20261008 */
+			file->stFileDef->keys[k].tf_ascending = 0;
+			file->stFileDef->keys[k].tf_suppress = 0;
+			file->stFileDef->keys[k].char_suppress = 0;
+			file->stFileDef->keys[k].count_components = 0;      /* count_components */
+			file->stFileDef->keys[k].component[0] = NULL;
+
+			/* s.m. 20210215    */
+			file->stFileDef->extfh_ptr = NULL;
+			file->stFileDef->linorkeyptr = NULL;
+			file->stFileDef->sort_collating = NULL;
+
+
 #endif
 			/* s.m. 202101 end  */
 			file->stFileDef->keys[k].offset = tKeys->position;
 			tKeys = tKeys->next;
+
+			/* debug */
+			/* fprintf(stdout, "offset %d size %d flag %d collating_sequence %p - duplicates %d\n", file->stFileDef->keys[k].offset, (int)file->stFileDef->keys[k].field->size,
+				file->stFileDef->keys[k].flag, file->stFileDef->keys[k].collating_sequence, file->stFileDef->keys[k].tf_duplicates); */
+
 		}
 		/* s.m. 202101 start    */
 #if __LIBCOB_VERSION >= 3

@@ -24,7 +24,6 @@
 #include <libcob.h>
 #include <time.h>
 #include "gcsort.h"
-#include "libgcsort.h"
 #include "utils.h"      
 #include "datediff.h"      
 

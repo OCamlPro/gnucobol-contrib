@@ -1,0 +1,42 @@
+# ====================================================================
+#  Makefile for testlibgcs (Windows - Visual Studio / NMAKE)
+# ====================================================================
+
+RM      = del /Q /F
+MKDIR   = mkdir
+INSTALL = copy
+EXE_EXT = .exe
+
+CC       = cl
+INC_DIR  = .
+LIB_DIR  = lib
+
+CFLAGS   = /Zi /W4 /O2 /std:c11 /I$(INC_DIR)
+LDFLAGS  = /LIBPATH:$(LIB_DIR) libgcs.lib libcob.lib /FORCE:MULTIPLE
+
+TARGET_NAME = testlibgcs
+TARGET      = $(TARGET_NAME)$(EXE_EXT)
+OUTDIR      = tests\bin
+
+SRCS     = testlibgcs\testlibgcs.c
+OBJS     = testlibgcs\testlibgcs.obj
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	link.exe $(LDFLAGS) /OUT:$(TARGET) $(OBJS)
+	@echo Compilation successful! Executable created: $(TARGET)
+	@if not exist $(OUTDIR) $(MKDIR) $(OUTDIR)
+	$(INSTALL) $(TARGET) $(OUTDIR)\$(TARGET)
+
+testlibgcs\testlibgcs.obj: testlibgcs\testlibgcs.c
+	$(CC) $(CFLAGS) /c testlibgcs\testlibgcs.c /Fotestlibgcs\testlibgcs.obj
+
+clean:
+	@if exist testlibgcs\*.obj $(RM) testlibgcs\*.obj
+	@if exist *.pdb $(RM) *.pdb
+	@if exist *.ilk $(RM) *.ilk
+	@if exist $(TARGET) $(RM) $(TARGET)
+	@echo Cleanup completed.
+
+rebuild: clean all

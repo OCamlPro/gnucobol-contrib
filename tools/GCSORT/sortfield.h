@@ -22,6 +22,7 @@
 #ifndef SORTFIELD_H_INCLUDED
 #define SORTFIELD_H_INCLUDED
 
+#include "libgcs/libgcs.h"
 
 struct sortField_t {
 	int position;
