@@ -1,13 +1,15 @@
-This README is superceded by the PDF manual and this includes all changes for
+This README is superseded by the PDF manual and this includes all changes for
 version v2.03.14 that runs under Windows, *nix, Linux etc with the GnuCOBOL
 compiler v2 and v3. It is recommended to always use the latest release, which is
-currently v3.2 Final.
+currently v3.2 Final (as of 1 Nov 2026).
+
+cobxref for Micros :
 
 This version supports both fixed, variable and free format Cobol source files
 creating Cobol cross references listings.
 
-This version supports user supplied names for data, section, paragraph,
-program and modules to 63 characters if using the latest GnuCobol code base v3.
+It also supports user supplied names for data, section, paragraph,
+program and modules to 63 characters IF using the latest GnuCobol code base v3.
 
 It has been tested against production sources - well in excess of
 1000 programs as well as various test source programs as well as large sources
@@ -15,19 +17,40 @@ exceeding 64,000 source lines.
 
 I have not tested it with Windows.
 
+[ There are some bugs :
+
+1. Around using CALL verbs in that they also appear in the
+un-referenced sections of any program listing very near the bottom.
+Simple way to fix this is to do a dummy call for each one affected at the bottom
+of your program which is NOT called or executed. ]
+
+2. Occasional errors around missing variables that are present as confirmed by
+being referenced else where.
+
+3. Odd behaviour regarding CDF copy replacing where there is a large list of
+such replacing statements. This is a bug in the supplemental module printcbl.
+This is the last nested module in the source file.
+This bug also applies to the standalone version of the same program stored
+within the GnuCobol contrib folder.
+
+I will try and find time to locate and fix it but at the moment very busy
+working on ACAS development for Payroll for the US market.
+This is more to keep me occupied than anything else :)
+
 Read the Changelog for latest updates and bug fixes.
 
 This project area (cobxref) also has the current version for
 IBM MVS Ansi Cobol at:
-https://sourceforge.net/projects/cobxref/IBM-MVS-38J-Ansi-Cobol/ cobxref-IBM-MVS-38J-Ansi-Cobol
+https://sourceforge.net/projects/cobxref/files/MVS3.8J-cobxref.rar/download
 
-but it does not provide support for COPY libraries due to no demand.
-In any event such would require adding extra supporting modules into MVS to
-allow Cobol programs access to the PDS file system.
+It does not provide support for COPY libraries due to no demand.
+In any event, such would require adding a extra support module into MVS to
+allow Cobol programs access to the PDS file system. See the docs for more info.
+This module has been tested.
 
 Please report all bugs found for the GnuCOBOL version to the GNUCobol contrib
 forum at https://sourceforge.net/p/gnucobol/discussion/contrib/ and send a
-copy to the author at vbcoen@gmail.com if urgent or a showstopper.
+copy to the author at vbcoen@gmail.com if urgent or a show stopper.
 
 Bugs for the IBM version direct to author at vbcoen@gmail.com with a subject
 of MVS bug.
@@ -35,5 +58,5 @@ of MVS bug.
 
 
 Vincent B. Coen
-Last update 17th June 2024.
+Last update 1 November 2026.
 

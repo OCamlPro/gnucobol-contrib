@@ -17,11 +17,12 @@ Read the Changelog for latest updates and bug fixes.
 
 This project area (cobxref) also has the current version for
 IBM MVS Ansi Cobol at:
-https://sourceforge.net/projects/cobxref/IBM-MVS-38J-Ansi-Cobol/ cobxref-IBM-MVS-38J-Ansi-Cobol
+https://sourceforge.net/projects/cobxref/files/MVS3.8J-cobxref.rar/download
 
-but it does not provide support for COPY libraries due to no demand.
-In any event such would require adding extra supporting modules into MVS to
-allow Cobol programs access to the PDS file system.
+It does not provide support for COPY libraries due to no demand.
+In any event, such would require adding a extra support module into MVS to
+allow Cobol programs access to the PDS file system. See the docs for more info.
+This module has been tested.
 
 Please report all bugs found for the GnuCOBOL version to the GNUCobol contrib
 forum at https://sourceforge.net/p/gnucobol/discussion/contrib/ and send a
@@ -30,8 +31,6 @@ copy to the author at vbcoen@gmail.com if urgent or a showstopper.
 Bugs for the IBM version direct to author at vbcoen@gmail.com with a subject
 of MVS bug.
 
-
-
 Vincent B. Coen
- 27th Mar 2022.
+Last update 1 November 2026.
 

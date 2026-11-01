@@ -1,30 +1,35 @@
-2025-09-09  Vincent B Coen <vbcoen@btconnect.com>
+
+2026-11-01  Vincent B Coen <vbcoen@gmail.com>
+                    Changed email address to gmail.com everywhere as THunderbird
+                    cannnot connect to the btconnect account - I have now given up.
+
+2025-09-09  Vincent B Coen <vbcoen@gmail.com>
         (v2.03.18)  Changed CopySourceRecIn2 from 160 to 256 as a prog has a
                     line of 210 - Who knew ?
 
-2025-07-25  Vincent B Coen <vbcoen@btconnect.com>
+2025-07-25  Vincent B Coen <vbcoen@gmail.com>
         (v2.03.17)  Added READY, TRACE to reserved words in get-reserved-lists at end
                     then added a sort for that table as bug in reserved word list is
                     missing these.
 
-2024-09-11  Vincent B Coen <vbcoen@btconnect.com>
+2024-09-11  Vincent B Coen <vbcoen@gmail.com>
         (v2.03.16)  Error - in WS Section-Short-Names-Table change 1 entry from 24 to 16.
                     Added 1 more to tables Section-Short-Names-Table, Section-Names-Table
                     SectTable, LSect, USect all to support extra section name CONSTANT.
                     NOT YET Coded for but expected in GC v4 at some time.
                     Lots of changes will be needed so not looking forward to it :(
 
-2024-08-26  Vincent B Coen <vbcoen@btconnect.com>
+2024-08-26  Vincent B Coen <vbcoen@gmail.com>
 cobxref (v2.03.15)  In para bb030-Chk1 the code for "CALL" did not allow for
                     words STATIC or STDCALL. This bug produced STATIC or STDCALL
                     in the Lsting for Called Procedures instead of the actual
                     routine called.
                     In bb020-GetAWord test for End-Prog and Source-Eof before
-                    performing zz110-Get-A-Word as trying to stop msg8but leave
+                    performing zz110-Get-A-Word as trying to stop msg8 but leave
                     in the same tests after. Ditto in zz110-Get-A-Word-OverFlow.
                     Still not fixed it ...
 
-2024-06-17  Vincent B Coen <vbcoen@btconnect.com>
+2024-06-17  Vincent B Coen <vbcoen@gmail.com>
 printcbl
        (v2.01.41)   From Chuck Haatvedt chg within prtcbl at ba000-Process Section
                     for 2 statements of "move     Input-Record To PL-Text" TO
@@ -35,19 +40,19 @@ cobxref
                     Default for help is without ANY parameters supplied, i.e.,
                     calling cobxref
 
-2023-06-16  Vincent B Coen <vbcoen@btconnect.com>
+2023-06-16  Vincent B Coen <vbcoen@gmail.com>
        (v2.03.13)   Changed in 2 tables 'values high-values' to 'value high-value'
                     due to change in cobc v3.2 RC-2 !! complaining.
                     In printcbl module zz900 changed display using a comp to a z(7)9
                     this was changed in printcbl standalone. keeping version #
                     to match.
 
-2022-10-17  Vincent B Coen <vbcoen@btconnect.com>
+2022-10-17  Vincent B Coen <vbcoen@gmail.com>
        (v2.03.11)   Increased size of progname and word names for Supp in/out &
                     sort file.
                     Ditto Git table entries and made table fixed at 10,000.
 
-2022-09-27  Vincent B Coen <vbcoen@btconnect.com>
+2022-09-27  Vincent B Coen <vbcoen@gmail.com>
        (v2.03.09)   Extend SourceInWS2 from 65 to 249 for variable format.
                     Remove bad tests for not ">>" etc  in get-a-source-record
                     as skipping valid tests for >>DEFINE, $SET etc.
@@ -55,7 +60,7 @@ cobxref
        (v2.03.08)   In zz100-Get-A-Source-Records skip lines with $E and $I (IF,
                     ELIF, ELSE, END-IF, ELSE-IF and END)
 
-2022-09-23  Vincent B Coen <vbcoen@btconnect.com>
+2022-09-23  Vincent B Coen <vbcoen@gmail.com>
        (v2.03.07)   Bug: missing test for SW-Variable with test for SW-Fixed.
 
        (v2.03.06)   Code to support Variable source format taken from updated
@@ -63,11 +68,11 @@ cobxref
                     Support for $SET treated as >>SET, $DEFINE as >>DEFINE and
                     skip any other $xxxx.
 
-2022-09-01  Vincent B Coen <vbcoen@btconnect.com>
+2022-09-01  Vincent B Coen <vbcoen@gmail.com>
        (v2.03.05)   Replaced all '>>DEFINE' with >>SET'
                     moved END PROGRAM to end of sources.
 
-2022-03-27  Vincent B Coen <vbcoen@btconnect.com>
+2022-03-27  Vincent B Coen <vbcoen@gmail.com>
        (v2.03.05?)  Start some coding to support end of scope for DEFINES/SET
                     after getting END PROGRAM by removing prog's DEFINES in
                     GIT (Global) tables but need to work out where to init
@@ -75,13 +80,13 @@ cobxref
 
                     This has been put on the back burner as hardly critical.
 
-2022-03-26  Vincent B Coen <vbcoen@btconnect.com>
+2022-03-26  Vincent B Coen <vbcoen@gmail.com>
        (v2.03.04)   A minor bug, clear duplicate refno reporting on same line
                     where variable used more than once. Found yet another bug
                     with internal xref as missed a variable in cobxref (CWS).
                     Version Released.
 
-2022-03-17  Vincent B Coen <vbcoen@btconnect.com>
+2022-03-17  Vincent B Coen <vbcoen@gmail.com>
        (v2.03.00)   Update to support CDF >>DEFINE CONSTANT:
                     Deduct 4 from COMPILER-LINE-CNT if LTZ-USA valid.
                     Start coding for CDF changes to PD fields to 99,
@@ -130,14 +135,14 @@ cobxref
                     Fix previously caused the new one - what else is new ?
                     version updated to v2.03.03 - not released.
 
-2022-03-22  Vincent B Coen <vbcoen@btconnect.com>
+2022-03-22  Vincent B Coen <vbcoen@gmail.com>
 (v2.01.38)   PrintCbl changed vars e to E2 as E is a reserved word and it will
                     confuse cobc creating bugs that cobc did not find. Can't be
                     bothered to create a bug report for it and there are others
                     for the internal cross ref tool, including no support for
                     CDF as have enough to do trying to fix cobxref.
 
-2021-12-14  Vincent B Coen <vbcoen@btconnect.com>
+2021-12-14  Vincent B Coen <vbcoen@gmail.com>
        (v2.02.04)   Bug found by David Wall in  zz180-Check-For-Param-Errors
                     where a perform search was using 128 for a field that is
                     only 64 chars that produced a runtime out of bounds. At some
@@ -156,7 +161,7 @@ cobxref
                     if nothing else will get rid of the silly warning regarding
                     'warning: inline PERFORM without imperative statement used'.
 
-2019-12-08  Vincent B Coen <vbcoen@btconnect.com>
+2019-12-08  Vincent B Coen <vbcoen@gmail.com>
        (v2.02.03)   Added extra tests for line starting with >>SOURCE as a
                     sample program this started in cc9 by using TRIM to strip
                     out leading spaces in zz100-Get-A-Source-Record as previous
@@ -164,12 +169,12 @@ cobxref
                     Needless to say cobc accepts this incorrectly placed
                     >>SOURCE error.
 
-2019-06-24  Vincent B Coen <vbcoen@btconnect.com>
+2019-06-24  Vincent B Coen <vbcoen@gmail.com>
        (v2.02.02)   Added print line o/p for display in bb100-scan4-colon
                     for testing a suspected error. Also one for XTERNAL
                     processing Ongoing.
 
-2019-05-13  Vincent B Coen <vbcoen@btconnect.com>
+2019-05-13  Vincent B Coen <vbcoen@gmail.com>
        (v2.02.01)   Released.
                     Bug fix for page number > 127 using bin-char instead of long
                     Support for user supplied names for data, section, paragraph
@@ -183,18 +188,18 @@ cobxref
                     were still using matrix or line printer the problem would
                     not arise.
 
-2019-03-11  Vincent B Coen <vbcoen@btconnect.com>
+2019-03-11  Vincent B Coen <vbcoen@gmail.com>
        (v2.01.02)   Released.
                     Support for replacing LEADING and TRAILING pseudo text but
                     must be same size as inspect replacing is used.
 
 
-2019-03-10  Vincent B Coen <vbcoen@btconnect.com>
+2019-03-10  Vincent B Coen <vbcoen@gmail.com>
        (v2.01.01)   Released.
                     All reported and found bugs cleared. modules Codebase merged
                     with printcbl. Manual updated.
 
-2019-02-26  Vincent B Coen <vbcoen@btconnect.com>
+2019-02-26  Vincent B Coen <vbcoen@gmail.com>
        (v1.99.40)
            BUGS: 1  cobxref producing ZZ110-GAWCH messages for fixed and free.
                  2  cobxref in xref showing all CALLS are USER - case issue ?
@@ -218,7 +223,7 @@ cobxref
 
                     Updated version number to v2.01.00.
 
-2019-02-26  Vincent B Coen <vbcoen@btconnect.com>
+2019-02-26  Vincent B Coen <vbcoen@gmail.com>
         v1.99.38  * Lots of changes to modules printcbl (and the program version)
        (v2.01.29)   For Printcbl module - Replacing clause
                     Does NOT now change comments (In Cobc it does
@@ -252,7 +257,7 @@ cobxref
                     so it was not being processed.
                     ReTesting for Fixed format now working as well as FREE.
 
-2019-02-14  Vincent B Coen <vbcoen@btconnect.com>
+2019-02-14  Vincent B Coen <vbcoen@gmail.com>
 
 
   GRL    1.00.04  * New parameter -VT to turn OFF messages for updating
@@ -292,7 +297,7 @@ cobxref
                     Found reason for ba20: msg4 error sometimes
                     Hopefully now fixed (Proc Div tested but retest skipped).
 
-2019-01-28  Vincent B Coen <vbcoen@btconnect.com>
+2019-01-28  Vincent B Coen <vbcoen@gmail.com>
         v1.99.24  * New Parameter for FREE or FIXED
                   * Inserted modified printcbl to handle COPY processing
                     creating a new file used as i/p to xref with ext as .pro
@@ -313,7 +318,7 @@ cobxref
                     not in reserved word lists. zz110-Get-A-Word-Unstring.
                     also not done in the internal xref thing.
 
-2018-10-15  Vincent B Coen <vbcoen@btconnect.com>
+2018-10-15  Vincent B Coen <vbcoen@gmail.com>
         v1.01.23  * Replace any reference to Open Cobol to GnuCOBOL.
                   * Renamed/Renumbered zz310 & zz400 routines to
                      zz220 & zz240 so that the copybook routines
@@ -322,10 +327,10 @@ cobxref
                     zz300. init taking it from printcbl and comparing with
                     the profiler code base. Updated copyright notices.
 
-2018-09-19  Vincent B Coen <vbcoen@btconnect.com>
+2018-09-19  Vincent B Coen <vbcoen@gmail.com>
         v1.01.22  * Increased additional reserved lists from 1024 to 2048.
 
-2017-03-23  Vincent B Coen <vbcoen@btconnect.com>
+2017-03-23  Vincent B Coen <vbcoen@gmail.com>
         v1.01.21  * Removed XREF list code (01.20).
                   * Removed test code for printer error/s in (cobc).
                   * Removed (see 01.19) lines printed no longer needed.
@@ -341,17 +346,17 @@ cobxref
                     likewise for only one program where xref occurs before the
                     source list.
 
-2017-03-22  Vincent B Coen <vbcoen@btconnect.com>
+2017-03-22  Vincent B Coen <vbcoen@gmail.com>
         v1.01.20  * Added new lpr file for XREF where data taken from the
                     Normal printfile that is still held by cobc.
                     This is more test code than anything else.
 
-2016-08-16  Vincent B Coen <vbcoen@btconnect.com>
+2016-08-16  Vincent B Coen <vbcoen@gmail.com>
         v1.01.19  * Add extra display for total lines printed. Still tracing
                     for problem via cobc call with missing report.
                   * Moved code from get-reserved-lists into cobxref.
 
-2016-07-06  Vincent B Coen <vbcoen@btconnect.com>
+2016-07-06  Vincent B Coen <vbcoen@gmail.com>
         v1.01.17  * Added test if listing file exists is it the same time or
                     within 1 minute if so treat as -A applied.
                   * Added display of input rec count to help test o/p of
@@ -366,19 +371,19 @@ cobxref
                     to see if cobc not closing print file before calling
                     cobxref. No definative answer and still happening.
 
-2016-07-05  Vincent B Coen <vbcoen@btconnect.com>
+2016-07-05  Vincent B Coen <vbcoen@gmail.com>
         v1.01.16  * Add param option -A to append listing to existing file.
                     Introduced with the new compiler option -T | -t
                     which now creates a sensible program listing.
 
-2014-11-08  Vincent B Coen <vbcoen@btconnect.com>
+2014-11-08  Vincent B Coen <vbcoen@gmail.com>
         v1.01.15  * Fix bug where option -G still produced all other reports.
                     Now it just produces a all in 1 report similar to MF & IBM.
                     **********************************************************
                     Must get round to performing reports one at a time instead
                     of full-through coding.
 
-2014-11-05  Vincent B Coen <vbcoen@btconnect.com>
+2014-11-05  Vincent B Coen <vbcoen@gmail.com>
         v1.01.14  * Fix bug where multi braces inside or right of : e.g.,
                     fred)anything:anything)
 
@@ -388,7 +393,7 @@ cobxref
         v1.01.12  * Improved error msg bb053 with more info and
 	            outputing blank lines at req. Rob. Mills
 
-2014-11-01  Vincent B Coen <vbcoen@btconnect.com>
+2014-11-01  Vincent B Coen <vbcoen@gmail.com>
 	v1.01.11  * Last version before adding in COPY library processing so
 	            that the program can be fully used outside cobc control as
 	            the source file provided by cobc has been converted to short
@@ -405,7 +410,7 @@ cobxref
                     a pic 9 field changed to a test against pic x vales 0 - 9.
                   * Added/uncommented code for new headings every 60 lines.
 
-2014-07-13  Vincent B Coen <vbcoen@btconnect.com>
+2014-07-13  Vincent B Coen <vbcoen@gmail.com>
         v1.01.09  * Added error msg # to error messages.
                   * Added GNU to compiler name for both modules in notices.
                   * Added message numbers Msg11 - Msg14 to get-reserved-lists
@@ -414,13 +419,13 @@ cobxref
                     on get-reserved and cobxref which may have started with
         v1.01.07.   More looking needed.
 
-2011-10-02  Vincent B Coen <vbcoen@btconnect.com>
+2011-10-02  Vincent B Coen <vbcoen@gmail.com>
         v1.01.08  * Global-Current-Level to use 99 instead of high-values for
                     GC v2.0.
                     No I have no idea why I should need to as highest value on a
                     numeric field is 99.
 
-2010-09-26  Vincent B Coen <vbcoen@btconnect.com>
+2010-09-26  Vincent B Coen <vbcoen@gmail.com>
         v1.01.07  * Changed zz170 to make it tighter with less processing steps
                     as original was getting hit hard as seen using the profiler.
                   * Clean up date in copyright display to include current year.
@@ -435,7 +440,7 @@ cobxref
                   * Program default will now list the source code prior to the
                     cross reference listing, -R now stops it.
 
-2009-02-21  Vincent B Coen <vbcoen@btconnect.com>
+2009-02-21  Vincent B Coen <vbcoen@gmail.com>
         v1.01.04  * Added support for .pre via cobc with other very minor
                     changes and upgraded version to v1 prior to incl into cobc.
                   * fixed bug with blogs(nocare) in Screen or Report Sec.
@@ -447,7 +452,7 @@ cobxref
                     internal registers.
                   * Not using new table yet.
 
-2009-02-14  Vincent B Coen <vbcoen@btconnect.com>
+2009-02-14  Vincent B Coen <vbcoen@gmail.com>
         v0.95.75  * fixed bugs regarding Special-names and file-control
                     where one or both may not be present. Extra suport
                     for Report writer but note that user names will be shown
@@ -465,7 +470,7 @@ cobxref
                     release v0.96.00 which may well be the next release subject
                     to bug reports.
 
-2009-02-13  Vincent B Coen <vbcoen@btconnect.com>
+2009-02-13  Vincent B Coen <vbcoen@gmail.com>
         v0.95.68  * Now support for user defined words in WS areas not
                     covered ie Report Writer (ba040 - ba049) ie:
                     line|col|column [number|linage is]
@@ -474,7 +479,7 @@ cobxref
                     footings [at]  &  top|bottom
                     and any other
 
-2009-02-12  Vincent B Coen <vbcoen@btconnect.com>
+2009-02-12  Vincent B Coen <vbcoen@gmail.com>
         v0.95.67  * Added support for special-names Currency sign is
                     as needed for test at ws on PIC.
                     Also added extra tests here for other leading chars.
@@ -486,23 +491,23 @@ cobxref
                     Added 3 additional non-reserved reserved words to lists
                     so that they are not reported on.
 
-2009-01-31  Vincent B Coen <vbcoen@btconnect.com>
+2009-01-31  Vincent B Coen <vbcoen@gmail.com>
         v0.95.44  * Restored -G param Group listings to make it easier to
                     compare listings from xref with MF or IBM as they are
                     more basic.
 
-2009-01-20  Vincent B Coen <vbcoen@btconnect.com>
+2009-01-20  Vincent B Coen <vbcoen@gmail.com>
         v0.95.43  * extra sub verbs in screen section added more needed
                   * ditto in ws sub verbs see DONE.
                   * Added to function table: CONCATENATE, SUBSTITUTE/-CASE
 
-2009-01-14  Vincent B Coen <vbcoen@btconnect.com>
+2009-01-14  Vincent B Coen <vbcoen@gmail.com>
         v0.95.41  * Support for free format source lines up to 255 chars
                   * Support for Cobol word sizes of 31 chars and allowance
                     for this to be increased without major problems
                     both in compliance for INCITS PL 22.4 20xx
 
-2009-01-13  Vincent B Coen <vbcoen@btconnect.com>
+2009-01-13  Vincent B Coen <vbcoen@gmail.com>
         v0.95.40  * Cleared bugs related to ws fields used in proc. with
                     )) after, ditto the (1 1 1) format. These bugs traced
                     after putting a large m/f program through OC and xref
@@ -515,7 +520,7 @@ cobxref
                   * Other changes made to cater for cobxref being called by
                     cobc.
 
-2009-01-03  Vincent B Coen <vbcoen@btconnect.com>
+2009-01-03  Vincent B Coen <vbcoen@gmail.com>
         v0.95.24  * added Check for unreferenced Globals in nested modules
                     and extra report for it
                   * More code clean ups
@@ -523,7 +528,7 @@ cobxref
                     but more to do
                   * Tidied up some of the reports
 
-2008-12-30  Vincent B Coen <vbcoen@btconnect.com>
+2008-12-30  Vincent B Coen <vbcoen@gmail.com>
         v0.95.20  * Clear loop on processing nested programs due copy proc
                     removal to cobc o/p (fn.i) and others co-related issues.
                   * Bugs related to value 0/1. due copy code removal, again.
@@ -535,7 +540,7 @@ cobxref
                   * Unref'd fields in nested to be reported at end - DONE
                   * Issued version to sourceforge & add1tocobol
 
-2008-12-21  Vincent B Coen <vbcoen@btconnect.com>
+2008-12-21  Vincent B Coen <vbcoen@gmail.com>
         v0.95.13  * Added in updated reserved.c lists which include
                     SUBSTITUTE and some new functions
                   * System reserved names are deliberately omitted so
@@ -543,7 +548,7 @@ cobxref
                   * Cleared some more cosmetic bugs in reports
                   * Issued version to sourceforge
 
-2008-12-19  Vincent B Coen <vbcoen@btconnect.com>
+2008-12-19  Vincent B Coen <vbcoen@gmail.com>
         v0.95.10  * Fixed program name in reports for case as indicated by
 	 	    commandline -l
 	          * Added module name in reports if nested source
@@ -553,7 +558,7 @@ cobxref
 		  * Cleaned up some Cobol code ie tighter & maybe faster & added
 		    code for profiling
 
-2008-12-14  Vincent B Coen <vbcoen@btconnect.com>
+2008-12-14  Vincent B Coen <vbcoen@gmail.com>
         v0.95.02  * Input changed, now input comes via cobc using progname.i
 	            (filename.i) ONLY. All COPY verb processing removed as the
 		    .i file has already processed COPY verbs & compiler
@@ -569,7 +574,7 @@ cobxref
                   * Code for producing 01 record layout sizing but should it be
 		    added?
 
-2008-03-29  Vincent B Coen <vbcoen@btconnect.com>
+2008-03-29  Vincent B Coen <vbcoen@gmail.com>
         v0.94.00  * On multi progs in source not sending to .src 1st  line of
 		    new prog ie ID Division but ok in .lst
                     This may relate to the next bug.
@@ -577,14 +582,14 @@ cobxref
 		    going to ba000 section etc
                   * literals using ' not treated as " in places
 
-2008-01-07  Vincent B Coen <vbcoen@btconnect.com>
+2008-01-07  Vincent B Coen <vbcoen@gmail.com>
         v0.93.00  * Reserved words changed to reflect OC v1.1 as 3/1/08.
 
-2007-04-01  Vincent B Coen <vbcoen@btconnect.com>
+2007-04-01  Vincent B Coen <vbcoen@gmail.com>
         v0.92.00  * Support for Copy to 99 levels.
 
-2007-03-19  Vincent B Coen <vbcoen@btconnect.com>
+2007-03-19  Vincent B Coen <vbcoen@gmail.com>
         v0.91.00  * Added extra features and clear out bugs.
 
-2007-03-10  Vincent B Coen <vbcoen@btconnect.com>
+2007-03-10  Vincent B Coen <vbcoen@gmail.com>
         v0.90.00  * Fast major rewrite to clear many bugs & add features

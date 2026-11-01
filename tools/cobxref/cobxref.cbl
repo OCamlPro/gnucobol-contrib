@@ -1,5 +1,13 @@
        >>SOURCE FREE
 *>
+*>
+*> 04/02/2026 - There are some bug showing up but I do not have the time to
+*> deal with them.
+*>
+*>  NEW CODE WILL BE REQUIRED FOR new CONSTANT SECTION with changes to the
+*>  various section tables see Changelog. code started in 2.03.16
+*>
+*>
 *> CONFIGURATION SETTINGS: Set these switches / values before compiling:
 *>  GnuCOBOL CONSTANTS section.
 *>=========================================================
@@ -25,8 +33,9 @@
 >>SET CONSTANT C-Testing-3    0    *> Not testing (default), change to AS 1 if wanted.
 >>SET CONSTANT C-Testing-4    0    *> Not testing (default), change to AS 1 if wanted.
 *>
-*> Used in cobxref  -  produces A lot of screen output displays from printcbl & cobxref modules
-*>    This can be over ridden by Param 5 use of -TEST
+*> When used in cobxref - will produces A lot of screen output displays from
+*>  printcbl & cobxref modules
+*>   This can be over ridden by Param 5 use of -TEST
 *>
 >>SET CONSTANT X-Testing      "N"  *> Not testing (default) change to AS "Y" if wanted.
 *>
@@ -38,6 +47,7 @@
 *>       go       to  AA070-Bypass-File-Deletes
 *>      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 *> to allow the temp Partnn.tmp files to be deleted at end of sources for program
+*>  They do not take up a lot of disk space.
 *>
 *>----
 *> END CONFIGURATION SETTINGS
@@ -49,13 +59,17 @@
  Date-Written.          28 July 1983 with code going back to 1967.
 *> Date-Rewriten.       10 March 2007 with code going back to 1983.
  Date-Compiled.         Today & Dont forget to update prog-name for builds.
-*> Security.            Copyright (C) 1967-2024 and later, Vincent Bryan Coen.
+*>
+*> Security.            Copyright (C) 1967-2026 and later, Vincent Bryan Coen.
 *>                      Distributed under the GNU General Public License.
-*>                      See the file COPYING for details but
-*>                      for use with GnuCOBOL ONLY.
+*>                      See the file COPYING for details.
+*>
+*>                      Any and all changes to the code for bug fixed or new
+*>                      functionality MUST be also update the original code base
+*>                      so that every one can make use of such.
 *>
 *> Usage.               Cobol Cross Referencer for GNU Cobol
-*>                      code reflects for v2.n and v3 and v4 (but needs to be tested).
+*>                      code reflects for v3 and v4 (but needs to be tested).
 *>
 *>                      Please read all of the notes before use!!!
 *>                      Notes transferred to a manual in LibreOffice & PDF formats.
@@ -77,7 +91,7 @@
 *> Calls.               As nested programs,
 *>                      get-reserved-lists
 *>                      printcbl
-*>                          which are at end of the source file.
+*>                        which are at end of this source file.
 *>
 *>                      compile with supplied script comp-cobxref.sh or :
 *>                      cobc -x cobxref.cbl
@@ -93,24 +107,20 @@
 *>*****************
 *>
 *> This file/program is part of Cobxref AND GNU Cobol and is copyright
-*> (c) Vincent B Coen 1967-2024. This version bears no resemblance to the
-*> original versions running on ICL 1501/1901 and IBM 1401 & 360/30 in the
+*> (c) Vincent B Coen 1967-2026 & later. This version bears no resemblance to
+*> the original versions running on ICL 1501/1901 and IBM 1401 & 360/30 in the
 *> 1960's and 70's.
 *>
 *> A version for running with MVS 3.8J and ANSI Cobol is available for those
 *> users running IBM emulation with Hercules.
 *> This uses A modified version of the original code from the 60s and will
-*>  ONLY run with IBM's ANSI Cobol.
+*> ONLY run with IBM's ANSI Cobol.
 *>
 *> This program is free software; you can redistribute it and/or modify it
 *> under the terms of the GNU General Public License as published by the
-*> Free Software Foundation; version 3 (and later) ONLY within GnuCOBOL,
-*> providing the package continues to be issued or marketed as GnuCOBOL and
-*> is available FREE OF CHARGE AND WITH FULL SOURCE CODE.
-*>
-*> It cannot be included or used with any other Compiler without the
-*> written Authority by the copyright holder, Vincent B Coen. See the
-*> manual for contact details.
+*> Free Software Foundation; version 3 (and later), providing the package
+*> continues to be issued and is available FREE OF CHARGE AND WITH FULL SOURCE
+*> CODE. This requirement changed 1 Nov 2026.
 *>
 *> Cobxref is distributed in the hope that it will be useful, but WITHOUT
 *> ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -142,10 +152,10 @@
 *>
 *>  A new pair is created for every nested program within A source file
 *>    and this is used for testing as the next program will overwrite
-*>      previous programs data
+*>      the previous programs data
 *>
-*>            These files are created at /tmp or /home/username/tmp
-*>            depending on your system settings.
+*>  These files are created at /tmp or /home/username/tmp
+*>    depending on your system settings.
 *>
      select   Supplemental-Part2-In assign Supp-File-2
               organization line sequential.
@@ -196,7 +206,7 @@
          05  filler        pic x.
      03  filler            pic x.
      03  Xr-X              pic x.
-     03  Xr-Count          pic xxxx.      *> count of occurances
+     03  Xr-Count          pic xxxx.     *> count of occurances
      03  filler            pic x(28).
 *>
  01  Printline-Overflow.                 *> For long datanames > 32 chars
@@ -214,7 +224,7 @@
      03  PL4-Name          pic x(30).    *> use PL-overflow for long names
      03  filler            pic xx.       *> with PL4-Name blank.
      03  PL4-Type          pic x(7).     *> Can be SYSTEM or USER
-     03  filler     occurs 12.          *> was 8    25/3/22
+     03  filler     occurs 12.           *> was 8    25/3/22
          05  PL4-Reference pic z(5)9.
          05  filler        pic x.
 *>
@@ -223,7 +233,7 @@
 *>
  fd  CopySourceInput2.
 *>
- 01  CopySourceRecIn2      pic x(160).
+ 01  CopySourceRecIn2      pic x(256).
 *>
  fd  Supplemental-Part1-Out.
  01  SortRecord.
@@ -242,7 +252,7 @@
      03  SdSortKey         pic x(74).           *>  22/3/22  x(106).  *> updated 10/3/22.
 *>
  working-storage section.
- 77  Prog-Name             pic x(13) value "Xref v2.03.15".
+ 77  Prog-Name             pic x(13) value "Xref v2.03.18".
  77  Page-No               Binary-long  value zero.
  77  String-Pointer        Binary-long  value 1.
  77  String-Pointer2       Binary-long  value 1.
@@ -589,12 +599,12 @@
 *> Msg21 - 31 in printcbl
 *>
  01  SectTable.
-     03  filler            pic x(10) value "FWLKCRSPID".   *> add and end "D" for CDF
+     03  filler            pic x(11) value "FWLKCRSPIDT".   *> add and end "D" for CDF added 1 more (T) 11/09/24
  01  filler  redefines SectTable.
-     03  LSect             pic x  occurs 10.               *> chgd to 10 for CDF added  by adding 10 to WSorpd
+     03  LSect             pic x  occurs 11.               *> chgd to 10 for CDF added  by adding 10 to WSorpd chg to 11, 11/09/24
 *> Keep track of sections used in analysed module
  01  Section-Used-Table  value zeros.
-     03  USect             pic 9  occurs 10.               *> chgd to 10 for CDF added
+     03  USect             pic 9  occurs 11.               *> chgd to 10 for CDF added chg 11/09/24
 *> holds program parameter values from command line
  01  Arg-Vals                       value spaces.
      03  Arg-Value         pic x(128)  occurs 13.
@@ -608,10 +618,11 @@
      03  filler pic x(24) value "REPORT SECTION.         ".
      03  filler pic x(24) value "SCREEN SECTION.         ".   *> #9 = Functions
      03  filler pic x(24) value "PROCEDURE DIVISION.     ".
-     03  filler pic x(24) value "DUMMY".
+     03  filler pic x(24) value "DUMMY                   ".
      03  filler pic x(24) value "CDF Variables           ".    *> 17/3/22
+     03  filler pic x(24) value "CONSTANT SECTION        ".    *> 11/09/24 New but no coding yet as need a number of changes
  01  filler   redefines Section-Names-Table.
-     03  Full-Section-Name          occurs 10.      *> Was 8 17/3/22
+     03  Full-Section-Name          occurs 11.      *> Was 8 17/3/22
          05  Section-Name  pic x(16).
          05  filler        pic x(8).
 *>
@@ -624,14 +635,15 @@
      03  filler pic x(16) value "REPORT          ".
      03  filler pic x(16) value "SCREEN          ".
      03  filler pic x(16) value "PROCEDURE       ".
-     03  filler pic x(24) value "DUMMY".
+     03  filler pic x(16) value "DUMMY           ".
      03  filler pic x(16) value "CDF Variables   ".    *> 17/3/22
+     03  filler pic x(16) value "CONSTANT SECTION".    *> 11/09/24 New but no coding yet as need a number of changes
  01  filler   redefines Section-Short-Names-Table.
-     03  Short-Section-Name          occurs 10.            *> Was 8 17/3/22
+     03  Short-Section-Name          occurs 11.          *> was 10  *> Was 8 11/09/24
          05  Sht-Section-Name  pic x(16).
 *>
 *> Here for cb_intrinsic_table in GC see :
-*>  cobc/reserved.c in the gnuCOBOL source directory but Totally ingoring
+*>  cobc/reserved.c in the gnuCOBOL source directory but Totally ignoring
 *>   the system_table as not needed/used by xref
 *>
 *> Also note that the number 0 or 1 indicates if the function/reserved word
@@ -1486,8 +1498,9 @@
                                          System-Table-R
                                          System-Table-Size.
 *>
+*> Possible problem with cobc not in path
      if       WS-Return-Code not = zero
-              display Msg19.         	*> Possible problem with cobc not in path
+              display Msg19.
 *>
 *> Just in case someones added names in source code (or in cobc) out of sort order
 *>  We MUST have all tables in sorted order
@@ -1938,6 +1951,7 @@
           and not End-Prog
  *>             call "CBL_DELETE_FILE" using SourceFileName  *>  basename + .pro, o/p from printcbl
 *> kill temp input file (anything else?) but not yet, Use when in QAR.
+*>
               call "CBL_DELETE_FILE" using Supp-File-2
               call "CBL_DELETE_FILE" using Supp-File-1
      end-if.
@@ -4833,7 +4847,7 @@
 *>
  working-storage section.
 *>**********************
- 77  Prog-Name              pic x(27)       value "get-reserved-lists v1.00.05".
+ 77  Prog-Name              pic x(27)       value "get-reserved-lists v1.00.06".
  77  S-Ptr                  Binary-long     value zero.
  77  Res-Start              Binary-char     value zero.
  77  WS-Function-Table-Size pic s9(5)  comp value zero.
@@ -5036,6 +5050,16 @@
           and not SW-No-Display
               display Msg15
      end-if
+*>
+*> Special for READY and TRACE , RESET already present
+*>
+     add      1 to Resvd-Table-Size.
+     move     "READY" to Resvd-Word (Resvd-Table-Size).
+     move     "1" to Resvd-Implemented (Resvd-Table-Size).
+     add      1 to Resvd-Table-Size.
+     move     "TRACE" to Resvd-Word (Resvd-Table-Size).
+     move     "1" to Resvd-Implemented (Resvd-Table-Size).
+     sort     Reserved-Names on ascending key Resvd-Word.
      exit     section.
 *>
  da000-Get-System-Words section.
@@ -5109,7 +5133,7 @@
 *>
 *> Author.      Vincent B Coen New rewritten version v2.01.18+)
 *>                See Changelog file for all changes.
-*> Copyright.   Vincent B Coen 2011-2024 Rewritten.
+*> Copyright.   Vincent B Coen 2011-2026 Rewritten.
 *>              [Jim C. Currey 2009-2011 Conceptual original programmer,]
 *>
 *> This program is free software; you can redistribute it and/or modify it
@@ -5160,8 +5184,24 @@
 *>  See manual for more information
 *>
 *>***************************************************************
-*> Program uses CBL_OPEN_FILE, COB_READ_FILE etc,
-*>           routines for I/P file.
+*>
+*>    Version.          See Prog-Name In Ws.
+*>**
+*>    Called Modules.
+*>                      CBL_CHECK_FILE_EXIST.
+*>                      CBL_CLOSE_FILE.
+*>                      CBL_GET_CURRENT_DIR.
+*>                      CBL_OPEN_FILE.
+*>                      CBL_READ_FILE.
+*>                      SYSTEM.
+*>**
+*>    Functions Used:
+*>                      CURRENT-DATE
+*>                      STORED-CHAR-LENGTH
+*>                      SUBSTITUTE
+*>                      SUBSTITUTE-CASE
+*>                      TRIM
+*>                      UPPER-CASE
 *>
 *>  Changes :
 *>
@@ -5180,6 +5220,9 @@
 *>                          for 2 statements of "move     Input-Record To PL-Text" TO
 *>                          "move     Input-Record (1 : IR-Buffer-Data-Size) To PL-Text"
 *>                          Update standalone version as well.
+*> 09/09/2025 vbc - 2.01.42 Increased size of PL-Text from 160 to 256.
+*> 31/12/2025 vbc -         Updated CR notice to 2026.
+*> 23/08/2026 vbc -         Added Functions and Called modules in comments above.
 *>
  environment division.
  input-output section.
@@ -5197,9 +5240,9 @@
  working-storage section.
 *>======================
 *>
- 01  WS-Name-Program        pic x(25) value "Prtcbl (in xref) v2.01.41".  *> ver.rel.build
+ 01  WS-Name-Program        pic x(25) value "Prtcbl (in xref) v2.01.42".  *> ver.rel.build
 *>
- 01  PL-Text                pic x(160).       *> printcbl.cbl has 248
+ 01  PL-Text                pic x(256).       *> printcbl.cbl has 248
 *>
 *>   **************************************
 *>   *     User changeable values here:  **
