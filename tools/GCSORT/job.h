@@ -101,6 +101,10 @@ struct job_t;
 #define CHECK_RECORD_POSITION_NO	0
 #define CHECK_RECORD_POSITION_YES	1
 
+#define TYPEUSE_GCSORT  0
+#define TYPEUSE_LIBGCS  1
+
+
 
 struct hSrtMem_t {
 	int64_t lPosPnt;			/* Pointer RRN file*/
@@ -269,6 +273,8 @@ struct job_t {
 	/* 20240927 */
 	int nContinueSrtTmp;
 	int nRC;
+	/* 20261107 */
+	int nTypeUse;   /* 0 = gcsort, 1 = libcob */
 };
 
 /* ok ok ok struct job_t* globalJob;    */
@@ -432,7 +438,10 @@ void job_UnlockResource(void);
 //void GCSORT_Init(void);
 int job_LoadInMemory(struct job_t* job, char* szBuffRek, char* szBuffKey, int nLenRek, int nSplitBuf, int nIdxFileIn, int64_t nLim01, int64_t nLim02);
 
-
+/* libgcs */
+bool is_word_delimiter(char c);
+int check_buffer_errors(const char* buffer, const char* forbidden_words[], size_t num_forbidden);
+int check_params(unsigned char* bufparams);
 
 
 /*  #if	defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)   */

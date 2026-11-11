@@ -32,6 +32,7 @@
 
 
 #include <time.h>
+#include <ctype.h>
 
 #include "../gcshare.h"
 #include "../gcsort.h"
@@ -80,6 +81,11 @@ static int gcMultiThread = 0;
 static int gcMaxThread = 0;
 /* MultiThread */
 
+typedef struct {
+	unsigned char cmd_length[2];  // lenght - PIC 9(4) COMP-X (2 byte)
+	unsigned char cmd_string[256];       // buffer - PIC X(256)
+} CblDfSort;
+
 #if defined(_WIN32) || defined(__MINGW32__)  || defined(__MINGW64__)
 #include <windows.h>
 typedef HMODULE cob_handle_t;
@@ -91,14 +97,12 @@ typedef void* cob_handle_t;
 typedef int (*fn_cob_is_initialized)(void);
 typedef void (*fn_cob_init_nomain)(const int argc, char** argv);
 
-
+extern int yydebug;
+extern void yyset_debug(int debug_flag);
 extern int process_keyfield(int position, int length, char* keyType, char* keyCollating);
 
 GCS_API int gcs_sort_init(void)
 {
-#pragma message ("--- ================================================================================== ---")
-#pragma message ("-- Define how to enable the collating sequence >>> fcd->confFlags2 - Collating sequence ? ")
-#pragma message ("--- ================================================================================== ---")
 	int nRC = 0;
     struct job_t* job = gcs_job_constructor();
 	if (job == NULL)
@@ -113,6 +117,15 @@ GCS_API int gcs_sort_init(void)
     job_ReviewMemAlloc(job);
     job_AllocateField(job);
     job_AllocateDataKey(job);
+
+	yydebug = 0;
+	yyset_debug(0);
+
+#ifndef GCSORT_EXE
+	job->nTypeUse = TYPEUSE_LIBGCS; /*libcob*/
+#else
+	job->nTypeUse = TYPEUSE_GCSORT; /*gcsort*/
+#endif
 	return 0;
 }
 
@@ -331,14 +344,14 @@ GCS_API int gcs_cb_sign(int ns)
 GCS_API int gcs_colseq(int ns)
 {
 	if (ns == 1)
-		g_cb_colseq = 1;  /*sign ASCII   */
+		g_cb_colseq = 1;   /*collating sequence ASCII   */
 	if (ns == 2)
-		g_cb_colseq = 2;  /*sign EBCDIC  */
+		g_cb_colseq = 2;   /*collating sequence EBCDIC  */
 	return 0;
 }
 
 /* - febcdic - table  */
-GCS_API int gcs_ebcdic_table(unsigned char* etab)
+GCS_API int gcs_ebcdic_table(const unsigned char* etab)
 {
 	if (strlen(etab) > 0)
 		strncpy(g_ebcdic_table, etab, sizeof(g_ebcdic_table) - 1);
@@ -357,6 +370,47 @@ GCS_API int gcs_sort_enable_multithread( int nThread )
 	return 0;
 	*/
 }
+
+/* Verify & Get add on sort command */
+GCS_API int gcs_getAddOnSort(FCD3* fcd, char* bufAddOn)
+{
+	int nRC = 0;
+	/* check id pointer _dfSortPtr is valid */
+	char* pMod = "libgcs";
+
+	int narg = 2;
+	char* penv = malloc(COB_MEDIUM_BUFF);
+	memset(penv, 0x00, COB_MEDIUM_BUFF);
+	penv = cob_getenv("GCSPARM");
+
+	if ((fcd->dfSortPtr != NULL) && (penv != NULL)) {
+		fprintf(stderr, "libgcs - Both the pointer in FCD3 and the environment variable are present; only the value specified in the GCSPARAM environment variable will be considered.\n");
+	}
+
+	if ((fcd->dfSortPtr != NULL) && (penv == NULL)) {
+		/* get length */
+		CblDfSort* cobolData = ((CblDfSort*)fcd->dfSortPtr);
+		unsigned short buflen = LDCOMPX2(cobolData->cmd_length);
+		if (buflen > 0) {
+			memset(bufAddOn, 0x00, COB_MEDIUM_BUFF);
+			memcpy(bufAddOn, (unsigned char*)cobolData->cmd_string, (size_t)buflen);
+			char* fparm[] = { pMod, bufAddOn };
+			narg = 2;
+			nRC = job_load(g_job, narg, fparm);
+		}
+	}
+	if (penv != NULL) {
+		char* ptake = "TAKE";
+		char* fparm[] = { pMod, ptake, penv };
+		memset(bufAddOn, 0x00, COB_MEDIUM_BUFF);
+		narg = 3;
+		nRC = job_load(g_job, narg, fparm);
+	}
+	free(penv);
+	return nRC;
+}
+
+
 
 /* define command indexed key */
 GCS_API int gcs_sort_init_key(int position, int length, const char* ctype, const char* cdirection)
@@ -465,6 +519,7 @@ GCS_API int gcs_LoadInMemory(struct job_t* job, char* szBuffRek, char* szBuffKey
 GCS_API int gcs_sort_review_name(void)
 {
 	job_RedefinesFileName(g_job);
+
 	return 0;
 }
 

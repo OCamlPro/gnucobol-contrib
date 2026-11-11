@@ -38,8 +38,8 @@
  *> the FCD for SORT, then calls EXTSM.  No subprograms:
  *> FCDSET is a SECTION.
  *>
- *> Usage:  extsmtst           -> SORT   (function code X“FA01”)
- *>         extsmtst MERGE     -> MERGE  (function code X“FA40”)
+ *> Usage:  extsmtst5           -> SORT   (function code X“FA01”)
+ *>         extsmtst5 MERGE     -> MERGE  (function code X“FA40”)
  *>
  *> The file xfhfcd3.cpy (with constants 78) is included ONCE,
  *> in LINKAGE as CUR-FCD: it is a “view” that is moved with
@@ -70,6 +70,7 @@
 #include <stdlib.h>
 
 #include "libgcs.h"
+#include "libcob.h"
 
 #include "../gcshare.h"
 #include "extsm.h"
@@ -81,6 +82,11 @@
 #define B1_NON_DISPLAY      0x20
 #define B1_FLOAT            0x04
 #define B1_MASK_BITS_01     0x03
+
+#define B0_EBCDIC_DATA   0x01  /* Bit 0: Data is in EBCDIC format */
+#define B0_EBCDIC_SIGN   0x02  /* Bit 1: SIGN is in EBCDIC format */
+#define B0_DESCENDING    0x40  /* Bit 6: DESCENDING key */
+
 
 static KDB_GLOBAL* cached_kdb_glob = NULL;
 
@@ -112,7 +118,8 @@ typedef struct {
     int is_signed;
     int sign_mode;                  /* SG_* (solo DISPLAY con segno) */
     int descending;
-    int ebcdic_data, ebcdic_sign;
+    int ebcdic_data;
+    int ebcdic_sign;
     int use_collating;              /* solo non numerici */
 } sk_comp;
 
@@ -219,6 +226,29 @@ static bool is_sort_operation(unsigned short opcodep) {
     return ((opcodep >= OP_SORT_EX_LE_INIT && opcodep <= OP_SORT_EX_LE_CLEANUP));
 }
 
+/**
+ * Verifica se la componente della chiave utilizza la codifica EBCDIC.
+ *
+ * @param componente Puntatore alla struttura della chiave (EXTKEY)
+ * @param out_is_ebcdic_sign Opzionale: ritorna 1 se il SEGNO è in EBCDIC, altrimenti 0
+ * @return int Ritorna 1 se i DATI sono in EBCDIC, 0 se sono in ASCII
+ */
+int utils_isExtsmFieldEbcdic(EXTKEY* componente, int* out_is_ebcdic_sign) {
+    if (componente == NULL) {
+        if (out_is_ebcdic_sign != NULL) 
+            *out_is_ebcdic_sign = 0;
+        return 0;
+    }
+
+    /* Estrae il bit del segno EBCDIC se richiesto */
+    if (out_is_ebcdic_sign != NULL) {
+        *out_is_ebcdic_sign = (componente->desc & B0_EBCDIC_SIGN) ? 1 : 0;
+    }
+
+    /* Ritorna 1 se il bit dei dati EBCDIC è attivo (altrimenti 0 = ASCII) */
+    return (componente->desc & B0_EBCDIC_DATA) ? 1 : 0;
+}
+
 /* Entry point COBOL Program */
 GCSORT_API int EXTSM(unsigned char* func, FCD3* fcdin)
 {
@@ -232,6 +262,7 @@ GCSORT_API int EXTSM(unsigned char* func, FCD3* fcdin)
 #endif
         return -1;
     }
+    
 
     unsigned lo = func[1];
     if (func[0] != 0xFA) { 
@@ -248,6 +279,31 @@ GCSORT_API int EXTSM(unsigned char* func, FCD3* fcdin)
     case 0x40:                         
         /* INIT */
         nRC = EXTSMGC_init(fcd);
+        /** ============================== **/
+        int i = 0;
+        int entry = 0;
+        cob_global* extcob_glob_ptr;
+        cob_module* extmodule = NULL;
+        cob_module_global_enter(&extmodule, &extcob_glob_ptr, 0, entry, 0);
+
+        if ((extmodule != NULL) && (extmodule->next != NULL)) {
+            extmodule = extmodule->next;
+         /* fprintf(stdout, "Pointer extmodule ptr module.........:%p\n", (void*)extmodule);
+            fprintf(stdout, "Pointer extmodule->collating_sequence:%p\n", (void*)extmodule->collating_sequence);
+            fprintf(stdout, "Pointer extmodule->ebcdic_sign.......:%p\n", (void*)extmodule->ebcdic_sign); */
+        }
+
+        /* -fsign=[ASCII|EBCDIC] define display sign representation */
+        if (extmodule != NULL)
+            gcs_cb_sign((int)extmodule->ebcdic_sign);
+
+        /* - fcolseq = [NATIVE = 0 | ASCII = 1 | EBCDIC = 2] collating sequence to use */
+       // GCS_API int gcs_colseq(int ns);
+        /* - febcdic - table  */
+        if ((extmodule != NULL) && (extmodule->collating_sequence != NULL))
+            gcs_ebcdic_table(extmodule->collating_sequence);
+        /** ============================== **/
+
 
         /* set operation to merge */
         if (lo == 0x40)
@@ -284,13 +340,21 @@ GCSORT_API int EXTSM(unsigned char* func, FCD3* fcdin)
 
         if (S.give > 0)                   /* All in one call */
             if (load_give_files(fcd) != 0)
-                goto fail;                
-
+                 goto fail;
+    
         /* Made correct file name */
         if ((S.use > 0) || (S.give > 0)) {
             gcs_sort_review_name();
         }
 
+        /* Get Environment variable GCSPARM */
+        unsigned char* pAddOnCmd = malloc(COB_MEDIUM_BUFF);
+        memset(pAddOnCmd, 0x00, COB_MEDIUM_BUFF);
+
+        nRC = gcs_getAddOnSort(fcd, pAddOnCmd);
+        free(pAddOnCmd);
+        if (nRC != 0)
+            goto fail;
 
 
         /* Case  Using >0 and Giving >0 */
@@ -311,28 +375,28 @@ GCSORT_API int EXTSM(unsigned char* func, FCD3* fcdin)
         }
         set_ok(fcd);
         break;
-    
-    /* ================== */
-    /* FAF3 RELEASE */
-    /* ================== */
+
+/* ================== */
+/* FAF3 RELEASE */
+/* ================== */
     case 0xF3:
-        if (S.phase != 1 || S.use != 0) { 
-            set_err(fcd, E_ORDER); 
-            break; 
+        if (S.phase != 1 || S.use != 0) {
+            set_err(fcd, E_ORDER);
+            break;
         }
         /* Push record from Cobol program */
         nRC = EXTSMGC_push_record(fcd);
         set_ok(fcd);
         break;
-    /* ================== */
-    /* FA10 EOF input file */
-    /* ================== */
+        /* ================== */
+        /* FA10 EOF input file */
+        /* ================== */
     case 0x10:
-        if (S.phase != 1 || S.use != 0) { 
-            set_err(fcd, E_ORDER); 
-            break; 
+        if (S.phase != 1 || S.use != 0) {
+            set_err(fcd, E_ORDER);
+            break;
         }
-       
+
         gcs_sort_data(job);
 
         if (S.give > 0) {
@@ -347,13 +411,13 @@ GCSORT_API int EXTSM(unsigned char* func, FCD3* fcdin)
         }
         set_ok(fcd);
         break;
-    /* ================== */
-    /* FAF5 RETURN */
-    /* ================== */
+        /* ================== */
+        /* FAF5 RETURN */
+        /* ================== */
     case 0xF5: {
-        if (S.phase != 2 || S.give != 0) { 
-            set_err(fcd, E_ORDER); 
-            break; 
+        if (S.phase != 2 || S.give != 0) {
+            set_err(fcd, E_ORDER);
+            break;
         }
         /* Pop record from memory */
         nRC = EXTSMGC_pop_record(fcd);
@@ -363,9 +427,9 @@ GCSORT_API int EXTSM(unsigned char* func, FCD3* fcdin)
             set_eof(fcd);
         break;
     }
-    /* ================== */
-    /* FA88 END           */
-    /* ================== */
+             /* ================== */
+             /* FA88 END           */
+             /* ================== */
     case 0x88:
         free_all();
         nRC = EXTSMGC_cleanup();
@@ -377,16 +441,24 @@ GCSORT_API int EXTSM(unsigned char* func, FCD3* fcdin)
     return 0;
 fail:
     free_all();
-    return 0;
+    return nRC;
 }
 
 /* --- function that returns the type directly as a string --- */
-char* utils_getExtsmFieldTypeName(EXTKEY* componente, int* out_is_descending) {
+char* utils_getExtsmFieldTypeName(EXTKEY* componente, int* out_is_descending, int* out_is_ebcdic) 
+{
 
     /* 1. Retrieve the direction (UP/DOWN) from Byte 0 */
     if (out_is_descending != NULL) {
         *out_is_descending = (componente->desc & B0_DESCENDING) ? 1 : 0;
     }
+
+    /* 2. Recupera il flag EBCDIC usando la nuova logica */
+   //-->> int is_ebcdic_sign = 0;
+   //-->> int is_ebcdic_data = utils_isExtsmFieldEbcdic(componente, &is_ebcdic_sign);
+   //-->> if (out_is_ebcdic != NULL) {
+   //-->>     *out_is_ebcdic = is_ebcdic_data;
+   //-->> }
 
     /* Data type */
     uint8_t b1 = componente->type;
@@ -481,12 +553,21 @@ int get_key_definition(FCD3* fcd)
                 job->nLenKeys += len;
 
                 int nOrd = SORT_DIRECTION_ASCENDING;
+                int is_ebcdic = 0; // <--- Nuova variabile per tenere traccia del formato
+
                 strncpy(szOrd, "A\0", 2);
                 int nType = 0;
-                pType = utils_getExtsmFieldTypeName(componente, &nOrd);
+                /* old -- pType = utils_getExtsmFieldTypeName(componente, &nOrd); */
+                /* Passiamo il riferimento a is_ebcdic per estrarre l'informazione */
+                pType = utils_getExtsmFieldTypeName(componente, &nOrd, &is_ebcdic);
 
                 if (nOrd == 1)
                     strncpy(szOrd, "D\0", 2);
+                /* A questo punto 'is_ebcdic' contiene 1 (EBCDIC) o 0 (ASCII).
+                   Se la tua funzione gcs_sort_init_key accetta un flag per la codifica,
+                   o se devi cambiare la sequenza di collazione del job di sort globale,
+                   puoi agire qui valorizzando i metadati del tuo engine. */
+
 
                 gcs_sort_init_key(pos, len, (const char*)pType, (const char*)szOrd);
             }
@@ -571,11 +652,6 @@ static int load_give_files(FCD3* fcd)
 
 int EXTSMGC_init(FCD3* fcd)
 {
-
-#pragma message ("--- ================================================================================== ---")
-#pragma message ("-- Define how to enable the collating sequence >>> fcd->confFlags2 - Collating sequence ? ")
-#pragma message ("--- ================================================================================== ---")
-
     int nRC = 0;
     if (nRC >= 0) {
         gcs_sort_init();

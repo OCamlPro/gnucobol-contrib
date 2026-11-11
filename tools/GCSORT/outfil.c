@@ -403,6 +403,10 @@ int outfil_write_buffer ( struct job_t *job, unsigned char* recordBuffer, unsign
 				useRecord = 0;
 			/* Verify Outfil- Outrek    */
 			if ((pOutfil->outfil_outrec != NULL) && (useRecord == 1)) {
+				if (pOutfil->outfil_File == NULL) {
+					fprintf(stdout, "*GCSORT*S401B*ERROR: Outfile not defined.\n");
+					return -1;
+				}
 				memset(szBuffRek, 0x00, pOutfil->outfil_File->maxLength);
 				byteRead = outrec_copy(pOutfil->outfil_outrec, szBuffRek, recordBuffer, pOutfil->outfil_File->maxLength, byteRead, file_getFormat(pOutfil->outfil_File), file_GetMF(pOutfil->outfil_File), job, nSplitPosPnt);
 				memcpy(recordBuffer, szBuffRek, byteRead + nSplitPosPnt);

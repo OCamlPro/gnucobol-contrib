@@ -87,7 +87,7 @@ _LIB
 /* value 1 : generate temp file fixed name : cob17, cob18, cob19, cob1a, cob1b  */
 #define GCSORT_DEBUG   0        /* 0 no debug - 1 debug */
 #define GCSORT_TESTCMD 0
-#define GCSORT_VERSION "01.06.00"
+#define GCSORT_VERSION "01.06.01"
 #define GCSORT_TAR_DATE "Oct 01 2026 07:00:00 UTC"
 
 /* Return Code */

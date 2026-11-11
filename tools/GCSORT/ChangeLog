@@ -1,3 +1,16 @@
+2026-11-11  Sauro Menna  <saumen2004@libero.it> 
+    * Version 01.06.01
+    * EXTSM v.1.0.1, libgcs v.1.01.01
+    * EXTSM - collating_sequence and ebcdic_sign taken from the runtime configuration of the main COBOL module.
+    * libgcs - FCD3 - _dfSortPtr pointer.
+    *   Support for the _dfSortPtr pointer has been introduced to handle additional parameters for Sort. The structure of the area passed as a pointer consists of a length field and a string field containing the 
+    *   additional parameters.
+    * libgcs - GCSPARAM - Environment variable that will contain the name of the file holding the additional parameters for Sort.
+    *   Checks are in place for both _dfSortPtr and GCSPARAM to detect any unhandled statements; if both values are present, only the value specified by GCSPARAM will be taken into account.
+    *   The file specified by the GCSPARAM environment variable is in the same format as the TAKEFILE.
+    * extsmtst5.cbl - extended use of _dfSortPtr
+    * updated documentation in doc folder and in EXTSM folder
+    
 2026-10-30  Sauro Menna  <saumen2004@libero.it> 
     * Version 01.06.00
     * New EXTSM module for interfacing via FCD3 for sort/merge operations called from COBOL. Sort in memory; if memory limits are exceeded, the sort will use MMF (Memory-Mapped File) files.

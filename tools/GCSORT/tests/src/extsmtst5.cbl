@@ -23,12 +23,12 @@
       *> ------------------------------------------------------------
       *> ------------------------------------------------------------
       *> Argomenti posizionali, separati da spazio:
-      *>   extsmtst                    -> using=3 give=1 (default)
-      *>   extsmtst 0 0                -> RELEASE / RETURN
-      *>   extsmtst 3 0                -> file input, RETURN
-      *>   extsmtst 0 1                -> RELEASE, file output
-      *>   extsmtst 3 1                -> tutto su file (default)
-      *>   extsmtst 3 1 MERGE          -> come sopra, ma MERGE (FA40)
+      *>   extsmtst5                    -> using=3 give=1 (default)
+      *>   extsmtst5 0 0                -> RELEASE / RETURN
+      *>   extsmtst5 3 0                -> file input, RETURN
+      *>   extsmtst5 0 1                -> RELEASE, file output
+      *>   extsmtst5 3 1                -> tutto su file (default)
+      *>   extsmtst5 3 1 MERGE          -> come sopra, ma MERGE (FA40)
       *> ------------------------------------------------------------
        IDENTIFICATION DIVISION.
        PROGRAM-ID. EXTSMTST5.
@@ -167,6 +167,18 @@
        01  SRC-DATA-T REDEFINES SRC-DATA.
            05 SRC-REC          PIC X(REC-LEN) OCCURS N-SRC-REC.
        01  WS-RETCOUNT         PIC 9(4) COMP-5.
+       
+
+      *> 1. DEFINIZIONE DEL BLOCCO PARAMETRI DINAMICI
+       01 DYN-DFSORT-CONTROL.
+          05 DYN-CMD-LENGTH    PIC 9(4) COMP-X.
+          05 DYN-CMD-STRING    PIC X(256).
+
+      *> Variabile di supporto per comporre la stringa
+       01 WK-STRING            PIC X(256).
+       
+       77 W-RISULTATO-C   PIC S9(9) COMP-5.
+
 
        LINKAGE SECTION.
       *> unica inclusione della copy: vista mobile sulla FCD corrente
@@ -178,8 +190,8 @@
 
        MAIN-SEC SECTION.
        MAIN-P.
-       
-           MOVE 250 TO FN-HI                   *> X"FA"
+      *> X"FA" 
+           MOVE 250 TO FN-HI                   
            MOVE 0 TO WS-MERGE
            ACCEPT WS-MODE FROM COMMAND-LINE
            PERFORM PARSE-ARGS
@@ -195,6 +207,7 @@
            PERFORM CHECK-SIZES
            PERFORM BUILD-FILE-FCDS
            PERFORM BUILD-KDB
+           PERFORM BUILD-ADDON
            PERFORM BUILD-SORT-FCD
            PERFORM CALL-EXTSM
            PERFORM SHOW-RESULTS
@@ -321,6 +334,25 @@
               SET FDB-PTR(WS-I) TO ADDRESS OF FILE-FCD(WS-I)
            END-PERFORM.
 
+       BUILD-ADDON SECTION.
+       BUILD-ADDON-P.
+      *> 1. AZZERARE SEMPRE IL COMP-X PRIMA DEL TALLYING
+           MOVE 0 TO DYN-CMD-LENGTH
+      *> B. Composizione dinamica dei parametri DFSORT
+      *>
+           MOVE "INCLUDE COND=(1,1,CH,GT,C'M')  " 
+             TO DYN-CMD-STRING
+           
+      *> C. Calcolo della lunghezza (puoi farlo contando i caratteri o fissando la dimensione occupata)
+      *> In questo esempio impostiamo la dimensione della stringa significativa:
+           INSPECT DYN-CMD-STRING TALLYING DYN-CMD-LENGTH 
+               FOR CHARACTERS BEFORE INITIAL "  "
+           
+           display "DYN-CMD-LENGTH=" DYN-CMD-LENGTH .
+
+              
+       
+       
        BUILD-KDB SECTION.
        BUILD-KDB-P.
       *>   Una chiave, due componenti:
@@ -385,8 +417,14 @@
                            FCD-CURRENT-REC-LEN
 
            SET FCD-KEY-DEF-ADDRESS TO ADDRESS OF KDB-AREA
-           SET FCD-COL-SEQ-ADDRESS TO NULL       *> nessuna collating
-           SET FCD-FILDEF-ADDRESS  TO ADDRESS OF FDB.
+      *> nessuna collating
+           SET FCD-COL-SEQ-ADDRESS TO NULL       
+           SET FCD-FILDEF-ADDRESS  TO ADDRESS OF FDB
+           
+      *> Valorizziamo il campo FCD-DFSORT-ADDRESS con l'indirizzo della nostra struttura dinamica
+      *> D. AGGANCIO DEL PUNTATORE NELL'FCD
+           SET FCD-DFSORT-ADDRESS TO ADDRESS OF DYN-DFSORT-CONTROL.
+           display "passa per DYN-DFSORT-CONTROL".
 
       **
        CALL-EXTSM SECTION.
@@ -399,6 +437,7 @@
               DISPLAY "-> FA01 (SORT)"
            END-IF
            CALL "EXTSM" USING FUNC-CODE SORT-FCD-AREA
+            RETURNING W-RISULTATO-C
            PERFORM SHOW-SORT-STATUS
 
            IF N-USING = 0
@@ -412,11 +451,13 @@
                  MOVE FN-RELEASE TO FN-LO
                  DISPLAY "-> FAF3 (RELEASE) rec " WS-I WITH NO ADVANCING
                  CALL "EXTSM" USING FUNC-CODE SORT-FCD-AREA
+                  RETURNING W-RISULTATO-C
                  DISPLAY " status " FCD-STATUS-KEY-1 FCD-STATUS-KEY-2
               END-PERFORM
               MOVE FN-END-INPUT TO FN-LO
               DISPLAY "-> FA10 (fine input)"
               CALL "EXTSM" USING FUNC-CODE SORT-FCD-AREA
+               RETURNING W-RISULTATO-C
               PERFORM SHOW-SORT-STATUS
            END-IF
 
@@ -428,6 +469,7 @@
               PERFORM UNTIL 1 = 0
                  MOVE FN-RETURN TO FN-LO
                  CALL "EXTSM" USING FUNC-CODE SORT-FCD-AREA
+                  RETURNING W-RISULTATO-C
                  IF FCD-STATUS-KEY-1 = "1"
                     EXIT PERFORM
                  END-IF
@@ -448,6 +490,7 @@
            MOVE FN-TERMINATE TO FN-LO
            DISPLAY "-> FA88 (termina)"
            CALL "EXTSM" USING FUNC-CODE SORT-FCD-AREA
+                    RETURNING W-RISULTATO-C
            PERFORM SHOW-SORT-STATUS.
       
        SHOW-SORT-STATUS.
@@ -460,7 +503,17 @@
                  DISPLAY "9/" FCD-BINARY
               WHEN OTHER
                  DISPLAY FCD-STATUS-KEY-1 FCD-STATUS-KEY-2
-           END-EVALUATE.
+           END-EVALUATE
+           IF W-RISULTATO-C NOT = 0
+               DISPLAY "=============================================="  
+               DISPLAY " >>>> ERRORE EXTSM - ReturnCode: "  
+                        W-RISULTATO-C " <<<<<"
+               DISPLAY "=============================================="  
+
+           ELSE
+               DISPLAY "EXTSM eseguito con successo. ReturnCode:"   
+                        W-RISULTATO-C
+           END-IF.           
 
        SHOW-RESULTS SECTION.
        SHOW-RESULTS-P.

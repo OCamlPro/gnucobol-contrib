@@ -889,7 +889,7 @@ if (job->nStatistics == 2) {
 		fprintf(stdout, "\n");
 	}
 
-	if (globalJob->nStatistics != 5) {
+	if ((globalJob->nStatistics != 5) && (globalJob->nTypeUse == TYPEUSE_GCSORT)) {
 		time(&timeEnd);
 		timeinfoStart = localtime(timeStart); /* localtime (&timeStart);    */
 		fprintf(stdout, "Start    : %s", asctime(timeinfoStart));

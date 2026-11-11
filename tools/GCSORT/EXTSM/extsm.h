@@ -95,8 +95,7 @@ static void free_all(void);
 void dump_fcd_structure(const FCD3* fcd, const char* label);
     /* */
 
-
-char* utils_getExtsmFieldTypeName(EXTKEY* componente, int* out_is_descending);
+char* utils_getExtsmFieldTypeName(EXTKEY* componente, int* out_is_descending, int* out_is_ebcdic);
 
 
 #endif /* EXTSM_H_INCLUDED   */

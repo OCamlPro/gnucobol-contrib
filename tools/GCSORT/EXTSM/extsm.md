@@ -55,6 +55,39 @@ GCSORT_API int EXTSM(unsigned char* func, FCD3* fcdin);
 The primary entry point called directly by the COBOL `CALL` statement. It verifies whether it is a valid sort operation, checks that `fnamePtr` is valid, and dispatches execution to the appropriate logic based 
 on the opcode (`func`) while updating the `fcdin` status structure.
 
+### Additional parameters
+Additional commands via FCD3 with **`_dfSortPtr`** or via the **`GCSPARAM`** environment variable.
+It is possible to add sort commands both in the FCD3 structure and via an environment variable.
+The FCD3 structure has a pointer named _dfSortPtr that contains a pointer to a memory area structured as follows:
+```cobol
+      *> 1. DEFINITION OF THE DYNAMIC PARAMETER BLOCK
+       01 DYN-DFSORT-CONTROL.
+          05 DYN-CMD-LENGTH    PIC 9(4) COMP-X.
+          05 DYN-CMD-STRING    PIC X(256).
+```
+Alternatively, write the parameters to a file in the same format as the TAKE file, and set the  **`GCSPARAM`** environment variable to the full path of the file; the libgcs library, called by EXTSM, will then read the file and retrieve the additional parameters for the sort.
+If both values (**`_dfSortPtr`** and  **`GCSPARAM`**) are present, the value specified in GCSPARAM will take precedence.
+The parameters do not allow specifying USE, GIVE, RECORD, or JOIN, but the following can be used: INCLUDE, OMIT, INREC, OUTREC, and OUTFIL,
+in the same format as specified by GCSORT.
+For example:
+```
+* INCLUDE COND=(1,1,CH,GT,C'M')
+ OMIT COND=(1,1,CH,GT,C'M')
+ OUTFIL OUTREC=(01,16,2X,18,2,C'/',20,2,C'/',22,2,2X,24,2,C':',26,2,2X,28,2,C'  ',41X) 
+* OUTREC=(01,16,2X,18,2,C'/',20,2,C'/',22,2,2X,24,2,C':',26,2,2X,28,2,C'  ',41X) 
+* INREC BUILD=(01,16,2X,18,2,C'/',20,2,C'/',22,2,2X,24,2,C':',26,2,2X,28,2,C'  ',41X) 
+* SUM  FIELDS=(11,6,ZD)
+* SUM  FIELDS=NONE
+* OPTION     SKIPREC=3
+*    STOPAFT=500 
+*    VLSCMP 
+*    VLSHRT 
+*   Using USE causes an error 
+*  USE
+*   Using GIVE causes an error 
+*   GIVE
+```
+
 ### Core Internal Functions (`GCSORT`)
 * **`EXTSMGC_init(FCD3* fcd)`**: Allocates dynamic memory buffers (`szBuffRek`, `szBuffKey`) for records and keys, initializing the core job structures and setting the operation type.
 * **`EXTSMGC_push_record(FCD3* fcd)`**: Submits a record to the memory buffer via `gcs_LoadInMemory`. If the memory allocation threshold (`nLim01` / `nLim02`) is reached and segmentation is enabled, it automatically executes the sorting core and flushes data to temporary disk swap files.

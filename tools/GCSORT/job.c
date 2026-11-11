@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <malloc.h>
 #include <time.h>
+#include <ctype.h>
 
 #include "libgcs/libgcs.h"
 
@@ -290,7 +291,7 @@ struct job_t* job_constructor(void) {
     if (pEnvEmule != NULL)
     {
         job->nStatistics = atol(pEnvEmule);
-        if ((job->nStatistics != 0) && (job->nStatistics != 1) && (job->nStatistics != 2) && (job->nStatistics != 5)) {
+        if ((job->nStatistics != 0) && (job->nStatistics != 1) && (job->nStatistics != 2) && (job->nStatistics != 5) && (globalJob->nTypeUse == TYPEUSE_GCSORT)) {
             fprintf(stderr, "GCSORT - Error on GCSORT_STATISTICS parameter. Value 0 for suppress info , 1 for Summary, 2 for Details, 5 for Total rec. Value Environment: %d\n", job->nStatistics);
             fprintf(stderr, "GCSORT - Forcing  GCSORT_STATISTICS = 0\n");
             job->nStatistics = 1;
@@ -431,6 +432,9 @@ struct job_t* job_constructor(void) {
     job->phSrt->pAddress = NULL;
 
     job->bThreadIsFirstRound = 0;
+
+    /* 20261107 */
+    job->nTypeUse = TYPEUSE_GCSORT; /* gcsort */
 
     return job;
 }
@@ -675,7 +679,7 @@ int job_load(struct job_t* job, int argc, char** argv) {
         memset(buffer, 0x00, COB_MEDIUM_BUFF);
         returnCode = job_MakeCmdLine(szTakeFile, buffer, COB_MEDIUM_BUFF);
         strcpy(buffprt, buffer);
-        if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0))
+        if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0) && (globalJob->nTypeUse == TYPEUSE_GCSORT))
             fprintf(stdout, "Start - Contents of the TAKE file"
                 "\n_________________________________\n"
                 "%s"
@@ -758,6 +762,14 @@ int job_load(struct job_t* job, int argc, char** argv) {
         }
     }
 
+    /* only for libgcs */
+    /* check parameters forbidden */
+#ifndef GCSORT_EXE
+    if (check_params(buffer) == -1) {
+        fprintf(stderr, "libgcs - Invalid parameters in the parameters string (check _dfSortPtr or GCSPARAM env. variable).\n");
+        returnCode = GC_RTC_ERROR;
+    }
+#endif
     if (returnCode == 0) {
         if (0 == 1) /* version normal */
         {
@@ -766,9 +778,13 @@ int job_load(struct job_t* job, int argc, char** argv) {
         }
         else
         {  /* version with modify name  */
+#ifdef GCSORT_EXE
             if (job_scanCmdLineFile(job, buffer, bufnew) != -1) {
                 job_scanCmdSpecialChar(bufnew);
-
+#else
+            memset(bufnew, 0x00, COB_MEDIUM_BUFF);
+            memcpy(bufnew, buffer, strlen(buffer));
+#endif
                 if (globalJob->nMultiThread == 1)
                     job_LockResource();
 
@@ -780,11 +796,13 @@ int job_load(struct job_t* job, int argc, char** argv) {
 
                 if (returnCode == 0)
                     returnCode = job_RedefinesFileName(job);
+#ifdef GCSORT_EXE
             }
             else
             {
                 fprintf(stderr, "\nMissing Command USE or GIVE\n");
             }
+#endif
         }
     }
     /* new    */
@@ -833,7 +851,85 @@ int job_load(struct job_t* job, int argc, char** argv) {
 
     return returnCode;
 }
+bool is_word_delimiter(char c) {
+    return c == '\0' || isspace((unsigned char)c) || ispunct((unsigned char)c);
+}
 
+/**
+ * Analizza il buffer alla ricerca di parole intere vietate (CASE-INSENSITIVE).
+ * Compatibile con Windows (MSVC), Linux e MinGW.
+ */
+int check_buffer_errors(const char* buffer, const char* forbidden_words[], size_t num_forbidden) {
+    bool in_quotes = false;
+    int parenthesis_level = 0;
+
+    size_t buffer_len = strnlen(buffer, COB_MEDIUM_BUFF);
+
+    for (size_t i = 0; i < buffer_len; i++) {
+        char current = buffer[i];
+
+        // 1. Gestione literal tra apici singoli
+        if (in_quotes) {
+            if (current == '\\' && (i + 1) < buffer_len) {
+                i++;
+                continue;
+            }
+            if (current == '\'') {
+                in_quotes = false;
+            }
+            continue;
+        }
+
+        if (current == '\'') {
+            in_quotes = true;
+            continue;
+        }
+
+        // 2. Gestione parentesi tonde
+        if (current == '(') {
+            parenthesis_level++;
+            continue;
+        }
+        if (current == ')') {
+            if (parenthesis_level > 0) {
+                parenthesis_level--;
+            }
+            continue;
+        }
+
+        if (parenthesis_level > 0) {
+            continue;
+        }
+
+        // 3. Controllo stringhe vietate (Case-Insensitive & Parola Intera)
+        for (size_t j = 0; j < num_forbidden; j++) {
+            size_t word_len = strlen(forbidden_words[j]);
+
+            if (i + word_len <= buffer_len) {
+                if (strncasecmp(&buffer[i], forbidden_words[j], word_len) == 0) {
+
+                    bool left_boundary = (i == 0) || is_word_delimiter(buffer[i - 1]);
+                    bool right_boundary = is_word_delimiter(buffer[i + word_len]);
+
+                    if (left_boundary && right_boundary) {
+                        fprintf(stderr, "libgcs - Invalid parameters: %s\n", &buffer[i]);
+                        return -1;
+                    }
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+int check_params(unsigned char* bufparams) {
+
+    const char* forbidden[] = { "USE", "GIVE", "ORG" , "RECORD" , "JOIN" };
+    size_t num_forbidden = sizeof(forbidden) / sizeof(forbidden[0]);
+
+    return  check_buffer_errors(bufparams, forbidden, num_forbidden);
+
+}
 /*
 #define NOISAM       0
 #define BDB          1
@@ -1946,7 +2042,7 @@ int job_MakeCmdLine(char* szF, char* buf, size_t nBufSize)
     cob_file* file_take = NULL;
     cob_file_key* keys = NULL;
 
-    if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0)) {
+    if ((globalJob->nStatistics > 1) && (globalJob->nStatistics != 5) && (gcMultiThreadIsFirst == 0) && (globalJob->nTypeUse == TYPEUSE_GCSORT)) {
         fprintf(stdout, "========================================================\n");
         fprintf(stdout, "GCSORT\nFile TAKE : %s\n", szF);
         fprintf(stdout, "========================================================\n");
@@ -2487,7 +2583,7 @@ int job_print_final(struct job_t* job, time_t* timeStart)
             }
         }
     }
-    if (globalJob->nStatistics != 5) 
+    if ((globalJob->nStatistics != 5) &&(globalJob->nTypeUse == TYPEUSE_GCSORT))
         fprintf(stdout, "====================================================================\n");
     if (job_GetTypeOp(job) == 'J') {
         if (job->join->joinkeysF1->nIsSorted == 0) {
@@ -2512,7 +2608,7 @@ int job_print_final(struct job_t* job, time_t* timeStart)
         fprintf(stdout, " Total Records Discard XSUM Output.: " NUM_FMT_LLD "\n", (long long)job->recordDiscardXSUMTotal);
     }
 
-    if (globalJob->nStatistics != 5) 
+    if ((globalJob->nStatistics != 5) && (globalJob->nTypeUse == TYPEUSE_GCSORT))
         fprintf(stdout, "====================================================================\n");
     if (job->nStatistics == 2) {
         if (job->bIsPresentSegmentation == 1) {
@@ -2548,7 +2644,7 @@ int job_print_final(struct job_t* job, time_t* timeStart)
         }
         fprintf(stdout, "\n");
     }
-    if (globalJob->nStatistics != 5) {
+    if ((globalJob->nStatistics != 5) && (globalJob->nTypeUse == TYPEUSE_GCSORT)) {
         time(&timeEnd);
         timeinfoStart = localtime(timeStart); /* localtime (&timeStart);    */
         fprintf(stdout, "Start    : %s", asctime(timeinfoStart));
@@ -2575,18 +2671,18 @@ int job_print(struct job_t* job)
     struct outrec_t* outrec;
     struct sortField_t* sortField;
 
-    if (globalJob->nStatistics != 5) {
+    if ((globalJob->nStatistics != 5) && (globalJob->nTypeUse == TYPEUSE_GCSORT)) {
         printf("\n========================================================\n");
         printf("GCSORT Version %s\n", GCSORT_VERSION);
         printf("========================================================\n");
     }
 
-    if ((job->bIsTake == 1) && (globalJob->nStatistics != 5)) {
+    if ((job->bIsTake == 1) && (globalJob->nStatistics != 5) && (globalJob->nTypeUse == TYPEUSE_GCSORT)) {
         printf("TAKE file name\n");
         printf("%s\n", job->szTakeFileName);
         printf("========================================================\n");
     }
-    if ((job->nStatistics > 0) && (globalJob->nStatistics != 5)) {
+    if ((job->nStatistics > 0) && (globalJob->nStatistics != 5) && (globalJob->nTypeUse == TYPEUSE_GCSORT)) {
         switch (job->job_typeOP) {
         case ('C'):
             printf("Operation  : COPY\n\n");
@@ -4189,6 +4285,7 @@ int job_save_out(struct job_t* job)
         /* if (useRecord == 0)
             continue;
             */
+
         byteRead = job->phSrt->nLenRek + nSplitPosPnt;
         nNumBytes = nNumBytes + byteRead;
         gc_memcpy(recordBuffer, szBuffRek, byteRead);

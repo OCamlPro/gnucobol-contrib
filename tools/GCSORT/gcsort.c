@@ -302,11 +302,11 @@ int main_prod(int argc, char **argv) {
 		}
 
 		if (nRC == 0) {
-			if (globalJob->nStatistics != 5) 
+			if ((globalJob->nStatistics != 5) && (globalJob->nTypeUse == TYPEUSE_GCSORT))
 				fprintf(stdout, "GCSORT - %s OK\n\n", szMex);
 		}
 		else {
-			if (globalJob->nStatistics != 5)
+			if ((globalJob->nStatistics != 5) && (globalJob->nTypeUse == TYPEUSE_GCSORT))
 				fprintf(stdout, "GCSORT - %s KO\n\n", szMex);
 			nRC = GC_RTC_ERROR;
 		}

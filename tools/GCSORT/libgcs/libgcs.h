@@ -74,13 +74,13 @@ enum cb_colseq {
 	CB_COLSEQ_EBCDIC = 2
 };
 
-#define  LIBGCS_VERSION "01.00.00"
+#define  LIBGCS_VERSION "01.00.01"
 
-#define  EXTSM_VERSION  "01.00.00"
+#define  EXTSM_VERSION  "01.00.01"
 
 #define  COB_SOURCE_FILE		"gcsort.c"
-#define  COB_MODULE_FORMATTED_DATE	"oct 02 2026 20:00:00"
-#define  COB_MODULE_DATE		20261002
+#define  COB_MODULE_FORMATTED_DATE	"oct 30 2026 20:00:00"
+#define  COB_MODULE_DATE		20261030
 #define  COB_MODULE_TIME		200000
 
 
@@ -119,8 +119,6 @@ struct Job_tmpfile_t {
 
 #endif /* __LIBCOB_RELEASE >= 30200 */
 
-
-
 GCS_API  void* gcs_get_job(void);
 
 /* Job Init */
@@ -150,12 +148,18 @@ GCS_API int gcs_sort_give(char* name, const char* org, char* fix_var, int rec_le
 GCS_API int gcs_sort_add_key(int position, int length, char* keyType, char* keyCollating);
 
 
+/* Add parameters to command */
+/* _dfSortPtr or env, variabile GCSPARAM (pathname file parameters) */
+GCS_API int gcs_getAddOnSort(FCD3* fcd, char* bufAddOn);
+
+
+
 /* Sign    ns=0 -> ASCII, ns=1 -> EBCDIC */
 GCS_API int gcs_cb_sign(int ns);
 /* - fcolseq = [NATIVE = 0 | ASCII = 1 | EBCDIC = 2] collating sequence to use */
 GCS_API int gcs_colseq(int ns);
 /* - febcdic - table  */
-GCS_API int gcs_ebcdic_table(unsigned char* etab);
+GCS_API int gcs_ebcdic_table(const unsigned char* etab);
 
 /* ================ */
 /* Inrec functions  */
