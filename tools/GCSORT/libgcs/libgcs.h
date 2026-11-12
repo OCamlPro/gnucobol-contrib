@@ -123,6 +123,10 @@ GCS_API  void* gcs_get_job(void);
 
 /* Job Init */
 GCS_API int gcs_sort_init(void);         /* Initialize environment */
+
+/* Return Global pointer of COBOL */
+GCS_API cob_global* gcs_get_Cob_Ptr(void);
+
 /* Init Cobol Environment */
 GCS_API int gcs_init_cob(void);
 /* Enable MultiThread */
@@ -147,12 +151,9 @@ GCS_API int gcs_sort_give(char* name, const char* org, char* fix_var, int rec_le
 /* Add key definition for Index file */
 GCS_API int gcs_sort_add_key(int position, int length, char* keyType, char* keyCollating);
 
-
 /* Add parameters to command */
 /* _dfSortPtr or env, variabile GCSPARAM (pathname file parameters) */
 GCS_API int gcs_getAddOnSort(FCD3* fcd, char* bufAddOn);
-
-
 
 /* Sign    ns=0 -> ASCII, ns=1 -> EBCDIC */
 GCS_API int gcs_cb_sign(int ns);

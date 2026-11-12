@@ -28,3 +28,4 @@ EXPORTS
         gcs_sort_LoadFile                       @27
         gcs_sort_check                          @28
         gcs_sort_enable_multithread             @29
+        gcs_get_Cob_Ptr                         @30

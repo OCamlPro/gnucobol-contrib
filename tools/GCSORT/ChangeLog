@@ -1,3 +1,7 @@
+2026-11-12 Sauro Menna  <saumen2004@libero.it> 
+    * Version 01.06.01
+    * Fixed a problem in EXTSM and libgcs caused by a capture error in the COBOL runtime global pointer.
+
 2026-11-11  Sauro Menna  <saumen2004@libero.it> 
     * Version 01.06.01
     * EXTSM v.1.0.1, libgcs v.1.01.01

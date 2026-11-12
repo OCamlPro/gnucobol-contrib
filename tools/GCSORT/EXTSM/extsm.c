@@ -104,6 +104,9 @@ int64_t nLim02 = 0;
 
 FCD3* fcd;
 
+extern cob_global* cob_glob_ptr;
+extern cob_module* module;
+
 int save_curRecLen=0;
 int save_maxRecLen=0;
 int save_minRecLen=0;
@@ -282,29 +285,18 @@ GCSORT_API int EXTSM(unsigned char* func, FCD3* fcdin)
         /** ============================== **/
         int i = 0;
         int entry = 0;
-        cob_global* extcob_glob_ptr;
-        cob_module* extmodule = NULL;
-        cob_module_global_enter(&extmodule, &extcob_glob_ptr, 0, entry, 0);
-
-        if ((extmodule != NULL) && (extmodule->next != NULL)) {
-            extmodule = extmodule->next;
-         /* fprintf(stdout, "Pointer extmodule ptr module.........:%p\n", (void*)extmodule);
-            fprintf(stdout, "Pointer extmodule->collating_sequence:%p\n", (void*)extmodule->collating_sequence);
-            fprintf(stdout, "Pointer extmodule->ebcdic_sign.......:%p\n", (void*)extmodule->ebcdic_sign); */
-        }
-
         /* -fsign=[ASCII|EBCDIC] define display sign representation */
-        if (extmodule != NULL)
-            gcs_cb_sign((int)extmodule->ebcdic_sign);
-
+        cob_global* cobptr = ((cob_global*)gcs_get_Cob_Ptr());
+        if ((cobptr != NULL) && (cobptr->cob_current_module != NULL))
+            gcs_cb_sign((int)cobptr->cob_current_module->ebcdic_sign);
+    
         /* - fcolseq = [NATIVE = 0 | ASCII = 1 | EBCDIC = 2] collating sequence to use */
        // GCS_API int gcs_colseq(int ns);
         /* - febcdic - table  */
-        if ((extmodule != NULL) && (extmodule->collating_sequence != NULL))
-            gcs_ebcdic_table(extmodule->collating_sequence);
+        if ((cobptr != NULL) && (cobptr->cob_current_module->collating_sequence != NULL))
+            gcs_ebcdic_table(cobptr->cob_current_module->collating_sequence);
+    
         /** ============================== **/
-
-
         /* set operation to merge */
         if (lo == 0x40)
             gcs_sort_set_oper('M');

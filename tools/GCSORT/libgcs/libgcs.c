@@ -214,6 +214,10 @@ int gcs_check_cobol_runtime(void) {
 	return 0;
 }
 
+GCS_API cob_global* gcs_get_Cob_Ptr(void)
+{
+	return (cob_get_global_ptr());
+}
 
 GCS_API int gcs_init_cob(void)
 {
