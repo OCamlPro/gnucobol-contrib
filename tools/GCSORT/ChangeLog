@@ -1,3 +1,7 @@
+2026-11-20 Sauro Menna  <saumen2004@libero.it> 
+    * GCSort Version 01.06.01 - libgcs 1.00.02
+    * Fixed a problem in convertion type (organization file) libgcs (FCD3 -> libgcs/EXTSM).
+
 2026-11-12 Sauro Menna  <saumen2004@libero.it> 
     * Version 01.06.01
     * Fixed a problem in EXTSM and libgcs caused by a capture error in the COBOL runtime global pointer.

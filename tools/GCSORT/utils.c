@@ -106,17 +106,46 @@ int utl_fileConvertFileType(int organization) {
 }
 /* convert organization from GNUCobol-LibCob  to GCSort */
 //const char* utl_fileConvertFileTypeFCD2GCS(int organization) 
+/*  GnuCobol */
+/* 
+libcob\common.h
+file ORGANIZATION IS 
+enum cob_file_org {
+	COB_ORG_SEQUENTIAL = 0,
+	COB_ORG_LINE_SEQUENTIAL = 1,
+	COB_ORG_RELATIVE = 2,
+	COB_ORG_INDEXED = 3,
+	COB_ORG_SORT = 4,
+	COB_ORG_MAX = 5,
+	COB_ORG_MESSAGE = 6
+}; 
+
+(xfhfcd3.cpy)
+		   40  FCD-ORGANIZATION      pic x comp-x.
+			  78 fcd--line-sequential-org      value 0.
+			  78 fcd--sequential-org           value 1.
+			  78 fcd--indexed-org              value 2.
+			  78 fcd--relative-org             value 3.
+	  *>         see opcode 0006:
+			  78 fcd--determine-org            value 255.
+
+convert value from xfhfcd3/FCD3 to file organization GCSort
+*/
 GCS_API const char* gcs_sort_FileTypeFCD2GCS(int organization)
 {
 	switch (organization) {
-	case 0:	/* fcd--line-sequential-org */
+	case 0:	/* fcd--line-sequential-org (COB_ORG_LINE_SEQUENTIAL)*/
 		return utils_getFileOrganizationName(FILE_ORGANIZATION_LINESEQUENTIAL);
-	case 1:	/* fcd--sequential - org */
+	case 1:	/* fcd--sequential - org - (COB_ORG_SEQUENTIAL) */
 		return utils_getFileOrganizationName(FILE_ORGANIZATION_SEQUENTIAL);
-	case 2: /* fcd--indexed - org */
-		return utils_getFileOrganizationName(FILE_ORGANIZATION_RELATIVE);
-	case 3: /* fcd--relative - org */
+	case 2: /* fcd--indexed - org - (COB_ORG_INDEXED) */
 		return utils_getFileOrganizationName(FILE_ORGANIZATION_INDEXED);
+	case 3: /* fcd--relative - org  - (COB_ORG_RELATIVE) */
+		return utils_getFileOrganizationName(FILE_ORGANIZATION_RELATIVE);
+	case 4: /* Cobol Sort - org - (COB_ORG_SORT) [Force FILE_ORGANIZATION_SEQUENTIAL] */
+		return utils_getFileOrganizationName(FILE_ORGANIZATION_SEQUENTIAL);
+	default:
+		fprintf(stderr, "libgcs - Error in fcd-org (file organization) value:%d.\n", organization);
 	}
 	return NULL;
 }
